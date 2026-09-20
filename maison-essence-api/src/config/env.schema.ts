@@ -1,7 +1,19 @@
 import { z } from 'zod';
+import { PASSWORD_MIN_LENGTH } from '../modules/auth/auth.constants.js';
 
 const MIN_SECRET_LENGTH = 32;
 const SECRET_TOO_SHORT = `deve ter ao menos ${MIN_SECRET_LENGTH} caracteres`;
+
+/**
+ * Variavel que pode nao existir.
+ *
+ * O `preprocess` trata string vazia como ausente: apagar uma variavel no
+ * painel da Vercel costuma deixar `''` para tras, e `''` reprovado pelo schema
+ * derrubaria o boot em vez de significar "nao configurado".
+ */
+function optional<Schema extends z.ZodType>(schema: Schema) {
+  return z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
+}
 
 export const envSchema = z.object({
   NODE_ENV: z
@@ -27,6 +39,19 @@ export const envSchema = z.object({
   // forjado com o papel que o atacante quiser.
   JWT_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
   JWT_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
+  // Criacao do primeiro SUPER_ADMIN. As tres sao opcionais porque a API
+  // precisa subir sem elas: depois do primeiro acesso elas saem do ambiente,
+  // e uma variavel obrigatoria que deve ser removida e uma contradicao.
+  BOOTSTRAP_SUPERADMIN_EMAIL: optional(
+    z.email('informe um e-mail valido').transform((email) => email.trim().toLowerCase()),
+  ),
+  BOOTSTRAP_SUPERADMIN_PASSWORD: optional(
+    z.string().min(PASSWORD_MIN_LENGTH, `deve ter ao menos ${PASSWORD_MIN_LENGTH} caracteres`),
+  ),
+  BOOTSTRAP_SUPERADMIN_NAME: z.string().min(1).max(120).default('Super Admin'),
+  // Libera POST /auth/bootstrap. Sem ela a rota responde 404, que e o estado
+  // em que o projeto deve ficar depois do primeiro acesso.
+  BOOTSTRAP_SECRET: optional(z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT)),
 })
   // Com os dois segredos iguais, um refresh token passaria por access token e
   // pularia a rotacao inteira — o que o guard confere e a assinatura.

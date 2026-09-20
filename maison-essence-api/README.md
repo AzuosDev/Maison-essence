@@ -4,9 +4,10 @@ Casca do backend da Maison Essence: NestJS em TypeScript estrito, preparado para
 rodar como uma unica funcao serverless na Vercel.
 
 Ha conexao com MongoDB via Mongoose, os schemas do dominio modelados, a
-autenticacao do painel (login, refresh com rotacao, logout) e o controle de
-acesso por papel com o CRUD de usuarios administrativos. As rotas de catalogo
-e de pedido ainda nao existem.
+autenticacao do painel (login, refresh com rotacao, logout), o controle de
+acesso por papel com o CRUD de usuarios administrativos e os comandos que
+criam o primeiro usuario e populam a loja de demonstracao. As rotas de
+catalogo e de pedido ainda nao existem.
 
 ## Rodando local
 
@@ -29,6 +30,15 @@ npm run dev:vercel
 
 O `vercel dev` exige login na Vercel no primeiro uso.
 
+Com o banco de pe, dois comandos deixam o ambiente utilizavel: um cria o
+usuario que abre o painel e o outro enche a loja de exemplo (ver "Primeiro
+acesso" e "Dados de demonstracao").
+
+```bash
+npm run seed:superadmin
+npm run seed:demo
+```
+
 ## Estrutura
 
 ```
@@ -43,6 +53,7 @@ src/health/           health check publico
 src/modules/auth/     sessao do painel: login, tokens, guards
 src/modules/users/    CRUD de usuarios administrativos e policy de acesso
 src/modules/          um diretorio por dominio, cada um com seus schemas
+src/seeds/            comandos de primeiro acesso e de dados de exemplo
 src/schemas.ts        ponto unico de importacao dos schemas
 ```
 
@@ -77,9 +88,18 @@ a lista do que falta e codigo de saida 1.
 | `MONGODB_DB_NAME` | nao      | `maison-essence` | Nome do banco                         |
 | `JWT_ACCESS_SECRET` | **sim** | —            | Assina o access token; minimo 32 caracteres |
 | `JWT_REFRESH_SECRET` | **sim** | —           | Assina o refresh token; precisa ser diferente do de cima |
+| `BOOTSTRAP_SUPERADMIN_EMAIL` | nao | — | Login do primeiro usuario (ver "Primeiro acesso") |
+| `BOOTSTRAP_SUPERADMIN_PASSWORD` | nao | — | Senha temporaria dele; minimo 12 caracteres |
+| `BOOTSTRAP_SUPERADMIN_NAME` | nao | `Super Admin` | Nome exibido no painel |
+| `BOOTSTRAP_SECRET` | nao | — | Libera `POST /auth/bootstrap`; minimo 32 caracteres. **Remova depois do primeiro acesso** |
 
 O nome do banco vem de `MONGODB_DB_NAME`, nao do caminho da URI: a string que o
 Atlas entrega nao traz banco nenhum e o Mongoose cairia no default `test`.
+
+As quatro `BOOTSTRAP_*` sao opcionais porque a API precisa subir sem elas: sao
+justamente as que devem sair do ambiente depois do primeiro acesso. Variavel
+vazia conta como ausente — apagar o valor no painel da Vercel deixa `''` para
+tras, e `''` reprovado pelo schema derrubaria o deploy.
 
 ## Banco de dados
 
@@ -225,6 +245,7 @@ estrago dele e curta.
 | `POST /auth/logout-all` | nao | Revoga todas as sessoes do usuario |
 | `PATCH /auth/change-password` | nao | Troca a propria senha e devolve sessao nova |
 | `GET /auth/me` | nao | Usuario da sessao atual |
+| `POST /auth/bootstrap` | sim | Cria o primeiro SUPER_ADMIN de um banco vazio (ver "Primeiro acesso") |
 
 `/auth/refresh` e `/auth/logout` sao publicas porque quem autentica nelas e o
 proprio refresh token: exigir access valido em uma rota cuja razao de existir e
@@ -445,6 +466,100 @@ na Vercel e o que fica pesquisavel, e nao para uma colecao: trilha de auditoria
 dentro do banco que o proprio painel administra e apagavel por quem esta sendo
 auditado. Senha e hash nunca aparecem ali.
 
+## Primeiro acesso
+
+O painel nao tem cadastro aberto, entao um banco novo comeca sem ninguem para
+fazer login. Ha duas portas para criar o primeiro `SUPER_ADMIN`, e as duas
+fazem a mesma coisa: mesmo servico, mesmo argon2id, mesma troca de senha
+obrigatoria no fim.
+
+As duas leem as mesmas variaveis:
+
+| Variavel | Para que |
+| --- | --- |
+| `BOOTSTRAP_SUPERADMIN_EMAIL` | Login do primeiro usuario |
+| `BOOTSTRAP_SUPERADMIN_PASSWORD` | Senha temporaria; minimo de 12 caracteres |
+| `BOOTSTRAP_SUPERADMIN_NAME` | Nome exibido. Opcional, padrao `Super Admin` |
+
+### Pelo terminal
+
+```bash
+npm run seed:superadmin
+```
+
+Idempotente: com um `SUPER_ADMIN` ja no banco ele avisa, nao cria nada e sai
+com codigo 0. Rodar duas vezes nao e erro — e o que acontece com quem nao
+lembra se ja rodou.
+
+### Pela API, que e o caminho da Vercel
+
+A Vercel nao da shell, entao o mesmo trabalho tem uma rota:
+
+```bash
+curl -X POST https://<seu-projeto>.vercel.app/api/v1/auth/bootstrap \
+  -H "x-bootstrap-secret: $BOOTSTRAP_SECRET"
+```
+
+| Situacao | Resposta |
+| --- | --- |
+| Banco sem usuario nenhum e segredo certo | `201` com o usuario criado |
+| `BOOTSTRAP_SECRET` fora do ambiente | `404` |
+| Header ausente ou segredo errado | `401` |
+| Ja existe **qualquer** usuario, nem que seja um STAFF | `409` |
+
+A rota e mais rigorosa que o comando de proposito. O comando roda na maquina
+de quem ja tem a URI do banco na mao e so precisa ser idempotente; a rota fica
+exposta na internet, e "o banco tem gente" e um criterio que a fecha sozinha no
+dia em que a loja cadastra o primeiro STAFF — mesmo que alguem esqueca o
+segredo no ambiente.
+
+> **Remova `BOOTSTRAP_SECRET` das variaveis de ambiente depois do primeiro
+> acesso.** Sem ela a rota responde 404, como se nunca tivesse existido. Vale
+> tirar junto `BOOTSTRAP_SUPERADMIN_EMAIL` e `BOOTSTRAP_SUPERADMIN_PASSWORD`:
+> essa senha fica legivel no painel da Vercel e e a senha de quem pode tudo.
+
+O usuario nasce com `mustChangePassword: true`. No primeiro login o painel so
+libera `PATCH /auth/change-password`, e e ali que a senha que passou por
+variavel de ambiente deixa de valer.
+
+### Os seeds criam os indices
+
+Antes de gravar qualquer coisa, os dois comandos conferem os indices de todas
+as colecoes. `autoIndex` fica desligado fora de desenvolvimento (ver "Banco de
+dados"), entao um cluster recem-criado no Atlas nao tem nem o unico de
+`users.email` — e sem ele dois usuarios podem nascer com o mesmo login. Rodar
+um dos seeds contra o banco novo resolve. E `createIndexes`: cria o que falta
+e nunca derruba indice existente, que nao e decisao de um comando de seed.
+
+## Dados de demonstracao
+
+```bash
+npm run seed:demo
+```
+
+Popula tres categorias, seis produtos com variantes, duas cidades de entrega e
+as configuracoes de loja e de pagamento — o bastante para abrir o frontend e
+ver uma loja de verdade sem cadastrar nada a mao. O conteudo esta em
+[`src/seeds/demo-data.ts`](src/seeds/demo-data.ts).
+
+Idempotente pela chave natural (slug do produto e da categoria, nome+estado da
+cidade, documento unico das configuracoes): rodar de novo reescreve os mesmos
+registros em vez de duplicar, e nao encosta no que foi cadastrado a mao fora
+dessa lista.
+
+Reescrever, porem, e destrutivo para quem ja mexeu no painel: as configuracoes
+da loja voltam para os valores de demonstracao. Por isso o comando se recusa a
+rodar com `NODE_ENV=production`. Quando for mesmo isso que voce quer:
+
+```bash
+npm run seed:demo -- --force
+```
+
+Nenhum registro traz imagem. O schema guarda `publicId` do Cloudinary, nao URL,
+e um publicId inventado nao resolve em conta nenhuma: renderizaria imagem
+quebrada no lugar do placeholder que o frontend ja sabe mostrar. Pela mesma
+razao a home fica sem banner, que exige uma imagem para existir.
+
 ## Preparando o MongoDB Atlas
 
 1. **Cluster.** Em [cloud.mongodb.com](https://cloud.mongodb.com), crie um
@@ -477,6 +592,12 @@ variaveis de ambiente do projeto na Vercel. Os cookies de sessao saem com
 `SameSite=None; Secure` fora de desenvolvimento, o que exige HTTPS — na Vercel
 isso ja e o padrao.
 
+No primeiro deploy defina tambem as `BOOTSTRAP_*`, chame
+`POST /api/v1/auth/bootstrap` uma vez e **remova `BOOTSTRAP_SECRET` em
+seguida** (ver "Primeiro acesso"). Sem shell na Vercel, essa rota e a unica
+forma de criar o usuario que abre o painel — e, com o segredo fora do
+ambiente, ela volta a responder 404.
+
 ## Scripts
 
 | Script             | O que faz                                  |
@@ -484,6 +605,8 @@ isso ja e o padrao.
 | `start:dev`        | Nest em watch mode na porta 3333           |
 | `dev:vercel`       | `vercel dev` pelo handler serverless       |
 | `build`            | Compila para `dist/`                       |
+| `seed:superadmin`  | Cria o primeiro SUPER_ADMIN; idempotente   |
+| `seed:demo`        | Popula catalogo, entrega e configuracoes   |
 | `typecheck`        | `tsc --noEmit`                             |
 | `test`             | Testes unitarios                           |
 | `test:e2e`         | Testes de ponta a ponta                    |

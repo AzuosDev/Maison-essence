@@ -15,6 +15,7 @@ import {
 } from '../../schemas.js';
 import { AuthController } from './auth.controller.js';
 import { AuthService } from './auth.service.js';
+import { BootstrapService } from './bootstrap.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 import { PendingPasswordGuard } from './guards/pending-password.guard.js';
 import { LoginRateLimitService } from './login-rate-limit.service.js';
@@ -44,6 +45,7 @@ import { TokenService } from './token.service.js';
   controllers: [AuthController],
   providers: [
     AuthService,
+    BootstrapService,
     PasswordService,
     TokenService,
     RefreshTokenService,
@@ -54,10 +56,12 @@ import { TokenService } from './token.service.js';
     { provide: APP_GUARD, useClass: PendingPasswordGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
-  // Exportados para o modulo de usuarios: criar usuario precisa do hash,
-  // resetar senha e desativar usuario precisam revogar as sessoes.
+  // Exportados para o modulo de usuarios (criar usuario precisa do hash,
+  // resetar senha e desativar precisam revogar as sessoes) e para os seeds,
+  // que criam o primeiro SUPER_ADMIN pelo mesmo servico da rota.
   exports: [
     AuthService,
+    BootstrapService,
     PasswordService,
     TokenService,
     RefreshTokenService,

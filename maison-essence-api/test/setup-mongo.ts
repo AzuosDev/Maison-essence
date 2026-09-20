@@ -16,6 +16,11 @@ process.env.CORS_ORIGINS ??= 'http://localhost:5173';
 // os dois iguais.
 process.env.JWT_ACCESS_SECRET ??= 'test-access-secret-0123456789-abcdefgh';
 process.env.JWT_REFRESH_SECRET ??= 'test-refresh-secret-0123456789-abcdefgh';
+// Primeiro acesso: as rotas e comandos de bootstrap leem daqui. O segredo
+// tem 32 caracteres porque o schema recusa menos que isso.
+process.env.BOOTSTRAP_SUPERADMIN_EMAIL ??= 'root@maisonessence.com';
+process.env.BOOTSTRAP_SUPERADMIN_PASSWORD ??= 'primeiro-acesso-2026';
+process.env.BOOTSTRAP_SECRET ??= 'test-bootstrap-secret-0123456789-abcd';
 
 afterAll(async () => {
   await mongo.stop();

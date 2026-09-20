@@ -16,6 +16,8 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "dev:vercel": "npx vercel@latest dev --listen 3333",
+    "seed:superadmin": "npm run build && node dist/seeds/superadmin.seed.js",
+    "seed:demo": "npm run build && node dist/seeds/demo.seed.js",
     "lint": "oxlint --type-aware src/ api/ test/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
