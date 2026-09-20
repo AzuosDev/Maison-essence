@@ -13,6 +13,16 @@ export const ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
 /** Refresh token: sete dias, rotacionado a cada uso. */
 export const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 
+/**
+ * Piso de tamanho de senha, na criacao de usuario e na troca.
+ *
+ * Doze e nao oito: o painel tem poucas contas e nenhuma delas troca de senha
+ * toda semana, entao o custo de exigir uma senha longa e baixo e o ganho
+ * contra ataque offline e direto. Nada de exigir simbolo ou maiuscula — o que
+ * segura forca bruta e comprimento.
+ */
+export const PASSWORD_MIN_LENGTH = 12;
+
 /** Tentativas de login por janela, contadas por IP + e-mail. */
 export const LOGIN_MAX_ATTEMPTS = 5;
 

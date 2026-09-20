@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Req,
   Res,
@@ -20,6 +21,7 @@ import type { RequestContext } from './auth.service.js';
 import type { AuthSession, AuthenticatedUser } from './auth.types.js';
 import { AllowPendingPassword } from './decorators/allow-pending-password.decorator.js';
 import { CurrentUser } from './decorators/current-user.decorator.js';
+import { ChangePasswordDto } from './dto/change-password.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RefreshDto } from './dto/refresh.dto.js';
 
@@ -106,6 +108,29 @@ export class AuthController {
     await this.auth.logoutAll(user.id);
 
     clearSessionCookies(response, this.isDevelopment);
+  }
+
+  /**
+   * Troca de senha do proprio usuario.
+   *
+   * E a unica rota administrativa liberada para quem esta com senha
+   * temporaria — e, no caminho normal, tambem o fim desse estado. Responde
+   * com uma sessao nova, ja sem a flag.
+   */
+  @AllowPendingPassword()
+  @Patch('change-password')
+  @HttpCode(HttpStatus.OK)
+  async changePassword(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: ChangePasswordDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<AuthSession> {
+    const session = await this.auth.changePassword(user, dto, requestContext(request));
+
+    setSessionCookies(response, session, this.isDevelopment);
+
+    return session;
   }
 
   /** Quem esta logado. Liberada com senha temporaria: e por ela que o painel

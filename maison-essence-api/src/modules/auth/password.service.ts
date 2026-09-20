@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import argon2 from 'argon2';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, randomInt } from 'node:crypto';
 
 /**
  * Parametros do argon2id, na linha do que a OWASP recomenda: 19 MiB de
@@ -16,6 +16,10 @@ export const ARGON2_OPTIONS = {
   timeCost: 2,
   parallelism: 1,
 } as const;
+
+const TEMPORARY_PASSWORD_ALPHABET =
+  'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
+const TEMPORARY_PASSWORD_LENGTH = 16;
 
 @Injectable()
 export class PasswordService {
@@ -51,6 +55,21 @@ export class PasswordService {
       // nao um erro 500 que vaza o estado do registro.
       return false;
     }
+  }
+
+  /**
+   * Senha temporaria para reset: 16 caracteres de um alfabeto sem `0`, `O`,
+   * `1`, `l` e `I`.
+   *
+   * Ela vai ser lida em voz alta ou copiada de uma tela para um WhatsApp, e
+   * caractere ambiguo nesse caminho vira chamado de suporte. `randomInt` e o
+   * sorteio uniforme do proprio Node, sem o vies de um `% alfabeto`.
+   */
+  generateTemporary(): string {
+    return Array.from(
+      { length: TEMPORARY_PASSWORD_LENGTH },
+      () => TEMPORARY_PASSWORD_ALPHABET[randomInt(TEMPORARY_PASSWORD_ALPHABET.length)],
+    ).join('');
   }
 
   /** `true` quando o hash foi gerado com parametros mais fracos que os atuais. */

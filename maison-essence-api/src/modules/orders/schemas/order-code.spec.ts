@@ -19,11 +19,13 @@ describe('generateOrderCode', () => {
     expect(random).toMatch(/^[0-9A-Z]{4}$/);
   });
 
-  it('nao repete o codigo em sequencia', () => {
+  it('quase nao repete o codigo em sequencia', () => {
     const codes = new Set(Array.from({ length: 500 }, () => generateOrderCode()));
 
-    // 1,6 milhao de combinacoes por dia: 500 sorteios sem repeticao e o
-    // esperado, e a repeticao restante fica por conta do indice unico.
-    expect(codes.size).toBe(500);
+    // 1,6 milhao de combinacoes por dia (36^4). Pelo paradoxo do aniversario,
+    // 500 sorteios colidem em cerca de 7% das rodadas — exigir 500 distintos
+    // seria um teste que falha sozinho de vez em quando. O que importa e a
+    // ordem de grandeza; a colisao que sobrar morre no indice unico.
+    expect(codes.size).toBeGreaterThanOrEqual(495);
   });
 });

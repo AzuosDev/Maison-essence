@@ -3,9 +3,10 @@
 Casca do backend da Maison Essence: NestJS em TypeScript estrito, preparado para
 rodar como uma unica funcao serverless na Vercel.
 
-Ha conexao com MongoDB via Mongoose, os schemas do dominio modelados e a
-autenticacao do painel (login, refresh com rotacao, logout). As rotas de
-negocio ainda nao existem.
+Ha conexao com MongoDB via Mongoose, os schemas do dominio modelados, a
+autenticacao do painel (login, refresh com rotacao, logout) e o controle de
+acesso por papel com o CRUD de usuarios administrativos. As rotas de catalogo
+e de pedido ainda nao existem.
 
 ## Rodando local
 
@@ -40,6 +41,7 @@ src/config/           schema Zod e ConfigModule tipado
 src/database/         conexao Mongoose, opcoes base e helpers de schema
 src/health/           health check publico
 src/modules/auth/     sessao do painel: login, tokens, guards
+src/modules/users/    CRUD de usuarios administrativos e policy de acesso
 src/modules/          um diretorio por dominio, cada um com seus schemas
 src/schemas.ts        ponto unico de importacao dos schemas
 ```
@@ -57,7 +59,8 @@ exatamente a mesma configuracao (helmet, compression, CORS, prefixo global).
   remove `__v` e `passwordHash` em qualquer profundidade.
 - `helmet`, `compression` e `cookie-parser` aplicados antes das rotas.
 - Toda rota nasce autenticada. Rota aberta precisa de `@Public()` explicito
-  (ver "Autenticacao").
+  (ver "Autenticacao") e rota restrita declara `@Roles(...)` (ver "Papeis e
+  permissoes").
 
 ## Variaveis de ambiente
 
@@ -220,6 +223,7 @@ estrago dele e curta.
 | `POST /auth/refresh` | sim | Rotaciona o refresh e emite um access novo |
 | `POST /auth/logout` | sim | Revoga a sessao apresentada; sempre 204 |
 | `POST /auth/logout-all` | nao | Revoga todas as sessoes do usuario |
+| `PATCH /auth/change-password` | nao | Troca a propria senha e devolve sessao nova |
 | `GET /auth/me` | nao | Usuario da sessao atual |
 
 `/auth/refresh` e `/auth/logout` sao publicas porque quem autentica nelas e o
@@ -262,8 +266,12 @@ dona refaz o login. O incidente vai para o log com o id do usuario.
 `User.credentialVersion` e copiado para dentro do access token e conferido
 contra o banco em cada request. Incrementar o contador mata na hora todo
 access token ja emitido, sem esperar os 15 minutos. Incrementam:
-`/auth/logout-all`, a deteccao de reuso e (no modulo de usuarios) desativar
-usuario e resetar senha.
+`/auth/logout-all`, a deteccao de reuso, a troca de senha e, no modulo de
+usuarios, desativar usuario, resetar senha e mudar o papel.
+
+As tres primeiras encerram a sessao inteira (os refresh tokens tambem sao
+revogados). Mudar o papel e o unico caso que so invalida o access token: a
+sessao segue de pe e a proxima renovacao ja sai com o papel novo.
 
 O custo disso e uma leitura do usuario por request autenticado. E o que faz
 "desativar usuario derruba a sessao dele" ser verdade, e nao uma promessa com
@@ -299,15 +307,15 @@ e-mails tem conta no painel.
 
 ### Protecao por padrao
 
-`JwtAuthGuard` e `PendingPasswordGuard` sao `APP_GUARD`: **toda rota nasce
-protegida** e so abre com `@Public()`. Inverter esse padrao e onde mais se
-esquece de uma rota.
+`JwtAuthGuard`, `PendingPasswordGuard` e `RolesGuard` sao `APP_GUARD`, nessa
+ordem: **toda rota nasce protegida** e so abre com `@Public()`. Inverter esse
+padrao e onde mais se esquece de uma rota.
 
 Usuario com `mustChangePassword` faz login normalmente, e a flag viaja no
 access token, mas toda rota administrativa responde 403 ate a troca. As
-excecoes sao marcadas com `@AllowPendingPassword()` — hoje `/auth/me`,
-`/auth/refresh`, `/auth/logout` e `/auth/logout-all`; a rota de troca de senha
-entra no modulo de usuarios.
+excecoes sao marcadas com `@AllowPendingPassword()`: `/auth/me`,
+`/auth/refresh`, `/auth/logout`, `/auth/logout-all` e
+`/auth/change-password`.
 
 Em um controller, o usuario da sessao vem pelo parametro:
 
@@ -333,6 +341,109 @@ src/modules/auth/
   strategies/jwt.strategy.ts
   schemas/                  refresh-token, login-attempt
 ```
+
+## Papeis e permissoes
+
+Tres papeis, fechados em `src/common/enums/user-role.ts`:
+
+| Papel | O que faz |
+| --- | --- |
+| `SUPER_ADMIN` | Tudo. Cria, edita, desativa e reseta senha de qualquer usuario. E o papel do desenvolvedor |
+| `OWNER` | A loja inteira: catalogo, precos, pedidos, entrega, pagamento, configuracoes. Nos usuarios, alcanca so os `STAFF` |
+| `STAFF` | Le o catalogo, le pedidos e atualiza status. Nao mexe em preco, configuracao nem usuario |
+
+### Como uma rota declara o que exige
+
+```ts
+@Roles(...MANAGES_STORE)
+@Patch(':id/price')
+updatePrice() {}
+```
+
+- Rota **sem** `@Roles` exige apenas estar autenticado.
+- Rota **`@Public()`** nao exige nada — e a unica forma de abrir uma rota.
+- `SUPER_ADMIN` **nunca** aparece em lista de papeis: o `RolesGuard` sempre o
+  libera. A lista onde alguem esquecesse de inclui-lo trancaria o
+  desenvolvedor para fora do sistema, sem ninguem para reabrir.
+
+Os conjuntos vivem em [`src/common/roles.ts`](src/common/roles.ts) —
+`MANAGES_STORE`, `MANAGES_USERS`, `HANDLES_ORDERS`, `READS_CATALOG` — e nao
+espalhados pelos controllers. Mudar quem mexe em preco e editar uma linha
+daquele arquivo.
+
+### O alcance do OWNER
+
+Papel dito pelo `@Roles` e permissao grossa: ela responde "o OWNER pode mexer
+em usuarios?". Quem responde "neste usuario?" e a policy em
+[`user-access.policy.ts`](src/modules/users/user-access.policy.ts), que sao
+funcoes puras testadas a parte:
+
+- o OWNER gerencia apenas alvos `STAFF`;
+- para o OWNER, um `SUPER_ADMIN` **nao existe**: some da listagem e responde
+  **404**, nao 403. Confirmar que aquele id e um super-admin ja seria
+  informacao;
+- alvo visivel porem fora do alcance (OWNER sobre OWNER) responde **403**;
+- corrigir o proprio nome e e-mail todo mundo pode, independente de alcance.
+  Mudar o proprio papel, ninguem: o unico `SUPER_ADMIN` se rebaixaria por
+  engano e nao sobraria quem o promovesse de volta.
+
+## Usuarios administrativos
+
+| Rota | Quem | O que faz |
+| --- | --- | --- |
+| `GET /users` | OWNER+ | Lista o que o ator enxerga |
+| `POST /users` | OWNER+ | Cria com senha temporaria definida por quem cria |
+| `PATCH /users/:id` | OWNER+ | Nome, e-mail e papel |
+| `PATCH /users/:id/status` | OWNER+ | Ativa ou desativa |
+| `POST /users/:id/reset-password` | OWNER+ | Gera senha temporaria nova |
+| `PATCH /auth/change-password` | qualquer autenticado | Troca a propria senha |
+
+("OWNER+" e OWNER e SUPER_ADMIN, dentro do alcance de cada um.)
+
+### Criacao e senha temporaria
+
+Quem cria digita a senha temporaria (minimo 12 caracteres) e o registro nasce
+com `mustChangePassword: true` — quem criou conhece a senha, entao ela so pode
+servir para o primeiro login. Enquanto a flag existir, toda rota
+administrativa responde 403 e so `PATCH /auth/change-password` passa.
+
+O reset e diferente: o servidor **gera** a senha, de 16 caracteres sem `0`,
+`O`, `1`, `l` e `I` (ela vai ser lida em voz alta ou colada num WhatsApp), e a
+devolve **uma unica vez** no corpo da resposta. Nao ha como consulta-la
+depois, e por isso ela nunca entra no log.
+
+### Invariantes
+
+- **Ninguem desativa a si mesmo** (409).
+- **O ultimo `SUPER_ADMIN` ativo nao pode ser desativado nem rebaixado** (409).
+  A verificacao conta os outros ativos antes de gravar; com duas ou tres
+  contas no painel a corrida teorica entre duas desativacoes simultaneas nao
+  acontece, e resolve-la exigiria transacao, que o Atlas M0 nao garante.
+- **Desativar revoga as sessoes na hora.** O access token do desativado para
+  de valer na proxima chamada, nao quando expirar.
+- **Resetar senha revoga as sessoes** do alvo.
+- **Mudar o papel invalida o access token, mas nao a sessao**: `PATCH
+  /users/:id` incrementa `credentialVersion` sem revogar os refresh tokens, e
+  a proxima renovacao ja sai com o papel novo, sem novo login.
+- **Trocar a propria senha** derruba as outras sessoes e devolve uma sessao
+  nova para quem trocou — inclusive no caminho da senha temporaria, que
+  terminaria em um login manual logo depois de uma troca obrigatoria.
+
+### Auditoria
+
+Toda acao sobre usuario sai como uma linha JSON no log, com ator, alvo, acao e
+data ([`user-audit.log.ts`](src/common/user-audit.log.ts)):
+
+```json
+{"action":"user.deactivated","actor":{"id":"...","email":"root@...","role":"SUPER_ADMIN"},
+ "target":{"id":"...","email":"staff@...","role":"STAFF"},"at":"2026-09-20T18:20:11.427Z"}
+```
+
+Acoes: `user.created`, `user.updated`, `user.activated`, `user.deactivated`,
+`user.password_reset`, `user.password_changed`. Vai para o log do processo, que
+na Vercel e o que fica pesquisavel, e nao para uma colecao: trilha de auditoria
+dentro do banco que o proprio painel administra e apagavel por quem esta sendo
+auditado. Senha e hash nunca aparecem ali.
 
 ## Preparando o MongoDB Atlas
 

@@ -144,13 +144,36 @@ export class RefreshTokenService {
    * access tokens ja emitidos.
    */
   async revokeAllSessions(userId: Types.ObjectId): Promise<number> {
+    const revoked = await this.revokeRefreshTokens(userId);
+
+    await this.bumpCredentialVersion(userId);
+
+    return revoked;
+  }
+
+  /**
+   * Revoga so os refresh tokens, sem tocar na versao da credencial.
+   *
+   * Existe para quem ja vai incrementar a versao na mesma escrita que faz
+   * outra coisa — a troca de senha grava hash, flag e versao de uma vez so.
+   */
+  async revokeRefreshTokens(userId: Types.ObjectId): Promise<number> {
     const result = await this.tokens
       .updateMany({ userId, revokedAt: null }, { $set: { revokedAt: new Date() } })
       .exec();
 
-    await this.users.updateOne({ _id: userId }, { $inc: { credentialVersion: 1 } }).exec();
-
     return result.modifiedCount;
+  }
+
+  /**
+   * Invalida os access tokens em circulacao sem encerrar as sessoes.
+   *
+   * E o que uma mudanca de papel precisa: o token atual para de valer na hora
+   * (o papel dentro dele ficou velho), o refresh continua valido e a proxima
+   * renovacao ja sai com o papel novo, sem novo login.
+   */
+  async bumpCredentialVersion(userId: Types.ObjectId): Promise<void> {
+    await this.users.updateOne({ _id: userId }, { $inc: { credentialVersion: 1 } }).exec();
   }
 }
 

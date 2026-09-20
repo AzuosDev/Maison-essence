@@ -3,6 +3,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
+import { RolesGuard } from '../../common/guards/roles.guard.js';
+import { UserAuditLog } from '../../common/user-audit.log.js';
 import {
   LoginAttempt,
   LoginAttemptSchema,
@@ -25,9 +27,9 @@ import { TokenService } from './token.service.js';
  * Autenticacao do painel.
  *
  * O `JwtModule` e registrado sem segredo: cada token e assinado com o seu, em
- * `TokenService`. Os dois guards entram como `APP_GUARD` e nessa ordem — o
+ * `TokenService`. Os tres guards entram como `APP_GUARD` e nessa ordem: o
  * primeiro resolve o usuario, o segundo barra quem ainda esta com senha
- * temporaria.
+ * temporaria e o terceiro confere o papel.
  */
 @Module({
   imports: [
@@ -47,11 +49,20 @@ import { TokenService } from './token.service.js';
     RefreshTokenService,
     LoginRateLimitService,
     JwtStrategy,
+    UserAuditLog,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PendingPasswordGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
   ],
   // Exportados para o modulo de usuarios: criar usuario precisa do hash,
   // resetar senha e desativar usuario precisam revogar as sessoes.
-  exports: [AuthService, PasswordService, TokenService, RefreshTokenService, MongooseModule],
+  exports: [
+    AuthService,
+    PasswordService,
+    TokenService,
+    RefreshTokenService,
+    UserAuditLog,
+    MongooseModule,
+  ],
 })
 export class AuthModule {}

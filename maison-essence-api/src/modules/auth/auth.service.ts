@@ -1,7 +1,13 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import { Types } from 'mongoose';
+import { USER_AUDIT_ACTIONS, UserAuditLog } from '../../common/user-audit.log.js';
 import { User } from '../users/schemas/user.schema.js';
 import type { UserDocument } from '../users/schemas/user.schema.js';
 import {
@@ -9,9 +15,10 @@ import {
   INVALID_CREDENTIALS_MESSAGE,
   LOGIN_MIN_DURATION_MS,
 } from './auth.constants.js';
-import type { AuthSession } from './auth.types.js';
+import type { AuthSession, AuthenticatedUser } from './auth.types.js';
 import { toAuthenticatedUser } from './auth.types.js';
 import { withMinimumDuration } from './constant-time.js';
+import type { ChangePasswordDto } from './dto/change-password.dto.js';
 import type { LoginDto } from './dto/login.dto.js';
 import { LoginRateLimitService } from './login-rate-limit.service.js';
 import { PasswordService } from './password.service.js';
@@ -34,6 +41,7 @@ export class AuthService {
     private readonly tokens: TokenService,
     private readonly sessions: RefreshTokenService,
     private readonly rateLimit: LoginRateLimitService,
+    private readonly audit: UserAuditLog,
   ) {}
 
   /**
@@ -112,6 +120,70 @@ export class AuthService {
       // Token invalido no logout nao e incidente: os cookies sao apagados
       // do mesmo jeito pelo controller.
     }
+  }
+
+  /**
+   * Troca a senha do proprio usuario.
+   *
+   * Derruba as outras sessoes — trocar senha e o que se faz quando se
+   * desconfia de acesso indevido, e manter as demais abertas esvaziaria o
+   * gesto — e ja devolve uma sessao nova para quem trocou. Sem isso, o
+   * usuario com senha temporaria teria de fazer login de novo logo depois de
+   * ter sido obrigado a trocar a senha.
+   *
+   * O hash, a flag e a versao da credencial vao em uma unica escrita: nao
+   * existe instante em que a senha nova ja vale e o token velho ainda passa.
+   */
+  async changePassword(
+    actor: AuthenticatedUser,
+    dto: ChangePasswordDto,
+    context: RequestContext,
+  ): Promise<AuthSession> {
+    if (dto.newPassword === dto.currentPassword) {
+      throw new BadRequestException('A nova senha deve ser diferente da atual.');
+    }
+
+    const userId = new Types.ObjectId(actor.id);
+    const stored = await this.users.findById(userId).select('+passwordHash').exec();
+
+    if (!stored) {
+      throw new UnauthorizedException('Sessao invalida.');
+    }
+
+    const matches = await this.passwords.verify(stored.passwordHash, dto.currentPassword);
+
+    if (!matches) {
+      // 401 e nao 403: a credencial apresentada e que esta errada.
+      throw new UnauthorizedException('Senha atual incorreta.');
+    }
+
+    const updated = await this.users
+      .findOneAndUpdate(
+        { _id: userId },
+        {
+          $set: {
+            passwordHash: await this.passwords.hash(dto.newPassword),
+            mustChangePassword: false,
+          },
+          $inc: { credentialVersion: 1 },
+        },
+        { returnDocument: 'after' },
+      )
+      .exec();
+
+    if (!updated) {
+      throw new UnauthorizedException('Sessao invalida.');
+    }
+
+    await this.sessions.revokeRefreshTokens(userId);
+
+    this.audit.record({
+      action: USER_AUDIT_ACTIONS.PASSWORD_CHANGED,
+      actor: { id: actor.id, email: actor.email, role: actor.role },
+      target: { id: actor.id, email: updated.email, role: updated.role },
+    });
+
+    return this.issueSession(updated, context.userAgent);
   }
 
   /** Derruba o usuario em todos os dispositivos. */
