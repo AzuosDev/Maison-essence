@@ -3,8 +3,8 @@
 Casca do backend da Maison Essence: NestJS em TypeScript estrito, preparado para
 rodar como uma unica funcao serverless na Vercel.
 
-Ha conexao com MongoDB via Mongoose, mas ainda nao ha schema de dominio nem
-autenticacao.
+Ha conexao com MongoDB via Mongoose e os schemas do dominio ja estao
+modelados. Ainda nao ha rotas de negocio nem autenticacao.
 
 ## Rodando local
 
@@ -34,11 +34,12 @@ api/index.ts          handler serverless: cria o Nest uma vez e reaproveita
 src/main.ts           bootstrap local (localhost:3333)
 src/bootstrap.ts      configuracao compartilhada pelos dois entrypoints
 src/app.module.ts     modulo raiz, registra pipe/filtro/interceptor globais
-src/common/           filters, interceptors, decorators, pipes, guards
+src/common/           filters, interceptors, decorators, enums, pipes, guards
 src/config/           schema Zod e ConfigModule tipado
-src/database/         conexao Mongoose e opcoes base dos schemas
+src/database/         conexao Mongoose, opcoes base e helpers de schema
 src/health/           health check publico
-src/modules/          um diretorio por dominio (ainda vazio)
+src/modules/          um diretorio por dominio, cada um com seus schemas
+src/schemas.ts        ponto unico de importacao dos schemas
 ```
 
 `src/bootstrap.ts` existe porque `main.ts` e `api/index.ts` precisam aplicar
@@ -90,20 +91,112 @@ a primeira invocacao da instancia serverless abre o socket e as seguintes o
 reaproveitam. O log `Conectado ao MongoDB` marca cada abertura real — se ele
 aparecer uma vez por request, o cache quebrou.
 
-### Schemas de dominio
+## Schemas do dominio
+
+Dez colecoes, cada uma no diretorio do seu dominio em
+`src/modules/<dominio>/schemas/`. Todas sao reexportadas por `src/schemas.ts`,
+que e o ponto unico de importacao:
+
+```ts
+import { Product, ProductSchema } from '../../schemas.js';
+
+MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]);
+```
+
+| Colecao            | Papel                                             |
+| ------------------ | ------------------------------------------------- |
+| `users`            | Usuarios do painel: SUPER_ADMIN, OWNER, STAFF      |
+| `refresh_tokens`   | Sessoes do painel, so o hash do token             |
+| `categories`       | Um nivel de subcategoria, via `parentId`           |
+| `products`         | Produto com variantes embutidas                    |
+| `quantity_discounts` | Desconto progressivo, por produto ou categoria   |
+| `delivery_cities`  | Cidades atendidas, com taxa fixa                   |
+| `store_settings`   | Configuracoes da loja (documento unico)            |
+| `payment_settings` | Regras de PIX e parcelamento (documento unico)     |
+| `orders`           | Pedido, com snapshot imutavel de precos            |
+| `customers`        | Conta de cliente, sempre opcional                  |
+
+### Regras que valem para todos
+
+**Dinheiro e inteiro em centavos.** Todo campo monetario termina em `Cents` e
+passa por `centsProp()`, que recusa decimal: R$ 199,90 se escreve `19990`.
+Ponto flutuante acumula erro no parcelamento, onde o total e dividido e somado
+de volta e a soma precisa fechar no centavo. A validacao vale tambem no
+`findOneAndUpdate` — `createSchema()` liga `runValidators`, que o Mongoose
+deixa desligado por padrao e que e o caminho do `PATCH` do painel.
+
+**Texto tem `trim` e tamanho maximo.** Sempre por `textProp({ max })`. O `trim`
+nao e cosmetico: um espaco sobrando no fim do nome muda o slug gerado.
+
+**Slug nasce do nome e nao muda depois.** `applySlugFrom()` preenche no
+`pre('validate')` so quando o campo esta vazio, resolvendo homonimo com sufixo
+(`importados`, `importados-2`). Renomear o produto depois nao mexe no endereco
+dele, porque o link ja foi para o WhatsApp de alguem. Trocar de slug de
+proposito e operacao do painel, que guarda o antigo em `previousSlugs`.
+
+**O pedido e um documento congelado.** `Order.items` guarda nome, label da
+variante, imagem, preco unitario, desconto e total da linha. `productId` e
+`variantId` ficam sem `ref`, de proposito: nao existe `populate` possivel
+neles, e e isso que impede alguem de exibir o preco de hoje num pedido de tres
+meses atras. O mesmo vale para a cidade dentro de `fulfillment`.
+
+**Enumeracoes sao objetos const**, nunca `enum` nativo, com o tipo derivado
+exportado ao lado (`USER_ROLES` e `UserRole`). Ficam em `src/common/enums/`.
+
+**Documentos unicos.** `StoreSettings` e `PaymentSettings` herdam de
+`SingletonSchema` e expoem `getOrCreate()`, que devolve o documento existente
+ou o cria com os padroes. O campo `singleton` carrega um indice unico: sem
+ele, duas invocacoes serverless simultaneas num banco vazio criariam duas
+configuracoes.
+
+**Codigo do pedido.** `ME-AAMMDD-XXXX`, com sufixo aleatorio em base36
+maiuscula e indice unico. A data e a do fuso da loja, nao a UTC da funcao:
+um pedido das 21h nasceria com a data de amanha, e a dona le o codigo junto do
+horario da mensagem.
+
+### Indices
+
+| Colecao | Indice | Para que |
+| --- | --- | --- |
+| `products` | `slug` unico | Rota publica por slug |
+| `products` | texto em `name` e `brand` | Busca, com peso 10 no nome e 4 na marca |
+| `products` | `isActive` + `categoryIds` + `createdAt` | Listagem publica filtrada |
+| `categories` | `slug` unico, `previousSlugs`, `parentId` + `order` | Arvore do menu e redirecionamento |
+| `orders` | `code` unico, `status` + `createdAt`, `customer.phone` + `createdAt` | Painel e historico do cliente |
+| `users` | `email` unico, `role` + `isActive` | Login e contagem de administradores |
+| `refresh_tokens` | `tokenHash` unico, `userId` + `revokedAt`, TTL em `expiresAt` | Rotacao e expiracao automatica |
+| `delivery_cities` | `isActive` + `order`, `name` + `state` unico | Lista publica sem cidade duplicada |
+| `customers` | `phone` unico, `email` unico parcial | Chave natural do cliente |
+| `store_settings`, `payment_settings` | `singleton` unico | Garante o documento unico |
+
+O indice de texto usa `default_language: 'portuguese'`, o que liga o stemming
+da lingua: quem busca "velas" acha "vela".
+
+### Declarando um schema novo
 
 `baseSchemaOptions()` concentra `timestamps: true`, `versionKey: false` e o
-transform de `toJSON` que troca `_id` por `id` e remove os campos internos.
-O `@nestjs/mongoose` le o `@Schema()` da propria classe e nao sobe na cadeia de
+transform de `toJSON` que troca `_id` por `id` e remove os campos internos. O
+`@nestjs/mongoose` le o `@Schema()` da propria classe e nao sobe na cadeia de
 heranca, entao cada schema declara as suas:
 
 ```ts
-@Schema(baseSchemaOptions())
+@Schema(baseSchemaOptions({ collection: 'produtos' }))
 export class Product extends BaseSchema {
-  @Prop({ required: true })
+  @Prop(textProp({ required: true, max: 160 }))
   name: string;
+
+  @Prop(centsProp({ required: true }))
+  priceCents: number;
 }
+
+export type ProductDocument = HydratedDocument<Product>;
+export const ProductSchema = createSchema(Product);
 ```
+
+`createSchema()` no lugar de `SchemaFactory.createForClass()`: e ele que liga
+a validacao nos updates por query. Subdocumentos usam
+`embeddedSchemaOptions()`, com `_id: false` nos blocos singulares como os
+totais do pedido.
 
 ## Preparando o MongoDB Atlas
 
@@ -144,4 +237,5 @@ quiser) nas variaveis de ambiente do projeto na Vercel.
 | `typecheck`        | `tsc --noEmit`                             |
 | `test`             | Testes unitarios                           |
 | `test:e2e`         | Testes de ponta a ponta                    |
+| `test:schemas`     | Insere e le um documento de cada colecao   |
 | `lint`             | oxlint                                     |

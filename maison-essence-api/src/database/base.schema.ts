@@ -27,6 +27,20 @@ export function baseSchemaOptions(overrides: SchemaOptions = {}): SchemaOptions 
 }
 
 /**
+ * Opcoes de subdocumento embutido: mesma serializacao do documento raiz, sem
+ * os timestamps.
+ *
+ * O `_id` continua ligado (padrao do Mongoose) porque uma variante de produto
+ * precisa de identidade propria — e ela que o pedido guarda no snapshot e que
+ * o painel usa para casar o array recebido no PATCH com o que ja existe.
+ * `createdAt`/`updatedAt` por variante nao servem a nada e so pesam o
+ * documento.
+ */
+export function embeddedSchemaOptions(overrides: SchemaOptions = {}): SchemaOptions {
+  return baseSchemaOptions({ timestamps: false, ...overrides });
+}
+
+/**
  * Campos que todo documento ganha de graca. Serve so para tipagem: `_id` e
  * virtual e os timestamps vem de `timestamps: true`, nenhum precisa de `@Prop`.
  */
@@ -35,6 +49,15 @@ export abstract class BaseSchema {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+}
+
+/**
+ * Tipagem dos campos que um subdocumento de array ganha de graca. Vale para os
+ * embutidos que vivem em lista e precisam ser identificados um a um; os blocos
+ * singulares (totais, pagamento) usam `_id: false` e nao herdam daqui.
+ */
+export abstract class EmbeddedSchema {
+  id: string;
 }
 
 type PlainDocument = Record<string, unknown> & { _id?: Types.ObjectId | string };
