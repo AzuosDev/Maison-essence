@@ -3,8 +3,9 @@
 Casca do backend da Maison Essence: NestJS em TypeScript estrito, preparado para
 rodar como uma unica funcao serverless na Vercel.
 
-Ha conexao com MongoDB via Mongoose e os schemas do dominio ja estao
-modelados. Ainda nao ha rotas de negocio nem autenticacao.
+Ha conexao com MongoDB via Mongoose, os schemas do dominio modelados e a
+autenticacao do painel (login, refresh com rotacao, logout). As rotas de
+negocio ainda nao existem.
 
 ## Rodando local
 
@@ -38,6 +39,7 @@ src/common/           filters, interceptors, decorators, enums, pipes, guards
 src/config/           schema Zod e ConfigModule tipado
 src/database/         conexao Mongoose, opcoes base e helpers de schema
 src/health/           health check publico
+src/modules/auth/     sessao do painel: login, tokens, guards
 src/modules/          um diretorio por dominio, cada um com seus schemas
 src/schemas.ts        ponto unico de importacao dos schemas
 ```
@@ -53,7 +55,9 @@ exatamente a mesma configuracao (helmet, compression, CORS, prefixo global).
   Stack trace nunca vai na resposta; vai so no log do servidor.
 - Toda resposta passa por um interceptor que converte `ObjectId` em string e
   remove `__v` e `passwordHash` em qualquer profundidade.
-- `helmet` e `compression` aplicados antes das rotas.
+- `helmet`, `compression` e `cookie-parser` aplicados antes das rotas.
+- Toda rota nasce autenticada. Rota aberta precisa de `@Public()` explicito
+  (ver "Autenticacao").
 
 ## Variaveis de ambiente
 
@@ -68,6 +72,8 @@ a lista do que falta e codigo de saida 1.
 | `APP_VERSION`  | nao         | package.json  | Versao exposta no `/health`              |
 | `MONGODB_URI`  | **sim**     | —             | `mongodb://` ou `mongodb+srv://`         |
 | `MONGODB_DB_NAME` | nao      | `maison-essence` | Nome do banco                         |
+| `JWT_ACCESS_SECRET` | **sim** | —            | Assina o access token; minimo 32 caracteres |
+| `JWT_REFRESH_SECRET` | **sim** | —           | Assina o refresh token; precisa ser diferente do de cima |
 
 O nome do banco vem de `MONGODB_DB_NAME`, nao do caminho da URI: a string que o
 Atlas entrega nao traz banco nenhum e o Mongoose cairia no default `test`.
@@ -93,7 +99,7 @@ aparecer uma vez por request, o cache quebrou.
 
 ## Schemas do dominio
 
-Dez colecoes, cada uma no diretorio do seu dominio em
+Onze colecoes, cada uma no diretorio do seu dominio em
 `src/modules/<dominio>/schemas/`. Todas sao reexportadas por `src/schemas.ts`,
 que e o ponto unico de importacao:
 
@@ -107,6 +113,7 @@ MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]);
 | ------------------ | ------------------------------------------------- |
 | `users`            | Usuarios do painel: SUPER_ADMIN, OWNER, STAFF      |
 | `refresh_tokens`   | Sessoes do painel, so o hash do token             |
+| `login_attempts`   | Contador do rate limit do login, com TTL          |
 | `categories`       | Um nivel de subcategoria, via `parentId`           |
 | `products`         | Produto com variantes embutidas                    |
 | `quantity_discounts` | Desconto progressivo, por produto ou categoria   |
@@ -165,6 +172,7 @@ horario da mensagem.
 | `orders` | `code` unico, `status` + `createdAt`, `customer.phone` + `createdAt` | Painel e historico do cliente |
 | `users` | `email` unico, `role` + `isActive` | Login e contagem de administradores |
 | `refresh_tokens` | `tokenHash` unico, `userId` + `revokedAt`, TTL em `expiresAt` | Rotacao e expiracao automatica |
+| `login_attempts` | `key` unico, TTL em `expiresAt` | Rate limit do login |
 | `delivery_cities` | `isActive` + `order`, `name` + `state` unico | Lista publica sem cidade duplicada |
 | `customers` | `phone` unico, `email` unico parcial | Chave natural do cliente |
 | `store_settings`, `payment_settings` | `singleton` unico | Garante o documento unico |
@@ -198,6 +206,134 @@ a validacao nos updates por query. Subdocumentos usam
 `embeddedSchemaOptions()`, com `_id: false` nos blocos singulares como os
 totais do pedido.
 
+## Autenticacao
+
+Sessao do painel com dois tokens. O access token vale 15 minutos e acompanha
+toda chamada; o refresh vale 7 dias, e trocado a cada uso e e o unico capaz de
+emitir um access novo. A conta que isso fecha: o access token nao consulta
+lista de revogacao a cada request (caro em serverless) porque a janela de
+estrago dele e curta.
+
+| Rota | Publica | O que faz |
+| --- | --- | --- |
+| `POST /auth/login` | sim | E-mail e senha; devolve o par de tokens |
+| `POST /auth/refresh` | sim | Rotaciona o refresh e emite um access novo |
+| `POST /auth/logout` | sim | Revoga a sessao apresentada; sempre 204 |
+| `POST /auth/logout-all` | nao | Revoga todas as sessoes do usuario |
+| `GET /auth/me` | nao | Usuario da sessao atual |
+
+`/auth/refresh` e `/auth/logout` sao publicas porque quem autentica nelas e o
+proprio refresh token: exigir access valido em uma rota cuja razao de existir e
+o access ter expirado seria um ciclo.
+
+### Onde os tokens viajam
+
+Duas vias, de proposito:
+
+- **Cookies `httpOnly`** — o caminho do painel. O JavaScript nunca toca no
+  token, entao um XSS no painel nao consegue le-lo. Saem com `Secure` e
+  `SameSite=None`, porque o painel roda em outro dominio da Vercel e sem isso o
+  navegador descarta o cookie na chamada cross-site. Em `NODE_ENV=development`
+  eles caem para `SameSite=Lax` sem `Secure`: o navegador recusa `None` sem
+  HTTPS e o login local ficaria sem cookie nenhum.
+- **Corpo da resposta** — `accessToken` e `refreshToken` tambem vem em JSON,
+  para o cliente que nao aceita cookie de terceiro (app nativo, navegador com
+  cookie cross-site bloqueado). Esse cliente manda o access em
+  `Authorization: Bearer` e o refresh no corpo de `/auth/refresh`.
+
+O `path` de cada cookie e restrito: o access vale em `/api/v1` e o refresh so
+em `/api/v1/auth`. Assim o navegador nem envia a credencial de sessao nas
+chamadas de catalogo ou de pedido.
+
+### Rotacao e deteccao de reuso
+
+Cada `/auth/refresh` revoga o token apresentado e emite outro, gravando
+`replacedBy` no antigo — a arvore de substituicoes fica registrada. A troca
+acontece em um `findOneAndUpdate` atomico, filtrando por `revokedAt: null`:
+duas abas renovando ao mesmo tempo nao podem receber duas sessoes validas.
+
+Apresentar um refresh token **ja revogado** derruba todas as sessoes do
+usuario e responde 401. E a deteccao de reuso: se o token vazou, nao ha como
+saber qual das duas partes e a legitima, entao as duas perdem a sessao e a
+dona refaz o login. O incidente vai para o log com o id do usuario.
+
+### O que invalida uma sessao
+
+`User.credentialVersion` e copiado para dentro do access token e conferido
+contra o banco em cada request. Incrementar o contador mata na hora todo
+access token ja emitido, sem esperar os 15 minutos. Incrementam:
+`/auth/logout-all`, a deteccao de reuso e (no modulo de usuarios) desativar
+usuario e resetar senha.
+
+O custo disso e uma leitura do usuario por request autenticado. E o que faz
+"desativar usuario derruba a sessao dele" ser verdade, e nao uma promessa com
+ate 15 minutos de atraso.
+
+### Senha
+
+`argon2id`, com 19 MiB de memoria, duas passagens e paralelismo 1 — a linha
+recomendada pela OWASP, que cabe folgado na memoria da funcao serverless.
+Nunca bcrypt, nunca SHA. O hash mora em `User.passwordHash`, que e
+`select: false`: so o login o pede, com `.select('+passwordHash')`.
+
+O refresh token, ao contrario, e guardado como SHA-256. Ele nao e uma senha:
+e um JWT de entropia alta, imune a dicionario, e um KDF lento so acrescentaria
+dezenas de milissegundos a cada renovacao. Vazamento da colecao nao vira
+sessao nem em um caso nem no outro.
+
+### Rate limit e resposta uniforme
+
+Cinco tentativas falhas por 15 minutos, contadas por **IP + e-mail
+combinados** (so por IP, um escritorio inteiro se bloqueia junto; so por
+e-mail, qualquer um tranca a conta da dona de fora). O contador vive na
+colecao `login_attempts`, e nao em memoria: cada invocacao serverless e um
+processo novo, entao um contador em memoria nao limitaria nada. A chave e o
+SHA-256 de `ip|email`, para a colecao nao virar uma lista de quem tentou
+entrar. A resposta e um 429 seco, sem contador nem tempo restante.
+
+Todo login recusado — e-mail inexistente, senha errada, usuario desativado —
+devolve o mesmo 401 com a mesma mensagem e demora o mesmo tanto: o caminho
+sem usuario tambem paga um argon2 (contra um hash descartavel) e a resposta
+inteira tem piso de 350 ms. Sem isso, cronometrar as respostas entrega quais
+e-mails tem conta no painel.
+
+### Protecao por padrao
+
+`JwtAuthGuard` e `PendingPasswordGuard` sao `APP_GUARD`: **toda rota nasce
+protegida** e so abre com `@Public()`. Inverter esse padrao e onde mais se
+esquece de uma rota.
+
+Usuario com `mustChangePassword` faz login normalmente, e a flag viaja no
+access token, mas toda rota administrativa responde 403 ate a troca. As
+excecoes sao marcadas com `@AllowPendingPassword()` — hoje `/auth/me`,
+`/auth/refresh`, `/auth/logout` e `/auth/logout-all`; a rota de troca de senha
+entra no modulo de usuarios.
+
+Em um controller, o usuario da sessao vem pelo parametro:
+
+```ts
+@Get('pedidos')
+list(@CurrentUser() user: AuthenticatedUser) {
+  return this.orders.listFor(user.id);
+}
+```
+
+### Arquivos
+
+```
+src/modules/auth/
+  auth.controller.ts        rotas e cookies
+  auth.service.ts           login, refresh, logout
+  token.service.ts          assina e confere os dois JWT
+  refresh-token.service.ts  rotacao, deteccao de reuso, revogacao em massa
+  password.service.ts       argon2id
+  login-rate-limit.service.ts
+  constant-time.ts          piso de tempo da resposta de login
+  guards/                   JwtAuthGuard, PendingPasswordGuard
+  strategies/jwt.strategy.ts
+  schemas/                  refresh-token, login-attempt
+```
+
 ## Preparando o MongoDB Atlas
 
 1. **Cluster.** Em [cloud.mongodb.com](https://cloud.mongodb.com), crie um
@@ -224,8 +360,11 @@ plano Enterprise) da IP fixo, e o Atlas aceita peering de VPC.
 de `engines.node` no `package.json` (o campo `functions.runtime` do
 `vercel.json` so aceita runtimes de terceiros no formato `pacote@versao`).
 
-Defina `CORS_ORIGINS` e `MONGODB_URI` (e `APP_VERSION` / `MONGODB_DB_NAME`, se
-quiser) nas variaveis de ambiente do projeto na Vercel.
+Defina `CORS_ORIGINS`, `MONGODB_URI`, `JWT_ACCESS_SECRET` e
+`JWT_REFRESH_SECRET` (e `APP_VERSION` / `MONGODB_DB_NAME`, se quiser) nas
+variaveis de ambiente do projeto na Vercel. Os cookies de sessao saem com
+`SameSite=None; Secure` fora de desenvolvimento, o que exige HTTPS — na Vercel
+isso ja e o padrao.
 
 ## Scripts
 

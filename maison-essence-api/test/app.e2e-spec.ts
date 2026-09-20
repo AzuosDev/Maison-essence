@@ -6,6 +6,7 @@ import type { Connection } from 'mongoose';
 import { STATES } from 'mongoose';
 import request from 'supertest';
 import { AppModule } from '../src/app.module.js';
+import { Public } from '../src/common/decorators/public.decorator.js';
 import { configureApp } from '../src/bootstrap.js';
 
 class CreateThingDto {
@@ -13,6 +14,9 @@ class CreateThingDto {
   name: string;
 }
 
+// @Public(): desde o modulo de autenticacao toda rota nasce protegida, e o
+// que este controller existe para exercitar e o ValidationPipe.
+@Public()
 @Controller('things')
 class ThingsController {
   @Post()

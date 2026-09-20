@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+const MIN_SECRET_LENGTH = 32;
+const SECRET_TOO_SHORT = `deve ter ao menos ${MIN_SECRET_LENGTH} caracteres`;
+
 export const envSchema = z.object({
   NODE_ENV: z
     .enum(['development', 'test', 'production'])
@@ -19,7 +22,18 @@ export const envSchema = z.object({
   // O nome do banco vem sempre daqui, nunca do caminho da URI: o Atlas entrega
   // a string de conexao sem banco e o Mongoose cairia no default "test".
   MONGODB_DB_NAME: z.string().min(1).default('maison-essence'),
-});
+  // Segredos dos tokens. O piso de 32 caracteres nao e enfeite: a assinatura
+  // HS256 nao e mais forte que o segredo, e segredo curto vira access token
+  // forjado com o papel que o atacante quiser.
+  JWT_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
+  JWT_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
+})
+  // Com os dois segredos iguais, um refresh token passaria por access token e
+  // pularia a rotacao inteira — o que o guard confere e a assinatura.
+  .refine((env) => env.JWT_ACCESS_SECRET !== env.JWT_REFRESH_SECRET, {
+    path: ['JWT_REFRESH_SECRET'],
+    message: 'deve ser diferente de JWT_ACCESS_SECRET',
+  });
 
 export type Env = z.infer<typeof envSchema>;
 
