@@ -3,10 +3,11 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
 import { SanitizeResponseInterceptor } from './common/interceptors/sanitize-response.interceptor.js';
 import { AppConfigModule } from './config/config.module.js';
+import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
 
 @Module({
-  imports: [AppConfigModule, HealthModule],
+  imports: [AppConfigModule, DatabaseModule, HealthModule],
   providers: [
     {
       provide: APP_PIPE,

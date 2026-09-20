@@ -9,6 +9,16 @@ export const envSchema = z.object({
     .string()
     .min(1, 'informe ao menos uma origem, separada por virgula'),
   APP_VERSION: z.string().min(1).default(process.env.npm_package_version ?? '0.0.0'),
+  MONGODB_URI: z
+    .string()
+    .min(1)
+    .refine(
+      (uri) => uri.startsWith('mongodb://') || uri.startsWith('mongodb+srv://'),
+      'deve comecar com mongodb:// ou mongodb+srv://',
+    ),
+  // O nome do banco vem sempre daqui, nunca do caminho da URI: o Atlas entrega
+  // a string de conexao sem banco e o Mongoose cairia no default "test".
+  MONGODB_DB_NAME: z.string().min(1).default('maison-essence'),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -6,8 +6,7 @@ import {
 } from '@nestjs/common';
 import type { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-const REDACTED_FIELDS: readonly string[] = ['__v', 'passwordHash'];
+import { REDACTED_FIELDS } from '../redacted-fields.js';
 
 @Injectable()
 export class SanitizeResponseInterceptor implements NestInterceptor {
