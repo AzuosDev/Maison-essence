@@ -1,0 +1,16 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+.env
+.env.local
+.env.*.local
+
+.vercel/
+
+logs/
+*.log
+npm-debug.log*
+
+.DS_Store
