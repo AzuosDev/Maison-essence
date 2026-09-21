@@ -10,6 +10,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import { IsImagePublicId } from '../../../common/image-public-id.js';
 import { MAX_IMAGES, MAX_VARIANTS } from '../products.constants.js';
 import { ProductVariantDto } from './product-variant.dto.js';
 
@@ -45,11 +46,12 @@ export class UpdateProductDto {
   @IsMongoId({ each: true, message: 'categoria invalida' })
   categoryIds?: string[];
 
+  /** `publicId`s do Cloudinary, so das pastas da loja. Ver o DTO de criacao. */
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(MAX_IMAGES)
   @IsString({ each: true })
-  @MaxLength(200, { each: true })
+  @IsImagePublicId({ each: true })
   images?: string[];
 
   @IsOptional()

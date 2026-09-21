@@ -9,6 +9,7 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { IsOptionalImagePublicId } from '../../../common/image-public-id.js';
 import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { MAX_SKU_LENGTH } from '../sku.js';
 import { MAX_STOCK } from '../products.constants.js';
@@ -58,10 +59,13 @@ export class ProductVariantDto {
   @Max(MAX_STOCK)
   stock?: number;
 
-  /** `publicId` do Cloudinary. Quando existe, substitui a capa do produto. */
+  /**
+   * `publicId` do Cloudinary. Quando existe, substitui a capa do produto.
+   * Vazio tira a foto propria da variante e devolve a capa.
+   */
   @IsOptional()
   @IsString()
-  @MaxLength(200)
+  @IsOptionalImagePublicId()
   image?: string;
 
   @IsOptional()

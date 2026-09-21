@@ -10,6 +10,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import { IsImagePublicId } from '../../../common/image-public-id.js';
 import { MAX_SLUG_LENGTH, slugify } from '../../../database/slug.js';
 import { MAX_IMAGES, MAX_VARIANTS } from '../products.constants.js';
 import { ProductVariantDto } from './product-variant.dto.js';
@@ -48,12 +49,16 @@ export class CreateProductDto {
   /**
    * `publicId`s do Cloudinary na ordem de exibicao: a posicao no array e a
    * ordenacao das fotos, e a primeira e a capa.
+   *
+   * So entra o que saiu do upload do painel, dentro das pastas da loja. E
+   * esta linha que fecha a injecao: sem ela, qualquer string viraria foto de
+   * produto e a vitrine passaria a carregar imagem de servidor alheio.
    */
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(MAX_IMAGES)
   @IsString({ each: true })
-  @MaxLength(200, { each: true })
+  @IsImagePublicId({ each: true })
   images?: string[];
 
   /**

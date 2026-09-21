@@ -8,6 +8,7 @@ import { HealthModule } from './health/health.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
+import { UploadsModule } from './modules/uploads/uploads.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
@@ -19,6 +20,7 @@ import { UsersModule } from './modules/users/users.module.js';
     UsersModule,
     CategoriesModule,
     ProductsModule,
+    UploadsModule,
   ],
   providers: [
     {

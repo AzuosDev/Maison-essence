@@ -39,6 +39,13 @@ export const envSchema = z.object({
   // forjado com o papel que o atacante quiser.
   JWT_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
   JWT_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
+  // Conta do Cloudinary, onde ficam as imagens. As tres sao opcionais porque
+  // nenhuma outra rota depende delas: a API sobe e a loja funciona sem conta
+  // de imagens, e so o envio de fotos responde 503 ate elas existirem. O
+  // segredo assina os uploads e nunca vai para o navegador.
+  CLOUDINARY_CLOUD_NAME: optional(z.string().min(1)),
+  CLOUDINARY_API_KEY: optional(z.string().min(1)),
+  CLOUDINARY_API_SECRET: optional(z.string().min(1)),
   // Criacao do primeiro SUPER_ADMIN. As tres sao opcionais porque a API
   // precisa subir sem elas: depois do primeiro acesso elas saem do ambiente,
   // e uma variavel obrigatoria que deve ser removida e uma contradicao.

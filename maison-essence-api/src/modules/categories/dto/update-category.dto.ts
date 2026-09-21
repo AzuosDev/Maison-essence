@@ -9,6 +9,7 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { IsOptionalImagePublicId } from '../../../common/image-public-id.js';
 import { MAX_SLUG_LENGTH } from '../../../database/slug.js';
 import { MAX_CATEGORY_ORDER } from '../categories.constants.js';
 import { NormalizeSlug } from './create-category.dto.js';
@@ -38,9 +39,10 @@ export class UpdateCategoryDto {
   @IsMongoId({ message: 'categoria pai invalida' })
   parentId?: string | null;
 
+  /** `publicId` do Cloudinary, so das pastas da loja. Vazio tira a foto. */
   @IsOptional()
   @IsString()
-  @MaxLength(200)
+  @IsOptionalImagePublicId()
   image?: string;
 
   @IsOptional()
