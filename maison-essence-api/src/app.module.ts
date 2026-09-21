@@ -6,10 +6,18 @@ import { AppConfigModule } from './config/config.module.js';
 import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
+import { CategoriesModule } from './modules/categories/categories.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
 @Module({
-  imports: [AppConfigModule, DatabaseModule, HealthModule, AuthModule, UsersModule],
+  imports: [
+    AppConfigModule,
+    DatabaseModule,
+    HealthModule,
+    AuthModule,
+    UsersModule,
+    CategoriesModule,
+  ],
   providers: [
     {
       provide: APP_PIPE,

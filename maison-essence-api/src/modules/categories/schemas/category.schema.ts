@@ -8,6 +8,7 @@ import {
   textProp,
 } from '../../../database/schema-helpers.js';
 import { MAX_SLUG_LENGTH, applySlugFrom } from '../../../database/slug.js';
+import { MAX_CATEGORY_ORDER } from '../categories.constants.js';
 
 /** Categoria do catalogo. Aceita um unico nivel de subcategoria, via `parentId`. */
 @Schema(baseSchemaOptions({ collection: 'categories' }))
@@ -39,7 +40,7 @@ export class Category extends BaseSchema {
   image: string;
 
   /** Posicao no menu. A rota de reorder regrava a lista inteira. */
-  @Prop(integerProp({ default: 0, max: 9999 }))
+  @Prop(integerProp({ default: 0, max: MAX_CATEGORY_ORDER }))
   order: number;
 
   @Prop({ type: Boolean, default: true })

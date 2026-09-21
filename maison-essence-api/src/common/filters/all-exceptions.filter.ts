@@ -15,11 +15,21 @@ export interface ErrorResponseBody {
   statusCode: number;
   message: string | string[];
   error: string;
+  /**
+   * Dados que a recusa precisa carregar alem do texto. Vem de quem lancou a
+   * excecao, e so quando ha o que dizer: o 409 de excluir categoria manda
+   * quantos produtos estao vinculados, e o painel monta o aviso com o numero
+   * sem ter que extrai-lo da frase.
+   */
+  details?: Record<string, unknown>;
   timestamp: string;
   path: string;
 }
 
-type NormalizedError = Pick<ErrorResponseBody, 'statusCode' | 'message' | 'error'>;
+type NormalizedError = Pick<
+  ErrorResponseBody,
+  'statusCode' | 'message' | 'error' | 'details'
+>;
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -62,12 +72,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
         return { statusCode, message: payload, error: reasonPhrase(statusCode) };
       }
 
-      const { message, error } = payload as { message?: unknown; error?: unknown };
+      const { message, error, details } = payload as {
+        message?: unknown;
+        error?: unknown;
+        details?: unknown;
+      };
 
       return {
         statusCode,
         message: isMessage(message) ? message : exception.message,
         error: typeof error === 'string' ? error : reasonPhrase(statusCode),
+        ...(isDetails(details) ? { details } : {}),
       };
     }
 
@@ -82,6 +97,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error: reasonPhrase(statusCode),
     };
   }
+}
+
+function isDetails(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function isMessage(value: unknown): value is string | string[] {
