@@ -1,0 +1,23 @@
+# Dependencias e artefatos de build, em qualquer nivel do monorepo.
+# Sem barra no inicio, o padrao vale para qualquer pasta: `node_modules/`
+# pega tanto `backend/node_modules/` quanto `frontend/node_modules/`.
+node_modules/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Segredos. O `.env.example` de cada projeto e versionado; o `.env` nunca.
+.env
+.env.local
+.env.*.local
+
+# Vercel: cada pasta e um projeto, e cada um cria o seu.
+.vercel/
+
+logs/
+*.log
+npm-debug.log*
+
+.DS_Store
+Thumbs.db
