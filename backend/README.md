@@ -52,6 +52,8 @@ src/database/         conexao Mongoose, opcoes base e helpers de schema
 src/health/           health check publico
 src/modules/auth/     sessao do painel: login, tokens, guards
 src/modules/users/    CRUD de usuarios administrativos e policy de acesso
+src/modules/rate-limit/ teto de chamadas de toda rota, contado no banco
+src/modules/audit/      trilha das acoes sensiveis do painel
 src/modules/          um diretorio por dominio, cada um com seus schemas
 src/seeds/            comandos de primeiro acesso e de dados de exemplo
 src/schemas.ts        ponto unico de importacao dos schemas
@@ -68,10 +70,16 @@ exatamente a mesma configuracao (helmet, compression, CORS, prefixo global).
   Stack trace nunca vai na resposta; vai so no log do servidor.
 - Toda resposta passa por um interceptor que converte `ObjectId` em string e
   remove `__v` e `passwordHash` em qualquer profundidade.
-- `helmet`, `compression` e `cookie-parser` aplicados antes das rotas.
-- Toda rota nasce autenticada. Rota aberta precisa de `@Public()` explicito
-  (ver "Autenticacao") e rota restrita declara `@Roles(...)` (ver "Papeis e
-  permissoes").
+- `helmet`, `compression` e `cookie-parser` aplicados antes das rotas (ver
+  "Endurecimento").
+- Toda rota nasce autenticada e com teto de chamadas. Rota aberta precisa de
+  `@Public()` explicito (ver "Autenticacao") e rota restrita declara
+  `@Roles(...)` (ver "Papeis e permissoes").
+- Corpo limitado a 256 KB, e o que passa disso volta 413 — nao 500.
+- Chave de objeto comecada por `$` ou com `.` no corpo e recusada com 400,
+  antes de qualquer controller (ver "Endurecimento").
+- Toda requisicao tem `x-request-id`, que volta no cabecalho da resposta e
+  marca cada linha de log.
 
 ## Variaveis de ambiente
 
@@ -82,12 +90,19 @@ a lista do que falta e codigo de saida 1.
 | -------------- | ----------- | ------------- | ---------------------------------------- |
 | `NODE_ENV`     | nao         | `development` | `development` \| `test` \| `production`  |
 | `PORT`         | nao         | `3333`        | Porta local; ignorada na Vercel          |
-| `CORS_ORIGINS` | **sim**     | —             | Origens separadas por virgula, ou `*`    |
+| `CORS_ORIGINS` | **sim**     | —             | Origens separadas por virgula; `*` e recusado no boot |
 | `APP_VERSION`  | nao         | package.json  | Versao exposta no `/health`              |
 | `MONGODB_URI`  | **sim**     | —             | `mongodb://` ou `mongodb+srv://`         |
 | `MONGODB_DB_NAME` | nao      | `maison-essence` | Nome do banco                         |
 | `JWT_ACCESS_SECRET` | **sim** | —            | Assina o access token; minimo 32 caracteres |
 | `JWT_REFRESH_SECRET` | **sim** | —           | Assina o refresh token; precisa ser diferente do de cima |
+| `JWT_CUSTOMER_ACCESS_SECRET` | **sim** | — | Assina o access token da conta de cliente; minimo 32 caracteres |
+| `JWT_CUSTOMER_REFRESH_SECRET` | **sim** | — | Assina o refresh token do cliente; os quatro segredos precisam ser distintos |
+| `CLOUDINARY_CLOUD_NAME` | nao | — | Conta das imagens; sem ela `/admin/uploads` responde 503 |
+| `CLOUDINARY_API_KEY` | nao | — | Par publico da assinatura de upload |
+| `CLOUDINARY_API_SECRET` | nao | — | Assina os uploads. **Nunca vai para o frontend** |
+| `DOCS_USER` | nao | — | Usuario da autenticacao basica de `/api/v1/docs` |
+| `DOCS_PASSWORD` | nao | — | Senha dela; minimo 12 caracteres. Sem as duas, a documentacao nao sobe em producao |
 | `BOOTSTRAP_SUPERADMIN_EMAIL` | nao | — | Login do primeiro usuario (ver "Primeiro acesso") |
 | `BOOTSTRAP_SUPERADMIN_PASSWORD` | nao | — | Senha temporaria dele; minimo 12 caracteres |
 | `BOOTSTRAP_SUPERADMIN_NAME` | nao | `Super Admin` | Nome exibido no painel |
@@ -145,6 +160,8 @@ MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]);
 | `payment_settings` | Regras de PIX e parcelamento (documento unico)     |
 | `orders`           | Pedido, com snapshot imutavel de precos            |
 | `customers`        | Conta de cliente, sempre opcional                  |
+| `audit_entries`    | Trilha das acoes sensiveis do painel, com TTL      |
+| `rate_limit_hits`  | Contador do limite de chamadas das rotas, com TTL  |
 
 ### Regras que valem para todos
 
@@ -199,6 +216,8 @@ horario da mensagem.
 | `delivery_cities` | `isActive` + `order`, `name` + `state` unico | Lista publica sem cidade duplicada |
 | `customers` | `phone` unico, `email` unico parcial | Chave natural do cliente |
 | `store_settings`, `payment_settings` | `singleton` unico | Garante o documento unico |
+| `audit_entries` | `action` + `createdAt`, `targetId` + `createdAt`, TTL em `createdAt` | Leitura da trilha e retencao de dois anos |
+| `rate_limit_hits` | `key` unico, TTL em `expiresAt` | Limite de chamadas de toda rota |
 
 O indice de texto usa `default_language: 'portuguese'`, o que liga o stemming
 da lingua: quem busca "velas" acha "vela".
@@ -312,13 +331,19 @@ sessao nem em um caso nem no outro.
 
 ### Rate limit e resposta uniforme
 
-Cinco tentativas falhas por 15 minutos, contadas por **IP + e-mail
-combinados** (so por IP, um escritorio inteiro se bloqueia junto; so por
-e-mail, qualquer um tranca a conta da dona de fora). O contador vive na
-colecao `login_attempts`, e nao em memoria: cada invocacao serverless e um
-processo novo, entao um contador em memoria nao limitaria nada. A chave e o
-SHA-256 de `ip|email`, para a colecao nao virar uma lista de quem tentou
-entrar. A resposta e um 429 seco, sem contador nem tempo restante.
+O login tem dois contadores, e os dois precisam passar. O primeiro e o teto da
+rota, do limitador global (ver "Endurecimento"): cinco chamadas por 15 minutos
+por IP, contando tambem as que acertam a senha — senao renovar sessao em laco
+continuaria de graca. O segundo e o `LoginRateLimitService`, que conta so as
+falhas, por **IP + e-mail combinados** (so por IP, um escritorio inteiro se
+bloqueia junto; so por e-mail, qualquer um tranca a conta da dona de fora), na
+colecao `login_attempts`.
+
+Nenhum dos dois vive em memoria: cada invocacao serverless e um processo novo,
+entao um contador em memoria nao limitaria nada. As duas chaves sao SHA-256 —
+de `ip|email` e de `escopo|ip` —, para que nenhuma das colecoes vire uma lista
+de quem tentou entrar. A resposta e um 429 seco, sem contador nem tempo
+restante.
 
 Todo login recusado — e-mail inexistente, senha errada, usuario desativado —
 devolve o mesmo 401 com a mesma mensagem e demora o mesmo tanto: o caminho
@@ -328,9 +353,11 @@ e-mails tem conta no painel.
 
 ### Protecao por padrao
 
-`JwtAuthGuard`, `PendingPasswordGuard` e `RolesGuard` sao `APP_GUARD`, nessa
-ordem: **toda rota nasce protegida** e so abre com `@Public()`. Inverter esse
-padrao e onde mais se esquece de uma rota.
+`RateLimitGuard`, `JwtAuthGuard`, `PendingPasswordGuard` e `RolesGuard` sao
+`APP_GUARD`, nessa ordem: **toda rota nasce protegida e com teto de chamadas**,
+e so abre com `@Public()`. Inverter esse padrao e onde mais se esquece de uma
+rota. O limite vem primeiro de proposito: a tentativa de login errada precisa
+ser contada, e ela nunca passa do primeiro guard.
 
 Usuario com `mustChangePassword` faz login normalmente, e a flag viaja no
 access token, mas toda rota administrativa responde 403 ate a troca. As
@@ -452,19 +479,148 @@ depois, e por isso ela nunca entra no log.
 
 ### Auditoria
 
-Toda acao sobre usuario sai como uma linha JSON no log, com ator, alvo, acao e
-data ([`user-audit.log.ts`](src/common/user-audit.log.ts)):
+Acao sensivel do painel entra na colecao `audit_entries` **e** sai como linha
+de log, as duas com o mesmo `requestId`
+([`audit.service.ts`](src/modules/audit/audit.service.ts)):
 
 ```json
-{"action":"user.deactivated","actor":{"id":"...","email":"root@...","role":"SUPER_ADMIN"},
- "target":{"id":"...","email":"staff@...","role":"STAFF"},"at":"2026-09-20T18:20:11.427Z"}
+{"action":"product.price_changed","actorId":"...","actorEmail":"dona@...",
+ "actorRole":"OWNER","targetKind":"product","targetId":"...","targetLabel":"Vela de lavanda",
+ "changes":{"variants.0.priceCents":{"from":4990,"to":5490}},"requestId":"..."}
 ```
 
-Acoes: `user.created`, `user.updated`, `user.activated`, `user.deactivated`,
-`user.password_reset`, `user.password_changed`. Vai para o log do processo, que
-na Vercel e o que fica pesquisavel, e nao para uma colecao: trilha de auditoria
-dentro do banco que o proprio painel administra e apagavel por quem esta sendo
-auditado. Senha e hash nunca aparecem ali.
+Sao os dois lugares de proposito: a colecao responde "quem mudou esse preco em
+marco?" e sobrevive a retencao de log do provedor, que na Vercel guarda horas;
+a linha de log e onde quem investiga um incidente agora ja esta olhando.
+
+Acoes registradas: `login.succeeded`, `login.failed`, `user.created`,
+`user.updated`, `user.activated`, `user.deactivated`, `user.password_reset`,
+`user.password_changed`, `settings.updated`, `payment-settings.updated`,
+`product.price_changed`, `order.status_changed`.
+
+Senha, token e hash nunca aparecem ali: quem monta a entrada nao os coloca, e
+o `AuditService` ainda apaga o valor de qualquer campo cujo nome cheire a
+segredo, em qualquer profundidade. A chave PIX chega ja mascarada da origem —
+os quatro ultimos caracteres ficam, porque e o que responde "para qual conta a
+loja passou a receber?".
+
+`record` nunca lanca: a acao auditada ja aconteceu quando a trilha e escrita, e
+derrubar a resposta por causa do registro nao desfaz nada. Falha de escrita vai
+para o log como erro.
+
+A entrada fica dois anos, por indice TTL. Ela protege contra o uso indevido do
+painel, que e o risco real de uma loja pequena, e nao contra quem tem acesso de
+escrita ao banco — esse pode apagar a propria pegada, e trilha a prova disso
+mora fora do sistema auditado.
+
+## Endurecimento
+
+Tudo desta secao e montado em [`src/bootstrap.ts`](src/bootstrap.ts), que vale
+para os tres entrypoints — servidor local, funcao da Vercel e testes e2e.
+Configuracao de seguranca que valesse so em um deles seria uma seguranca que
+nao existe.
+
+### Limite de chamadas
+
+`RateLimitGuard` e global e **nenhuma rota fica sem teto**: a que nao declara
+`@RateLimit()` herda o teto da sua categoria, e a categoria sai do `@Public()`
+— rota aberta na internet de um lado, rota que exige credencial do outro.
+
+| Escopo | Teto | Onde |
+| --- | --- | --- |
+| Login do painel e da loja | 5 por 15 min | `@RateLimit(LOGIN_RATE_LIMIT)` |
+| Cadastro de cliente | 5 por hora | `@RateLimit(CUSTOMER_REGISTER_RATE_LIMIT)` |
+| Criacao de pedido | 5 por 10 min, por IP **e** por telefone | `@RateLimit(ORDER_IP_RATE_LIMIT)` e `RateLimitService` |
+| Cotacao do carrinho | 30 por min | `@RateLimit(QUOTE_RATE_LIMIT)` |
+| Demais rotas publicas | 120 por min, somadas | padrao de `@Public()` |
+| Rotas do painel | 300 por min, somadas | padrao das demais |
+
+O orcamento das duas ultimas e por categoria, e nao por rota: quem navega pede
+catalogo, categorias, cidades e configuracao na mesma tela, e um teto por rota
+deixaria o robo multiplicar o limite pelo numero de rotas que conhece.
+
+O contador vive na colecao `rate_limit_hits`, com janela fixa e TTL, porque em
+serverless cada invocacao e um processo novo e a Vercel sobe varias em
+paralelo — um `Map` em memoria zera no cold start e nao ve o que as outras
+instancias contaram. Trocar por Redis, se o volume pedir, e reescrever so
+[`mongo-throttler.storage.ts`](src/modules/rate-limit/mongo-throttler.storage.ts).
+
+Quem chama e identificado pelo `x-forwarded-for`, e nao por `req.ip`: na Vercel
+esse e sempre o endereco do proxy dela, ou seja, um unico balde para o mundo
+inteiro. A chave gravada e o SHA-256 de `escopo|identidade`, para a colecao nao
+virar um registro de quem visitou a loja.
+
+O limite estourado responde 429 com mensagem generica — sem contador, sem
+tempo restante e sem dizer qual regra estourou. So o `Retry-After` fica, para o
+cliente legitimo que quer se comportar.
+
+### Cabecalhos e origem
+
+A API nao serve pagina: toda resposta e JSON. Entao a CSP e a mais fechada que
+existe (`default-src 'none'`, nada de frame, nada de formulario), com HSTS de
+180 dias e `nosniff`. A excecao e `/api/v1/docs`, que e uma pagina de verdade e
+recebe a politica afrouxada montada **so naquele caminho**.
+
+O CORS e uma lista, nunca um curinga: `CORS_ORIGINS` recusa `*` ja na validacao
+do boot. Com `credentials: true` o curinga nem funcionaria no navegador, e a
+liberacao "so para destravar o deploy" costuma virar permanente. Origem
+desconhecida nao vira erro — ela apenas nao recebe os cabecalhos, e quem barra
+a leitura e o navegador. Requisicao sem `Origin` passa: nao e navegador, e
+nenhum `curl` carrega cookie de sessao de ninguem.
+
+### Corpo da requisicao
+
+Teto de **256 KB**. O maior corpo legitimo aqui e uma pagina institucional
+inteira, e nenhuma imagem passa pela API — o upload e assinado e vai do
+navegador direto para o Cloudinary. Acima do teto a resposta e 413 no formato
+de erro da API: o parser do Express lanca um `Error` comum, fora do Nest, e sem
+a traducao do filtro a defesa funcionando se anunciava como 500.
+
+Toda chave de objeto comecada por `$` ou contendo `.` e recusada com 400 antes
+de qualquer controller
+([`mongo-operator-guard.ts`](src/common/mongo-operator-guard.ts)). `$ne` num
+filtro devolve o primeiro usuario que existir e `role.0` alcanca dentro de um
+documento que o codigo tratava como valor. Os DTOs ja descartariam isso; a
+defesa na porta e para o que nao passa por DTO — a consulta montada a partir de
+um objeto e o proximo endpoint que alguem escrever sem lembrar da regra.
+
+### Log
+
+Uma linha JSON por evento, com `level`, `time`, `context`, `requestId` e
+`message` ([`json-logger.ts`](src/common/json-logger.ts)). Na Vercel cada linha
+de stdout vira um evento, e evento estruturado se filtra por campo — texto
+formatado so se procura por pedaco de frase.
+
+O `requestId` vem de `AsyncLocalStorage`, entao qualquer `Logger` do projeto
+sai com ele sem mudar assinatura nenhuma: da para ler a historia inteira de uma
+requisicao juntando pelo mesmo valor. Ele aceita o `x-request-id` que vier de
+fora — o frontend e a borda da Vercel ja geram o seu — e volta no cabecalho da
+resposta, para quem viu o erro na tela saber dizer qual requisicao foi.
+
+Senha, token, hash, chave PIX e telefone completo nunca entram numa linha. A
+regra e aplicada em duas alturas: na origem, por quem escreve (`maskPhone`,
+`maskPixKey`), e sobre a linha ja montada, como ultima rede
+([`log-redaction.ts`](src/common/log-redaction.ts)) — porque a primeira depende
+de alguem lembrar. Telefone sai como `88*****34`: o bastante para reconhecer o
+pedido, insuficiente para ligar para alguem.
+
+### Documentacao
+
+Swagger em `/api/v1/docs`, gerado do proprio codigo. Em producao fica atras de
+autenticacao basica (`DOCS_USER` e `DOCS_PASSWORD`), e **sem as duas variaveis
+nao sobe**: a lista de rotas nao e segredo, mas uma documentacao aberta e um
+mapa pronto de onde estao as rotas administrativas e o que cada uma aceita.
+
+### Teto de tempo no banco
+
+Toda query e toda agregacao saem com `maxTimeMS` de 5 segundos, aplicado no
+`createSchema` para ninguem precisar lembrar
+([`schema-helpers.ts`](src/database/schema-helpers.ts)). A funcao da Vercel tem
+tempo maximo de execucao, e consulta pendurada nao volta com erro util: a
+funcao e cortada e quem chamou recebe um 504 sem mensagem e sem log. Com o
+teto, o proprio Mongo aborta e devolve um erro nomeado, que vira linha de log e
+resposta. Cinco segundos e folgado para colecoes pequenas e indexadas —
+consulta que passa disso esta errada, nao lenta.
 
 ## Primeiro acesso
 
@@ -586,9 +742,13 @@ plano Enterprise) da IP fixo, e o Atlas aceita peering de VPC.
 de `engines.node` no `package.json` (o campo `functions.runtime` do
 `vercel.json` so aceita runtimes de terceiros no formato `pacote@versao`).
 
-Defina `CORS_ORIGINS`, `MONGODB_URI`, `JWT_ACCESS_SECRET` e
-`JWT_REFRESH_SECRET` (e `APP_VERSION` / `MONGODB_DB_NAME`, se quiser) nas
-variaveis de ambiente do projeto na Vercel. Os cookies de sessao saem com
+Defina `CORS_ORIGINS`, `MONGODB_URI` e os quatro segredos de JWT
+(`JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_CUSTOMER_ACCESS_SECRET` e
+`JWT_CUSTOMER_REFRESH_SECRET`, todos distintos) nas variaveis de ambiente do
+projeto na Vercel — mais `APP_VERSION`, `MONGODB_DB_NAME` e as `CLOUDINARY_*`,
+se quiser. `CORS_ORIGINS` precisa listar as origens uma a uma: `*` derruba o
+boot. Sem `DOCS_USER` e `DOCS_PASSWORD`, `/api/v1/docs` nao sobe em producao —
+o que e proposital, e nao um deploy quebrado. Os cookies de sessao saem com
 `SameSite=None; Secure` fora de desenvolvimento, o que exige HTTPS — na Vercel
 isso ja e o padrao.
 

@@ -6,6 +6,7 @@ import request from 'supertest';
 import { AppModule } from '../src/app.module.js';
 import { DOCS_PATH, configureApp } from '../src/bootstrap.js';
 import { Public } from '../src/common/decorators/public.decorator.js';
+import { BODY_TOO_LARGE_MESSAGE } from '../src/common/filters/all-exceptions.filter.js';
 import { JsonLogger } from '../src/common/json-logger.js';
 import { REQUEST_ID_HEADER } from '../src/common/request-id.middleware.js';
 import { PasswordService } from '../src/modules/auth/password.service.js';
@@ -194,20 +195,41 @@ describe('endurecimento (e2e)', () => {
   });
 
   describe('tamanho do corpo', () => {
-    it('recusa corpo acima de 256 KB', async () => {
+    it('recusa corpo acima de 256 KB com 413, e nao com 500', async () => {
       const response = await request(server)
         .post(`${API}/cart/quote`)
         .send({ items: [], observacao: 'x'.repeat(300 * 1024) });
 
+      // O parser do Express lanca um Error comum, fora do Nest. Sem
+      // traducao no filtro, a defesa funcionando se anunciava como falha do
+      // servidor — 500, com a pilha inteira no log.
       expect(response.status).toBe(413);
+      expect(response.body.message).toBe(BODY_TOO_LARGE_MESSAGE);
+      expect(response.body.error).toBe('Payload Too Large');
     });
 
-    it('aceita corpo grande, mas dentro do teto', async () => {
-      // Duzentos KB: passa do padrao do Express e cabe no teto novo.
-      await request(server)
-        .post(`${API}/cart/quote`)
-        .send({ items: [], observacao: 'x'.repeat(200 * 1024) })
-        .expect(200);
+    it('le o corpo grande que cabe no teto, em vez de corta-lo', async () => {
+      // Duas mil linhas de sacola dao uns 200 KB: passa do padrao do Express,
+      // que e 100 KB, e cabe no teto novo. A recusa que vem e a do DTO, que
+      // aceita 50 itens — e e ela que prova que o corpo chegou inteiro ate a
+      // validacao, em vez de ter sido cortado pelo tamanho.
+      const items = Array.from({ length: 2000 }, () => ({
+        productId: '65f0a1b2c3d4e5f6a7b8c9d0',
+        variantId: '65f0a1b2c3d4e5f6a7b8c9d1',
+        quantity: 1,
+      }));
+      const body = {
+        items,
+        fulfillment: { mode: 'PICKUP' },
+        payment: { method: 'PIX' },
+      };
+
+      expect(JSON.stringify(body).length).toBeGreaterThan(150 * 1024);
+
+      const response = await request(server).post(`${API}/cart/quote`).send(body);
+
+      expect(response.status).toBe(400);
+      expect(String(response.body.message)).toContain('no maximo 50 itens');
     });
   });
 

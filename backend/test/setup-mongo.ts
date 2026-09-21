@@ -36,17 +36,25 @@ process.env.BOOTSTRAP_SECRET ??= 'test-bootstrap-secret-0123456789-abcd';
 /**
  * Conexao propria do teste, so para limpar o que o teste nao criou.
  *
- * O contador de rate limit e estado compartilhado entre requisicoes, como uma
- * colecao qualquer — e agora toda rota tem limite, inclusive as do painel.
- * Sem zerar entre os testes, um arquivo com muitas chamadas comecaria a
- * receber 429 no meio, e o teste que quebraria seria sempre outro.
+ * Os dois contadores de limite sao estado compartilhado entre requisicoes,
+ * como uma colecao qualquer — e agora toda rota tem limite, inclusive as do
+ * painel. Sem zerar entre os testes, um arquivo com muitas chamadas comecaria
+ * a receber 429 no meio, e o teste que quebraria seria sempre outro.
+ *
+ * `login_attempts` entra pelo mesmo motivo, e esquece-lo custou sete testes: a
+ * janela do `LoginRateLimitService` e de quinze minutos e nao morre com o caso
+ * que a abriu, entao cinco senhas erradas num teste faziam o login seguinte —
+ * ate o certo — comecar bloqueado.
  */
 const maintenance = await mongoose
   .createConnection(mongo.getUri(), { dbName: 'maison-essence-test' })
   .asPromise();
 
 afterEach(async () => {
-  await maintenance.collection('rate_limit_hits').deleteMany({});
+  await Promise.all([
+    maintenance.collection('rate_limit_hits').deleteMany({}),
+    maintenance.collection('login_attempts').deleteMany({}),
+  ]);
 });
 
 afterAll(async () => {
