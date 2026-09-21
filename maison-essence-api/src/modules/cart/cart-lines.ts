@@ -73,6 +73,14 @@ export interface QuoteItem {
   unitPriceCents: number;
   /** Quanto ainda ha em estoque, para a sacola ajustar a quantidade. */
   availableStock: number;
+  /**
+   * Venda sob encomenda: esta linha vale mesmo com o estoque no zero.
+   *
+   * A sacola usa para avisar do prazo maior; a criacao do pedido usa para
+   * saber que esta baixa nao pode exigir estoque suficiente, ou recusaria o
+   * proprio item que acabou de cotar como disponivel.
+   */
+  allowBackorder: boolean;
   /** Desconto por quantidade aplicado a esta linha. */
   discountPercent: number;
   /** Quanto o desconto retirou desta linha, em centavos. */
@@ -197,6 +205,7 @@ export function quoteItems(
       quantity: line.quantity,
       unitPriceCents,
       availableStock: variant?.stock ?? 0,
+      allowBackorder: variant?.allowBackorder ?? false,
       discountPercent,
       discountCents: available ? discountCents : 0,
       lineTotalCents: available ? lineTotalCents : 0,

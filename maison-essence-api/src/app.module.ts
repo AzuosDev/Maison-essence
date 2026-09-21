@@ -10,6 +10,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
 import { DeliveryModule } from './modules/delivery/delivery.module.js';
+import { OrdersModule } from './modules/orders/orders.module.js';
 import { PaymentsModule } from './modules/payments/payments.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
@@ -30,6 +31,7 @@ import { UsersModule } from './modules/users/users.module.js';
     DeliveryModule,
     PaymentsModule,
     CartModule,
+    OrdersModule,
   ],
   providers: [
     {
