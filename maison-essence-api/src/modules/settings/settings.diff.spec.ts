@@ -27,16 +27,27 @@ describe('diffOf', () => {
     expect(changes).toEqual({ 'pickupAddress.city': { from: 'Sobral', to: 'Fortaleza' } });
   });
 
-  it('registra banner criado e banner removido pelo id', () => {
+  it('registra banner criado e banner removido pelo id, em uma linha cada', () => {
     const changes = diffOf(
       { banners: { aaa: { title: 'Natal' } } },
       { banners: { bbb: { title: 'Ano novo' } } },
     );
 
+    // Banner que nasce ou some entra inteiro, e nao um campo por linha: dez
+    // linhas "de nada para alguma coisa" escondem o que de fato aconteceu.
     expect(changes).toEqual({
-      'banners.aaa.title': { from: 'Natal', to: undefined },
-      'banners.bbb.title': { from: undefined, to: 'Ano novo' },
+      'banners.aaa': { from: { title: 'Natal' }, to: undefined },
+      'banners.bbb': { from: undefined, to: { title: 'Ano novo' } },
     });
+  });
+
+  it('desce por campo no banner que ja existia', () => {
+    const changes = diffOf(
+      { banners: { aaa: { title: 'Natal', order: 0 } } },
+      { banners: { aaa: { title: 'Natal', order: 2 } } },
+    );
+
+    expect(changes).toEqual({ 'banners.aaa.order': { from: 0, to: 2 } });
   });
 
   it('corta texto longo em vez de guardar a pagina inteira no log', () => {

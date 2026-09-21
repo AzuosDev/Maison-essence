@@ -1,4 +1,8 @@
-import { normalizeWhatsappNumber, whatsappLinkOf } from './whatsapp-number.js';
+import {
+  WHATSAPP_NUMBER_PATTERN,
+  normalizeWhatsappNumber,
+  whatsappLinkOf,
+} from './whatsapp-number.js';
 
 describe('normalizeWhatsappNumber', () => {
   it('aceita o numero ja no formato internacional', () => {
@@ -45,5 +49,29 @@ describe('whatsappLinkOf', () => {
 
   it('nao inventa link quando nao ha numero', () => {
     expect(whatsappLinkOf('')).toBe('');
+  });
+});
+
+
+/**
+ * O padrao vale sobre o valor ja normalizado, e e ele que o DTO aplica. Ja
+ * nasceu recusando tudo uma vez: escrito em template literal, o `\d` virou
+ * um `d` e nenhum numero passava pelo painel.
+ */
+describe('WHATSAPP_NUMBER_PATTERN', () => {
+  it('aceita o que a normalizacao devolve', () => {
+    expect(WHATSAPP_NUMBER_PATTERN.test('5588999999999')).toBe(true);
+    expect(WHATSAPP_NUMBER_PATTERN.test('351912345678')).toBe(true);
+  });
+
+  it('aceita vazio, que e a loja sem WhatsApp configurado', () => {
+    expect(WHATSAPP_NUMBER_PATTERN.test('')).toBe(true);
+  });
+
+  it('recusa pontuacao, letra e tamanho fora da faixa', () => {
+    expect(WHATSAPP_NUMBER_PATTERN.test('+55 (88) 99999-9999')).toBe(false);
+    expect(WHATSAPP_NUMBER_PATTERN.test('fale comigo no zap')).toBe(false);
+    expect(WHATSAPP_NUMBER_PATTERN.test('5588999999')).toBe(false);
+    expect(WHATSAPP_NUMBER_PATTERN.test('5588999999999999')).toBe(false);
   });
 });

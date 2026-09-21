@@ -30,34 +30,41 @@ export function applySingletonIndex<T>(schema: Schema<T>): void {
  * Devolve o documento unico da colecao, criando-o com os padroes do schema na
  * primeira chamada.
  *
- * O `upsert` resolve o caso normal numa ida so ao banco. O `catch` cobre a
- * corrida: quando duas invocacoes fazem o upsert ao mesmo tempo num banco
- * vazio, o indice unico derruba uma delas com E11000, e ai basta reler o
+ * Le primeiro e so escreve quando nao ha nada, em vez de resolver tudo em um
+ * `findOneAndUpdate({}, {}, { upsert: true })`. O upsert numa ida so parecia mais
+ * barato, mas o Mongoose carimba `updatedAt` em toda atualizacao, inclusive na
+ * que nao muda campo nenhum: o documento passava a ter idade de ultima *leitura*
+ * e nao de ultima *alteracao*. E essa data que versiona o ETag da rota publica de
+ * configuracoes — cada visita a loja mudava a etiqueta, a CDN nunca recebia um
+ * 304, e toda leitura da vitrine virava uma escrita no banco.
+ *
+ * O `catch` cobre a corrida: quando duas invocacoes encontram a colecao vazia ao
+ * mesmo tempo, o indice unico derruba uma delas com E11000, e ai basta reler o
  * documento que a outra acabou de criar.
  */
 export async function getOrCreateSingleton<T>(
   model: Model<T>,
 ): Promise<HydratedDocument<T>> {
+  const existing = await model.findOne({}).exec();
+
+  if (existing) {
+    return existing;
+  }
+
   try {
-    return await model
-      .findOneAndUpdate(
-        {},
-        {},
-        { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true },
-      )
-      .exec();
+    return await model.create({} as Partial<T>);
   } catch (error) {
     if (!isDuplicateKeyError(error)) {
       throw error;
     }
 
-    const existing = await model.findOne({}).exec();
+    const created = await model.findOne({}).exec();
 
-    if (!existing) {
+    if (!created) {
       throw error;
     }
 
-    return existing;
+    return created;
   }
 }
 

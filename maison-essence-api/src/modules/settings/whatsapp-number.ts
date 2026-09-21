@@ -22,7 +22,7 @@ export const MAX_WHATSAPP_DIGITS = 15;
 
 /** Ja normalizado: so digitos, com codigo do pais na frente. */
 export const WHATSAPP_NUMBER_PATTERN = new RegExp(
-  `^(?:\d{${MIN_WHATSAPP_DIGITS},${MAX_WHATSAPP_DIGITS}})?$`,
+  String.raw`^(?:\d{${MIN_WHATSAPP_DIGITS},${MAX_WHATSAPP_DIGITS}})?$`,
 );
 
 export const WHATSAPP_NUMBER_MESSAGE =

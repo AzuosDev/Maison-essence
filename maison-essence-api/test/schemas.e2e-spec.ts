@@ -353,6 +353,16 @@ describe('schemas (e2e)', () => {
       expect(await models.storeSettings.countDocuments()).toBe(1);
     });
 
+    it('ler nao envelhece o documento', async () => {
+      const first = await models.storeSettings.getOrCreate();
+      const second = await models.storeSettings.getOrCreate();
+
+      // `updatedAt` e data de alteracao, nunca de leitura: e ela que versiona o
+      // ETag da rota publica de configuracoes. Se cada leitura a movesse, a CDN
+      // nunca receberia um 304 e a vitrine escreveria no banco a cada visita.
+      expect(second.updatedAt.getTime()).toBe(first.updatedAt.getTime());
+    });
+
     it('o indice unico impede um segundo documento', async () => {
       await models.paymentSettings.getOrCreate();
 
