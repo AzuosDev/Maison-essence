@@ -1,5 +1,6 @@
 import { Controller, Get, HttpStatus, Param, Req, Res } from '@nestjs/common';
 import type { Request, Response } from 'express';
+import { CdnCache } from '../../common/cache-control.js';
 import { Public } from '../../common/decorators/public.decorator.js';
 import { CategoriesService } from './categories.service.js';
 import type { PublicCategoryView, WithChildren } from './category.view.js';
@@ -13,8 +14,12 @@ export interface MovedCategory {
 
 /**
  * Categorias para a vitrine. Sem autenticacao: e o menu da loja aberta.
+ *
+ * Mesmo cache do catalogo: o menu e o que abre em toda visita, e nenhuma
+ * dessas respostas muda entre um cliente e outro.
  */
 @Public()
+@CdnCache()
 @Controller('categories')
 export class PublicCategoriesController {
   constructor(private readonly categories: CategoriesService) {}

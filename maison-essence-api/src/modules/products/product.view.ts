@@ -1,5 +1,11 @@
 import type { ProductDocument, ProductVariant } from './schemas/product.schema.js';
 
+/** O minimo para decidir se o produto tem variantes: a vitrine le lean, sem `id`. */
+type LabelledVariant = Pick<ProductVariant, 'label'>;
+
+/** O minimo para a faixa de preco, pelo mesmo motivo. */
+type PricedVariant = Pick<ProductVariant, 'priceCents'>;
+
 /** Variante como o painel a ve. */
 export interface ProductVariantView {
   id: string;
@@ -108,7 +114,7 @@ export function toVariantView(variant: ProductVariant): ProductVariantView {
  * outra coisa — duas variantes, ou uma so mas chamada de "100 ml" — e um
  * produto com variantes, e a tela mostra o seletor.
  */
-export function hasVariants(variants: readonly ProductVariant[]): boolean {
+export function hasVariants(variants: readonly LabelledVariant[]): boolean {
   return variants.length > 1 || (variants[0]?.label ?? '') !== '';
 }
 
@@ -116,7 +122,7 @@ export function hasVariants(variants: readonly ProductVariant[]): boolean {
  * Menor e maior preco. Sem variante ativa, cai para a lista inteira: o painel
  * mostrando "R$ 0,00" num produto so desativado parece defeito, nao estado.
  */
-function priceRangeOf(variants: readonly ProductVariantView[]): PriceRange {
+export function priceRangeOf(variants: readonly PricedVariant[]): PriceRange {
   const prices = variants.map((variant) => variant.priceCents);
 
   return prices.length === 0

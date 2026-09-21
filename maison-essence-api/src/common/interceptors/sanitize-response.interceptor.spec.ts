@@ -58,4 +58,18 @@ describe('SanitizeResponseInterceptor', () => {
 
     await expect(run(node)).resolves.toEqual({ name: 'raiz' });
   });
+
+  /**
+   * O mesmo objeto em dois ramos da resposta nao e ciclo. A regra de desconto
+   * que o produto anuncia no card e a primeira da escada dele sao a mesma
+   * referencia, e as duas precisam chegar inteiras na vitrine.
+   */
+  it('mantem a referencia repetida que nao e ciclo', async () => {
+    const tier = { minQty: 3, percentOff: 10 };
+
+    await expect(run({ quantityDiscount: tier, quantityDiscounts: [tier] })).resolves.toEqual({
+      quantityDiscount: { minQty: 3, percentOff: 10 },
+      quantityDiscounts: [{ minQty: 3, percentOff: 10 }],
+    });
+  });
 });

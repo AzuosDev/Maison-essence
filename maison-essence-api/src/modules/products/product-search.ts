@@ -33,6 +33,6 @@ export function searchFilter(term: string): QueryFilter<Product> {
 }
 
 /** Termo de busca e texto do usuario: `R$ 1,00 (novo)` nao pode virar regex. */
-function escapeRegex(value: string): string {
+export function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

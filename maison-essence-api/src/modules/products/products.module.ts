@@ -1,26 +1,44 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Order, OrderSchema, Product, ProductSchema } from '../../schemas.js';
+import {
+  Category,
+  CategorySchema,
+  Order,
+  OrderSchema,
+  Product,
+  ProductSchema,
+  QuantityDiscount,
+  QuantityDiscountSchema,
+} from '../../schemas.js';
 import { ProductsController } from './products.controller.js';
 import { ProductsService } from './products.service.js';
+import { PublicCatalogService } from './public-catalog.service.js';
+import { PublicProductsController } from './public-products.controller.js';
 
 /**
- * Produtos e variantes.
+ * Produtos e variantes, no painel e na vitrine.
  *
- * Registra o model `Order` para uma pergunta so: esta variante ja foi
- * vendida? E ela que decide entre apagar a variante que saiu da lista e
- * apenas aposenta-la, porque o cancelamento de um pedido devolve o estoque
- * procurando a variante pelo id guardado no item.
+ * Registra `Order` para duas perguntas: esta variante ja foi vendida? — a que
+ * decide entre apagar a variante que saiu da lista e apenas aposenta-la, por
+ * causa do estoque devolvido no cancelamento — e quanto cada produto vendeu,
+ * que e a prateleira de mais vendidos.
+ *
+ * `Category` entra para resolver o filtro por slug da vitrine, e
+ * `QuantityDiscount` para o card anunciar o desconto progressivo. O modulo de
+ * categorias registra `Product` pelo mesmo tipo de motivo; `forFeature`
+ * repetido e idempotente.
  */
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Product.name, schema: ProductSchema },
       { name: Order.name, schema: OrderSchema },
+      { name: Category.name, schema: CategorySchema },
+      { name: QuantityDiscount.name, schema: QuantityDiscountSchema },
     ]),
   ],
-  controllers: [ProductsController],
-  providers: [ProductsService],
-  exports: [ProductsService, MongooseModule],
+  controllers: [ProductsController, PublicProductsController],
+  providers: [ProductsService, PublicCatalogService],
+  exports: [ProductsService, PublicCatalogService, MongooseModule],
 })
 export class ProductsModule {}

@@ -1,6 +1,7 @@
 import { Module, ValidationPipe } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter.js';
+import { CdnCacheInterceptor } from './common/interceptors/cdn-cache.interceptor.js';
 import { SanitizeResponseInterceptor } from './common/interceptors/sanitize-response.interceptor.js';
 import { AppConfigModule } from './config/config.module.js';
 import { DatabaseModule } from './database/database.module.js';
@@ -38,6 +39,10 @@ import { UsersModule } from './modules/users/users.module.js';
     {
       provide: APP_INTERCEPTOR,
       useClass: SanitizeResponseInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CdnCacheInterceptor,
     },
   ],
 })

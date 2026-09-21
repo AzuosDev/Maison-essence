@@ -15,7 +15,16 @@ export class SanitizeResponseInterceptor implements NestInterceptor {
   }
 }
 
-function sanitize(value: unknown, seen: WeakSet<object>): unknown {
+/**
+ * `path` guarda os objetos do caminho da raiz ate aqui, e nao tudo que ja foi
+ * visitado.
+ *
+ * A diferenca aparece quando a mesma referencia e usada duas vezes em lugares
+ * diferentes da resposta — a regra de desconto que o produto anuncia no card e
+ * repete na escada, por exemplo. Isso nao e ciclo: e o mesmo objeto em dois
+ * ramos, e cortar o segundo apagaria um pedaco legitimo da resposta.
+ */
+function sanitize(value: unknown, path: WeakSet<object>): unknown {
   if (value === null || typeof value !== 'object') {
     return value;
   }
@@ -28,13 +37,24 @@ function sanitize(value: unknown, seen: WeakSet<object>): unknown {
     return value.toHexString();
   }
 
-  if (seen.has(value)) {
+  if (path.has(value)) {
     return undefined;
   }
-  seen.add(value);
 
+  path.add(value);
+
+  try {
+    return sanitizeObject(value, path);
+  } finally {
+    // Sai do caminho ao voltar: daqui para a frente, encontrar este objeto de
+    // novo e reaproveitamento, nao ciclo.
+    path.delete(value);
+  }
+}
+
+function sanitizeObject(value: object, path: WeakSet<object>): unknown {
   if (Array.isArray(value)) {
-    return value.map((item) => sanitize(item, seen));
+    return value.map((item) => sanitize(item, path));
   }
 
   const source = hasToJSON(value) ? value.toJSON() : value;
@@ -44,7 +64,7 @@ function sanitize(value: unknown, seen: WeakSet<object>): unknown {
   }
 
   if (source !== value && (Array.isArray(source) || isObjectIdLike(source))) {
-    return sanitize(source, seen);
+    return sanitize(source, path);
   }
 
   const result: Record<string, unknown> = {};
@@ -54,7 +74,7 @@ function sanitize(value: unknown, seen: WeakSet<object>): unknown {
       continue;
     }
 
-    const sanitized = sanitize(item, seen);
+    const sanitized = sanitize(item, path);
 
     if (sanitized !== undefined) {
       result[key] = sanitized;
