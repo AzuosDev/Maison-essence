@@ -7,6 +7,7 @@ import { AppModule } from '../src/app.module.js';
 import { configureApp } from '../src/bootstrap.js';
 import { PasswordService } from '../src/modules/auth/password.service.js';
 import {
+  AuditEntry,
   INSTITUTIONAL_PAGE_SLUGS,
   RefreshToken,
   StoreSettings,
@@ -33,6 +34,7 @@ describe('configuracoes da loja (e2e)', () => {
   let users: Model<User>;
   let refreshTokens: Model<RefreshToken>;
   let settings: Model<StoreSettings>;
+  let audit: Model<AuditEntry>;
   let passwordHash: string;
 
   beforeAll(async () => {
@@ -46,6 +48,7 @@ describe('configuracoes da loja (e2e)', () => {
     users = app.get<Model<User>>(getModelToken(User.name));
     refreshTokens = app.get<Model<RefreshToken>>(getModelToken(RefreshToken.name));
     settings = app.get<Model<StoreSettings>>(getModelToken(StoreSettings.name));
+    audit = app.get<Model<AuditEntry>>(getModelToken(AuditEntry.name));
     passwordHash = await app.get(PasswordService).hash(PASSWORD);
   });
 
@@ -60,6 +63,7 @@ describe('configuracoes da loja (e2e)', () => {
       users.deleteMany({}),
       refreshTokens.deleteMany({}),
       settings.deleteMany({}),
+      audit.deleteMany({}),
     ]);
   });
 
@@ -258,28 +262,29 @@ describe('configuracoes da loja (e2e)', () => {
 
     it('registra na auditoria quem mudou o que', async () => {
       const owner = await signedInOwner();
-      const logged = vi.spyOn(Logger.prototype, 'log');
 
       await patch(owner, {
         whatsappNumber: '5588999999999',
         pickupAddress: { city: 'Sobral' },
       }).expect(200);
 
-      const entry = logged.mock.calls
-        .map(([message]) => String(message))
-        .find((message) => message.includes('settings.updated'));
+      // Na colecao, e nao so no log: a trilha precisa sobreviver a
+      // retencao de log do provedor para responder por uma alteracao de
+      // tres meses atras.
+      const entry = await audit.findOne({ action: 'settings.updated' }).exec();
 
-      logged.mockRestore();
-
-      expect(entry).toBeDefined();
-      expect(JSON.parse(entry as string)).toMatchObject({
+      expect(entry).not.toBeNull();
+      expect(entry?.toJSON()).toMatchObject({
         action: 'settings.updated',
-        actor: { id: owner.id, email: 'dona@maisonessence.com', role: USER_ROLES.OWNER },
+        actorId: owner.id,
+        actorEmail: 'dona@maisonessence.com',
+        actorRole: USER_ROLES.OWNER,
         changes: {
           whatsappNumber: { from: '', to: '5588999999999' },
           'pickupAddress.city': { from: '', to: 'Sobral' },
         },
       });
+      expect(entry?.createdAt).toBeInstanceOf(Date);
     });
 
     it('nao polui a trilha com gravacao que nao mudou nada', async () => {

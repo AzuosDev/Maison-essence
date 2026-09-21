@@ -95,3 +95,22 @@ export function normalizePixKey(value: unknown, type: PixKeyType): string | null
   // onde ele quebraria o link `wa.me`.
   return PHONE_DIGITS.test(international) ? `+${international}` : null;
 }
+
+/**
+ * A chave PIX reduzida ao que da para mostrar num log.
+ *
+ * Sobram os quatro ultimos caracteres, que bastam para quem conhece a chave
+ * reconhece-la e para a trilha de auditoria provar que ela mudou. A chave
+ * inteira num log e o endereco para onde vai o dinheiro da loja, e log e o
+ * lugar menos protegido de todo o sistema.
+ *
+ * Chave vazia continua vazia: nao ha o que esconder, e um `****` no lugar de
+ * "nao havia chave" faria a trilha mentir.
+ */
+export function maskPixKey(key: string): string {
+  if (key.length === 0) {
+    return '';
+  }
+
+  return key.length <= 4 ? '****' : `****${key.slice(-4)}`;
+}

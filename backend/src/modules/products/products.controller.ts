@@ -13,6 +13,8 @@ import {
 import { Roles } from '../../common/decorators/roles.decorator.js';
 import type { Paginated } from '../../common/pagination.js';
 import { MANAGES_STORE, READS_CATALOG } from '../../common/roles.js';
+import type { AuthenticatedUser } from '../auth/auth.types.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { CreateProductDto } from './dto/create-product.dto.js';
 import { ListProductsDto } from './dto/list-products.dto.js';
 import { UpdateProductDto } from './dto/update-product.dto.js';
@@ -50,8 +52,12 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateProductDto): Promise<ProductView> {
-    return this.products.update(id, dto);
+  update(
+    @CurrentUser() actor: AuthenticatedUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateProductDto,
+  ): Promise<ProductView> {
+    return this.products.update(actor, id, dto);
   }
 
   /** Toggle da listagem, sem passar pelo cadastro inteiro. */

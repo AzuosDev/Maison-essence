@@ -8,8 +8,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import { Types } from 'mongoose';
 import { USER_ROLES } from '../../common/enums/user-role.js';
-import { USER_AUDIT_ACTIONS, UserAuditLog } from '../../common/user-audit.log.js';
-import type { AuditParty } from '../../common/user-audit.log.js';
+import { AUDIT_ACTIONS, AUDIT_TARGETS } from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
+import type { AuditActor, AuditTarget } from '../audit/audit.types.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { PasswordService } from '../auth/password.service.js';
 import { RefreshTokenService, adminOwner } from '../auth/refresh-token.service.js';
@@ -48,7 +49,7 @@ export class UsersService {
     @InjectModel(User.name) private readonly users: Model<User>,
     private readonly passwords: PasswordService,
     private readonly sessions: RefreshTokenService,
-    private readonly audit: UserAuditLog,
+    private readonly audit: AuditService,
   ) {}
 
   /** Lista o que o ator enxerga. Para o OWNER, SUPER_ADMIN nao existe. */
@@ -77,8 +78,8 @@ export class UsersService {
       }),
     );
 
-    this.audit.record({
-      action: USER_AUDIT_ACTIONS.CREATED,
+    await this.audit.record({
+      action: AUDIT_ACTIONS.USER_CREATED,
       actor: toParty(actor),
       target: partyOf(created),
       details: { role: created.role },
@@ -137,8 +138,8 @@ export class UsersService {
       await this.sessions.bumpCredentialVersion(adminOwner(saved._id));
     }
 
-    this.audit.record({
-      action: USER_AUDIT_ACTIONS.UPDATED,
+    await this.audit.record({
+      action: AUDIT_ACTIONS.USER_UPDATED,
       actor: toParty(actor),
       target: partyOf(saved),
       details: changed,
@@ -182,10 +183,10 @@ export class UsersService {
       await this.sessions.revokeAllSessions(adminOwner(saved._id));
     }
 
-    this.audit.record({
+    await this.audit.record({
       action: dto.isActive
-        ? USER_AUDIT_ACTIONS.ACTIVATED
-        : USER_AUDIT_ACTIONS.DEACTIVATED,
+        ? AUDIT_ACTIONS.USER_ACTIVATED
+        : AUDIT_ACTIONS.USER_DEACTIVATED,
       actor: toParty(actor),
       target: partyOf(saved),
     });
@@ -215,8 +216,8 @@ export class UsersService {
 
     await this.sessions.revokeAllSessions(adminOwner(saved._id));
 
-    this.audit.record({
-      action: USER_AUDIT_ACTIONS.PASSWORD_RESET,
+    await this.audit.record({
+      action: AUDIT_ACTIONS.USER_PASSWORD_RESET,
       actor: toParty(actor),
       target: partyOf(saved),
     });
@@ -285,12 +286,13 @@ function viewTarget(user: UserDocument): { id: string; role: UserDocument['role'
   return { id: user._id.toHexString(), role: user.role };
 }
 
-function toParty(actor: AuthenticatedUser): AuditParty {
+function toParty(actor: AuthenticatedUser): AuditActor {
   return { id: actor.id, email: actor.email, role: actor.role };
 }
 
-function partyOf(user: UserDocument): AuditParty {
-  return { id: user._id.toHexString(), email: user.email, role: user.role };
+/** O usuario como alvo da acao: o e-mail e o rotulo que se reconhece. */
+function partyOf(user: UserDocument): AuditTarget {
+  return { kind: AUDIT_TARGETS.USER, id: user._id.toHexString(), label: user.email };
 }
 
 function isDuplicateKey(error: unknown): boolean {

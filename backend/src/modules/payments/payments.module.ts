@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SettingsAuditLog } from '../../common/settings-audit.log.js';
 import { PaymentSettings, PaymentSettingsSchema } from '../../schemas.js';
 import { InstallmentService } from './installment.service.js';
 import { PaymentsController } from './payments.controller.js';
@@ -20,7 +19,7 @@ import { PublicPaymentsController } from './public-payments.controller.js';
     MongooseModule.forFeature([{ name: PaymentSettings.name, schema: PaymentSettingsSchema }]),
   ],
   controllers: [PaymentsController, PublicPaymentsController],
-  providers: [PaymentsService, InstallmentService, SettingsAuditLog],
+  providers: [PaymentsService, InstallmentService],
   exports: [PaymentsService, InstallmentService, MongooseModule],
 })
 export class PaymentsModule {}

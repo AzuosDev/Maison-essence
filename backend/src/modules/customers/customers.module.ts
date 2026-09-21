@@ -10,7 +10,6 @@ import {
   OrderSchema,
 } from '../../schemas.js';
 import { AuthModule } from '../auth/auth.module.js';
-import { RateLimitModule } from '../rate-limit/rate-limit.module.js';
 import { CustomerAuthService } from './customer-auth.service.js';
 import { CustomerOrdersController } from './customer-orders.controller.js';
 import { CustomerOrdersService } from './customer-orders.service.js';
@@ -50,7 +49,6 @@ import { CustomerJwtStrategy } from './strategies/customer-jwt.strategy.js';
     // nome, e um padrao neste modulo so serviria para mascarar um esquecimento.
     PassportModule.register({ session: false }),
     AuthModule,
-    RateLimitModule,
   ],
   controllers: [CustomersController, CustomerOrdersController],
   providers: [

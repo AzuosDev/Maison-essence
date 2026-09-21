@@ -251,7 +251,12 @@ describe('auth (e2e)', () => {
         '192.0.2.77',
       ).expect(429);
 
-      expect(blocked.body.message).toBe('Muitas tentativas. Tente novamente mais tarde.');
+      // A frase e a do limite de rota, que age antes do contador de falhas do
+      // servico: os dois valem cinco por quinze minutos, e quem chega primeiro
+      // e o guard. As duas recusas sao igualmente mudas sobre o e-mail.
+      expect(blocked.body.message).toBe(
+        'Muitas requisicoes em pouco tempo. Espere um instante e tente de novo.',
+      );
       expect(JSON.stringify(blocked.body)).not.toContain(EMAIL);
 
       // A senha certa tambem para: o bloqueio e da combinacao IP + e-mail.

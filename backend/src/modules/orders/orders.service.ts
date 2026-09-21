@@ -9,10 +9,14 @@ import type { Model, QueryFilter } from 'mongoose';
 import { Types } from 'mongoose';
 import { FULFILLMENT_MODES } from '../../common/enums/fulfillment-mode.js';
 import { ORDER_STATUSES } from '../../common/enums/order-status.js';
+import type { OrderStatus } from '../../common/enums/order-status.js';
 import { PAYMENT_METHODS } from '../../common/enums/payment-method.js';
 import type { Paginated } from '../../common/pagination.js';
 import { paginate, skipFor } from '../../common/pagination.js';
 import { Order } from '../../schemas.js';
+import { AUDIT_ACTIONS, AUDIT_TARGETS } from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
+import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { CartQuoteService } from '../cart/cart-quote.service.js';
 import { CARD_UNAVAILABLE_WARNING, PIX_UNAVAILABLE_WARNING } from '../cart/cart.constants.js';
 import type { CartQuoteView } from '../cart/quote.view.js';
@@ -72,6 +76,7 @@ export class OrdersService {
     private readonly stock: OrderStockService,
     private readonly settings: SettingsService,
     private readonly limits: RateLimitService,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -145,7 +150,11 @@ export class OrdersService {
    * seguro de repetir: a segunda chamada encontra o pedido ja cancelado e sai
    * antes de chegar perto do estoque.
    */
-  async setStatus(id: string, dto: UpdateOrderStatusDto): Promise<OrderView> {
+  async setStatus(
+    actor: AuthenticatedUser,
+    id: string,
+    dto: UpdateOrderStatusDto,
+  ): Promise<OrderView> {
     const order = await this.findById(id);
 
     if (dto.status === order.status) {
@@ -156,13 +165,34 @@ export class OrdersService {
       throw new ConflictException(CANCELLED_IS_FINAL_MESSAGE);
     }
 
-    if (dto.status === ORDER_STATUSES.CANCELLED) {
-      return this.cancel(order);
-    }
+    const previous = order.status;
+    const view =
+      dto.status === ORDER_STATUSES.CANCELLED
+        ? await this.cancel(order)
+        : toOrderView(await this.moveTo(order, dto.status));
 
-    order.status = dto.status;
+    // Depois da gravacao, e nunca antes: trilha de acao que nao
+    // aconteceu e pior do que trilha nenhuma. O codigo do pedido vai
+    // junto porque e por ele que a dona procura, e nao pelo id.
+    await this.audit.record({
+      action: AUDIT_ACTIONS.ORDER_STATUS_CHANGED,
+      actor: { id: actor.id, email: actor.email, role: actor.role },
+      target: {
+        kind: AUDIT_TARGETS.ORDER,
+        id: order._id.toHexString(),
+        label: order.code,
+      },
+      changes: { status: { from: previous, to: dto.status } },
+    });
 
-    return toOrderView(await order.save());
+    return view;
+  }
+
+  /** A virada simples de status, que e tudo o que nao e cancelamento. */
+  private moveTo(order: OrderDocument, status: OrderStatus): Promise<OrderDocument> {
+    order.status = status;
+
+    return order.save();
   }
 
   /** A anotacao interna. Substitui a anterior; vazio apaga. */

@@ -6,6 +6,7 @@ import { SanitizeResponseInterceptor } from './common/interceptors/sanitize-resp
 import { AppConfigModule } from './config/config.module.js';
 import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
+import { AuditModule } from './modules/audit/audit.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
@@ -14,6 +15,7 @@ import { DeliveryModule } from './modules/delivery/delivery.module.js';
 import { OrdersModule } from './modules/orders/orders.module.js';
 import { PaymentsModule } from './modules/payments/payments.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
+import { RateLimitModule } from './modules/rate-limit/rate-limit.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
 import { UploadsModule } from './modules/uploads/uploads.module.js';
 import { UsersModule } from './modules/users/users.module.js';
@@ -22,6 +24,11 @@ import { UsersModule } from './modules/users/users.module.js';
   imports: [
     AppConfigModule,
     DatabaseModule,
+    // Antes de tudo o que responde: guards globais rodam na ordem em que os
+    // modulos sao registrados, e o limite de chamadas precisa contar a
+    // tentativa de login antes de o guard de autenticacao recusa-la.
+    RateLimitModule,
+    AuditModule,
     HealthModule,
     AuthModule,
     UsersModule,

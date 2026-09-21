@@ -10,10 +10,14 @@ import { Types } from 'mongoose';
 import type { Paginated } from '../../common/pagination.js';
 import { paginate, skipFor } from '../../common/pagination.js';
 import { Order, Product } from '../../schemas.js';
+import { AUDIT_ACTIONS, AUDIT_TARGETS } from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
+import type { AuthenticatedUser } from '../auth/auth.types.js';
 import type { CreateProductDto } from './dto/create-product.dto.js';
 import type { ListProductsDto } from './dto/list-products.dto.js';
 import type { UpdateProductDto } from './dto/update-product.dto.js';
 import type { UpdateProductStatusDto } from './dto/update-product-status.dto.js';
+import { priceChangesBetween, priceSnapshotOf } from './price-audit.js';
 import { searchFilter, usesTextIndex } from './product-search.js';
 import { toProductView } from './product.view.js';
 import type { ProductView } from './product.view.js';
@@ -33,6 +37,7 @@ export class ProductsService {
   constructor(
     @InjectModel(Product.name) private readonly products: Model<Product>,
     @InjectModel(Order.name) private readonly orders: Model<Order>,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -95,8 +100,15 @@ export class ProductsService {
     return toProductView(await this.save(product));
   }
 
-  async update(id: string, dto: UpdateProductDto): Promise<ProductView> {
+  async update(
+    actor: AuthenticatedUser,
+    id: string,
+    dto: UpdateProductDto,
+  ): Promise<ProductView> {
     const product = await this.findById(id);
+    // O retrato precisa ser tirado antes de qualquer atribuicao: depois
+    // dela o documento ja e o depois, e o antes so existiria no banco.
+    const before = priceSnapshotOf(product);
 
     if (dto.variants !== undefined) {
       product.set({ variants: await this.diffVariants(product, dto.variants) });
@@ -139,7 +151,27 @@ export class ProductsService {
       product.set({ tags: dto.tags });
     }
 
-    return toProductView(await this.save(product));
+    const saved = await this.save(product);
+    const changes = priceChangesBetween(before, priceSnapshotOf(saved));
+
+    // Preco e o campo que mais causa problema quando muda sem ninguem
+    // saber: a loja anuncia um valor, o cliente ve outro, e a conversa
+    // termina no WhatsApp. Os outros campos do produto mudam sem trilha;
+    // este nao.
+    if (Object.keys(changes).length > 0) {
+      await this.audit.record({
+        action: AUDIT_ACTIONS.PRODUCT_PRICE_CHANGED,
+        actor: { id: actor.id, email: actor.email, role: actor.role },
+        target: {
+          kind: AUDIT_TARGETS.PRODUCT,
+          id: saved._id.toHexString(),
+          label: saved.name,
+        },
+        changes,
+      });
+    }
+
+    return toProductView(saved);
   }
 
   /** O interruptor da listagem: tira da vitrine sem abrir o cadastro. */

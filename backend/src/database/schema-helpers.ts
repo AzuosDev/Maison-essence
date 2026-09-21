@@ -1,6 +1,10 @@
 import type { Type } from '@nestjs/common';
 import { SchemaFactory } from '@nestjs/mongoose';
-import type { Schema, SchemaTypeOptions } from 'mongoose';
+import type {
+  MongooseQueryOrDocumentMiddleware,
+  Schema,
+  SchemaTypeOptions,
+} from 'mongoose';
 import { SchemaTypes } from 'mongoose';
 
 /**
@@ -13,16 +17,63 @@ import { SchemaTypes } from 'mongoose';
 export const MAX_CENTS = 99_999_999;
 
 /**
+ * Teto de tempo de qualquer consulta ao banco.
+ *
+ * A funcao serverless da Vercel tem tempo maximo de execucao, e uma consulta
+ * pendurada nao volta com erro util: a funcao e cortada e quem chamou recebe
+ * um 504 sem mensagem, sem log e sem pista do que travou. Com `maxTimeMS`, o
+ * proprio servidor do Mongo aborta a operacao e devolve um erro nomeado, que
+ * vira linha de log e resposta.
+ *
+ * Cinco segundos e folgado para tudo o que esta API faz — as consultas sao
+ * indexadas e as colecoes sao pequenas — e ainda cabe com margem dentro do
+ * teto da funcao. Consulta que passa disso esta errada, nao lenta.
+ */
+export const DB_MAX_TIME_MS = 5000;
+
+/**
+ * Operacoes de consulta que recebem o teto de tempo.
+ *
+ * Escrita de documento unico (`save`, `create`) fica de fora porque o
+ * Mongoose nao expoe `maxTimeMS` nesse caminho — e o risco ali e outro: quem
+ * pendura uma conexao e a varredura, nao o insert de um documento por `_id`.
+ */
+const TIMED_QUERIES: MongooseQueryOrDocumentMiddleware[] = [
+  'countDocuments',
+  'deleteMany',
+  'deleteOne',
+  'distinct',
+  'estimatedDocumentCount',
+  'find',
+  'findOne',
+  'findOneAndDelete',
+  'findOneAndReplace',
+  'findOneAndUpdate',
+  'replaceOne',
+  'updateMany',
+  'updateOne',
+];
+
+/**
  * `SchemaFactory.createForClass` com o comportamento que todo schema do
  * projeto precisa.
  *
- * O unico acrescimo e ligar `runValidators` nas atualizacoes por query. O
- * Mongoose nao valida `findOneAndUpdate` por padrao, entao um `priceCents`
- * decimal seria recusado no `save()` e aceito no `PATCH` do painel — que e
- * justamente o caminho que a dona usa todo dia.
+ * Sao dois acrescimos, os dois por query e nao por documento.
+ *
+ * `runValidators`: o Mongoose nao valida `findOneAndUpdate` por padrao, entao
+ * um `priceCents` decimal seria recusado no `save()` e aceito no `PATCH` do
+ * painel — que e justamente o caminho que a dona usa todo dia.
+ *
+ * `maxTimeMS`: o teto de tempo (ver `DB_MAX_TIME_MS`). Fica aqui, e nao em
+ * cada chamada, porque "toda consulta tem teto" so e verdade se ninguem
+ * precisar lembrar — e todo schema do projeto nasce nesta funcao.
  */
 export function createSchema<T>(target: Type<T>): Schema<T> {
   const schema = SchemaFactory.createForClass(target);
+
+  schema.pre(TIMED_QUERIES, { document: false, query: true }, function () {
+    this.setOptions({ maxTimeMS: DB_MAX_TIME_MS });
+  });
 
   schema.pre(
     ['findOneAndUpdate', 'updateOne', 'updateMany'],
@@ -31,6 +82,11 @@ export function createSchema<T>(target: Type<T>): Schema<T> {
       this.setOptions({ runValidators: true });
     },
   );
+
+  // A agregacao nao e uma query e tem a sua propria forma de receber opcoes.
+  schema.pre('aggregate', function () {
+    this.option({ maxTimeMS: DB_MAX_TIME_MS });
+  });
 
   return schema;
 }

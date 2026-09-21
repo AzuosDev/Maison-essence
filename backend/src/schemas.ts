@@ -33,6 +33,7 @@ export { MAX_SLUG_LENGTH, slugify } from './database/slug.js';
 export { SingletonSchema } from './database/singleton.schema.js';
 
 // Acesso e usuarios.
+export * from './modules/audit/schemas/audit-entry.schema.js';
 export * from './modules/users/schemas/user.schema.js';
 export * from './modules/auth/schemas/refresh-token.schema.js';
 export * from './modules/auth/schemas/login-attempt.schema.js';

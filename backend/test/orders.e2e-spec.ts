@@ -9,6 +9,7 @@ import { PasswordService } from '../src/modules/auth/password.service.js';
 import { OrderStockService } from '../src/modules/orders/order-stock.service.js';
 import { ORDER_CODE_PATTERN } from '../src/modules/orders/schemas/order-code.js';
 import {
+  AuditEntry,
   DeliveryCity,
   FULFILLMENT_MODES,
   ORDER_STATUSES,
@@ -60,6 +61,7 @@ describe('pedidos (e2e)', () => {
   let orders: Model<Order>;
   let hits: Model<RateLimitHit>;
   let users: Model<User>;
+  let audit: Model<AuditEntry>;
   let seeded: Seeded;
   let token: string;
 
@@ -78,6 +80,7 @@ describe('pedidos (e2e)', () => {
     orders = app.get<Model<Order>>(getModelToken(Order.name));
     hits = app.get<Model<RateLimitHit>>(getModelToken(RateLimitHit.name));
     users = app.get<Model<User>>(getModelToken(User.name));
+    audit = app.get<Model<AuditEntry>>(getModelToken(AuditEntry.name));
 
     // O indice unico de `code` e o que faz a colisao de sorteio virar nova
     // tentativa. `autoIndex` so vale em desenvolvimento.
@@ -104,6 +107,7 @@ describe('pedidos (e2e)', () => {
       // Todos os testes chegam do mesmo IP: sem limpar, um gastaria a cota do
       // seguinte.
       hits.deleteMany({}),
+      audit.deleteMany({}),
     ]);
   });
 
@@ -581,6 +585,49 @@ describe('pedidos (e2e)', () => {
   describe('painel', () => {
     it('exige autenticacao', async () => {
       await request(server).get(ADMIN).expect(401);
+    });
+
+    it('a mudanca de status fica na trilha de auditoria', async () => {
+      const { body: created } = ok(await place(), 201);
+
+      await request(server)
+        .patch(`${ADMIN}/${created.orderId}/status`)
+        .set(as())
+        .send({ status: ORDER_STATUSES.CONFIRMED })
+        .expect(200);
+
+      const entry = await audit.findOne({ action: 'order.status_changed' }).exec();
+
+      expect(entry).not.toBeNull();
+      expect(entry?.toJSON()).toMatchObject({
+        actorEmail: 'dona@maisonessence.com',
+        targetKind: 'order',
+        targetId: created.orderId,
+        // O codigo, e nao o id: e por ele que a dona procura o pedido.
+        targetLabel: created.code,
+        changes: {
+          status: {
+            from: ORDER_STATUSES.PENDING_CONTACT,
+            to: ORDER_STATUSES.CONFIRMED,
+          },
+        },
+      });
+    });
+
+    it('a trilha do pedido nao carrega o telefone do cliente', async () => {
+      const phone = '(88) 97777-1234';
+
+      const { body: created } = ok(await place({ customer: { name: 'Joao', phone } }), 201);
+
+      await request(server)
+        .patch(`${ADMIN}/${created.orderId}/status`)
+        .set(as())
+        .send({ status: ORDER_STATUSES.CANCELLED })
+        .expect(200);
+
+      const entry = await audit.findOne({ action: 'order.status_changed' }).exec();
+
+      expect(JSON.stringify(entry?.toJSON())).not.toContain('88977771234');
     });
 
     it('lista do mais recente para o mais antigo, com o resumo', async () => {

@@ -9,6 +9,7 @@ import { PasswordService } from '../src/modules/auth/password.service.js';
 import { InstallmentService } from '../src/modules/payments/installment.service.js';
 import { PaymentsService } from '../src/modules/payments/payments.service.js';
 import {
+  AuditEntry,
   PIX_KEY_TYPES,
   PaymentSettings,
   RefreshToken,
@@ -29,6 +30,7 @@ describe('pagamento (e2e)', () => {
   let users: Model<User>;
   let refreshTokens: Model<RefreshToken>;
   let settings: Model<PaymentSettings>;
+  let audit: Model<AuditEntry>;
   let installments: InstallmentService;
   let payments: PaymentsService;
   let passwordHash: string;
@@ -44,6 +46,7 @@ describe('pagamento (e2e)', () => {
     users = app.get<Model<User>>(getModelToken(User.name));
     refreshTokens = app.get<Model<RefreshToken>>(getModelToken(RefreshToken.name));
     settings = app.get<Model<PaymentSettings>>(getModelToken(PaymentSettings.name));
+    audit = app.get<Model<AuditEntry>>(getModelToken(AuditEntry.name));
     installments = app.get(InstallmentService);
     payments = app.get(PaymentsService);
     passwordHash = await app.get(PasswordService).hash(PASSWORD);
@@ -60,6 +63,7 @@ describe('pagamento (e2e)', () => {
       users.deleteMany({}),
       refreshTokens.deleteMany({}),
       settings.deleteMany({}),
+      audit.deleteMany({}),
     ]);
   });
 
@@ -222,25 +226,36 @@ describe('pagamento (e2e)', () => {
 
     it('registra na auditoria quem mudou o que', async () => {
       const owner = await signedInOwner();
-      const logged = vi.spyOn(Logger.prototype, 'log');
 
       await patch(owner, { pixDiscountPercent: 5, acceptsCard: false }).expect(200);
 
-      const entry = logged.mock.calls
-        .map(([message]) => String(message))
-        .find((message) => message.includes('payment-settings.updated'));
+      const entry = await audit.findOne({ action: 'payment-settings.updated' }).exec();
 
-      logged.mockRestore();
-
-      expect(entry).toBeDefined();
-      expect(JSON.parse(entry as string)).toMatchObject({
+      expect(entry).not.toBeNull();
+      expect(entry?.toJSON()).toMatchObject({
         action: 'payment-settings.updated',
-        actor: { id: owner.id, email: 'dona@maisonessence.com', role: USER_ROLES.OWNER },
+        actorId: owner.id,
+        actorEmail: 'dona@maisonessence.com',
+        actorRole: USER_ROLES.OWNER,
         changes: {
           pixDiscountPercent: { from: 0, to: 5 },
           acceptsCard: { from: true, to: false },
         },
       });
+    });
+
+    it('a chave PIX nunca entra na trilha por inteiro', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, { pixKey: PIX_KEY, pixKeyType: PIX_KEY_TYPES.EMAIL }).expect(200);
+
+      const entry = await audit.findOne({ action: 'payment-settings.updated' }).exec();
+      const changes = entry?.changes as Record<string, { to: unknown }>;
+
+      // O suficiente para provar que a chave mudou, insuficiente para
+      // alguem copiar do log a conta que recebe o dinheiro da loja.
+      expect(changes['pixKey'].to).toBe(`****${PIX_KEY.slice(-4)}`);
+      expect(JSON.stringify(entry?.toJSON())).not.toContain(PIX_KEY);
     });
 
     it('nao polui a trilha com gravacao que nao mudou nada', async () => {

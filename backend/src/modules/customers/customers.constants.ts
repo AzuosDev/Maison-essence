@@ -27,10 +27,16 @@ export const CUSTOMER_REGISTER_RATE_LIMIT: RateLimitRule = {
   windowSeconds: 60 * 60,
 };
 
-/** Login: dez tentativas por quinze minutos por IP. */
+/**
+ * Login: cinco tentativas por quinze minutos por IP.
+ *
+ * O mesmo numero do login do painel, e de proposito: sao duas portas para o
+ * mesmo tipo de ataque, e um teto mais alto de um lado seria o lado por onde
+ * se tenta.
+ */
 export const CUSTOMER_LOGIN_RATE_LIMIT: RateLimitRule = {
   scope: 'customer-login',
-  limit: 10,
+  limit: 5,
   windowSeconds: 15 * 60,
 };
 

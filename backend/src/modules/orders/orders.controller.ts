@@ -4,7 +4,6 @@ import type { AuthenticatedCustomer } from '../customers/customer-auth.types.js'
 import { OptionalCustomer } from '../customers/decorators/current-customer.decorator.js';
 import { OptionalCustomerGuard } from '../customers/guards/optional-customer.guard.js';
 import { RateLimit } from '../rate-limit/rate-limit.decorator.js';
-import { RateLimitGuard } from '../rate-limit/rate-limit.guard.js';
 import { CreateOrderDto } from './dto/create-order.dto.js';
 import type { CreatedOrderView } from './order.view.js';
 import { ORDER_IP_RATE_LIMIT } from './orders.constants.js';
@@ -46,7 +45,7 @@ const ORDER_BODY = new ValidationPipe({
  * onde alguma coisa passa a existir.
  */
 @Public()
-@UseGuards(RateLimitGuard, OptionalCustomerGuard)
+@UseGuards(OptionalCustomerGuard)
 @RateLimit(ORDER_IP_RATE_LIMIT)
 @Controller('orders')
 export class OrdersController {

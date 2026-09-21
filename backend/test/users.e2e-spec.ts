@@ -1,4 +1,4 @@
-import { Body, Controller, INestApplication, Logger, Patch } from '@nestjs/common';
+import { Body, Controller, INestApplication, Patch } from '@nestjs/common';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import type { Model } from 'mongoose';
@@ -8,7 +8,13 @@ import { configureApp } from '../src/bootstrap.js';
 import { Roles } from '../src/common/decorators/roles.decorator.js';
 import { MANAGES_STORE } from '../src/common/roles.js';
 import { PasswordService } from '../src/modules/auth/password.service.js';
-import { RefreshToken, USER_ROLES, User, type UserRole } from '../src/schemas.js';
+import {
+  AuditEntry,
+  RefreshToken,
+  USER_ROLES,
+  User,
+  type UserRole,
+} from '../src/schemas.js';
 
 const API = '/api/v1';
 const PASSWORD = 'senha-longa-do-painel-2026';
@@ -33,6 +39,7 @@ describe('users (e2e)', () => {
   let server: ReturnType<INestApplication['getHttpServer']>;
   let users: Model<User>;
   let refreshTokens: Model<RefreshToken>;
+  let audit: Model<AuditEntry>;
   let passwordHash: string;
 
   beforeAll(async () => {
@@ -48,6 +55,7 @@ describe('users (e2e)', () => {
     server = app.getHttpServer();
     users = app.get<Model<User>>(getModelToken(User.name));
     refreshTokens = app.get<Model<RefreshToken>>(getModelToken(RefreshToken.name));
+    audit = app.get<Model<AuditEntry>>(getModelToken(AuditEntry.name));
     passwordHash = await app.get(PasswordService).hash(PASSWORD);
   });
 
@@ -56,7 +64,11 @@ describe('users (e2e)', () => {
   });
 
   afterEach(async () => {
-    await Promise.all([users.deleteMany({}), refreshTokens.deleteMany({})]);
+    await Promise.all([
+      users.deleteMany({}),
+      refreshTokens.deleteMany({}),
+      audit.deleteMany({}),
+    ]);
   });
 
   interface Session {
@@ -148,7 +160,7 @@ describe('users (e2e)', () => {
   describe('POST /users', () => {
     it('cria com senha temporaria e mustChangePassword', async () => {
       const root = await signedIn(USER_ROLES.SUPER_ADMIN, 'root@maisonessence.com');
-      const logged = vi.spyOn(Logger.prototype, 'log');
+
 
       const response = await request(server)
         .post(`${API}/users`)
@@ -176,20 +188,19 @@ describe('users (e2e)', () => {
 
       expect(session.accessToken).toBeTruthy();
 
-      // Auditoria: ator, alvo, acao e data, em uma linha JSON.
-      const audit = logged.mock.calls
-        .map(([message]) => String(message))
-        .find((message) => message.includes('user.created'));
+      // Auditoria: ator, alvo, acao e data, gravados no banco.
+      const entry = await audit.findOne({ action: 'user.created' }).exec();
 
-      logged.mockRestore();
-
-      expect(audit).toBeDefined();
-      expect(JSON.parse(audit as string)).toMatchObject({
+      expect(entry).not.toBeNull();
+      expect(entry?.toJSON()).toMatchObject({
         action: 'user.created',
-        actor: { id: root.id, email: 'root@maisonessence.com' },
-        target: { email: 'vendedora@maisonessence.com', role: USER_ROLES.STAFF },
+        actorId: root.id,
+        actorEmail: 'root@maisonessence.com',
+        targetKind: 'user',
+        targetLabel: 'vendedora@maisonessence.com',
+        details: { role: USER_ROLES.STAFF },
       });
-      expect(typeof JSON.parse(audit as string).at).toBe('string');
+      expect(entry?.createdAt).toBeInstanceOf(Date);
     });
 
     it('o OWNER recebe 403 ao tentar criar um SUPER_ADMIN', async () => {

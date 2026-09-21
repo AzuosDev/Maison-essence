@@ -1,96 +1,44 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import type { Model } from 'mongoose';
-import { createHash } from 'node:crypto';
+import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { ThrottlerStorage } from '@nestjs/throttler';
 import { TOO_MANY_REQUESTS_MESSAGE } from './rate-limit.constants.js';
 import type { RateLimitRule } from './rate-limit.decorator.js';
-import { RateLimitHit } from './schemas/rate-limit-hit.schema.js';
+import { rateLimitKey } from './rate-limit.rule.js';
 
-const DUPLICATE_KEY = 11000;
-
-/** A regra somada a quem esta chamando — o IP, na maioria das rotas. */
+/** A regra somada a quem esta chamando — o IP na rota, o telefone no pedido. */
 export interface RateLimitInput extends RateLimitRule {
   identity: string;
 }
 
 /**
- * Limite de chamadas por janela, compartilhado entre as rotas publicas.
+ * O mesmo contador do guard, para quem precisa limitar por algo que nao e o
+ * IP.
  *
- * Janela fixa, e nao deslizante: a primeira chamada abre a janela e ela vale
- * pelo tempo declarado. Uma janela fixa deixa passar ate o dobro do limite na
- * virada — trinta no fim de um minuto e trinta no comeco do seguinte —, e
- * isso e aceitavel aqui: o que se quer evitar e o robo que varre a cotacao em
- * laco, nao o cliente apressado que recalcula o carrinho algumas vezes.
- * Janela deslizante exigiria guardar o instante de cada chamada, e passar a
- * escrever um documento por requisicao numa rota de calculo puro seria trocar
- * o problema por outro.
+ * O caso que existe hoje e o pedido: o limite por IP fica no guard, mas o
+ * limite por telefone so pode ser conferido depois que o numero foi
+ * normalizado, ja dentro do servico. Sao os dois lados do mesmo flood — a
+ * mesma maquina insistindo e o mesmo cliente chegando de outra.
+ *
+ * Recebe o armazenamento pelo token do throttler, e nao pela classe: assim e
+ * literalmente o mesmo objeto que o guard usa, e nao ha como as duas contagens
+ * divergirem um dia.
  */
 @Injectable()
 export class RateLimitService {
-  constructor(@InjectModel(RateLimitHit.name) private readonly hits: Model<RateLimitHit>) {}
+  constructor(@Inject(ThrottlerStorage) private readonly storage: ThrottlerStorage) {}
 
   /** Conta mais uma chamada e lanca 429 quando ela passa do teto. */
   async consume(input: RateLimitInput): Promise<void> {
-    const key = buildKey(input.scope, input.identity);
-    const now = new Date();
-    // Incremento e leitura na mesma operacao: duas invocacoes simultaneas da
-    // mesma funcao serverless nao podem ler o mesmo contador e grava-lo duas
-    // vezes com o mesmo valor.
-    const open = await this.hits
-      .findOneAndUpdate(
-        { key, expiresAt: { $gt: now } },
-        { $inc: { count: 1 } },
-        { returnDocument: 'after' },
-      )
-      .exec();
+    const windowMs = input.windowSeconds * 1000;
+    const record = await this.storage.increment(
+      rateLimitKey(input.scope, input.identity),
+      windowMs,
+      input.limit,
+      windowMs,
+      input.scope,
+    );
 
-    if (open === null) {
-      await this.openWindow(key, now, input.windowSeconds);
-
-      return;
-    }
-
-    if (open.count > input.limit) {
+    if (record.isBlocked) {
       throw new HttpException(TOO_MANY_REQUESTS_MESSAGE, HttpStatus.TOO_MANY_REQUESTS);
     }
   }
-
-  /**
-   * Abre a janela desta chave, reaproveitando o documento vencido.
-   *
-   * O `upsert` cobre tanto a primeira chamada quanto o contador que o TTL
-   * ainda nao varreu — nos dois casos a janela nasce em 1, e nao somada a de
-   * antes. Duas invocacoes que chegam juntas a colecao vazia podem gravar 1 as
-   * duas e perder uma unidade da contagem; e o unico desvio possivel e custa
-   * uma chamada a mais em trinta, o que nao muda o que o limite protege.
-   */
-  private async openWindow(key: string, now: Date, windowSeconds: number): Promise<void> {
-    const expiresAt = new Date(now.getTime() + windowSeconds * 1000);
-
-    try {
-      await this.hits
-        .updateOne({ key }, { $set: { count: 1, expiresAt } }, { upsert: true })
-        .exec();
-    } catch (error: unknown) {
-      if (!isDuplicateKey(error)) {
-        throw error;
-      }
-
-      // A outra invocacao venceu a corrida do `upsert`: a janela dela ja vale,
-      // e esta chamada so precisa ser contada dentro dela.
-      await this.hits.updateOne({ key }, { $inc: { count: 1 } }).exec();
-    }
-  }
-}
-
-function buildKey(scope: string, identity: string): string {
-  return createHash('sha256').update(`${scope}|${identity}`).digest('hex');
-}
-
-function isDuplicateKey(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    (error as { code?: unknown }).code === DUPLICATE_KEY
-  );
 }

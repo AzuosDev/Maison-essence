@@ -20,9 +20,20 @@ export const envSchema = z.object({
     .enum(['development', 'test', 'production'])
     .default('development'),
   PORT: z.coerce.number().int().positive().max(65535).default(3333),
+  // Origens do CORS, uma a uma. Curinga e recusado no boot de proposito: com
+  // `credentials: true` ele nem funcionaria no navegador, e a tentacao de
+  // liberar tudo "so para destravar o deploy" acaba virando permanente.
   CORS_ORIGINS: z
     .string()
-    .min(1, 'informe ao menos uma origem, separada por virgula'),
+    .min(1, 'informe ao menos uma origem, separada por virgula')
+    .refine(
+      (value) => !parseCorsOrigins(value).includes('*'),
+      'curinga nao e aceito: liste as origens uma a uma',
+    )
+    .refine(
+      (value) => parseCorsOrigins(value).every(isOrigin),
+      'cada origem precisa ser um endereco http(s) sem caminho, como https://loja.com.br',
+    ),
   APP_VERSION: z.string().min(1).default(process.env.npm_package_version ?? '0.0.0'),
   MONGODB_URI: z
     .string()
@@ -63,6 +74,11 @@ export const envSchema = z.object({
     z.string().min(PASSWORD_MIN_LENGTH, `deve ter ao menos ${PASSWORD_MIN_LENGTH} caracteres`),
   ),
   BOOTSTRAP_SUPERADMIN_NAME: z.string().min(1).max(120).default('Super Admin'),
+  // Usuario e senha da documentacao em producao. As duas juntas ou nenhuma:
+  // sem elas, `/api/v1/docs` nao sobe em producao (ver `swagger.ts`). Fora de
+  // producao a documentacao e aberta, porque ali ela e ferramenta de trabalho.
+  DOCS_USER: optional(z.string().min(1)),
+  DOCS_PASSWORD: optional(z.string().min(12, 'deve ter ao menos 12 caracteres')),
   // Libera POST /auth/bootstrap. Sem ela a rota responde 404, que e o estado
   // em que o projeto deve ficar depois do primeiro acesso.
   BOOTSTRAP_SECRET: optional(z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT)),
@@ -140,4 +156,26 @@ export function parseCorsOrigins(value: string): string[] {
     .split(',')
     .map((origin) => origin.trim())
     .filter((origin) => origin.length > 0);
+}
+
+/**
+ * Origem no sentido do navegador: esquema, host e porta, sem caminho.
+ *
+ * `https://loja.com.br/` com a barra no fim nao e a mesma coisa que o
+ * navegador manda no cabecalho `Origin`, e a comparacao exata falharia em
+ * producao com o erro mais confuso possivel — tudo funcionando, menos o
+ * navegador. Reprovar no boot troca isso por uma mensagem.
+ */
+function isOrigin(value: string): boolean {
+  try {
+    const url = new URL(value);
+
+    return (
+      (url.protocol === 'http:' || url.protocol === 'https:') &&
+      url.pathname === '/' &&
+      !value.endsWith('/')
+    );
+  } catch {
+    return false;
+  }
 }

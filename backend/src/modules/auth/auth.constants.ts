@@ -1,3 +1,5 @@
+import type { RateLimitRule } from '../rate-limit/rate-limit.decorator.js';
+
 /**
  * Tempos e limites do modulo de autenticacao.
  *
@@ -69,3 +71,19 @@ export const ADMIN_ONLY_MESSAGE = 'Esta area e do painel administrativo.';
 /** Bloqueio das rotas administrativas enquanto a senha temporaria nao troca. */
 export const PASSWORD_CHANGE_REQUIRED_MESSAGE =
   'Troque a senha temporaria antes de usar o painel.';
+
+/**
+ * Limite do login no guard global: as mesmas cinco tentativas por quinze
+ * minutos, contadas por IP.
+ *
+ * Nao substitui o `LoginRateLimitService`, que conta so as falhas e por IP
+ * somado ao e-mail. Os dois respondem a perguntas diferentes: aquele protege
+ * uma conta de ser adivinhada de varios lugares, este protege a rota de virar
+ * um laco — inclusive de quem acerta a senha e fica renovando sessao. Quem
+ * estourar qualquer um dos dois recebe 429.
+ */
+export const LOGIN_RATE_LIMIT: RateLimitRule = {
+  scope: 'auth-login',
+  limit: LOGIN_MAX_ATTEMPTS,
+  windowSeconds: LOGIN_WINDOW_SECONDS,
+};

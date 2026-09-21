@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Query } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator.js';
+import type { AuthenticatedUser } from '../auth/auth.types.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import type { Paginated } from '../../common/pagination.js';
 import { HANDLES_ORDERS } from '../../common/roles.js';
 import { ListOrdersDto } from './dto/list-orders.dto.js';
@@ -38,10 +40,11 @@ export class AdminOrdersController {
   /** Mover para `CANCELLED` devolve o estoque das variantes, uma vez so. */
   @Patch(':id/status')
   setStatus(
+    @CurrentUser() actor: AuthenticatedUser,
     @Param('id') id: string,
     @Body() dto: UpdateOrderStatusDto,
   ): Promise<OrderView> {
-    return this.orders.setStatus(id, dto);
+    return this.orders.setStatus(actor, id, dto);
   }
 
   @Patch(':id/notes')

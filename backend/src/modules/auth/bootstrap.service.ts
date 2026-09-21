@@ -3,8 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import { USER_ROLES } from '../../common/enums/user-role.js';
-import { USER_AUDIT_ACTIONS, UserAuditLog } from '../../common/user-audit.log.js';
-import type { AuditParty } from '../../common/user-audit.log.js';
+import { AUDIT_ACTIONS, AUDIT_TARGETS, SYSTEM_ACTOR_ID } from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
+import type { AuditTarget } from '../audit/audit.types.js';
 import type { Env } from '../../config/env.schema.js';
 import { User } from '../users/schemas/user.schema.js';
 import type { UserDocument } from '../users/schemas/user.schema.js';
@@ -80,7 +81,7 @@ export class BootstrapService {
     @InjectModel(User.name) private readonly users: Model<User>,
     private readonly passwords: PasswordService,
     private readonly config: ConfigService<Env, true>,
-    private readonly audit: UserAuditLog,
+    private readonly audit: AuditService,
   ) {}
 
   /** `true` quando `BOOTSTRAP_SECRET` esta no ambiente. */
@@ -112,10 +113,10 @@ export class BootstrapService {
 
     const party = partyOf(created);
 
-    this.audit.record({
-      action: USER_AUDIT_ACTIONS.CREATED,
+    await this.audit.record({
+      action: AUDIT_ACTIONS.USER_CREATED,
       // O ator e o proprio processo: nao havia usuario para agir.
-      actor: { id: 'bootstrap', email: options.origin, role: USER_ROLES.SUPER_ADMIN },
+      actor: { id: SYSTEM_ACTOR_ID, email: options.origin, role: USER_ROLES.SUPER_ADMIN },
       target: party,
       details: { role: created.role, origin: options.origin },
     });
@@ -180,8 +181,8 @@ export class BootstrapService {
   }
 }
 
-function partyOf(user: UserDocument): AuditParty {
-  return { id: user._id.toHexString(), email: user.email, role: user.role };
+function partyOf(user: UserDocument): AuditTarget {
+  return { kind: AUDIT_TARGETS.USER, id: user._id.toHexString(), label: user.email };
 }
 
 function isDuplicateKey(error: unknown): boolean {

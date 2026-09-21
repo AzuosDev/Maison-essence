@@ -7,6 +7,7 @@ import { AppModule } from '../src/app.module.js';
 import { configureApp } from '../src/bootstrap.js';
 import { PasswordService } from '../src/modules/auth/password.service.js';
 import {
+  AuditEntry,
   Category,
   FULFILLMENT_MODES,
   Order,
@@ -27,6 +28,7 @@ describe('products (e2e)', () => {
   let products: Model<Product>;
   let categories: Model<Category>;
   let orders: Model<Order>;
+  let audit: Model<AuditEntry>;
   let passwordHash: string;
   let owner: { Authorization: string };
 
@@ -42,6 +44,7 @@ describe('products (e2e)', () => {
     products = app.get<Model<Product>>(getModelToken(Product.name));
     categories = app.get<Model<Category>>(getModelToken(Category.name));
     orders = app.get<Model<Order>>(getModelToken(Order.name));
+    audit = app.get<Model<AuditEntry>>(getModelToken(AuditEntry.name));
     passwordHash = await app.get(PasswordService).hash(PASSWORD);
 
     // `autoIndex` so vale em desenvolvimento (ver `database.module`), e a
@@ -61,6 +64,7 @@ describe('products (e2e)', () => {
       products.deleteMany({}),
       categories.deleteMany({}),
       orders.deleteMany({}),
+      audit.deleteMany({}),
     ]);
   });
 
@@ -248,6 +252,38 @@ describe('products (e2e)', () => {
 
       expect(created.inStock).toBe(true);
       expect(created.variants[0].isAvailable).toBe(true);
+    });
+  });
+
+  describe('trilha de preco', () => {
+    it('registra quem mudou o preco, de quanto para quanto', async () => {
+      const created = await create({
+        name: 'Asad',
+        variants: [{ label: '100 ml', sku: 'ASAD-100', priceCents: 24_990 }],
+      });
+
+      await patch(created.id, {
+        variants: [{ id: created.variants[0].id, priceCents: 19_990 }],
+      }).expect(200);
+
+      const entry = await audit.findOne({ action: 'product.price_changed' }).exec();
+
+      expect(entry).not.toBeNull();
+      expect(entry?.toJSON()).toMatchObject({
+        actorEmail: 'dona@maisonessence.com',
+        targetKind: 'product',
+        targetId: created.id,
+        targetLabel: 'Asad',
+        changes: { 'ASAD-100.priceCents': { from: 24_990, to: 19_990 } },
+      });
+    });
+
+    it('editar o produto sem mexer no preco nao vira linha na trilha', async () => {
+      const created = await create({ name: 'Asad' });
+
+      await patch(created.id, { description: 'Amadeirado' }).expect(200);
+
+      expect(await audit.countDocuments({ action: 'product.price_changed' })).toBe(0);
     });
   });
 

@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SettingsAuditLog } from '../../common/settings-audit.log.js';
 import { StoreSettings, StoreSettingsSchema } from '../../schemas.js';
 import { PublicPagesController } from './public-pages.controller.js';
 import { PublicSettingsController } from './public-settings.controller.js';
@@ -19,7 +18,7 @@ import { SettingsService } from './settings.service.js';
     MongooseModule.forFeature([{ name: StoreSettings.name, schema: StoreSettingsSchema }]),
   ],
   controllers: [SettingsController, PublicSettingsController, PublicPagesController],
-  providers: [SettingsService, SettingsAuditLog],
+  providers: [SettingsService],
   exports: [SettingsService, MongooseModule],
 })
 export class SettingsModule {}

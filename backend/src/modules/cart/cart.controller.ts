@@ -4,12 +4,10 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseGuards,
   ValidationPipe,
 } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorator.js';
 import { RateLimit } from '../rate-limit/rate-limit.decorator.js';
-import { RateLimitGuard } from '../rate-limit/rate-limit.guard.js';
 import { CartQuoteService } from './cart-quote.service.js';
 import { QUOTE_RATE_LIMIT } from './cart.constants.js';
 import { QuoteCartDto } from './dto/quote-cart.dto.js';
@@ -52,7 +50,6 @@ const QUOTE_BODY = new ValidationPipe({
  * qualquer forma — o que falta e a tentacao de adicionar o cabecalho depois.
  */
 @Public()
-@UseGuards(RateLimitGuard)
 @RateLimit(QUOTE_RATE_LIMIT)
 @Controller('cart')
 export class CartController {

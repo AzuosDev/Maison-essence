@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppConfigModule } from '../config/config.module.js';
 import { DatabaseModule } from '../database/database.module.js';
+import { AuditModule } from '../modules/audit/audit.module.js';
 import { AuthModule } from '../modules/auth/auth.module.js';
 import {
   Category,
@@ -45,6 +46,10 @@ import { DemoSeedService } from './demo-seed.service.js';
   imports: [
     AppConfigModule,
     DatabaseModule,
+    // O @Global() do modulo de auditoria so vale dentro do contexto que o
+    // importa, e este contexto nao e o AppModule: sem esta linha o
+    // BootstrapService nao resolve o AuditService e o seed morre no boot.
+    AuditModule,
     AuthModule,
     MongooseModule.forFeature([
       { name: Category.name, schema: CategorySchema },

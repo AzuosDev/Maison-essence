@@ -1,7 +1,8 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { SETTINGS_AUDIT_ACTIONS, SettingsAuditLog } from '../../common/settings-audit.log.js';
-import type { AuditParty } from '../../common/user-audit.log.js';
+import { AUDIT_ACTIONS } from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
+import type { AuditActor } from '../audit/audit.types.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { diffOf } from '../settings/settings.diff.js';
 import type { AuditSnapshot } from '../settings/settings.diff.js';
@@ -12,7 +13,7 @@ import type {
   PaymentSettingsView,
   PublicPaymentSettingsView,
 } from './payment-settings.view.js';
-import { PIX_KEY_MESSAGES, normalizePixKey } from './pix-key.js';
+import { PIX_KEY_MESSAGES, maskPixKey, normalizePixKey } from './pix-key.js';
 import { pixQuoteOf } from './pix-discount.js';
 import type { PixQuote } from './pix-discount.js';
 import { PaymentSettings } from './schemas/payment-settings.schema.js';
@@ -44,7 +45,7 @@ const SCALARS = [
 export class PaymentsService {
   constructor(
     @InjectModel(PaymentSettings.name) private readonly settings: PaymentSettingsModel,
-    private readonly audit: SettingsAuditLog,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -99,8 +100,8 @@ export class PaymentsService {
     const changes = diffOf(before, auditSnapshot(settings));
 
     if (Object.keys(changes).length > 0) {
-      this.audit.record({
-        action: SETTINGS_AUDIT_ACTIONS.PAYMENT_UPDATED,
+      await this.audit.record({
+        action: AUDIT_ACTIONS.PAYMENT_SETTINGS_UPDATED,
         actor: toParty(actor),
         changes,
       });
@@ -158,7 +159,9 @@ export class PaymentsService {
 function auditSnapshot(settings: PaymentSettingsDocument): AuditSnapshot {
   return {
     acceptsPix: settings.acceptsPix,
-    pixKey: settings.pixKey,
+    // Mascarada: a trilha precisa mostrar que a chave mudou, e a chave
+    // inteira num log e a conta para onde o dinheiro da loja vai.
+    pixKey: maskPixKey(settings.pixKey),
     pixKeyType: settings.pixKeyType,
     pixDiscountPercent: settings.pixDiscountPercent,
     acceptsCard: settings.acceptsCard,
@@ -169,6 +172,6 @@ function auditSnapshot(settings: PaymentSettingsDocument): AuditSnapshot {
   };
 }
 
-function toParty(actor: AuthenticatedUser): AuditParty {
+function toParty(actor: AuthenticatedUser): AuditActor {
   return { id: actor.id, email: actor.email, role: actor.role };
 }

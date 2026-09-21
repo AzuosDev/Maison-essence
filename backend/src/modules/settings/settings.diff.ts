@@ -1,4 +1,4 @@
-import type { SettingsDiff } from '../../common/settings-audit.log.js';
+import type { AuditChanges } from '../audit/audit.types.js';
 
 /**
  * O diff que vai para a trilha de auditoria.
@@ -28,15 +28,15 @@ export type AuditSnapshot = Record<string, unknown>;
  */
 export const MAX_AUDIT_TEXT_LENGTH = 120;
 
-export function diffOf(before: AuditSnapshot, after: AuditSnapshot): SettingsDiff {
-  const changes: SettingsDiff = {};
+export function diffOf(before: AuditSnapshot, after: AuditSnapshot): AuditChanges {
+  const changes: AuditChanges = {};
 
   walk('', before, after, changes);
 
   return changes;
 }
 
-function walk(path: string, before: unknown, after: unknown, changes: SettingsDiff): void {
+function walk(path: string, before: unknown, after: unknown, changes: AuditChanges): void {
   if (isPlainObject(before) && isPlainObject(after)) {
     for (const key of new Set([...Object.keys(before), ...Object.keys(after)])) {
       walk(path === '' ? key : `${path}.${key}`, before[key], after[key], changes);

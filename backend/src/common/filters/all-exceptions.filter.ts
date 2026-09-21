@@ -9,23 +9,9 @@ import {
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
 import { Error as MongooseError } from 'mongoose';
-import { STATUS_CODES } from 'node:http';
 import type { Env } from '../../config/env.schema.js';
-
-export interface ErrorResponseBody {
-  statusCode: number;
-  message: string | string[];
-  error: string;
-  /**
-   * Dados que a recusa precisa carregar alem do texto. Vem de quem lancou a
-   * excecao, e so quando ha o que dizer: o 409 de excluir categoria manda
-   * quantos produtos estao vinculados, e o painel monta o aviso com o numero
-   * sem ter que extrai-lo da frase.
-   */
-  details?: Record<string, unknown>;
-  timestamp: string;
-  path: string;
-}
+import { errorResponseBody, reasonPhrase } from '../error-response.js';
+import type { ErrorResponseBody } from '../error-response.js';
 
 type NormalizedError = Pick<
   ErrorResponseBody,
@@ -55,11 +41,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       );
     }
 
-    const body: ErrorResponseBody = {
-      ...normalized,
-      timestamp: new Date().toISOString(),
-      path,
-    };
+    const body = errorResponseBody(normalized, path);
 
     response.status(body.statusCode).json(body);
   }
@@ -132,8 +114,4 @@ function isMessage(value: unknown): value is string | string[] {
     typeof value === 'string' ||
     (Array.isArray(value) && value.every((item) => typeof item === 'string'))
   );
-}
-
-function reasonPhrase(statusCode: number): string {
-  return STATUS_CODES[statusCode] ?? 'Error';
 }

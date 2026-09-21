@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
-import { SETTINGS_AUDIT_ACTIONS, SettingsAuditLog } from '../../common/settings-audit.log.js';
-import type { AuditParty } from '../../common/user-audit.log.js';
+import { AUDIT_ACTIONS } from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
+import type { AuditActor } from '../audit/audit.types.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { hasValidWindow, unknownBannerIds } from './banners.js';
 import type { BannerDto } from './dto/banner.dto.js';
@@ -51,7 +52,7 @@ export interface Versioned<T> {
 export class SettingsService {
   constructor(
     @InjectModel(StoreSettings.name) private readonly settings: StoreSettingsModel,
-    private readonly audit: SettingsAuditLog,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -138,8 +139,8 @@ export class SettingsService {
     // auditoria: a trilha existe para mostrar alteracao, e ruido nela custa a
     // confianca de quem a le.
     if (Object.keys(changes).length > 0) {
-      this.audit.record({
-        action: SETTINGS_AUDIT_ACTIONS.UPDATED,
+      await this.audit.record({
+        action: AUDIT_ACTIONS.SETTINGS_UPDATED,
         actor: toParty(actor),
         changes,
       });
@@ -305,6 +306,6 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
   };
 }
 
-function toParty(actor: AuthenticatedUser): AuditParty {
+function toParty(actor: AuthenticatedUser): AuditActor {
   return { id: actor.id, email: actor.email, role: actor.role };
 }

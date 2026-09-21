@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PassportModule } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
-import { UserAuditLog } from '../../common/user-audit.log.js';
 import {
   Customer,
   CustomerSchema,
@@ -56,7 +55,6 @@ import { TokenService } from './token.service.js';
     RefreshTokenService,
     LoginRateLimitService,
     JwtStrategy,
-    UserAuditLog,
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: PendingPasswordGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
@@ -70,7 +68,6 @@ import { TokenService } from './token.service.js';
     PasswordService,
     TokenService,
     RefreshTokenService,
-    UserAuditLog,
     MongooseModule,
   ],
 })

@@ -18,7 +18,9 @@ import type { Request, Response } from 'express';
 import { resolveClientIp } from '../../common/client-ip.js';
 import { Public } from '../../common/decorators/public.decorator.js';
 import type { Env } from '../../config/env.schema.js';
+import { RateLimit } from '../rate-limit/rate-limit.decorator.js';
 import type { UserView } from '../users/user.view.js';
+import { LOGIN_RATE_LIMIT } from './auth.constants.js';
 import { setSessionCookies, clearSessionCookies, readRefreshToken } from './auth.cookies.js';
 import { AuthService } from './auth.service.js';
 import type { RequestContext } from './auth.service.js';
@@ -54,6 +56,7 @@ export class AuthController {
   ) {}
 
   @Public()
+  @RateLimit(LOGIN_RATE_LIMIT)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(

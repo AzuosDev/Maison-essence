@@ -7,7 +7,12 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import { Types } from 'mongoose';
-import { USER_AUDIT_ACTIONS, UserAuditLog } from '../../common/user-audit.log.js';
+import {
+  AUDIT_ACTIONS,
+  AUDIT_TARGETS,
+  UNKNOWN_ACTOR_ID,
+} from '../audit/audit.constants.js';
+import { AuditService } from '../audit/audit.service.js';
 import { User } from '../users/schemas/user.schema.js';
 import type { UserDocument } from '../users/schemas/user.schema.js';
 import {
@@ -42,7 +47,7 @@ export class AuthService {
     private readonly tokens: TokenService,
     private readonly sessions: RefreshTokenService,
     private readonly rateLimit: LoginRateLimitService,
-    private readonly audit: UserAuditLog,
+    private readonly audit: AuditService,
   ) {}
 
   /**
@@ -65,6 +70,16 @@ export class AuthService {
 
       if (!user || !passwordMatches || !user.isActive) {
         await this.rateLimit.registerFailure(context.ip, email);
+        // A trilha guarda o motivo, que a resposta nunca conta: e a
+        // diferenca entre "alguem esta chutando e-mails" e "alguem esta
+        // tentando a conta da dona". Escrever aqui nao abre caminho para
+        // encher a colecao: o limite da rota recusa a sexta tentativa
+        // antes de chegar neste metodo.
+        await this.audit.record({
+          action: AUDIT_ACTIONS.LOGIN_FAILED,
+          actor: { id: UNKNOWN_ACTOR_ID, email },
+          details: { reason: failureReason(user, passwordMatches) },
+        });
 
         throw new UnauthorizedException(INVALID_CREDENTIALS_MESSAGE);
       }
@@ -79,6 +94,12 @@ export class AuthService {
       user.lastLoginAt = lastLoginAt;
 
       this.logger.log(`Login de ${user.email} (${user.role})`);
+
+      await this.audit.record({
+        action: AUDIT_ACTIONS.LOGIN_SUCCEEDED,
+        // Sem alvo: no login, quem age e sobre quem se age sao o mesmo.
+        actor: { id: user._id.toHexString(), email: user.email, role: user.role },
+      });
 
       return this.issueSession(user, context.userAgent);
     });
@@ -178,10 +199,10 @@ export class AuthService {
 
     await this.sessions.revokeRefreshTokens(adminOwner(userId));
 
-    this.audit.record({
-      action: USER_AUDIT_ACTIONS.PASSWORD_CHANGED,
+    await this.audit.record({
+      action: AUDIT_ACTIONS.USER_PASSWORD_CHANGED,
       actor: { id: actor.id, email: actor.email, role: actor.role },
-      target: { id: actor.id, email: updated.email, role: updated.role },
+      target: { kind: AUDIT_TARGETS.USER, id: actor.id, label: updated.email },
     });
 
     return this.issueSession(updated, context.userAgent);
@@ -213,4 +234,24 @@ export class AuthService {
       user: toAuthenticatedUser(user),
     };
   }
+}
+
+/**
+ * Por que o login foi recusado — para a trilha, nunca para a resposta.
+ *
+ * Quem tenta entrar recebe sempre a mesma frase e sempre no mesmo tempo (ver
+ * `login`). Quem investiga precisa da diferenca: e-mail que nao existe conta
+ * uma historia, senha errada no e-mail da dona conta outra, e conta
+ * desativada tentando entrar conta a terceira.
+ */
+function failureReason(user: UserDocument | null, passwordMatches: boolean): string {
+  if (!user) {
+    return 'email_desconhecido';
+  }
+
+  if (!passwordMatches) {
+    return 'senha_incorreta';
+  }
+
+  return 'conta_desativada';
 }

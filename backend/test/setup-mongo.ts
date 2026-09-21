@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
 // Precisa rodar no corpo do modulo, e nao dentro de um beforeAll: o vitest
@@ -32,6 +33,23 @@ process.env.BOOTSTRAP_SUPERADMIN_EMAIL ??= 'root@maisonessence.com';
 process.env.BOOTSTRAP_SUPERADMIN_PASSWORD ??= 'primeiro-acesso-2026';
 process.env.BOOTSTRAP_SECRET ??= 'test-bootstrap-secret-0123456789-abcd';
 
+/**
+ * Conexao propria do teste, so para limpar o que o teste nao criou.
+ *
+ * O contador de rate limit e estado compartilhado entre requisicoes, como uma
+ * colecao qualquer — e agora toda rota tem limite, inclusive as do painel.
+ * Sem zerar entre os testes, um arquivo com muitas chamadas comecaria a
+ * receber 429 no meio, e o teste que quebraria seria sempre outro.
+ */
+const maintenance = await mongoose
+  .createConnection(mongo.getUri(), { dbName: 'maison-essence-test' })
+  .asPromise();
+
+afterEach(async () => {
+  await maintenance.collection('rate_limit_hits').deleteMany({});
+});
+
 afterAll(async () => {
+  await maintenance.close();
   await mongo.stop();
 });

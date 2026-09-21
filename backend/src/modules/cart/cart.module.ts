@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { DeliveryModule } from '../delivery/delivery.module.js';
 import { PaymentsModule } from '../payments/payments.module.js';
 import { ProductsModule } from '../products/products.module.js';
-import { RateLimitModule } from '../rate-limit/rate-limit.module.js';
 import { CartQuoteService } from './cart-quote.service.js';
 import { CartController } from './cart.controller.js';
 
@@ -20,7 +19,7 @@ import { CartController } from './cart.controller.js';
  * garante que a segunda nunca discorde da primeira sem motivo.
  */
 @Module({
-  imports: [ProductsModule, DeliveryModule, PaymentsModule, RateLimitModule],
+  imports: [ProductsModule, DeliveryModule, PaymentsModule],
   controllers: [CartController],
   providers: [CartQuoteService],
   exports: [CartQuoteService],

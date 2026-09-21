@@ -9,14 +9,12 @@ import {
   Req,
   Res,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
 import { Public } from '../../common/decorators/public.decorator.js';
 import type { Env } from '../../config/env.schema.js';
 import { RateLimit } from '../rate-limit/rate-limit.decorator.js';
-import { RateLimitGuard } from '../rate-limit/rate-limit.guard.js';
 import { CustomerAuthService } from './customer-auth.service.js';
 import type { CustomerRequestContext } from './customer-auth.service.js';
 import type { AuthenticatedCustomer } from './customer-auth.types.js';
@@ -56,7 +54,6 @@ export class CustomersController {
   ) {}
 
   @Public()
-  @UseGuards(RateLimitGuard)
   @RateLimit(CUSTOMER_REGISTER_RATE_LIMIT)
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
@@ -73,7 +70,6 @@ export class CustomersController {
   }
 
   @Public()
-  @UseGuards(RateLimitGuard)
   @RateLimit(CUSTOMER_LOGIN_RATE_LIMIT)
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -94,7 +90,6 @@ export class CustomersController {
    * motivo da chamada: quem autentica aqui e o refresh token.
    */
   @Public()
-  @UseGuards(RateLimitGuard)
   @RateLimit(CUSTOMER_REFRESH_RATE_LIMIT)
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
