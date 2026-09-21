@@ -8,7 +8,7 @@ dependencias e o proprio deploy.
 ```
 maison-essence/
 ├── backend/    API NestJS (MongoDB, funcao serverless na Vercel)
-├── frontend/   loja em React (ainda nao criada)
+├── frontend/   loja em React (Vite, site estatico)
 ├── docs/       plano de prompts e material de apoio
 ├── .gitignore
 └── README.md
@@ -30,8 +30,17 @@ Os demais comandos do backend — build, testes, lint e os seeds que criam o
 primeiro super-admin e a loja de demonstracao — estao em
 [backend/README.md](backend/README.md).
 
-O frontend entra em `frontend/` quando comecar, com o proprio `package.json` e
-o proprio `npm install`.
+A loja roda do mesmo jeito, na porta 5173:
+
+```bash
+cd frontend
+cp .env.example .env    # preencha VITE_API_URL e VITE_CLOUDINARY_CLOUD_NAME
+npm install
+npm run dev             # http://localhost:5173
+```
+
+A estrutura, as variaveis de ambiente e as decisoes que valem para a loja
+inteira estao em [frontend/README.md](frontend/README.md).
 
 ## Deploy
 

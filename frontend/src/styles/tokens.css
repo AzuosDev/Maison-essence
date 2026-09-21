@@ -1,0 +1,116 @@
+/*
+ * Os tokens da Maison Essence.
+ *
+ * Esta e a unica definicao de cor, fonte, espaco, raio e sombra da loja.
+ * Componente nenhum escreve `#0E0E0E` ou `24px` direto: escreve
+ * `var(--ink)` e `var(--space-24)`. A regra nao e estetica — e o que permite
+ * ajustar o creme do fundo em um lugar so, em vez de cacar o hexadecimal em
+ * quarenta arquivos de CSS Module.
+ *
+ * Os valores vem do design system extraido do mockup e nao devem ser
+ * reinventados por tela nenhuma.
+ */
+
+:root {
+  /* ---- Cor ------------------------------------------------------------ */
+
+  --ink: #0e0e0e;
+  --ink-soft: #3a3a3a;
+  --muted: #8a8578;
+  --cream: #faf7f2;
+  --sand: #f1e9dd;
+  --surface: #ffffff;
+  --gold: #c0a062;
+  --gold-deep: #9c7c3c;
+  --line: #e3dacd;
+  --success: #2e7d5b;
+  --danger: #b3261e;
+
+  /* O verde oficial do WhatsApp, no botao flutuante. Nao e token de marca:
+     e a cor do canal, e muda se o canal mudar. */
+  --whatsapp: #25d366;
+
+  /* Painel administrativo. Fundo proprio, frio, para que o operador saiba
+     pelo canto do olho que nao esta na loja. */
+  --admin-bg: #f6f5fb;
+  --admin-sidebar: var(--ink);
+  --admin-item-active: rgb(192 160 98 / 0.14);
+
+  /* ---- Tipografia ----------------------------------------------------- */
+
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Jost', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* Escala 48/36/28/22/18/16/14/12. */
+  --text-48: 3rem;
+  --text-36: 2.25rem;
+  --text-28: 1.75rem;
+  --text-22: 1.375rem;
+  --text-18: 1.125rem;
+  --text-16: 1rem;
+  --text-14: 0.875rem;
+  --text-12: 0.75rem;
+
+  --leading-tight: 1.15;
+  --leading-body: 1.6;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  /* O logotipo e os botoes em caixa alta. Dois valores, nao um: o logo
+     respira muito mais que o botao. */
+  --tracking-logo: 0.28em;
+  --tracking-button: 0.08em;
+
+  /* ---- Espaco --------------------------------------------------------- */
+
+  --space-4: 0.25rem;
+  --space-8: 0.5rem;
+  --space-12: 0.75rem;
+  --space-16: 1rem;
+  --space-24: 1.5rem;
+  --space-32: 2rem;
+  --space-48: 3rem;
+  --space-64: 4rem;
+  --space-96: 6rem;
+
+  /* ---- Forma ---------------------------------------------------------- */
+
+  --radius-chip: 4px;
+  --radius-card: 12px;
+  --radius-modal: 16px;
+  --radius-pill: 999px;
+
+  --border: 1px solid var(--line);
+
+  /* Uma sombra so, e discreta. Sombra colorida nao existe neste projeto. */
+  --shadow: 0 1px 2px rgb(14 14 14 / 0.04), 0 8px 24px rgb(14 14 14 / 0.06);
+
+  /* ---- Layout --------------------------------------------------------- */
+
+  --container-max: 1280px;
+  --gutter: var(--space-16);
+
+  --header-height: 4.5rem;
+
+  /* ---- Movimento ------------------------------------------------------ */
+
+  --transition: 180ms ease-out;
+
+  /* ---- Camadas --------------------------------------------------------
+     Em um lugar so porque z-index disputado entre arquivos sempre termina
+     em `9999`. */
+
+  --z-header: 100;
+  --z-drawer: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+  --z-whatsapp: 90;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --gutter: var(--space-24);
+  }
+}

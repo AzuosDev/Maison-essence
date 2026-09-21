@@ -1,0 +1,87 @@
+/*
+ * A tela de recado da loja: 404, erro de rota, lista vazia.
+ *
+ * Centralizada, com muito ar em volta e um filete dourado em cima do titulo.
+ * A ideia e que um erro continue parecendo a Maison Essence, e nao a tela
+ * cinza padrao do navegador.
+ */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+
+  min-height: 55vh;
+  padding: var(--space-64) 0;
+  text-align: center;
+}
+
+/* O numero do erro, quando ha: discreto, acima do titulo. */
+.code {
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.title {
+  position: relative;
+  padding-top: var(--space-24);
+  font-size: var(--text-36);
+  color: var(--ink);
+}
+
+/* O filete dourado da marca. */
+.title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 3rem;
+  height: 1px;
+  background-color: var(--gold);
+  transform: translateX(-50%);
+}
+
+.description {
+  max-width: 38ch;
+  color: var(--ink-soft);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  justify-content: center;
+  margin-top: var(--space-16);
+}
+
+/*
+ * O detalhe tecnico do erro. Fica em `<details>`, fechado: o cliente nao
+ * precisa dele, e quem esta depurando abre em um clique.
+ */
+.details {
+  margin-top: var(--space-24);
+  max-width: 60ch;
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.details summary {
+  cursor: pointer;
+}
+
+.details pre {
+  margin-top: var(--space-8);
+  padding: var(--space-12);
+  overflow-x: auto;
+  text-align: left;
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+  white-space: pre-wrap;
+  word-break: break-word;
+}

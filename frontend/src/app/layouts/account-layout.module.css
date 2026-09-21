@@ -1,0 +1,55 @@
+/*
+ * A area da conta do cliente.
+ *
+ * Por dentro da loja, e nao fora dela: mesmo cabecalho, mesmo rodape, mesmo
+ * creme de fundo. Para quem comprou, "meus pedidos" e uma pagina da loja.
+ */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.main {
+  flex: 1;
+  padding-block: var(--space-48);
+}
+
+.heading {
+  padding-bottom: var(--space-24);
+  margin-bottom: var(--space-32);
+  border-bottom: var(--border);
+}
+
+.title {
+  font-size: var(--text-28);
+}
+
+.subtitle {
+  margin-top: var(--space-4);
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+/*
+ * Menu lateral a partir do desktop; empilhado no celular, onde a coluna
+ * unica e a unica leitura possivel.
+ */
+.body {
+  display: grid;
+  gap: var(--space-32);
+}
+
+@media (min-width: 64rem) {
+  .body {
+    grid-template-columns: 16rem 1fr;
+    align-items: start;
+  }
+}
+
+.aside {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-24));
+}

@@ -1,0 +1,17 @@
+/*
+ * A largura util da pagina: 1280px com gutter de 24px no desktop e 16px no
+ * mobile. O gutter vem do token, que ja troca sozinho no breakpoint.
+ */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Bloco que precisa encostar nas bordas — banner, faixa de destaque. */
+.flush {
+  max-width: none;
+  padding-inline: 0;
+}

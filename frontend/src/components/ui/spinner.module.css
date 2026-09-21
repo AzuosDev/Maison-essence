@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-48) 0;
+}
+
+/* Ocupa a altura util da janela: e o estado de carregamento de uma rota. */
+.page {
+  min-height: 50vh;
+}
+
+.spinner {
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 2px solid var(--line);
+  border-top-color: var(--gold-deep);
+  border-radius: var(--radius-pill);
+  animation: spin 720ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

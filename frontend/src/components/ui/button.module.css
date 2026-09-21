@@ -1,0 +1,92 @@
+/*
+ * O botao do design system.
+ *
+ * Altura de 48px, caixa alta e `letter-spacing` de .08em vem do mockup e
+ * valem para as duas variantes: o que muda entre primario e secundario e so
+ * o preenchimento.
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+
+  min-height: 3rem;
+  padding: 0 var(--space-24);
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-button);
+  white-space: nowrap;
+
+  border: 1px solid transparent;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    opacity var(--transition);
+}
+
+.button:disabled,
+.button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ---- Variantes ------------------------------------------------------- */
+
+.primary {
+  background-color: var(--ink);
+  color: var(--cream);
+}
+
+.primary:hover:not(:disabled) {
+  background-color: var(--gold-deep);
+}
+
+.secondary {
+  background-color: transparent;
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.secondary:hover:not(:disabled) {
+  background-color: var(--ink);
+  color: var(--cream);
+}
+
+/* Acao terciaria — "cancelar", "voltar". Sem caixa, so o texto. */
+.ghost {
+  min-height: 2.5rem;
+  padding: 0 var(--space-12);
+  background-color: transparent;
+  color: var(--ink-soft);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: var(--weight-medium);
+}
+
+.ghost:hover:not(:disabled) {
+  color: var(--gold-deep);
+}
+
+/* ---- Tamanhos -------------------------------------------------------- */
+
+.small {
+  min-height: 2.25rem;
+  padding: 0 var(--space-16);
+  font-size: var(--text-12);
+}
+
+/* Ocupa a linha inteira: o botao do passo do checkout e o do formulario. */
+.block {
+  display: flex;
+  width: 100%;
+}

@@ -1,0 +1,17 @@
+/*
+ * A moldura da loja: cabecalho fixo, conteudo, rodape.
+ *
+ * O `flex` com `main` crescendo e o que segura o rodape embaixo mesmo numa
+ * pagina curta — um 404, por exemplo — em vez de deixa-lo no meio da tela.
+ */
+
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.main {
+  flex: 1;
+}

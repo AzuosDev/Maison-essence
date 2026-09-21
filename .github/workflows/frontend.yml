@@ -1,0 +1,66 @@
+# CI da loja.
+#
+# Espelha o workflow do backend, inclusive o recorte por caminho: um ajuste na
+# API nao tem por que segurar o merge de um ajuste de CSS. O proprio arquivo
+# entra na lista — quebrar o CI ao editar o CI e o jeito mais silencioso de
+# nao ter CI.
+name: frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+  pull_request:
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/frontend.yml'
+
+concurrency:
+  group: frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # A mesma versao declarada em `engines.node`, que e a que a Vercel
+          # usa para construir o site.
+          node-version-file: frontend/package.json
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck
+
+      - name: Testes
+        run: npm test
+
+      # O build fica por ultimo porque e o mais lento, e porque os tres
+      # passos acima pegam a maior parte do que quebraria nele.
+      #
+      # As variaveis entram com valores de fachada porque o Vite as embute no
+      # bundle: sem elas, o que seria construido aqui e um site que abre e
+      # reclama de configuracao. O CI nao publica nada — so precisa construir
+      # o mesmo artefato que a Vercel construiria.
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: https://api.invalido.test/api/v1
+          VITE_CLOUDINARY_CLOUD_NAME: ci

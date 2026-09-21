@@ -1,0 +1,86 @@
+/*
+ * O cabecalho e o rodape da loja.
+ *
+ * Por enquanto sao a moldura minima: a marca no topo, o filete dourado e a
+ * linha de rodape. A barra de avisos rolando, o menu de categorias, a busca e
+ * o carrinho com contador entram aqui quando as telas chegarem — o layout ja
+ * reserva o lugar deles.
+ */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+
+  background-color: var(--surface);
+  border-bottom: var(--border);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24);
+  min-height: var(--header-height);
+}
+
+/* O logotipo: caixa alta, serifada, muito respiro entre as letras. */
+.brand {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-logo);
+  color: var(--ink);
+
+  /* O `letter-spacing` sobra depois da ultima letra e desloca o centro. */
+  text-indent: var(--tracking-logo);
+}
+
+.brandRule {
+  width: 2.5rem;
+  height: 1px;
+  background-color: var(--gold);
+}
+
+/* Onde entram busca, conta e sacola. */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  font-size: var(--text-14);
+}
+
+.footer {
+  margin-top: var(--space-96);
+  padding-block: var(--space-48);
+  background-color: var(--ink);
+  color: var(--sand);
+}
+
+.footerInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  text-align: center;
+}
+
+.footerBrand {
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-logo);
+  text-indent: var(--tracking-logo);
+  color: var(--cream);
+}
+
+.footerNote {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
