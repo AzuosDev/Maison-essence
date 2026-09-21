@@ -4,6 +4,7 @@ import type { AuditParty } from './user-audit.log.js';
 /** Acoes auditadas sobre as configuracoes da loja. */
 export const SETTINGS_AUDIT_ACTIONS = {
   UPDATED: 'settings.updated',
+  PAYMENT_UPDATED: 'payment-settings.updated',
 } as const;
 
 export type SettingsAuditAction =
