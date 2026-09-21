@@ -242,3 +242,9 @@ OrderSchema.index({ code: 1 }, { unique: true });
 OrderSchema.index({ status: 1, createdAt: -1 });
 // Historico de um cliente, com ou sem conta — o telefone e a chave natural.
 OrderSchema.index({ 'customer.phone': 1, createdAt: -1 });
+/**
+ * "Esta variante ja foi vendida?" — a pergunta que o modulo de produtos faz
+ * antes de apagar uma variante que saiu da lista, e antes de excluir um
+ * produto. Sem o indice, cada gravacao no painel varreria os pedidos.
+ */
+OrderSchema.index({ 'items.variantId': 1 });

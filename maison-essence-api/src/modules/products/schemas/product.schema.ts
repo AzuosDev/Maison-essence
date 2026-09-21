@@ -15,9 +15,7 @@ import {
 } from '../../../database/schema-helpers.js';
 import { MAX_SLUG_LENGTH, applySlugFrom } from '../../../database/slug.js';
 import { Category } from '../../categories/schemas/category.schema.js';
-
-/** Estoque maximo por variante. Serve so para barrar digitacao absurda. */
-const MAX_STOCK = 1_000_000;
+import { MAX_STOCK } from '../products.constants.js';
 
 /**
  * Variante de um produto: o que de fato tem preco e estoque.

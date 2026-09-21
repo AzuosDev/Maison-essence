@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response } from 'express';
+import { Error as MongooseError } from 'mongoose';
 import { STATUS_CODES } from 'node:http';
 import type { Env } from '../../config/env.schema.js';
 
@@ -86,6 +87,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
       };
     }
 
+    if (exception instanceof MongooseError.ValidationError) {
+      const statusCode = HttpStatus.UNPROCESSABLE_ENTITY;
+
+      return {
+        statusCode,
+        message: validationMessages(exception),
+        error: reasonPhrase(statusCode),
+      };
+    }
+
     const statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
     return {
@@ -97,6 +108,19 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error: reasonPhrase(statusCode),
     };
   }
+}
+
+/**
+ * Regra de dominio recusada pelo schema vira 422, e nao 500.
+ *
+ * Nem toda regra cabe no DTO: "o produto precisa de ao menos uma variante" e
+ * "o preco de comparacao precisa ser maior que o de venda" valem tambem para
+ * o seed e para um script de manutencao, e por isso moram no schema. As
+ * mensagens ja estao em portugues la — aqui elas so ganham o status certo e
+ * o caminho do campo, que diz qual variante da lista reprovou.
+ */
+function validationMessages(exception: MongooseError.ValidationError): string[] {
+  return Object.entries(exception.errors).map(([path, error]) => `${path}: ${error.message}`);
 }
 
 function isDetails(value: unknown): value is Record<string, unknown> {
