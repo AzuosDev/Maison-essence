@@ -16,6 +16,10 @@ process.env.CORS_ORIGINS ??= 'http://localhost:5173';
 // os dois iguais.
 process.env.JWT_ACCESS_SECRET ??= 'test-access-secret-0123456789-abcdefgh';
 process.env.JWT_REFRESH_SECRET ??= 'test-refresh-secret-0123456789-abcdefgh';
+// Os segredos das contas de cliente sao outros dois: o schema exige que os
+// quatro sejam distintos.
+process.env.JWT_CUSTOMER_ACCESS_SECRET ??= 'test-customer-access-secret-0123456789';
+process.env.JWT_CUSTOMER_REFRESH_SECRET ??= 'test-customer-refresh-secret-0123456789';
 // Conta de imagens de mentira. Basta para as rotas de upload responderem: a
 // assinatura e calculo local, e as chamadas de rede ao Cloudinary sao
 // trocadas por um dublê no teste que precisa delas.

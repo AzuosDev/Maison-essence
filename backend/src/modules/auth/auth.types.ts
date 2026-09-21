@@ -15,6 +15,41 @@ export const TOKEN_TYPES = {
 
 export type TokenType = (typeof TOKEN_TYPES)[keyof typeof TOKEN_TYPES];
 
+/**
+ * Para quem o token foi emitido: o painel ou a loja.
+ *
+ * Vai na claim `aud` e e conferida na verificacao. Os segredos ja sao
+ * diferentes, entao um token de cliente nunca passaria pela assinatura do
+ * painel — a audiencia existe para que a separacao esteja escrita dentro do
+ * proprio token, legivel por quem depura e obrigatoria para quem verifica. E
+ * e ela que permite ao guard do painel reconhecer um token de cliente e
+ * responder "esta area nao e sua" em vez de "credencial invalida".
+ */
+export const TOKEN_AUDIENCES = {
+  ADMIN: 'maison-essence/admin',
+  CUSTOMER: 'maison-essence/customer',
+} as const;
+
+export type TokenAudience = (typeof TOKEN_AUDIENCES)[keyof typeof TOKEN_AUDIENCES];
+
+/**
+ * Claims do access token do cliente.
+ *
+ * Nao ha `role`, e a ausencia e o ponto: nao existe papel administrativo que
+ * caiba neste payload, entao nenhum valor vindo daqui pode virar permissao de
+ * painel. O que identifica a conta e o `sub`; `credentialVersion` faz o mesmo
+ * que no painel — trocar a senha ou desativar a conta invalida na hora os
+ * tokens ja emitidos.
+ */
+export interface CustomerAccessTokenPayload {
+  sub: string;
+  credentialVersion: number;
+  type: typeof TOKEN_TYPES.ACCESS;
+  aud?: string;
+  iat?: number;
+  exp?: number;
+}
+
 /** Claims do access token. */
 export interface AccessTokenPayload {
   sub: string;

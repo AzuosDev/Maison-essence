@@ -39,6 +39,13 @@ export const envSchema = z.object({
   // forjado com o papel que o atacante quiser.
   JWT_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
   JWT_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
+  // Segredos da conta de cliente. Separados dos do painel de proposito: sao
+  // duas populacoes com riscos diferentes — o cadastro do cliente e aberto na
+  // internet, o do painel nao — e um segredo vazado de um lado nao pode
+  // assinar token do outro. Com chaves distintas, "token de cliente vira token
+  // de administrador" deixa de depender de o codigo conferir alguma claim.
+  JWT_CUSTOMER_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
+  JWT_CUSTOMER_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
   // Conta do Cloudinary, onde ficam as imagens. As tres sao opcionais porque
   // nenhuma outra rota depende delas: a API sobe e a loja funciona sem conta
   // de imagens, e so o envio de fotos responde 503 ate elas existirem. O
@@ -60,11 +67,38 @@ export const envSchema = z.object({
   // em que o projeto deve ficar depois do primeiro acesso.
   BOOTSTRAP_SECRET: optional(z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT)),
 })
-  // Com os dois segredos iguais, um refresh token passaria por access token e
-  // pularia a rotacao inteira — o que o guard confere e a assinatura.
-  .refine((env) => env.JWT_ACCESS_SECRET !== env.JWT_REFRESH_SECRET, {
-    path: ['JWT_REFRESH_SECRET'],
-    message: 'deve ser diferente de JWT_ACCESS_SECRET',
+  /**
+   * Os quatro segredos precisam ser diferentes entre si.
+   *
+   * Com o mesmo valor no access e no refresh, um refresh token passaria por
+   * access token e pularia a rotacao inteira — o que o guard confere e a
+   * assinatura. Entre painel e cliente o risco e maior ainda: segredos iguais
+   * fariam um access token de cliente ser aceito como credencial de
+   * administrador, e a separacao das duas contas viraria uma linha de codigo
+   * em vez de uma chave.
+   */
+  .superRefine((env, ctx) => {
+    const secrets = [
+      'JWT_ACCESS_SECRET',
+      'JWT_REFRESH_SECRET',
+      'JWT_CUSTOMER_ACCESS_SECRET',
+      'JWT_CUSTOMER_REFRESH_SECRET',
+    ] as const;
+    const seen = new Map<string, string>();
+
+    for (const name of secrets) {
+      const twin = seen.get(env[name]);
+
+      if (twin === undefined) {
+        seen.set(env[name], name);
+      } else {
+        ctx.addIssue({
+          code: 'custom',
+          path: [name],
+          message: `deve ser diferente de ${twin}`,
+        });
+      }
+    }
   });
 
 export type Env = z.infer<typeof envSchema>;

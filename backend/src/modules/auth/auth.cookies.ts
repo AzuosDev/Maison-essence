@@ -1,4 +1,9 @@
 import type { CookieOptions, Request, Response } from 'express';
+import {
+  ACCESS_TOKEN_COOKIE,
+  REFRESH_TOKEN_COOKIE,
+  readCookie,
+} from '../../common/session-cookies.js';
 import { GLOBAL_PREFIX } from '../../bootstrap.js';
 import {
   ACCESS_TOKEN_TTL_SECONDS,
@@ -6,8 +11,10 @@ import {
 } from './auth.constants.js';
 import type { IssuedTokens } from './auth.types.js';
 
-export const ACCESS_TOKEN_COOKIE = 'me_access_token';
-export const REFRESH_TOKEN_COOKIE = 'me_refresh_token';
+// Os nomes vivem em `common/session-cookies.ts`, com os da loja: o guard do
+// painel precisa conhecer os dois conjuntos. Reexportados aqui porque este e
+// o arquivo que o resto do modulo ja importa.
+export { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE };
 
 /** O access token serve toda a API. */
 export const ACCESS_COOKIE_PATH = `/${GLOBAL_PREFIX}`;
@@ -38,12 +45,12 @@ export function setSessionCookies(
   response.cookie(
     ACCESS_TOKEN_COOKIE,
     tokens.accessToken,
-    cookieOptions(ACCESS_COOKIE_PATH, ACCESS_TOKEN_TTL_SECONDS, isDevelopment),
+    sessionCookieOptions(ACCESS_COOKIE_PATH, ACCESS_TOKEN_TTL_SECONDS, isDevelopment),
   );
   response.cookie(
     REFRESH_TOKEN_COOKIE,
     tokens.refreshToken,
-    cookieOptions(REFRESH_COOKIE_PATH, REFRESH_TOKEN_TTL_SECONDS, isDevelopment),
+    sessionCookieOptions(REFRESH_COOKIE_PATH, REFRESH_TOKEN_TTL_SECONDS, isDevelopment),
   );
 }
 
@@ -51,11 +58,11 @@ export function setSessionCookies(
 export function clearSessionCookies(response: Response, isDevelopment: boolean): void {
   response.clearCookie(
     ACCESS_TOKEN_COOKIE,
-    cookieOptions(ACCESS_COOKIE_PATH, 0, isDevelopment),
+    sessionCookieOptions(ACCESS_COOKIE_PATH, 0, isDevelopment),
   );
   response.clearCookie(
     REFRESH_TOKEN_COOKIE,
-    cookieOptions(REFRESH_COOKIE_PATH, 0, isDevelopment),
+    sessionCookieOptions(REFRESH_COOKIE_PATH, 0, isDevelopment),
   );
 }
 
@@ -64,12 +71,17 @@ export function readRefreshToken(
   request: Request,
   fromBody?: string,
 ): string | undefined {
-  const cookies = (request as Request & { cookies?: Record<string, string> }).cookies;
-
-  return cookies?.[REFRESH_TOKEN_COOKIE] ?? fromBody;
+  return readCookie(request, REFRESH_TOKEN_COOKIE) ?? fromBody;
 }
 
-function cookieOptions(
+/**
+ * Opcoes de cookie de sessao, compartilhadas pelas duas audiencias.
+ *
+ * Exportada para o modulo de clientes usar as mesmas regras: um cookie de
+ * sessao da loja com politica diferente da do painel seria uma segunda
+ * decisao de seguranca, tomada em outro arquivo, para o mesmo problema.
+ */
+export function sessionCookieOptions(
   path: string,
   maxAgeSeconds: number,
   isDevelopment: boolean,

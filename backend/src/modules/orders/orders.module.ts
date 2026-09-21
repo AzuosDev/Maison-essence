@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Order, OrderSchema, Product, ProductSchema } from '../../schemas.js';
 import { CartModule } from '../cart/cart.module.js';
+import { CustomersModule } from '../customers/customers.module.js';
 import { RateLimitModule } from '../rate-limit/rate-limit.module.js';
 import { SettingsModule } from '../settings/settings.module.js';
 import { AdminOrdersController } from './admin-orders.controller.js';
@@ -29,6 +30,7 @@ import { OrdersService } from './orders.service.js';
       { name: Product.name, schema: ProductSchema },
     ]),
     CartModule,
+    CustomersModule,
     SettingsModule,
     RateLimitModule,
   ],

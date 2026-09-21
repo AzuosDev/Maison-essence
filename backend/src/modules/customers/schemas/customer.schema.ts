@@ -6,7 +6,12 @@ import {
   baseSchemaOptions,
   embeddedSchemaOptions,
 } from '../../../database/base.schema.js';
-import { createSchema, objectIdProp, textProp } from '../../../database/schema-helpers.js';
+import {
+  createSchema,
+  integerProp,
+  objectIdProp,
+  textProp,
+} from '../../../database/schema-helpers.js';
 import { DeliveryCity } from '../../delivery/schemas/delivery-city.schema.js';
 
 /**
@@ -82,6 +87,20 @@ export class Customer extends BaseSchema {
 
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
+
+  /**
+   * Contador de credencial, como no usuario do painel.
+   *
+   * Viaja dentro do access token e e conferido a cada request: incrementar
+   * aqui invalida na hora todos os tokens ja emitidos para a conta, sem
+   * esperar os trinta minutos de validade. E o que faz "trocar a senha
+   * derruba os outros aparelhos" significar alguma coisa.
+   */
+  @Prop(integerProp({ required: true, default: 0, min: 0 }))
+  credentialVersion: number;
+
+  @Prop({ type: Date, default: null })
+  lastLoginAt: Date | null;
 }
 
 export type CustomerDocument = HydratedDocument<Customer>;

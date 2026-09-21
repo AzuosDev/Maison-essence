@@ -16,6 +16,7 @@ import { Order } from '../../schemas.js';
 import { CartQuoteService } from '../cart/cart-quote.service.js';
 import { CARD_UNAVAILABLE_WARNING, PIX_UNAVAILABLE_WARNING } from '../cart/cart.constants.js';
 import type { CartQuoteView } from '../cart/quote.view.js';
+import type { AuthenticatedCustomer } from '../customers/customer-auth.types.js';
 import { RateLimitService } from '../rate-limit/rate-limit.service.js';
 import { SettingsService } from '../settings/settings.service.js';
 import type { StoreSettingsDocument } from '../settings/schemas/store-settings.schema.js';
@@ -82,7 +83,10 @@ export class OrdersService {
    * reservado e exatamente a venda em duplicidade que se quer evitar. Se a
    * gravacao falhar, a baixa e desfeita.
    */
-  async create(dto: CreateOrderDto): Promise<CreatedOrderView> {
+  async create(
+    dto: CreateOrderDto,
+    customer: AuthenticatedCustomer | null = null,
+  ): Promise<CreatedOrderView> {
     // O limite por IP fica no guard da rota; este e o por telefone, que pega o
     // mesmo cliente insistindo de outro lugar — e, principalmente, o
     // formulario reenviado seis vezes numa conexao ruim.
@@ -97,7 +101,7 @@ export class OrdersService {
     await this.stock.take(lines);
 
     try {
-      return await this.persist(dto, quote);
+      return await this.persist(dto, quote, customer);
     } catch (error: unknown) {
       // O pedido nao existe: o estoque que ele tirou nao pode continuar fora.
       await this.stock.giveBack(lines);
@@ -210,11 +214,18 @@ export class OrdersService {
    * responder 500 a um cliente por causa de um sorteio seria desperdicar a
    * venda. A mensagem e montada dentro do laco porque carrega o codigo.
    */
-  private async persist(dto: CreateOrderDto, quote: CartQuoteView): Promise<CreatedOrderView> {
+  private async persist(
+    dto: CreateOrderDto,
+    quote: CartQuoteView,
+    customer: AuthenticatedCustomer | null,
+  ): Promise<CreatedOrderView> {
     const store = await this.settings.current();
 
     for (let attempt = 1; ; attempt += 1) {
-      const order = new this.orders({ ...snapshotOf(dto, quote), code: generateOrderCode() });
+      const order = new this.orders({
+        ...snapshotOf(dto, quote, customer),
+        code: generateOrderCode(),
+      });
 
       order.whatsappMessage = this.messageFor(order.code, dto, quote, store);
 
@@ -347,7 +358,11 @@ function mismatch(
 }
 
 /** O pedido pronto para gravar, todo ele saido da cotacao do servidor. */
-function snapshotOf(dto: CreateOrderDto, quote: CartQuoteView): Record<string, unknown> {
+function snapshotOf(
+  dto: CreateOrderDto,
+  quote: CartQuoteView,
+  customer: AuthenticatedCustomer | null,
+): Record<string, unknown> {
   return {
     items: quote.items.map((item) => ({
       productId: new Types.ObjectId(item.productId),
@@ -387,6 +402,20 @@ function snapshotOf(dto: CreateOrderDto, quote: CartQuoteView): Record<string, u
       totalCents: quote.totalCents,
     },
     status: ORDER_STATUSES.PENDING_CONTACT,
+    /**
+     * A conta de quem comprou, quando havia uma sessao.
+     *
+     * `null` no checkout como convidado, que e o caminho padrao — e nao fica
+     * `null` para sempre: se essa pessoa criar uma conta depois com o mesmo
+     * telefone, e o cadastro que vem buscar este pedido (ver
+     * `CustomerAuthService.adoptGuestOrders`).
+     *
+     * Os dados de contato continuam vindo do formulario, mesmo com o cliente
+     * logado: quem compra para a irma preenche o nome e o telefone da irma, e
+     * sobrescrever isso com os da conta mandaria a dona conversar com a pessoa
+     * errada.
+     */
+    customerId: customer === null ? null : new Types.ObjectId(customer.id),
   };
 }
 

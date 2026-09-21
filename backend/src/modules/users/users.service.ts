@@ -12,7 +12,7 @@ import { USER_AUDIT_ACTIONS, UserAuditLog } from '../../common/user-audit.log.js
 import type { AuditParty } from '../../common/user-audit.log.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { PasswordService } from '../auth/password.service.js';
-import { RefreshTokenService } from '../auth/refresh-token.service.js';
+import { RefreshTokenService, adminOwner } from '../auth/refresh-token.service.js';
 import type { CreateUserDto } from './dto/create-user.dto.js';
 import type { UpdateUserDto } from './dto/update-user.dto.js';
 import type { UpdateUserStatusDto } from './dto/update-user-status.dto.js';
@@ -134,7 +134,7 @@ export class UsersService {
     // que o usuario tem na mao. A sessao continua de pe e a proxima renovacao
     // ja sai com o papel correto.
     if (changed.role) {
-      await this.sessions.bumpCredentialVersion(saved._id);
+      await this.sessions.bumpCredentialVersion(adminOwner(saved._id));
     }
 
     this.audit.record({
@@ -179,7 +179,7 @@ export class UsersService {
     const saved = await this.save(target);
 
     if (!dto.isActive) {
-      await this.sessions.revokeAllSessions(saved._id);
+      await this.sessions.revokeAllSessions(adminOwner(saved._id));
     }
 
     this.audit.record({
@@ -213,7 +213,7 @@ export class UsersService {
 
     const saved = await this.save(target);
 
-    await this.sessions.revokeAllSessions(saved._id);
+    await this.sessions.revokeAllSessions(adminOwner(saved._id));
 
     this.audit.record({
       action: USER_AUDIT_ACTIONS.PASSWORD_RESET,

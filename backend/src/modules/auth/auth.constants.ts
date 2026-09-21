@@ -14,6 +14,19 @@ export const ACCESS_TOKEN_TTL_SECONDS = 15 * 60;
 export const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 
 /**
+ * Access token da conta de cliente: trinta minutos.
+ *
+ * Mais longo que o do painel porque o estrago possivel e menor — a conta do
+ * cliente ve os proprios pedidos e edita o proprio endereco, e nao mexe em
+ * preco, estoque nem usuario. E porque o custo de renovar no meio de um
+ * checkout cai sobre a venda.
+ */
+export const CUSTOMER_ACCESS_TOKEN_TTL_SECONDS = 30 * 60;
+
+/** Refresh token da loja: trinta dias, tambem rotacionado a cada uso. */
+export const CUSTOMER_REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60;
+
+/**
  * Piso de tamanho de senha, na criacao de usuario e na troca.
  *
  * Doze e nao oito: o painel tem poucas contas e nenhuma delas troca de senha
@@ -44,6 +57,14 @@ export const INVALID_CREDENTIALS_MESSAGE = 'Credenciais invalidas.';
 /** Resposta do rate limit: generica, sem contador nem tempo restante. */
 export const TOO_MANY_ATTEMPTS_MESSAGE =
   'Muitas tentativas. Tente novamente mais tarde.';
+
+/**
+ * Credencial de cliente apresentada a uma rota do painel.
+ *
+ * Diz que a area e que nao e dele, e nao que a sessao expirou: o frontend
+ * precisa saber que renovar o token nao vai resolver.
+ */
+export const ADMIN_ONLY_MESSAGE = 'Esta area e do painel administrativo.';
 
 /** Bloqueio das rotas administrativas enquanto a senha temporaria nao troca. */
 export const PASSWORD_CHANGE_REQUIRED_MESSAGE =

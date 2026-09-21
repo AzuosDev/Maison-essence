@@ -16,13 +16,14 @@ import {
   LOGIN_MIN_DURATION_MS,
 } from './auth.constants.js';
 import type { AuthSession, AuthenticatedUser } from './auth.types.js';
+import { TOKEN_AUDIENCES } from './auth.types.js';
 import { toAuthenticatedUser } from './auth.types.js';
 import { withMinimumDuration } from './constant-time.js';
 import type { ChangePasswordDto } from './dto/change-password.dto.js';
 import type { LoginDto } from './dto/login.dto.js';
 import { LoginRateLimitService } from './login-rate-limit.service.js';
 import { PasswordService } from './password.service.js';
-import { RefreshTokenService } from './refresh-token.service.js';
+import { RefreshTokenService, adminOwner } from './refresh-token.service.js';
 import { TokenService } from './token.service.js';
 
 /** De onde veio a chamada. Alimenta o rate limit e o registro da sessao. */
@@ -92,11 +93,11 @@ export class AuthService {
    * ganhar um token novo.
    */
   async refresh(rawToken: string, context: RequestContext): Promise<AuthSession> {
-    const claimed = await this.sessions.claim(rawToken);
-    const user = await this.users.findById(claimed.userId).exec();
+    const claimed = await this.sessions.claim(rawToken, TOKEN_AUDIENCES.ADMIN);
+    const user = await this.users.findById(claimed.ownerId).exec();
 
     if (!user || !user.isActive) {
-      await this.sessions.revokeAllSessions(claimed.userId);
+      await this.sessions.revokeAllSessions(adminOwner(claimed.ownerId));
 
       throw new UnauthorizedException('Sessao invalida.');
     }
@@ -115,7 +116,7 @@ export class AuthService {
     }
 
     try {
-      await this.sessions.revoke(rawToken);
+      await this.sessions.revoke(rawToken, TOKEN_AUDIENCES.ADMIN);
     } catch {
       // Token invalido no logout nao e incidente: os cookies sao apagados
       // do mesmo jeito pelo controller.
@@ -175,7 +176,7 @@ export class AuthService {
       throw new UnauthorizedException('Sessao invalida.');
     }
 
-    await this.sessions.revokeRefreshTokens(userId);
+    await this.sessions.revokeRefreshTokens(adminOwner(userId));
 
     this.audit.record({
       action: USER_AUDIT_ACTIONS.PASSWORD_CHANGED,
@@ -188,7 +189,8 @@ export class AuthService {
 
   /** Derruba o usuario em todos os dispositivos. */
   async logoutAll(userId: string): Promise<void> {
-    const revoked = await this.sessions.revokeAllSessions(new Types.ObjectId(userId));
+    const owner = adminOwner(new Types.ObjectId(userId));
+    const revoked = await this.sessions.revokeAllSessions(owner);
 
     this.logger.log(`Logout global do usuario ${userId}: ${revoked} sessoes revogadas`);
   }
@@ -200,7 +202,7 @@ export class AuthService {
   ): Promise<AuthSession> {
     const [accessToken, refresh] = await Promise.all([
       this.tokens.signAccessToken(user),
-      this.sessions.issue(user._id, userAgent, replaces),
+      this.sessions.issue(adminOwner(user._id), userAgent, replaces),
     ]);
 
     return {

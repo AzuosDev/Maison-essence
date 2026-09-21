@@ -6,6 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { RolesGuard } from '../../common/guards/roles.guard.js';
 import { UserAuditLog } from '../../common/user-audit.log.js';
 import {
+  Customer,
+  CustomerSchema,
   LoginAttempt,
   LoginAttemptSchema,
   RefreshToken,
@@ -38,6 +40,9 @@ import { TokenService } from './token.service.js';
       { name: User.name, schema: UserSchema },
       { name: RefreshToken.name, schema: RefreshTokenSchema },
       { name: LoginAttempt.name, schema: LoginAttemptSchema },
+      // O contador de credencial do cliente e incrementado pela revogacao em
+      // massa, que vive em `RefreshTokenService`.
+      { name: Customer.name, schema: CustomerSchema },
     ]),
     PassportModule.register({ defaultStrategy: 'jwt', session: false }),
     JwtModule.register({}),

@@ -1,5 +1,8 @@
 import { Body, Controller, Post, UseGuards, ValidationPipe } from '@nestjs/common';
 import { Public } from '../../common/decorators/public.decorator.js';
+import type { AuthenticatedCustomer } from '../customers/customer-auth.types.js';
+import { OptionalCustomer } from '../customers/decorators/current-customer.decorator.js';
+import { OptionalCustomerGuard } from '../customers/guards/optional-customer.guard.js';
 import { RateLimit } from '../rate-limit/rate-limit.decorator.js';
 import { RateLimitGuard } from '../rate-limit/rate-limit.guard.js';
 import { CreateOrderDto } from './dto/create-order.dto.js';
@@ -43,17 +46,27 @@ const ORDER_BODY = new ValidationPipe({
  * onde alguma coisa passa a existir.
  */
 @Public()
-@UseGuards(RateLimitGuard)
+@UseGuards(RateLimitGuard, OptionalCustomerGuard)
 @RateLimit(ORDER_IP_RATE_LIMIT)
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly orders: OrdersService) {}
 
+  /**
+   * `@OptionalCustomer()` e a unica coisa que a conta de cliente acrescenta
+   * aqui: com sessao, o pedido nasce ligado a ela; sem sessao, `null` e o
+   * checkout segue exatamente como antes. Nenhum campo do corpo mudou, e
+   * nenhuma resposta depende de estar logado — a conta e uma comodidade,
+   * nunca um requisito para comprar.
+   */
   @Post()
-  create(@Body(ORDER_BODY) body: object): Promise<CreatedOrderView> {
+  create(
+    @Body(ORDER_BODY) body: object,
+    @OptionalCustomer() customer: AuthenticatedCustomer | null,
+  ): Promise<CreatedOrderView> {
     // O pipe acima devolve um `CreateOrderDto` validado e sem os campos que
     // nao pertencem a ele; o tipo do parametro e `object` so para o pipe
     // global nao tentar valida-lo antes (ver `cart.controller.ts`).
-    return this.orders.create(body as CreateOrderDto);
+    return this.orders.create(body as CreateOrderDto, customer);
   }
 }
