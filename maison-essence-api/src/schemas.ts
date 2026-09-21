@@ -36,6 +36,7 @@ export { SingletonSchema } from './database/singleton.schema.js';
 export * from './modules/users/schemas/user.schema.js';
 export * from './modules/auth/schemas/refresh-token.schema.js';
 export * from './modules/auth/schemas/login-attempt.schema.js';
+export * from './modules/rate-limit/schemas/rate-limit-hit.schema.js';
 
 // Catalogo.
 export * from './modules/categories/schemas/category.schema.js';

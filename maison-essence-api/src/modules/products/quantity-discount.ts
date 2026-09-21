@@ -71,3 +71,28 @@ export function discountLadder(
 export function entryTier(ladder: readonly QuantityDiscountTier[]): QuantityDiscountTier | null {
   return ladder[0] ?? null;
 }
+
+/**
+ * O degrau que vale para uma quantidade: o ultimo cujo minimo ela alcanca.
+ *
+ * `null` quando a quantidade nao chega ao primeiro degrau — o caso comum, de
+ * quem leva uma unidade. Como a escada ja sobe em desconto, percorre-la ate o
+ * primeiro degrau grande demais basta: o ultimo alcancado e o melhor
+ * aplicavel, e nenhum desconto se soma a outro.
+ */
+export function tierFor(
+  ladder: readonly QuantityDiscountTier[],
+  quantity: number,
+): QuantityDiscountTier | null {
+  let best: QuantityDiscountTier | null = null;
+
+  for (const tier of ladder) {
+    if (quantity < tier.minQty) {
+      break;
+    }
+
+    best = tier;
+  }
+
+  return best;
+}

@@ -18,6 +18,8 @@ import {
   ProductSchema,
   QuantityDiscount,
   QuantityDiscountSchema,
+  RateLimitHit,
+  RateLimitHitSchema,
   StoreSettings,
   StoreSettingsSchema,
 } from '../schemas.js';
@@ -53,6 +55,7 @@ import { DemoSeedService } from './demo-seed.service.js';
       { name: PaymentSettings.name, schema: PaymentSettingsSchema },
       { name: Order.name, schema: OrderSchema },
       { name: Customer.name, schema: CustomerSchema },
+      { name: RateLimitHit.name, schema: RateLimitHitSchema },
     ]),
   ],
   providers: [DemoSeedService],
