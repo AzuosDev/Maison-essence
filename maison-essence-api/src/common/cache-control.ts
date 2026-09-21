@@ -13,6 +13,17 @@ export interface CdnCacheOptions {
 export const CATALOG_CACHE: CdnCacheOptions = { sMaxAge: 60, staleWhileRevalidate: 300 };
 
 /**
+ * Configuracoes da loja e paginas institucionais: cinco minutos.
+ *
+ * Aguentam mais cache que o catalogo porque mudam menos — o nome da loja, o
+ * endereco de retirada e o texto de "Quem somos" ficam meses parados — e
+ * porque sao lidos em *toda* pagina: o cabecalho, o rodape e o botao do
+ * WhatsApp saem daqui. Quem encurta a janela real depois de uma alteracao e
+ * o ETag, que muda junto com o `updatedAt` do documento.
+ */
+export const SETTINGS_CACHE: CdnCacheOptions = { sMaxAge: 300, staleWhileRevalidate: 600 };
+
+/**
  * Monta o `Cache-Control` das rotas publicas.
  *
  * `max-age=0` junto do `s-maxage` de proposito: quem absorve o trafego e a
