@@ -158,6 +158,7 @@ export class SettingsService {
       'businessHours',
       'pickupEnabled',
       'pickupInstructions',
+      'freeShippingMinCents',
     ] as const;
 
     for (const field of scalars) {
@@ -266,6 +267,7 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
     businessHours: settings.businessHours,
     pickupEnabled: settings.pickupEnabled,
     pickupInstructions: settings.pickupInstructions,
+    freeShippingMinCents: settings.freeShippingMinCents,
     pickupAddress: {
       street: pickupAddress.street,
       number: pickupAddress.number,

@@ -87,6 +87,8 @@ export interface SettingsView {
   pickupAddress: AddressView;
   pickupInstructions: string;
   socialLinks: SocialLinksView;
+  /** Minimo para frete gratis em qualquer cidade. `null` desliga a regra. */
+  freeShippingMinCents: number | null;
   banners: BannerView[];
   institutionalPages: PageView[];
   updatedAt: Date;
@@ -113,6 +115,12 @@ export interface PublicSettingsView {
   /** `null` quando a retirada esta desligada: endereco que nao se usa nao sai. */
   pickupAddress: AddressView | null;
   pickupInstructions: string;
+  /**
+   * Minimo para frete gratis, para a sacola dizer quanto falta. Sai aqui e
+   * nao so na lista de cidades porque a barra de "faltam R$ 30,00" aparece
+   * antes de o cliente escolher para onde a entrega vai.
+   */
+  freeShippingMinCents: number | null;
   banners: PublicBannerView[];
 }
 
@@ -127,6 +135,7 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     pickupAddress: toAddressView(settings.pickupAddress),
     pickupInstructions: settings.pickupInstructions,
     socialLinks: toSocialLinksView(settings.socialLinks),
+    freeShippingMinCents: settings.freeShippingMinCents,
     // Ordenados como a home os exibe, para a tela do painel bater com o site.
     banners: [...settings.banners]
       .sort((first, second) => first.order - second.order)
@@ -151,6 +160,7 @@ export function toPublicSettingsView(
     pickupEnabled: settings.pickupEnabled,
     pickupAddress: settings.pickupEnabled ? toAddressView(settings.pickupAddress) : null,
     pickupInstructions: settings.pickupEnabled ? settings.pickupInstructions : '',
+    freeShippingMinCents: settings.freeShippingMinCents,
     banners: liveBanners(settings.banners, now).map(toPublicBannerView),
   };
 }

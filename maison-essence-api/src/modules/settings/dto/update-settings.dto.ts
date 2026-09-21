@@ -4,12 +4,16 @@ import {
   IsArray,
   IsBoolean,
   IsEmail,
+  IsInt,
   IsOptional,
   IsString,
+  Max,
   MaxLength,
+  Min,
   MinLength,
   ValidateNested,
 } from 'class-validator';
+import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { IsWhatsappNumber } from '../whatsapp-number.js';
 import { MAX_BANNERS } from '../settings.constants.js';
 import { BannerDto } from './banner.dto.js';
@@ -81,6 +85,17 @@ export class UpdateSettingsDto {
   @ValidateNested()
   @Type(() => SocialLinksDto)
   socialLinks?: SocialLinksDto;
+
+  /**
+   * Frete gratis acima deste valor, em qualquer cidade. `null` desliga a
+   * regra, e a cidade que tiver minimo proprio ignora este aqui — a regra da
+   * cidade tem precedencia (ver `delivery-fee.ts`).
+   */
+  @IsOptional()
+  @IsInt({ message: 'o minimo para frete gratis deve ser um inteiro em centavos' })
+  @Min(0)
+  @Max(MAX_CENTS)
+  freeShippingMinCents?: number | null;
 
   @IsOptional()
   @IsArray()

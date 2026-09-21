@@ -8,6 +8,7 @@ import { DatabaseModule } from './database/database.module.js';
 import { HealthModule } from './health/health.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
+import { DeliveryModule } from './modules/delivery/delivery.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
 import { UploadsModule } from './modules/uploads/uploads.module.js';
@@ -24,6 +25,7 @@ import { UsersModule } from './modules/users/users.module.js';
     ProductsModule,
     UploadsModule,
     SettingsModule,
+    DeliveryModule,
   ],
   providers: [
     {
