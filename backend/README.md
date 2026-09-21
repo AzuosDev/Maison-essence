@@ -1,13 +1,18 @@
 # maison-essence-api
 
-Casca do backend da Maison Essence: NestJS em TypeScript estrito, preparado para
-rodar como uma unica funcao serverless na Vercel.
+Backend da Maison Essence: NestJS em TypeScript estrito, rodando como uma unica
+funcao serverless na Vercel, com MongoDB Atlas.
 
-Ha conexao com MongoDB via Mongoose, os schemas do dominio modelados, a
-autenticacao do painel (login, refresh com rotacao, logout), o controle de
-acesso por papel com o CRUD de usuarios administrativos e os comandos que
-criam o primeiro usuario e populam a loja de demonstracao. As rotas de
-catalogo e de pedido ainda nao existem.
+A loja nao processa pagamento: o cliente monta a sacola, o servidor recalcula
+tudo — preco, desconto por quantidade, taxa de entrega, PIX, parcelas —, grava
+o pedido com o estoque baixado e devolve a mensagem pronta para o WhatsApp da
+dona. O que esta aqui: catalogo publico, carrinho e pedido, painel
+administrativo (produtos, categorias, entrega, pagamentos, configuracoes,
+usuarios), conta opcional de cliente, trilha de auditoria e o endurecimento de
+producao (limite de chamadas, cabecalhos, log estruturado).
+
+- Rotas: ver "Mapa de rotas" e a colecao em [`docs/`](docs/).
+- Como rodar: abaixo. Como publicar: "Deploy na Vercel".
 
 ## Rodando local
 
@@ -37,6 +42,22 @@ acesso" e "Dados de demonstracao").
 ```bash
 npm run seed:superadmin
 npm run seed:demo
+```
+
+Os dois sao idempotentes por chave natural, entao rodar de novo nao duplica
+nada. O `seed:superadmin` le as variaveis `BOOTSTRAP_SUPERADMIN_*` do `.env` e
+nao faz nada se ja existir um `SUPER_ADMIN`; o `seed:demo` cria categorias,
+produtos com variantes e cidades de entrega (pelo slug e pelo par cidade +
+estado) e **sobrescreve** as configuracoes da loja e de pagamento — por isso
+ele se recusa a rodar com `NODE_ENV=production` sem `--force`. Serve tanto para
+abrir o painel com conteudo quanto para ter ids reais para a colecao do
+Postman.
+
+Para conferir que esta tudo de pe antes de sair mexendo:
+
+```bash
+npm test          # unitarios, ~1s, sem banco
+npm run test:e2e  # integracao, sobe um mongod em memoria
 ```
 
 ## Estrutura
@@ -622,6 +643,156 @@ teto, o proprio Mongo aborta e devolve um erro nomeado, que vira linha de log e
 resposta. Cinco segundos e folgado para colecoes pequenas e indexadas —
 consulta que passa disso esta errada, nao lenta.
 
+## Mapa de rotas
+
+Tudo sob `/api/v1`. A coluna **Quem** diz o que a rota exige: `publica` nao
+exige nada, `sessao` exige estar autenticado no painel, `cliente` exige um
+token de conta de cliente, e os papeis listados sao o que o `@Roles` pede —
+lembrando que `SUPER_ADMIN` passa em todas (ver "Papeis e permissoes").
+
+### Saude e documentacao
+
+| Rota | Quem | O que faz |
+| --- | --- | --- |
+| `GET /health` | publica | Estado da API e da conexao com o banco. E o que o deploy valida |
+| `GET /docs` | basic auth em producao | Swagger gerado do codigo (ver "Documentacao") |
+
+### Autenticacao do painel
+
+| Rota | Quem | O que faz |
+| --- | --- | --- |
+| `POST /auth/bootstrap` | segredo no header | Cria o primeiro `SUPER_ADMIN`. 404 sem `BOOTSTRAP_SECRET` |
+| `POST /auth/login` | publica | Access + refresh, em corpo e em cookie. 5 por 15 min |
+| `POST /auth/refresh` | publica | Rotaciona a sessao. Reuso derruba todas as sessoes |
+| `POST /auth/logout` | publica | Revoga a sessao apresentada. Sempre 204 |
+| `POST /auth/logout-all` | sessao | Derruba todas as sessoes do usuario |
+| `PATCH /auth/change-password` | sessao | Troca a propria senha e devolve sessao nova |
+| `GET /auth/me` | sessao | O usuario logado, com `mustChangePassword` |
+
+### Loja (publicas)
+
+| Rota | Quem | O que faz |
+| --- | --- | --- |
+| `GET /products` | publica | Vitrine paginada, com busca e filtros |
+| `GET /products/featured` | publica | Prateleira de destaques |
+| `GET /products/ready-to-ship` | publica | Prateleira de pronta entrega |
+| `GET /products/best-sellers` | publica | Mais vendidos, a partir dos pedidos fechados |
+| `GET /products/:slug` | publica | Pagina do produto; slug antigo aponta para o atual |
+| `GET /categories` | publica | Arvore do menu |
+| `GET /categories/:slug` | publica | Uma categoria |
+| `GET /delivery-cities` | publica | Cidades atendidas, com taxa e regra de frete gratis |
+| `GET /settings` | publica | Nome, WhatsApp, banners vigentes, horarios, redes |
+| `GET /pages` | publica | Paginas institucionais publicadas |
+| `GET /pages/:slug` | publica | Uma pagina institucional |
+| `GET /payment-settings` | publica | PIX (sem a chave) e regras de parcelamento |
+| `POST /cart/quote` | publica | Recalcula a sacola inteira no servidor. 30 por min |
+| `POST /orders` | publica | Cria o pedido, baixa o estoque e devolve o link do WhatsApp. 5 por 10 min |
+
+### Conta do cliente
+
+| Rota | Quem | O que faz |
+| --- | --- | --- |
+| `POST /customer/register` | publica | Cadastro. 5 por hora por IP |
+| `POST /customer/login` | publica | Entra pelo telefone. 5 por 15 min |
+| `POST /customer/refresh` | publica | Rotaciona a sessao do cliente |
+| `GET /customer/me` | cliente | Dados da conta |
+| `PATCH /customer/me` | cliente | Nome, e-mail e ate dez enderecos |
+| `GET /customer/orders` | cliente | Historico de pedidos |
+| `GET /customer/orders/:code` | cliente | Um pedido, sem a anotacao interna |
+
+### Painel
+
+| Rota | Quem | O que faz |
+| --- | --- | --- |
+| `GET /admin/products` | OWNER, STAFF | Lista com busca, filtro e paginacao |
+| `GET /admin/products/:id` | OWNER, STAFF | Produto com variantes |
+| `POST /admin/products` | OWNER | Cria produto |
+| `PATCH /admin/products/:id` | OWNER | Edita; mudanca de preco entra na auditoria |
+| `PATCH /admin/products/:id/status` | OWNER | Ativa ou desativa |
+| `DELETE /admin/products/:id` | OWNER | Exclui |
+| `GET /admin/categories` | OWNER, STAFF | Arvore completa, ativas e inativas |
+| `POST /admin/categories` | OWNER | Cria categoria |
+| `PATCH /admin/categories/reorder` | OWNER | Ordem do menu |
+| `PATCH /admin/categories/:id` | OWNER | Edita |
+| `DELETE /admin/categories/:id` | OWNER | Exclui; 409 se ainda houver vinculo |
+| `GET /admin/delivery-cities` | OWNER | Cidades, ativas e inativas |
+| `POST /admin/delivery-cities` | OWNER | Cria cidade |
+| `PATCH /admin/delivery-cities/reorder` | OWNER | Ordem da lista |
+| `PATCH /admin/delivery-cities/:id` | OWNER | Edita taxa, prazo e regra propria |
+| `DELETE /admin/delivery-cities/:id` | OWNER | Exclui |
+| `GET /admin/orders` | OWNER, STAFF | Lista com status, periodo e busca |
+| `GET /admin/orders/:id` | OWNER, STAFF | Pedido com a anotacao interna |
+| `PATCH /admin/orders/:id/status` | OWNER, STAFF | Move o status; cancelar repoe o estoque |
+| `PATCH /admin/orders/:id/notes` | OWNER, STAFF | Anotacao interna |
+| `GET /admin/settings` | OWNER | Configuracoes da loja |
+| `PATCH /admin/settings` | OWNER | Altera; entra na auditoria com o diff |
+| `GET /admin/payment-settings` | OWNER | Regras de pagamento, com a chave PIX |
+| `PATCH /admin/payment-settings` | OWNER | Altera PIX e parcelamento |
+| `POST /admin/uploads/signature` | OWNER | Assina o envio direto ao Cloudinary |
+| `POST /admin/uploads/confirm` | OWNER | Confirma o envio concluido |
+| `DELETE /admin/uploads/:publicId` | OWNER | Remove a imagem |
+| `GET /users` | OWNER | Lista usuarios ao alcance de quem pergunta |
+| `POST /users` | OWNER | Cria usuario com senha temporaria |
+| `PATCH /users/:id` | OWNER | Nome, e-mail e papel |
+| `PATCH /users/:id/status` | OWNER | Ativa ou desativa; desativar derruba as sessoes |
+| `POST /users/:id/reset-password` | OWNER | Nova senha temporaria |
+
+### Colecao para o Postman e o Insomnia
+
+[`docs/maison-essence.postman_collection.json`](docs/maison-essence.postman_collection.json)
+traz as 61 rotas acima com exemplos preenchidos. O formato e o do Postman
+(schema v2.1), que o Insomnia importa direto em **Import > File**.
+
+O login do painel e o do cliente guardam os tokens nas variaveis da colecao,
+entao a ordem de uso e: ajustar `baseUrl`, rodar **Login**, e sair chamando o
+resto. Ids de exemplo (`productId`, `cityId`, ...) sao variaveis — preencha com
+o que houver no seu banco, ou rode `npm run seed:demo` e copie de la.
+
+## Testes
+
+```bash
+npm test          # unitarios: regras puras, sem banco (~1s)
+npm run test:e2e  # integracao: sobe um mongod em memoria e o Nest inteiro
+npm run test:cov  # as duas suites juntas, com a meta de cobertura
+```
+
+Os unitarios (`src/**/*.spec.ts`) vivem ao lado do que testam e cobrem o que e
+conta: parcelamento, taxa de entrega, desconto por quantidade, mensagem do
+WhatsApp, slug, SKU, mascara de telefone, politica de acesso. Onde a regra ja e
+funcao pura, o teste chama a funcao; onde ela depende de configuracao da loja
+— `InstallmentService`, `DeliveryService.resolveFee` — o teste monta um dublê
+das configuracoes e exercita o service.
+
+Os de integracao (`test/**/*.e2e-spec.ts`) sobem a aplicacao de verdade contra
+um MongoDB em memoria (`mongodb-memory-server`), pelo mesmo `configureApp` que
+roda em producao. Os tres caminhos que nao se provam de outro jeito:
+
+- **login e refresh com deteccao de reuso**: apresentar duas vezes o mesmo
+  refresh token derruba a arvore inteira de sessoes daquele usuario
+  ([`auth.e2e-spec.ts`](test/auth.e2e-spec.ts));
+- **pedido com baixa atomica de estoque**: o pedido criado baixa exatamente o
+  que vendeu, e o cancelamento repoe uma vez so
+  ([`orders.e2e-spec.ts`](test/orders.e2e-spec.ts));
+- **corrida pela ultima unidade**: dois pedidos simultaneos pela mesma peca —
+  um recebe 201, o outro 409, e o estoque termina em zero.
+
+A meta de cobertura e **70%** e vale para os services de dominio
+(`src/modules/**/*.service.ts`), configurada em
+[`vitest.config.coverage.ts`](vitest.config.coverage.ts). Controller e view
+ficam de fora de proposito: o controller so encaminha, e exigir meta dele
+empurraria o projeto a escrever teste de encaminhamento. Hoje os services estao
+em ~90% de linhas; o unico bem abaixo e o `CloudinaryService`, que e chamada de
+rede a um servico de terceiro e e testado por dublê nas rotas de upload.
+
+## Integracao continua
+
+[`.github/workflows/backend.yml`](../.github/workflows/backend.yml) roda lint,
+tipos, build e as duas suites com cobertura, tudo com `working-directory:
+backend`. O gatilho e por caminho — `backend/**` e o proprio workflow —, entao
+mexer no frontend nao dispara os testes da API. A versao do Node vem de
+`engines.node`, a mesma que a funcao da Vercel usa: CI que testa em outra
+versao testa outro ambiente.
+
 ## Primeiro acesso
 
 O painel nao tem cadastro aberto, entao um banco novo comeca sem ninguem para
@@ -738,25 +909,105 @@ plano Enterprise) da IP fixo, e o Atlas aceita peering de VPC.
 
 ## Deploy na Vercel
 
-`vercel.json` reescreve todas as rotas para `/api/index`. A versao do Node vem
-de `engines.node` no `package.json` (o campo `functions.runtime` do
-`vercel.json` so aceita runtimes de terceiros no formato `pacote@versao`).
+O repositorio e um monorepo, entao o projeto da Vercel aponta para a pasta, e
+nao para a raiz. O caminho inteiro, na ordem:
 
-Defina `CORS_ORIGINS`, `MONGODB_URI` e os quatro segredos de JWT
-(`JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`, `JWT_CUSTOMER_ACCESS_SECRET` e
-`JWT_CUSTOMER_REFRESH_SECRET`, todos distintos) nas variaveis de ambiente do
-projeto na Vercel — mais `APP_VERSION`, `MONGODB_DB_NAME` e as `CLOUDINARY_*`,
-se quiser. `CORS_ORIGINS` precisa listar as origens uma a uma: `*` derruba o
-boot. Sem `DOCS_USER` e `DOCS_PASSWORD`, `/api/v1/docs` nao sobe em producao —
-o que e proposital, e nao um deploy quebrado. Os cookies de sessao saem com
-`SameSite=None; Secure` fora de desenvolvimento, o que exige HTTPS — na Vercel
-isso ja e o padrao.
+**1. Importar.** Em *Add New > Project*, escolha o repositorio e, em
+*Configure Project*, defina **Root Directory = `backend`**. Framework Preset
+fica em *Other*: quem decide o que roda e o `vercel.json`, que reescreve toda
+rota para `/api/index`. A versao do Node vem de `engines.node` no
+`package.json` (o campo `functions.runtime` do `vercel.json` so aceita runtimes
+de terceiros no formato `pacote@versao`).
 
-No primeiro deploy defina tambem as `BOOTSTRAP_*`, chame
-`POST /api/v1/auth/bootstrap` uma vez e **remova `BOOTSTRAP_SECRET` em
-seguida** (ver "Primeiro acesso"). Sem shell na Vercel, essa rota e a unica
-forma de criar o usuario que abre o painel — e, com o segredo fora do
-ambiente, ela volta a responder 404.
+**2. Nao reconstruir o que nao mudou.** O `vercel.json` ja traz
+
+```json
+"ignoreCommand": "git diff --quiet HEAD^ HEAD -- ."
+```
+
+Com o Root Directory em `backend`, esse `.` e a propria pasta: commit que so
+toca o frontend sai com o build ignorado, e o deploy anterior continua
+servindo. Em *Settings > Git > Ignored Build Step* a opcao equivalente e
+*Only build if there are changes in the Root Directory* — o comando do
+`vercel.json` tem precedencia, e os dois dizem a mesma coisa. Na duvida, o
+comando falhando (por exemplo, num clone raso sem `HEAD^`) constroi: o lado
+seguro do erro e publicar demais, nunca de menos.
+
+**3. Variaveis de ambiente.** Em *Settings > Environment Variables*, para o
+ambiente *Production* (e *Preview*, se for usar):
+
+| Variavel | Obrigatoria | Observacao |
+| --- | --- | --- |
+| `MONGODB_URI` | sim | String do Atlas, com usuario e senha |
+| `MONGODB_DB_NAME` | nao | `maison-essence` por padrao |
+| `CORS_ORIGINS` | sim | Dominios da loja e do painel, um a um. `*` derruba o boot |
+| `JWT_ACCESS_SECRET` | sim | 32+ caracteres |
+| `JWT_REFRESH_SECRET` | sim | 32+, diferente do anterior |
+| `JWT_CUSTOMER_ACCESS_SECRET` | sim | 32+, diferente dos dois |
+| `JWT_CUSTOMER_REFRESH_SECRET` | sim | 32+, diferente dos tres |
+| `CLOUDINARY_CLOUD_NAME` | nao | Sem ela, so `/admin/uploads` responde 503 |
+| `CLOUDINARY_API_KEY` | nao | |
+| `CLOUDINARY_API_SECRET` | nao | Nunca vai para o frontend |
+| `DOCS_USER` | nao | Usuario do `/api/v1/docs` |
+| `DOCS_PASSWORD` | nao | 12+ caracteres. Sem as duas, a documentacao nao sobe |
+| `APP_VERSION` | nao | Aparece no `/health` |
+| `BOOTSTRAP_SUPERADMIN_EMAIL` | so no primeiro deploy | Ver o passo 5 |
+| `BOOTSTRAP_SUPERADMIN_PASSWORD` | so no primeiro deploy | 12+ caracteres |
+| `BOOTSTRAP_SUPERADMIN_NAME` | nao | `Super Admin` por padrao |
+| `BOOTSTRAP_SECRET` | so no primeiro deploy | 32+. **Sai do ambiente depois** |
+
+O que cada uma faz em detalhe esta em "Variaveis de ambiente". Os cookies de
+sessao saem com `SameSite=None; Secure` fora de desenvolvimento, o que exige
+HTTPS — na Vercel isso ja e o padrao.
+
+No Atlas, libere o acesso de rede. A Vercel nao publica faixa fixa de IP de
+saida no plano gratuito, entao ou se usa `0.0.0.0/0` com usuario de banco forte
+e escopo minimo, ou se contrata IP dedicado. Escolha a regiao da funcao
+(*Settings > Functions*) na mesma regiao do cluster: cada ida ao banco atravessa
+essa distancia, e ela aparece inteira no cold start.
+
+**4. Validar o deploy.** Com a URL publicada:
+
+```bash
+npm run check:coldstart -- https://sua-api.vercel.app
+```
+
+O script chama `GET /api/v1/health` uma vez e mostra o tempo; depois chama mais
+tres, ja com a instancia quente, para a comparacao. Ele falha quando a primeira
+passa de **3 segundos**, quando o HTTP nao e 200 ou quando o banco nao responde
+`connected`. Para medir um cold start de verdade, rode depois de alguns minutos
+sem trafego — instancia quente responde em dezenas de milissegundos e nao prova
+nada sobre o boot. O mesmo teto e verificado no CI, so que contra o boot local,
+em [`test/serverless.e2e-spec.ts`](test/serverless.e2e-spec.ts).
+
+Passando de 3 segundos, os suspeitos, em ordem: a regiao da funcao longe do
+cluster, o Atlas em tier gratuito hibernando, e algum import pesado novo no
+caminho do boot.
+
+**5. Primeiro acesso e fechamento da porta.** Com as `BOOTSTRAP_*` definidas e
+o deploy no ar:
+
+```bash
+curl -X POST https://sua-api.vercel.app/api/v1/auth/bootstrap \
+  -H "x-bootstrap-secret: $BOOTSTRAP_SECRET"
+```
+
+Responde 201 com o usuario criado, 409 se ja houver alguem no banco e 404 se o
+segredo nao estiver no ambiente. Feito isso:
+
+1. entre no painel com o e-mail e a senha temporaria — o login responde 200 e o
+   `/auth/me` traz `mustChangePassword: true`, e toda rota administrativa
+   responde 403 ate a troca;
+2. troque a senha em `PATCH /api/v1/auth/change-password`;
+3. **remova `BOOTSTRAP_SECRET`** das variaveis da Vercel e refaca o deploy
+   (*Deployments > ... > Redeploy*, ou um commit qualquer em `backend/`). Sem o
+   segredo, a rota volta a responder 404. As `BOOTSTRAP_SUPERADMIN_*` podem sair
+   junto: elas so servem para essa unica chamada, e deixa-las e manter uma senha
+   em texto no painel do provedor.
+
+Depois disso, `GET /api/v1/health` deve responder `status: ok` com
+`database.status: connected`, e o login do super-admin deve funcionar exigindo
+a troca de senha — que sao os tres criterios de aceite do deploy.
 
 ## Scripts
 
@@ -771,4 +1022,6 @@ ambiente, ela volta a responder 404.
 | `test`             | Testes unitarios                           |
 | `test:e2e`         | Testes de ponta a ponta                    |
 | `test:schemas`     | Insere e le um documento de cada colecao   |
+| `test:cov`         | As duas suites juntas, com a meta de cobertura |
+| `check:coldstart`  | Mede o cold start da URL publicada (ver "Deploy") |
 | `lint`             | oxlint                                     |

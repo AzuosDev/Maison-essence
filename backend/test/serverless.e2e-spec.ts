@@ -27,6 +27,30 @@ describe('handler serverless (api/index.ts)', () => {
     vi.restoreAllMocks();
   });
 
+  /**
+   * Teto do cold start, em milissegundos.
+   *
+   * A funcao da Vercel tem tempo maximo de execucao, e a primeira invocacao
+   * depois de um periodo ocioso paga o boot inteiro do Nest antes de comecar
+   * a responder. Tres segundos e o limite que o projeto assume: acima disso,
+   * quem abre a loja depois de um tempo sem visitas ve a pagina parada.
+   *
+   * A medida aqui e do boot, com o Mongo local: no Atlas soma-se a abertura
+   * do socket, que e o que `npm run check:coldstart` mede contra a URL
+   * publicada.
+   */
+  const MAX_COLD_START_MS = 3_000;
+
+  it('a primeira invocacao sobe a aplicacao inteira dentro do teto', async () => {
+    const startedAt = Date.now();
+
+    // Este e o primeiro request do arquivo de proposito: e ele que paga o
+    // `NestFactory.create`, o `configureApp` e o `init`.
+    await request(server).get('/api/v1/health').expect(200);
+
+    expect(Date.now() - startedAt).toBeLessThan(MAX_COLD_START_MS);
+  });
+
   it('serve GET /api/v1/health pelo handler', async () => {
     const response = await request(server).get('/api/v1/health').expect(200);
 

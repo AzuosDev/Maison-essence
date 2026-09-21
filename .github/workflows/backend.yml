@@ -1,0 +1,80 @@
+# CI do backend.
+#
+# Roda so quando a pasta `backend/` muda: o monorepo tem frontend ao lado, e
+# um workflow que roda em tudo transforma um ajuste de CSS numa espera de tres
+# minutos pelos testes da API. O proprio arquivo entra na lista de caminhos —
+# quebrar o CI ao editar o CI e o jeito mais silencioso de nao ter CI.
+name: backend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+
+# Push seguido em cima do mesmo branch cancela a execucao anterior: o que
+# interessa e o resultado do ultimo commit, e minuto de runner e pago.
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  verificar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # A mesma versao que a funcao da Vercel usa, declarada em
+          # `engines.node`: CI que testa noutra versao testa outro ambiente.
+          node-version-file: backend/package.json
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      # `ci` e nao `install`: instala exatamente o que esta no lock e falha se
+      # ele divergir do package.json, em vez de silenciosamente atualizar.
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Tipos
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+
+      # O mongod que os testes de integracao sobem e um binario baixado na
+      # primeira execucao. Sem cache, sao ~80 MB por run.
+      - name: Cache do mongod dos testes
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/mongodb-binaries
+          key: mongod-${{ runner.os }}-${{ hashFiles('backend/package-lock.json') }}
+          restore-keys: mongod-${{ runner.os }}-
+
+      # Uma execucao so para as duas suites, com a meta de cobertura dos
+      # services (ver `vitest.config.coverage.ts`).
+      - name: Testes e cobertura
+        run: npm run test:cov
+
+      - name: Guardar o relatorio de cobertura
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cobertura
+          path: backend/coverage/
+          retention-days: 7
+          if-no-files-found: ignore

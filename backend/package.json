@@ -22,9 +22,10 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:cov": "vitest run --coverage",
+    "test:cov": "vitest run --config ./vitest.config.coverage.ts --coverage",
     "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
-    "test:schemas": "vitest run --config ./vitest.config.e2e.ts test/schemas.e2e-spec.ts"
+    "test:schemas": "vitest run --config ./vitest.config.e2e.ts test/schemas.e2e-spec.ts",
+    "check:coldstart": "node scripts/cold-start.mjs"
   },
   "dependencies": {
     "@nestjs/common": "^12.0.1",
