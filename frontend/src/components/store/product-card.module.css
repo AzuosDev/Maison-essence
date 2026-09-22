@@ -1,0 +1,244 @@
+/*
+ * O card de produto — o componente mais repetido da loja.
+ *
+ * Duas decisoes explicam quase tudo o que esta aqui.
+ *
+ * A primeira: **toda linha do corpo tem altura reservada**. Marca, nome,
+ * preco, parcelamento e a chamada de desconto ocupam o mesmo espaco tendo ou
+ * nao conteudo. Custa um respiro a mais num card sem promocao e paga com a
+ * unica coisa que o criterio de aceite mede: a grade nao se mexe quando os
+ * dados chegam. O esqueleto usa estas mesmas classes — e por isso ele tem,
+ * por construcao, exatamente a altura do card que vai substitui-lo.
+ *
+ * A segunda: a foto e 3:4 com `aspect-ratio`, e nao com altura fixa. O
+ * navegador reserva a caixa antes de baixar um byte da imagem, e o card ja
+ * nasce do tamanho final.
+ */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  /* A foto encosta na borda arredondada; sem isto o canto dela vaza. */
+  overflow: hidden;
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.card:hover,
+.card:focus-within {
+  border-color: var(--gold);
+  box-shadow: var(--shadow);
+}
+
+/* ---- A foto ---------------------------------------------------------- */
+
+.media {
+  position: relative;
+  display: block;
+
+  /* A caixa existe antes da imagem: e o que impede o salto de layout. */
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+
+  background-color: var(--sand);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  /* O zoom e lento de proposito: tres vezes a duracao dos controles. Um
+     movimento de 180ms numa foto grande le-se como solavanco, nao como
+     carinho. O numero continua saindo do token — nao ha duracao nova no
+     sistema. */
+  transition: transform calc(var(--duration) * 3) var(--ease);
+}
+
+.card:hover .image,
+.card:focus-within .image {
+  transform: scale(1.05);
+}
+
+/* Esgotado: a foto perde cor, e o selo vermelho diz por que. */
+.soldOut {
+  filter: grayscale(0.55);
+  opacity: 0.85;
+}
+
+/*
+ * Os selos, no canto superior esquerdo e empilhados.
+ *
+ * Coluna, e nao linha: um produto pode acumular os tres — esgotado, com
+ * desconto e de pronta entrega — e em linha o terceiro sairia da foto.
+ */
+.badges {
+  position: absolute;
+  top: var(--space-8);
+  left: var(--space-8);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+
+  /* Os selos sao rotulo, nao alvo: o clique atravessa para o link da foto. */
+  pointer-events: none;
+}
+
+/* ---- O corpo --------------------------------------------------------- */
+
+.body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+
+  padding: var(--space-16);
+}
+
+.brand {
+  min-height: calc(var(--text-12) * var(--leading-body));
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+
+  /* Marca longa nao quebra em duas linhas e nao empurra o nome para baixo. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Duas linhas, sempre: a altura nao depende do tamanho do nome. */
+.nameRow {
+  min-height: calc(var(--text-18) * var(--leading-tight) * 2);
+}
+
+.name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.nameLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nameLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ---- Preco ----------------------------------------------------------- */
+
+.prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  min-height: calc(var(--text-22) * var(--leading-tight));
+  margin-top: var(--space-8);
+}
+
+.compareAt {
+  font-size: var(--text-14);
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.price {
+  font-size: var(--text-22);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/*
+ * A linha do parcelamento.
+ *
+ * As regras vem de `GET /payment-settings`, que e outra requisicao e pode
+ * chegar depois do produto. A altura reservada e o que faz essa chegada
+ * atrasada preencher um espaco que ja existia, em vez de empurrar o botao.
+ */
+.installment {
+  min-height: calc(var(--text-12) * var(--leading-body));
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+/*
+ * A chamada de desconto progressivo: "Leve 3 e ganhe 10%".
+ *
+ * Reservada mesmo nos produtos que nao tem regra nenhuma. E o caso comum, e
+ * portanto o que mais custaria: sem a reserva, a grade teria cards de duas
+ * alturas e o rodape saltaria na hora em que os dados trocassem.
+ */
+.promo {
+  min-height: calc(var(--text-12) * var(--leading-body));
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-body);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+/* `auto` no topo: o botao desce para a base e os cards de uma mesma linha
+   alinham o rodape, por mais que os nomes tenham tamanhos diferentes. */
+.action {
+  margin-top: auto;
+  padding-top: var(--space-16);
+}
+
+/* ---- O esqueleto -----------------------------------------------------
+ *
+ * Nao ha classes de tamanho aqui: o esqueleto reusa `.card`, `.media`,
+ * `.body`, `.brand`, `.nameRow`, `.prices`, `.installment`, `.promo` e
+ * `.action` exatamente como o card os usa. O que segue sao os tres ajustes
+ * que so o placeholder precisa — e e por isso que ele tem, por construcao, a
+ * altura do card que vai substituir.
+ */
+
+/* O retangulo que preenche a foto: sem canto proprio, ja que `.media` corta. */
+.mediaGhost {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+/* Duas barras onde iriam as duas linhas do nome. */
+.nameGhost {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+/* A altura do botao, com o mesmo canto dele. */
+.actionGhost {
+  height: var(--control-height);
+  border-radius: var(--radius-chip);
+}

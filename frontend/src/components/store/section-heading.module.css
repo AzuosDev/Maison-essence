@@ -1,0 +1,46 @@
+/*
+ * O cabecalho de secao da loja: filete dourado, titulo serifado, linha de
+ * apoio.
+ *
+ * O filete e um `<span>` vazio com `aria-hidden`, e nao um `::before` do
+ * titulo, porque a distancia entre ele e o texto precisa ser o mesmo `gap`
+ * que separa o titulo da linha de apoio — e pseudo-elemento nao participa de
+ * `gap`.
+ */
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+
+  text-align: center;
+}
+
+.rule {
+  width: 3rem;
+  height: 1px;
+  background-color: var(--gold);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.description {
+  /* Medida de leitura: linha longa demais cansa, e aqui sao duas frases. */
+  max-width: 46ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+@media (min-width: 64rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+}

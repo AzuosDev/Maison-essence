@@ -1,0 +1,49 @@
+/*
+ * A prateleira: um cabecalho, uma grade de cards e o link para ver tudo.
+ *
+ * Duas colunas no celular — e nao uma. Card unico por linha vira uma pagina
+ * de rolagem infinita em que o cliente ve tres produtos antes de desistir;
+ * em duas colunas ele ve seis na mesma altura de tela e compara. A foto 3:4
+ * a 50vw ainda tem tamanho de sobra para o perfume ser reconhecido.
+ */
+
+.shelf {
+  padding-block: var(--space-48);
+}
+
+/* A faixa de fundo areia, para separar prateleiras vizinhas sem filete. */
+.tinted {
+  background-color: var(--sand);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-16);
+
+  margin-top: var(--space-32);
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+
+  margin-top: var(--space-32);
+}
+
+@media (min-width: 40rem) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+}
+
+@media (min-width: 64rem) {
+  .shelf {
+    padding-block: var(--space-64);
+  }
+
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

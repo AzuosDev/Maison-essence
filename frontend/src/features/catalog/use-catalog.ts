@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchCategoryTree, fetchSuggestions } from './catalog.api';
+import { fetchCategoryTree, fetchShelf, fetchSuggestions, type ShelfName } from './catalog.api';
 import { catalogKeys } from './catalog.keys';
 import type { CategoryTree, Paginated, PublicProduct } from './catalog.types';
 
@@ -51,5 +51,33 @@ export function useSearchSuggestions(term: string) {
     queryFn: ({ signal }) => fetchSuggestions(term, signal),
     enabled,
     placeholderData: (previous) => previous,
+  });
+}
+
+/**
+ * Um minuto de frescor para as prateleiras da home.
+ *
+ * E o mesmo numero que o `QueryClient` ja usa como padrao, e esta escrito de
+ * novo aqui de proposito: o padrao vale para a aplicacao inteira e pode mudar
+ * por um motivo que nada tem a ver com a vitrine. A prateleira depende deste
+ * valor — e o que faz a dona marcar um produto como destaque e ver a home
+ * mudar no minuto seguinte, sem redeploy — e por isso ele fica declarado onde
+ * a dependencia esta.
+ */
+const SHELF_STALE_TIME_MS = 60_000;
+
+/**
+ * Uma prateleira da home: destaques, pronta entrega ou mais vendidos.
+ *
+ * As tres compartilham hook, chave e politica de cache porque sao a mesma
+ * consulta com outro nome. O `limit` entra na chave: duas larguras diferentes
+ * da mesma prateleira sao duas respostas diferentes, e servir uma pela outra
+ * faria a lista encolher ou crescer sozinha ao navegar.
+ */
+export function useShelf(name: ShelfName, limit?: number) {
+  return useQuery<PublicProduct[]>({
+    queryKey: catalogKeys.shelf(name, limit),
+    queryFn: ({ signal }) => fetchShelf(name, limit, signal),
+    staleTime: SHELF_STALE_TIME_MS,
   });
 }

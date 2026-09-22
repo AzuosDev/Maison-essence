@@ -7,7 +7,7 @@ import { useStoreSettings } from '@/features/settings';
 import { formatPhone } from '@/lib/format';
 import { BrandLogo } from './brand-logo';
 import { InstagramIcon, TiktokIcon } from './icons';
-import { NewsletterForm } from './newsletter-form';
+import { DeferredNewsletter } from './deferred-newsletter';
 import { LEGAL } from './store.constants';
 import { TrustBadges } from './trust-badges';
 import styles from './store-footer.module.css';
@@ -37,7 +37,7 @@ export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, 
       <Container>
         <div className={styles.newsletter}>
           <BrandLogo inverted asLink={false} className={styles.newsletterBrand} />
-          <NewsletterForm />
+          <DeferredNewsletter />
         </div>
 
         <TrustBadges />

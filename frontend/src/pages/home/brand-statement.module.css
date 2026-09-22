@@ -1,0 +1,79 @@
+/*
+ * O banner institucional: a assinatura da marca e a proposta da loja.
+ *
+ * Largura total, fundo preto, texto centrado numa medida curta. E a unica
+ * secao da home que nao vende nada — existe para responder "quem e essa loja
+ * de quem eu nunca ouvi falar?", que e a pergunta que trava a primeira compra
+ * numa vitrine pequena.
+ *
+ * Nao ha foto aqui de proposito: uma imagem de fundo atras de texto e mais um
+ * arquivo grande na primeira dobra e uma aposta de contraste que nenhuma
+ * media query resolve. O preto da marca com o filete dourado faz o mesmo
+ * trabalho, sem byte nenhum.
+ */
+
+.statement {
+  /* Os dois tokens capturados onde ainda valem os valores globais, para que
+     `.action` possa inverte-los no botao contornado sem escrever cor nova.
+     Mesmo arranjo do hero — a explicacao inteira esta la. */
+  --dark: var(--ink);
+  --light: var(--cream);
+
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-24);
+
+  padding-block: var(--space-64);
+  text-align: center;
+}
+
+/* A assinatura: o logotipo em versao empilhada, sem link. */
+.signature {
+  margin-bottom: var(--space-8);
+}
+
+.rule {
+  width: 4rem;
+  height: 1px;
+  background-color: var(--gold);
+}
+
+.text {
+  /* Medida de leitura curta: sao tres frases e elas precisam ser lidas. */
+  max-width: 54ch;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  line-height: 1.5;
+  color: var(--cream);
+}
+
+.note {
+  max-width: 54ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: rgb(250 247 242 / 0.7);
+}
+
+/* Os tokens invertidos para o botao contornado, como no hero. */
+.action {
+  --ink: var(--light);
+  --cream: var(--dark);
+}
+
+@media (min-width: 64rem) {
+  .inner {
+    padding-block: var(--space-96);
+  }
+
+  .text {
+    font-size: var(--text-28);
+  }
+}

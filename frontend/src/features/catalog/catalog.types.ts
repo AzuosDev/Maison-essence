@@ -27,6 +27,18 @@ export interface PriceRange {
   max: number;
 }
 
+/**
+ * Um degrau do desconto progressivo: "leve 3 e ganhe 10%".
+ *
+ * O card anuncia um so — o primeiro da escada, de menor quantidade, que e o
+ * que o backend ja escolhe e manda em `quantityDiscount`. A escada inteira
+ * so aparece na pagina do produto.
+ */
+export interface QuantityDiscountTier {
+  minQty: number;
+  percentOff: number;
+}
+
 /** Variante como o cliente a ve. */
 export interface PublicVariant {
   id: string;
@@ -56,6 +68,8 @@ export interface PublicProduct {
   isFeatured: boolean;
   isReadyToShip: boolean;
   tags: string[];
+  /** A chamada de desconto progressivo. `null` quando nao ha regra. */
+  quantityDiscount: QuantityDiscountTier | null;
 }
 
 /** Uma pagina de resultados, no formato que a API devolve. */

@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button, Input } from '@/components/ui';
 import { subscribeToNewsletter } from '@/features/settings/newsletter';
+import { cx } from '@/lib/cx';
 import { errorMessage } from '@/lib/http';
 import styles from './newsletter-form.module.css';
 
@@ -29,7 +30,15 @@ const schema = z.object({
 
 type NewsletterForm = z.input<typeof schema>;
 
-export function NewsletterForm() {
+/**
+ * O tom, conforme o fundo em que o formulario cai: o rodape preto, onde ele
+ * nasceu, ou a faixa clara da home.
+ */
+interface NewsletterFormProps {
+  tone?: 'dark' | 'light';
+}
+
+export function NewsletterForm({ tone = 'dark' }: NewsletterFormProps) {
   const [status, setStatus] = useState<string | null>(null);
 
   const {
@@ -56,7 +65,11 @@ export function NewsletterForm() {
   });
 
   return (
-    <form className={styles.form} onSubmit={(event) => void submit(event)} noValidate>
+    <form
+      className={cx(styles.form, tone === 'light' && styles.light)}
+      onSubmit={(event) => void submit(event)}
+      noValidate
+    >
       <p className={styles.label}>Receba as novidades</p>
       <p className={styles.note}>Lancamentos e promocoes, sem excesso.</p>
 

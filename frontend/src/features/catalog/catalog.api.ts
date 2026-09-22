@@ -40,3 +40,29 @@ export function fetchSuggestions(
 ): Promise<Paginated<PublicProduct>> {
   return fetchProducts({ q: term, limit: SUGGESTION_LIMIT }, signal);
 }
+
+/**
+ * As prateleiras da home.
+ *
+ * Tres rotas de nome fixo — `/products/featured`, `/products/ready-to-ship`
+ * e `/products/best-sellers` — e uma funcao so, porque as tres respondem a
+ * mesma coisa: uma lista curta, **sem paginacao**. Prateleira tem comeco e
+ * fim; quem quer navegar o catalogo inteiro vai para `/products`, que pagina.
+ *
+ * O `limit` fica opcional para que a home nao precise repetir o padrao do
+ * backend (doze). Quem passa um numero e quem tem motivo — uma prateleira de
+ * quatro no rodape do produto, por exemplo.
+ */
+export type ShelfName = 'featured' | 'ready-to-ship' | 'best-sellers';
+
+export function fetchShelf(
+  name: ShelfName,
+  limit?: number,
+  signal?: AbortSignal,
+): Promise<PublicProduct[]> {
+  return api.get<PublicProduct[]>(`/products/${name}`, {
+    scope: null,
+    ...(limit === undefined ? {} : { query: { limit } }),
+    ...(signal ? { signal } : {}),
+  });
+}

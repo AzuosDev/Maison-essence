@@ -1,18 +1,41 @@
 /*
- * Os selos de confianca, acima do rodape.
+ * Os selos de confianca.
  *
  * Empilhados no celular, em fila a partir de 768px. Nao sao decoracao: sao
  * as tres perguntas que travam a compra numa loja pequena — chega ate mim?
  * meus dados estao seguros? da para parcelar?
+ *
+ * As quatro cores saem por variavel para que a mesma faixa sirva ao rodape
+ * preto e a home creme. Quem troca e a classe `.light`, e nada alem das
+ * cores muda entre os dois tons.
  */
 
 .badges {
+  --badge-title: var(--cream);
+  --badge-note: var(--muted);
+  --badge-icon: var(--gold);
+  /* O dourado a 40%, como no rodape original: moldura que sugere, nao cerca. */
+  --badge-icon-line: rgb(192 160 98 / 0.4);
+  --badge-rule: rgb(250 247 242 / 0.12);
+
   display: grid;
   gap: var(--space-24);
   grid-template-columns: 1fr;
 
   padding-block: var(--space-32);
-  border-bottom: 1px solid rgb(250 247 242 / 0.12);
+  border-bottom: 1px solid var(--badge-rule);
+}
+
+/* A faixa da home, sobre o creme: filete em cima tambem, porque ali ela
+   separa duas secoes em vez de fechar a pagina. */
+.light {
+  --badge-title: var(--ink);
+  --badge-note: var(--ink-soft);
+  --badge-icon: var(--gold-deep);
+  --badge-icon-line: rgb(156 124 60 / 0.4);
+  --badge-rule: var(--line);
+
+  border-top: 1px solid var(--badge-rule);
 }
 
 @media (min-width: 48rem) {
@@ -37,18 +60,18 @@
   width: 2.5rem;
   height: 2.5rem;
 
-  color: var(--gold);
-  border: 1px solid rgb(192 160 98 / 0.4);
+  color: var(--badge-icon);
+  border: 1px solid var(--badge-icon-line);
   border-radius: var(--radius-pill);
 }
 
 .title {
   font-size: var(--text-14);
   font-weight: var(--weight-semibold);
-  color: var(--cream);
+  color: var(--badge-title);
 }
 
 .note {
   font-size: var(--text-12);
-  color: var(--muted);
+  color: var(--badge-note);
 }

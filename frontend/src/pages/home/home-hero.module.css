@@ -1,0 +1,211 @@
+/*
+ * O hero: foto de modelo a esquerda, bloco de texto a direita sobre preto.
+ *
+ * ## Por que nao ha `position: absolute` aqui
+ *
+ * Os slides sao empilhados por grade — todos em `grid-area: 1 / 1` — e nao
+ * sobrepostos com posicionamento absoluto. A diferenca aparece na conta da
+ * altura: com grade, o container mede o slide mais alto e fica desse tamanho
+ * desde o primeiro render; com `absolute`, os slides saem do fluxo e o
+ * container colapsa, obrigando a uma altura fixa que nao acompanha o texto.
+ * Banner com subtitulo de tres linhas e banner sem subtitulo convivem sem
+ * ninguem medir nada.
+ *
+ * ## O truque das duas variaveis
+ *
+ * `--dark` e `--light` sao os tokens `--ink` e `--cream` capturados no `.hero`,
+ * onde ainda valem os valores globais. E o que permite que `.action` inverta
+ * os dois para o botao contornado sem escrever cor nova e sem cair num ciclo
+ * de `var()` — trocar `--ink` por `var(--cream)` no mesmo elemento em que
+ * `--cream` tambem esta sendo trocado nao funciona.
+ */
+
+.hero {
+  --dark: var(--ink);
+  --light: var(--cream);
+
+  background-color: var(--dark);
+  color: var(--light);
+}
+
+.viewport {
+  display: grid;
+}
+
+.slide {
+  /* Todos na mesma celula: a pilha do carrossel. */
+  grid-area: 1 / 1;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+
+  opacity: 0;
+  visibility: hidden;
+
+  /* A visibilidade so muda no fim do esmaecimento, senao o slide que sai
+     desaparece de um golpe no primeiro quadro. */
+  transition:
+    opacity calc(var(--duration) * 3) var(--ease),
+    visibility 0s linear calc(var(--duration) * 3);
+}
+
+.slideActive {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity calc(var(--duration) * 3) var(--ease);
+}
+
+/* ---- A foto ---------------------------------------------------------- */
+
+.media {
+  position: relative;
+
+  /* Retrato no celular: a foto de modelo pede altura, e a proporcao fixa
+     reserva a caixa antes de o arquivo chegar. */
+  aspect-ratio: 4 / 5;
+
+  background-color: var(--ink-soft);
+  overflow: hidden;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- O bloco de texto ------------------------------------------------ */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-16);
+
+  padding: var(--space-48) var(--gutter);
+}
+
+.eyebrow {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-36);
+  line-height: var(--leading-tight);
+  color: var(--light);
+}
+
+.subtitle {
+  max-width: 40ch;
+
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: rgb(250 247 242 / 0.75);
+}
+
+/*
+ * O botao contornado.
+ *
+ * `--ink` e `--cream` invertidos: o primitivo `Button` continua sendo o
+ * mesmo, desenha a variante `secondary` com as regras dele, e o que muda sao
+ * os dois tokens que ele le. Sem isto, o contorno preto sobre preto sumiria.
+ */
+.action {
+  --ink: var(--light);
+  --cream: var(--dark);
+
+  margin-top: var(--space-8);
+}
+
+/* ---- Indicadores ----------------------------------------------------- */
+
+.indicators {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+
+  padding-bottom: var(--space-24);
+}
+
+.indicator {
+  position: relative;
+  width: 2rem;
+  height: 2px;
+  padding: 0;
+
+  background-color: rgb(250 247 242 / 0.3);
+  border: 0;
+  cursor: pointer;
+
+  transition: background-color var(--transition);
+}
+
+/*
+ * A area de clique tem 44px de altura, o alvo minimo de toque, enquanto o
+ * filete visivel tem 2px. O pseudo-elemento cresce o alvo sem engordar o
+ * desenho — e sem os oito pixels de espaco morto que um `padding` criaria
+ * entre um indicador e o vizinho.
+ */
+.indicator::after {
+  content: '';
+  position: absolute;
+  inset: -1.35rem 0;
+}
+
+.indicatorActive {
+  background-color: var(--gold);
+}
+
+/* ---- Desktop --------------------------------------------------------- */
+
+@media (min-width: 64rem) {
+  .slide {
+    /* A foto ocupa a maior parte; o texto pede menos largura para nao virar
+       linha de oitenta caracteres. */
+    grid-template-columns: 55fr 45fr;
+    min-height: 36rem;
+  }
+
+  .media {
+    /* No desktop quem manda na altura e o `min-height` do slide. */
+    aspect-ratio: auto;
+    height: 100%;
+  }
+
+  .panel {
+    padding: var(--space-64);
+  }
+
+  .title {
+    font-size: var(--text-48);
+  }
+
+  /* Sobre a foto, no rodape do hero, como no mockup. */
+  .indicators {
+    position: relative;
+    margin-top: calc(var(--space-32) * -1);
+    padding-bottom: var(--space-32);
+  }
+}
+
+/* ---- O esqueleto ----------------------------------------------------- */
+
+.ghostPanel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+
+  padding: var(--space-48) var(--gutter);
+}
+
+@media (min-width: 64rem) {
+  .ghostPanel {
+    padding: var(--space-64);
+  }
+}

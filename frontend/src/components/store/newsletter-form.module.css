@@ -1,14 +1,36 @@
 /*
- * O formulario de newsletter, no rodape.
+ * O formulario de newsletter.
  *
  * Empilhado no celular e em linha a partir de 640px — o campo e o botao lado
  * a lado so cabem quando ha largura para o botao nao espremer o e-mail.
+ *
+ * As cores saem por variavel porque o formulario aparece em dois fundos: o
+ * rodape preto e a faixa clara da home. Quem troca e a classe `.light`, e o
+ * primitivo `Input` continua sendo o mesmo componente — ele le `--surface`,
+ * `--line`, `--ink` e `--muted`, e e so isso que muda de um tom para o outro.
  */
 
 .form {
+  --news-title: var(--cream);
+  --news-field-surface: transparent;
+  --news-field-line: rgb(250 247 242 / 0.25);
+  --news-field-ink: var(--cream);
+  --news-field-muted: rgb(250 247 242 / 0.6);
+  --news-field-focus: var(--gold);
+
   display: flex;
   flex-direction: column;
   gap: var(--space-12);
+}
+
+/* A faixa da home, sobre o areia. */
+.light {
+  --news-title: var(--ink);
+  --news-field-surface: var(--surface);
+  --news-field-line: var(--line);
+  --news-field-ink: var(--ink);
+  --news-field-muted: var(--muted);
+  --news-field-focus: var(--gold-deep);
 }
 
 @media (min-width: 40rem) {
@@ -24,23 +46,18 @@
   }
 }
 
-/*
- * O rodape e preto: o campo herda a paleta clara do primitivo e precisa do
- * contraste invertido. Variaveis, e nao regras novas — o `Input` continua
- * sendo o mesmo componente.
- */
 .field {
-  --surface: transparent;
-  --line: rgb(250 247 242 / 0.25);
-  --ink: var(--cream);
-  --muted: rgb(250 247 242 / 0.6);
-  --focus-color: var(--gold);
+  --surface: var(--news-field-surface);
+  --line: var(--news-field-line);
+  --ink: var(--news-field-ink);
+  --muted: var(--news-field-muted);
+  --focus-color: var(--news-field-focus);
 }
 
 .label {
   font-family: var(--font-display);
   font-size: var(--text-18);
-  color: var(--cream);
+  color: var(--news-title);
 }
 
 .note {
@@ -57,4 +74,30 @@
 
 .error {
   color: var(--danger);
+}
+
+/*
+ * O espaco do formulario enquanto o pedaco dele nao chegou.
+ *
+ * A altura e a soma exata das tres linhas que o formulario ocupa, escrita
+ * com os mesmos tokens que as desenham: titulo, nota e a fileira do campo.
+ * Nao e um numero medido a olho — se algum desses tokens mudar, a reserva
+ * muda junto, e o bloco continua sem saltar quando o formulario aparece.
+ *
+ * A fileira tem duas alturas: no celular o campo e o botao ficam empilhados,
+ * e a partir de 640px eles dividem a linha.
+ */
+.placeholder {
+  --news-row: calc(var(--control-height) * 2);
+
+  min-height: calc(
+    var(--text-18) * var(--leading-body) + var(--text-12) * var(--leading-body) + var(--news-row) +
+      var(--space-12) * 2
+  );
+}
+
+@media (min-width: 40rem) {
+  .placeholder {
+    --news-row: var(--control-height);
+  }
 }
