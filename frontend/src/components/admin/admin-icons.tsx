@@ -9,8 +9,8 @@ import type { SVGProps } from 'react';
  * importa do painel. O que os dois compartilham sao os tokens e os
  * primitivos.
  *
- * Nenhuma biblioteca de icones. Vinte e um desenhos de uma ou duas linhas
- * pesam menos que o `import` de um pacote, e todos saem com o mesmo peso de
+ * Nenhuma biblioteca de icones. Trinta desenhos de uma ou duas linhas pesam
+ * menos que o `import` de um pacote, e todos saem com o mesmo peso de
  * traco — que e o que faz um menu parecer desenhado por uma pessoa so.
  *
  * `aria-hidden` por padrao: icone dentro de botao nao e informacao, e o nome
@@ -255,6 +255,96 @@ export function ChatIcon(props: IconProps) {
   return (
     <Icon {...props}>
       <path d="M4 18.5 5.2 15A7.4 7.4 0 0 1 4.5 11.5C4.5 7.4 8 4 12.2 4s7.6 3.4 7.6 7.5-3.4 7.5-7.6 7.5a7.9 7.9 0 0 1-3.4-.8z" />
+    </Icon>
+  );
+}
+
+/* ---- A area de sistema --------------------------------------------------- */
+
+/**
+ * Sistema: o escudo.
+ *
+ * E o unico item do menu que nao e uma coisa da loja, e o desenho diz isso —
+ * nenhum outro icone daqui tem essa silhueta.
+ */
+export function ShieldIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3 5 6v5.5c0 4.3 2.9 7.6 7 9.5 4.1-1.9 7-5.2 7-9.5V6z" />
+    </Icon>
+  );
+}
+
+/** Usuarios: uma pessoa, e a segunda atras dela. */
+export function UsersIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="10" cy="8.5" r="3.5" />
+      <path d="M3.5 20a6.5 6.5 0 0 1 13 0" />
+      <path d="M16.5 5.6a3.5 3.5 0 0 1 0 5.8" />
+      <path d="M18 14.4a6.5 6.5 0 0 1 2.5 5.1" />
+    </Icon>
+  );
+}
+
+/** Auditoria: o relogio que anda para tras. */
+export function HistoryIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1" />
+      <path d="M3.5 4.5V9h4.5" />
+      <path d="M12 7.5V12l3 1.8" />
+    </Icon>
+  );
+}
+
+/** Saude: o tracado do monitor. */
+export function PulseIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M3 12.5h4l2-5.5 3 11 2.5-7 1.5 1.5h5" />
+    </Icon>
+  );
+}
+
+/** Resetar senha: a chave. */
+export function KeyIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="8" cy="12" r="4" />
+      <path d="M12 12h9" />
+      <path d="M17.5 12v3" />
+      <path d="M20.5 12v2" />
+    </Icon>
+  );
+}
+
+/** Encerrar sessoes: o botao de desligar. */
+export function PowerIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3.5v8" />
+      <path d="M7 6.6a7 7 0 1 0 10 0" />
+    </Icon>
+  );
+}
+
+/** Editar: o lapis. */
+export function PencilIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17z" />
+      <path d="m15 7 2 2" />
+    </Icon>
+  );
+}
+
+/** Recarregar: a seta que volta ao inicio. */
+export function RefreshIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20 12a8 8 0 1 1-2.3-5.6" />
+      <path d="M20.5 3.5V8H16" />
     </Icon>
   );
 }

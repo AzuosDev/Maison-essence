@@ -34,6 +34,15 @@ export const ADMIN_AREAS = [
   'delivery',
   'payments',
   'settings',
+
+  /**
+   * A area de sistema: usuarios, auditoria, saude.
+   *
+   * Ultima da lista e separada por um divisor no menu, porque nao e uma
+   * area da loja — e a manutencao do proprio painel. A dona nunca precisa
+   * dela para vender.
+   */
+  'system',
 ] as const;
 
 export type AdminArea = (typeof ADMIN_AREAS)[number];
@@ -41,12 +50,41 @@ export type AdminArea = (typeof ADMIN_AREAS)[number];
 /** O que o STAFF alcanca. Todo o resto do painel e de quem administra. */
 const STAFF_AREAS = new Set<AdminArea>(['home', 'orders']);
 
+/**
+ * O que so o SUPER_ADMIN alcanca.
+ *
+ * A dona administra a loja inteira; quem administra o **sistema** e outra
+ * pessoa. Criar usuario, ler a trilha de auditoria e conferir a saude do
+ * servidor sao tarefas de quem mantem a aplicacao, e deixa-las a vista do
+ * OWNER so cria a chance de alguem se desativar sozinho numa tarde movimentada.
+ *
+ * Vale registrar uma divergencia com o backend: `/users` aceita o OWNER
+ * (`MANAGES_USERS = [OWNER]`, e o SUPER_ADMIN passa pelo guard), com uma
+ * policy que limita o alcance dele aos STAFF. O painel e mais restrito do
+ * que o servidor de proposito — esconder aqui nao afrouxa nada la.
+ */
+const SUPER_ADMIN_AREAS = new Set<AdminArea>(['system']);
+
 export function canSee(role: UserRole | undefined, area: AdminArea): boolean {
   if (role === undefined) {
     return false;
   }
 
+  if (SUPER_ADMIN_AREAS.has(area)) {
+    return role === USER_ROLES.SUPER_ADMIN;
+  }
+
   return role === USER_ROLES.STAFF ? STAFF_AREAS.has(area) : true;
+}
+
+/**
+ * O papel administra o sistema.
+ *
+ * Um atalho com nome, para as telas que perguntam isso sem falar de area:
+ * o guarda de `/admin/system`, a tela de acesso negado e o divisor do menu.
+ */
+export function canManageSystem(role: UserRole | undefined): boolean {
+  return role === USER_ROLES.SUPER_ADMIN;
 }
 
 /** As areas que este papel abre, na ordem do menu. */

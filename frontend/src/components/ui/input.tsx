@@ -12,7 +12,12 @@ import styles from './input.module.css';
  * — porque nao ha razao para reinventar o que o HTML ja nomeia.
  */
 export type InputProps = FieldOwnProps &
-  Omit<ComponentPropsWithoutRef<'input'>, 'className'> & {
+  // `prefix` sai dos tipos nativos: o HTML tem um atributo `prefix` (RDFa,
+  // uma string) que nada aqui usa, e mante-lo cruzaria com o nosso na
+  // intersecao — o tipo resultante seria `string & ReactNode`, que nenhum
+  // icone satisfaz. O componente ja o retira das props antes de espalhar o
+  // resto no `<input>`, entao tira-lo do tipo so descreve o que ja acontece.
+  Omit<ComponentPropsWithoutRef<'input'>, 'className' | 'prefix'> & {
     /** `R$` no campo de preco, a lupa na busca. */
     prefix?: ReactNode;
     /** `%` no desconto, `kg` no peso. */

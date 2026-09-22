@@ -1,0 +1,54 @@
+/*
+ * A confirmacao.
+ *
+ * O alvo tem mais peso visual que a pergunta: e ele que precisa ser lido.
+ */
+
+.description {
+  margin: 0 0 var(--space-16);
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/*
+ * O nome do alvo.
+ *
+ * Fonte de largura fixa porque o que aparece aqui e quase sempre um
+ * identificador — e-mail, codigo de pedido, SKU —, e e nele que a leitura
+ * tem de ser caractere a caractere.
+ *
+ * `overflow-wrap: anywhere` para o e-mail longo no celular: sem isso, ele
+ * empurra o dialogo para fora da tela e o botao de confirmar sai junto.
+ */
+.target {
+  margin: 0;
+  padding: var(--space-12) var(--space-16);
+
+  background-color: var(--admin-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+
+  font-family: var(--font-mono);
+  font-size: var(--text-14);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-12);
+}
+
+/* No celular os dois botoes ocupam a largura, na ordem em que se le. */
+@media (max-width: 30rem) {
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .actions > * {
+    width: 100%;
+  }
+}

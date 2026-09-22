@@ -59,6 +59,12 @@
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Jost', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
+  /* Identificador que se le caractere a caractere: e-mail em confirmacao de
+     acao destrutiva, senha temporaria, id de requisicao na auditoria. A pilha
+     do sistema, sem webfont: sao trechos curtos e raros, e baixar uma quarta
+     fonte para eles custaria mais do que rende. */
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
   /* Escala 48/36/28/22/18/16/14/12. */
   --text-48: 3rem;
   --text-36: 2.25rem;

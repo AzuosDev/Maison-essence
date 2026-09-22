@@ -43,6 +43,7 @@ export {
   areasFor,
   canHandleOrders,
   canManageStore,
+  canManageSystem,
   canSee,
   canSeePrices,
   type AdminArea,
@@ -89,3 +90,64 @@ export {
   statusTone,
   whatsappLink,
 } from './order-labels';
+
+export {
+  AUDIT_ACTION_OPTIONS,
+  describeAction,
+  describeField,
+  describeValue,
+  diffOf,
+  isSensitive,
+  type DiffLine,
+} from './audit-diff';
+
+export {
+  createUser,
+  fetchHealth,
+  listAudit,
+  listCollections,
+  listUsers,
+  resetUserPassword,
+  revokeSessions,
+  runDemoSeed,
+  setUserStatus,
+  updateUser,
+} from './system.api';
+
+export {
+  AUDIT_ACTIONS,
+  AUDIT_TARGETS,
+  type AuditAction,
+  type AuditEntry,
+  type AuditListParams,
+  type AuditTargetKind,
+  type CollectionCount,
+  type CreateUserInput,
+  type DatabaseStatus,
+  type FieldChange,
+  type HealthStatus,
+  type PasswordResetResult,
+  type SeedResult,
+  type SystemUser,
+  type UpdateUserInput,
+} from './system.types';
+
+export {
+  TEMPORARY_PASSWORD_LENGTH,
+  copyToClipboard,
+  generateTemporaryPassword,
+} from './temporary-password';
+
+export {
+  isMissingRoute,
+  useAudit,
+  useCollections,
+  useCreateUser,
+  useDemoSeed,
+  useHealth,
+  useResetPassword,
+  useRevokeSessions,
+  useSetUserStatus,
+  useUpdateUser,
+  useUsers,
+} from './use-system';

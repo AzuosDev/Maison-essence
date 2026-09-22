@@ -1,0 +1,72 @@
+/*
+ * A tela de acesso negado.
+ *
+ * Centralizada e estreita, sem vermelho: quem chega aqui nao errou nada nem
+ * quebrou nada. O escudo e o mesmo icone do item de menu que ela nao ve — e
+ * a unica pista visual de que existe uma area, e de qual e.
+ */
+
+.box {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-12);
+
+  max-width: 34rem;
+  margin: var(--space-32) auto;
+  padding: var(--space-32) var(--space-24);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  text-align: center;
+}
+
+.icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--gold-deep);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.body {
+  margin: 0;
+
+  max-width: 44ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.back {
+  min-height: 2.75rem;
+  margin-top: var(--space-8);
+  padding: var(--space-12) var(--space-24);
+
+  background-color: var(--ink);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  letter-spacing: var(--tracking-button);
+  color: var(--cream);
+  text-decoration: none;
+}
+
+.back:hover {
+  background-color: var(--ink-soft);
+}
+
+.back:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

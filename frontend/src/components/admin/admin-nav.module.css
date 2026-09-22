@@ -72,3 +72,17 @@
   outline: var(--focus-width) solid var(--gold);
   outline-offset: calc(var(--focus-offset) * -1);
 }
+
+/*
+ * O comeco de um grupo novo.
+ *
+ * Um filete e o espaco acima dele. Cor com 12% de opacidade sobre o preto:
+ * o bastante para separar, pouco o bastante para nao competir com o filete
+ * dourado do item ativo, que e a unica linha desta coluna que deve chamar
+ * atencao.
+ */
+.group {
+  margin-top: var(--space-8);
+  padding-top: var(--space-12);
+  border-top: 1px solid rgb(250 247 242 / 0.12);
+}

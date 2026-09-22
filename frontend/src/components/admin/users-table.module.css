@@ -1,0 +1,194 @@
+/*
+ * A lista de usuarios, nas duas formas.
+ *
+ * Mesma gramatica de `orders-table.module.css`: tabela no desktop, cards no
+ * celular. Nao e um arquivo compartilhado porque as colunas sao outras e os
+ * cards tem uma acao embutida — juntar os dois criaria um componente com
+ * dois conjuntos de props que nunca aparecem ao mesmo tempo.
+ */
+
+.tableWrap {
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  /* Seis colunas nao encolhem indefinidamente; rolar e melhor do que quebrar
+     um e-mail em quatro linhas. */
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+.table th,
+.table td {
+  padding: var(--space-12) var(--space-16);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table thead th {
+  border-bottom: var(--border);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.table tbody tr {
+  border-bottom: var(--border);
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: var(--cream);
+}
+
+/* A celula de acoes nao cresce: ela tem a largura do botao. */
+.table td:last-child {
+  width: 1px;
+  padding-left: 0;
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+/*
+ * "voce", ao lado do proprio nome.
+ *
+ * A tabela tem quatro linhas parecidas e uma delas e a de quem esta olhando.
+ * Saber qual muda o que se faz com o menu de acoes.
+ */
+.you {
+  padding: 0.1rem var(--space-8);
+
+  background-color: var(--gold-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+}
+
+/* O e-mail e um identificador: largura fixa ajuda a compara-lo com outro. */
+.email {
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.access {
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/* ---- Os cards do celular ------------------------------------------------- */
+
+.cards {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.cardWho {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.cardName {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  margin: 0;
+
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.cardEmail {
+  margin: 0;
+
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  overflow-wrap: anywhere;
+}
+
+.cardFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+
+  margin: 0;
+  padding-top: var(--space-12);
+  border-top: var(--border);
+}
+
+.cardFacts dt {
+  margin-bottom: var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.cardFacts dd {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+/* O ultimo acesso e uma data por extenso: ocupa a linha inteira. */
+.cardWide {
+  grid-column: 1 / -1;
+}
+
+/* ---- Carregando ---------------------------------------------------------- */
+
+.skeleton {
+  display: grid;
+  gap: var(--space-12);
+}

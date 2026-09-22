@@ -132,5 +132,19 @@ export const ROUTES = {
     delivery: `${ROUTE_GROUPS.admin}/entrega`,
     payments: `${ROUTE_GROUPS.admin}/pagamento`,
     settings: `${ROUTE_GROUPS.admin}/configuracoes`,
+
+    /**
+     * A area de sistema, do SUPER_ADMIN.
+     *
+     * `/admin/system` em ingles, e nao `/admin/sistema` como o resto: nao e
+     * inconsistencia, e destino. Os enderecos em portugues existem porque a
+     * dona os le — ela manda `/admin/pedidos/ME-1042` para quem ajuda no
+     * atendimento. Esta area ela nao abre, nao ve no menu e nao manda para
+     * ninguem; quem digita aqui e quem mantem a aplicacao. As tres telas
+     * abaixo seguem em portugues porque sao lidas nas abas da propria area.
+     */
+    system: `${ROUTE_GROUPS.admin}/system`,
+    systemAudit: `${ROUTE_GROUPS.admin}/system/auditoria`,
+    systemHealth: `${ROUTE_GROUPS.admin}/system/saude`,
   },
 } as const;

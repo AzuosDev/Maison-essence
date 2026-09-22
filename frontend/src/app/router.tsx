@@ -198,6 +198,34 @@ const adminRoutes: RouteObject = {
           'pagamento',
           'configuracoes',
         ]),
+
+        // A area de sistema, do SUPER_ADMIN. Fica dentro da moldura do
+        // painel — e nao num grupo proprio — porque quem chega aqui sem o
+        // papel precisa continuar a um clique de onde queria ir: o menu
+        // permanece ao lado da tela de acesso negado. O recorte por papel e
+        // do `SystemLayout`, e o backend recusa de todo jeito.
+        {
+          path: 'system',
+          lazy: page(() => import('@/pages/admin/system/system-layout')),
+          ErrorBoundary: RouteErrorBoundary,
+          children: [
+            {
+              index: true,
+              lazy: page(() => import('@/pages/admin/system/system-users-page')),
+              ErrorBoundary: RouteErrorBoundary,
+            },
+            {
+              path: 'auditoria',
+              lazy: page(() => import('@/pages/admin/system/system-audit-page')),
+              ErrorBoundary: RouteErrorBoundary,
+            },
+            {
+              path: 'saude',
+              lazy: page(() => import('@/pages/admin/system/system-health-page')),
+              ErrorBoundary: RouteErrorBoundary,
+            },
+          ],
+        },
       ],
     },
   ],

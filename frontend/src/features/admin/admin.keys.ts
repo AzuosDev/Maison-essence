@@ -44,4 +44,18 @@ export const adminKeys = {
 
   /** Os numeros da abertura do painel. */
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,
+
+  /**
+   * A area de sistema.
+   *
+   * Debaixo da mesma raiz `['admin']` — sair do painel limpa isto junto —,
+   * com uma familia por tela. A lista de usuarios nao tem parametros na
+   * chave porque a rota devolve todo mundo: quem filtra e a tela.
+   */
+  system: () => [...adminKeys.all, 'system'] as const,
+  users: () => [...adminKeys.system(), 'users'] as const,
+  audit: () => [...adminKeys.system(), 'audit'] as const,
+  auditList: (params: Record<string, unknown> = {}) => [...adminKeys.audit(), params] as const,
+  health: () => [...adminKeys.system(), 'health'] as const,
+  collections: () => [...adminKeys.system(), 'collections'] as const,
 } as const;

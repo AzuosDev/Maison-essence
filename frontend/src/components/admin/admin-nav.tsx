@@ -10,6 +10,7 @@ import {
   LayersIcon,
   PinIcon,
   ReceiptIcon,
+  ShieldIcon,
   SlidersIcon,
   TruckIcon,
 } from './admin-icons';
@@ -44,6 +45,8 @@ interface NavItem {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
   /** Casa so o endereco exato. Vale para a raiz do painel. */
   end?: boolean;
+  /** Abre um grupo novo: desenha o filete acima do item. */
+  startsGroup?: boolean;
 }
 
 const ITEMS: readonly NavItem[] = [
@@ -55,6 +58,13 @@ const ITEMS: readonly NavItem[] = [
   { area: 'delivery', label: 'Entrega', to: ROUTES.admin.delivery, icon: PinIcon },
   { area: 'payments', label: 'Pagamento', to: ROUTES.admin.payments, icon: CardIcon },
   { area: 'settings', label: 'Configuracoes', to: ROUTES.admin.settings, icon: SlidersIcon },
+  {
+    area: 'system',
+    label: 'Sistema',
+    to: ROUTES.admin.system,
+    icon: ShieldIcon,
+    startsGroup: true,
+  },
 ];
 
 export interface AdminNavProps {
@@ -70,8 +80,8 @@ export function AdminNav({ onNavigate }: AdminNavProps) {
     <nav aria-label="Areas do painel">
       <ul className={styles.list}>
         {ITEMS.filter((item) => allowed.has(item.area)).map(
-          ({ area, label, to, icon: Icon, end }) => (
-            <li key={area}>
+          ({ area, label, to, icon: Icon, end, startsGroup }) => (
+            <li key={area} className={cx(startsGroup === true && styles.group)}>
               <NavLink
                 to={to}
                 end={end ?? false}

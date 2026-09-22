@@ -1,0 +1,98 @@
+/*
+ * A moldura da area de sistema.
+ *
+ * Mesmo ritmo vertical da abertura do painel: o cabecalho, um bloco de
+ * navegacao e o conteudo. Nao inventa um segundo layout dentro do painel.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.header {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.subtitle {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/*
+ * As abas.
+ *
+ * Rolam na horizontal no celular em vez de quebrar em duas linhas: tres abas
+ * com icone nao cabem em 360px, e uma segunda linha as faria parecer dois
+ * grupos. `scrollbar-width: none` porque a barra sobre tres itens polui mais
+ * do que orienta — o corte da terceira aba ja diz que ha mais para o lado.
+ */
+.tabs {
+  display: flex;
+  gap: var(--space-4);
+
+  margin: 0;
+  padding: 0 0 var(--space-4);
+  list-style: none;
+
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: var(--border);
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: 2.75rem;
+  padding: var(--space-8) var(--space-16);
+
+  /* O filete de baixo ja existe transparente: sem ele, a aba ativa empurraria
+     as outras dois pixels para cima. */
+  border-bottom: 2px solid transparent;
+  margin-bottom: calc(var(--space-4) * -1 - 1px);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: none;
+  white-space: nowrap;
+
+  transition:
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.tabActive {
+  border-bottom-color: var(--gold-deep);
+  color: var(--ink);
+  font-weight: var(--weight-medium);
+}
+
+.tabIcon {
+  width: 1rem;
+  height: 1rem;
+  color: currentcolor;
+}

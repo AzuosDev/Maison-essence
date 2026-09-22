@@ -1,0 +1,42 @@
+/* A tela de usuarios: a barra de acoes e a lista. */
+
+.page {
+  display: grid;
+  gap: var(--space-16);
+}
+
+/*
+ * Busca e "Novo acesso" na mesma linha no desktop, empilhados no celular.
+ *
+ * A busca vem antes do botao na ordem do DOM porque e essa a ordem de uso:
+ * quem abre esta tela quase sempre vem procurar alguem, e cadastrar e o caso
+ * raro.
+ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.search {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 34rem) {
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}

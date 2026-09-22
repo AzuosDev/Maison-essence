@@ -1,6 +1,13 @@
 import { expect, test } from 'vitest';
 import { USER_ROLES } from '@/features/auth';
-import { ADMIN_AREAS, areasFor, canManageStore, canSee, canSeePrices } from './admin.roles';
+import {
+  ADMIN_AREAS,
+  areasFor,
+  canManageStore,
+  canManageSystem,
+  canSee,
+  canSeePrices,
+} from './admin.roles';
 
 /**
  * O recorte por papel.
@@ -16,8 +23,11 @@ test('o STAFF alcanca o inicio e os pedidos, e mais nada', () => {
   expect(areasFor(USER_ROLES.STAFF)).toEqual(['home', 'orders']);
 });
 
-test('quem administra alcanca as oito areas', () => {
-  expect(areasFor(USER_ROLES.OWNER)).toEqual([...ADMIN_AREAS]);
+test('a dona alcanca a loja inteira, menos a area de sistema', () => {
+  expect(areasFor(USER_ROLES.OWNER)).toEqual(ADMIN_AREAS.filter((area) => area !== 'system'));
+});
+
+test('so o administrador do sistema alcanca todas as areas', () => {
   expect(areasFor(USER_ROLES.SUPER_ADMIN)).toEqual([...ADMIN_AREAS]);
 });
 
@@ -44,4 +54,34 @@ test('o catalogo e as configuracoes ficam fechados para o STAFF', () => {
   expect(canSee(USER_ROLES.STAFF, 'settings')).toBe(false);
   expect(canSee(USER_ROLES.STAFF, 'delivery')).toBe(false);
   expect(canSee(USER_ROLES.STAFF, 'orders')).toBe(true);
+});
+
+/**
+ * A area de sistema.
+ *
+ * O criterio de aceite e negativo — "o OWNER nao enxerga o item Sistema nem
+ * acessa a rota" — e por isso os casos sao escritos dos dois lados: o que o
+ * SUPER_ADMIN abre e o que a dona nao abre. Um `!==` invertido aqui poria a
+ * criacao de usuarios nas maos de quem nao deve te-la.
+ */
+
+test('o item Sistema so existe para o administrador do sistema', () => {
+  expect(canSee(USER_ROLES.SUPER_ADMIN, 'system')).toBe(true);
+  expect(canSee(USER_ROLES.OWNER, 'system')).toBe(false);
+  expect(canSee(USER_ROLES.STAFF, 'system')).toBe(false);
+  expect(canSee(undefined, 'system')).toBe(false);
+});
+
+test('o menu da dona termina em Configuracoes', () => {
+  const areas = areasFor(USER_ROLES.OWNER);
+
+  expect(areas).not.toContain('system');
+  expect(areas.at(-1)).toBe('settings');
+});
+
+test('canManageSystem responde o mesmo que a area', () => {
+  expect(canManageSystem(USER_ROLES.SUPER_ADMIN)).toBe(true);
+  expect(canManageSystem(USER_ROLES.OWNER)).toBe(false);
+  expect(canManageSystem(USER_ROLES.STAFF)).toBe(false);
+  expect(canManageSystem(undefined)).toBe(false);
 });

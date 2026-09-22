@@ -1,0 +1,63 @@
+/*
+ * O aviso de rota ausente.
+ *
+ * Nao usa o vermelho de erro: nao ha falha, ha uma ausencia conhecida. O
+ * contorno pontilhado e o vocabulario de "lugar reservado" — o mesmo que um
+ * slot vazio de layout usa —, e e isso que este aviso e.
+ */
+
+.box {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-16);
+
+  padding: var(--space-24);
+
+  background-color: var(--cream);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-card);
+}
+
+.icon {
+  flex-shrink: 0;
+  margin-top: 0.15em;
+  color: var(--gold-deep);
+}
+
+.text {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+/* O caminho, em largura fixa: e uma coisa a ser copiada para um editor. */
+.route {
+  margin: 0;
+
+  font-family: var(--font-mono);
+  font-size: var(--text-14);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.body,
+.workaround {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.workaround {
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--line);
+}
