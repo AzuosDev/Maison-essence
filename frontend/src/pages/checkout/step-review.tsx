@@ -10,10 +10,12 @@ import {
   useCheckout,
   type CheckoutQuoteView,
   type CheckoutStep,
+  type OrderFailure,
 } from '@/features/checkout';
 import { formatCents, formatInstallment, maskPhone } from '@/lib/format';
 import { QuoteTotals } from './quote-totals';
 import { StepCard } from './step-card';
+import { SubmitFailure } from './submit-failure';
 import styles from './step-review.module.css';
 
 /**
@@ -53,7 +55,9 @@ export interface StepReviewProps {
   onFinish: () => void;
   isSubmitting: boolean;
   /** O que deu errado no envio, quando nao foi conflito de cotacao. */
-  submitError: string | null;
+  failure: OrderFailure | null;
+  /** Manda o mesmo pedido de novo, sem refazer nada. */
+  onRetry: () => void;
 }
 
 export function StepReview({
@@ -63,7 +67,8 @@ export function StepReview({
   onGoTo,
   onFinish,
   isSubmitting,
-  submitError,
+  failure,
+  onRetry,
 }: StepReviewProps) {
   const contact = useCheckout((state) => state.contact);
   const setContactField = useCheckout((state) => state.setContactField);
@@ -135,10 +140,16 @@ export function StepReview({
         />
       </div>
 
-      {submitError === null ? null : (
-        <p className={styles.error} role="alert">
-          {submitError}
-        </p>
+      {/* `key` no instante da falha: uma recusa nova monta um painel novo, e
+          e essa remontagem que reinicia a espera de quem bateu no limite de
+          envios. Sem ela, o segundo `429` herdaria a contagem do primeiro. */}
+      {failure === null ? null : (
+        <SubmitFailure
+          key={failure.at}
+          failure={failure}
+          onRetry={onRetry}
+          isSubmitting={isSubmitting}
+        />
       )}
 
       <p className={styles.reassurance}>

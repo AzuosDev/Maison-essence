@@ -1,8 +1,10 @@
-import { api, isApiError } from '@/lib/http';
+import { api, errorMessage, isApiError, isNetworkError } from '@/lib/http';
 import {
+  ORDER_FAILURE_KINDS,
   QUOTE_MISMATCH_REASONS,
   type CreateOrderInput,
   type CreatedOrder,
+  type OrderFailure,
   type QuoteConflict,
   type QuoteMismatchReason,
 } from './order.types';
@@ -50,6 +52,32 @@ export function quoteConflictOf(error: unknown): QuoteConflict | null {
   }
 
   return { reason, quote, message: error.message };
+}
+
+/**
+ * Classifica o que nao foi conflito de cotacao.
+ *
+ * Tres desfechos, porque a tela oferece tres coisas diferentes — ver
+ * `ORDER_FAILURE_KINDS`. O `429` e lido pelo status e nao pelo texto: a
+ * frase do limite pode ser reescrita no backend a qualquer momento, e o
+ * numero nao.
+ *
+ * A mensagem sai sempre do erro, nunca daqui. O servidor escreve em
+ * portugues e escreve para quem vai ler; duplicar esse texto no frontend
+ * criaria duas versoes da mesma explicacao.
+ */
+export function orderFailureOf(error: unknown): OrderFailure {
+  const at = Date.now();
+
+  if (isNetworkError(error)) {
+    return { kind: ORDER_FAILURE_KINDS.OFFLINE, message: error.message, at };
+  }
+
+  if (isApiError(error) && error.status === 429) {
+    return { kind: ORDER_FAILURE_KINDS.RATE_LIMIT, message: error.message, at };
+  }
+
+  return { kind: ORDER_FAILURE_KINDS.GENERIC, message: errorMessage(error), at };
 }
 
 function isMismatchReason(value: unknown): value is QuoteMismatchReason {

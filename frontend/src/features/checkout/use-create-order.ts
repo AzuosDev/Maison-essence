@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useRef, useState } from 'react';
-import { errorMessage } from '@/lib/http';
-import { createOrder, quoteConflictOf } from './orders.api';
+import { createOrder, orderFailureOf, quoteConflictOf } from './orders.api';
 import {
   PAYMENT_METHODS,
   type PaymentMethod,
@@ -10,8 +9,10 @@ import {
   isConfirmableConflict,
   type CreateOrderInput,
   type CreatedOrder,
+  type OrderFailure,
   type QuoteConflict,
 } from './order.types';
+import { reserveWhatsappTab, type WhatsappHandoff } from './whatsapp-handoff';
 
 /**
  * O envio do pedido, com as duas protecoes que este botao exige.
@@ -50,6 +51,17 @@ import {
  * novo, e nada acontece ate alguem decidir. Reenviar automaticamente com o
  * valor recalculado seria cobrar um preco que o cliente nao viu — que e
  * exatamente o que a conferencia do servidor existe para impedir.
+ *
+ * ## A aba do WhatsApp
+ *
+ * A reserva da aba mora aqui, e nao na tela, por um motivo so: sao tres os
+ * caminhos que criam um pedido — o envio, a confirmacao do `409` e a
+ * repeticao depois de uma falha —, e os tres saem de um clique. Se a reserva
+ * ficasse na pagina, cada um deles precisaria lembrar de fazer a mesma
+ * chamada, na mesma ordem, antes do mesmo `await`; o dia em que um esquecer,
+ * o pedido e criado e a conversa nao abre — e so no iPhone de alguem.
+ *
+ * Todos passam por `send`, e `send` reserva. Ver `whatsapp-handoff`.
  */
 
 export interface CreateOrderView {
@@ -62,8 +74,16 @@ export interface CreateOrderView {
   acceptConflict: () => void;
   /** Fecha o modal sem enviar nada. O pedido continua por fazer. */
   dismissConflict: () => void;
-  /** A frase de um erro que nao e conflito de cotacao. */
-  error: string | null;
+  /** O que deu errado, quando nao foi conflito de cotacao. */
+  failure: OrderFailure | null;
+  /**
+   * Manda de novo o mesmo pedido, sem mudar nada.
+   *
+   * E a saida das falhas que nao sao do conteudo do pedido — queda de rede,
+   * servidor fora do ar. Reaproveita o corpo que ja foi montado em vez de
+   * mandar o cliente refazer as quatro etapas.
+   */
+  retry: () => void;
 }
 
 export interface UseCreateOrderOptions {
@@ -73,7 +93,7 @@ export interface UseCreateOrderOptions {
 
 export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrderView {
   const [conflict, setConflict] = useState<QuoteConflict | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [failure, setFailure] = useState<OrderFailure | null>(null);
 
   /**
    * A bandeira do duplo clique.
@@ -96,26 +116,46 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
    */
   const lastInput = useRef<CreateOrderInput | null>(null);
 
+  /**
+   * A aba reservada no clique, esperando a resposta.
+   *
+   * Em `ref` pela mesma razao da bandeira acima: ela e aberta durante o
+   * evento e usada quando a promessa resolve, sem nenhum render no meio.
+   */
+  const handoff = useRef<WhatsappHandoff | null>(null);
+
   const mutation = useMutation<CreatedOrder, unknown, CreateOrderInput>({
     mutationFn: (input) => createOrder(input),
 
     onSuccess: (order) => {
       setConflict(null);
-      setError(null);
+      setFailure(null);
+
+      // A conversa primeiro. A tela de confirmacao que `onSuccess` abre e a
+      // rede de seguranca de quem teve a aba bloqueada — e ela precisa
+      // aparecer com a passagem ja tentada, e nao antes dela.
+      handoff.current?.send(order.whatsappUrl);
+      handoff.current = null;
+
       onSuccess(order);
     },
 
-    onError: (failure) => {
-      const mismatch = quoteConflictOf(failure);
+    onError: (reason) => {
+      // Nada foi criado: a aba reservada nao tem para onde ir. Fechada aqui,
+      // e nao deixada em branco atras da tela de erro.
+      handoff.current?.release();
+      handoff.current = null;
+
+      const mismatch = quoteConflictOf(reason);
 
       if (mismatch === null) {
-        setError(errorMessage(failure));
+        setFailure(orderFailureOf(reason));
 
         return;
       }
 
       // Conflito nao e erro na tela: e uma decisao esperando o cliente.
-      setError(null);
+      setFailure(null);
       setConflict(mismatch);
     },
 
@@ -132,7 +172,11 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
 
       inFlight.current = true;
       lastInput.current = input;
-      setError(null);
+      setFailure(null);
+
+      // Antes do `mutate`, e nao depois: a reserva so e permitida enquanto o
+      // clique que a pediu ainda esta sendo tratado.
+      handoff.current = reserveWhatsappTab();
 
       mutation.mutate(input);
     },
@@ -154,13 +198,29 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
     setConflict(null);
   }, []);
 
+  /**
+   * De novo, igual.
+   *
+   * O mesmo corpo, sem remontar nada: o pedido que falhou por rede nao tem
+   * defeito nenhum, e recalcular a partir da tela abriria a chance de ele
+   * sair diferente — inclusive com outro total, que o servidor recusaria.
+   */
+  const retry = useCallback(() => {
+    const pending = lastInput.current;
+
+    if (pending !== null) {
+      send(pending);
+    }
+  }, [send]);
+
   return {
     submit: send,
     isSubmitting: mutation.isPending,
     conflict,
     acceptConflict,
     dismissConflict,
-    error,
+    failure,
+    retry,
   };
 }
 

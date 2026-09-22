@@ -170,3 +170,46 @@ export interface QuoteConflict {
 export function isConfirmableConflict(reason: QuoteMismatchReason): boolean {
   return reason === QUOTE_MISMATCH_REASONS.TOTAL || reason === QUOTE_MISMATCH_REASONS.INSTALLMENTS;
 }
+
+/* ---- O que mais pode dar errado no envio ---------------------------------- */
+
+/**
+ * As tres falhas de envio que pedem conversas diferentes.
+ *
+ * Uma frase vermelha unica serviria para as tres e nao ajudaria em nenhuma.
+ * O que muda nao e o tom: e o que a tela oferece a seguir.
+ *
+ * - `OFFLINE`: a requisicao nem chegou. O pedido **nao** existe, nada foi
+ *   cobrado e nada foi perdido — o botao certo e "tentar de novo".
+ * - `RATE_LIMIT`: o servidor recusou por excesso de tentativas. Aqui o botao
+ *   de repetir imediatamente e uma armadilha, porque a causa mais comum e
+ *   alguem que ja enviou o pedido algumas vezes — e alguma delas pode ter
+ *   dado certo. A tela pede para esperar e conferir a conversa antes.
+ * - `GENERIC`: o resto. A frase vem do servidor, que escreve em portugues, e
+ *   repetir continua sendo uma acao razoavel.
+ *
+ * O `409` de cotacao divergente nao esta aqui de proposito: ele nao e falha,
+ * e uma decisao — e tem o seu proprio caminho, em `QuoteConflict`.
+ */
+export const ORDER_FAILURE_KINDS = {
+  OFFLINE: 'offline',
+  RATE_LIMIT: 'rate-limit',
+  GENERIC: 'generic',
+} as const;
+
+export type OrderFailureKind = (typeof ORDER_FAILURE_KINDS)[keyof typeof ORDER_FAILURE_KINDS];
+
+export interface OrderFailure {
+  kind: OrderFailureKind;
+  /** A frase pronta para a tela, escrita pelo servidor quando houve um. */
+  message: string;
+  /**
+   * O instante em que esta falha chegou, em milissegundos.
+   *
+   * Existe para a tela saber que uma falha e **outra** falha, e nao a mesma
+   * ainda em cartaz: duas recusas por excesso de tentativas trazem o mesmo
+   * texto e o mesmo motivo, e sem este campo a espera de trinta segundos
+   * continuaria correndo a partir da primeira.
+   */
+  at: number;
+}

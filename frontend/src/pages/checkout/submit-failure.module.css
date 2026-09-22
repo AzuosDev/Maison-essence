@@ -1,0 +1,50 @@
+/*
+ * O aviso de que o pedido nao saiu.
+ *
+ * Lavado de vermelho, e nao vermelho: o alarme aqui e a interrupcao do fluxo,
+ * e o texto ja diz o que aconteceu. Um bloco saturado no fim de um checkout
+ * assusta mais do que informa — e o proximo gesto que se quer e apertar um
+ * botao, nao fechar a aba.
+ */
+
+.panel {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-8);
+
+  padding: var(--space-16);
+  border: var(--border);
+  border-color: var(--danger);
+  border-radius: var(--radius-card);
+  background: var(--danger-wash);
+}
+
+.title {
+  margin: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--danger);
+}
+
+.message {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink);
+}
+
+.reassurance {
+  margin: 0 0 var(--space-4);
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  /*
+   * `--ink-soft`, e nao `--muted`: o lavado do vermelho e claro, mas o cinza
+   * de rotulo secundario sobre ele cai perto do limite de contraste — e esta
+   * e justamente a frase que responde ao medo de quem ve um erro no fim de
+   * uma compra. Ela nao pode ser a menos legivel do bloco.
+   */
+  color: var(--ink-soft);
+}

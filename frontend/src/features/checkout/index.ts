@@ -31,6 +31,7 @@ export {
 } from './checkout.types';
 
 export {
+  ORDER_FAILURE_KINDS,
   ORDER_STATUSES,
   QUOTE_MISMATCH_REASONS,
   isConfirmableConflict,
@@ -38,6 +39,8 @@ export {
   type CreatedOrder,
   type CustomerOrder,
   type OrderAddressInput,
+  type OrderFailure,
+  type OrderFailureKind,
   type OrderItemView,
   type OrderStatus,
   type OrderTotalsView,
@@ -45,7 +48,16 @@ export {
   type QuoteMismatchReason,
 } from './order.types';
 
-export { createOrder, quoteConflictOf } from './orders.api';
+export { createOrder, orderFailureOf, quoteConflictOf } from './orders.api';
+
+export {
+  PLACED_ORDERS_LIMIT,
+  placedOrderBy,
+  usePlacedOrders,
+  type PlacedOrder,
+} from './placed-orders';
+
+export { reserveWhatsappTab, type WhatsappHandoff } from './whatsapp-handoff';
 
 export { useCheckoutQuote, type CheckoutQuoteView } from './use-checkout-quote';
 

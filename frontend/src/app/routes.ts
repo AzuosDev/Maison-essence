@@ -56,11 +56,39 @@ export const ROUTES = {
    */
   checkout: '/checkout',
 
+  /**
+   * A confirmacao de um pedido, pelo codigo.
+   *
+   * Fora de `/conta` de proposito: quem compra como convidado tambem fecha
+   * pedido, e um endereco sob a area logada sugeriria que e preciso ter conta
+   * para ver o que acabou de acontecer. `/pedido/ME-260922-4KP1` tambem e um
+   * endereco que o cliente entende ao ver.
+   */
+  order: (code: string) => `/pedido/${encodeURIComponent(code)}`,
+
   /** Paginas institucionais: `quem-somos`, `trocas-e-devolucoes`... */
   page: (slug: string) => `/institucional/${slug}`,
 
   account: {
     root: ROUTE_GROUPS.account,
+
+    /** A lista de pedidos da conta. A tela entra na area do cliente. */
+    orders: `${ROUTE_GROUPS.account}/pedidos`,
+
+    /** O cadastro. */
+    register: `${ROUTE_GROUPS.account}/criar`,
+
+    /**
+     * O cadastro com o telefone ja preenchido.
+     *
+     * A confirmacao do pedido oferece a conta a quem comprou como convidado,
+     * e o telefone que ela leva e o mesmo do pedido — e por ele que o
+     * servidor liga as compras anteriores a conta nova. Pedir o numero de
+     * novo, na tela seguinte, so criaria a chance de ele ser digitado
+     * diferente.
+     */
+    registerWith: (phone: string) =>
+      `${ROUTE_GROUPS.account}/criar?telefone=${encodeURIComponent(phone)}`,
   },
 
   admin: {

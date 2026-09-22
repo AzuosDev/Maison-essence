@@ -1,0 +1,348 @@
+/*
+ * A confirmacao do pedido.
+ *
+ * Uma coluna estreita e centrada, do tamanho de um comprovante. Nada aqui
+ * disputa com o codigo do pedido: ele e o unico elemento com fundo proprio, e
+ * o unico numero que a pessoa vai precisar repetir.
+ */
+
+.page {
+  padding-block: var(--space-48) var(--space-64);
+}
+
+.sheet {
+  display: grid;
+  gap: var(--space-32);
+
+  max-width: 34rem;
+  margin-inline: auto;
+}
+
+/* ---- O topo ---------------------------------------------------------------- */
+
+.hero {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-16);
+
+  text-align: center;
+}
+
+/*
+ * O selo.
+ *
+ * Dourado, e nao verde: o verde de "sucesso" e do formulario generico, e esta
+ * loja tem uma cor propria. O anel de 1px e o mesmo do resto do sistema, e o
+ * fundo e o lavado do dourado — o selo pesa pela area, nao pelo contraste.
+ */
+.mark {
+  display: grid;
+  place-items: center;
+
+  width: 4.5rem;
+  height: 4.5rem;
+
+  border: var(--border);
+  border-color: var(--gold);
+  border-radius: var(--radius-pill);
+  background: var(--gold-wash);
+  color: var(--gold-deep);
+}
+
+.markIcon {
+  stroke-width: 1.75;
+}
+
+/*
+ * O unico movimento da pagina: o traco do certo se desenhando, uma vez.
+ *
+ * Entra depois do circulo, que e a ordem em que a coisa acontece de verdade —
+ * primeiro o selo, depois a marca dentro dele. Curva exponencial: comeca
+ * rapido e assenta, em vez de acelerar no fim como um `ease-in` faria.
+ *
+ * Fora de `prefers-reduced-motion: no-preference` nada se move — o traco ja
+ * chega inteiro, porque o estado final do desenho e o estado normal do SVG.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .mark {
+    animation: seal 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .markIcon path {
+    stroke-dasharray: 26;
+    animation: draw 420ms cubic-bezier(0.16, 1, 0.3, 1) 180ms both;
+  }
+}
+
+@keyframes seal {
+  from {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 26;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.codeLabel {
+  margin: var(--space-8) 0 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/*
+ * O codigo, emoldurado.
+ *
+ * Fundo proprio e espaco a volta porque ele e a unica coisa desta tela que a
+ * pessoa vai precisar de novo — para achar no WhatsApp, para dizer no
+ * telefone, para procurar na conta depois. `user-select: all` faz um toque
+ * selecionar o codigo inteiro, sem arrastar o dedo entre os hifens.
+ */
+.code {
+  margin: 0;
+
+  padding: var(--space-8) var(--space-16);
+  border-radius: var(--radius-chip);
+  background: var(--sand);
+
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  user-select: all;
+}
+
+.instruction {
+  margin: var(--space-8) 0 0;
+
+  max-width: 40ch;
+
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.instruction strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-12);
+
+  margin-top: var(--space-8);
+}
+
+/*
+ * A saida de quem teve a aba bloqueada.
+ *
+ * Menor que a instrucao principal, mas nao apagada: quem precisa desta frase
+ * e justamente quem ficou sem a conversa abrir, e uma orientacao de
+ * recuperacao nao pode ser o texto menos legivel da tela.
+ */
+.blocked {
+  margin: 0;
+
+  max-width: 42ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* ---- A copia a mao --------------------------------------------------------- */
+
+.manual {
+  display: grid;
+  gap: var(--space-8);
+
+  width: 100%;
+  text-align: left;
+}
+
+.manualHint {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.manualText {
+  width: 100%;
+  padding: var(--space-12);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background: var(--cream);
+
+  font-family: inherit;
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.manualText:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- O resumo -------------------------------------------------------------- */
+
+/*
+ * Quatro linhas entre dois fios.
+ *
+ * Sem cartao: um cartao branco sobre o fundo branco da loja seria uma borda a
+ * toa, e o resumo nao e um objeto separado — e a continuacao da mesma folha.
+ */
+.recap {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+  padding-block: var(--space-24);
+  border-top: var(--border);
+  border-bottom: var(--border);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-16);
+
+  font-size: var(--text-14);
+}
+
+/*
+ * Rotulo em `--ink-soft`, como nas linhas de valores do checkout.
+ *
+ * `--muted` e o cinza dos rotulos maiusculos de dois centimetros; numa frase
+ * de 14px sobre o creme da loja ele nao chega aos 4.5:1 de contraste, e esta
+ * e a unica leitura do pedido que a pessoa tem depois de fechar.
+ */
+.row dt {
+  color: var(--ink-soft);
+}
+
+.row dd {
+  margin: 0;
+  text-align: right;
+  color: var(--ink);
+}
+
+.totalRow {
+  padding-top: var(--space-12);
+  border-top: var(--border);
+
+  font-size: var(--text-16);
+}
+
+.totalRow dt,
+.totalRow dd {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/* ---- O convite da conta ---------------------------------------------------- */
+
+/*
+ * O bloco do convite, em area.
+ *
+ * `--sand`, e nao `--cream`: o creme **e** o fundo da loja, e um bloco creme
+ * sobre ele nao existe. A areia e o mesmo fundo que o quadro de valores da
+ * revisao usa — e o tom que esta loja reserva para "isto esta separado do
+ * resto" —, e ele fecha a pagina no mesmo par com a moldura do codigo la em
+ * cima.
+ */
+.invite {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-12);
+
+  padding: var(--space-24);
+  border-radius: var(--radius-card);
+  background: var(--sand);
+
+  text-align: center;
+}
+
+.inviteTitle {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.inviteText {
+  margin: 0;
+
+  max-width: 44ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.inviteText strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.back {
+  justify-self: center;
+}
+
+/* ---- O pedido que nao esta aqui -------------------------------------------- */
+
+.notHere {
+  justify-items: center;
+  padding-block: var(--space-32);
+
+  text-align: center;
+}
+
+@media (min-width: 48rem) {
+  .page {
+    padding-block: var(--space-64) var(--space-96);
+  }
+
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .code {
+    font-size: var(--text-28);
+  }
+}

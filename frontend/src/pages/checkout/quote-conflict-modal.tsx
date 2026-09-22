@@ -37,8 +37,13 @@ import styles from './quote-conflict-modal.module.css';
  *
  * Item indisponivel ou estoque perdido: nao ha o que confirmar. Reenviar a
  * mesma sacola com um item que nao existe mais produziria o mesmo `409`, e o
- * botao seria uma promessa que so pode falhar. A unica saida e voltar a
- * lista de itens — e e a unica que o modal oferece.
+ * botao seria uma promessa que so pode falhar.
+ *
+ * O que o modal oferece nesse caso e o gesto que resolve: tirar da sacola
+ * exatamente os itens que o servidor marcou como indisponiveis. O cliente ve
+ * quais sao, na lista logo acima do botao, e nao precisa procurar entre as
+ * proprias linhas qual foi. Quem prefere decidir com calma tem o "revisar os
+ * itens" ao lado.
  */
 
 export interface QuoteConflictModalProps {
@@ -47,6 +52,11 @@ export interface QuoteConflictModalProps {
   previousTotalCents: number;
   /** Segue com o valor novo. So aparece quando o motivo permite. */
   onConfirm: () => void;
+  /**
+   * Tira da sacola os itens que o servidor marcou como indisponiveis e volta
+   * a etapa de itens. So aparece quando ha algum para tirar.
+   */
+  onRemoveUnavailable: () => void;
   /** Volta para a etapa de itens, onde o problema pode ser resolvido. */
   onReview: () => void;
   onClose: () => void;
@@ -56,6 +66,7 @@ export function QuoteConflictModal({
   conflict,
   previousTotalCents,
   onConfirm,
+  onRemoveUnavailable,
   onReview,
   onClose,
 }: QuoteConflictModalProps) {
@@ -65,6 +76,7 @@ export function QuoteConflictModal({
 
   const newTotalCents = conflict.quote.totalCents;
   const confirmable = isConfirmableConflict(conflict.reason);
+  const unavailable = conflict.quote.items.filter((item) => item.unavailable);
 
   return (
     <Modal
@@ -84,6 +96,12 @@ export function QuoteConflictModal({
           </Button>
 
           {confirmable ? <Button onClick={onConfirm}>Continuar com o novo valor</Button> : null}
+
+          {!confirmable && unavailable.length > 0 ? (
+            <Button onClick={onRemoveUnavailable}>
+              {unavailable.length === 1 ? 'Remover o item' : 'Remover os itens'}
+            </Button>
+          ) : null}
         </div>
       }
     >
@@ -105,7 +123,7 @@ export function QuoteConflictModal({
 
       {conflict.reason === QUOTE_MISMATCH_REASONS.ITEMS ||
       conflict.reason === QUOTE_MISMATCH_REASONS.STOCK ? (
-        <UnavailableList conflict={conflict} />
+        <UnavailableList items={unavailable} />
       ) : null}
     </Modal>
   );
@@ -150,16 +168,14 @@ function Difference({
 }
 
 /** Quais itens travaram o pedido, nas palavras que o servidor escreveu. */
-function UnavailableList({ conflict }: { conflict: QuoteConflict }) {
-  const unavailable = conflict.quote.items.filter((item) => item.unavailable);
-
-  if (unavailable.length === 0) {
+function UnavailableList({ items }: { items: QuoteConflict['quote']['items'] }) {
+  if (items.length === 0) {
     return null;
   }
 
   return (
     <ul className={styles.unavailable}>
-      {unavailable.map((item) => (
+      {items.map((item) => (
         <li key={`${item.productId}:${item.variantId}`}>
           <strong>{item.productName}</strong>
           {item.variantLabel === '' ? '' : ` · ${item.variantLabel}`}: {item.unavailableReason}

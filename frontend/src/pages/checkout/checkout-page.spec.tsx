@@ -6,8 +6,9 @@ import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ToastProvider } from '@/components/ui';
 import { useCart } from '@/features/cart';
-import { useCheckout } from '@/features/checkout';
+import { useCheckout, usePlacedOrders } from '@/features/checkout';
 import { StoreSettingsProvider } from '@/features/settings';
+import OrderConfirmationPage from '@/pages/order/order-confirmation-page';
 import CheckoutPage from './checkout-page';
 
 /**
@@ -27,6 +28,18 @@ import CheckoutPage from './checkout-page';
  *    unico que produz duas conversas no WhatsApp da dona.
  * 5. **O 409 abre o modal comparando os dois valores**, e nao reenvia nada
  *    por conta propria.
+ *
+ * E o fecho, que e o momento em que o sistema todo entrega ou nao entrega:
+ *
+ * 6. **A aba do WhatsApp e reservada no clique** e recebe exatamente a URL
+ *    que o servidor mandou — com as quebras de linha e os acentos como
+ *    ficaram gravados no pedido.
+ * 7. **Erro na criacao nao esvazia a sacola.** O criterio de aceite mais
+ *    caro de descobrir em producao.
+ * 8. **O 429 pede para esperar** em vez de oferecer um botao que so pode
+ *    falhar de novo.
+ * 9. **O 409 de estoque tira da sacola o item que acabou**, sem obrigar o
+ *    cliente a procurar qual foi.
  */
 
 vi.mock('@/lib/env', () => ({
@@ -160,6 +173,129 @@ function cotacao(options: {
   };
 }
 
+/**
+ * A mensagem do pedido, com o que o criterio de aceite cobra: quebra de linha
+ * de verdade e acentuacao de verdade.
+ *
+ * Escrita com acento **de proposito**, ao contrario dos comentarios deste
+ * projeto: e exatamente o que se quer provar que atravessa o caminho inteiro
+ * sem ser reescrito.
+ */
+const MENSAGEM = [
+  'Olá! Segue meu pedido na Maison Essence.',
+  '',
+  'Código: ME-260922-AB12',
+  '1x Asad · 50ml — R$ 189,90',
+  'Retirada na loja · Pagamento em PIX',
+].join('\n');
+
+/** A URL como o servidor a monta: `wa.me` mais a mensagem codificada. */
+const URL_WHATSAPP = `https://wa.me/5588999998888?text=${encodeURIComponent(MENSAGEM)}`;
+
+/** A resposta de `POST /orders`, inteira, como `order.view.ts` a devolve. */
+function pedidoCriado() {
+  return {
+    orderId: 'o1',
+    code: 'ME-260922-AB12',
+    whatsappUrl: URL_WHATSAPP,
+    order: {
+      id: 'o1',
+      code: 'ME-260922-AB12',
+      status: 'PENDING_CONTACT',
+      items: [
+        {
+          productId: '507f1f77bcf86cd799439011',
+          variantId: '507f1f77bcf86cd799439012',
+          productName: 'Asad',
+          variantLabel: '50ml',
+          image: '',
+          unitPriceCents: 18990,
+          quantity: 1,
+          discountPercent: 0,
+          lineTotalCents: 18990,
+        },
+      ],
+      customer: {
+        name: 'Maria Silva',
+        phone: '88999998888',
+        phoneLabel: '(88) 99999-8888',
+        email: '',
+      },
+      fulfillment: {
+        mode: 'PICKUP',
+        cityId: null,
+        cityName: '',
+        state: '',
+        estimatedDays: 0,
+        address: null,
+      },
+      payment: { method: 'PIX', installments: 1, hasInterest: false },
+      totals: {
+        subtotalCents: 18990,
+        discountTotalCents: 0,
+        deliveryFeeCents: 0,
+        pixDiscountCents: 0,
+        totalCents: 18990,
+      },
+      whatsappMessage: MENSAGEM,
+      createdAt: '2026-09-22T12:00:00.000Z',
+      updatedAt: '2026-09-22T12:00:00.000Z',
+    },
+  };
+}
+
+/**
+ * Uma aba de navegador de mentira.
+ *
+ * O jsdom nao abre abas: `window.open` devolve `null`, e com isso o codigo
+ * cairia direto no caminho de emergencia — que nao e o que estes casos
+ * querem observar. Com o dublê, da para conferir as duas coisas que importam:
+ * que a aba foi pedida **vazia** durante o clique, e que a URL do servidor
+ * chegou nela sem passar por nenhuma reescrita.
+ */
+interface AbaFalsa {
+  abertaCom: string;
+  /** A URL que a tela mandou para esta aba, ou `null` se nao mandou nenhuma. */
+  enviadaPara: string | null;
+  closed: boolean;
+  opener: unknown;
+  document: { write: (html: string) => void; close: () => void };
+  location: { replace: (url: string) => void };
+  focus: () => void;
+  close: () => void;
+}
+
+/** As abas que a tela pediu ao navegador, na ordem. */
+let abas: AbaFalsa[] = [];
+
+function comAbas(): void {
+  vi.stubGlobal(
+    'open',
+    vi.fn((url: string): AbaFalsa => {
+      const aba: AbaFalsa = {
+        abertaCom: url,
+        enviadaPara: null,
+        closed: false,
+        opener: {},
+        document: { write: vi.fn(), close: vi.fn() },
+        location: {
+          replace: (destino: string) => {
+            aba.enviadaPara = destino;
+          },
+        },
+        focus: vi.fn(),
+        close: vi.fn(() => {
+          aba.closed = true;
+        }),
+      };
+
+      abas.push(aba);
+
+      return aba;
+    }),
+  );
+}
+
 function jsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
@@ -186,27 +322,17 @@ beforeEach(() => {
   localStorage.clear();
   useCart.setState({ lines: [], hints: {}, drawerOpen: false });
   useCheckout.getState().reset();
+  usePlacedOrders.getState().clear();
 
   quoteRequests = [];
   orderRequests = [];
+  abas = [];
 
   quoteFor = () => cotacao({ totalCents: 18990 });
 
-  orderResponse = () =>
-    jsonResponse(
-      {
-        orderId: 'o1',
-        code: 'ME-260922-AB12',
-        whatsappUrl: 'https://wa.me/5588999998888?text=pedido',
-        order: {},
-      },
-      201,
-    );
+  orderResponse = () => jsonResponse(pedidoCriado(), 201);
 
-  // A ida para o `wa.me` nao e simulada: o jsdom apenas registra "navigation
-  // not implemented" e segue. O que estes casos conferem e o que foi
-  // **enviado** ao servidor — quem abre a conversa e assunto do passo
-  // seguinte do plano, e tera o seu proprio caso.
+  comAbas();
 
   vi.stubGlobal(
     'fetch',
@@ -259,9 +385,18 @@ afterEach(() => {
 function abrirCheckout() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
 
-  const router = createMemoryRouter([{ path: '/checkout', element: <CheckoutPage /> }], {
-    initialEntries: ['/checkout'],
-  });
+  // A confirmacao entra no roteador porque o fecho termina nela: depois do
+  // `201` a pagina navega para `/pedido/:code`, e sem a rota o teste nao
+  // veria o que o cliente ve. `/sacola` responde pelo caminho da sacola
+  // esvaziada.
+  const router = createMemoryRouter(
+    [
+      { path: '/checkout', element: <CheckoutPage /> },
+      { path: '/pedido/:code', element: <OrderConfirmationPage /> },
+      { path: '/sacola', element: <p>A sacola</p> },
+    ],
+    { initialEntries: ['/checkout'] },
+  );
 
   return render(
     <QueryClientProvider client={client}>
@@ -516,16 +651,7 @@ test('o 409 abre o modal comparando os dois valores, sem reenviar sozinho', asyn
   expect(orderRequests.length).toBe(1);
 
   // A confirmacao reenvia com o total novo — e so entao.
-  orderResponse = () =>
-    jsonResponse(
-      {
-        orderId: 'o1',
-        code: 'ME-260922-AB12',
-        whatsappUrl: 'https://wa.me/5588999998888?text=pedido',
-        order: {},
-      },
-      201,
-    );
+  orderResponse = () => jsonResponse(pedidoCriado(), 201);
 
   await usuario.click(within(modal).getByRole('button', { name: 'Continuar com o novo valor' }));
 
@@ -534,6 +660,170 @@ test('o 409 abre o modal comparando os dois valores, sem reenviar sozinho', asyn
   });
 
   expect(orderRequests[1]?.expectedTotalCents).toBe(21990);
+});
+
+/* ---- O fecho --------------------------------------------------------------- */
+
+test('a aba do WhatsApp e reservada no clique e recebe a URL do servidor', async () => {
+  const usuario = userEvent.setup();
+
+  await irAteARevisao(usuario);
+  await usuario.click(screen.getByRole('button', { name: 'Finalizar pelo WhatsApp' }));
+
+  // A aba foi pedida **vazia**, ainda dentro do clique. E o ponto inteiro do
+  // desenho: o Safari do iOS recusa `window.open` chamado depois da promessa
+  // do `POST`, e o pedido ficaria criado sem a conversa acontecer.
+  expect(abas.length).toBe(1);
+  expect(abas[0]?.abertaCom).toBe('');
+
+  await waitFor(() => {
+    expect(abas[0]?.enviadaPara).toBe(URL_WHATSAPP);
+  });
+
+  /**
+   * A URL foi entregue byte a byte.
+   *
+   * O criterio de aceite fala em quebra de linha correta e acento integro, e
+   * e isto que garante os dois: a tela nao remonta nem recodifica nada — ela
+   * repassa a string que o servidor gravou no pedido. Conferir a igualdade
+   * exata e mais forte do que procurar `%0A` no meio dela, porque qualquer
+   * reescrita, inclusive uma que "arrumasse" o texto, quebra o caso.
+   */
+  const enviada = abas[0]?.enviadaPara ?? '';
+
+  expect(decodeURIComponent(enviada.split('?text=')[1] ?? '')).toBe(MENSAGEM);
+
+  // E a confirmacao entrou no lugar do checkout, com o codigo do pedido.
+  expect(await screen.findByText('ME-260922-AB12')).toBeTruthy();
+
+  // E nao a sacola vazia. A guarda de "sacola vazia nao tem checkout" corre
+  // junto com esta navegacao — esvaziar a sacola e ir para a confirmacao
+  // acontecem no mesmo instante —, e ja mandou a pessoa para `/sacola` bem
+  // na hora em que o pedido dera certo.
+  expect(screen.queryByText('A sacola')).toBeNull();
+});
+
+test('erro na criacao do pedido nao esvazia o carrinho', async () => {
+  const usuario = userEvent.setup();
+
+  orderResponse = () =>
+    jsonResponse(
+      {
+        statusCode: 500,
+        message: 'Nao foi possivel registrar o pedido agora.',
+        error: 'Internal Server Error',
+        timestamp: new Date().toISOString(),
+        path: '/orders',
+      },
+      500,
+    );
+
+  await irAteARevisao(usuario);
+  await usuario.click(screen.getByRole('button', { name: 'Finalizar pelo WhatsApp' }));
+
+  await screen.findByRole('alert');
+
+  // O criterio de aceite: a sacola esta como estava.
+  expect(useCart.getState().lines.length).toBe(1);
+
+  // E a aba reservada foi fechada, em vez de ficar em branco atras da tela.
+  await waitFor(() => {
+    expect(abas[0]?.closed).toBe(true);
+  });
+
+  // O caminho de volta e repetir o mesmo pedido, sem refazer as quatro
+  // etapas.
+  orderResponse = () => jsonResponse(pedidoCriado(), 201);
+
+  await usuario.click(screen.getByRole('button', { name: 'Tentar de novo' }));
+
+  await waitFor(() => {
+    expect(orderRequests.length).toBe(2);
+  });
+
+  expect(orderRequests[1]).toEqual(orderRequests[0]);
+});
+
+test('o 429 pede para esperar em vez de oferecer o reenvio na hora', async () => {
+  const usuario = userEvent.setup();
+
+  orderResponse = () =>
+    jsonResponse(
+      {
+        statusCode: 429,
+        message: 'Muitas requisicoes em pouco tempo. Espere um instante e tente de novo.',
+        error: 'Too Many Requests',
+        timestamp: new Date().toISOString(),
+        path: '/orders',
+      },
+      429,
+    );
+
+  await irAteARevisao(usuario);
+  await usuario.click(screen.getByRole('button', { name: 'Finalizar pelo WhatsApp' }));
+
+  const aviso = await screen.findByRole('alert');
+
+  expect(within(aviso).getByText('Muitas tentativas seguidas')).toBeTruthy();
+
+  // O botao existe, e esta fora do ar: quem chega aqui costuma ter enviado o
+  // pedido varias vezes, e uma dessas pode ter passado.
+  const esperar = within(aviso).getByRole('button', { name: /Tentar de novo em \d+s/ });
+
+  expect(esperar).toHaveProperty('disabled', true);
+
+  // A sacola, de novo, intacta.
+  expect(useCart.getState().lines.length).toBe(1);
+});
+
+test('o 409 de estoque tira da sacola o item que acabou', async () => {
+  const usuario = userEvent.setup();
+
+  orderResponse = () =>
+    jsonResponse(
+      {
+        statusCode: 409,
+        message: 'A ultima unidade de um dos itens acabou de ser vendida.',
+        error: 'Conflict',
+        timestamp: new Date().toISOString(),
+        path: '/orders',
+        details: {
+          reason: 'stock',
+          quote: cotacao({
+            mode: 'PICKUP',
+            totalCents: 0,
+            items: [
+              itemCotado({
+                unavailable: true,
+                unavailableReason: 'Sem estoque no momento',
+              }),
+            ],
+          }),
+        },
+      },
+      409,
+    );
+
+  await irAteARevisao(usuario);
+  await usuario.click(screen.getByRole('button', { name: 'Finalizar pelo WhatsApp' }));
+
+  const modal = await screen.findByRole('dialog');
+
+  // O modal nomeia o item, em vez de mandar o cliente procurar qual foi.
+  expect(within(modal).getByText(/Sem estoque no momento/)).toBeTruthy();
+
+  // E nao oferece "continuar com o novo valor": nao ha valor a aceitar, ha
+  // item a tirar.
+  expect(within(modal).queryByRole('button', { name: 'Continuar com o novo valor' })).toBeNull();
+
+  await usuario.click(within(modal).getByRole('button', { name: 'Remover o item' }));
+
+  await waitFor(() => {
+    expect(useCart.getState().lines.length).toBe(0);
+  });
+
+  // Nenhum segundo pedido saiu por conta propria.
+  expect(orderRequests.length).toBe(1);
 });
 
 /** Atravessa os tres primeiros passos com retirada e PIX. */

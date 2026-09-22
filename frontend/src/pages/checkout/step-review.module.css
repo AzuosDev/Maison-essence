@@ -159,18 +159,6 @@
 
 /* ---- Envio ----------------------------------------------------------------- */
 
-.error {
-  margin: 0;
-  padding: var(--space-12);
-
-  background: var(--danger-wash);
-  border-radius: var(--radius-chip);
-
-  font-size: var(--text-14);
-  line-height: var(--leading-body);
-  color: var(--danger);
-}
-
 .reassurance {
   margin: 0;
 

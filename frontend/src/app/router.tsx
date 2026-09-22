@@ -99,6 +99,15 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
+    // A confirmacao, logo depois do checkout que leva a ela. Fica no grupo
+    // da loja, e nao em `/conta`, porque o pedido de convidado termina aqui
+    // do mesmo jeito que o do cliente cadastrado.
+    {
+      path: '/pedido/:code',
+      lazy: page(() => import('@/pages/order/order-confirmation-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
     // Os enderecos que a moldura ja aponta e cujas telas entram nos proximos
     // passos. Existem agora para que nenhum link do cabecalho ou do rodape
     // caia num 404 — o placeholder e o mesmo modulo para todos, e cada rota
@@ -134,6 +143,12 @@ const accountRoutes: RouteObject = {
       lazy: page(() => import('@/pages/account/account-home-page')),
       ErrorBoundary: RouteErrorBoundary,
     },
+
+    // Os dois enderecos que a confirmacao do pedido ja oferece — "ver meus
+    // pedidos" para quem esta logado, "criar conta" para quem nao esta. As
+    // telas entram na area do cliente; ate la o placeholder responde, que e
+    // melhor do que um convite terminar em 404.
+    ...soonRoutes(['/conta/pedidos', '/conta/criar']),
   ],
 };
 

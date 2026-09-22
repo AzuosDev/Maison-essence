@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
-import { Breadcrumb, Button, ButtonLink, Container } from '@/components/ui';
+import { Breadcrumb, Container } from '@/components/ui';
 import { cartIsEmpty, useCart } from '@/features/cart';
 import {
   CHECKOUT_STEPS,
@@ -10,11 +10,12 @@ import {
   useCheckout,
   useCheckoutQuote,
   useCreateOrder,
+  usePlacedOrders,
   type CheckoutAddress,
   type CheckoutQuoteView,
   type CheckoutStep,
   type CreateOrderInput,
-  type CreatedOrder,
+  type OrderFailure,
   type QuoteInput,
 } from '@/features/checkout';
 import { cx } from '@/lib/cx';
@@ -61,6 +62,14 @@ import styles from './checkout-page.module.css';
  * manter os dois lado a lado faria o cliente conferir os mesmos cinco
  * numeros em dois lugares da mesma tela.
  *
+ * ## O fecho
+ *
+ * O envio acontece em `useCreateOrder`, e a ordem das coisas depois do `201`
+ * e deliberada: guardar o pedido no navegador, esvaziar a sacola, zerar o
+ * checkout e so entao ir para `/pedido/:code`. A sacola e esvaziada **depois
+ * da resposta**, nunca antes — qualquer falha no meio do caminho deixa tudo
+ * exatamente onde estava, e o cliente tenta de novo sem remontar nada.
+ *
  * ## Fora do indice
  *
  * `noindex`, como a sacola: esta pagina e de uma pessoa so e nao tem nada a
@@ -79,6 +88,9 @@ export default function CheckoutPage() {
 
   const isEmpty = useCart(cartIsEmpty);
   const clearCart = useCart((state) => state.clear);
+  const removeLine = useCart((state) => state.removeLine);
+
+  const rememberOrder = usePlacedOrders((state) => state.remember);
 
   const quoting = useCheckoutQuote();
 
@@ -107,8 +119,22 @@ export default function CheckoutPage() {
     goTo(to);
   };
 
-  /** O pedido fechado. Segura o redirecionamento da sacola vazia. */
-  const [placed, setPlaced] = useState<CreatedOrder | null>(null);
+  /**
+   * O pedido ja foi fechado nesta visita.
+   *
+   * Em `ref`, e nao em estado, pelo mesmo motivo da trava de duplo clique em
+   * `useCreateOrder`: ele precisa valer **no mesmo instante** em que e
+   * escrito.
+   *
+   * A corrida e real e foi vista em navegador. Esvaziar a sacola e uma
+   * escrita no store externo do zustand, e o React reage a ela com um render
+   * proprio; a ida para `/pedido/:code` e uma navegacao assincrona do
+   * roteador, que so se completa depois. No meio dos dois, a guarda de
+   * "sacola vazia nao tem checkout" roda — e, com um `useState`, leria o
+   * valor antigo e mandaria a pessoa para `/sacola` bem na hora em que o
+   * pedido acabou de dar certo. O `ref` fecha essa janela.
+   */
+  const placed = useRef(false);
 
   /**
    * O total que estava na tela no momento do envio.
@@ -122,19 +148,20 @@ export default function CheckoutPage() {
 
   const order = useCreateOrder({
     onSuccess: (created) => {
+      // Guardar antes de limpar: e a unica copia que a tela de confirmacao
+      // tera, e ela e montada no proximo instante.
+      rememberOrder(created);
+
       // A sacola so e esvaziada depois da resposta de sucesso. Se o envio
       // falhar, tudo continua onde estava.
-      setPlaced(created);
+      placed.current = true;
       clearCart();
       resetCheckout();
 
-      if (created.whatsappUrl !== '') {
-        // Na mesma aba, e de proposito: uma aba nova aberta depois de uma
-        // promessa e bloqueada pelo Safari no iOS, e o pedido ficaria criado
-        // sem a conversa acontecer. O painel abaixo cobre o caso de a
-        // navegacao nao acontecer por qualquer outro motivo.
-        window.location.assign(created.whatsappUrl);
-      }
+      // `replace` para que o "voltar" do navegador nao traga a pessoa de
+      // volta a um checkout que ja nao existe — a sacola esta vazia e o
+      // pedido, feito.
+      void navigate(ROUTES.order(created.code), { replace: true });
     },
   });
 
@@ -143,17 +170,13 @@ export default function CheckoutPage() {
    *
    * `placed` segura o redirecionamento no unico caso em que a sacola fica
    * vazia de proposito — o pedido acabou de ser fechado, e mandar a pessoa
-   * para a sacola vazia nesse instante apagaria o codigo do pedido da tela.
+   * para a sacola vazia nesse instante a tiraria do caminho da confirmacao.
    */
   useEffect(() => {
-    if (isEmpty && placed === null) {
+    if (isEmpty && !placed.current) {
       void navigate(ROUTES.cart, { replace: true });
     }
-  }, [isEmpty, placed, navigate]);
-
-  if (placed !== null) {
-    return <OrderPlaced order={placed} />;
-  }
+  }, [isEmpty, navigate]);
 
   const finish = (): void => {
     const input = orderInputFrom(quoting.input, contact, address, quoting.quote?.totalCents ?? null);
@@ -164,6 +187,28 @@ export default function CheckoutPage() {
 
     setSubmittedTotal(input.expectedTotalCents);
     order.submit(input);
+  };
+
+  /**
+   * Tira da sacola o que o servidor disse que acabou, e volta aos itens.
+   *
+   * A alternativa — mandar o cliente achar sozinho, entre cinco linhas, qual
+   * e o frasco que saiu — e o tipo de trabalho que o sistema ja sabe fazer:
+   * o `409` veio com a cotacao nova, e nela cada item indisponivel esta
+   * marcado. A tela remove exatamente esses e nao toca em mais nada.
+   *
+   * Removidos todos, a sacola pode ficar vazia. Ai a guarda acima assume e
+   * leva a pessoa para `/sacola`, que e onde ela precisa estar.
+   */
+  const removeUnavailable = (): void => {
+    for (const item of order.conflict?.quote.items ?? []) {
+      if (item.unavailable) {
+        removeLine(item.productId, item.variantId);
+      }
+    }
+
+    order.dismissConflict();
+    move(CHECKOUT_STEPS[0]);
   };
 
   return (
@@ -202,7 +247,8 @@ export default function CheckoutPage() {
             onGoTo={move}
             onFinish={finish}
             isSubmitting={order.isSubmitting}
-            submitError={order.error}
+            failure={order.failure}
+            onRetry={order.retry}
           />
         </div>
 
@@ -223,6 +269,7 @@ export default function CheckoutPage() {
         conflict={order.conflict}
         previousTotalCents={submittedTotal}
         onConfirm={order.acceptConflict}
+        onRemoveUnavailable={removeUnavailable}
         onReview={() => {
           order.dismissConflict();
           move(CHECKOUT_STEPS[0]);
@@ -244,7 +291,8 @@ interface StepProps {
   onGoTo: (step: CheckoutStep) => void;
   onFinish: () => void;
   isSubmitting: boolean;
-  submitError: string | null;
+  failure: OrderFailure | null;
+  onRetry: () => void;
 }
 
 function Step({
@@ -256,7 +304,8 @@ function Step({
   onGoTo,
   onFinish,
   isSubmitting,
-  submitError,
+  failure,
+  onRetry,
 }: StepProps) {
   switch (step) {
     case 'items':
@@ -293,56 +342,11 @@ function Step({
           onGoTo={onGoTo}
           onFinish={onFinish}
           isSubmitting={isSubmitting}
-          submitError={submitError}
+          failure={failure}
+          onRetry={onRetry}
         />
       );
   }
-}
-
-/* ---- O pedido fechado ------------------------------------------------------ */
-
-/**
- * O que fica na tela depois que o pedido existe.
- *
- * A navegacao para o WhatsApp ja foi disparada; este painel e a rede de
- * seguranca — o navegador pode te-la bloqueado, e a loja pode nao ter numero
- * cadastrado. Nos dois casos o pedido **existe**, e o codigo dele precisa
- * estar visivel: e por ele que a loja acha a conversa.
- *
- * A tela de confirmacao propria, em `/pedido/:code`, com "reenviar pelo
- * WhatsApp" e "copiar a mensagem", e o passo seguinte do plano. Este painel
- * e o minimo para que o fluxo nao termine numa tela em branco.
- */
-function OrderPlaced({ order }: { order: CreatedOrder }) {
-  return (
-    <Container className={styles.page}>
-      <div className={styles.placed}>
-        <p className={styles.placedTitle}>Pedido registrado</p>
-
-        <p className={styles.placedCode}>{order.code}</p>
-
-        <p className={styles.placedText}>
-          {order.whatsappUrl === ''
-            ? 'Guarde este codigo e fale com a loja para combinar o pagamento.'
-            : 'Estamos abrindo o WhatsApp da loja com o resumo do seu pedido.'}
-        </p>
-
-        {order.whatsappUrl === '' ? null : (
-          <Button
-            onClick={() => {
-              window.location.assign(order.whatsappUrl);
-            }}
-          >
-            Abrir o WhatsApp
-          </Button>
-        )}
-
-        <ButtonLink variant="ghost" to={ROUTES.products}>
-          Voltar a loja
-        </ButtonLink>
-      </div>
-    </Container>
-  );
 }
 
 /* ---- O corpo do pedido ------------------------------------------------------ */
