@@ -1,5 +1,5 @@
 import { Suspense, useRef } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, ScrollRestoration, type Location } from 'react-router-dom';
 import { AnnouncementBar, StoreFooter, StoreHeader, WhatsappButton } from '@/components/store';
 import { Spinner } from '@/components/ui';
 import { StoreSettingsProvider } from '@/features/settings';
@@ -25,6 +25,8 @@ export function StoreLayout() {
 
   return (
     <StoreSettingsProvider>
+      <ScrollRestoration getKey={scrollKey} />
+
       <div className={styles.layout}>
         <AnnouncementBar />
         <StoreHeader />
@@ -40,4 +42,26 @@ export function StoreLayout() {
       </div>
     </StoreSettingsProvider>
   );
+}
+
+/**
+ * A chave sob a qual cada posicao de rolagem e guardada.
+ *
+ * O padrao do React Router e `location.key`, que e unico por navegacao —
+ * inclusive por `replace`. Aqui a chave e so o caminho, e a diferenca importa
+ * em dois momentos da vitrine:
+ *
+ * 1. **Marcar um filtro nao pula para o topo.** Os filtros vivem na query
+ *    string e cada clique reescreve a URL. Com a chave padrao, cada reescrita
+ *    seria um endereco novo, e o navegador iria para o inicio da pagina — o
+ *    cliente marcaria "em estoque" na barra lateral e perderia o lugar em que
+ *    estava. Com o caminho como chave, `/produtos` e `/produtos?estoque=1`
+ *    compartilham a posicao e a tela fica parada.
+ * 2. **Voltar do produto cai onde se estava.** A ida para `/produtos/asad`
+ *    grava a altura de `/produtos`; a volta a encontra. E a metade desta casa
+ *    do criterio de aceite — a outra metade e a lista ainda estar em cache,
+ *    para que exista altura onde pousar.
+ */
+function scrollKey(location: Location): string {
+  return location.pathname;
 }

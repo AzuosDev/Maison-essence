@@ -1,7 +1,21 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchCategoryTree, fetchShelf, fetchSuggestions, type ShelfName } from './catalog.api';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
+import {
+  fetchCategory,
+  fetchCategoryTree,
+  fetchProduct,
+  fetchShelf,
+  fetchSuggestions,
+  type ShelfName,
+} from './catalog.api';
 import { catalogKeys } from './catalog.keys';
-import type { CategoryTree, Paginated, PublicProduct } from './catalog.types';
+import type {
+  CategoryTree,
+  MovedCategory,
+  Paginated,
+  PublicProduct,
+  PublicProductDetail,
+} from './catalog.types';
 
 /**
  * Os hooks de leitura do catalogo.
@@ -80,4 +94,68 @@ export function useShelf(name: ShelfName, limit?: number) {
     queryFn: ({ signal }) => fetchShelf(name, limit, signal),
     staleTime: SHELF_STALE_TIME_MS,
   });
+}
+
+/* ---- A categoria da pagina --------------------------------------------- */
+
+/**
+ * A categoria pelo endereco, com as subcategorias dela.
+ *
+ * Mesmo frescor do menu: nome e foto de categoria nao mudam durante uma
+ * visita. O `enabled` desliga a consulta em `/produtos` e `/busca`, que nao
+ * tem categoria nenhuma — sem ele, a vitrine pediria `/categories/` a cada
+ * abertura e levaria um 404.
+ */
+export function useCategory(slug: string | undefined) {
+  return useQuery<CategoryTree | MovedCategory>({
+    queryKey: catalogKeys.category(slug ?? ''),
+    queryFn: ({ signal }) => fetchCategory(slug ?? '', signal),
+    enabled: slug !== undefined && slug !== '',
+    staleTime: CATEGORY_STALE_TIME_MS,
+  });
+}
+
+/**
+ * A categoria de verdade, ou nada.
+ *
+ * `GET /categories/:slug` responde 301 quando o endereco mudou de nome, e o
+ * navegador segue o redirecionamento sozinho — entao o corpo `MovedCategory`
+ * quase nunca chega aqui. Quando chega, e tratado como ausencia: a pagina
+ * desenha o cabecalho generico em vez de mostrar `undefined` no titulo.
+ */
+export function asCategory(data: CategoryTree | MovedCategory | undefined): CategoryTree | null {
+  return data !== undefined && 'name' in data ? data : null;
+}
+
+/* ---- Prebusca ----------------------------------------------------------- */
+
+/**
+ * O produto sob o cursor, buscado antes do clique.
+ *
+ * Meio segundo separa o hover do clique, e e tempo de sobra para a API
+ * responder. Quando a pagina do produto abrir, ela vai pedir exatamente esta
+ * chave e encontrar o dado pronto: a navegacao parece instantanea porque,
+ * para os dados, ela e.
+ *
+ * `prefetchQuery` respeita `staleTime`, entao passar o mouse dez vezes pelo
+ * mesmo card e uma requisicao so. A promessa e descartada de proposito —
+ * prebusca que falha nao e erro: e so um clique que vai esperar como
+ * esperaria sem ela.
+ */
+/** O mesmo minuto do resto do catalogo. */
+const PRODUCT_STALE_TIME_MS = 60_000;
+
+export function usePrefetchProduct(): (slug: string) => void {
+  const client = useQueryClient();
+
+  return useCallback(
+    (slug: string) => {
+      void client.prefetchQuery<PublicProductDetail>({
+        queryKey: catalogKeys.product(slug),
+        queryFn: ({ signal }) => fetchProduct(slug, signal),
+        staleTime: PRODUCT_STALE_TIME_MS,
+      });
+    },
+    [client],
+  );
 }

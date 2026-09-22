@@ -7,12 +7,14 @@ import {
   displayVariant,
   quantityDiscountLabel,
   soleVariant,
+  usePrefetchProduct,
   type PublicProduct,
 } from '@/features/catalog';
 import { bestInterestFreeInstallment, usePaymentSettings } from '@/features/payments';
 import { imageProps } from '@/lib/cloudinary';
 import { formatCents, formatCentsRange, formatInstallment } from '@/lib/format';
 import { cx } from '@/lib/cx';
+import { Highlight } from './highlight';
 import { useAddToCart } from './use-add-to-cart';
 import { VariantPicker } from './variant-picker';
 import styles from './product-card.module.css';
@@ -57,6 +59,13 @@ export interface ProductCardProps {
   priority?: boolean;
   /** O `sizes` do `<img>`, quando a grade nao e a padrao. */
   sizes?: string;
+  /**
+   * O termo buscado, realcado no nome.
+   *
+   * So a pagina de busca passa isto. Vazio em todo o resto da loja, e o nome
+   * sai limpo.
+   */
+  highlight?: string;
   className?: string | undefined;
 }
 
@@ -64,10 +73,12 @@ export function ProductCard({
   product,
   priority = false,
   sizes = DEFAULT_SIZES,
+  highlight = '',
   className,
 }: ProductCardProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const addToCart = useAddToCart();
+  const prefetchProduct = usePrefetchProduct();
 
   const variant = displayVariant(product);
   const single = soleVariant(product);
@@ -87,13 +98,22 @@ export function ProductCard({
     setPickerOpen(true);
   };
 
+  const prefetch = (): void => {
+    prefetchProduct(product.slug);
+  };
+
   return (
     <article className={cx(styles.card, className)}>
+      {/* A prebusca fica nos dois links, e nao no card inteiro: sao eles que
+          levam ao produto, e sao eles que o cursor atravessa a caminho do
+          clique. O `onFocus` do link do nome — o unico do card que recebe
+          foco — e o equivalente para quem navega por teclado. */}
       <Link
         to={ROUTES.product(product.slug)}
         className={styles.media}
         tabIndex={-1}
         aria-hidden="true"
+        onMouseEnter={prefetch}
       >
         <img
           {...imageProps(product.coverImage, 'card', sizes)}
@@ -123,8 +143,13 @@ export function ProductCard({
         <p className={styles.brand}>{product.brand}</p>
 
         <h3 className={cx(styles.nameRow, styles.name)}>
-          <Link to={ROUTES.product(product.slug)} className={styles.nameLink}>
-            {product.name}
+          <Link
+            to={ROUTES.product(product.slug)}
+            className={styles.nameLink}
+            onMouseEnter={prefetch}
+            onFocus={prefetch}
+          >
+            <Highlight text={product.name} term={highlight} />
           </Link>
         </h3>
 

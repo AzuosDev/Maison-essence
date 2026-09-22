@@ -1,0 +1,100 @@
+/*
+ * A listagem: cabecalho, pilulas, barra de ferramentas, filtros e grade.
+ *
+ * A coluna de filtros tem largura fixa e a grade fica com o resto. Fixa e
+ * nao proporcional porque o conteudo dela nao escala: um nome de marca ocupa
+ * o que ocupa, e uma coluna em porcentagem ficaria estreita demais a 1024px
+ * e larga demais a 1600px, com as marcas boiando.
+ */
+
+.page {
+  padding-bottom: var(--space-64);
+}
+
+/* ---- A barra de ferramentas ------------------------------------------- */
+
+/*
+ * O botao de filtros e a ordenacao, na mesma linha.
+ *
+ * No celular sao os dois; no desktop so a ordenacao, empurrada para a
+ * direita — os filtros ja estao na coluna lateral. Por isso o
+ * `space-between`: com um filho so, ele encosta na direita sozinho.
+ */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+
+  padding-block: var(--space-16);
+  border-bottom: var(--border);
+}
+
+/* O seletor nao ocupa a linha inteira: no celular divide com o botao. */
+.sort {
+  margin-left: auto;
+  min-width: 11rem;
+}
+
+/* ---- O corpo ----------------------------------------------------------- */
+
+.body {
+  display: grid;
+  gap: var(--space-32);
+
+  padding-top: var(--space-24);
+}
+
+.results {
+  /* `min-width: 0` para que um nome longo nao estique a coluna da grade e
+     espreme a barra de filtros ao lado. */
+  min-width: 0;
+}
+
+.pagination {
+  margin-top: var(--space-48);
+}
+
+.more {
+  margin-top: var(--space-32);
+}
+
+/* O aviso do teto da varredura de promocoes. */
+.note {
+  margin-top: var(--space-24);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  text-align: center;
+  color: var(--muted);
+}
+
+@media (min-width: 64rem) {
+  .body {
+    grid-template-columns: 16rem minmax(0, 1fr);
+    gap: var(--space-48);
+
+    padding-top: var(--space-32);
+  }
+
+  /*
+   * A coluna de filtros acompanha a rolagem.
+   *
+   * Presa logo abaixo do cabecalho encolhido — que e a altura que ele tem
+   * depois que a pagina rola, e portanto a que vale enquanto alguem usa os
+   * filtros. A altura maxima e o que sobra da tela, e o excedente rola
+   * dentro da propria coluna: sem isso, uma loja com muitas marcas teria o
+   * botao de limpar filtros fora do alcance.
+   */
+  .sidebar {
+    position: sticky;
+    top: calc(var(--header-height-compact) + var(--space-16));
+
+    max-height: calc(100vh - var(--header-height-compact) - var(--space-32));
+    overflow-y: auto;
+
+    /* O anel de foco dos controles nao pode ser cortado pela rolagem. */
+    padding: var(--focus-offset);
+    margin: calc(var(--focus-offset) * -1);
+  }
+}

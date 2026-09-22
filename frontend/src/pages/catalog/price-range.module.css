@@ -1,0 +1,129 @@
+/*
+ * O slider duplo.
+ *
+ * O desenho e todo do trilho e do preenchimento, que sao dois elementos
+ * comuns. Os dois `<input type="range">` ficam por cima, invisiveis, e so as
+ * bolinhas aparecem — assim o comportamento continua sendo o nativo (arrasto,
+ * toque, teclado, foco) e a aparencia e a da loja.
+ *
+ * `pointer-events` e o que faz os dois conviverem: os inputs empilhados
+ * cobrem o trilho inteiro, e se ambos recebessem o clique, o de cima
+ * roubaria todo gesto. Desligando nos inputs e religando so nas bolinhas,
+ * cada ponta responde ao seu proprio arrasto.
+ */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.values {
+  display: flex;
+  justify-content: space-between;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+.track {
+  position: relative;
+
+  /* Altura do gesto, e nao do trilho: e a area em que o dedo acerta a
+     bolinha. O trilho visivel tem 2px e e desenhado pelo `::before`. */
+  height: var(--control-height-small);
+}
+
+.track::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+
+  height: 2px;
+  margin-top: -1px;
+
+  background-color: var(--line);
+  border-radius: var(--radius-pill);
+}
+
+/* O trecho escolhido, entre as duas bolinhas. As duas pontas vem por
+   variavel, escritas pelo componente. */
+.fill {
+  position: absolute;
+  top: 50%;
+  left: var(--from);
+  right: calc(100% - var(--to));
+
+  height: 2px;
+  margin-top: -1px;
+
+  background-color: var(--ink);
+  border-radius: var(--radius-pill);
+}
+
+.input {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  appearance: none;
+  background: transparent;
+
+  /* O input inteiro e transparente ao clique; so a bolinha responde. */
+  pointer-events: none;
+}
+
+.input:focus {
+  outline: none;
+}
+
+/* ---- As bolinhas ------------------------------------------------------ */
+
+.input::-webkit-slider-thumb {
+  appearance: none;
+  pointer-events: auto;
+
+  width: var(--space-24);
+  height: var(--space-24);
+
+  background-color: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+  cursor: grab;
+}
+
+.input::-moz-range-thumb {
+  pointer-events: auto;
+
+  width: var(--space-24);
+  height: var(--space-24);
+
+  background-color: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+  cursor: grab;
+}
+
+/*
+ * O anel de foco vai na bolinha, e nao no input.
+ *
+ * O input ocupa a largura inteira do trilho: um anel nele desenharia um
+ * retangulo em volta de tudo, e quem navega por teclado nao saberia qual das
+ * duas pontas esta prestes a mover.
+ */
+.input:focus-visible::-webkit-slider-thumb {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.input:focus-visible::-moz-range-thumb {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

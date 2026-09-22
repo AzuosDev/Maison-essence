@@ -24,8 +24,10 @@ export { MobileMenu } from './mobile-menu';
  * sincrono importa de './newsletter-form'.
  */
 export { DeferredNewsletter } from './deferred-newsletter';
+export { Highlight, type HighlightProps } from './highlight';
 export { ProductCard, type ProductCardProps } from './product-card';
 export { ProductCardSkeleton } from './product-card-skeleton';
+export { ProductGrid, type ProductGridProps } from './product-grid';
 export { ProductShelf } from './product-shelf';
 export { SearchOverlay } from './search-overlay';
 export { SectionHeading } from './section-heading';

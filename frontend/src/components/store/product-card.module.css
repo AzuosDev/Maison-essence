@@ -242,3 +242,16 @@
   height: var(--control-height);
   border-radius: var(--radius-chip);
 }
+
+/*
+ * O termo buscado, realcado no nome.
+ *
+ * O `<mark>` do navegador vem amarelo, que nao existe nesta paleta. A troca
+ * e pelo dourado quase apagado que o resto da loja ja usa para marcar linha
+ * sob o cursor — o realce le-se como grifo, e nao como aviso.
+ */
+.name mark {
+  background-color: var(--gold-wash);
+  color: inherit;
+  font-weight: var(--weight-medium);
+}

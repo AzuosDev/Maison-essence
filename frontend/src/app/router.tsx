@@ -49,19 +49,36 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
+    // A listagem: quatro enderecos, uma tela. O que muda entre eles e o
+    // cabecalho e o contexto — a categoria fixa, a bandeira fixa, o termo
+    // buscado —, e cada modulo abaixo e so isso. O miolo mora em
+    // `pages/catalog/catalog-view`, que os quatro compartilham.
+    {
+      path: '/produtos',
+      lazy: page(() => import('@/pages/catalog/products-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: '/pronta-entrega',
+      lazy: page(() => import('@/pages/catalog/ready-to-ship-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: '/categorias/:slug',
+      lazy: page(() => import('@/pages/catalog/category-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: '/busca',
+      lazy: page(() => import('@/pages/catalog/search-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
     // Os enderecos que a moldura ja aponta e cujas telas entram nos proximos
     // passos. Existem agora para que nenhum link do cabecalho ou do rodape
     // caia num 404 — o placeholder e o mesmo modulo para todos, e cada rota
     // troca a sua entrada quando a tela dela chegar.
-    ...soonRoutes([
-      '/produtos',
-      '/produtos/:slug',
-      '/pronta-entrega',
-      '/categorias/:slug',
-      '/busca',
-      '/sacola',
-      '/institucional/:slug',
-    ]),
+    ...soonRoutes(['/produtos/:slug', '/sacola', '/institucional/:slug']),
 
     {
       // O curinga fica no grupo da loja de proposito: e ele que pega

@@ -1,5 +1,11 @@
 import { api } from '@/lib/http';
-import type { CategoryTree, Paginated, PublicProduct } from './catalog.types';
+import type {
+  CategoryTree,
+  MovedCategory,
+  Paginated,
+  PublicProduct,
+  PublicProductDetail,
+} from './catalog.types';
 import type { ProductListParams } from './catalog.keys';
 
 /**
@@ -63,6 +69,38 @@ export function fetchShelf(
   return api.get<PublicProduct[]>(`/products/${name}`, {
     scope: null,
     ...(limit === undefined ? {} : { query: { limit } }),
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Um produto pelo endereco dele.
+ *
+ * Quem chama hoje e a prebusca do card no hover; a pagina do produto usa a
+ * mesma funcao e a mesma chave de cache quando chegar — e por isso encontra
+ * o produto ja carregado no clique.
+ */
+export function fetchProduct(slug: string, signal?: AbortSignal): Promise<PublicProductDetail> {
+  return api.get<PublicProductDetail>(`/products/${encodeURIComponent(slug)}`, {
+    scope: null,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Uma categoria pelo endereco, com as subcategorias dela.
+ *
+ * E o que o cabecalho da listagem precisa: o nome para o titulo, a contagem
+ * para o subtitulo e os filhos para as pilulas de subcategoria. Vem daqui e
+ * nao da arvore do menu porque a arvore traz so as raizes com um nivel — e
+ * esta rota responde tambem quando o slug pedido e o de uma subcategoria.
+ */
+export function fetchCategory(
+  slug: string,
+  signal?: AbortSignal,
+): Promise<CategoryTree | MovedCategory> {
+  return api.get<CategoryTree | MovedCategory>(`/categories/${encodeURIComponent(slug)}`, {
+    scope: null,
     ...(signal ? { signal } : {}),
   });
 }

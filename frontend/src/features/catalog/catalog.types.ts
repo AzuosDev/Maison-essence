@@ -80,3 +80,39 @@ export interface Paginated<T> {
   totalItems: number;
   hasMore: boolean;
 }
+
+/** Categoria no fio de pao da pagina do produto. */
+export interface PublicProductCategory {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+/**
+ * O produto na pagina dele: tudo do card, mais o que so ela mostra.
+ *
+ * Existe aqui antes de a pagina existir porque o card ja a prebusca no hover
+ * — e prebuscar sem tipo significaria gravar no cache, sob a chave
+ * `catalogKeys.product`, um objeto de formato diferente do que a tela vai
+ * pedir depois. A chave e a mesma; o tipo precisa ser o mesmo tambem.
+ */
+export interface PublicProductDetail extends PublicProduct {
+  description: string;
+  categories: PublicProductCategory[];
+  /** A escada inteira, para a pagina mostrar quanto se ganha levando mais. */
+  quantityDiscounts: QuantityDiscountTier[];
+  related: PublicProduct[];
+}
+
+/**
+ * O que `GET /categories/:slug` devolve quando o endereco mudou de nome.
+ *
+ * O backend responde `301` com `Location`, e o `fetch` do navegador segue o
+ * redirecionamento sozinho — este formato so aparece para quem nao segue.
+ * Esta declarado para que o discriminante (`'location' in resposta`) tenha
+ * tipo, e nao para ser o caso comum.
+ */
+export interface MovedCategory {
+  slug: string;
+  location: string;
+}

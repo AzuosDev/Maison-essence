@@ -1,0 +1,32 @@
+/*
+ * A grade da listagem.
+ *
+ * Quatro larguras, e a do desktop e a que tem motivo menos obvio: a partir
+ * de 1024px a barra de filtros ocupa uma coluna fixa a esquerda, entao a
+ * grade recebe menos largura do que teria na home — e continua em tres
+ * colunas ate 1280px, onde finalmente cabe a quarta. E por isso que esta
+ * grade nao e a mesma de `product-shelf.module.css`: a prateleira da home
+ * usa a tela inteira e passa a quatro colunas ja em 1024px.
+ *
+ * Colunas em `minmax(0, 1fr)` e nao `1fr`: sem o minimo zerado, um nome de
+ * produto sem espaco estoura a coluna e a grade inteira fica torta.
+ */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-16);
+}
+
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+}
+
+@media (min-width: 80rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

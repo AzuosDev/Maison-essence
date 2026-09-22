@@ -40,6 +40,16 @@ export const catalogKeys = {
   /** As sugestoes da caixa de busca, por termo ja normalizado. */
   suggestions: (term: string) => [...catalogKeys.all, 'suggestions', term] as const,
 
+  /**
+   * As marcas e o teto de preco que a barra de filtros oferece.
+   *
+   * Chave propria, e nao a da listagem: as opcoes de filtro mudam com a
+   * categoria e com a busca, mas nao com a marca escolhida nem com a pagina
+   * — senao a lista de marcas encolheria para uma so assim que alguem
+   * clicasse numa delas.
+   */
+  facets: (params: ProductListParams = {}) => [...catalogKeys.all, 'facets', params] as const,
+
   /** As prateleiras da home: destaques, pronta entrega e mais vendidos. */
   shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers', limit?: number) =>
     [...catalogKeys.all, 'shelf', name, limit ?? null] as const,

@@ -1,0 +1,29 @@
+/*
+ * O vazio da listagem.
+ *
+ * Ocupa altura de verdade: o `EmptyState` sozinho, num container largo,
+ * ficaria como uma faixa fina perdida no meio da pagina, e o rodape subiria
+ * ate quase encostar no cabecalho. A reserva mantem a pagina com a forma de
+ * sempre, e o que muda e so o que ha dentro dela.
+ */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+
+  padding-block: var(--space-32);
+}
+
+.suggestions {
+  padding-top: var(--space-32);
+  border-top: var(--border);
+}
+
+.suggestionsTitle {
+  margin-bottom: var(--space-24);
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  color: var(--ink);
+}

@@ -2,7 +2,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { cleanup, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { StoreLayout } from '@/app/layouts/store-layout';
 import headerStyles from './store-header.module.css';
@@ -109,20 +109,32 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+/**
+ * A moldura monta num roteador de dados, e nao num `<MemoryRouter>`.
+ *
+ * O layout da loja traz o `<ScrollRestoration>`, que e um componente das
+ * APIs de dados do React Router e exige um roteador criado por
+ * `createMemoryRouter` ou `createBrowserRouter` — que e o que a aplicacao de
+ * verdade usa. Com o roteador declarativo antigo, ele lanca na montagem.
+ */
 function abrirLoja() {
   const client = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
 
+  const router = createMemoryRouter(
+    [
+      {
+        element: <StoreLayout />,
+        children: [{ index: true, element: <p>Vitrine</p> }],
+      },
+    ],
+    { initialEntries: ['/'] },
+  );
+
   return render(
     <QueryClientProvider client={client}>
-      <MemoryRouter initialEntries={['/']}>
-        <Routes>
-          <Route element={<StoreLayout />}>
-            <Route index element={<p>Vitrine</p>} />
-          </Route>
-        </Routes>
-      </MemoryRouter>
+      <RouterProvider router={router} />
     </QueryClientProvider>,
   );
 }

@@ -1,0 +1,103 @@
+/*
+ * A barra de filtros.
+ *
+ * Sem moldura propria: quem desenha a caixa em volta e a pagina, porque a
+ * coluna do desktop tem filete e a gaveta do celular nao — ela ja esta
+ * dentro de um painel. O que esta aqui e so o ritmo interno dos grupos.
+ */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+/* Um filete separa um grupo do seguinte, menos no primeiro. */
+.group + .group {
+  padding-top: var(--space-24);
+  border-top: var(--border);
+}
+
+.legend {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.checks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+/* ---- Marca ------------------------------------------------------------ */
+
+.brandSearch {
+  margin-bottom: var(--space-4);
+}
+
+/*
+ * A lista de marcas rola dentro do proprio grupo.
+ *
+ * O teto existe para que uma loja com quarenta marcas nao empurre as caixas
+ * de disponibilidade para fora da tela — no desktop a coluna e fixa, e o que
+ * fica abaixo da dobra dela nao e encontrado.
+ */
+.brands {
+  display: flex;
+  flex-direction: column;
+
+  max-height: 14rem;
+  overflow-y: auto;
+
+  /* O anel de foco do item nao pode ser cortado pela borda do scroll. */
+  padding: var(--focus-offset);
+  margin: calc(var(--focus-offset) * -1);
+}
+
+.brand {
+  width: 100%;
+  padding: var(--space-8) var(--space-12);
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  text-align: left;
+  color: var(--ink-soft);
+
+  background: none;
+  border: none;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.brand:hover {
+  background-color: var(--gold-wash);
+  color: var(--ink);
+}
+
+.brandActive {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  background-color: var(--sand);
+}
+
+.noBrand {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.clear {
+  margin-top: var(--space-4);
+}
