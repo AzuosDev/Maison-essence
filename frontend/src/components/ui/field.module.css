@@ -1,0 +1,108 @@
+/*
+ * A moldura de um campo: rotulo em cima, controle, ajuda ou erro embaixo.
+ *
+ * Nao e um primitivo — e o que Input, Select e Textarea tem igual. Mora
+ * separado para que os tres nao escrevam tres vezes a mesma regra de
+ * espacamento e de cor de erro, e para que mudar o rotulo mude os tres.
+ */
+
+.field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.block {
+  display: flex;
+  width: 100%;
+}
+
+.label {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/*
+ * O asterisco de obrigatorio.
+ *
+ * `aria-hidden` no markup: o leitor de tela ja anuncia "obrigatorio" pelo
+ * `required` do proprio campo, e repetir viraria "asterisco obrigatorio".
+ */
+.required {
+  margin-left: var(--space-4);
+  color: var(--gold-deep);
+}
+
+.hint {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+}
+
+/*
+ * A base visual dos tres controles.
+ *
+ * Fica aqui, e nao em cada modulo, porque um campo de texto com borda
+ * diferente da do seletor ao lado e o tipo de desalinhamento que ninguem
+ * consegue nomear mas todo mundo ve.
+ */
+.control {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 var(--space-16);
+
+  font-family: var(--font-body);
+  font-size: var(--text-16);
+  color: var(--ink);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-chip);
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+.control::placeholder {
+  color: var(--muted);
+}
+
+.control:hover:not(:disabled):not([aria-invalid='true']) {
+  border-color: var(--muted);
+}
+
+.control:focus-visible {
+  border-color: var(--gold-deep);
+}
+
+.control:disabled {
+  background-color: var(--sand);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+/*
+ * Invalido: borda vermelha e um fundo levemente tingido.
+ *
+ * Os dois juntos porque so a cor nao basta — quem nao distingue vermelho de
+ * cinza precisa de outro sinal, e por isso a mensagem de erro embaixo e
+ * texto, e nao so um contorno.
+ */
+.control[aria-invalid='true'] {
+  border-color: var(--danger);
+  background-color: var(--danger-wash);
+}

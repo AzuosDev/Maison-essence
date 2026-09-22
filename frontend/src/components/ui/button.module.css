@@ -1,18 +1,19 @@
 /*
  * O botao do design system.
  *
- * Altura de 48px, caixa alta e `letter-spacing` de .08em vem do mockup e
- * valem para as duas variantes: o que muda entre primario e secundario e so
- * o preenchimento.
+ * Altura de 48px, caixa alta e `letter-spacing` de .08em vem da
+ * especificacao e valem para todas as variantes: o que muda entre elas e o
+ * preenchimento, nunca a forma.
  */
 
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-8);
 
-  min-height: 3rem;
+  min-height: var(--control-height);
   padding: 0 var(--space-24);
 
   font-family: var(--font-body);
@@ -34,8 +35,12 @@
     opacity var(--transition);
 }
 
-.button:disabled,
-.button[aria-disabled='true'] {
+/*
+ * Desabilitado e carregando tem a mesma aparencia de proposito: nos dois o
+ * clique nao vale, e inventar um terceiro estado visual so faria o cliente
+ * decidir qual dos dois cinzas responde.
+ */
+.button:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -45,6 +50,7 @@
 .primary {
   background-color: var(--ink);
   color: var(--cream);
+  --focus-color: var(--gold);
 }
 
 .primary:hover:not(:disabled) {
@@ -64,7 +70,7 @@
 
 /* Acao terciaria — "cancelar", "voltar". Sem caixa, so o texto. */
 .ghost {
-  min-height: 2.5rem;
+  min-height: var(--control-height-small);
   padding: 0 var(--space-12);
   background-color: transparent;
   color: var(--ink-soft);
@@ -74,13 +80,33 @@
 }
 
 .ghost:hover:not(:disabled) {
+  background-color: var(--gold-wash);
   color: var(--gold-deep);
+}
+
+/*
+ * Destrutivo: excluir produto, cancelar pedido.
+ *
+ * Contornado, e nao preenchido de vermelho. O vermelho cheio puxa o olho
+ * para a acao mais perigosa da tela e a transforma no caminho obvio; o
+ * contorno deixa claro o que e sem convidar para o clique.
+ */
+.danger {
+  background-color: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.danger:hover:not(:disabled) {
+  background-color: var(--danger);
+  color: var(--cream);
+  --focus-color: var(--gold);
 }
 
 /* ---- Tamanhos -------------------------------------------------------- */
 
 .small {
-  min-height: 2.25rem;
+  min-height: var(--control-height-small);
   padding: 0 var(--space-16);
   font-size: var(--text-12);
 }
@@ -89,4 +115,40 @@
 .block {
   display: flex;
   width: 100%;
+}
+
+/* ---- Carregando ------------------------------------------------------
+   O rotulo continua no lugar, invisivel, segurando a largura do botao: sem
+   isso o botao encolhe para o tamanho do circulo e a tela salta embaixo do
+   dedo de quem acabou de clicar. */
+
+.label {
+  display: contents;
+}
+
+.loading .label {
+  visibility: hidden;
+}
+
+.indicator {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner {
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 2px solid currentcolor;
+  /* A volta que falta e o que se ve girando. */
+  border-top-color: transparent;
+  border-radius: var(--radius-pill);
+  animation: spin 720ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

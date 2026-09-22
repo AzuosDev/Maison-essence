@@ -1,0 +1,130 @@
+/*
+ * O aviso passageiro: "produto adicionado", "pedido enviado", "nao foi
+ * possivel salvar".
+ *
+ * No celular ocupa a largura toda embaixo, acima do polegar e do botao
+ * flutuante do WhatsApp. No desktop vai para o canto inferior direito.
+ */
+
+.viewport {
+  position: fixed;
+  inset: auto var(--space-16) var(--space-16);
+  z-index: var(--z-toast);
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+
+  /* O container inteiro nao intercepta clique: so os avisos dentro dele. */
+  pointer-events: none;
+}
+
+@media (min-width: 40rem) {
+  .viewport {
+    inset: auto var(--space-24) var(--space-24) auto;
+    width: 22rem;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-left: 3px solid var(--ink);
+  border-radius: var(--radius-chip);
+  box-shadow: var(--shadow);
+
+  pointer-events: auto;
+  animation: enter var(--duration) var(--ease);
+}
+
+/*
+ * A cor do filete e o unico sinal cromatico, e ele nunca vai sozinho: o
+ * texto diz o que aconteceu. Quem nao distingue verde de vermelho le
+ * "pedido enviado" e "nao foi possivel salvar" igual.
+ */
+.success {
+  border-left-color: var(--success);
+  background-color: var(--success-wash);
+}
+
+.danger {
+  border-left-color: var(--danger);
+  background-color: var(--danger-wash);
+}
+
+.info {
+  border-left-color: var(--gold);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.description {
+  margin-top: var(--space-4);
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  color: var(--muted);
+  border-radius: var(--radius-chip);
+  transition: color var(--transition);
+}
+
+.close:hover {
+  color: var(--ink);
+}
+
+.closeIcon {
+  position: relative;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.closeIcon::before,
+.closeIcon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentcolor;
+}
+
+.closeIcon::before {
+  transform: rotate(45deg);
+}
+
+.closeIcon::after {
+  transform: rotate(-45deg);
+}
+
+@keyframes enter {
+  from {
+    transform: translateY(var(--space-16));
+    opacity: 0;
+  }
+}

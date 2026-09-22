@@ -1,0 +1,28 @@
+/*
+ * A area de texto.
+ *
+ * Herda a base de `field.module.css`; o que muda e que ela tem altura em
+ * linhas e padding vertical, e nao uma altura fixa de controle.
+ */
+
+.textarea {
+  min-height: calc(var(--control-height) * 2);
+  padding: var(--space-12) var(--space-16);
+  line-height: var(--leading-body);
+
+  /* So na vertical: redimensionar na horizontal quebra o formulario. */
+  resize: vertical;
+}
+
+.counter {
+  align-self: flex-end;
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* Passou do limite: o mesmo vermelho da mensagem de erro. */
+.counterOver {
+  color: var(--danger);
+  font-weight: var(--weight-medium);
+}

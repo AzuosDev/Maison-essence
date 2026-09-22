@@ -1,0 +1,60 @@
+/*
+ * O vazio com explicacao.
+ *
+ * Aparece onde uma lista estaria: sacola sem itens, busca sem resultado,
+ * painel sem pedidos do dia. Nunca e so "nada encontrado" — diz o que
+ * aconteceu e oferece a saida.
+ */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+
+  padding: var(--space-48) var(--space-24);
+  text-align: center;
+}
+
+/* Dentro de um card ou de uma gaveta, o respiro precisa ser menor. */
+.compact {
+  padding: var(--space-32) var(--space-16);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: var(--space-4);
+
+  color: var(--gold-deep);
+  background-color: var(--sand);
+  border-radius: var(--radius-pill);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.description {
+  max-width: 38ch;
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-12);
+  margin-top: var(--space-8);
+}

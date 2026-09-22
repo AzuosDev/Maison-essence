@@ -1,0 +1,49 @@
+/*
+ * O campo de texto.
+ *
+ * A base — altura, borda, raio de 4px, estados — vem de `field.module.css`,
+ * compartilhada com o seletor e a area de texto. Aqui fica so o que e do
+ * input: os adornos das pontas.
+ */
+
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/*
+ * Prefixo e sufixo: o `R$` do campo de preco, o `%` do desconto, a lupa da
+ * busca. Ficam sobre o campo, e o `padding` do input e que abre espaco — o
+ * texto digitado nao pode passar por baixo deles.
+ */
+.affix {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  font-size: var(--text-14);
+  color: var(--muted);
+  /* O clique atravessa e cai no campo, como se o adorno nao existisse. */
+  pointer-events: none;
+}
+
+.prefix {
+  left: var(--space-16);
+}
+
+.suffix {
+  right: var(--space-16);
+}
+
+.hasPrefix {
+  padding-left: var(--space-48);
+}
+
+.hasSuffix {
+  padding-right: var(--space-48);
+}
+
+/* Preco, quantidade, parcela: numero em largura fixa nao dança no grid. */
+.numeric {
+  font-variant-numeric: tabular-nums;
+}

@@ -85,4 +85,26 @@ const adminRoutes: RouteObject = {
   ],
 };
 
-export const router = createBrowserRouter([storeRoutes, accountRoutes, adminRoutes]);
+/**
+ * O styleguide, so em desenvolvimento.
+ *
+ * O `import.meta.env.DEV` vira `false` literal no build de producao, e com
+ * isso o ternario inteiro morre na analise estatica do Rollup: o `import()`
+ * some junto, e a pagina nao vira nem um chunk carregado sob demanda. Uma
+ * rota escondida atras de um `if` dentro do componente teria o efeito
+ * contrario — o codigo continuaria no bundle, so que inalcancavel.
+ *
+ * Fica fora dos tres grupos porque nao pertence a nenhum: nao e loja, nao e
+ * conta e nao e painel. E uma bancada de trabalho, com moldura propria.
+ */
+const devRoutes: RouteObject[] = import.meta.env.DEV
+  ? [
+      {
+        path: '/styleguide',
+        lazy: page(() => import('@/pages/styleguide/styleguide-page')),
+        ErrorBoundary: RouteErrorBoundary,
+      },
+    ]
+  : [];
+
+export const router = createBrowserRouter([...devRoutes, storeRoutes, accountRoutes, adminRoutes]);

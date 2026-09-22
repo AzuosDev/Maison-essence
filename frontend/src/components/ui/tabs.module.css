@@ -1,0 +1,84 @@
+/*
+ * As abas: descricao e avaliacoes na pagina do produto, os recortes de
+ * pedidos no painel.
+ *
+ * A aba ativa e marcada por um filete de 2px embaixo, e nao por uma caixa:
+ * a lista inteira rola na horizontal no celular, e caixa cheia com scroll
+ * fica pesada.
+ */
+
+.list {
+  display: flex;
+  gap: var(--space-24);
+
+  border-bottom: var(--border);
+
+  /* No celular, a fila de abas rola; a barra de rolagem some. */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  position: relative;
+  flex: none;
+
+  padding: var(--space-12) 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--muted);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  transition: color var(--transition);
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--ink);
+}
+
+.tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.tab[aria-selected='true'] {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+/* O filete. Fica no pseudo-elemento para nao empurrar o texto ao aparecer. */
+.tab::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color var(--transition);
+}
+
+.tab[aria-selected='true']::after {
+  background-color: var(--gold-deep);
+}
+
+.panel {
+  padding-top: var(--space-24);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.panel:focus {
+  outline: none;
+}

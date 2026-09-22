@@ -1,0 +1,65 @@
+/*
+ * O esqueleto: o formato do conteudo antes de ele chegar.
+ *
+ * Existe para que a pagina nao salte. Um card de produto que aparece do nada
+ * empurra o grid inteiro; um retangulo do tamanho certo, ja no lugar, faz o
+ * conteudo so ganhar cor.
+ *
+ * O brilho que atravessa e um gradiente animado em `background-position`, e
+ * nao um elemento extra deslizando: um pseudo-elemento em movimento dentro
+ * de vinte cards e vinte camadas para o navegador compor.
+ */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+
+  background-color: var(--sand);
+  background-image: linear-gradient(90deg, var(--sand) 0%, var(--surface) 50%, var(--sand) 100%);
+  background-size: 200% 100%;
+  border-radius: var(--radius-chip);
+
+  animation: sheen 1400ms linear infinite;
+}
+
+/* Linha de texto: a altura de uma linha de corpo. */
+.text {
+  height: var(--text-16);
+}
+
+/* A ultima linha de um paragrafo nunca vai ate o fim. */
+.lastLine {
+  width: 60%;
+}
+
+.title {
+  height: var(--text-28);
+  border-radius: var(--radius-chip);
+}
+
+/* A foto do card: 3:4, como o card de produto. */
+.image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-card);
+}
+
+.circle {
+  border-radius: var(--radius-pill);
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+@keyframes sheen {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}

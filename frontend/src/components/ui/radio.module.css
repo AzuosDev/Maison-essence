@@ -1,0 +1,132 @@
+/*
+ * O botao de radio.
+ *
+ * Mesma ideia da caixa de marcar: o `<input>` nativo fica invisivel mas
+ * presente, e o circulo e um irmao pintado pelo estado dele. Aqui isso
+ * importa ainda mais — a navegacao por setas dentro de um grupo e
+ * comportamento nativo do radio, e so existe se o input existir de verdade.
+ */
+
+.group {
+  /* `fieldset` vem com borda e padding do navegador. */
+  border: none;
+  padding: 0;
+  min-width: 0;
+}
+
+/*
+ * As opcoes ficam num wrapper, e nao direto no `fieldset`: o `<legend>` tem
+ * renderizacao propria e, dentro de um container flex horizontal, entraria
+ * na mesma linha das opcoes.
+ */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--space-4);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* Lado a lado, quando as opcoes sao curtas: PIX / cartao. */
+.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--space-24);
+}
+
+.choice {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding: var(--space-4) 0;
+  cursor: pointer;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dot {
+  position: relative;
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: 0.125rem;
+
+  background-color: var(--surface);
+  border: 1px solid var(--muted);
+  border-radius: var(--radius-pill);
+
+  transition: border-color var(--transition);
+}
+
+.choice:hover .input:not(:disabled) + .dot {
+  border-color: var(--ink);
+}
+
+.input:checked + .dot {
+  border-color: var(--ink);
+}
+
+.input:focus-visible + .dot {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.input:checked + .dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.625rem;
+  height: 0.625rem;
+  background-color: var(--ink);
+  border-radius: var(--radius-pill);
+  transform: translate(-50%, -50%);
+}
+
+.label {
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.description {
+  display: block;
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.input:disabled + .dot {
+  background-color: var(--sand);
+  border-color: var(--line);
+}
+
+.input:disabled:checked + .dot::after {
+  background-color: var(--muted);
+}
+
+.disabled {
+  cursor: not-allowed;
+}
+
+.disabled .label {
+  color: var(--muted);
+}
+
+.error {
+  font-size: var(--text-12);
+  color: var(--danger);
+}

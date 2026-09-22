@@ -1,0 +1,70 @@
+/*
+ * A sanfona: as perguntas frequentes, os detalhes do produto, os blocos de
+ * um pedido no painel.
+ *
+ * Linhas separadas por 1px, sem caixa: e uma lista, e parecer uma lista e o
+ * que faz cada item parecer clicavel sem precisar de mais desenho.
+ */
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  border-top: var(--border);
+}
+
+.item {
+  border-bottom: var(--border);
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  width: 100%;
+
+  padding: var(--space-16) 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  text-align: left;
+  color: var(--ink);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  transition: color var(--transition);
+}
+
+.trigger:hover:not(:disabled) {
+  color: var(--gold-deep);
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  color: var(--muted);
+}
+
+/* A seta: um chevron que gira meia volta ao abrir. */
+.chevron {
+  flex: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-right: 1px solid currentcolor;
+  border-bottom: 1px solid currentcolor;
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform var(--transition);
+}
+
+.trigger[aria-expanded='true'] .chevron {
+  transform: translateY(25%) rotate(-135deg);
+}
+
+.panel {
+  padding-bottom: var(--space-16);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}

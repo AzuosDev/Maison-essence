@@ -1,0 +1,60 @@
+/*
+ * Os selos do card de produto: `Esgotado`, `-33%`, `Pronta entrega`.
+ *
+ * Todos 12px em caixa alta, como a especificacao pede. O que muda e a cor de
+ * fundo, e ela carrega o significado: preto e informacao, verde e promessa,
+ * vermelho e impedimento.
+ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  padding: var(--space-4) var(--space-8);
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  line-height: 1.2;
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  border-radius: var(--radius-chip);
+}
+
+/* O desconto, e o selo neutro de modo geral. */
+.ink {
+  background-color: var(--ink);
+  color: var(--cream);
+}
+
+/* Pronta entrega. */
+.success {
+  background-color: var(--success);
+  color: var(--cream);
+}
+
+/* Esgotado. */
+.danger {
+  background-color: var(--danger);
+  color: var(--cream);
+}
+
+/* Destaque, novidade, selecao da casa. */
+.gold {
+  background-color: var(--gold);
+  color: var(--ink);
+}
+
+/* Contagem e rotulo de apoio no painel, onde o selo cheio pesaria demais. */
+.muted {
+  background-color: var(--sand);
+  color: var(--ink-soft);
+}
+
+/* Numero em largura fixa: a contagem de pedidos numa tabela. */
+.numeric {
+  font-variant-numeric: tabular-nums;
+}

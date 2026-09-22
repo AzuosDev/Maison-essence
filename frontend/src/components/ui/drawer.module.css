@@ -1,0 +1,155 @@
+/*
+ * A gaveta: a sacola, o menu de categorias no celular, o filtro do catalogo.
+ *
+ * Entra pela lateral e ocupa a altura inteira. No celular deixa uma faixa do
+ * fundo a mostra de proposito — e o que diz que a pagina continua ali atras,
+ * e o que da onde tocar para fechar.
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-drawer);
+
+  display: flex;
+  background-color: var(--overlay);
+  animation: fade var(--duration) var(--ease);
+}
+
+.right {
+  justify-content: flex-end;
+}
+
+.left {
+  justify-content: flex-start;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: min(24rem, 90vw);
+  height: 100%;
+
+  background-color: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+.right .panel {
+  animation: slide-from-right var(--duration) var(--ease);
+}
+
+.left .panel {
+  animation: slide-from-left var(--duration) var(--ease);
+}
+
+@media (min-width: 40rem) {
+  .panel {
+    width: 26rem;
+  }
+
+  .wide {
+    width: 32rem;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+  padding: var(--space-24);
+  border-bottom: var(--border);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+
+  color: var(--ink-soft);
+  border-radius: var(--radius-chip);
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.close:hover {
+  background-color: var(--sand);
+  color: var(--ink);
+}
+
+.closeIcon {
+  position: relative;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.closeIcon::before,
+.closeIcon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: currentcolor;
+}
+
+.closeIcon::before {
+  transform: rotate(45deg);
+}
+
+.closeIcon::after {
+  transform: rotate(-45deg);
+}
+
+.body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-24);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* O resumo e o botao de fechar pedido, presos embaixo da sacola. */
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-24);
+  border-top: var(--border);
+  background-color: var(--cream);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+}

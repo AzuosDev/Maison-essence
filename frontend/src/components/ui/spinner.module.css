@@ -1,22 +1,38 @@
 .wrapper {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--space-8);
+}
+
+/* Centralizado e com respiro: o estado de carregamento de uma rota. */
+.page {
+  display: flex;
+  width: 100%;
+  min-height: 50vh;
   padding: var(--space-48) 0;
 }
 
-/* Ocupa a altura util da janela: e o estado de carregamento de uma rota. */
-.page {
-  min-height: 50vh;
-}
-
 .spinner {
-  width: 1.75rem;
-  height: 1.75rem;
   border: 2px solid var(--line);
   border-top-color: var(--gold-deep);
   border-radius: var(--radius-pill);
   animation: spin 720ms linear infinite;
+}
+
+.small {
+  width: 1rem;
+  height: 1rem;
+}
+
+.medium {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.large {
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 @keyframes spin {

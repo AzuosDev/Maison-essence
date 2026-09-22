@@ -17,6 +17,15 @@ html {
   /* `rem` continua valendo 16px por padrao, mas respeita quem aumentou a
      fonte no navegador: por isso a escala e em rem e nao em px. */
   -webkit-text-size-adjust: 100%;
+
+  /* Rolagem suave para ancora e para "voltar ao topo". O bloco de
+     `prefers-reduced-motion` la embaixo desliga isto para quem pediu menos
+     movimento — rolagem animada e um gatilho comum de enjoo. */
+  scroll-behavior: smooth;
+
+  /* O cabecalho e fixo: sem isto, a ancora para uma secao a esconde atras
+     dele. */
+  scroll-padding-top: calc(var(--header-height) + var(--space-16));
 }
 
 html,
@@ -79,14 +88,21 @@ h6 {
 /*
  * O anel de foco nunca e removido, so redesenhado: quem navega por teclado
  * precisa dele, e `outline: none` sem substituto e uma barreira de acesso.
+ *
+ * `:focus-visible` e nao `:focus`: o anel aparece para quem chegou pelo
+ * teclado e nao para quem clicou com o mouse, que ja sabe onde clicou.
  */
 :focus-visible {
-  outline: 2px solid var(--gold-deep);
-  outline-offset: 2px;
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* Respeita quem pediu menos animacao no sistema. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

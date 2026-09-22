@@ -1,0 +1,56 @@
+/*
+ * O fio de pao: Inicio / Masculino / Asad Lattafa.
+ *
+ * Texto pequeno e discreto — e orientacao, nao conteudo. No celular rola na
+ * horizontal em vez de quebrar em duas linhas: uma trilha quebrada deixa de
+ * parecer uma trilha.
+ */
+
+.nav {
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.link {
+  color: var(--muted);
+  transition: color var(--transition);
+}
+
+.link:hover {
+  color: var(--gold-deep);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* A pagina atual: sem link, e em tinta cheia. */
+.current {
+  color: var(--ink-soft);
+  font-weight: var(--weight-medium);
+}
+
+/* O separador. `aria-hidden` no markup: a barra nao e conteudo. */
+.separator {
+  color: var(--line);
+}

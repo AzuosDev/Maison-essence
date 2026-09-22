@@ -1,14 +1,17 @@
 /*
  * Os tokens da Maison Essence.
  *
- * Esta e a unica definicao de cor, fonte, espaco, raio e sombra da loja.
- * Componente nenhum escreve `#0E0E0E` ou `24px` direto: escreve
+ * Esta e a unica definicao de cor, fonte, espaco, raio, sombra e duracao da
+ * loja. Componente nenhum escreve `#0E0E0E` ou `24px` direto: escreve
  * `var(--ink)` e `var(--space-24)`. A regra nao e estetica — e o que permite
  * ajustar o creme do fundo em um lugar so, em vez de cacar o hexadecimal em
  * quarenta arquivos de CSS Module.
  *
  * Os valores vem do design system extraido do mockup e nao devem ser
- * reinventados por tela nenhuma.
+ * reinventados por tela nenhuma. Os poucos tokens que nao estao na
+ * especificacao — o veu do modal, a base do skeleton — sao derivados dos que
+ * estao, e a derivacao esta escrita ao lado de cada um: nenhuma cor nova
+ * entrou no sistema.
  */
 
 :root {
@@ -35,6 +38,21 @@
   --admin-bg: #f6f5fb;
   --admin-sidebar: var(--ink);
   --admin-item-active: rgb(192 160 98 / 0.14);
+  --admin-item-border: 3px;
+
+  /* ---- Cores derivadas -------------------------------------------------
+     Nao sao cores novas: sao as da paleta com transparencia, para os usos
+     que precisam deixar o fundo aparecer. */
+
+  /* O veu atras do modal e da gaveta: o preto da marca a meia opacidade. */
+  --overlay: rgb(14 14 14 / 0.5);
+
+  /* Realce de linha, item de lista sob o cursor: o dourado quase apagado. */
+  --gold-wash: rgb(192 160 98 / 0.12);
+
+  /* Fundo de aviso e de erro, para o toast e a mensagem de formulario. */
+  --success-wash: rgb(46 125 91 / 0.1);
+  --danger-wash: rgb(179 38 30 / 0.08);
 
   /* ---- Tipografia ----------------------------------------------------- */
 
@@ -84,8 +102,18 @@
 
   --border: 1px solid var(--line);
 
-  /* Uma sombra so, e discreta. Sombra colorida nao existe neste projeto. */
+  /* Uma sombra so, e discreta. Sombra colorida nao existe neste projeto, e
+     modal e gaveta usam a mesma: o que separa os planos ali e o veu. */
   --shadow: 0 1px 2px rgb(14 14 14 / 0.04), 0 8px 24px rgb(14 14 14 / 0.06);
+
+  /* ---- Foco -----------------------------------------------------------
+     O anel dourado de 2px, em um lugar so. Sobre fundo escuro, o contexto
+     troca a cor por `--gold` (ver abaixo): o mesmo anel, legivel nos dois. */
+
+  --focus-color: var(--gold-deep);
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --focus-ring: var(--focus-width) solid var(--focus-color);
 
   /* ---- Layout --------------------------------------------------------- */
 
@@ -94,9 +122,20 @@
 
   --header-height: 4.5rem;
 
-  /* ---- Movimento ------------------------------------------------------ */
+  /* Altura dos controles de formulario e do botao. O botao primario tem 48px
+     por especificacao, e campo e botao alinhados na mesma linha precisam da
+     mesma medida. */
+  --control-height: 3rem;
+  --control-height-small: 2.25rem;
 
-  --transition: 180ms ease-out;
+  /* ---- Movimento ------------------------------------------------------
+     180ms `ease-out` para tudo. Os dois pedacos existem separados para quem
+     precisa compor (`transform 180ms ease-out, opacity 180ms ease-out`); o
+     atalho `--transition` serve o caso comum. */
+
+  --duration: 180ms;
+  --ease: ease-out;
+  --transition: var(--duration) var(--ease);
 
   /* ---- Camadas --------------------------------------------------------
      Em um lugar so porque z-index disputado entre arquivos sempre termina
@@ -109,6 +148,31 @@
   --z-whatsapp: 90;
 }
 
+/*
+ * Contexto escuro: o bloco da marca, a sidebar do painel, o botao primario.
+ *
+ * Sobre o preto, `--gold-deep` some. A classe troca so a cor do anel de
+ * foco — o token continua sendo um — e quem a aplica e o componente que
+ * pinta o proprio fundo de escuro.
+ */
+.on-dark {
+  --focus-color: var(--gold);
+}
+
+/*
+ * Os quatro respiros da loja: 640, 768, 1024 e 1280px.
+ *
+ * Nao sao variaveis porque `@media` nao le `var()` — ficam escritos como rem
+ * em cada arquivo. A conversao esta aqui para que ninguem precise refaze-la:
+ *
+ *   640px  = 40rem   celular grande / duas colunas
+ *   768px  = 48rem   tablet, onde o gutter passa a 24px
+ *   1024px = 64rem   desktop, onde a sidebar do painel aparece
+ *   1280px = 80rem   largura maxima do container
+ *
+ * Tudo e `min-width`: o estilo base e o do celular, e cada respiro so
+ * acrescenta.
+ */
 @media (min-width: 48rem) {
   :root {
     --gutter: var(--space-24);

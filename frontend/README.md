@@ -56,6 +56,56 @@ A regra de dependencia: `lib` nao importa nada; `features` importa `lib`;
 `components` importa `lib` e `features`; `pages` e `app` importam tudo. Import
 no sentido contrario e sinal de que algo esta na pasta errada.
 
+## Design system
+
+Os primitivos estao em [`src/components/ui`](src/components/ui), um CSS Module
+por componente: Button, Input, Select, Textarea, Checkbox, Radio, Badge, Chip,
+Card, Modal, Drawer, Skeleton, Spinner, Toast, Tabs, Accordion, Breadcrumb,
+Pagination e EmptyState. Nenhuma biblioteca de componentes — o que ha e HTML
+nativo, CSS Modules e os tokens.
+
+Tres regras valem para todos: encaminham `ref`, aceitam `className` e herdam
+os tipos do elemento nativo (`ComponentPropsWithoutRef`), de modo que
+`autoComplete`, `maxLength` e `aria-*` funcionam sem precisar ser
+redeclarados.
+
+**`npm run dev` e abra `/styleguide`.** E a bancada de revisao: todo primitivo,
+em todos os estados, na mesma tela — junto das cores, da escala tipografica e
+da escala de espaco. A rota so existe em desenvolvimento; no build de producao
+o `import.meta.env.DEV` vira `false` e o Rollup remove a pagina inteira do
+bundle.
+
+### Tokens
+
+Cor, tipografia, espaco, raio, sombra e duracao saem de
+[`src/styles/tokens.css`](src/styles/tokens.css), e so de la: nenhum CSS
+Module do projeto escreve um hexadecimal. Para conferir:
+
+```bash
+grep -rnE "#[0-9a-fA-F]{3,8}\b|\brgba?\(" src --include="*.module.css"
+```
+
+Os poucos tokens que nao estao na especificacao — o veu do modal, o fundo
+lavado do toast — sao os da paleta com transparencia, e a derivacao esta
+escrita ao lado de cada um.
+
+Mobile first, com quatro respiros: 640px (`40rem`), 768px (`48rem`), 1024px
+(`64rem`) e 1280px (`80rem`). Toda media query e `min-width`.
+
+### Acessibilidade
+
+O que nao da para conferir a olho tem teste
+([`dialog.spec.tsx`](src/components/ui/dialog.spec.tsx),
+[`navigation.spec.tsx`](src/components/ui/navigation.spec.tsx)):
+
+- Modal e Drawer prendem o foco, fecham no Escape e devolvem o foco ao botao
+  que abriu. Os tres comportamentos vem do mesmo hook, `useDialog`.
+- Nas Tabs, as setas trocam de aba e so a selecionada esta na ordem do Tab.
+  Na sanfona, as setas movem entre os gatilhos. `Home` e `End` vao as pontas
+  nos dois.
+- O anel de foco dourado de 2px nunca e removido, so redesenhado. Sobre fundo
+  escuro, a classe `on-dark` troca a cor do anel para `--gold`.
+
 ## Decisoes que valem para tudo
 
 **Um cliente HTTP.** Nenhum `fetch` solto: tudo passa por `lib/http`. Ele

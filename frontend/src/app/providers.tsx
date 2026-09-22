@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState, type ReactNode } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ToastProvider } from '@/components/ui';
 import { registerSessions } from '@/features/auth';
 import { AppErrorBoundary } from './app-error-boundary';
 import { createQueryClient } from './query-client';
@@ -41,7 +42,7 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
 
         {Devtools ? (
           <Suspense fallback={null}>
