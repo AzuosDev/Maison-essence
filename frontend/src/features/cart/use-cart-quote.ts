@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
-import { checkoutKeys, type QuoteInput } from '@/features/checkout';
+import { checkoutKeys, type QuoteInput } from '@/features/checkout/checkout.keys';
 import { useDeliveryCities } from '@/features/delivery';
 import { useStoreSettings } from '@/features/settings';
 import { useDebouncedValue } from '@/lib/use-debounced-value';
@@ -157,12 +157,20 @@ function useQuoteFulfillment(): QuoteInput['fulfillment'] | null {
 /**
  * Anota os precos desta cotacao e decide se ha o que avisar.
  *
+ * Exportado porque o checkout precisa do mesmo aviso: o "Comprar agora" da
+ * pagina do produto pula a sacola e cai direto em `/checkout`, e quem chega
+ * por ali com uma sacola de semanas atras merece a mesma linha discreta
+ * dizendo que os valores foram atualizados. Um segundo aviso escrito la
+ * teria que repetir a leitura do retrato anterior, a comparacao por digest e
+ * a regra de quando regravar — tres coisas que so funcionam se forem
+ * exatamente iguais nas duas telas.
+ *
  * O efeito depende dos ids e dos precos da resposta, e nao do objeto: a
  * consulta devolve uma instancia nova a cada revalidacao, e comparar por
  * identidade reescreveria a anotacao — e reabriria o aviso — a cada ida ao
  * servidor.
  */
-function usePriceNotice(quote: CartQuote | undefined): {
+export function usePriceNotice(quote: CartQuote | undefined): {
   pricesChanged: boolean;
   dismissPriceNotice: () => void;
 } {

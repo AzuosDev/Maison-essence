@@ -1,0 +1,115 @@
+/*
+ * O checkout: trilha, passo e resumo.
+ *
+ * No celular vira uma coluna so, com o resumo abaixo do passo — primeiro o
+ * que fazer, depois quanto da.
+ */
+
+.page {
+  padding-block: var(--space-24) var(--space-64);
+}
+
+.breadcrumb {
+  margin-bottom: var(--space-16);
+}
+
+.heading {
+  margin: 0 0 var(--space-32);
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.body {
+  display: grid;
+  gap: var(--space-32);
+  align-items: start;
+}
+
+.column {
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .page {
+    padding-block: var(--space-32) var(--space-96);
+  }
+
+  .heading {
+    font-size: var(--text-36);
+  }
+
+  /*
+   * Largura fixa nas duas colunas, e o conjunto centrado.
+   *
+   * O passo **nao** ganha o `1fr` que sobra, e isso e proposital: um cartao
+   * de formulario com 880px espalha rotulo e campo por meia tela e obriga o
+   * olho a atravessar de ponta a ponta a cada linha. Com 44rem ele fica na
+   * medida de leitura, e o que sobra vira margem.
+   *
+   * O ganho maior vem na ultima etapa, quando o resumo sai de cena: com
+   * largura fixa, o cartao continua exatamente do mesmo tamanho, em vez de
+   * esticar 22rem de uma etapa para a outra.
+   */
+  .body {
+    grid-template-columns: minmax(0, 44rem) 22rem;
+    justify-content: center;
+    gap: var(--space-48);
+  }
+
+  .narrow {
+    grid-template-columns: minmax(0, 44rem);
+  }
+}
+
+/* ---- O pedido fechado ------------------------------------------------------ */
+
+/*
+ * A rede de seguranca depois do envio.
+ *
+ * Centrado e curto: o que importa e o codigo, e ele e o unico elemento com
+ * peso de titulo aqui. A tela de confirmacao propria vem no passo seguinte
+ * do plano.
+ */
+.placed {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-16);
+
+  max-width: 32rem;
+  margin-inline: auto;
+  padding: var(--space-48) var(--space-24);
+
+  text-align: center;
+}
+
+.placedTitle {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.placedCode {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-36);
+  line-height: var(--leading-tight);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.placedText {
+  margin: 0;
+
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}

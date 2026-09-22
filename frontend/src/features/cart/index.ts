@@ -33,4 +33,9 @@ export type {
   QuotePayment,
 } from './quote.types';
 
-export { QUOTE_DEBOUNCE_MS, useCartQuote, type CartQuoteView } from './use-cart-quote';
+export {
+  QUOTE_DEBOUNCE_MS,
+  useCartQuote,
+  usePriceNotice,
+  type CartQuoteView,
+} from './use-cart-quote';

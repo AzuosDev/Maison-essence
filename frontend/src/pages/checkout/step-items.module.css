@@ -1,0 +1,75 @@
+/*
+ * A lista de itens do checkout.
+ *
+ * Mais apertada que a da sacola: aqui ela e conferencia, e nao vitrine. As
+ * linhas ficam separadas por um filete em vez de por espaco, e o cartao do
+ * passo ja e a superficie — nao ha uma segunda caixa em volta.
+ */
+
+.lines {
+  display: grid;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lines > li + li {
+  border-top: var(--border);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+
+  padding-top: var(--space-16);
+  border-top: var(--border);
+}
+
+.subtotal {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-12);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.subtotal strong {
+  font-size: var(--text-18);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/*
+ * "Continuar comprando" e um link, e nao um botao.
+ *
+ * Ele leva a outro endereco, e e isso que um link faz. Como botao, perderia
+ * o abrir em nova aba e o Enter do teclado — e ganharia um peso visual que
+ * ele nao deve ter ao lado da acao que segue o fluxo.
+ */
+.keepShopping {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-color: var(--line);
+
+  transition: color var(--transition), text-decoration-color var(--transition);
+}
+
+.keepShopping:hover {
+  color: var(--ink);
+  text-decoration-color: var(--gold-deep);
+}
+
+.blocked {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--danger);
+}

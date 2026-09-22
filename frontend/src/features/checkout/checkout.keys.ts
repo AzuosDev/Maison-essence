@@ -11,6 +11,19 @@ import type { QuoteItem } from '@/features/cart';
  *
  * Por isso a chave carrega o corpo inteiro da cotacao: e ele que define o
  * resultado. Mudou a cidade, mudou a chave, e ha uma consulta nova.
+ *
+ * ## Importe este arquivo direto, e nao o barril
+ *
+ * A sacola e a entrega precisam destas chaves, e o checkout precisa das
+ * duas: `use-checkout-quote` chama `useCart` e `useDeliveryCities`. Se elas
+ * pedissem `checkoutKeys` a `@/features/checkout`, os tres barris fechariam
+ * um ciclo em tempo de execucao, com dois stores do Zustand criados no meio
+ * dele — o tipo de arranjo que funciona ate o dia em que a ordem de
+ * avaliacao muda e um `create()` roda com um import ainda pela metade.
+ *
+ * Este modulo nao importa nada em tempo de execucao: so um tipo, que o
+ * `verbatimModuleSyntax` apaga na compilacao. Importa-lo direto e o que
+ * mantem o grafo aciclico.
  */
 
 /** O corpo de `POST /cart/quote`, como a tela o monta. */

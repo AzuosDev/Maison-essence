@@ -143,6 +143,15 @@ export function ShieldIcon(props: IconProps) {
   );
 }
 
+/** O passo cumprido, na trilha do checkout. */
+export function CheckIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m5 12.5 4.5 4.5L19 7" />
+    </Icon>
+  );
+}
+
 export function CardIcon(props: IconProps) {
   return (
     <Icon {...props}>

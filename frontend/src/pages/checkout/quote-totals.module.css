@@ -1,0 +1,114 @@
+/*
+ * As linhas de dinheiro.
+ *
+ * Servem ao resumo da lateral e a revisao final. Nao ha superficie nem
+ * padding aqui: quem desenha a caixa e o bloco que as contem, e por isso as
+ * mesmas linhas cabem tanto no cartao branco da direita quanto dentro do
+ * ultimo passo.
+ */
+
+.lines {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+
+  transition: opacity var(--transition);
+}
+
+/*
+ * Durante o recalculo, os numeros antigos esmaecem em vez de sumir.
+ *
+ * E a diferenca entre "estamos conferindo" e "perdemos a conta". O resumo e
+ * refeito a cada troca de cidade e de forma de pagamento, e uma coluna que
+ * pisca vazia a cada clique faz a tela parecer instavel justamente quando o
+ * cliente esta somando de cabeca.
+ */
+.recalculating {
+  opacity: 0.55;
+}
+
+.line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.line dt {
+  min-width: 0;
+}
+
+.line dd {
+  margin: 0;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* A cidade embaixo do rotulo, e nao ao lado: "Entrega" e o que a linha e, e
+   "Juazeiro do Norte" e de onde o valor saiu. */
+.city {
+  display: block;
+
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.discount,
+.free {
+  color: var(--gold-deep);
+}
+
+/* "a calcular" e o valor desta linha, e nao uma nota de rodape. */
+.pending {
+  color: var(--ink-soft);
+}
+
+.total {
+  padding-top: var(--space-12);
+  border-top: var(--border);
+
+  font-size: var(--text-16);
+  color: var(--ink);
+}
+
+.total strong {
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+}
+
+.note {
+  margin: var(--space-16) 0 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/*
+ * O que falta para o frete gratis.
+ *
+ * Sobre a areia, e nao sobre o branco do bloco: e a unica linha que pede uma
+ * acao, e a troca de fundo e o que a separa das notas que so explicam.
+ */
+.freeHint {
+  margin: var(--space-16) 0 0;
+  padding: var(--space-12);
+
+  background: var(--sand);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.freeHint strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}

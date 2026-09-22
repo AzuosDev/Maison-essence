@@ -1,0 +1,129 @@
+/*
+ * O cartao de um passo.
+ *
+ * Branco sobre o creme da pagina, raio de 16px — o dos blocos de checkout,
+ * maior que o dos cards de produto —, campos empilhados e o botao ocupando a
+ * largura toda embaixo. A mesma caixa nos quatro passos: o que muda de um
+ * para o outro e o conteudo, nunca a moldura.
+ */
+
+.card {
+  display: grid;
+  gap: var(--space-24);
+
+  padding: var(--space-24);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-modal);
+}
+
+.header {
+  display: grid;
+  gap: var(--space-4);
+}
+
+/*
+ * A serifada, no mesmo tamanho do titulo do resumo ao lado.
+ *
+ * O checkout e a sacola sao a mesma travessia, e os blocos dos dois precisam
+ * ter a mesma voz: "Resumo" e "Entrega ou retirada" sao titulos de bloco, e
+ * um deles em serifada e o outro em sans faria as duas telas parecerem de
+ * projetos diferentes.
+ */
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* O foco chega aqui por codigo, na troca de passo. Sem anel: ninguem
+   navegou ate este titulo, e um anel piscando em cada avanco seria ruido. */
+.title:focus {
+  outline: none;
+}
+
+.description {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.body {
+  display: grid;
+  gap: var(--space-24);
+  min-width: 0;
+}
+
+.footer {
+  display: grid;
+  gap: var(--space-16);
+}
+
+/*
+ * O total no ponto da decisao, so no celular.
+ *
+ * No desktop o resumo esta ao lado e nunca sai da tela; repetir o numero
+ * aqui seria escreve-lo duas vezes na mesma dobra.
+ */
+.total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  padding-top: var(--space-16);
+  border-top: var(--border);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/*
+ * Empilhados no celular, lado a lado no desktop — e nesta ordem nos dois.
+ *
+ * Nenhum `order` no CSS: a ordem visual e a do DOM, que e a do teclado. O
+ * "voltar" e um botao fantasma porque voltar nao e um caminho do fluxo — e
+ * uma correcao, e nao deve competir com a acao que segue.
+ */
+.actions {
+  display: grid;
+  gap: var(--space-8);
+}
+
+@media (min-width: 40rem) {
+  .card {
+    padding: var(--space-32);
+  }
+}
+
+@media (min-width: 64rem) {
+  .total {
+    display: none;
+  }
+
+  /*
+   * Lado a lado, com o avanco no fim da linha.
+   *
+   * A convencao de formulario: a acao que segue fica a direita, onde a
+   * leitura termina. A coluna do "voltar" e automatica e a do "continuar"
+   * tem largura minima — um botao principal estreito demais ao lado de um
+   * fantasma largo inverteria o peso dos dois.
+   */
+  .actions {
+    grid-auto-flow: column;
+    grid-auto-columns: auto;
+    justify-content: end;
+    gap: var(--space-12);
+  }
+
+  .actions > :last-child {
+    min-width: 14rem;
+  }
+}

@@ -29,6 +29,28 @@ export { MobileMenu } from './mobile-menu';
  */
 export { DeferredNewsletter } from './deferred-newsletter';
 export { Highlight, type HighlightProps } from './highlight';
+
+/**
+ * Os icones, para as telas que os desenham fora desta pasta.
+ *
+ * Nao pesam no pedaco inicial: o cabecalho e o rodape ja importam metade
+ * deles, e cada um e um punhado de `<path>` sem dependencia nenhuma.
+ */
+export {
+  CardIcon,
+  CartIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  CloseIcon,
+  InstagramIcon,
+  MenuIcon,
+  SearchIcon,
+  ShieldIcon,
+  TiktokIcon,
+  TruckIcon,
+  UserIcon,
+  WhatsappIcon,
+} from './icons';
 export { ProductCard, type ProductCardProps } from './product-card';
 export { ProductCardSkeleton } from './product-card-skeleton';
 export { ProductGrid, type ProductGridProps } from './product-grid';

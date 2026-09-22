@@ -1,0 +1,248 @@
+/*
+ * Entrega ou retirada.
+ *
+ * A escolha vem primeiro e ocupa espaco de escolha: dois cartoes largos, e
+ * nao dois pontinhos numa lista. Tudo o que aparece depois — o endereco da
+ * loja ou o seletor de cidade com a taxa — e consequencia deles.
+ */
+
+/* ---- Os dois cartoes ------------------------------------------------------ */
+
+.modes {
+  /* O `RadioGroup` entra em modo horizontal e as opcoes viram itens de um
+     flex com quebra: no desktop elas dividem a linha, no celular cada uma
+     fica com a sua. Ver `.choice`. */
+  margin: 0;
+}
+
+/*
+ * Os dois cartoes dividem a linha e quebram quando nao cabem.
+ *
+ * Aqui so a largura: a moldura, o estado marcado e o anel de foco sao da
+ * variante `card` do proprio `Radio`, em `components/ui`. E a divisao de
+ * sempre — o primitivo decide a aparencia, a tela decide a posicao.
+ */
+.choice {
+  flex: 1 1 14rem;
+}
+
+/* ---- O painel da retirada ------------------------------------------------- */
+
+.panel {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background: var(--sand);
+  border-radius: var(--radius-card);
+}
+
+.panelTitle {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.panelText,
+.panelRow {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.panelLabel {
+  display: block;
+
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* O endereco em linhas, como se escreve num envelope. */
+.address {
+  display: grid;
+  gap: var(--space-4);
+
+  font-size: var(--text-16);
+  font-style: normal;
+  line-height: var(--leading-body);
+  color: var(--ink);
+}
+
+.panelNote {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--gold-deep);
+}
+
+/* ---- A entrega ------------------------------------------------------------ */
+
+.delivery {
+  display: grid;
+  gap: var(--space-24);
+}
+
+/*
+ * A taxa, colada no seletor de cidade.
+ *
+ * Sem o respiro de 24px que separa os outros blocos: ela nao e um campo, e
+ * a resposta ao campo de cima. O `margin-top` negativo a encosta na ajuda do
+ * seletor, e a faixa de areia amarra as duas como um par.
+ */
+.fee {
+  display: grid;
+  gap: var(--space-4);
+
+  margin-top: calc(var(--space-24) * -1 + var(--space-8));
+  padding: var(--space-12) var(--space-16);
+
+  background: var(--sand);
+  border-radius: var(--radius-chip);
+
+  transition: opacity var(--transition);
+}
+
+/* A cotacao esta no ar: o valor antigo esmaece em vez de sumir. */
+.feeUpdating {
+  opacity: 0.55;
+}
+
+.feeRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.feeValue {
+  font-size: var(--text-18);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.feeFree {
+  color: var(--gold-deep);
+}
+
+.feeNote {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+/* ---- Os enderecos salvos -------------------------------------------------- */
+
+.saved {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.savedTitle {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.savedList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.savedItem {
+  display: grid;
+  gap: var(--space-4);
+
+  padding: var(--space-8) var(--space-12);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-chip);
+
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+.savedItem:hover {
+  background: var(--gold-wash);
+  border-color: var(--gold-deep);
+}
+
+.savedItem:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.savedLabel {
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.savedLine {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+/* ---- Os campos ------------------------------------------------------------ */
+
+.fields {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.noZip {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+@media (min-width: 40rem) {
+  /*
+   * Duas colunas, com numero e complemento dividindo a linha.
+   *
+   * Sao os dois unicos campos curtos do endereco. Rua, bairro e ponto de
+   * referencia ocupam a linha inteira porque o conteudo deles e longo — um
+   * "Rua Coronel Antonio Luiz" espremido em meia coluna rola dentro do
+   * proprio campo enquanto a pessoa digita.
+   */
+  .fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+  }
+}

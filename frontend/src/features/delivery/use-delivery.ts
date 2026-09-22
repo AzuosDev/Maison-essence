@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
-import { checkoutKeys } from '@/features/checkout';
+import { checkoutKeys } from '@/features/checkout/checkout.keys';
 import { fetchDeliveryCities } from './delivery.api';
 import type { PublicDeliveryCity } from './delivery.types';
 

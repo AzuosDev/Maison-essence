@@ -1,0 +1,68 @@
+/*
+ * A moldura do resumo.
+ *
+ * As linhas de dinheiro estao em `quote-totals.module.css`; aqui ficam a
+ * superficie, o titulo e o grude ao rolar.
+ */
+
+.summary {
+  display: grid;
+  gap: var(--space-16);
+  align-content: start;
+
+  padding: var(--space-24);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-modal);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.count {
+  margin: 0;
+
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Quando a cotacao falha ---------------------------------------------- */
+
+.failed {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.failedText {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--danger);
+}
+
+@media (min-width: 64rem) {
+  .summary {
+    position: sticky;
+
+    /* Abaixo do cabecalho encolhido, que e a altura que ele tem depois de a
+       pagina rolar — e rolar e a unica forma de chegar ate aqui. */
+    top: calc(var(--header-height-compact) + var(--space-24));
+  }
+}

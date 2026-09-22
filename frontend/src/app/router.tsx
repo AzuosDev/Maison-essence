@@ -90,6 +90,15 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
+    // O fechamento do pedido, logo depois da sacola que leva a ele. Entra
+    // por `lazy` como todas as outras: `zod` e os quatro passos so sao
+    // baixados por quem chega a esta tela, e nao por quem abriu a home.
+    {
+      path: '/checkout',
+      lazy: page(() => import('@/pages/checkout/checkout-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
     // Os enderecos que a moldura ja aponta e cujas telas entram nos proximos
     // passos. Existem agora para que nenhum link do cabecalho ou do rodape
     // caia num 404 — o placeholder e o mesmo modulo para todos, e cada rota

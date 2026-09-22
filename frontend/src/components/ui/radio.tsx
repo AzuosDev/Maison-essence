@@ -46,11 +46,37 @@ export type RadioProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'class
   label: string;
   /** Uma linha de apoio embaixo do rotulo: "em ate 12x sem juros". */
   description?: ReactNode;
+  /**
+   * A opcao vira um cartao: moldura, area de toque grande e fundo proprio
+   * quando marcada.
+   *
+   * Para a escolha que domina uma tela inteira — entrega ou retirada, PIX ou
+   * cartao — onde um alvo de 20px nao corresponde ao peso da decisao, e onde
+   * a opcao marcada precisa continuar obvia depois que o cliente rolou a
+   * pagina e voltou.
+   *
+   * A aparencia mora aqui, e nao na tela que usa, pelo motivo de sempre:
+   * dois cartoes desenhados em dois CSS Modules divergem no primeiro ajuste,
+   * e sao justamente as duas escolhas mais importantes do checkout.
+   */
+  card?: boolean;
   className?: string | undefined;
 };
 
 export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
-  { label, description, className, disabled, id, name, checked, value, onChange, ...props },
+  {
+    label,
+    description,
+    card = false,
+    className,
+    disabled,
+    id,
+    name,
+    checked,
+    value,
+    onChange,
+    ...props
+  },
   ref,
 ) {
   const generated = useId();
@@ -61,7 +87,9 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
     checked ?? (group?.value === undefined ? undefined : group.value === value);
 
   return (
-    <label className={cx(styles.choice, disabled && styles.disabled, className)}>
+    <label
+      className={cx(styles.choice, card && styles.card, disabled && styles.disabled, className)}
+    >
       <input
         ref={ref}
         type="radio"

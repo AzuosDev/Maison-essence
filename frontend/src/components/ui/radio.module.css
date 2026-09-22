@@ -50,6 +50,62 @@
   cursor: pointer;
 }
 
+/*
+ * A variante cartao: a escolha que domina uma tela.
+ *
+ * Entrega ou retirada, PIX ou cartao. A moldura transforma a opcao inteira
+ * em area de toque — a linha de apoio e a borda passam a fazer parte do
+ * alvo, em vez de so o circulo de 20px — e da a opcao marcada um estado que
+ * continua legivel depois de rolar a pagina e voltar.
+ *
+ * O `box-shadow` interno e que dobra a espessura do contorno quando ela e
+ * escolhida. Uma borda de 2px mudaria a caixa e empurraria o texto 1px a
+ * cada troca, fazendo a coluna inteira tremer.
+ */
+.card {
+  align-items: flex-start;
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.card:hover {
+  border-color: var(--muted);
+}
+
+.card:has(.input:checked) {
+  background-color: var(--gold-wash);
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+/*
+ * O anel de foco passa a ser do cartao: e ele o alvo, e um anel no circulo
+ * de 20px some no meio da moldura. O anel do circulo sai junto — dois aneis
+ * concentricos no mesmo foco confundem mais do que marcam.
+ */
+.card:has(.input:focus-visible) {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.card .input:focus-visible + .dot {
+  outline: none;
+}
+
+.card:has(.input:disabled) {
+  background-color: var(--sand);
+  border-color: var(--line);
+  box-shadow: none;
+}
+
 .input {
   position: absolute;
   width: 1px;

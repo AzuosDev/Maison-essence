@@ -1,0 +1,213 @@
+/*
+ * A trilha das quatro etapas.
+ *
+ * Dois desenhos que nunca aparecem juntos: a trilha com nomes no desktop e a
+ * contagem com barra no celular. Quem decide e o respiro de 64rem, o mesmo
+ * em que a coluna do resumo aparece ao lado.
+ */
+
+.progress {
+  margin-bottom: var(--space-24);
+}
+
+/* ---- Celular: "Passo 2 de 4" e uma barra --------------------------------- */
+
+.compact {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.compactText {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+
+  margin: 0;
+}
+
+.compactCount {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.compactLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.track {
+  height: 2px;
+  background: var(--line);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--ink);
+
+  /* A barra cresce quando o passo avanca: o movimento e o recado, e sem ele
+     o salto de 25% acontece entre dois quadros e passa despercebido. */
+  transition: inline-size var(--duration) var(--ease);
+}
+
+.trail {
+  display: none;
+}
+
+/* ---- Desktop: os quatro passos, com nome --------------------------------- */
+
+@media (min-width: 64rem) {
+  .compact {
+    display: none;
+  }
+
+  /*
+   * Quatro colunas iguais, ligadas por um filete.
+   *
+   * O filete e um `::before` que atravessa cada item a partir do segundo, e
+   * nao uma linha de fundo atras de tudo: assim ele comeca e termina nos
+   * marcadores, e nao sobra ponta para fora do primeiro e do ultimo.
+   */
+  .trail {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .item + .item::before {
+    content: '';
+    position: absolute;
+    inset-inline-end: 50%;
+    inset-inline-start: -50%;
+
+    /* Na altura do centro do marcador, que tem 2rem. */
+    top: 1rem;
+
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* O trecho ja percorrido fica escuro: a linha conta a mesma historia que
+     os marcadores, para quem le a trilha de longe. */
+  .done::before,
+  .current::before {
+    background: var(--ink);
+  }
+
+  .link {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-8);
+
+    position: relative;
+    padding: 0;
+
+    background: none;
+    border: none;
+    font: inherit;
+    text-align: center;
+  }
+
+  /* So o passo cumprido e um `<button>`; o resto e `<span>`. */
+  button.link {
+    cursor: pointer;
+  }
+
+  button.link:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: var(--focus-offset);
+    border-radius: var(--radius-chip);
+  }
+
+  .marker {
+    display: grid;
+    place-items: center;
+
+    width: 2rem;
+    height: 2rem;
+
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+
+    font-size: var(--text-12);
+    font-weight: var(--weight-semibold);
+    font-variant-numeric: tabular-nums;
+    color: var(--muted);
+
+    transition:
+      background-color var(--transition),
+      border-color var(--transition),
+      color var(--transition);
+  }
+
+  .label {
+    font-size: var(--text-12);
+    letter-spacing: var(--tracking-button);
+    text-transform: uppercase;
+    color: var(--muted);
+
+    transition: color var(--transition);
+  }
+
+  /*
+   * Cumprido: circulo preto com o visto.
+   *
+   * O preto cheio e o mesmo do botao primario — e o unico peso forte da
+   * paleta, e aqui ele marca o que ja foi resolvido.
+   */
+  .done .marker {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--cream);
+  }
+
+  .done .label {
+    color: var(--ink-soft);
+  }
+
+  button.link:hover .marker {
+    border-color: var(--gold-deep);
+  }
+
+  button.link:hover .label {
+    color: var(--ink);
+  }
+
+  /*
+   * Atual: contorno preto e rotulo preto, sem preenchimento.
+   *
+   * A diferenca entre cumprido e atual nao e de cor, e de peso: um esta
+   * resolvido (cheio), o outro esta em aberto (contorno). Usar duas cores
+   * para isso exigiria uma terceira cor na paleta e diria menos.
+   */
+  .current .marker {
+    border-color: var(--ink);
+    color: var(--ink);
+  }
+
+  .current .label {
+    font-weight: var(--weight-semibold);
+    color: var(--ink);
+  }
+
+  .check {
+    display: block;
+  }
+}

@@ -1,0 +1,109 @@
+/*
+ * A comparacao dos dois totais.
+ *
+ * Duas colunas de peso igual, separadas por um filete: a decisao e "aceito
+ * ou nao", e desenhar o valor novo maior ou em destaque seria a tela
+ * empurrando a resposta. O que diferencia os dois e o risco no valor antigo
+ * — ele nao vale mais.
+ */
+
+.compare {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  border: var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+.column {
+  display: grid;
+  gap: var(--space-4);
+
+  padding: var(--space-16);
+}
+
+.column + .column {
+  border-left: var(--border);
+  background: var(--sand);
+}
+
+.label {
+  margin: 0;
+
+  font-size: var(--text-12);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.value {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* O valor antigo riscado: ele e referencia, e nao alternativa. */
+.old {
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.difference {
+  margin: var(--space-16) 0 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.difference strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.unavailable {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: var(--space-16) 0 0;
+  padding: var(--space-12) var(--space-16);
+
+  background: var(--danger-wash);
+  border-radius: var(--radius-chip);
+  list-style: none;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.unavailable strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/*
+ * As duas saidas, com a confirmacao no fim da linha.
+ *
+ * No celular elas empilham e a confirmacao fica embaixo — que e onde o
+ * polegar chega. Sem `order` em nenhum dos dois casos: a ordem visual e a do
+ * DOM, e portanto a do teclado.
+ */
+.actions {
+  display: grid;
+  gap: var(--space-8);
+  width: 100%;
+}
+
+@media (min-width: 40rem) {
+  .actions {
+    grid-auto-flow: column;
+    justify-content: end;
+    gap: var(--space-12);
+  }
+}
