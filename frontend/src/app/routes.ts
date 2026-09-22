@@ -47,6 +47,15 @@ export const ROUTES = {
   /** A sacola. */
   cart: '/sacola',
 
+  /**
+   * O fechamento do pedido.
+   *
+   * Existe aqui antes da tela porque a pagina do produto ja aponta para ele:
+   * o "Comprar agora" poe o item na sacola e manda o cliente direto para
+   * este endereco, sem a parada intermediaria.
+   */
+  checkout: '/checkout',
+
   /** Paginas institucionais: `quem-somos`, `trocas-e-devolucoes`... */
   page: (slug: string) => `/institucional/${slug}`,
 

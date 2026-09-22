@@ -48,7 +48,24 @@ export {
   soleVariant,
 } from './product-display';
 
+export {
+  LOW_STOCK_THRESHOLD,
+  ON_DEMAND_MAX_QUANTITY,
+  defaultVariant,
+  galleryOf,
+  imageIndexOf,
+  isLowStock,
+  linePricing,
+  maxQuantityOf,
+  nextTierFor,
+  tierFor,
+  variantById,
+  type LinePricing,
+} from './product-detail';
+
 export { brandsOf, ceilingOf, pagedSlice, saleSlice, type ListSlice } from './product-list';
+
+export { metaDescriptionOf, productJsonLd, productMeta } from './product-seo';
 
 /**
  * Os hooks estao em dois arquivos, e a divisao e de empacotamento.
@@ -73,6 +90,7 @@ export {
   useCategory,
   useCategoryTree,
   usePrefetchProduct,
+  useProduct,
   useSearchSuggestions,
   useShelf,
 } from './use-catalog';

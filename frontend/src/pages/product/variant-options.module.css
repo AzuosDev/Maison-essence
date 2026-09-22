@@ -1,0 +1,112 @@
+/*
+ * As pilulas de variante.
+ *
+ * O `<input>` fica escondido — e nao `display: none`, que o tiraria da ordem
+ * do foco e mataria a navegacao por setas. Escondido por tamanho zero e
+ * opacidade, ele continua sendo o controle de verdade, e a pilula ao lado e
+ * so o desenho dele.
+ */
+
+.group {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.option {
+  display: inline-flex;
+  cursor: pointer;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  min-height: var(--control-height-small);
+  padding: var(--space-8) var(--space-16);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+
+  font-size: var(--text-14);
+  line-height: 1.2;
+  color: var(--ink);
+
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.price {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.option:hover .pill {
+  border-color: var(--muted);
+}
+
+.input:checked + .pill {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--cream);
+}
+
+.input:checked + .pill .price {
+  color: var(--sand);
+}
+
+.input:focus-visible + .pill {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/*
+ * A opcao esgotada: visivel, riscada, fora de alcance.
+ *
+ * O risco e o portador do recado para quem ve; o `disabled` do input e o
+ * portador para quem usa teclado ou leitor de tela, e e ele que garante o
+ * "nao selecionavel" — nao ha clique nem Enter que a marque.
+ */
+.soldOut {
+  cursor: not-allowed;
+}
+
+.input:disabled + .pill {
+  background: var(--cream);
+  border-color: var(--line);
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.input:disabled + .pill .price {
+  color: var(--muted);
+}

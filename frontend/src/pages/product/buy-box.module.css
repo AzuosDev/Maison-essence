@@ -1,0 +1,155 @@
+/*
+ * A coluna de compra.
+ *
+ * Um empilhamento simples com respiro generoso entre os blocos: cada decisao
+ * — o preco, a opcao, a quantidade — precisa ser lida sozinha. Preco colado
+ * no seletor e o que faz o cliente escolher o tamanho errado.
+ */
+
+.box {
+  display: grid;
+  gap: var(--space-24);
+  align-content: start;
+}
+
+/* ---- Marca, nome e selos ------------------------------------------------ */
+
+.heading {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.brand {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/*
+ * O nome, na serifada grande.
+ *
+ * E o `h1` da pagina, e tambem o maior texto dela: o produto e o assunto, e
+ * a tipografia precisa dizer isso antes de qualquer leitura.
+ */
+.name {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+/* ---- Preco -------------------------------------------------------------- */
+
+.prices {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.priceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  margin: 0;
+}
+
+.compareAt {
+  font-size: var(--text-16);
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.price {
+  font-size: var(--text-28);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.unit,
+.installment,
+.financed {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.financed {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+/*
+ * O preco no PIX.
+ *
+ * Destacado no dourado da marca porque e a forma de pagamento que a loja
+ * prefere — e a que sai mais barata para os dois lados.
+ */
+.pix {
+  margin: var(--space-4) 0 0;
+
+  font-size: var(--text-16);
+  color: var(--gold-deep);
+}
+
+.pixOff {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* ---- Quantidade e estoque ----------------------------------------------- */
+
+.quantity {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-16);
+}
+
+.stock {
+  margin: 0 0 var(--space-8);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.lowStock {
+  color: var(--danger);
+}
+
+/* ---- Os botoes ---------------------------------------------------------- */
+
+/*
+ * Empilhados no celular, lado a lado no desktop.
+ *
+ * O primario vem primeiro nos dois casos: "adicionar" e o que a maioria faz,
+ * e "comprar agora" e o atalho de quem ja decidiu.
+ */
+.actions {
+  display: grid;
+  gap: var(--space-12);
+}
+
+@media (min-width: 48rem) {
+  .name {
+    font-size: var(--text-36);
+  }
+
+  .actions {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -1,5 +1,5 @@
 import { api } from '@/lib/http';
-import type { PublicPageSummary, PublicSettings } from './settings.types';
+import type { PublicPage, PublicPageSummary, PublicSettings } from './settings.types';
 
 /**
  * As duas chamadas que a moldura da loja faz.
@@ -18,4 +18,19 @@ export function fetchSettings(signal?: AbortSignal): Promise<PublicSettings> {
 
 export function fetchInstitutionalPages(signal?: AbortSignal): Promise<PublicPageSummary[]> {
   return api.get<PublicPageSummary[]>('/pages', { scope: null, ...(signal ? { signal } : {}) });
+}
+
+/**
+ * Uma pagina institucional pelo endereco, com o texto.
+ *
+ * Quem chama hoje sao as abas da pagina do produto — "Trocas e devolucoes"
+ * nao e um texto do produto, e sim a politica da loja, escrita uma vez e
+ * mostrada em todo lugar onde faz falta. A pagina institucional inteira usa
+ * a mesma funcao e a mesma chave quando chegar.
+ */
+export function fetchInstitutionalPage(slug: string, signal?: AbortSignal): Promise<PublicPage> {
+  return api.get<PublicPage>(`/pages/${encodeURIComponent(slug)}`, {
+    scope: null,
+    ...(signal ? { signal } : {}),
+  });
 }

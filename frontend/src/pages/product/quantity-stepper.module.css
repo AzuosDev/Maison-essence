@@ -1,0 +1,92 @@
+/*
+ * O seletor de quantidade.
+ *
+ * Altura de controle do design system, para alinhar com o botao de adicionar
+ * quando os dois dividem a mesma linha no desktop.
+ */
+
+.field {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.label {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stepper {
+  display: inline-grid;
+  grid-template-columns: var(--control-height) 3.5rem var(--control-height);
+  align-items: stretch;
+
+  border: var(--border);
+  border-radius: var(--radius-chip);
+  overflow: hidden;
+}
+
+.step {
+  display: grid;
+  place-items: center;
+
+  height: var(--control-height);
+  padding: 0;
+
+  background: var(--surface);
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--font-body);
+  font-size: var(--text-18);
+  color: var(--ink);
+
+  transition: background-color var(--transition);
+}
+
+.step:hover:not(:disabled) {
+  background: var(--cream);
+}
+
+.step:disabled {
+  color: var(--line);
+  cursor: not-allowed;
+}
+
+.step:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.input {
+  width: 100%;
+  height: var(--control-height);
+  padding: 0;
+
+  background: var(--surface);
+  border: none;
+  border-inline: var(--border);
+
+  font-family: var(--font-body);
+  font-size: var(--text-16);
+  text-align: center;
+  color: var(--ink);
+
+  /* As setinhas nativas ficam apertadas demais para o dedo, e o lugar delas
+     ja e ocupado pelos dois botoes ao lado. */
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input::-webkit-outer-spin-button,
+.input::-webkit-inner-spin-button {
+  appearance: none;
+  margin: 0;
+}
+
+.input:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
+}

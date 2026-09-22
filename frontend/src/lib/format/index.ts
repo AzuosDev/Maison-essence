@@ -6,6 +6,7 @@
  * escrever preco, telefone e data nesta aplicacao, e ele esta neste modulo.
  */
 
+export { addressLines, formatZipCode, type PostalAddress } from './address';
 export { centsFromInput, formatCents, formatCentsRange, formatInstallment } from './currency';
 export { formatPhone, maskPhone, normalizePhone, whatsappNumber } from './phone';
 export {

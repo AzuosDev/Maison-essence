@@ -1,0 +1,96 @@
+/*
+ * A escada de desconto progressivo.
+ *
+ * Fundo areia para separar do resto da coluna de compra sem precisar de
+ * borda: e um bloco de oferta, e deve parecer um.
+ */
+
+.block {
+  padding: var(--space-16);
+
+  background: var(--sand);
+  border-radius: var(--radius-card);
+}
+
+.title {
+  margin: 0 0 var(--space-12);
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.tiers {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-4) var(--space-8);
+  width: 100%;
+
+  padding: var(--space-8) var(--space-12);
+
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+  text-align: left;
+
+  font-family: var(--font-body);
+  color: var(--ink);
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+.tier:hover {
+  border-color: var(--gold);
+}
+
+.tier:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* O degrau que a quantidade atual ja alcancou. */
+.reached {
+  border-color: var(--ink);
+}
+
+.quantity {
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+}
+
+.percent {
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--gold-deep);
+}
+
+.savings {
+  grid-column: 1 / -1;
+
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.nudge {
+  margin: var(--space-12) 0 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}

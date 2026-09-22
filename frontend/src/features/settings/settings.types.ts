@@ -72,3 +72,21 @@ export interface PublicPageSummary {
   slug: InstitutionalPageSlug;
   title: string;
 }
+
+/**
+ * Uma pagina institucional inteira, com o texto.
+ *
+ * O `slug` e `string`, e nao `InstitutionalPageSlug`: as abas da pagina do
+ * produto leem paginas pelo endereco, e a lista fechada pode ganhar um item
+ * no backend antes de este arquivo saber dele. O que garante que a pagina
+ * existe nao e o tipo — e a listagem de `/pages`, que so traz o que esta
+ * publicado.
+ *
+ * O conteudo e Markdown, do jeito que a dona escreveu no painel. Quem
+ * renderiza e `lib/markdown`.
+ */
+export interface PublicPage {
+  slug: string;
+  title: string;
+  content: string;
+}

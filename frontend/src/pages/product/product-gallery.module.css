@@ -1,0 +1,176 @@
+/*
+ * A galeria: miniaturas em coluna e a foto grande.
+ *
+ * A moldura tem proporcao fixa (3:4, a mesma do card) e esconde o que
+ * transborda. E o que permite a foto crescer por dentro sem empurrar a
+ * coluna de compra ao lado — a moldura nao muda de tamanho, so o conteudo
+ * dela.
+ */
+
+.gallery {
+  display: grid;
+  gap: var(--space-16);
+}
+
+/* ---- As miniaturas ------------------------------------------------------ */
+
+.thumbs {
+  display: none;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+
+  background: var(--cream);
+  border: var(--border);
+  border-radius: var(--radius-chip);
+  overflow: hidden;
+  cursor: pointer;
+
+  transition: border-color var(--transition);
+}
+
+.thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.thumb:hover {
+  border-color: var(--muted);
+}
+
+.thumbActive {
+  border-color: var(--ink);
+}
+
+.thumb:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- A foto grande ------------------------------------------------------ */
+
+.stage {
+  display: grid;
+  gap: var(--space-12);
+  min-width: 0;
+}
+
+.frame {
+  position: relative;
+
+  aspect-ratio: 3 / 4;
+  background: var(--cream);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+
+  /* A rolagem da pagina continua com um dedo enquanto a foto esta no
+     tamanho normal; `usePinchZoom` troca para `none` ao ampliar. */
+  touch-action: pan-y;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  transition: transform var(--transition);
+  will-change: transform;
+}
+
+/*
+ * Durante o gesto, nenhuma transicao.
+ *
+ * Meio segundo de suavizacao e bonito num clique e horrivel num arrasto: a
+ * foto ficaria sempre um passo atras do cursor e do dedo.
+ */
+.zooming .image {
+  transition: none;
+}
+
+.zooming {
+  cursor: zoom-out;
+}
+
+.frame:not(.zooming) {
+  cursor: zoom-in;
+}
+
+/* A dica some assim que a ampliacao comeca: ela ja fez o trabalho dela. */
+.hint {
+  position: absolute;
+  right: var(--space-12);
+  bottom: var(--space-12);
+
+  margin: 0;
+  padding: var(--space-4) var(--space-8);
+
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+
+  transition: opacity var(--transition);
+}
+
+.zooming .hint {
+  opacity: 0;
+}
+
+/* ---- Os pontos do celular ----------------------------------------------- */
+
+.dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  padding: 0;
+
+  background: var(--line);
+  border: none;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+
+  transition: background-color var(--transition);
+}
+
+.dotActive {
+  background: var(--ink);
+}
+
+.dot:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+@media (min-width: 64rem) {
+  .gallery {
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: var(--space-16);
+    align-items: start;
+  }
+
+  .thumbs {
+    display: grid;
+    gap: var(--space-8);
+
+    /* Muitas fotos rolam na propria coluna, e nao esticam a pagina. */
+    max-height: 40rem;
+    overflow-y: auto;
+  }
+}

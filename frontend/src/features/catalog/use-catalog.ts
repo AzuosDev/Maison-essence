@@ -127,6 +127,31 @@ export function asCategory(data: CategoryTree | MovedCategory | undefined): Cate
   return data !== undefined && 'name' in data ? data : null;
 }
 
+/* ---- O produto ---------------------------------------------------------- */
+
+/** O mesmo minuto do resto do catalogo. */
+const PRODUCT_STALE_TIME_MS = 60_000;
+
+/**
+ * O produto da pagina dele.
+ *
+ * Mesma chave e mesmo frescor da prebusca do card — e e essa igualdade que
+ * torna a navegacao instantanea. Quem passou o mouse pelo card antes de
+ * clicar chega aqui e encontra a resposta pronta no cache, sem esqueleto e
+ * sem ida a rede.
+ *
+ * O `enabled` protege do endereco sem slug, que nao existe pela rota mas
+ * existe enquanto o React Router resolve os parametros.
+ */
+export function useProduct(slug: string) {
+  return useQuery<PublicProductDetail>({
+    queryKey: catalogKeys.product(slug),
+    queryFn: ({ signal }) => fetchProduct(slug, signal),
+    enabled: slug !== '',
+    staleTime: PRODUCT_STALE_TIME_MS,
+  });
+}
+
 /* ---- Prebusca ----------------------------------------------------------- */
 
 /**
@@ -142,9 +167,6 @@ export function asCategory(data: CategoryTree | MovedCategory | undefined): Cate
  * prebusca que falha nao e erro: e so um clique que vai esperar como
  * esperaria sem ela.
  */
-/** O mesmo minuto do resto do catalogo. */
-const PRODUCT_STALE_TIME_MS = 60_000;
-
 export function usePrefetchProduct(): (slug: string) => void {
   const client = useQueryClient();
 
