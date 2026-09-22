@@ -48,6 +48,21 @@ const storeRoutes: RouteObject = {
       lazy: page(() => import('@/pages/home/home-page')),
       ErrorBoundary: RouteErrorBoundary,
     },
+
+    // Os enderecos que a moldura ja aponta e cujas telas entram nos proximos
+    // passos. Existem agora para que nenhum link do cabecalho ou do rodape
+    // caia num 404 — o placeholder e o mesmo modulo para todos, e cada rota
+    // troca a sua entrada quando a tela dela chegar.
+    ...soonRoutes([
+      '/produtos',
+      '/produtos/:slug',
+      '/pronta-entrega',
+      '/categorias/:slug',
+      '/busca',
+      '/sacola',
+      '/institucional/:slug',
+    ]),
+
     {
       // O curinga fica no grupo da loja de proposito: e ele que pega
       // qualquer endereco desconhecido da aplicacao, inclusive os que comecam
@@ -58,6 +73,14 @@ const storeRoutes: RouteObject = {
     },
   ],
 };
+
+function soonRoutes(paths: readonly string[]): RouteObject[] {
+  return paths.map((path) => ({
+    path,
+    lazy: page(() => import('@/pages/soon/soon-page')),
+    ErrorBoundary: RouteErrorBoundary,
+  }));
+}
 
 const accountRoutes: RouteObject = {
   path: ROUTE_GROUPS.account,

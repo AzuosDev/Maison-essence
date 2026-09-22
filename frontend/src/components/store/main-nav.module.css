@@ -1,0 +1,96 @@
+/*
+ * O menu horizontal do cabecalho.
+ *
+ * So aparece a partir de 1024px. Abaixo disso o caminho e a gaveta — quatro
+ * itens mais o logo e os icones nao cabem em 375px sem virar uma fila que
+ * rola na horizontal, que e exatamente o que nao pode acontecer.
+ */
+
+.nav {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .nav {
+    display: block;
+  }
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-32);
+
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+}
+
+/*
+ * Link e botao dividem a mesma aparencia: "Categorias" abre um painel e por
+ * isso e um `<button>`, enquanto os outros tres sao enderecos e por isso sao
+ * `<a>`. A diferenca importa para o teclado e para o leitor de tela, mas nao
+ * deve aparecer no desenho.
+ */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  padding-block: var(--space-8);
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  transition: color var(--transition);
+}
+
+.link:hover {
+  color: var(--gold-deep);
+}
+
+/* O filete dourado sob o item ativo e sob o painel aberto. */
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: transparent;
+  transition: background-color var(--transition);
+}
+
+.active,
+.open {
+  color: var(--ink);
+  font-weight: var(--weight-semibold);
+}
+
+.active::after,
+.open::after {
+  background-color: var(--gold);
+}
+
+/* A seta de "Categorias", que gira meia volta quando o painel abre. */
+.chevron {
+  transition: transform var(--transition);
+}
+
+.open .chevron {
+  transform: rotate(180deg);
+}

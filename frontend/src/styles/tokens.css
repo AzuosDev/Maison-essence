@@ -120,7 +120,17 @@
   --container-max: 1280px;
   --gutter: var(--space-16);
 
-  --header-height: 4.5rem;
+  /*
+   * O cabecalho tem duas alturas: a de repouso, com o monograma inteiro, e a
+   * encolhida, depois que a pagina rola. Sao tokens porque o layout da conta
+   * e o `scroll-padding` das ancoras precisam da mesma medida — e precisam
+   * dela na altura em que o cabecalho esta de fato quando a ancora chega.
+   */
+  --header-height: 6.5rem;
+  --header-height-compact: 4rem;
+
+  /** A barra de avisos, que rola junto com a pagina e nao gruda. */
+  --announcement-height: 2.25rem;
 
   /* Altura dos controles de formulario e do botao. O botao primario tem 48px
      por especificacao, e campo e botao alinhados na mesma linha precisam da

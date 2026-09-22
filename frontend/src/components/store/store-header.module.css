@@ -1,0 +1,119 @@
+/*
+ * O cabecalho da loja.
+ *
+ * Fica fixo ao rolar e encolhe: a altura cai de 6.5rem para 4rem e o logo
+ * passa de empilhado para em linha. As duas medidas sao tokens, e a
+ * transicao anima `height` e `padding` com os mesmos 180ms de todo o resto.
+ *
+ * `position: sticky` e nao `fixed`: com `sticky`, o cabecalho ocupa espaco no
+ * fluxo enquanto esta no topo, e o conteudo comeca abaixo dele sem precisar
+ * de um `padding-top` compensatorio que teria que ser mantido em sincronia
+ * com a altura.
+ */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+
+  background-color: var(--surface);
+  border-bottom: var(--border);
+
+  transition: box-shadow var(--transition);
+}
+
+/* A sombra so aparece quando ha conteudo passando por baixo. */
+.scrolled {
+  box-shadow: var(--shadow);
+}
+
+/*
+ * A barra e um grid de tres colunas com o logo no meio: as laterais sao
+ * `1fr` iguais, entao o logo fica centralizado na tela mesmo com um icone a
+ * mais de um lado que do outro.
+ */
+.bar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-8);
+
+  height: var(--header-height);
+  transition: height var(--transition);
+}
+
+.scrolled .bar {
+  height: var(--header-height-compact);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: 0;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/* O hamburguer some quando o menu horizontal aparece. */
+.menuButton {
+  display: inline-flex;
+}
+
+@media (min-width: 64rem) {
+  .menuButton {
+    display: none;
+  }
+}
+
+/*
+ * A fila do menu, na segunda linha.
+ *
+ * Ao rolar, ela nao some — encolhe ate zero e desaparece junto com a altura
+ * do cabecalho. Sumir de uma vez faria o conteudo da pagina dar um salto de
+ * 40px no primeiro toque do scroll.
+ */
+.navRow {
+  display: none;
+  overflow: hidden;
+
+  transition:
+    height var(--transition),
+    opacity var(--transition);
+}
+
+@media (min-width: 64rem) {
+  .navRow {
+    display: flex;
+    justify-content: center;
+    height: 2.75rem;
+    opacity: 1;
+    border-top: var(--border);
+  }
+
+  .scrolled .navRow {
+    height: 0;
+    opacity: 0;
+    border-top-color: transparent;
+  }
+}
+
+/*
+ * A conta so aparece no desktop: no celular ela esta na gaveta, e tres
+ * icones a direita de uma tela de 375px espremem o logo.
+ */
+.accountLink {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .accountLink {
+    display: inline-flex;
+  }
+}

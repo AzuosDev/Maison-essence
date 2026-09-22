@@ -1,0 +1,54 @@
+/*
+ * Os selos de confianca, acima do rodape.
+ *
+ * Empilhados no celular, em fila a partir de 768px. Nao sao decoracao: sao
+ * as tres perguntas que travam a compra numa loja pequena — chega ate mim?
+ * meus dados estao seguros? da para parcelar?
+ */
+
+.badges {
+  display: grid;
+  gap: var(--space-24);
+  grid-template-columns: 1fr;
+
+  padding-block: var(--space-32);
+  border-bottom: 1px solid rgb(250 247 242 / 0.12);
+}
+
+@media (min-width: 48rem) {
+  .badges {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-32);
+  }
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.5rem;
+  height: 2.5rem;
+
+  color: var(--gold);
+  border: 1px solid rgb(192 160 98 / 0.4);
+  border-radius: var(--radius-pill);
+}
+
+.title {
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--cream);
+}
+
+.note {
+  font-size: var(--text-12);
+  color: var(--muted);
+}

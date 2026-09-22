@@ -24,8 +24,9 @@ html {
   scroll-behavior: smooth;
 
   /* O cabecalho e fixo: sem isto, a ancora para uma secao a esconde atras
-     dele. */
-  scroll-padding-top: calc(var(--header-height) + var(--space-16));
+     dele. A conta e com a altura encolhida, que e a que ele tem quando a
+     pagina ja rolou — e rolar e a unica forma de chegar a uma ancora. */
+  scroll-padding-top: calc(var(--header-height-compact) + var(--space-16));
 }
 
 html,

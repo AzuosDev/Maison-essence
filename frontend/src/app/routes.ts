@@ -7,7 +7,7 @@
  * caminho e uma edicao neste arquivo.
  *
  * Em portugues porque a URL e parte do que o cliente le e do que o Google
- * indexa: `/produto/asad-lattafa` diz mais que `/product/asad-lattafa` para
+ * indexa: `/produtos/asad-lattafa` diz mais que `/products/asad-lattafa` para
  * quem compra aqui. Os identificadores do codigo seguem em ingles, como no
  * resto do projeto.
  */
@@ -24,6 +24,31 @@ export const ROUTE_GROUPS = {
 
 export const ROUTES = {
   home: ROUTE_GROUPS.store,
+
+  /** A vitrine inteira, com os filtros na query string. */
+  products: '/produtos',
+  product: (slug: string) => `/produtos/${slug}`,
+
+  /**
+   * Pronta entrega tem endereco proprio, e nao `?readyToShip=true`.
+   *
+   * E um item de menu e o argumento de venda mais forte da loja — o link
+   * limpo e o que se manda no WhatsApp. O filtro equivalente continua
+   * existindo na vitrine para quem chega por ela.
+   */
+  readyToShip: '/pronta-entrega',
+
+  category: (slug: string) => `/categorias/${slug}`,
+
+  /** A busca, com o termo em `?q=`. */
+  search: '/busca',
+  searchFor: (term: string) => `/busca?q=${encodeURIComponent(term)}`,
+
+  /** A sacola. */
+  cart: '/sacola',
+
+  /** Paginas institucionais: `quem-somos`, `trocas-e-devolucoes`... */
+  page: (slug: string) => `/institucional/${slug}`,
 
   account: {
     root: ROUTE_GROUPS.account,

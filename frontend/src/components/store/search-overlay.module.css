@@ -1,0 +1,307 @@
+/*
+ * A busca em tela cheia.
+ *
+ * Encosta no topo em vez de ficar centralizada: a caixa nasce onde a lupa
+ * estava, e o resultado cresce para baixo sem empurrar o campo.
+ */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+
+  background-color: var(--overlay);
+  animation: fade var(--duration) var(--ease);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 100vh;
+  max-height: 100dvh;
+
+  background-color: var(--surface);
+  animation: drop var(--duration) var(--ease);
+}
+
+.panel:focus {
+  outline: none;
+}
+
+@media (min-width: 48rem) {
+  .overlay {
+    padding-top: var(--space-64);
+    padding-inline: var(--space-24);
+  }
+
+  .panel {
+    max-width: 44rem;
+    max-height: 80vh;
+    max-height: 80dvh;
+    border-radius: var(--radius-modal);
+    box-shadow: var(--shadow);
+  }
+}
+
+/* ---- O campo ---------------------------------------------------------- */
+
+.form {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+  border-bottom: var(--border);
+}
+
+@media (min-width: 48rem) {
+  .form {
+    padding: var(--space-24);
+  }
+}
+
+.searchIcon {
+  flex: none;
+  color: var(--muted);
+}
+
+/*
+ * O campo nao usa o primitivo `Input`: aqui ele nao tem rotulo visivel, nem
+ * borda, nem altura de controle — e um campo de 22px que ocupa a linha
+ * inteira. Forcar o primitivo a virar isto custaria mais props do que o
+ * proprio estilo.
+ */
+.input {
+  flex: 1;
+  min-width: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-22);
+  color: var(--ink);
+
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+/* O X do navegador no `type="search"`, que nao segue a paleta. */
+.input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.close {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+
+  color: var(--ink-soft);
+  border-radius: var(--radius-chip);
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.close:hover {
+  background-color: var(--sand);
+  color: var(--ink);
+}
+
+/* ---- Os resultados ---------------------------------------------------- */
+
+.results {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-16);
+}
+
+@media (min-width: 48rem) {
+  .results {
+    padding: var(--space-16) var(--space-24) var(--space-24);
+  }
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  margin-bottom: var(--space-12);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.clear {
+  font-size: var(--text-12);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--gold-deep);
+  transition: color var(--transition);
+}
+
+.clear:hover {
+  color: var(--ink);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+/* ---- Busca recente ---------------------------------------------------- */
+
+.recentRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.recentTerm {
+  flex: 1;
+  min-width: 0;
+
+  padding: var(--space-12) var(--space-8);
+
+  font-size: var(--text-14);
+  text-align: left;
+  color: var(--ink-soft);
+  border-radius: var(--radius-chip);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.recentTerm:hover {
+  background-color: var(--gold-wash);
+  color: var(--ink);
+}
+
+.forget {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--muted);
+  border-radius: var(--radius-chip);
+  transition: color var(--transition);
+}
+
+.forget:hover {
+  color: var(--danger);
+}
+
+/* ---- Sugestao de produto ---------------------------------------------- */
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  padding: var(--space-8);
+  border-radius: var(--radius-chip);
+
+  transition: background-color var(--transition);
+}
+
+.suggestion:hover {
+  background-color: var(--gold-wash);
+}
+
+.thumb {
+  flex: none;
+  width: 3rem;
+  height: 4rem;
+  object-fit: cover;
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+}
+
+.suggestionText {
+  flex: 1;
+  min-width: 0;
+}
+
+.suggestionName {
+  font-size: var(--text-14);
+  color: var(--ink);
+  /* Nome longo corta em vez de empurrar o preco para fora. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.suggestionBrand {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.suggestionPrice {
+  flex: none;
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* ---- Estados ---------------------------------------------------------- */
+
+.hint {
+  padding-block: var(--space-24);
+  font-size: var(--text-14);
+  text-align: center;
+  color: var(--muted);
+}
+
+.seeAll {
+  display: block;
+  padding-top: var(--space-16);
+  margin-top: var(--space-8);
+  border-top: var(--border);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--gold-deep);
+  transition: color var(--transition);
+}
+
+.seeAll:hover {
+  color: var(--ink);
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(calc(var(--space-16) * -1));
+    opacity: 0;
+  }
+}

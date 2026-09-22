@@ -1,0 +1,125 @@
+/*
+ * O painel de categorias: largura total, abaixo do cabecalho.
+ *
+ * So existe a partir de 1024px — no celular e no tablet o caminho das
+ * categorias e a gaveta, com a arvore em acordeao. Um painel de colunas numa
+ * tela de 375px viraria uma lista vertical enorme escondida atras de um
+ * hover que nao existe no toque.
+ */
+
+.panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+
+  background-color: var(--surface);
+  border-top: var(--border);
+  border-bottom: var(--border);
+  box-shadow: var(--shadow);
+
+  animation: drop var(--duration) var(--ease);
+}
+
+.inner {
+  padding-block: var(--space-32) var(--space-48);
+}
+
+/*
+ * Colunas que se acomodam sozinhas: cada categoria ocupa no minimo 12rem, e
+ * o navegador decide quantas cabem. Sem media query, e sem coluna orfa
+ * quando a dona cadastra a sexta categoria.
+ */
+.columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: var(--space-32);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.parent {
+  min-width: 0;
+}
+
+.parentLink {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  padding-bottom: var(--space-8);
+  margin-bottom: var(--space-12);
+
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  color: var(--ink);
+  border-bottom: 1px solid var(--gold);
+
+  transition: color var(--transition);
+}
+
+.parentLink:hover {
+  color: var(--gold-deep);
+}
+
+.count {
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.childLink {
+  display: block;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  transition: color var(--transition);
+}
+
+.childLink:hover {
+  color: var(--gold-deep);
+}
+
+.empty {
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+/* O rodape do painel: o atalho para a vitrine inteira. */
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-24);
+  margin-top: var(--space-32);
+  border-top: var(--border);
+}
+
+.allLink {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  transition: color var(--transition);
+}
+
+.allLink:hover {
+  color: var(--ink);
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(calc(var(--space-8) * -1));
+  }
+}

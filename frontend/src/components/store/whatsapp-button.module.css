@@ -1,0 +1,58 @@
+/*
+ * O botao flutuante do WhatsApp.
+ *
+ * Circulo de 56px no canto inferior direito, acima do rodape. Fica em todas
+ * as paginas da loja porque e o unico canal de atendimento que ela tem: o
+ * pedido termina la, a duvida sobre o perfume termina la, e a troca tambem.
+ */
+
+.button {
+  position: fixed;
+  right: var(--space-16);
+  bottom: var(--space-16);
+  z-index: var(--z-whatsapp);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3.5rem;
+  height: 3.5rem;
+
+  color: var(--cream);
+  background-color: var(--whatsapp);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+
+  /* O anel de foco precisa aparecer sobre o verde. */
+  --focus-color: var(--ink);
+
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
+}
+
+@media (min-width: 48rem) {
+  .button {
+    right: var(--space-24);
+    bottom: var(--space-24);
+  }
+}
+
+.button:hover {
+  transform: scale(1.05);
+}
+
+/*
+ * O rodape entrou na tela: o botao sobe para nao cobrir os links dele.
+ *
+ * Sobe, e nao some: quem rolou ate o fim da pagina e justamente quem esta
+ * decidindo perguntar alguma coisa.
+ */
+.raised {
+  transform: translateY(calc(var(--space-64) * -1));
+}
+
+.raised:hover {
+  transform: translateY(calc(var(--space-64) * -1)) scale(1.05);
+}

@@ -1,0 +1,60 @@
+/*
+ * O formulario de newsletter, no rodape.
+ *
+ * Empilhado no celular e em linha a partir de 640px — o campo e o botao lado
+ * a lado so cabem quando ha largura para o botao nao espremer o e-mail.
+ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+@media (min-width: 40rem) {
+  .row {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+
+  .field {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/*
+ * O rodape e preto: o campo herda a paleta clara do primitivo e precisa do
+ * contraste invertido. Variaveis, e nao regras novas — o `Input` continua
+ * sendo o mesmo componente.
+ */
+.field {
+  --surface: transparent;
+  --line: rgb(250 247 242 / 0.25);
+  --ink: var(--cream);
+  --muted: rgb(250 247 242 / 0.6);
+  --focus-color: var(--gold);
+}
+
+.label {
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  color: var(--cream);
+}
+
+.note {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+/* A resposta do envio: some sozinha do fluxo quando nao ha nada a dizer. */
+.status {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+}
+
+.error {
+  color: var(--danger);
+}

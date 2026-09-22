@@ -1,0 +1,59 @@
+/*
+ * Os botoes de icone do cabecalho: lupa, sacola, hamburguer.
+ *
+ * Alvo de toque de 44px, que e o minimo confortavel no celular, mesmo com o
+ * icone desenhado em 20px. O quadrado invisivel em volta e o que faz o dedo
+ * acertar de primeira.
+ */
+
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.75rem;
+  height: 2.75rem;
+
+  color: var(--ink);
+  border-radius: var(--radius-chip);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.button:hover {
+  background-color: var(--gold-wash);
+  color: var(--gold-deep);
+}
+
+/*
+ * O contador da sacola.
+ *
+ * Fica no canto do icone e nunca cresce alem de duas casas — "99+" cabe, e
+ * uma sacola com mais de 99 itens nao existe nesta loja.
+ */
+.counter {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.125rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 1.125rem;
+  height: 1.125rem;
+  padding-inline: 0.25rem;
+
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--cream);
+
+  background-color: var(--ink);
+  border-radius: var(--radius-pill);
+}

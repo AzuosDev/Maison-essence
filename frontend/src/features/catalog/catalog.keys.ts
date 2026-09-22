@@ -14,11 +14,19 @@
 
 /** Filtros da vitrine, como `GET /products` os aceita. */
 export interface ProductListParams {
+  /** Busca por nome e marca. */
+  q?: string;
+  /** Slug da categoria. As subcategorias dela entram junto. */
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  inStock?: boolean;
+  readyToShip?: boolean;
+  featured?: boolean;
+  sort?: string;
   page?: number;
   limit?: number;
-  search?: string;
-  category?: string;
-  sort?: string;
   [key: string]: string | number | boolean | undefined;
 }
 
@@ -29,10 +37,14 @@ export const catalogKeys = {
   productList: (params: ProductListParams = {}) => [...catalogKeys.products(), params] as const,
   product: (slug: string) => [...catalogKeys.products(), 'detail', slug] as const,
 
+  /** As sugestoes da caixa de busca, por termo ja normalizado. */
+  suggestions: (term: string) => [...catalogKeys.all, 'suggestions', term] as const,
+
   /** As prateleiras da home: destaques, pronta entrega e mais vendidos. */
   shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers', limit?: number) =>
     [...catalogKeys.all, 'shelf', name, limit ?? null] as const,
 
   categories: () => [...catalogKeys.all, 'categories'] as const,
+  categoryTree: () => [...catalogKeys.categories(), 'tree'] as const,
   category: (slug: string) => [...catalogKeys.categories(), slug] as const,
 } as const;

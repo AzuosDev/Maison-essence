@@ -1,0 +1,103 @@
+/*
+ * A barra de avisos.
+ *
+ * O texto atravessa a tela em loop. A animacao move um bloco que contem o
+ * texto duas vezes, deslocando-o em exatamente metade da propria largura:
+ * quando a primeira copia sai pela esquerda, a segunda esta na posicao em
+ * que a primeira comecou, e o ciclo reinicia sem emenda visivel.
+ *
+ * `translate3d` e nao `left`: a animacao roda na GPU, sem recalcular layout
+ * a cada quadro. Numa barra que nunca para, essa diferenca e bateria.
+ */
+
+.bar {
+  /* Nao gruda no topo: quem rola quer o catalogo, nao o aviso. O que fica
+     fixo e o cabecalho, logo abaixo. */
+  position: relative;
+  z-index: var(--z-header);
+
+  display: flex;
+  align-items: center;
+  height: var(--announcement-height);
+  overflow: hidden;
+
+  background-color: var(--ink);
+  color: var(--cream);
+}
+
+.viewport {
+  width: 100%;
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+
+/*
+ * Pausa no hover — e tambem quando algo dentro dela recebe foco, para quem
+ * chega de teclado conseguir ler o aviso sem correr atras dele.
+ */
+.bar:hover .track,
+.bar:focus-within .track {
+  animation-play-state: paused;
+}
+
+.copy {
+  display: flex;
+  align-items: center;
+  flex: none;
+
+  padding-inline: var(--space-24);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* O losango entre as repeticoes do aviso. */
+.separator {
+  margin-left: var(--space-24);
+  color: var(--gold);
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/*
+ * Quem pediu menos movimento no sistema recebe o aviso parado e centralizado,
+ * e nao um texto cortado no meio: o reset ja zera a duracao da animacao, o
+ * que congelaria a faixa em qualquer posicao.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Com a faixa parada, a segunda copia so repetiria o texto na tela. */
+  .copy:nth-child(2) {
+    display: none;
+  }
+
+  .copy {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .separator {
+    display: none;
+  }
+}

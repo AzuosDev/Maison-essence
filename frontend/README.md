@@ -92,6 +92,53 @@ escrita ao lado de cada um.
 Mobile first, com quatro respiros: 640px (`40rem`), 768px (`48rem`), 1024px
 (`64rem`) e 1280px (`80rem`). Toda media query e `min-width`.
 
+## Moldura da loja
+
+O layout base — barra de avisos, cabecalho, rodape e o botao do WhatsApp —
+esta em [`src/components/store`](src/components/store) e e montado por
+[`store-layout.tsx`](src/app/layouts/store-layout.tsx). A area da conta do
+cliente usa a mesma moldura: para quem esta comprando, "meus pedidos" e uma
+pagina da loja, nao outro site.
+
+**Uma chamada por dado.** O `StoreSettingsProvider` fica no topo do layout e
+busca `GET /settings` e `GET /pages` uma vez; cabecalho, rodape, barra de
+avisos e o botao do WhatsApp leem do contexto. A arvore de categorias
+(`GET /categories`) segue a mesma regra pelo `useCategoryTree`. Ha teste
+contando as requisicoes.
+
+**O cabecalho** fica fixo (`sticky`, nao `fixed` — assim ele ocupa espaco no
+fluxo e dispensa um `padding-top` compensatorio) e encolhe ao rolar: a altura
+cai de `--header-height` para `--header-height-compact` e o logo passa de
+empilhado para em linha. Quem decide e o `useScrolled`, que devolve um
+booleano e le a posicao dentro de um `requestAnimationFrame`.
+
+**O menu de Categorias** abre um painel em largura total. Ele e filho do
+`<header>`, e nao do container de 1280px, porque precisa se esticar de ponta
+a ponta. Nao e um dialogo e nao prende o foco; o Escape e o clique fora sao
+tratados pelo cabecalho, e so enquanto ele esta aberto.
+
+**No celular** o caminho e a gaveta (`Drawer` do design system, com foco
+preso e Escape ja prontos): busca no topo, categorias em acordeao e links
+institucionais no fim. O menu horizontal so aparece a partir de 1024px.
+
+**A busca** abre em tela cheia, sugere a partir de 3 letras com 300ms de
+espera e guarda as buscas recentes so no `localStorage` deste navegador —
+nao vao para a API nem se ligam a conta nenhuma.
+
+### Dois pontos sem backend
+
+Ambos estao marcados no codigo e desenhados para falhar de forma honesta, em
+vez de fingir que funcionam:
+
+- **Newsletter** ([`features/settings/newsletter.ts`](src/features/settings/newsletter.ts)):
+  nao existe rota de inscricao na API. O formulario valida e envia, mas a
+  chamada recusa com uma mensagem que manda o cliente para o WhatsApp.
+  Quando a rota existir, e uma linha para ligar.
+- **CNPJ do rodape** ([`components/store/store.constants.ts`](src/components/store/store.constants.ts)):
+  `GET /settings` nao devolve CNPJ nem razao social. As constantes nascem
+  vazias e o rodape esconde a linha enquanto estiverem assim — um CNPJ
+  inventado no ar e pior do que nenhum.
+
 ### Acessibilidade
 
 O que nao da para conferir a olho tem teste

@@ -1,0 +1,167 @@
+/*
+ * O conteudo da gaveta do celular.
+ *
+ * A moldura — veu, painel, foco preso, Escape — e do primitivo `Drawer`.
+ * Aqui fica so o que vai dentro: busca no topo, arvore de categorias no
+ * meio, institucional no fim.
+ */
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+/*
+ * A busca parece um campo mas e um botao: abrir o teclado do celular dentro
+ * de uma gaveta que ja e estreita seria pior que fechar a gaveta e abrir a
+ * busca inteira, que e o que este botao faz.
+ */
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  width: 100%;
+
+  min-height: var(--control-height);
+  padding-inline: var(--space-16);
+
+  font-size: var(--text-14);
+  text-align: left;
+  color: var(--muted);
+
+  background-color: var(--cream);
+  border: var(--border);
+  border-radius: var(--radius-chip);
+
+  transition: border-color var(--transition);
+}
+
+.search:hover {
+  border-color: var(--muted);
+}
+
+.sectionTitle {
+  margin-bottom: var(--space-8);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Atalhos de topo --------------------------------------------------- */
+
+.links {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.link {
+  display: block;
+  padding-block: var(--space-12);
+
+  font-size: var(--text-16);
+  color: var(--ink);
+  border-bottom: var(--border);
+
+  transition: color var(--transition);
+}
+
+.link:hover {
+  color: var(--gold-deep);
+}
+
+/* ---- Arvore de categorias ---------------------------------------------- */
+
+/*
+ * A categoria pai e um link dentro do gatilho do acordeao? Nao: seriam dois
+ * alvos empilhados no mesmo toque. O pai abre a sanfona, e o primeiro item
+ * de dentro e "Ver tudo em <categoria>" — dois toques, nenhum ambiguo.
+ */
+.subList {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.subLink {
+  display: block;
+  padding-block: var(--space-8);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  transition: color var(--transition);
+}
+
+.subLink:hover {
+  color: var(--gold-deep);
+}
+
+.allInCategory {
+  font-weight: var(--weight-semibold);
+  color: var(--gold-deep);
+}
+
+.empty {
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+/* ---- Institucional e contato ------------------------------------------- */
+
+.footer {
+  padding-top: var(--space-24);
+  margin-top: var(--space-8);
+  border-top: var(--border);
+}
+
+.institutional {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.institutionalLink {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  transition: color var(--transition);
+}
+
+.institutionalLink:hover {
+  color: var(--gold-deep);
+}
+
+.social {
+  display: flex;
+  gap: var(--space-8);
+  margin-top: var(--space-24);
+}
+
+.socialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+
+  color: var(--ink-soft);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+
+  transition:
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.socialLink:hover {
+  color: var(--gold-deep);
+  border-color: var(--gold);
+}

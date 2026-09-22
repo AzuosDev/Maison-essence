@@ -1,0 +1,84 @@
+/*
+ * O logotipo: monograma ME numa moldura dourada, com o nome em caixa alta
+ * bem espacada embaixo.
+ *
+ * As medidas sao variaveis locais para que o cabecalho as reduza ao encolher
+ * — trocar dois numeros num lugar so, em vez de repetir o bloco inteiro numa
+ * classe `.small`.
+ */
+
+.logo {
+  --monogram-size: 2.5rem;
+  --monogram-text: var(--text-16);
+  --wordmark-text: var(--text-18);
+
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+
+  color: var(--ink);
+  transition:
+    gap var(--transition),
+    color var(--transition);
+}
+
+/* Encolhido: o cabecalho passa esta classe ao rolar a pagina. */
+.compact {
+  --monogram-size: 1.75rem;
+  --monogram-text: var(--text-12);
+  --wordmark-text: var(--text-14);
+
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+
+  width: var(--monogram-size);
+  height: var(--monogram-size);
+
+  font-family: var(--font-display);
+  font-size: var(--monogram-text);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  /* O espacamento da fonte sobra a direita e desloca o centro optico. */
+  text-indent: 0.04em;
+  line-height: 1;
+  color: var(--gold-deep);
+
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-chip);
+
+  transition:
+    width var(--transition),
+    height var(--transition),
+    font-size var(--transition);
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: var(--wordmark-text);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-logo);
+  text-indent: var(--tracking-logo);
+  white-space: nowrap;
+
+  transition: font-size var(--transition);
+}
+
+/* No rodape e na gaveta, sobre fundo escuro. */
+.inverted {
+  color: var(--cream);
+}
+
+.inverted .monogram {
+  color: var(--gold);
+}
