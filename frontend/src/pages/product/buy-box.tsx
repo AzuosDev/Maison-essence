@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
 import { useAddToCart } from '@/components/store';
-import { Badge, Button } from '@/components/ui';
+import { Badge, Button, QuantityStepper } from '@/components/ui';
 import {
   isLowStock,
   linePricing,
@@ -14,7 +14,6 @@ import { bestInterestFreeInstallment, usePaymentSettings } from '@/features/paym
 import { cx } from '@/lib/cx';
 import { formatCents, formatInstallment } from '@/lib/format';
 import { QuantityDiscounts } from './quantity-discounts';
-import { QuantityStepper } from './quantity-stepper';
 import { VariantOptions } from './variant-options';
 import styles from './buy-box.module.css';
 
@@ -190,7 +189,9 @@ function PriceBlock({
   const pix = payments?.pix;
   const card = payments?.card;
 
-  const installment = card === undefined ? null : bestInterestFreeInstallment(totalCents, card);
+  // `card` e nulo quando a loja nao aceita cartao e indefinido enquanto as
+  // regras nao chegaram: os dois casos sao "nao ha parcelamento a anunciar".
+  const installment = card ? bestInterestFreeInstallment(totalCents, card) : null;
   const pixDiscount =
     pix && pix.hasKey && pix.discountPercent > 0
       ? Math.round((totalCents * pix.discountPercent) / 100)
@@ -259,8 +260,10 @@ function PriceBlock({
  * para quem volta. Produto sob encomenda diz o que e, porque o prazo dele e
  * outro e o cliente precisa saber disso antes de comprar, nao depois.
  *
- * `role="status"` para que a troca de variante anuncie o novo estoque a quem
- * usa leitor de tela: a informacao mudou sem que a pagina mudasse.
+ * O aviso sai num `<output>`, que e o elemento do resultado que muda sem que
+ * a pagina mude — e ja carrega o `role="status"` embutido. A troca de
+ * variante anuncia o novo estoque a quem usa leitor de tela sem que nada
+ * aqui precise pedir.
  */
 function StockNote({ variant }: { variant: PublicVariant | null }) {
   if (variant === null) {
@@ -268,11 +271,7 @@ function StockNote({ variant }: { variant: PublicVariant | null }) {
   }
 
   if (variant.onDemand) {
-    return (
-      <p className={styles.stock} role="status">
-        Sob encomenda. Combinamos o prazo pelo WhatsApp.
-      </p>
-    );
+    return <output className={styles.stock}>Sob encomenda. Combinamos o prazo pelo WhatsApp.</output>;
   }
 
   if (!isLowStock(variant)) {
@@ -280,8 +279,8 @@ function StockNote({ variant }: { variant: PublicVariant | null }) {
   }
 
   return (
-    <p className={cx(styles.stock, styles.lowStock)} role="status">
+    <output className={cx(styles.stock, styles.lowStock)}>
       {variant.stock === 1 ? 'Ultima unidade' : `Restam apenas ${String(variant.stock)} unidades`}
-    </p>
+    </output>
   );
 }

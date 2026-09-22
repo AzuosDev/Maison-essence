@@ -28,12 +28,29 @@ import styles from './toast.module.css';
 
 export type ToastVariant = 'info' | 'success' | 'danger';
 
+/**
+ * O atalho no rodape do aviso: "Ver a sacola".
+ *
+ * E um `onSelect`, e nao um endereco, e a razao e de arquitetura: o
+ * `ToastProvider` fica **por fora** do `RouterProvider` (ver `app/App.tsx`),
+ * entao um `<Link>` desenhado aqui dentro nao encontraria contexto de
+ * roteador nenhum e derrubaria o primeiro aviso que tentasse usa-lo. Quem
+ * pede o toast esta dentro do router e tem `useNavigate` a mao; este
+ * primitivo continua sem saber que rotas existem, que e como o resto de
+ * `components/ui` funciona.
+ */
+export interface ToastAction {
+  label: string;
+  onSelect: () => void;
+}
+
 export interface ToastOptions {
   title: string;
   description?: string;
   variant?: ToastVariant;
   /** Quanto tempo fica na tela. `0` para so sair no clique. */
   duration?: number;
+  action?: ToastAction;
 }
 
 /**
@@ -137,6 +154,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                   title={entry.title}
                   description={entry.description}
                   variant={entry.variant}
+                  action={entry.action}
+                  onSelectAction={() => {
+                    dismiss(entry.id);
+                  }}
                   onDismiss={() => {
                     dismiss(entry.id);
                   }}
@@ -154,6 +175,16 @@ export type ToastProps = Omit<ComponentPropsWithoutRef<'div'>, 'title'> & {
   title: string;
   description?: string | undefined;
   variant?: ToastVariant | undefined;
+  /** O link do rodape do aviso: "Ver a sacola". */
+  action?: ToastAction | undefined;
+  /**
+   * O atalho foi usado.
+   *
+   * O aviso sai da tela junto: deixa-lo anunciando que o item entrou na
+   * sacola por cima da propria sacola aberta e dar a mesma noticia duas
+   * vezes, com uma delas cobrindo a outra.
+   */
+  onSelectAction?: (() => void) | undefined;
   /** Sem ele, o aviso nao mostra o X — util so no styleguide. */
   onDismiss?: (() => void) | undefined;
   closeLabel?: string;
@@ -164,6 +195,8 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
     title,
     description,
     variant = 'info',
+    action,
+    onSelectAction,
     onDismiss,
     closeLabel = 'Dispensar',
     className,
@@ -185,6 +218,19 @@ export const Toast = forwardRef<HTMLDivElement, ToastProps>(function Toast(
       <div className={styles.content}>
         <p className={styles.title}>{title}</p>
         {description ? <p className={styles.description}>{description}</p> : null}
+
+        {action ? (
+          <button
+            type="button"
+            className={styles.action}
+            onClick={() => {
+              action.onSelect();
+              onSelectAction?.();
+            }}
+          >
+            {action.label}
+          </button>
+        ) : null}
       </div>
 
       {onDismiss ? (

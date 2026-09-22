@@ -2,6 +2,7 @@ import { Suspense, lazy, useState, type ReactNode } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '@/components/ui';
 import { registerSessions } from '@/features/auth';
+import { watchCustomerCart } from '@/features/cart';
 import { AppErrorBoundary } from './app-error-boundary';
 import { createQueryClient } from './query-client';
 
@@ -15,6 +16,16 @@ import { createQueryClient } from './query-client';
  * o `SessionPort` e trataria o `401` como sessao inexistente.
  */
 registerSessions();
+
+/**
+ * A sacola acompanha quem entra e quem sai.
+ *
+ * Aqui, e nao num efeito, pelo mesmo motivo do registro acima: a sessao pode
+ * mudar antes de qualquer componente montar — o cliente HTTP a encerra
+ * sozinho quando a renovacao falha —, e uma assinatura que so comeca depois
+ * do primeiro render perderia justamente esse caso.
+ */
+watchCustomerCart();
 
 /**
  * O inspetor de cache do TanStack Query.

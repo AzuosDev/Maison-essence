@@ -1,0 +1,157 @@
+/*
+ * A faixa de produtos relacionados.
+ *
+ * Fundo areia para fechar a pagina: o produto acabou de ser apresentado
+ * sobre creme, e a mudanca de fundo e o que diz, sem filete nem titulo
+ * gritado, que aqui comeca outro assunto.
+ */
+
+.shelf {
+  margin-top: var(--space-64);
+  padding-block: var(--space-48);
+
+  background-color: var(--sand);
+}
+
+/*
+ * O cabecalho centralizado da loja, com as setas ancoradas a direita.
+ *
+ * As setas ficam fora da faixa de cards de proposito. Sobrepostas ao
+ * primeiro e ao ultimo card — que e o desenho comum — elas cobririam
+ * justamente a foto do produto que deveriam ajudar a ver, e no celular
+ * ficariam debaixo do dedo que desliza.
+ */
+.header {
+  position: relative;
+}
+
+.arrows {
+  display: none;
+}
+
+.arrow {
+  display: grid;
+  place-items: center;
+
+  width: var(--control-height);
+  height: var(--control-height);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+
+  transition:
+    border-color var(--transition),
+    color var(--transition),
+    opacity var(--transition);
+}
+
+.arrow:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.arrow:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.arrow:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* O chevron do sistema, girado. Um desenho so para os dois lados. */
+.previous svg {
+  transform: rotate(90deg);
+}
+
+.next svg {
+  transform: rotate(-90deg);
+}
+
+/* ---- A faixa ------------------------------------------------------------ */
+
+.track {
+  display: flex;
+  gap: var(--space-16);
+
+  margin: var(--space-32) 0 0;
+  padding: 0 0 var(--space-16);
+  list-style: none;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+
+  /*
+   * A barra de rolagem tambem e parte do desenho.
+   *
+   * Ela aparece de verdade aqui — e uma lista que rola na horizontal, e no
+   * celular e ela que conta que ha mais coisa a direita. Deixada no padrao,
+   * seria o unico elemento cinza-azulado de uma pagina inteira em creme e
+   * dourado.
+   */
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.track::-webkit-scrollbar {
+  height: 6px;
+}
+
+.track::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.track::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: var(--radius-pill);
+}
+
+.track::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/*
+ * Cada card encaixa no comeco da faixa.
+ *
+ * `scroll-margin-left` zera a folga que o encaixe deixaria e mantem o
+ * primeiro card alinhado com o resto do conteudo da pagina.
+ */
+.slide {
+  flex: 0 0 72%;
+  scroll-snap-align: start;
+  scroll-margin-left: 0;
+}
+
+@media (min-width: 40rem) {
+  .slide {
+    flex-basis: calc((100% - var(--space-16)) / 2);
+  }
+}
+
+@media (min-width: 64rem) {
+  .shelf {
+    margin-top: var(--space-96);
+    padding-block: var(--space-64);
+  }
+
+  .arrows {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    gap: var(--space-8);
+  }
+
+  .track {
+    gap: var(--space-24);
+  }
+
+  .slide {
+    flex-basis: calc((100% - var(--space-24) * 3) / 4);
+  }
+}

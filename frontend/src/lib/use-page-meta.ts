@@ -36,6 +36,15 @@ export interface PageMeta {
   image?: string;
   /** `product` na pagina do produto, `website` no resto. */
   type?: 'website' | 'product';
+  /**
+   * O que o rastreador pode fazer com esta pagina.
+   *
+   * Ausente na loja inteira, que existe para ser encontrada. `noindex` vale
+   * para as telas que sao de uma pessoa so e nao dizem nada a quem chega de
+   * fora — a sacola, o checkout, a conta. Sem ele, o endereco da sacola
+   * entra no indice e aparece na busca como uma pagina vazia da loja.
+   */
+  robots?: string;
   /** O objeto de dados estruturados, ja pronto. */
   jsonLd?: unknown;
 }
@@ -49,6 +58,7 @@ export function usePageMeta({
   canonical,
   image,
   type = 'website',
+  robots,
   jsonLd,
 }: PageMeta): void {
   // O JSON-LD entra como texto na lista de dependencias de proposito: o
@@ -62,6 +72,7 @@ export function usePageMeta({
     document.title = title;
 
     setMeta('name', 'description', description);
+    setMeta('name', 'robots', robots ?? '');
     setMeta('property', 'og:title', title);
     setMeta('property', 'og:description', description);
     setMeta('property', 'og:type', type);
@@ -84,7 +95,7 @@ export function usePageMeta({
         node.remove();
       }
     };
-  }, [title, description, canonical, image, type, structured]);
+  }, [title, description, canonical, image, type, robots, structured]);
 }
 
 /**

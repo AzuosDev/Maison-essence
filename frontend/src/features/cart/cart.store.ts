@@ -1,10 +1,12 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import { mergeCartLines } from './cart-merge';
 import {
   MAX_CART_LINES,
   MAX_LINE_QUANTITY,
   lineKey,
   type CartLine,
+  type CartLineHint,
   type CartLineKey,
   type QuoteItem,
 } from './cart.types';
@@ -12,18 +14,47 @@ import {
 /**
  * O estado da sacola, e so ele.
  *
- * Fica no cliente porque e do cliente: o backend nao tem coleccao de carrinho
+ * Fica no cliente porque e do cliente: o backend nao tem colecao de carrinho
  * — tem uma rota de cotacao que recebe as linhas e devolve os totais. Isso
  * torna a sacola instantanea (adicionar item nao espera rede) e faz dela a
  * unica parte do fluxo de compra que sobrevive sem conexao.
  *
- * Persistida em `localStorage`: quem monta a sacola no celular, fecha o
- * navegador e volta no dia seguinte encontra tudo no lugar.
+ * ## O que atravessa o `localStorage`, e o que nao atravessa
+ *
+ * Tres campos por linha: produto, variante e quantidade. Isso e o que o
+ * `partialize` deixa passar, e e por isso que ele esta escrito com os campos
+ * nomeados um a um em vez de um `...state` com omissoes — a lista e curta de
+ * proposito, e acrescentar algo a ela exige escrever o campo aqui e
+ * responder por que ele precisa sobreviver ao fechamento do navegador.
+ *
+ * Nome, foto e rotulo da opcao ficam em `hints`, fora da persistencia: a
+ * gaveta abre cheia no clique e, depois de uma recarga, espera a cotacao.
+ * Preco nao esta em lugar nenhum — nem persistido, nem em memoria. A tela le
+ * o preco da cotacao ou nao mostra preco.
  */
 
 interface CartState {
   /** Na ordem em que foram adicionados. */
   lines: CartLine[];
+
+  /**
+   * Nome, foto e opcao de cada linha, por chave. Memoria apenas.
+   *
+   * Um mapa, e nao campos na linha, porque e exatamente isso que mantem a
+   * linha persistida limpa: o que nao esta dentro de `CartLine` nao tem como
+   * ser gravado por engano.
+   */
+  hints: Record<CartLineKey, CartLineHint>;
+
+  /**
+   * A gaveta da sacola esta aberta.
+   *
+   * Mora aqui, e nao no componente, porque quem a abre esta em qualquer
+   * lugar da loja — o card da vitrine, o seletor rapido, a pagina do
+   * produto — e quem a desenha e o layout. Um estado no meio do caminho
+   * exigiria um contexto so para isso.
+   */
+  drawerOpen: boolean;
 
   /**
    * Acrescenta, ou soma na linha que ja existe.
@@ -32,7 +63,7 @@ interface CartState {
    * fariam o servidor devolver o aviso de itens somados, e o cliente veria a
    * sacola se reorganizar sozinha depois da cotacao.
    */
-  addLine: (line: CartLine) => void;
+  addLine: (line: CartLine, hint: CartLineHint) => void;
 
   /** Quantidade exata. Zero ou menos remove a linha. */
   setQuantity: (productId: string, variantId: string, quantity: number) => void;
@@ -41,20 +72,35 @@ interface CartState {
 
   /** Chamado quando o pedido e fechado. */
   clear: () => void;
+
+  /**
+   * Junta uma sacola guardada a esta. Usada no login.
+   *
+   * A guardada entra como base: ela e a mais antiga, e fica em cima na
+   * lista, com o que foi escolhido nesta visita logo abaixo.
+   */
+  mergeLines: (stashed: readonly CartLine[]) => void;
+
+  openDrawer: () => void;
+  closeDrawer: () => void;
 }
 
 export const useCart = create<CartState>()(
   persist(
     (set) => ({
       lines: [],
+      hints: {},
+      drawerOpen: false,
 
-      addLine: (line) => {
+      addLine: (line, hint) => {
         set((state) => {
           const key = lineKey(line.productId, line.variantId);
           const existing = state.lines.find((item) => keyOf(item) === key);
+          const hints = { ...state.hints, [key]: hint };
 
           if (existing) {
             return {
+              hints,
               lines: state.lines.map((item) =>
                 keyOf(item) === key
                   ? { ...item, quantity: capQuantity(item.quantity + line.quantity) }
@@ -69,7 +115,10 @@ export const useCart = create<CartState>()(
             return state;
           }
 
-          return { lines: [...state.lines, { ...line, quantity: capQuantity(line.quantity) }] };
+          return {
+            hints,
+            lines: [...state.lines, { ...line, quantity: capQuantity(line.quantity) }],
+          };
         });
       },
 
@@ -78,7 +127,7 @@ export const useCart = create<CartState>()(
           const key = lineKey(productId, variantId);
 
           if (quantity <= 0) {
-            return { lines: state.lines.filter((item) => keyOf(item) !== key) };
+            return dropLine(state, key);
           }
 
           return {
@@ -90,20 +139,54 @@ export const useCart = create<CartState>()(
       },
 
       removeLine: (productId, variantId) => {
-        set((state) => ({
-          lines: state.lines.filter((item) => keyOf(item) !== lineKey(productId, variantId)),
-        }));
+        set((state) => dropLine(state, lineKey(productId, variantId)));
       },
 
       clear: () => {
-        set({ lines: [] });
+        set({ lines: [], hints: {} });
+      },
+
+      mergeLines: (stashed) => {
+        set((state) => ({ lines: mergeCartLines(stashed, state.lines) }));
+      },
+
+      openDrawer: () => {
+        set({ drawerOpen: true });
+      },
+
+      closeDrawer: () => {
+        set({ drawerOpen: false });
       },
     }),
     {
       name: 'maison-essence.cart',
       storage: createJSONStorage(() => localStorage),
-      version: 1,
-      partialize: (state) => ({ lines: state.lines }),
+
+      /**
+       * Versao 2: a sacola deixou de guardar preco.
+       *
+       * A versao 1 gravava nome, foto, `unitPriceCents` e `availableStock`
+       * em cada linha. Quem tem uma sacola dessas no navegador nao pode
+       * perde-la por causa de uma mudanca de formato — e tambem nao pode
+       * continuar com o preco de semanas atras encostado no item. A migracao
+       * resolve os dois: mantem as linhas, joga fora todo o resto.
+       */
+      version: 2,
+
+      migrate: (persisted): { lines: CartLine[] } => {
+        const saved = persisted as { lines?: unknown } | undefined;
+
+        return { lines: onlyLineFields(saved?.lines) };
+      },
+
+      // Os tres campos, escritos um a um. Ver a nota no topo do arquivo.
+      partialize: (state) => ({
+        lines: state.lines.map(({ productId, variantId, quantity }) => ({
+          productId,
+          variantId,
+          quantity,
+        })),
+      }),
     },
   ),
 );
@@ -125,23 +208,26 @@ export function cartIsEmpty(state: CartState): boolean {
 }
 
 /**
- * O subtotal pelos precos guardados na sacola.
+ * As linhas no formato que `POST /cart/quote` recebe.
  *
- * Para o resumo lateral, e nada alem disso: nao inclui desconto progressivo,
- * frete nem desconto de PIX, e pode estar defasado. O valor que vale e o
- * `totalCents` da cotacao.
+ * E a propria lista de linhas: a sacola persistida ja tem exatamente o
+ * formato do corpo da cotacao, e nao ha traducao a fazer.
  */
-export function cartSnapshotSubtotalCents(state: CartState): number {
-  return state.lines.reduce((total, line) => total + line.unitPriceCents * line.quantity, 0);
+export function cartQuoteItems(state: CartState): QuoteItem[] {
+  return state.lines;
 }
 
-/** As linhas no formato que `POST /cart/quote` recebe. */
-export function cartQuoteItems(state: CartState): QuoteItem[] {
-  return state.lines.map(({ productId, variantId, quantity }) => ({
-    productId,
-    variantId,
-    quantity,
-  }));
+/** O que se sabe de uma linha antes da cotacao. `null` depois de recarregar. */
+export function cartHint(state: CartState, key: CartLineKey): CartLineHint | null {
+  return state.hints[key] ?? null;
+}
+
+/* ---- Auxiliares --------------------------------------------------------- */
+
+function dropLine(state: CartState, key: CartLineKey): Pick<CartState, 'lines' | 'hints'> {
+  const { [key]: _removed, ...hints } = state.hints;
+
+  return { lines: state.lines.filter((item) => keyOf(item) !== key), hints };
 }
 
 function keyOf(line: CartLine): CartLineKey {
@@ -150,4 +236,25 @@ function keyOf(line: CartLine): CartLineKey {
 
 function capQuantity(quantity: number): number {
   return Math.min(Math.max(Math.trunc(quantity), 1), MAX_LINE_QUANTITY);
+}
+
+/** Linhas de uma versao anterior, reduzidas aos tres campos que ficam. */
+function onlyLineFields(value: unknown): CartLine[] {
+  if (!Array.isArray(value)) {
+    return [];
+  }
+
+  return value.flatMap((entry): CartLine[] => {
+    if (typeof entry !== 'object' || entry === null) {
+      return [];
+    }
+
+    const { productId, variantId, quantity } = entry as Record<string, unknown>;
+
+    return typeof productId === 'string' &&
+      typeof variantId === 'string' &&
+      typeof quantity === 'number'
+      ? [{ productId, variantId, quantity: capQuantity(quantity) }]
+      : [];
+  });
 }

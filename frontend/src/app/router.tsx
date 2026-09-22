@@ -74,11 +74,27 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
+    // A pagina do produto, logo abaixo das listagens que levam a ela. A
+    // ordem no arquivo nao muda o casamento das rotas — quem decide e a
+    // especificidade do caminho —, mas segue a ordem em que o cliente
+    // navega, que e como a proxima pessoa vai procurar aqui dentro.
+    {
+      path: '/produtos/:slug',
+      lazy: page(() => import('@/pages/product/product-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
+    {
+      path: '/sacola',
+      lazy: page(() => import('@/pages/cart/cart-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
     // Os enderecos que a moldura ja aponta e cujas telas entram nos proximos
     // passos. Existem agora para que nenhum link do cabecalho ou do rodape
     // caia num 404 — o placeholder e o mesmo modulo para todos, e cada rota
     // troca a sua entrada quando a tela dela chegar.
-    ...soonRoutes(['/produtos/:slug', '/sacola', '/institucional/:slug']),
+    ...soonRoutes(['/institucional/:slug']),
 
     {
       // O curinga fica no grupo da loja de proposito: e ele que pega

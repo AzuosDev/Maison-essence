@@ -1,0 +1,141 @@
+/*
+ * Os dois avisos da sacola.
+ *
+ * O peso visual separa um do outro antes da leitura: o que exige decisao
+ * tem caixa, fundo e botao; o que so informa e uma linha.
+ */
+
+/* ---- O que saiu --------------------------------------------------------- */
+
+.changed {
+  display: grid;
+  gap: var(--space-8);
+  justify-items: start;
+
+  padding: var(--space-16);
+  margin-bottom: var(--space-24);
+
+  background: var(--danger-wash);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-card);
+}
+
+.title {
+  margin: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--danger);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+
+  margin: 0;
+  padding-left: var(--space-16);
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.list strong {
+  color: var(--ink);
+}
+
+.note {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/*
+ * O botao do aviso e sobrio de proposito.
+ *
+ * Remover itens e a saida comoda, nao a recomendada: pode ser que o cliente
+ * prefira esperar o produto voltar. Um botao vermelho cheio empurraria a
+ * decisao que a loja prefere, e nao a que ele prefere.
+ */
+.action {
+  padding: var(--space-8) var(--space-16);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+
+  transition:
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.action:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.action:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- O reajuste --------------------------------------------------------- */
+
+/*
+ * Uma linha, com um filete dourado a esquerda.
+ *
+ * Sem caixa e sem fundo cheio: o recado nao pede nada de ninguem, e um
+ * cartao inteiro para dizer "os valores estao em dia" roubaria a atencao do
+ * que importa, que e a lista logo abaixo.
+ */
+.prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-8);
+
+  padding: var(--space-8) var(--space-12);
+  margin-bottom: var(--space-16);
+
+  border-left: 1px solid var(--gold);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.dismiss {
+  padding: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition: text-decoration-color var(--transition);
+}
+
+.dismiss:hover {
+  text-decoration-color: var(--gold-deep);
+}
+
+.dismiss:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}

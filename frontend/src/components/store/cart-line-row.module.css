@@ -1,0 +1,261 @@
+/*
+ * A linha da sacola.
+ *
+ * Tres colunas: foto, corpo e valor. A do valor tem largura propria e o
+ * numero alinhado a direita, que e onde o olho soma — uma coluna de precos
+ * com larguras diferentes obriga a reler cada linha para comparar.
+ */
+
+.row {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto;
+  gap: var(--space-16);
+  align-items: start;
+
+  padding-block: var(--space-24);
+  border-bottom: var(--border);
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+/* ---- A foto ------------------------------------------------------------- */
+
+.media {
+  position: relative;
+}
+
+.thumb,
+.thumbSkeleton {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+
+  background: var(--cream);
+  border-radius: var(--radius-chip);
+  object-fit: cover;
+}
+
+/* ---- O corpo ------------------------------------------------------------ */
+
+.body {
+  display: grid;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.heading {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.name {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.nameLink {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition: text-decoration-color var(--transition);
+}
+
+.nameLink:hover {
+  text-decoration-color: var(--gold);
+}
+
+.variant {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.stock {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--danger);
+}
+
+/* O motivo vindo do servidor: "Este produto saiu do catalogo." */
+.reason {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-16);
+
+  margin-top: var(--space-4);
+}
+
+/*
+ * "Remover" e um link de texto, e nao um botao vermelho.
+ *
+ * A acao destrutiva da sacola nao disputa atencao com "finalizar": quem
+ * chegou ate aqui esta comprando, e o botao de maior peso na tela precisa
+ * ser o que fecha o pedido. Vermelho fica reservado para o que ja deu
+ * errado.
+ */
+.remove {
+  padding: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition:
+    color var(--transition),
+    text-decoration-color var(--transition);
+}
+
+.remove:hover {
+  color: var(--danger);
+  text-decoration-color: currentcolor;
+}
+
+.remove:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+/* ---- O valor ------------------------------------------------------------ */
+
+.price {
+  display: grid;
+  gap: var(--space-4);
+  justify-items: end;
+  text-align: right;
+}
+
+.lineTotal {
+  margin: 0;
+
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.lineDiscount {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--gold-deep);
+}
+
+.unitPrice {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.outOfTotal {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--danger);
+}
+
+/* ---- A linha que saiu --------------------------------------------------- */
+
+/*
+ * Fundo de aviso e um filete a esquerda, no vermelho da loja.
+ *
+ * O item continua inteiro e legivel — ele precisa ser reconhecido para ser
+ * removido com consciencia. O que muda e o entorno, que diz "este aqui nao
+ * vai junto" antes de qualquer leitura de texto. A foto esmaece porque e o
+ * elemento que mais puxa o olho para um item que agora e um problema, e nao
+ * uma compra.
+ */
+.unavailable {
+  position: relative;
+
+  margin-inline: calc(var(--space-16) * -1);
+  padding-inline: var(--space-16);
+
+  background: var(--danger-wash);
+  border-bottom-color: transparent;
+}
+
+.unavailable::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+
+  width: 1px;
+  background: var(--danger);
+}
+
+.unavailable .thumb {
+  opacity: 0.55;
+  filter: grayscale(1);
+}
+
+.unavailable .name {
+  color: var(--ink-soft);
+}
+
+/* ---- A gaveta ----------------------------------------------------------- */
+
+/*
+ * Na gaveta ha 26rem de largura, e o valor nao cabe numa terceira coluna sem
+ * espremer o nome. Ele desce para baixo do corpo e alinha a esquerda, junto
+ * com o resto — duas colunas em vez de tres.
+ */
+.compact {
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: var(--space-12);
+  padding-block: var(--space-16);
+}
+
+.compact .name {
+  font-size: var(--text-16);
+}
+
+.compact .price {
+  grid-column: 2;
+  justify-items: start;
+  text-align: left;
+}
+
+.compact .controls {
+  gap: var(--space-12);
+}
+
+@media (min-width: 48rem) {
+  .row:not(.compact) {
+    grid-template-columns: 6rem minmax(0, 1fr) auto;
+    gap: var(--space-24);
+  }
+
+  .row:not(.compact) .media {
+    width: 6rem;
+  }
+}

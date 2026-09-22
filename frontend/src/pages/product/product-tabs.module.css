@@ -1,0 +1,117 @@
+/*
+ * As abas do produto.
+ *
+ * O texto e para ser lido de ponta a ponta, e nao varrido: a medida fica
+ * presa em 68 caracteres mesmo quando o bloco tem 1280px de largura. Linha
+ * de cem caracteres faz o olho perder o comeco da proxima, e uma politica de
+ * trocas mal lida vira uma conversa no WhatsApp.
+ */
+
+.block {
+  margin-top: var(--space-48);
+  padding-top: var(--space-48);
+  border-top: var(--border);
+}
+
+.list {
+  gap: var(--space-32);
+}
+
+.panel {
+  padding-top: var(--space-32);
+}
+
+/* ---- O texto vindo do painel -------------------------------------------- */
+
+.prose {
+  max-width: 68ch;
+
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.prose > * + * {
+  margin-top: var(--space-16);
+}
+
+/*
+ * Mais espaco acima de um titulo do que abaixo: e o que faz o titulo
+ * pertencer ao texto que vem depois dele, e nao ao que ficou para tras.
+ */
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: var(--space-32);
+
+  font-family: var(--font-display);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.prose h3 {
+  font-size: var(--text-22);
+}
+
+.prose h4 {
+  font-size: var(--text-18);
+}
+
+.prose h5,
+.prose h6 {
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: var(--space-24);
+}
+
+.prose li + li {
+  margin-top: var(--space-8);
+}
+
+/*
+ * O marcador no dourado da marca.
+ *
+ * `::marker` aceita cor, e e o jeito de pintar a bolinha sem trocar a lista
+ * por um `<div>` com pseudo-elemento — a lista continua sendo uma lista para
+ * quem usa leitor de tela.
+ */
+.prose li::marker {
+  color: var(--gold-deep);
+}
+
+/*
+ * O link com sublinhado afastado da letra.
+ *
+ * O padrao do navegador corta o descendente do "g" e do "p"; dois pixels de
+ * folga e a diferenca entre um link que parece desenhado e um que parece
+ * herdado.
+ */
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition: text-decoration-color var(--transition);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--gold-deep);
+}
+
+@media (min-width: 64rem) {
+  .block {
+    margin-top: var(--space-64);
+    padding-top: var(--space-64);
+  }
+}

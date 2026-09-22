@@ -81,6 +81,42 @@
   color: var(--ink-soft);
 }
 
+/*
+ * O atalho do aviso: "Ver a sacola".
+ *
+ * Desenhado como link de texto — sublinhado dourado, afastado da letra, como
+ * o resto dos links da loja — ainda que seja um `<button>` por baixo. A
+ * escolha do elemento esta explicada em `toast.tsx`, e e sobre onde o
+ * provedor mora na arvore; a aparencia continua sendo a de um link porque e
+ * isso que ele faz: leva a outra tela.
+ */
+.action {
+  display: inline-block;
+  margin-top: var(--space-8);
+  padding: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition: text-decoration-color var(--transition);
+}
+
+.action:hover {
+  text-decoration-color: var(--gold-deep);
+}
+
+.action:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
 .close {
   flex: none;
   display: flex;

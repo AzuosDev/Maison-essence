@@ -157,21 +157,25 @@ export function ProductGallery({ images, alt, index, onIndexChange }: ProductGal
           ) : null}
         </div>
 
+        {/* Os pontos sao uma lista, como a coluna de miniaturas do desktop:
+            sao os mesmos botoes para as mesmas fotos, e quem ouve a pagina
+            deve encontrar a mesma estrutura nos dois tamanhos de tela. */}
         {!isDesktop && total > 1 ? (
-          <div className={styles.dots} role="group" aria-label="Fotos do produto">
+          <ul className={styles.dots} aria-label="Fotos do produto">
             {images.map((publicId, position) => (
-              <button
-                key={publicId}
-                type="button"
-                className={cx(styles.dot, position === index && styles.dotActive)}
-                aria-current={position === index ? 'true' : undefined}
-                aria-label={`Foto ${String(position + 1)} de ${String(total)}`}
-                onClick={() => {
-                  select(position);
-                }}
-              />
+              <li key={publicId}>
+                <button
+                  type="button"
+                  className={cx(styles.dot, position === index && styles.dotActive)}
+                  aria-current={position === index ? 'true' : undefined}
+                  aria-label={`Foto ${String(position + 1)} de ${String(total)}`}
+                  onClick={() => {
+                    select(position);
+                  }}
+                />
+              </li>
             ))}
-          </div>
+          </ul>
         ) : null}
       </div>
     </div>

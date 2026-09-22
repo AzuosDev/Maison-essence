@@ -1,6 +1,12 @@
 import { Suspense, useRef } from 'react';
 import { Outlet, ScrollRestoration, type Location } from 'react-router-dom';
-import { AnnouncementBar, StoreFooter, StoreHeader, WhatsappButton } from '@/components/store';
+import {
+  AnnouncementBar,
+  CartDrawer,
+  StoreFooter,
+  StoreHeader,
+  WhatsappButton,
+} from '@/components/store';
 import { Spinner } from '@/components/ui';
 import { StoreSettingsProvider } from '@/features/settings';
 import styles from './store-layout.module.css';
@@ -38,6 +44,11 @@ export function StoreLayout() {
         </main>
 
         <StoreFooter ref={footerRef} />
+
+        {/* A gaveta da sacola vive aqui porque quem a abre esta em toda a
+            loja — card, seletor rapido, pagina do produto — e o estado dela
+            mora no store do carrinho. Fechada, nao monta nada. */}
+        <CartDrawer />
         <WhatsappButton avoidRef={footerRef} />
       </div>
     </StoreSettingsProvider>

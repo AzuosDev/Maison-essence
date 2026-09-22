@@ -28,6 +28,26 @@
   overflow: hidden;
 }
 
+/*
+ * A versao curta, para a linha da sacola.
+ *
+ * O alvo de toque encolhe de 48 para 36px, e isso e o minimo que ainda se
+ * acerta com o polegar. Abaixo disso, trocar a quantidade no celular vira um
+ * jogo de pontaria — e a sacola e justamente onde errar o clique custa caro.
+ */
+.small {
+  grid-template-columns: var(--control-height-small) 2.5rem var(--control-height-small);
+}
+
+.small .step,
+.small .input {
+  height: var(--control-height-small);
+}
+
+.small .input {
+  font-size: var(--text-14);
+}
+
 .step {
   display: grid;
   place-items: center;

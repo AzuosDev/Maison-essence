@@ -121,6 +121,8 @@
 }
 
 .stock {
+  /* `<output>` nasce inline, e a nota e um paragrafo. */
+  display: block;
   margin: 0 0 var(--space-8);
 
   font-size: var(--text-14);

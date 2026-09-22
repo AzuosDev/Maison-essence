@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "frontend/src/pages/product/product-gallery.tsx"
+        ],
+        "createdAt": "2026-09-22T16:38:14.948Z",
+        "reason": "imageProps() nunca devolve src vazio: cai em /placeholder-product.svg, asset real em public/"
+      }
+    ]
+  }
+}

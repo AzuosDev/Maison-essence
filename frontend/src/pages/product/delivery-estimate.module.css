@@ -1,0 +1,147 @@
+/*
+ * O bloco de entrega e retirada.
+ *
+ * Contornado e sobre branco, e nao com fundo areia: a escada de desconto,
+ * logo acima na coluna, ja e o bloco de fundo cheio. Dois fundos preenchidos
+ * empilhados fariam a coluna virar uma pilha de caixas, e nenhuma das duas
+ * se destacaria. Aqui o contorno diz "informacao", e o preenchido de cima
+ * continua dizendo "oferta".
+ */
+
+.block {
+  display: grid;
+  gap: var(--space-16);
+
+  padding: var(--space-16);
+
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.delivery {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/*
+ * A resposta tem altura reservada.
+ *
+ * Sem o `min-height`, escolher a cidade empurraria o bloco de retirada — e
+ * tudo o que vem depois dele — para baixo no instante da escolha. O cliente
+ * estaria olhando justamente para essa linha quando ela se movesse.
+ */
+.result {
+  display: grid;
+  gap: var(--space-4);
+  min-height: 3rem;
+  align-content: center;
+}
+
+/*
+ * Rotulo a esquerda, valor a direita, com o filete pontilhado ligando os
+ * dois — o desenho de nota fiscal, que e o que estas duas linhas sao.
+ */
+.line {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.line::after {
+  content: '';
+  grid-column: 2;
+
+  border-bottom: 1px dotted var(--line);
+  transform: translateY(-0.2em);
+}
+
+.line strong {
+  grid-column: 3;
+}
+
+/*
+ * O rotulo fica em `--ink-soft`, e nao no cinza `--muted` que a loja usa nos
+ * rotulos decorativos.
+ *
+ * "Taxa" e "Prazo" sao a resposta que o cliente veio buscar, e `--muted`
+ * sobre branco da 3,7:1 — abaixo do minimo de leitura. A hierarquia entre
+ * rotulo e valor continua existindo, e vem do peso: o valor e `<strong>`, em
+ * `--ink`.
+ */
+.label {
+  font-weight: var(--weight-regular);
+  color: var(--ink-soft);
+}
+
+/* A unica boa noticia do bloco, no verde que a loja ja usa para ela. */
+.free {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--success);
+}
+
+/*
+ * A nota carrega o convite ("escolha a cidade") e o recado de falha, e
+ * chega a ser a unica coisa escrita no bloco. Texto de 12px e o que menos
+ * pode se dar ao luxo de pouco contraste.
+ */
+.note {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* ---- A retirada --------------------------------------------------------- */
+
+.pickup {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-top: var(--space-16);
+  border-top: var(--border);
+}
+
+/*
+ * O endereco em linhas, para caber no aplicativo de mapa de quem vai buscar.
+ * `<address>` vem em italico por padrao no navegador, e endereco em italico
+ * e mais dificil de copiar com o olho.
+ */
+.address {
+  display: grid;
+  gap: var(--space-4);
+
+  font-size: var(--text-14);
+  font-style: normal;
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/*
+ * "Proximo a praca" e parte do endereco de quem vai dirigir ate la, entao
+ * fica secundario pelo tamanho e nao por um cinza mais claro.
+ */
+.reference {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}

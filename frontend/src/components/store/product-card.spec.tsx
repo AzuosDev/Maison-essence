@@ -137,9 +137,17 @@ test('produto de varias variantes abre o seletor antes de adicionar', async () =
   await user.click(within(dialogo).getByRole('radio', { name: /100ml/ }));
   await user.click(within(dialogo).getByRole('button', { name: 'Adicionar a sacola' }));
 
+  // A linha guardada tem tres campos e nenhum deles e texto: o rotulo da
+  // opcao — como o nome e a foto — vive na dica em memoria, fora do
+  // `localStorage`. Conferir os dois lados e o que garante que a variante
+  // certa foi escolhida *e* que a linha continua sem nada alem dos ids.
   expect(useCart.getState().lines).toEqual([
-    expect.objectContaining({ variantId: 'v100', variantLabel: '100ml' }),
+    { productId: 'p1', variantId: 'v100', quantity: 1 },
   ]);
+
+  expect(useCart.getState().hints['p1:v100']).toEqual(
+    expect.objectContaining({ variantLabel: '100ml', name: 'Asad' }),
+  );
 });
 
 test('o card precifica pela variante mais barata', () => {

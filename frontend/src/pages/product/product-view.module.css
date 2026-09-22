@@ -1,0 +1,84 @@
+/*
+ * A pagina do produto: a foto de um lado, a decisao do outro.
+ *
+ * As duas colunas nao dividem a largura ao meio. A galeria leva um pouco
+ * mais porque e a peca que o cliente veio ver; a coluna de compra leva o
+ * bastante para o preco, as opcoes e os dois botoes caberem sem apertar, e
+ * nada alem disso — uma coluna de compra de 600px espalha seis linhas de
+ * texto por meia tela e obriga o olho a varrer no lugar de ler.
+ *
+ * Por isso a grade tem largura maxima propria, menor que a do container, e
+ * fica centrada nele: acima de 1120px a pagina para de esticar e passa a
+ * ganhar margem.
+ */
+
+.page {
+  padding-block: var(--space-24) var(--space-48);
+}
+
+.breadcrumb {
+  margin-bottom: var(--space-24);
+}
+
+.main {
+  display: grid;
+  gap: var(--space-32);
+}
+
+/*
+ * `min-width: 0` nas duas colunas.
+ *
+ * O padrao de um item de grade e `min-width: auto`, que o impede de encolher
+ * abaixo do conteudo. Na galeria, isso significa a moldura da foto
+ * empurrando a coluna de compra para fora da tela no primeiro nome de
+ * produto comprido.
+ */
+.media,
+.column {
+  min-width: 0;
+}
+
+.column {
+  display: grid;
+  gap: var(--space-24);
+  align-content: start;
+}
+
+@media (min-width: 64rem) {
+  .page {
+    padding-block: var(--space-32) var(--space-64);
+  }
+
+  .main {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: var(--space-64);
+    align-items: start;
+
+    max-width: 70rem;
+    margin-inline: auto;
+  }
+
+  .breadcrumb {
+    max-width: 70rem;
+    margin-inline: auto;
+    margin-bottom: var(--space-32);
+  }
+}
+
+/* ---- O esqueleto --------------------------------------------------------
+ *
+ * Mora nesta folha, e nao numa propria, porque a unica funcao dele e ocupar
+ * exatamente a geometria acima enquanto o produto nao chega. Em dois
+ * arquivos, a grade mudaria em um e o esqueleto passaria a prometer um
+ * layout que a pagina nao entrega mais.
+ */
+
+.skeletonFrame {
+  aspect-ratio: 3 / 4;
+  border-radius: var(--radius-card);
+}
+
+.skeletonBlock {
+  display: grid;
+  gap: var(--space-16);
+}

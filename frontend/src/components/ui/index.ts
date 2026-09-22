@@ -67,6 +67,8 @@ export { Modal, type ModalProps } from './modal';
 
 export { Pagination, type PaginationProps } from './pagination';
 
+export { QuantityStepper, type QuantityStepperProps } from './quantity-stepper';
+
 export { Radio, RadioGroup, type RadioGroupProps, type RadioProps } from './radio';
 
 export { Select, type SelectOption, type SelectProps } from './select';
@@ -98,6 +100,7 @@ export {
   Toast,
   ToastProvider,
   useToast,
+  type ToastAction,
   type ToastOptions,
   type ToastProps,
   type ToastVariant,

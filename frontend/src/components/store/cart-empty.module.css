@@ -1,0 +1,75 @@
+/*
+ * A sacola vazia.
+ *
+ * Centralizada, com respiro acima e abaixo: uma tela vazia apertada contra o
+ * cabecalho parece erro de carregamento, e uma com ar parece uma escolha.
+ */
+
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-12);
+
+  padding-block: var(--space-64);
+  text-align: center;
+}
+
+.illustration {
+  width: 6rem;
+  height: 6rem;
+  margin-bottom: var(--space-12);
+}
+
+/* O corpo da sacola no cinza da linha; as alcas no dourado da marca. */
+.bag {
+  stroke: var(--line);
+}
+
+.handles {
+  stroke: var(--gold);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.description {
+  /* Duas linhas de leitura, e nao uma faixa de texto atravessando a pagina. */
+  max-width: 38ch;
+  margin: 0 0 var(--space-12);
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* ---- Na gaveta ---------------------------------------------------------- */
+
+.compact {
+  padding-block: var(--space-48);
+}
+
+.compact .illustration {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.compact .title {
+  font-size: var(--text-18);
+}
+
+@media (min-width: 64rem) {
+  .empty:not(.compact) {
+    padding-block: var(--space-96);
+  }
+
+  .empty:not(.compact) .illustration {
+    width: 7.5rem;
+    height: 7.5rem;
+  }
+}

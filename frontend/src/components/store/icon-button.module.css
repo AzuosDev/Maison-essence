@@ -57,3 +57,33 @@
   background-color: var(--ink);
   border-radius: var(--radius-pill);
 }
+
+/*
+ * A batida do contador quando um item entra.
+ *
+ * Sai de 1, cresce e volta — nunca comeca invisivel nem fora do lugar. Um
+ * contador que nasce em `scale(0)` piscaria a cada item adicionado, e o que
+ * se quer aqui e o oposto: chamar o olho para um numero que **ja estava**
+ * ali e acabou de mudar.
+ *
+ * O dourado no meio do caminho e a marca aparecendo por um quarto de
+ * segundo. Ele volta ao preto sozinho: o contador e informacao permanente, e
+ * informacao permanente nesta loja e preta.
+ *
+ * `prefers-reduced-motion` e tratado globalmente em `reset.css`, que reduz
+ * toda animacao a 0,01ms — esta inclusive.
+ */
+.bump {
+  animation: bump 320ms var(--ease);
+}
+
+@keyframes bump {
+  40% {
+    transform: scale(1.35);
+    background-color: var(--gold-deep);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
