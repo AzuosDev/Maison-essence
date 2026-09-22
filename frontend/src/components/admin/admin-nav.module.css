@@ -1,0 +1,74 @@
+/*
+ * O menu do painel.
+ *
+ * Escrito para a coluna escura, e reaproveitado na gaveta do celular, que
+ * tambem e escura: um menu so, com um contexto de cor so, em vez de duas
+ * variantes que precisam ser mantidas iguais.
+ *
+ * O alvo de toque tem 44px de altura. Nao e um numero solto: e o minimo que
+ * um dedo acerta sem ampliar a tela, e o painel e usado no celular na maior
+ * parte do tempo.
+ */
+
+.list {
+  display: grid;
+  gap: var(--space-4);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  min-height: 2.75rem;
+  padding: var(--space-8) var(--space-12);
+
+  /* O filete dourado do item ativo ja existe aqui, transparente: sem ele, o
+     texto de todos os itens andaria 3px para a direita ao ficar ativo. */
+  border-left: var(--admin-item-border) solid transparent;
+  border-radius: 0 var(--radius-chip) var(--radius-chip) 0;
+
+  font-size: var(--text-14);
+  line-height: 1.2;
+  color: var(--sand);
+  text-decoration: none;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.item:hover {
+  background-color: var(--admin-item-active);
+  color: var(--cream);
+}
+
+/*
+ * O item ativo: o dourado da marca a 14% sobre o preto, com o filete cheio
+ * na borda esquerda.
+ *
+ * O contraste do texto sobe para `--cream` junto — o fundo translucido sozinho
+ * distingue pouco a 14%, e quem enxerga menos precisa da diferenca de
+ * luminosidade, nao so da de cor.
+ */
+.active {
+  background-color: var(--admin-item-active);
+  border-left-color: var(--gold);
+  color: var(--cream);
+  font-weight: var(--weight-medium);
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--gold);
+}
+
+/* O anel de foco sobre fundo escuro usa o dourado claro (ver `.on-dark`). */
+.item:focus-visible {
+  outline: var(--focus-width) solid var(--gold);
+  outline-offset: calc(var(--focus-offset) * -1);
+}

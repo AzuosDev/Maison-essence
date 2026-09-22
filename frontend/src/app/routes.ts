@@ -18,8 +18,19 @@ export const ROUTE_GROUPS = {
   store: '/',
   /** A conta do cliente. */
   account: '/conta',
-  /** O painel administrativo. */
-  admin: '/painel',
+  /**
+   * O painel administrativo.
+   *
+   * `/admin`, e nao `/painel` como as outras raizes: o endereco do painel
+   * nao e lido por cliente nenhum e nao vai para o Google — quem o digita e
+   * a dona, e e `/admin` que ela vai tentar. O endereco antigo continua
+   * respondendo, redirecionado, para nao quebrar o que ja estiver salvo nos
+   * favoritos de quem usou a versao anterior.
+   */
+  admin: '/admin',
+
+  /** Onde o painel morava. Redireciona para `admin`. */
+  adminLegacy: '/painel',
 } as const;
 
 export const ROUTES = {
@@ -91,7 +102,35 @@ export const ROUTES = {
       `${ROUTE_GROUPS.account}/criar?telefone=${encodeURIComponent(phone)}`,
   },
 
+  /**
+   * O painel, tela a tela.
+   *
+   * Em portugues como o resto dos enderecos, e por um motivo pratico: a dona
+   * le a barra de enderecos quando manda um link para quem ajuda no
+   * atendimento. `/admin/pedidos/ME-1042` diz o que e; `/admin/orders/...`
+   * pediria traducao.
+   */
   admin: {
     root: ROUTE_GROUPS.admin,
+
+    /** A tela de entrada do painel, fora da moldura logada. */
+    login: `${ROUTE_GROUPS.admin}/entrar`,
+
+    /** A troca obrigatoria da senha temporaria. */
+    changePassword: `${ROUTE_GROUPS.admin}/trocar-senha`,
+
+    products: `${ROUTE_GROUPS.admin}/produtos`,
+    newProduct: `${ROUTE_GROUPS.admin}/produtos/novo`,
+    product: (id: string) => `${ROUTE_GROUPS.admin}/produtos/${id}`,
+
+    categories: `${ROUTE_GROUPS.admin}/categorias`,
+    readyToShip: `${ROUTE_GROUPS.admin}/pronta-entrega`,
+
+    orders: `${ROUTE_GROUPS.admin}/pedidos`,
+    order: (id: string) => `${ROUTE_GROUPS.admin}/pedidos/${id}`,
+
+    delivery: `${ROUTE_GROUPS.admin}/entrega`,
+    payments: `${ROUTE_GROUPS.admin}/pagamento`,
+    settings: `${ROUTE_GROUPS.admin}/configuracoes`,
   },
 } as const;

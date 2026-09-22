@@ -1,0 +1,157 @@
+/*
+ * A abertura do painel.
+ *
+ * Quatro numeros, a lista de pedidos, o aviso de estoque. A ordem e a das
+ * perguntas de quem acabou de abrir a loja, e o espaco entre os blocos e
+ * generoso de proposito: esta tela e lida de relance, entre um cliente e
+ * outro.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-32);
+}
+
+.header {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.subtitle {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/*
+ * Os cards em duas colunas ja no celular.
+ *
+ * Um por linha empurraria a lista de pedidos para baixo da dobra, e e ela
+ * que a dona veio ver. Dois cabem em 360px porque o numero e curto e o
+ * rotulo e de 12px.
+ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+}
+
+.block {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.blockHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.blockTitle {
+  margin: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.blockLink {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.blockLink:hover {
+  color: var(--ink);
+}
+
+.blockLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* ---- Estoque acabando ---------------------------------------------------- */
+
+.stockList {
+  display: grid;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.stockItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  padding: var(--space-12) var(--space-16);
+  border-bottom: var(--border);
+}
+
+.stockItem:last-child {
+  border-bottom: none;
+}
+
+.stockName {
+  font-size: var(--text-14);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.stockName:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.stockName:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/*
+ * A contagem em vermelho, e com a palavra junto.
+ *
+ * "2 unidades" em vermelho conta duas coisas ao mesmo tempo: quantas restam
+ * e que isso e pouco. Quem nao distingue a cor le a mesma frase.
+ */
+.stockCount {
+  flex-shrink: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--danger);
+  white-space: nowrap;
+}
+
+@media (min-width: 64rem) {
+  .cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-16);
+  }
+
+  .title {
+    font-size: var(--text-36);
+  }
+}

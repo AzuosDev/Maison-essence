@@ -1,8 +1,12 @@
 /*
  * O painel administrativo.
  *
- * Fundo frio e sidebar preta, separados da loja de proposito: quem opera
+ * Fundo frio e coluna preta, separados da loja de proposito: quem opera
  * precisa saber pelo canto do olho que um clique ali muda o que o cliente ve.
+ *
+ * No celular a coluna vira gaveta e a barra de cima e a unica moldura fixa.
+ * Ela nao gruda: a dona rola listas longas o dia inteiro, e uma barra presa
+ * come 56px de uma tela que ja e pequena.
  */
 
 .layout {
@@ -10,31 +14,49 @@
   grid-template-columns: 1fr;
   min-height: 100vh;
   min-height: 100dvh;
+
   background-color: var(--admin-bg);
 }
 
-@media (min-width: 64rem) {
-  .layout {
-    grid-template-columns: 15rem 1fr;
-  }
-}
+/* ---- A coluna ----------------------------------------------------------- */
 
 .sidebar {
-  display: none;
+  display: flex;
   flex-direction: column;
-  gap: var(--space-24);
-  padding: var(--space-24) var(--space-16);
+  gap: var(--space-32);
+
+  padding: var(--space-24) var(--space-8) var(--space-24) 0;
+
   background-color: var(--admin-sidebar);
   color: var(--sand);
 }
 
+/*
+ * A coluna acompanha a rolagem da pagina inteira.
+ *
+ * Presa no topo e com a altura da tela: uma lista de duzentos produtos rola
+ * no conteudo, e o menu continua onde estava. Sem isso, chegar a "Pedidos"
+ * no fim de uma tabela longa exigiria voltar ao topo primeiro.
+ */
 @media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: 15rem 1fr;
+  }
+
   .sidebar {
-    display: flex;
+    position: sticky;
+    top: 0;
+
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto;
   }
 }
 
 .brand {
+  margin: 0;
+  padding-left: var(--space-24);
+
   font-family: var(--font-display);
   font-size: var(--text-16);
   text-transform: uppercase;
@@ -46,11 +68,83 @@
 .brandNote {
   display: block;
   margin-top: var(--space-4);
+
+  font-family: var(--font-body);
   font-size: var(--text-12);
   letter-spacing: normal;
   text-indent: 0;
+  text-transform: none;
   color: var(--gold);
 }
+
+/* ---- Sair --------------------------------------------------------------- */
+
+/*
+ * Empurrado para o pe da coluna pelo `margin-top: auto`, e nao por um bloco
+ * vazio de altura fixa: a coluna cresce com o numero de itens do menu, que
+ * muda com o papel de quem entrou.
+ */
+.signOut {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  margin-top: auto;
+  margin-left: var(--admin-item-border);
+
+  min-height: 2.75rem;
+  padding: var(--space-8) var(--space-12);
+
+  background: none;
+  border: none;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  color: var(--muted);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.signOut:hover {
+  background-color: var(--admin-item-active);
+  color: var(--cream);
+}
+
+.signOut:focus-visible {
+  outline: var(--focus-width) solid var(--gold);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.signOutIcon {
+  flex-shrink: 0;
+}
+
+/* ---- A gaveta do celular ------------------------------------------------ */
+
+/*
+ * A gaveta e a mesma coluna, portatil.
+ *
+ * O primitivo desenha o painel em branco — e o que a loja pede. Aqui ele
+ * recebe o preto do painel, e o titulo e o botao de fechar herdam a cor
+ * clara junto, porque os dois usam `currentColor`.
+ */
+.menuPanel {
+  display: flex;
+  flex-direction: column;
+
+  background-color: var(--admin-sidebar);
+  color: var(--sand);
+}
+
+.menuPanel h2 {
+  color: var(--cream);
+}
+
+/* ---- O conteudo --------------------------------------------------------- */
 
 .content {
   display: flex;
@@ -61,25 +155,84 @@
 .topbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-16);
+  gap: var(--space-12);
 
-  min-height: var(--header-height);
-  padding-inline: var(--space-24);
+  min-height: 3.5rem;
+  padding-inline: var(--space-16);
+
   background-color: var(--surface);
   border-bottom: var(--border);
 }
 
 .topbarTitle {
+  margin: 0;
+
   font-family: var(--font-body);
-  font-size: var(--text-14);
+  font-size: var(--text-12);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.menuButton {
+  display: grid;
+  place-items: center;
+
+  width: var(--control-height-small);
+  height: var(--control-height-small);
+  padding: 0;
+  margin-left: calc(var(--space-8) * -1);
+
+  background: none;
+  border: none;
+  border-radius: var(--radius-chip);
+  cursor: pointer;
   color: var(--ink);
+}
+
+.menuButton:hover {
+  background-color: var(--cream);
+}
+
+.menuButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* Quem esta logado, encostado na direita. */
+.user {
+  display: grid;
+  gap: 1px;
+  margin: 0 0 0 auto;
+
+  text-align: right;
+}
+
+.userName {
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.userRole {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
 }
 
 .main {
   flex: 1;
-  padding: var(--space-32) var(--space-24);
+  min-width: 0;
+  padding: var(--space-24) var(--space-16) var(--space-48);
+}
+
+@media (min-width: 48rem) {
+  .topbar {
+    min-height: 4rem;
+    padding-inline: var(--space-24);
+  }
+
+  .main {
+    padding: var(--space-32) var(--space-24) var(--space-64);
+  }
 }

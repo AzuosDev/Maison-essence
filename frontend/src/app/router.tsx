@@ -1,8 +1,8 @@
 import type { ComponentType } from 'react';
-import { createBrowserRouter, type RouteObject } from 'react-router-dom';
+import { createBrowserRouter, Navigate, type RouteObject } from 'react-router-dom';
 import { AccountLayout, AdminLayout, StoreLayout } from './layouts';
 import { RouteErrorBoundary } from './route-error-boundary';
-import { ROUTE_GROUPS } from './routes';
+import { ROUTE_GROUPS, ROUTES } from './routes';
 
 /**
  * O mapa da aplicacao.
@@ -152,17 +152,76 @@ const accountRoutes: RouteObject = {
   ],
 };
 
+/**
+ * O painel.
+ *
+ * As duas telas de acesso — entrar e trocar a senha — ficam **fora** da
+ * moldura do painel, e nao e organizacao: a moldura contem o guarda que
+ * manda quem nao tem sessao para a tela de entrada. Com a entrada dentro
+ * dela, o guarda mandaria a tela de entrada para a tela de entrada, para
+ * sempre.
+ */
 const adminRoutes: RouteObject = {
   path: ROUTE_GROUPS.admin,
-  Component: AdminLayout,
   ErrorBoundary: RouteErrorBoundary,
   children: [
     {
-      index: true,
-      lazy: page(() => import('@/pages/admin/admin-home-page')),
+      path: 'entrar',
+      lazy: page(() => import('@/pages/admin/admin-login-page')),
       ErrorBoundary: RouteErrorBoundary,
     },
+    {
+      path: 'trocar-senha',
+      lazy: page(() => import('@/pages/admin/admin-change-password-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
+    {
+      Component: AdminLayout,
+      ErrorBoundary: RouteErrorBoundary,
+      children: [
+        {
+          index: true,
+          lazy: page(() => import('@/pages/admin/admin-home-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
+        // As areas que o menu ja lista e cujas telas entram nos proximos
+        // passos. Existem agora para que um item do menu nunca jogue a dona
+        // para fora do painel, na tela de 404 da loja.
+        ...adminSoonRoutes([
+          'produtos',
+          'categorias',
+          'pronta-entrega',
+          'pedidos',
+          'entrega',
+          'pagamento',
+          'configuracoes',
+        ]),
+      ],
+    },
   ],
+};
+
+function adminSoonRoutes(paths: readonly string[]): RouteObject[] {
+  return paths.map((path) => ({
+    path,
+    lazy: page(() => import('@/pages/admin/admin-soon-page')),
+    ErrorBoundary: RouteErrorBoundary,
+  }));
+}
+
+/**
+ * O endereco antigo do painel.
+ *
+ * `/painel` respondia por ele ate agora, e pode estar salvo no navegador de
+ * quem ja usou. Redireciona em vez de responder 404 — inclusive os caminhos
+ * abaixo dele, que vao todos para a abertura.
+ */
+const adminLegacyRoutes: RouteObject = {
+  path: ROUTE_GROUPS.adminLegacy,
+  ErrorBoundary: RouteErrorBoundary,
+  children: [{ path: '*', element: <Navigate to={ROUTES.admin.root} replace /> }],
 };
 
 /**
@@ -187,4 +246,10 @@ const devRoutes: RouteObject[] = import.meta.env.DEV
     ]
   : [];
 
-export const router = createBrowserRouter([...devRoutes, storeRoutes, accountRoutes, adminRoutes]);
+export const router = createBrowserRouter([
+  ...devRoutes,
+  storeRoutes,
+  accountRoutes,
+  adminRoutes,
+  adminLegacyRoutes,
+]);

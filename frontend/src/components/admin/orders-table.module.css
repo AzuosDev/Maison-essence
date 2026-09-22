@@ -1,0 +1,246 @@
+/*
+ * A lista de pedidos, nas duas formas.
+ *
+ * A tabela e a forma do desktop: colunas alinhadas, numeros em largura fixa,
+ * o olho descendo pela coluna de status. O card e a forma do celular, e nao
+ * uma tabela espremida — cada pedido vira um bloco com os rotulos escritos.
+ */
+
+.tableWrap {
+  /* Uma tabela com sete colunas nao encolhe abaixo de certo ponto. Rolar na
+     horizontal e melhor do que quebrar o nome do cliente em cinco linhas. */
+  overflow-x: auto;
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+.table th,
+.table td {
+  padding: var(--space-12) var(--space-16);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.table thead th {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+
+  border-bottom: var(--border);
+  white-space: nowrap;
+}
+
+.table tbody tr {
+  border-bottom: var(--border);
+}
+
+/* A ultima linha nao precisa de risco: a borda do bloco ja fecha a tabela. */
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.table tbody tr:hover {
+  background-color: var(--cream);
+}
+
+.numeric {
+  text-align: right;
+}
+
+/* ---- A celula do codigo ------------------------------------------------- */
+
+.code {
+  font-weight: var(--weight-regular);
+  white-space: nowrap;
+}
+
+.codeLink {
+  display: block;
+
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.codeLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.codeLink:focus-visible,
+.phone:focus-visible,
+.openLink:focus-visible,
+.cardCode:focus-visible,
+.cardPhone:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.date {
+  display: block;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-regular);
+  color: var(--muted);
+}
+
+/* ---- Cliente e telefone -------------------------------------------------- */
+
+.customer {
+  display: block;
+  white-space: nowrap;
+}
+
+.phone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--success);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.phone:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.phoneIcon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* ---- Abrir --------------------------------------------------------------- */
+
+.open {
+  width: 1px;
+}
+
+.openLink {
+  display: grid;
+  place-items: center;
+
+  width: var(--control-height-small);
+  height: var(--control-height-small);
+
+  border-radius: var(--radius-chip);
+  color: var(--muted);
+}
+
+.openLink:hover {
+  background-color: var(--sand);
+  color: var(--ink);
+}
+
+/* ---- Os cards do celular ------------------------------------------------- */
+
+.cards {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: grid;
+  gap: var(--space-8);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+.cardCode {
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.cardCustomer {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/*
+ * Os campos do card: rotulo em cima, valor embaixo, dois por linha.
+ *
+ * E a forma que sobrevive a um nome de cidade longo ao lado de um total —
+ * cada campo tem a largura que precisa, e a lista quebra sozinha.
+ */
+.cardFacts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8);
+
+  margin: 0;
+}
+
+.cardFacts dt {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.cardFacts dd {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+/*
+ * O telefone, com alvo de toque cheio.
+ *
+ * E o botao mais apertado do painel no celular — a dona aperta com o polegar
+ * enquanto segura o aparelho com a outra mao.
+ */
+.cardPhone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: 2.75rem;
+  margin-top: var(--space-4);
+  padding: var(--space-8) var(--space-12);
+
+  background-color: var(--success-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  color: var(--success);
+  text-decoration: none;
+}
+
+/* ---- Carregando ---------------------------------------------------------- */
+
+.skeleton {
+  display: grid;
+  gap: var(--space-12);
+}

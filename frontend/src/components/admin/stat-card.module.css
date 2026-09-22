@@ -1,0 +1,101 @@
+/*
+ * O card de numero da abertura.
+ *
+ * Superficie branca sobre o fundo frio do painel, com a borda fina do
+ * sistema. Sem sombra: sao quatro caixas lado a lado, e quatro sombras
+ * fariam a primeira tela do painel parecer flutuar inteira.
+ */
+
+.card {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  text-decoration: none;
+
+  transition:
+    border-color var(--transition),
+    transform var(--transition);
+}
+
+.card:hover {
+  border-color: var(--muted);
+}
+
+/*
+ * Um pixel para cima no hover.
+ *
+ * O suficiente para o card responder ao cursor sem que a grade inteira
+ * pareca tremer quando o mouse atravessa os quatro.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .card:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted);
+}
+
+.label {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: var(--text-36);
+  font-weight: var(--weight-regular);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.note {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+/*
+ * O card que pede acao.
+ *
+ * Fundo dourado apagado e o numero no dourado escuro — o mesmo par que o
+ * menu usa no item ativo. O icone acompanha, e com tudo em dia nenhum card
+ * acende.
+ */
+.alert {
+  background-color: var(--gold-wash);
+  border-color: var(--gold);
+}
+
+.alert .value,
+.alert .icon {
+  color: var(--gold-deep);
+}
+
+.alert .note {
+  color: var(--ink-soft);
+}
