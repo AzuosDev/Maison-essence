@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { normalizePhone } from '@/lib/format';
 import { PASSWORD_MIN_LENGTH } from './account.types';
+import { resolveIdentifier } from './sign-in-identifier';
 
 /**
  * As regras dos formularios da conta.
@@ -38,8 +39,27 @@ const email = z
   .max(160, 'E-mail longo demais.')
   .transform((value) => value.trim().toLowerCase());
 
-export const loginSchema = z.object({
-  phone,
+/**
+ * A entrada, que e uma so para os dois publicos.
+ *
+ * Um campo de identificacao — celular do cliente ou e-mail de quem trabalha
+ * na loja — e a senha. O formato do que foi digitado decide para qual login
+ * a tentativa vai, e quem sabe ler esse formato e `resolveIdentifier`.
+ *
+ * A mensagem de recusa cita os dois exemplos de proposito: quem errou o
+ * celular precisa do formato com DDD, e quem errou o e-mail precisa saber
+ * que ele tambem serve aqui.
+ */
+export const signInSchema = z.object({
+  identifier: z
+    .string()
+    .trim()
+    .min(1, 'Informe seu celular ou e-mail.')
+    .refine(
+      (value) => resolveIdentifier(value) !== null,
+      'Informe um celular com DDD, como (88) 99999-9999, ou um e-mail.',
+    ),
+
   // Sem minimo: aqui nao se cadastra senha, se confere uma. Exigir oito
   // caracteres no login so contaria a quem tenta adivinhar que as senhas
   // desta loja tem pelo menos oito — e recusaria, antes do servidor, quem
@@ -47,7 +67,7 @@ export const loginSchema = z.object({
   password: z.string().min(1, 'Informe sua senha.'),
 });
 
-export type LoginForm = z.input<typeof loginSchema>;
+export type SignInForm = z.input<typeof signInSchema>;
 
 export const registerSchema = z.object({
   name,

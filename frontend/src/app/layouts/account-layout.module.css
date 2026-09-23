@@ -57,8 +57,21 @@
   align-items: start;
 }
 
+/*
+ * As duas colunas so existem quando ha um menu para por na primeira.
+ *
+ * Sem sessao a moldura nao desenha o `<aside>` — nao ha o que listar —, e um
+ * `grid-template-columns` incondicional espremia o resto do conteudo nos
+ * 15rem da coluna do menu: entrar, criar conta e o convite abriam com 240px
+ * de largura, encostados a esquerda, com metade da pagina vazia ao lado.
+ *
+ * O `:has` evita repetir aqui a condicao que o React ja avalia — a verdade
+ * continua sendo uma so, o menu estar em cena — e degrada para o lado certo:
+ * onde ele nao funcionasse, restaria a coluna unica, que e a leitura larga e
+ * nao a espremida.
+ */
 @media (min-width: 64rem) {
-  .body {
+  .body:has(> .aside) {
     grid-template-columns: 15rem 1fr;
     gap: var(--space-48);
   }

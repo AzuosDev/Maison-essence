@@ -366,3 +366,52 @@ export type UploadFolder = (typeof UPLOAD_FOLDERS)[keyof typeof UPLOAD_FOLDERS];
 export const PRODUCT_STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
 
 export type ProductStatusFilter = (typeof PRODUCT_STATUS_FILTERS)[number];
+
+/* ---- O que o cadastro de categoria manda -------------------------------- */
+
+export interface CreateCategoryInput {
+  name: string;
+  /** Opcional: sem ele, o endereco sai do nome. */
+  slug?: string;
+  /** `null` ou ausente cria uma categoria principal. */
+  parentId?: string | null;
+  image?: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+/**
+ * A edicao de categoria. Campo omitido fica como esta.
+ *
+ * `parentId` aceita `null` **de verdade**, e nao apenas a ausencia: omitir
+ * deixa o pai como esta, e mandar `null` promove a subcategoria a categoria
+ * principal. Sao duas intencoes diferentes, e o tipo precisa saber
+ * distingui-las.
+ *
+ * O endereco (`slug`) esta aqui, ao contrario do produto: a categoria guarda
+ * os enderecos antigos em `previousSlugs` e o servidor redireciona, entao
+ * renomear a URL nao quebra o link que ja circulou.
+ */
+export type UpdateCategoryInput = Partial<CreateCategoryInput>;
+
+/** Os limites que o servidor impoe ao cadastro de categoria. */
+export const CATEGORY_LIMITS = {
+  name: 80,
+  /** `MAX_SLUG_LENGTH`. */
+  slug: 120,
+  /** `MAX_CATEGORY_ORDER`: o teto do campo de posicao, e da lista de reorder. */
+  order: 9999,
+} as const;
+
+/**
+ * O que o 409 de exclusao carrega.
+ *
+ * O servidor recusa apagar categoria que ainda tem subcategoria ou produto
+ * ativo, e manda as contagens junto porque a pergunta seguinte e sempre
+ * "quantos?". `canDeactivate` e a saida que ele oferece no lugar.
+ */
+export interface CategoryBlockedDetails {
+  subcategoryCount: number;
+  productCount: number;
+  canDeactivate: boolean;
+}

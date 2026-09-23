@@ -97,12 +97,16 @@ export const ROUTES = {
     profile: ROUTE_GROUPS.account,
 
     /**
-     * A entrada da loja.
+     * A entrada, e a unica da aplicacao inteira.
      *
      * `entrar`, e nao `login`, como todo o resto dos enderecos que o cliente
-     * le. E a unica porta de autenticacao que ele encontra — a do painel mora
-     * em `/admin/entrar` e as duas nunca se cruzam: sessoes diferentes,
-     * armazenamentos diferentes, publicos diferentes.
+     * le. Atende os dois publicos num campo so: o cliente se identifica pelo
+     * celular dos pedidos, quem trabalha na loja pelo e-mail do acesso, e o
+     * formato do que foi digitado decide para qual login a tentativa vai.
+     *
+     * As sessoes continuam separadas — tokens, armazenamentos e limites de
+     * tentativa diferentes. O que deixou de ser separado e a porta:
+     * `ROUTES.admin.login` ainda existe e redireciona para ca.
      */
     login: `${ROUTE_GROUPS.account}/entrar`,
 
@@ -152,7 +156,14 @@ export const ROUTES = {
   admin: {
     root: ROUTE_GROUPS.admin,
 
-    /** A tela de entrada do painel, fora da moldura logada. */
+    /**
+     * A entrada do painel, que hoje so redireciona.
+     *
+     * O formulario e um so, em `ROUTES.account.login`, e atende os dois
+     * publicos. Este endereco fica porque o guarda do painel manda para ele
+     * e porque esta salvo no navegador de quem ja usou — e leva o `from`
+     * junto, para que a pessoa volte a tela que a barrou.
+     */
     login: `${ROUTE_GROUPS.admin}/entrar`,
 
     /** A troca obrigatoria da senha temporaria. */

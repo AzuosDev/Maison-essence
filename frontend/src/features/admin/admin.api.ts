@@ -1,13 +1,16 @@
 import { api, SESSION_SCOPES } from '@/lib/http';
 import type { AdminOrderListParams, AdminProductListParams } from './admin.keys';
 import type {
+  AdminCategory,
   AdminCategoryNode,
   AdminOrder,
   AdminOrderSummary,
   AdminPage,
   AdminProduct,
+  CreateCategoryInput,
   CreateProductInput,
   OrderStatus,
+  UpdateCategoryInput,
   UpdateProductInput,
 } from './admin.types';
 
@@ -169,6 +172,71 @@ export function deleteProduct(id: string, signal?: AbortSignal): Promise<void> {
  */
 export function listAdminCategories(signal?: AbortSignal): Promise<AdminCategoryNode[]> {
   return api.get<AdminCategoryNode[]>('/admin/categories', {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function createCategory(
+  input: CreateCategoryInput,
+  signal?: AbortSignal,
+): Promise<AdminCategory> {
+  return api.post<AdminCategory>('/admin/categories', input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Edita a categoria. Campo omitido fica como esta.
+ *
+ * `parentId: null` promove a subcategoria a categoria principal — e por isso
+ * o tipo aceita `null` de verdade, e nao so a ausencia: sao duas intencoes
+ * diferentes, e confundi-las faria "tirar de dentro de Masculino" virar "nao
+ * mexer no pai".
+ */
+export function updateCategory(
+  id: string,
+  input: UpdateCategoryInput,
+  signal?: AbortSignal,
+): Promise<AdminCategory> {
+  return api.patch<AdminCategory>(`/admin/categories/${encodeURIComponent(id)}`, input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Regrava a ordem do menu.
+ *
+ * A lista vai inteira e em ordem de menu — cada pai seguido dos filhos dele —,
+ * e nao so o item que se moveu: o servidor grava `order = indice` para cada
+ * id citado, e a posicao de um so faz sentido em relacao a dos outros.
+ *
+ * A resposta e a arvore ja reordenada, que a tela adota no lugar do retrato
+ * otimista.
+ */
+export function reorderCategories(
+  ids: readonly string[],
+  signal?: AbortSignal,
+): Promise<AdminCategoryNode[]> {
+  return api.patch<AdminCategoryNode[]>(
+    '/admin/categories/reorder',
+    { ids },
+    { scope: SESSION_SCOPES.ADMIN, ...(signal ? { signal } : {}) },
+  );
+}
+
+/**
+ * Exclui a categoria, se ela estiver vazia.
+ *
+ * O servidor recusa com 409 quando ha subcategoria ou produto ativo, e manda
+ * as contagens em `details` — e com elas que a tela oferece desativar, que
+ * costuma ser o que a dona queria: some do menu da loja sem que nenhum
+ * produto saia do lugar.
+ */
+export function deleteCategory(id: string, signal?: AbortSignal): Promise<void> {
+  return api.delete<void>(`/admin/categories/${encodeURIComponent(id)}`, {
     scope: SESSION_SCOPES.ADMIN,
     ...(signal ? { signal } : {}),
   });

@@ -10,6 +10,7 @@ export { AccountInvite, type AccountInviteProps } from './account-invite';
 export { AccountNav } from './account-nav';
 export { AddressCard, type AddressCardProps } from './address-card';
 export { AddressDialog, type AddressDialogProps } from './address-dialog';
+export { IdentifierField, type IdentifierFieldProps } from './identifier-field';
 export { OrderCard, type OrderCardProps } from './order-card';
 export { OrderItems } from './order-items';
 export { OrderTimeline } from './order-timeline';

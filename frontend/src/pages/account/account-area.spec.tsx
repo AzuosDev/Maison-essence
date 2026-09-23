@@ -487,7 +487,7 @@ test('entrar volta para a tela que trouxe a pessoa ate aqui', async () => {
 
   await usuario.click(screen.getByRole('link', { name: 'Entrar' }));
 
-  await usuario.type(campo('Celular'), '88999998888');
+  await usuario.type(campo('Celular ou e-mail'), '88999998888');
   await usuario.type(campo('Senha'), 'segredo12345');
   await usuario.click(screen.getByRole('button', { name: 'Entrar' }));
 

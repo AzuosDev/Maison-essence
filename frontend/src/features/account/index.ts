@@ -22,15 +22,17 @@ export { addAddress, editAddress, makeDefault, removeAddress, toInputs } from '.
 
 export { conversationUrl } from './conversation';
 
+export { maskIdentifier, resolveIdentifier, type SignInIdentity } from './sign-in-identifier';
+
 export {
   addressSchema,
-  loginSchema,
   profileSchema,
   registerSchema,
+  signInSchema,
   type AddressForm,
-  type LoginForm,
   type ProfileForm,
   type RegisterForm,
+  type SignInForm,
 } from './account.schema';
 
 export {
