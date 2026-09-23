@@ -49,6 +49,16 @@ export const ROUTES = {
    */
   readyToShip: '/pronta-entrega',
 
+  /**
+   * A vitrine ja filtrada por uma marca.
+   *
+   * `marca`, e nao `brand`: o nome do parametro e o que a vitrine le da URL
+   * (ver `KEYS` em `catalog.filters`). Escrito a mao com o nome errado, o
+   * link nao quebra — abre a vitrine inteira, sem filtro e sem aviso, e o
+   * cliente que clicou em "ver tudo de Lattafa" cai no catalogo todo.
+   */
+  productsByBrand: (brand: string) => `/produtos?marca=${encodeURIComponent(brand)}`,
+
   category: (slug: string) => `/categorias/${slug}`,
 
   /** A busca, com o termo em `?q=`. */

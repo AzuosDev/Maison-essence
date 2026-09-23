@@ -102,6 +102,46 @@ export async function fetchLatest(
 }
 
 /**
+ * Uma prateleira de marca.
+ *
+ * Cinco, e nao os doze de novidades: a prateleira de marca nao e para navegar
+ * o acervo da marca inteira — e uma amostra que diz "temos esta marca" e leva
+ * para a vitrine ja filtrada por ela. Quem quer ver as sessenta e duas
+ * Isabelle clica no atalho do titulo.
+ *
+ * Nao tem rota propria, como novidades: e `GET /products` com o filtro de
+ * marca. O filtro do backend casa a marca inteira, ignorando maiuscula —
+ * `lattafa` acha `Lattafa` e nao acha `Lattafa Qaed`.
+ *
+ * **As setas apagadas no monitor largo nao sao defeito.** Acima de 1360px
+ * cabem cinco cards e meio na fileira, entao cinco produtos nao transbordam:
+ * a prateleira nao rola, e as setas nascem desligadas — que e o tratamento
+ * certo, e nao seta acesa sem ter para onde levar. Do celular ate 1280px a
+ * fileira transborda e o carrossel anda normalmente. Quem trocar este numero
+ * por doze ganha o carrossel no desktop e perde a fileira curta; foi uma
+ * escolha, nao um esquecimento.
+ */
+export const BRAND_SHELF_LIMIT = 5;
+
+/**
+ * Por data de cadastro, e nao pela ordem natural do banco.
+ *
+ * A fileira mostra cinco de um acervo que tem dezenas: sem ordem declarada,
+ * os cinco seriam sempre os mesmos e a prateleira envelheceria junto com o
+ * catalogo. Por data, o que a loja acabou de cadastrar aparece na home no
+ * minuto seguinte, que e o mesmo criterio de "Novidades".
+ */
+export async function fetchBrandShelf(
+  brand: string,
+  limit = BRAND_SHELF_LIMIT,
+  signal?: AbortSignal,
+): Promise<PublicProduct[]> {
+  const page = await fetchProducts({ brand, sort: 'newest', limit }, signal);
+
+  return page.items;
+}
+
+/**
  * Um produto pelo endereco dele.
  *
  * Quem chama hoje e a prebusca do card no hover; a pagina do produto usa a

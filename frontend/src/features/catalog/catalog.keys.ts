@@ -61,6 +61,21 @@ export const catalogKeys = {
   shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers' | 'latest', limit?: number) =>
     [...catalogKeys.all, 'shelf', name, limit ?? null] as const,
 
+  /**
+   * Uma prateleira de marca, por marca.
+   *
+   * Dentro da familia `shelf` de proposito: e uma lista curta da home, com o
+   * mesmo frescor das outras, e quem invalida "as prateleiras" precisa pegar
+   * estas junto. O `'brand'` antes do nome e o que impede uma marca chamada
+   * `latest` de colidir com a chave da prateleira de novidades.
+   *
+   * A marca entra normalizada para minuscula porque o filtro do backend
+   * ignora caixa: `Lattafa` e `lattafa` sao a mesma resposta, e duas chaves
+   * para ela seriam duas idas ao servidor pelo mesmo dado.
+   */
+  brandShelf: (brand: string, limit?: number) =>
+    [...catalogKeys.all, 'shelf', 'brand', brand.toLowerCase(), limit ?? null] as const,
+
   categories: () => [...catalogKeys.all, 'categories'] as const,
   categoryTree: () => [...catalogKeys.categories(), 'tree'] as const,
   category: (slug: string) => [...catalogKeys.categories(), slug] as const,

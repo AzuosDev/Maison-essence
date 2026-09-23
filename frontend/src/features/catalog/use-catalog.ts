@@ -1,6 +1,8 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import {
+  BRAND_SHELF_LIMIT,
+  fetchBrandShelf,
   fetchCategory,
   fetchCategoryTree,
   fetchLatest,
@@ -111,6 +113,88 @@ export function useLatest(limit?: number) {
     queryFn: ({ signal }) => fetchLatest(limit, signal),
     staleTime: SHELF_STALE_TIME_MS,
   });
+}
+
+/**
+ * A prateleira de uma marca.
+ *
+ * Mesma politica das outras: a dona cadastra um perfume da marca e ele
+ * aparece na home no minuto seguinte, sem redeploy.
+ */
+export function useBrandShelf(brand: string, limit?: number) {
+  return useQuery<PublicProduct[]>({
+    queryKey: catalogKeys.brandShelf(brand, limit),
+    queryFn: ({ signal }) => fetchBrandShelf(brand, limit, signal),
+    staleTime: SHELF_STALE_TIME_MS,
+  });
+}
+
+/**
+ * Uma prateleira com mais de uma marca dentro.
+ *
+ * ## Por que nao e uma consulta so
+ *
+ * O filtro de marca do backend aceita uma marca por vez — ele casa a marca
+ * inteira, e nao uma lista. Entao sao N consultas em paralelo, uma por
+ * marca, cada uma com a chave e o cache que ja teria se estivesse sozinha na
+ * home: trocar a ordem das marcas, ou promover uma delas para prateleira
+ * propria depois, nao custa nenhuma ida nova ao servidor.
+ *
+ * ## Por que intercalado, e nao emendado
+ *
+ * Emendando as listas, as cinco vagas da fileira sairiam todas da primeira
+ * marca sempre que ela tivesse cinco produtos — e a segunda marca nunca
+ * apareceria na prateleira que leva o nome dela. Intercalando, as duas
+ * entram na fileira: com cinco vagas e duas marcas, tres e duas.
+ *
+ * ## Erro parcial nao apaga a prateleira
+ *
+ * `isError` so quando **todas** falham. Uma marca fora do ar nao e motivo
+ * para sumir com a fileira inteira — o cliente veria uma secao a menos sem
+ * nenhum aviso, e a loja perderia a outra marca junto.
+ */
+export function useBrandsShelf(brands: readonly string[], limit = BRAND_SHELF_LIMIT) {
+  return useQueries({
+    queries: brands.map((brand) => ({
+      queryKey: catalogKeys.brandShelf(brand, limit),
+      queryFn: ({ signal }: { signal: AbortSignal }) => fetchBrandShelf(brand, limit, signal),
+      staleTime: SHELF_STALE_TIME_MS,
+    })),
+
+    combine: (results) => ({
+      data: interleave(
+        results.map((result) => result.data),
+        limit,
+      ),
+      isLoading: results.some((result) => result.isLoading),
+      isError: results.length > 0 && results.every((result) => result.isError),
+    }),
+  });
+}
+
+/**
+ * As listas alternadas entre si, ate o teto: a primeira de cada, depois a
+ * segunda de cada, e assim por diante.
+ *
+ * Uma lista que acaba antes das outras simplesmente para de contribuir — com
+ * quatro de uma marca e uma de outra, as cinco vagas saem 1, 1, 1, 1 e a
+ * quinta da primeira marca. Nenhuma vaga fica vazia por causa do rodizio.
+ */
+function interleave(lists: readonly (PublicProduct[] | undefined)[], limit: number) {
+  const picked: PublicProduct[] = [];
+  const longest = Math.max(0, ...lists.map((list) => list?.length ?? 0));
+
+  for (let position = 0; position < longest && picked.length < limit; position += 1) {
+    for (const list of lists) {
+      const product = list?.[position];
+
+      if (product !== undefined && picked.length < limit) {
+        picked.push(product);
+      }
+    }
+  }
+
+  return picked;
 }
 
 /* ---- A categoria da pagina --------------------------------------------- */

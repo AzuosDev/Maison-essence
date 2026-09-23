@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ToastProvider } from '@/components/ui';
 import { StoreSettingsProvider } from '@/features/settings';
+import shelfStyles from '@/components/store/product-shelf.module.css';
 import stripStyles from './category-strip.module.css';
 import HomePage from './home-page';
 
@@ -97,14 +98,23 @@ function produto(id: string, name: string, extras: Record<string, unknown> = {})
 let prateleiras: Record<string, unknown[]>;
 
 /**
- * O que `GET /products` devolve.
+ * O que `GET /products?brand=...` devolve, por marca.
  *
- * Separado das prateleiras porque nao e uma delas: e a listagem paginada do
- * catalogo, e e de la que sai "Novidades" — a unica prateleira da home que nao
- * depende de marcacao no painel nem de pedido nenhum.
+ * Por marca, e nao uma resposta so para `/products`: o que separa as tres
+ * fileiras de marca e justamente o filtro, e com uma resposta unica um erro
+ * que fizesse a home pedir a marca errada — ou nao pedir marca nenhuma —
+ * passaria batido, porque as tres apareceriam cheias do mesmo jeito.
  */
-let catalogo: unknown[];
+let marcas: Record<string, unknown[]>;
+
+/** Marcas cuja consulta responde 500. Vazio, menos onde um caso pede. */
+let marcasQuebradas: Set<string>;
 let chamadas: string[];
+
+/** A marca pedida numa URL de listagem, ou `null` quando nao ha filtro. */
+function marcaDe(url: string): string | null {
+  return new URL(url, 'http://local.test').searchParams.get('brand');
+}
 
 function jsonResponse(body: unknown): Response {
   return new Response(JSON.stringify(body), {
@@ -122,7 +132,14 @@ beforeEach(() => {
     'best-sellers': [produto('3', 'Fakhar')],
   };
 
-  catalogo = [produto('4', 'Khamrah')];
+  marcas = {
+    'Isabelle La Belle': [produto('5', 'Body Splash Yara', { brand: 'Isabelle La Belle' })],
+    'Arabic Collection': [produto('6', 'Asad 25ml', { brand: 'Arabic Collection' })],
+    'Maison Alhambra': [produto('7', 'Body Mist Chants', { brand: 'Maison Alhambra' })],
+    Lattafa: [produto('8', 'Desodorante Mayar', { brand: 'Lattafa' })],
+  };
+
+  marcasQuebradas = new Set();
 
   // O jsdom nao implementa `matchMedia`, e o carrossel o consulta para saber
   // se pode girar sozinho. Sem o duble, o hero quebra no primeiro render.
@@ -146,12 +163,40 @@ beforeEach(() => {
         }
       }
 
-      // A listagem do catalogo, que e de onde sai "Novidades". Depois das
-      // prateleiras: `/products/featured` tambem casaria com `/products`.
-      if (url.includes('/products')) {
+      // As prateleiras de marca, antes da listagem geral: as duas batem em
+      // `/products`, e o que as separa e o filtro.
+      const marca = url.includes('/products') ? marcaDe(url) : null;
+
+      if (marca !== null && marcasQuebradas.has(marca)) {
         return Promise.resolve(
-          jsonResponse({ items: catalogo, page: 1, totalPages: 1, totalItems: catalogo.length }),
+          new Response(JSON.stringify({ message: 'Falhou' }), {
+            status: 500,
+            headers: { 'content-type': 'application/json' },
+          }),
         );
+      }
+
+      if (marca !== null) {
+        return Promise.resolve(
+          jsonResponse({
+            items: marcas[marca] ?? [],
+            page: 1,
+            totalPages: 1,
+            totalItems: marcas[marca]?.length ?? 0,
+          }),
+        );
+      }
+
+      /*
+       * A listagem sem filtro, que nenhuma prateleira da home consome hoje.
+       *
+       * Fica respondendo vazio, e nao removida: e a rota que sustentava
+       * "Novidades" antes de ela sair da home, e uma prateleira nova que
+       * volte a usar `GET /products` sem filtro precisa ver uma resposta
+       * valida aqui em vez de cair no `[]` generico do fim.
+       */
+      if (url.includes('/products')) {
+        return Promise.resolve(jsonResponse({ items: [], page: 1, totalPages: 1, totalItems: 0 }));
       }
 
       if (url.includes('/settings')) {
@@ -300,6 +345,72 @@ test('prateleira sem produto some da pagina', async () => {
   });
 });
 
+/* ---- As prateleiras de marca --------------------------------------------- */
+
+test('cada prateleira de marca pede a marca dela, e so ela', async () => {
+  abrirHome();
+
+  const isabelle = await screen.findByRole('region', { name: 'Isabelle La Belle' });
+  const arabic = await screen.findByRole('region', { name: 'Arabic Collection' });
+
+  expect(await within(isabelle).findByRole('heading', { name: 'Body Splash Yara' })).toBeDefined();
+  expect(await within(arabic).findByRole('heading', { name: 'Asad 25ml' })).toBeDefined();
+
+  const pedidas = chamadas.map(marcaDe).filter((marca) => marca !== null);
+
+  expect(pedidas).toContain('Isabelle La Belle');
+  expect(pedidas).toContain('Arabic Collection');
+});
+
+/**
+ * A fileira de duas marcas mostra as duas.
+ *
+ * E o motivo de as listas serem intercaladas e nao emendadas: com a emenda,
+ * as cinco vagas sairiam todas da primeira marca assim que ela tivesse cinco
+ * produtos, e Lattafa nunca apareceria na prateleira que leva o nome dela.
+ */
+test('a prateleira combinada traz produto das duas marcas', async () => {
+  abrirHome();
+
+  const combinada = await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
+
+  expect(await within(combinada).findByRole('heading', { name: 'Body Mist Chants' })).toBeDefined();
+  expect(
+    await within(combinada).findByRole('heading', { name: 'Desodorante Mayar' }),
+  ).toBeDefined();
+});
+
+/**
+ * Uma marca fora do ar nao leva a prateleira junto.
+ *
+ * A fileira combinada e duas consultas; se bastasse uma falhar para ela
+ * sumir, a loja perderia a secao inteira — e a marca que respondeu bem — sem
+ * nenhum aviso.
+ */
+test('com uma das duas marcas em erro, a prateleira combinada continua', async () => {
+  marcasQuebradas.add('Maison Alhambra');
+
+  abrirHome();
+
+  const combinada = await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
+
+  expect(
+    await within(combinada).findByRole('heading', { name: 'Desodorante Mayar' }),
+  ).toBeDefined();
+});
+
+test('marca sem produto nenhum some da home, como as outras prateleiras', async () => {
+  marcas['Arabic Collection'] = [];
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Isabelle La Belle' });
+
+  await waitFor(() => {
+    expect(screen.queryByRole('region', { name: 'Arabic Collection' })).toBeNull();
+  });
+});
+
 /* ---- A ordem das secoes -------------------------------------------------- */
 
 /**
@@ -325,17 +436,19 @@ function ordemDasSecoes(): string[] {
     .map((titulo) => titulo.textContent?.trim() ?? '');
 }
 
-test('as colecoes entram depois de duas prateleiras, e nao antes', async () => {
+test('as colecoes entram depois do bloco de marcas, e nao no meio dele', async () => {
   abrirHome();
 
   await screen.findByRole('region', { name: 'Destaques' });
 
   await waitFor(() => {
     expect(ordemDasSecoes()).toEqual([
+      'Isabelle La Belle',
+      'Arabic Collection',
+      'Maison Alhambra e Lattafa',
+      'Descubra as colecoes',
       'Destaques',
       'Pronta entrega',
-      'Descubra as colecoes',
-      'Novidades',
       'Mais vendidos',
     ]);
   });
@@ -346,36 +459,70 @@ test('as colecoes entram depois de duas prateleiras, e nao antes', async () => {
  *
  * Destaque e pronta entrega saem de marcacao no painel, e mais vendidos sai
  * do historico de pedidos: as tres respondem vazio numa loja que acabou de
- * subir o catalogo, que foi o estado em que esta home chegou a producao.
- * Novidades sai do catalogo ordenado por data — se ha produto cadastrado, ela
- * tem o que mostrar, e a home nunca abre sem um perfume na tela.
+ * subir o catalogo, que foi o estado em que esta home chegou a producao. As
+ * de marca saem do catalogo filtrado — se ha produto da marca cadastrado,
+ * elas tem o que mostrar, e a home nunca abre sem um perfume na tela.
+ *
+ * Era o papel de "Novidades", que saiu da home. A troca tem um custo: aquela
+ * dependia so de existir produto, e estas dependem de a marca estar escrita
+ * no cadastro como esta em `BRANDS`.
  */
-test('com as tres prateleiras curadas vazias, novidades sustenta a vitrine', async () => {
+test('com as tres prateleiras curadas vazias, as marcas sustentam a vitrine', async () => {
   prateleiras['featured'] = [];
   prateleiras['ready-to-ship'] = [];
   prateleiras['best-sellers'] = [];
 
   abrirHome();
 
-  const novidades = await screen.findByRole('region', { name: 'Novidades' });
+  const isabelle = await screen.findByRole('region', { name: 'Isabelle La Belle' });
 
-  expect(await within(novidades).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
+  expect(await within(isabelle).findByRole('heading', { name: 'Body Splash Yara' })).toBeDefined();
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual(['Novidades', 'Descubra as colecoes']);
+    expect(ordemDasSecoes()).toEqual([
+      'Isabelle La Belle',
+      'Arabic Collection',
+      'Maison Alhambra e Lattafa',
+      'Descubra as colecoes',
+    ]);
   });
 });
 
 /**
- * A regressao que motivou o arranjo dinamico.
+ * A fileira encostada na faixa de colecoes sai em areia.
  *
- * Com as posicoes escritas a mao, uma loja sem nenhum destaque marcado —
- * que e o estado de qualquer loja recem-cadastrada — desenhava o banner e,
- * logo embaixo, as colecoes. A faixa que e a terceira secao virava a
- * primeira, e o cliente batia numa tela de navegacao sem ter visto um
- * perfume. As posicoes precisam valer sobre as prateleiras que aparecem.
+ * A faixa nao tem fundo proprio: ela e o creme da pagina. Uma prateleira em
+ * creme logo acima dela encosta sem mudanca de tom, e a vitrine passa a
+ * parecer parte da faixa. Foi o que aconteceu quando o bloco de marcas virou
+ * a abertura da home e a contagem de tons continuou saindo da primeira
+ * prateleira: tres antes da faixa em vez de duas, e a terceira caiu em creme.
  */
-test('sem destaques, as colecoes continuam vindo depois de duas prateleiras', async () => {
+test('a prateleira que encosta nas colecoes sai tingida', async () => {
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
+
+  await waitFor(() => {
+    const ultimaAntesDaFaixa = screen.getByRole('region', { name: 'Maison Alhambra e Lattafa' });
+
+    expect(ultimaAntesDaFaixa.className).toContain(shelfStyles.tinted);
+  });
+});
+
+/** E a de cima dela, nao: duas de areia seguidas leem como uma fileira so. */
+test('a prateleira anterior a essa nao sai tingida', async () => {
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Arabic Collection' });
+
+  await waitFor(() => {
+    expect(screen.getByRole('region', { name: 'Arabic Collection' }).className).not.toContain(
+      shelfStyles.tinted,
+    );
+  });
+});
+
+test('sem destaques, o bloco de marcas continua abrindo a pagina', async () => {
   prateleiras['featured'] = [];
 
   abrirHome();
@@ -384,9 +531,42 @@ test('sem destaques, as colecoes continuam vindo depois de duas prateleiras', as
 
   await waitFor(() => {
     expect(ordemDasSecoes()).toEqual([
-      'Pronta entrega',
-      'Novidades',
+      'Isabelle La Belle',
+      'Arabic Collection',
+      'Maison Alhambra e Lattafa',
       'Descubra as colecoes',
+      'Pronta entrega',
+      'Mais vendidos',
+    ]);
+  });
+});
+
+/**
+ * A regressao que motivou o arranjo dinamico.
+ *
+ * Com as posicoes escritas a mao, uma prateleira que sai vazia empurra a
+ * faixa de colecoes para cima e ela aparece antes do que deveria — foi assim
+ * que uma loja sem destaque marcado chegou a abrir no banner e ir direto para
+ * uma tela de navegacao, sem um perfume no meio.
+ *
+ * Agora quem abre a pagina sao as tres de marca, entao o caso a guardar e uma
+ * delas vazia: a faixa nao pode subir para o meio do bloco, tem de continuar
+ * entrando depois da terceira fileira que de fato aparecer.
+ */
+test('com uma marca vazia, as colecoes ainda esperam tres prateleiras', async () => {
+  marcas['Arabic Collection'] = [];
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Isabelle La Belle' });
+
+  await waitFor(() => {
+    expect(ordemDasSecoes()).toEqual([
+      'Isabelle La Belle',
+      'Maison Alhambra e Lattafa',
+      'Destaques',
+      'Descubra as colecoes',
+      'Pronta entrega',
       'Mais vendidos',
     ]);
   });
@@ -395,7 +575,7 @@ test('sem destaques, as colecoes continuam vindo depois de duas prateleiras', as
 test('com uma prateleira so, as colecoes vem logo depois dela', async () => {
   prateleiras['featured'] = [];
   prateleiras['best-sellers'] = [];
-  catalogo = [];
+  marcas = {};
 
   abrirHome();
 
@@ -418,7 +598,7 @@ test('sem prateleira nenhuma, as colecoes encostam no banner', async () => {
   prateleiras['featured'] = [];
   prateleiras['ready-to-ship'] = [];
   prateleiras['best-sellers'] = [];
-  catalogo = [];
+  marcas = {};
 
   abrirHome();
 

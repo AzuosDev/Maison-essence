@@ -1,6 +1,8 @@
 export {
+  BRAND_SHELF_LIMIT,
   LATEST_SHELF_LIMIT,
   SUGGESTION_LIMIT,
+  fetchBrandShelf,
   fetchCategory,
   fetchCategoryTree,
   fetchLatest,
@@ -89,6 +91,8 @@ export { metaDescriptionOf, productJsonLd, productMeta } from './product-seo';
 export {
   MIN_SEARCH_LENGTH,
   asCategory,
+  useBrandShelf,
+  useBrandsShelf,
   useCategory,
   useCategoryTree,
   useLatest,
