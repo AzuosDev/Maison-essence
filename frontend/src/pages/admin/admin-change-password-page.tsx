@@ -26,19 +26,33 @@ import styles from './admin-auth.module.css';
  * A resposta da troca ja vem com a sessao nova, sem a marca: gravar essa
  * sessao e o que abre o painel, sem uma segunda consulta.
  *
- * ## O minimo de oito
+ * ## O minimo de doze
  *
- * E a regra do backend (`ChangePasswordDto`). Conferir aqui tambem nao e
- * duplicacao inutil: e a diferenca entre o campo avisar enquanto se digita e
- * o servidor recusar depois de um envio.
+ * E a regra do backend (`PASSWORD_MIN_LENGTH`, em `auth.constants.ts`).
+ * Conferir aqui tambem nao e duplicacao inutil: e a diferenca entre o campo
+ * avisar enquanto se digita e o servidor recusar depois de um envio — e a
+ * recusa dele chega em ingles, crua do `class-validator`.
+ *
+ * Nao confunda com os oito da conta de cliente (`CUSTOMER_PASSWORD_MIN_LENGTH`):
+ * sao numeros diferentes de proposito, porque as duas contas protegem coisas
+ * diferentes. Esta muda preco, estoque e usuario.
  */
+
+/**
+ * O piso, em um lugar so.
+ *
+ * O schema e o texto embaixo do campo precisam dizer o mesmo numero. Quando
+ * divergiram, a tela aceitou uma senha que o servidor recusou, e quem estava
+ * entrando pela primeira vez ficou preso aqui sem entender o motivo.
+ */
+const MIN_LENGTH = 12;
 
 const schema = z
   .object({
     currentPassword: z.string().min(1, 'Informe a senha temporaria.'),
     newPassword: z
       .string()
-      .min(8, 'A senha nova precisa de pelo menos 8 caracteres.')
+      .min(MIN_LENGTH, `A senha nova precisa de pelo menos ${MIN_LENGTH} caracteres.`)
       .max(72, 'Senha longa demais.'),
     confirmation: z.string().min(1, 'Repita a senha nova.'),
   })
@@ -122,7 +136,7 @@ export default function AdminChangePasswordPage() {
             label="Senha nova"
             type="password"
             autoComplete="new-password"
-            hint="Pelo menos 8 caracteres."
+            hint={`Pelo menos ${MIN_LENGTH} caracteres.`}
             error={errors.newPassword?.message}
             {...register('newPassword')}
           />
