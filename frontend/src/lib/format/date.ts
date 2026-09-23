@@ -61,6 +61,32 @@ export function toDateTimeAttribute(value: DateInput): string {
 }
 
 /**
+ * O comeco do dia escolhido, no fuso de quem esta olhando.
+ *
+ * `<input type="date">` devolve `2026-09-22`, e `new Date('2026-09-22')`
+ * interpreta isso como meia-noite **UTC** — tres horas antes da meia-noite
+ * daqui. Um filtro montado assim perderia tudo o que aconteceu entre 21h e
+ * meia-noite do dia anterior, que e justamente o horario em que a loja mais
+ * vende.
+ *
+ * O `T00:00:00` sem fuso e o que muda a leitura: a especificacao manda
+ * interpretar data-e-hora sem fuso como **local**, e data sozinha como UTC.
+ *
+ * Nao passa pelo `Intl` como o resto deste arquivo — nao e texto para
+ * alguem ler, e o valor que vai na query string. Mora aqui porque o assunto
+ * e o mesmo, e porque duas copias dele em duas telas viram duas regras de
+ * fuso diferentes no mesmo painel.
+ */
+export function dayStartISO(date: string): string {
+  return new Date(`${date}T00:00:00`).toISOString();
+}
+
+/** O fim do dia escolhido: "ate 30/09" precisa incluir o dia 30 inteiro. */
+export function dayEndISO(date: string): string {
+  return new Date(`${date}T23:59:59.999`).toISOString();
+}
+
+/**
  * Texto vazio no lugar de `Invalid Date`.
  *
  * Data quebrada e um dado errado, nao uma tela quebrada: some do rotulo em

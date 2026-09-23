@@ -130,6 +130,7 @@ export default function AdminHomePage() {
           orders={dashboard.recentOrders}
           isLoading={dashboard.isLoading}
           showTotals={showMoney}
+          showPayment={false}
           emptyTitle="Nenhum pedido ainda"
           emptyDescription="Os pedidos feitos pelo site aparecem aqui, do mais novo para o mais antigo."
         />

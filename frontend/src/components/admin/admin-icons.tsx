@@ -240,6 +240,26 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
+/** A volta para a lista. Seta, e nao chevron: chevron aponta, seta leva. */
+export function ArrowLeftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20 12H4" />
+      <path d="m10 6-6 6 6 6" />
+    </Icon>
+  );
+}
+
+/** Cancelar: o circulo cortado. Nao e a lixeira — pedido nao se apaga. */
+export function BanIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="m6 6 12 12" />
+    </Icon>
+  );
+}
+
 export function ImageIcon(props: IconProps) {
   return (
     <Icon {...props}>

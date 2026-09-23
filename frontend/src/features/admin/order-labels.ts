@@ -2,6 +2,7 @@ import {
   FULFILLMENT_MODES,
   ORDER_STATUSES,
   PAYMENT_METHODS,
+  type AdminOrderPayment,
   type FulfillmentMode,
   type OrderStatus,
   type PaymentMethod,
@@ -52,6 +53,35 @@ export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
 };
 
 /**
+ * As opcoes do filtro e do seletor de status.
+ *
+ * Derivadas do fluxo e dos rotulos, e nao escritas a mao: um status novo no
+ * dominio aparece nos dois controles sem ninguem lembrar de acrescenta-lo.
+ * O tipo e o minimo que `<Select>` pede, para que este modulo continue sem
+ * saber que existe um design system do outro lado.
+ */
+export const ORDER_STATUS_OPTIONS: readonly { value: OrderStatus; label: string }[] =
+  ORDER_STATUS_FLOW.map((status) => ({ value: status, label: ORDER_STATUS_LABELS[status] }));
+
+/**
+ * Como o pagamento cabe numa celula: `PIX`, `Cartao`, `Cartao 6x`.
+ *
+ * O numero de parcelas entra so quando ha mais de uma — "Cartao 1x" e ruido,
+ * e a coluna existe para ser lida de relance. Se ha juros ou nao fica de
+ * fora aqui de proposito: e uma frase, nao um rotulo, e o detalhe do pedido
+ * a escreve por extenso.
+ */
+export function paymentLabel(payment: AdminOrderPayment): string {
+  const method = PAYMENT_LABELS[payment.method];
+
+  if (payment.method !== PAYMENT_METHODS.CARD || payment.installments <= 1) {
+    return method;
+  }
+
+  return `${method} ${String(payment.installments)}x`;
+}
+
+/**
  * O tom do selo de status.
  *
  * Quatro tons para seis status, porque o que a cor precisa dizer e mais
@@ -82,7 +112,8 @@ export function statusTone(status: OrderStatus): 'gold' | 'ink' | 'success' | 'd
 export function whatsappLink(phone: string, message?: string): string {
   const digits = phone.replace(/\D/g, '');
   const withCountry = digits.startsWith('55') ? digits : `55${digits}`;
-  const text = message === undefined || message === '' ? '' : `?text=${encodeURIComponent(message)}`;
+  const text =
+    message === undefined || message === '' ? '' : `?text=${encodeURIComponent(message)}`;
 
   return `https://wa.me/${withCountry}${text}`;
 }

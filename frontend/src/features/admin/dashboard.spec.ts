@@ -1,6 +1,18 @@
 import { expect, test } from 'vitest';
-import { ORDER_STATUSES, type AdminOrderSummary, type AdminProduct, type AdminVariant } from './admin.types';
-import { countSince, lowStock, outOfStock, revenueOf, startOfMonth, startOfToday } from './dashboard';
+import {
+  ORDER_STATUSES,
+  type AdminOrderSummary,
+  type AdminProduct,
+  type AdminVariant,
+} from './admin.types';
+import {
+  countSince,
+  lowStock,
+  outOfStock,
+  revenueOf,
+  startOfMonth,
+  startOfToday,
+} from './dashboard';
 
 /**
  * As contas da abertura do painel.
@@ -20,6 +32,7 @@ function order(patch: Partial<AdminOrderSummary> = {}): AdminOrderSummary {
     phone: '88999998888',
     phoneLabel: '(88) 99999-8888',
     mode: 'DELIVERY',
+    payment: { method: 'PIX', installments: 1, hasInterest: false },
     itemCount: 1,
     totalCents: 10_000,
     createdAt: '2026-09-22T12:00:00.000Z',

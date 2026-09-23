@@ -4,6 +4,7 @@ import { Badge, EmptyState, Skeleton } from '@/components/ui';
 import {
   FULFILLMENT_LABELS,
   ORDER_STATUS_LABELS,
+  paymentLabel,
   statusTone,
   whatsappLink,
   type AdminOrderSummary,
@@ -46,6 +47,18 @@ export interface OrdersTableProps {
   isLoading?: boolean;
   /** Esconde as colunas de dinheiro. O STAFF nao ve valor. */
   showTotals?: boolean;
+  /**
+   * Mostra como o pedido foi pago.
+   *
+   * Ligado na tela de pedidos, onde a dona esta decidindo o que responder, e
+   * desligado na abertura do painel, que e uma olhada de relance: uma coluna
+   * a mais ali empurra o codigo e o cliente para fora da largura do celular
+   * sem responder nenhuma pergunta que a abertura faca.
+   *
+   * Nao segue `showTotals`: "Cartao 6x" diz como o cliente vai pagar, e nao
+   * quanto a loja ganha. O STAFF precisa disso para atender.
+   */
+  showPayment?: boolean;
   emptyTitle?: string;
   emptyDescription?: string;
 }
@@ -54,6 +67,7 @@ export function OrdersTable({
   orders,
   isLoading = false,
   showTotals = true,
+  showPayment = true,
   emptyTitle = 'Nenhum pedido por aqui',
   emptyDescription = 'Quando um pedido chegar pelo site, ele aparece nesta lista.',
 }: OrdersTableProps) {
@@ -68,9 +82,9 @@ export function OrdersTable({
   }
 
   return isWide ? (
-    <OrderRows orders={orders} showTotals={showTotals} />
+    <OrderRows orders={orders} showTotals={showTotals} showPayment={showPayment} />
   ) : (
-    <OrderCards orders={orders} showTotals={showTotals} />
+    <OrderCards orders={orders} showTotals={showTotals} showPayment={showPayment} />
   );
 }
 
@@ -79,9 +93,11 @@ export function OrdersTable({
 function OrderRows({
   orders,
   showTotals,
+  showPayment,
 }: {
   orders: readonly AdminOrderSummary[];
   showTotals: boolean;
+  showPayment: boolean;
 }) {
   return (
     <div className={styles.tableWrap}>
@@ -91,6 +107,7 @@ function OrderRows({
             <th scope="col">Codigo</th>
             <th scope="col">Cliente</th>
             <th scope="col">Entrega</th>
+            {showPayment ? <th scope="col">Pagamento</th> : null}
             <th scope="col" className={styles.numeric}>
               Itens
             </th>
@@ -131,6 +148,10 @@ function OrderRows({
 
               <td>{FULFILLMENT_LABELS[order.mode]}</td>
 
+              {showPayment ? (
+                <td className={styles.payment}>{paymentLabel(order.payment)}</td>
+              ) : null}
+
               <td className={cx(styles.numeric, 'tabular')}>{order.itemCount}</td>
 
               {showTotals ? (
@@ -165,9 +186,11 @@ function OrderRows({
 function OrderCards({
   orders,
   showTotals,
+  showPayment,
 }: {
   orders: readonly AdminOrderSummary[];
   showTotals: boolean;
+  showPayment: boolean;
 }) {
   return (
     <ul className={styles.cards}>
@@ -198,6 +221,13 @@ function OrderCards({
               <dt>Entrega</dt>
               <dd>{FULFILLMENT_LABELS[order.mode]}</dd>
             </div>
+
+            {showPayment ? (
+              <div>
+                <dt>Pagamento</dt>
+                <dd>{paymentLabel(order.payment)}</dd>
+              </div>
+            ) : null}
 
             {showTotals ? (
               <div>

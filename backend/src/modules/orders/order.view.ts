@@ -95,6 +95,15 @@ export interface OrderSummaryView {
   phone: string;
   phoneLabel: string;
   mode: FulfillmentMode;
+  /**
+   * Como o pagamento foi combinado.
+   *
+   * Entra no resumo porque e o que a dona confere antes de responder no
+   * WhatsApp: um PIX pendente e uma conversa, um cartao em 6x e outra. Sem
+   * ele, a tabela do painel obrigaria a abrir cada pedido para descobrir
+   * qual dos dois esta na frente dela.
+   */
+  payment: OrderPaymentView;
   /** Quantas unidades, somando as linhas. Nao e o numero de linhas. */
   itemCount: number;
   totalCents: number;
@@ -171,6 +180,11 @@ export function toOrderSummaryView(order: OrderDocument): OrderSummaryView {
     phone: order.customer.phone,
     phoneLabel: formatBrazilianPhone(order.customer.phone),
     mode: order.fulfillment.mode,
+    payment: {
+      method: order.payment.method,
+      installments: order.payment.installments,
+      hasInterest: order.payment.hasInterest,
+    },
     itemCount: order.items.reduce((total, item) => total + item.quantity, 0),
     totalCents: order.totals.totalCents,
     createdAt: order.createdAt,

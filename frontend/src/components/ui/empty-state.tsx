@@ -19,8 +19,15 @@ export type EmptyStateProps = Omit<ComponentPropsWithoutRef<'div'>, 'title'> & {
   actions?: ReactNode;
   /** Menos respiro: dentro de um card ou da gaveta da sacola. */
   compact?: boolean;
-  /** O nivel do titulo no documento. */
-  as?: 'h2' | 'h3' | 'p';
+  /**
+   * O nivel do titulo no documento.
+   *
+   * `h1` existe para o vazio que **e** a tela: um pedido que nao abriu, uma
+   * pagina que nao existe. Nesses casos o estado vazio ocupa o lugar do
+   * conteudo inteiro, e um documento sem `h1` deixa quem navega por titulos
+   * sem ponto de partida.
+   */
+  as?: 'h1' | 'h2' | 'h3' | 'p';
 };
 
 export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyState(

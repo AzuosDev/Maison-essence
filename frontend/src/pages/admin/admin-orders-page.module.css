@@ -1,0 +1,154 @@
+/*
+ * A lista de pedidos.
+ *
+ * A tela e um funil de cima para baixo: a pergunta (a busca), o recorte (as
+ * pilulas e o periodo), a resposta (a tabela). O espaco entre os tres e
+ * maior do que o espaco dentro de cada um, que e o que permite achar o
+ * proprio lugar sem ler nada.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.header {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/*
+ * A contagem embaixo do titulo.
+ *
+ * `--ink-soft`, e nao `--muted`: sao 14px, e o cinza de rotulo nao alcanca
+ * 4.5:1 nesse corpo (ver a tabela de contraste em `tokens.css`).
+ */
+.count {
+  margin: 0;
+
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+/* ---- O recorte ----------------------------------------------------------- */
+
+.filters {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/*
+ * A fileira de status rola na horizontal no celular.
+ *
+ * Sete pilulas nao cabem em 360px, e quebrar em tres linhas empurraria a
+ * tabela para fora da dobra — justamente na tela que a dona abre com o
+ * polegar. O `scroll-padding` mantem a pilula escolhida inteira quando ela
+ * para na borda, e a barra some porque a fileira ja se anuncia rolavel pelo
+ * corte da ultima pilula.
+ *
+ * E um `<fieldset>` com a legenda escondida, e nao uma `<div role="group">`:
+ * as sete pilulas sao um controle so — "filtrar por status" —, e o elemento
+ * nativo diz isso sem precisar de atributo. O bloco abaixo desfaz a moldura
+ * que o navegador desenha em volta de todo fieldset.
+ */
+.statuses {
+  display: flex;
+  gap: var(--space-8);
+
+  min-width: 0;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0 var(--gutter);
+  border: 0;
+
+  overflow-x: auto;
+  scroll-padding-inline: var(--gutter);
+  scrollbar-width: none;
+}
+
+.statuses::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * O periodo: dois campos de data e a saida.
+ *
+ * `auto-fit` com piso de 9rem porque o campo de data nativo tem largura
+ * minima propria — abaixo disso o navegador corta o "aaaa" e a pessoa
+ * digita no escuro. Em 360px eles ficam um por linha; a partir de 320px de
+ * espaco util, lado a lado.
+ */
+.period {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-12);
+  align-items: end;
+}
+
+/*
+ * "Limpar filtros" alinhado com o pe dos campos, e nao com o rotulo deles.
+ *
+ * O `align-items: end` do container ja faz isso; a altura fixa existe para
+ * que o botao nao encolha ate o texto quando ele cai sozinho numa linha.
+ */
+.clear {
+  min-height: var(--control-height);
+  justify-self: start;
+}
+
+/* ---- A resposta ----------------------------------------------------------- */
+
+/*
+ * A lista velha enquanto a nova vem.
+ *
+ * Meio segundo de opacidade reduzida diz "isto ainda nao e a resposta" sem
+ * tirar a resposta anterior da tela. `pointer-events: none` evita o clique
+ * num pedido que esta prestes a sair da lista — o tipo de erro que so
+ * acontece com quem usa a tela rapido, que e quem a usa de verdade.
+ */
+.refreshing {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  /* No desktop o periodo nao precisa da linha inteira: dois campos e o
+     botao cabem a esquerda, e a tabela ganha o resto da altura. */
+  .period {
+    grid-template-columns: 12rem 12rem auto;
+    justify-content: start;
+  }
+
+  .statuses {
+    margin-inline: 0;
+    padding-inline: 0;
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}

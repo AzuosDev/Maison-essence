@@ -10,6 +10,8 @@ export { addressLines, formatZipCode, type PostalAddress } from './address';
 export { centsFromInput, formatCents, formatCentsRange, formatInstallment } from './currency';
 export { formatPhone, maskPhone, normalizePhone, whatsappNumber } from './phone';
 export {
+  dayEndISO,
+  dayStartISO,
   formatDate,
   formatDateTime,
   formatLongDate,

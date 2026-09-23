@@ -1,0 +1,422 @@
+/*
+ * Um pedido, inteiro.
+ *
+ * Duas colunas no desktop: a larga com o que foi pedido, a estreita com os
+ * dados que se confere. No celular vira uma coluna so, e a ordem do DOM ja e
+ * a ordem certa — itens, mensagem, anotacao, e depois status, cliente,
+ * entrega, pagamento, valores.
+ *
+ * As acoes ficam acima das duas, e nao dentro de uma delas: elas valem para
+ * o pedido, e no celular precisam estar ao alcance do polegar sem rolagem.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-24);
+}
+
+/* ---- O cabecalho --------------------------------------------------------- */
+
+.header {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  justify-self: start;
+
+  /* Alvo de toque cheio: e o caminho de volta mais usado do painel, e no
+     celular ele fica na borda de cima, onde o polegar chega torto. */
+  min-height: 2.75rem;
+  margin-inline-start: calc(var(--space-8) * -1);
+  padding-inline: var(--space-8);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.backLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+}
+
+/*
+ * O codigo do pedido e o titulo da tela.
+ *
+ * Em largura fixa de proposito: e um identificador que se compara caractere
+ * a caractere com o que a cliente colou no WhatsApp, e a serifada com
+ * numerais proporcionais atrapalha exatamente essa leitura.
+ */
+.code {
+  margin: 0;
+
+  font-family: var(--font-mono);
+  font-size: var(--text-22);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0;
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.when {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+/* ---- As acoes rapidas ----------------------------------------------------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+/*
+ * "Abrir conversa": o link com peso de botao primario.
+ *
+ * Desenhado aqui e nao herdado do `<Button>` porque e um `<a>` — a acao sai
+ * da aplicacao, e o porque esta escrito no componente. Os valores sao os
+ * mesmos da acao primaria do sistema (preenchimento em `--ink`, texto creme,
+ * altura de controle, pilula), e e de proposito que ele nao invente um
+ * terceiro tipo de botao para a mesma tela.
+ */
+.openChat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+
+  min-height: var(--control-height);
+  padding: 0 var(--space-24);
+
+  background-color: var(--ink);
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--cream);
+
+  /* Sobre o preenchimento escuro o anel dourado escuro some, e a variante
+     primaria faz esta mesma troca. O token continua sendo um. */
+  --focus-color: var(--gold);
+
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.openChat:hover {
+  background-color: var(--gold-deep);
+}
+
+.openChat:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/*
+ * Cancelar fica longe das outras duas.
+ *
+ * `margin-inline-start: auto` empurra para a outra ponta da fileira no
+ * desktop. No celular, onde tudo quebra em linha, a ordem do DOM ja o deixa
+ * por ultimo — e a distancia vertical faz o mesmo trabalho.
+ */
+.cancel {
+  margin-inline-start: auto;
+  color: var(--danger);
+}
+
+.cancel:hover {
+  background-color: var(--danger-wash);
+  color: var(--danger);
+}
+
+/* ---- As duas colunas ------------------------------------------------------- */
+
+.columns {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.main,
+.rail {
+  display: grid;
+  gap: var(--space-16);
+  align-content: start;
+}
+
+/* ---- O bloco ---------------------------------------------------------------- */
+
+.panel {
+  display: grid;
+  gap: var(--space-12);
+  align-content: start;
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.panelTitle {
+  margin: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Cola no titulo: o `gap` do bloco separaria os dois como se fossem
+   assuntos diferentes, e a nota explica o titulo. */
+.panelNote {
+  margin: calc(var(--space-12) * -1) 0 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* ---- Os dados conferidos ------------------------------------------------------ */
+
+.facts {
+  display: grid;
+  gap: var(--space-12);
+  margin: 0;
+}
+
+.fact {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.fact dt {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.fact dd {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.address {
+  display: grid;
+  gap: var(--space-4);
+  font-style: normal;
+}
+
+.reference {
+  margin: var(--space-4) 0 0;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+.pickup {
+  color: var(--ink-soft);
+}
+
+/*
+ * O telefone, com alvo de toque cheio.
+ *
+ * O botao mais apertado desta tela no celular, e o mais usado: e por ele que
+ * a dona sai do painel para a conversa.
+ */
+.phone {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: 2.75rem;
+  padding: var(--space-8) var(--space-12);
+
+  background-color: var(--success-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  color: var(--success);
+  text-decoration: none;
+}
+
+.phone:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.phoneIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ---- O status ------------------------------------------------------------------ */
+
+.statusHint {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/*
+ * O aviso do pedido cancelado.
+ *
+ * Ocupa o lugar do seletor, e nao aparece ao lado dele desabilitado: um
+ * controle cinza convida a tentar, e o que ha para dizer aqui e que nao ha
+ * mais o que escolher.
+ */
+.finalNote {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink);
+}
+
+/* ---- A mensagem enviada ---------------------------------------------------------- */
+
+/*
+ * O texto como foi para o WhatsApp.
+ *
+ * `<pre>` porque as quebras de linha sao o conteudo: a mensagem foi montada
+ * com elas, e e assim que ela chegou na conversa. `user-select: all` nao
+ * entra — a dona as vezes quer copiar so o trecho do endereco.
+ *
+ * Em largura fixa por ser transcricao, e nao prosa da interface. O limite de
+ * altura evita que um pedido de quinze itens empurre a anotacao para fora da
+ * tela; o bloco rola dentro de si.
+ */
+.message {
+  max-height: 22rem;
+  margin: 0;
+  padding: var(--space-12);
+  overflow: auto;
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-chip);
+
+  font-family: var(--font-mono);
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink);
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 2;
+}
+
+/* ---- A anotacao ------------------------------------------------------------------- */
+
+.noteActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-8);
+}
+
+/* ---- Os valores --------------------------------------------------------------------- */
+
+.totals {
+  display: grid;
+  gap: var(--space-8);
+  margin: 0;
+}
+
+.money,
+.grandTotal {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.money dt {
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.money dd {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+/* O total fecha a lista com um filete e ganha corpo: e o numero que a dona
+   confere contra o comprovante. */
+.grandTotal {
+  padding-top: var(--space-8);
+  border-top: var(--border);
+}
+
+.grandTotal dt {
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.grandTotal dd {
+  margin: 0;
+
+  font-size: var(--text-18);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+/* ---- O desktop ------------------------------------------------------------------------ */
+
+@media (min-width: 64rem) {
+  .code {
+    font-size: var(--text-28);
+  }
+
+  /*
+   * A coluna estreita tem largura fixa, e nao uma fracao.
+   *
+   * O que mora nela — status, telefone, endereco, valores — tem largura
+   * natural propria e nao melhora esticando. O que ganha o espaco extra de
+   * uma tela larga e a lista de itens e a mensagem, que sao o conteudo.
+   */
+  .columns {
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    gap: var(--space-24);
+    align-items: start;
+  }
+}

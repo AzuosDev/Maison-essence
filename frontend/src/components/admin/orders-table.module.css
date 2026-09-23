@@ -59,6 +59,12 @@
   text-align: right;
 }
 
+/* "Cartao 6x" nunca quebra em duas linhas: o "6x" sozinho embaixo do
+   "Cartao" e o tipo de quebra que faz a coluna parecer um erro. */
+.payment {
+  white-space: nowrap;
+}
+
 /* ---- A celula do codigo ------------------------------------------------- */
 
 .code {

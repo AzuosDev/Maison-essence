@@ -74,6 +74,13 @@ export interface AdminOrderSummary {
   /** `(88) 99999-9999`, pronto pela API. */
   phoneLabel: string;
   mode: FulfillmentMode;
+  /**
+   * Como o pagamento foi combinado.
+   *
+   * No resumo, e nao so no detalhe: e a coluna que a dona le antes de abrir
+   * a conversa. Um PIX pendente pede uma frase, um cartao em 6x pede outra.
+   */
+  payment: AdminOrderPayment;
   /** Unidades somadas, e nao o numero de linhas. */
   itemCount: number;
   totalCents: number;

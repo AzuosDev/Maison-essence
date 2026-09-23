@@ -213,6 +213,21 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
+        // Os pedidos: a lista e o detalhe. A lista le o recorte do proprio
+        // endereco (`?status=...`), e por isso o card da abertura consegue
+        // apontar para um filtro; o detalhe entra por id, e nao por codigo,
+        // porque e o id que as rotas administrativas do backend aceitam.
+        {
+          path: 'pedidos',
+          lazy: page(() => import('@/pages/admin/admin-orders-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+        {
+          path: 'pedidos/:id',
+          lazy: page(() => import('@/pages/admin/admin-order-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
         // As areas que o menu ja lista e cujas telas entram nos proximos
         // passos. Existem agora para que um item do menu nunca jogue a dona
         // para fora do painel, na tela de 404 da loja.
@@ -220,7 +235,6 @@ const adminRoutes: RouteObject = {
           'produtos',
           'categorias',
           'pronta-entrega',
-          'pedidos',
           'entrega',
           'pagamento',
           'configuracoes',

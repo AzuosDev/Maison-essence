@@ -14,7 +14,7 @@ import {
   type AuditListParams,
 } from '@/features/admin';
 import { errorMessage } from '@/lib/http';
-import { formatDateTime } from '@/lib/format';
+import { dayEndISO, dayStartISO, formatDateTime } from '@/lib/format';
 import styles from './system-audit-page.module.css';
 
 /**
@@ -64,10 +64,10 @@ export default function SystemAuditPage() {
       limit: PAGE_SIZE,
       ...(actorId === '' ? {} : { actorId }),
       ...(action === '' ? {} : { action }),
-      ...(from === '' ? {} : { from: startOfDay(from) }),
+      ...(from === '' ? {} : { from: dayStartISO(from) }),
       // `to` inclusivo para quem preenche: escolher 30/09 nos dois campos
       // precisa trazer o dia 30 inteiro, e nao zero resultados.
-      ...(to === '' ? {} : { to: endOfDay(to) }),
+      ...(to === '' ? {} : { to: dayEndISO(to) }),
     }),
     [page, actorId, action, from, to],
   );
@@ -266,23 +266,4 @@ function AuditRow({ entry }: { entry: AuditEntry }) {
       )}
     </li>
   );
-}
-
-/* ---- Datas --------------------------------------------------------------- */
-
-/**
- * O comeco do dia escolhido, no fuso de quem esta olhando.
- *
- * `<input type="date">` devolve `2026-09-22`, que interpretado direto vira
- * meia-noite **UTC** — tres horas antes da meia-noite daqui. Sem esta
- * conversao, filtrar "de 22/09" perderia as acoes feitas entre 21h e meia-
- * noite do dia 21.
- */
-function startOfDay(date: string): string {
-  return new Date(`${date}T00:00:00`).toISOString();
-}
-
-/** O fim do dia escolhido: "ate 30/09" inclui o dia 30 inteiro. */
-function endOfDay(date: string): string {
-  return new Date(`${date}T23:59:59.999`).toISOString();
 }

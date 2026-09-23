@@ -27,7 +27,6 @@ function areaLabel(pathname: string): string {
     produtos: 'Produtos',
     categorias: 'Categorias',
     'pronta-entrega': 'Pronta entrega',
-    pedidos: 'Pedidos',
     entrega: 'Entrega',
     pagamento: 'Pagamento',
     configuracoes: 'Configuracoes',

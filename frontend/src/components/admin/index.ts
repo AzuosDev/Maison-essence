@@ -7,6 +7,8 @@
 
 export {
   AlertIcon,
+  ArrowLeftIcon,
+  BanIcon,
   BottleIcon,
   CardIcon,
   ChatIcon,
@@ -42,6 +44,7 @@ export { AdminNav, type AdminNavProps } from './admin-nav';
 export { ConfirmDialog, type ConfirmDialogProps } from './confirm-dialog';
 export { MissingRoute, type MissingRouteProps } from './missing-route';
 export { OneTimeSecret, type OneTimeSecretProps } from './one-time-secret';
+export { OrderItems, type OrderItemsProps } from './order-items';
 export { OrdersTable, type OrdersTableProps } from './orders-table';
 export { StatCard, type StatCardProps } from './stat-card';
 export { UserActions, type UserActionsProps } from './user-actions';
