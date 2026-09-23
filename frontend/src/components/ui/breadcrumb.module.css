@@ -4,21 +4,34 @@
  * Texto pequeno e discreto — e orientacao, nao conteudo. No celular rola na
  * horizontal em vez de quebrar em duas linhas: uma trilha quebrada deixa de
  * parecer uma trilha.
+ *
+ * O alvo de toque sai do texto e vai para a faixa inteira: 44px de altura e
+ * o espaco ate o separador em preenchimento. E aqui, e nao num `::after` de
+ * area invisivel, porque `.nav` rola — uma area que transborda para cima e
+ * para baixo do scrollport vira rolagem vertical dentro de um elemento que
+ * so deveria rolar na horizontal.
+ *
+ * O recuo negativo devolve o alinhamento: com preenchimento lateral no
+ * link, o primeiro rotulo comecaria 8px a direita do titulo da pagina logo
+ * abaixo. Puxar o scrollport inteiro para tras encosta os dois de volta, e
+ * cabe na calha de 16px do container.
  */
 
 .nav {
   overflow-x: auto;
   scrollbar-width: none;
+  margin-inline: calc(var(--space-8) * -1);
 }
 
 .nav::-webkit-scrollbar {
   display: none;
 }
 
+/* Sem `gap`: o respiro de 8px agora vem do preenchimento de cada rotulo, e
+   somar os dois abriria a trilha ao dobro. */
 .list {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
   padding: 0;
   margin: 0;
   list-style: none;
@@ -28,9 +41,17 @@
 .item {
   display: flex;
   align-items: center;
-  gap: var(--space-8);
+  min-height: 2.75rem;
   font-size: var(--text-12);
   color: var(--ink-soft);
+}
+
+.link,
+.current {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  padding-inline: var(--space-8);
 }
 
 .link {

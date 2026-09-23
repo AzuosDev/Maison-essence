@@ -139,6 +139,26 @@ function abrirLoja() {
   );
 }
 
+/**
+ * Monta a moldura na largura do desktop.
+ *
+ * O jsdom nao implementa `matchMedia`, e sem ele o `useMediaQuery` responde
+ * `false` — o caminho do celular. La o rodape e um acordeao: as quatro
+ * colunas viram botoes fechados, e um deles se chama "Categorias", que e
+ * tambem o nome do botao do menu no cabecalho. Os casos que falam do painel
+ * do cabecalho e das colunas do rodape pedem, os dois, a forma do desktop.
+ */
+function noDesktop(): void {
+  vi.stubGlobal(
+    'matchMedia',
+    vi.fn(() => ({
+      matches: true,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })),
+  );
+}
+
 test('a barra de avisos mostra o texto cadastrado no painel', async () => {
   abrirLoja();
 
@@ -152,6 +172,7 @@ test('a barra de avisos mostra o texto cadastrado no painel', async () => {
 test('o menu de categorias reflete o que esta cadastrado', async () => {
   const user = userEvent.setup();
 
+  noDesktop();
   abrirLoja();
 
   const botao = await screen.findByRole('button', { name: /Categorias/ });
@@ -174,6 +195,7 @@ test('o menu de categorias reflete o que esta cadastrado', async () => {
 test('o Escape fecha o painel de categorias', async () => {
   const user = userEvent.setup();
 
+  noDesktop();
   abrirLoja();
 
   const botao = await screen.findByRole('button', { name: /Categorias/ });
@@ -222,6 +244,7 @@ test('o cabecalho encolhe ao rolar a pagina', async () => {
 });
 
 test('o rodape monta as colunas com o que a API devolveu', async () => {
+  noDesktop();
   abrirLoja();
 
   const rodape = await screen.findByRole('contentinfo');
@@ -235,6 +258,31 @@ test('o rodape monta as colunas com o que a API devolveu', async () => {
   expect(within(rodape).getByText('Seg a sex, 9h as 18h')).toBeDefined();
   // O numero aparece formatado para leitura, sem o codigo do pais.
   expect(within(rodape).getByText('(88) 99999-8888')).toBeDefined();
+});
+
+/**
+ * No celular o rodape e um indice, nao um segundo documento.
+ *
+ * Quatro listas abertas somavam mais de 800px logo abaixo da vitrine. O caso
+ * guarda as duas metades do contrato: fechada, a lista nao esta na arvore
+ * acessivel — e `hidden`, e nao apenas escondida por CSS, que um leitor de
+ * tela anunciaria assim mesmo; aberta, esta.
+ */
+test('no celular as colunas do rodape comecam fechadas e abrem no toque', async () => {
+  const user = userEvent.setup();
+
+  abrirLoja();
+
+  const rodape = await screen.findByRole('contentinfo');
+  const institucional = await within(rodape).findByRole('button', { name: 'Institucional' });
+
+  expect(institucional.getAttribute('aria-expanded')).toBe('false');
+  expect(within(rodape).queryByRole('link', { name: 'Quem somos' })).toBeNull();
+
+  await user.click(institucional);
+
+  expect(institucional.getAttribute('aria-expanded')).toBe('true');
+  expect(await within(rodape).findByRole('link', { name: 'Quem somos' })).toBeDefined();
 });
 
 test('as configuracoes sao buscadas uma vez so, mesmo com varios componentes lendo', async () => {

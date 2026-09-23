@@ -130,9 +130,12 @@ export function CatalogView({
 
       <div className={styles.toolbar}>
         {isDesktop ? null : (
+          // Tamanho normal, e nao `small`: e um botao que so existe no
+          // celular, onde 36px de altura ficam abaixo do alvo de toque — e
+          // ele divide a linha com o seletor de ordem, que tem 48. Os dois
+          // com a mesma altura fecham a barra numa faixa so.
           <Button
             variant="secondary"
-            size="small"
             onClick={() => {
               setDrawerOpen(true);
             }}

@@ -1,10 +1,16 @@
 /*
  * O rodape da loja.
  *
- * Preto, com quatro colunas que viram uma so no celular. A ordem no markup e
- * a ordem em que fazem sentido lidas de cima para baixo — institucional,
- * categorias, contato, redes —, entao a coluna unica do celular nao precisa
- * de reordenacao nenhuma.
+ * Preto, com quatro colunas. A ordem no markup e a ordem em que fazem
+ * sentido lidas de cima para baixo — institucional, categorias, contato,
+ * redes —, entao o empilhamento do celular nao precisa de reordenacao
+ * nenhuma.
+ *
+ * Abaixo de 40rem as quatro nao empilham: viram acordeao. Quatro listas
+ * abertas uma sob a outra somavam mais de 800px de rodape, e quem chega ao
+ * fim da vitrine no celular tinha de rolar um segundo documento inteiro para
+ * achar o CNPJ. Fechadas, as quatro cabem em 176px e continuam sendo um
+ * indice: o cliente ve os quatro assuntos e abre o que quer.
  */
 
 /*
@@ -48,17 +54,25 @@
 
 /* ---- Colunas ----------------------------------------------------------- */
 
+/*
+ * No celular nao ha vao nem recuo entre as colunas: uma fileira de acordeao
+ * se le como fileira porque as linhas se encostam. O espaco de 32px que
+ * separava blocos empilhados aqui separaria o titulo do filete que e dele, e
+ * o recuo vertical abriria uma faixa vazia entre o filete dos selos de
+ * confianca e o da primeira fileira — duas reguas a 24px uma da outra, sem
+ * nada no meio.
+ */
 .columns {
   display: grid;
   grid-template-columns: 1fr;
-  gap: var(--space-32);
-
-  padding-block: var(--space-48);
 }
 
 @media (min-width: 40rem) {
   .columns {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-32);
+
+    padding-block: var(--space-48);
   }
 }
 
@@ -69,10 +83,78 @@
   }
 }
 
+/*
+ * Os filetes da fileira sao os das proprias linhas, e so os que faltam.
+ *
+ * Em cima da primeira ja existe o que fecha os selos de confianca; embaixo da
+ * ultima, o que abre a linha legal. Desenhar os dois de novo daria uma regua
+ * dupla nas duas pontas.
+ */
 .column {
   min-width: 0;
+  border-top: 1px solid rgb(250 247 242 / 0.12);
 }
 
+.column:first-child {
+  border-top: 0;
+}
+
+@media (min-width: 40rem) {
+  .column {
+    border-top: 0;
+  }
+}
+
+/* ---- O cabecalho da coluna --------------------------------------------- */
+
+/*
+ * O titulo continua sendo um `<h2>` nos dois tamanhos de tela — e o que da a
+ * quem navega por marcos a mesma lista de assuntos no celular e no desktop.
+ * O que muda e o que vai dentro dele: um botao que abre, ou so o texto.
+ */
+.columnHeading {
+  margin: 0;
+}
+
+.disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0;
+
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--cream);
+}
+
+/* O unico movimento do rodape, e o que diz de que lado a lista vai sair. */
+.chevron {
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: transform var(--transition);
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.panel {
+  padding-bottom: var(--space-16);
+}
+
+/* O titulo do desktop, sem botao em volta. */
 .columnTitle {
   margin-bottom: var(--space-16);
 
@@ -83,16 +165,28 @@
   color: var(--cream);
 }
 
+/* ---- As listas --------------------------------------------------------- */
+
+/*
+ * No celular cada link e uma fileira de 44px, e nao uma linha de texto de 20
+ * com 8 de respiro: dentro de um acordeao de rodape o dedo mira no assunto,
+ * nao na palavra. O `gap` sai junto — a altura da fileira ja e o espaco.
+ */
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-8);
   padding: 0;
   margin: 0;
   list-style: none;
 }
 
 .link {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 2.75rem;
+
   font-size: var(--text-14);
   color: var(--muted);
   transition: color var(--transition);
@@ -103,6 +197,8 @@
 }
 
 .text {
+  padding-block: var(--space-12);
+
   font-size: var(--text-14);
   line-height: var(--leading-body);
   color: var(--muted);
@@ -112,6 +208,21 @@
   display: block;
   font-size: var(--text-14);
   color: var(--cream);
+}
+
+@media (min-width: 40rem) {
+  .list {
+    gap: var(--space-8);
+  }
+
+  .link {
+    display: inline;
+    min-height: 0;
+  }
+
+  .text {
+    padding-block: 0;
+  }
 }
 
 .social {
@@ -124,8 +235,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
 
   color: var(--sand);
   border: 1px solid rgb(250 247 242 / 0.25);

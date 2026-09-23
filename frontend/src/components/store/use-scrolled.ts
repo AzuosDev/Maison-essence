@@ -12,8 +12,17 @@ import { useEffect, useState } from 'react';
  * quadro, e nao uma vez por evento de scroll — que em trackpad dispara
  * dezenas de vezes por quadro — e a diferenca entre um cabecalho que encolhe
  * suave e um que engasga.
+ *
+ * Os dois limiares nao sao o mesmo numero, e e proposital. O cabecalho troca
+ * de altura sem transicao — animar a altura de um elemento sticky remedia a
+ * pagina a cada quadro —, entao a troca e um salto, e um salto que acontece
+ * nos dois sentidos no mesmo pixel pisca: encolher sobe o conteudo, e o
+ * conteudo subindo pode devolver a rolagem para baixo do limiar, que devolve
+ * a altura, que desce o conteudo de novo. Com a volta atrasada para 8px, a
+ * faixa entre 8 e 24 e terra de ninguem: quem entra encolhido so volta ao
+ * repouso perto do topo de verdade.
  */
-export function useScrolled(threshold = 24): boolean {
+export function useScrolled(threshold = 24, release = 8): boolean {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -21,7 +30,9 @@ export function useScrolled(threshold = 24): boolean {
 
     const read = (): void => {
       frame = 0;
-      setScrolled(window.scrollY > threshold);
+      // Quem ja esta encolhido responde ao limiar de volta; quem esta em
+      // repouso, ao de ida.
+      setScrolled((was) => (was ? window.scrollY > release : window.scrollY > threshold));
     };
 
     const onScroll = (): void => {
@@ -43,7 +54,7 @@ export function useScrolled(threshold = 24): boolean {
         cancelAnimationFrame(frame);
       }
     };
-  }, [threshold]);
+  }, [threshold, release]);
 
   return scrolled;
 }

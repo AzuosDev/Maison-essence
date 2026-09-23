@@ -61,7 +61,6 @@
 
 .stage {
   display: grid;
-  gap: var(--space-12);
   min-width: 0;
 }
 
@@ -130,10 +129,19 @@
 
 /* ---- Os pontos do celular ----------------------------------------------- */
 
+/*
+ * O ponto e de 8px; o botao em volta dele tem 44.
+ *
+ * Sem `gap`: a distancia entre um ponto e o seguinte ja e a soma das duas
+ * metades vazias dos botoes vizinhos. Um `gap` por cima disso afastaria os
+ * pontos sem aumentar alvo nenhum.
+ *
+ * O respiro acima vem do proprio botao, entao `.stage` nao precisa mais do
+ * seu: com os dois, sobrava uma faixa morta de 30px entre a foto e a fila.
+ */
 .dots {
   display: flex;
   justify-content: center;
-  gap: var(--space-8);
 
   margin: 0;
   padding: 0;
@@ -141,19 +149,29 @@
 }
 
 .dot {
-  width: 0.5rem;
-  height: 0.5rem;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
   padding: 0;
 
-  background: var(--line);
+  background: none;
   border: none;
-  border-radius: var(--radius-pill);
   cursor: pointer;
+}
+
+.dot::before {
+  content: '';
+  width: 0.5rem;
+  height: 0.5rem;
+
+  background: var(--line);
+  border-radius: var(--radius-pill);
 
   transition: background-color var(--transition);
 }
 
-.dotActive {
+.dotActive::before {
   background: var(--ink);
 }
 
