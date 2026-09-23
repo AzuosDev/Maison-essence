@@ -9,6 +9,7 @@ import {
   useIsSignedIn,
   useMustChangePassword,
 } from '@/features/admin';
+import { ThemeToggle } from '@/features/theme';
 import { cx } from '@/lib/cx';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { ROUTES } from '../routes';
@@ -77,6 +78,15 @@ export function AdminLayout() {
 
           <AdminNav />
 
+          {/*
+            O tema tambem se troca daqui.
+
+            O controle da loja mora no rodape, e o painel nao tem rodape: sem
+            este, a dona teria de sair do painel, achar o rodape da loja e
+            voltar. Sao o mesmo estado — trocar aqui muda a marcacao la.
+          */}
+          <ThemeToggle className={styles.theme} />
+
           <SignOutButton onSignOut={signOut} />
         </aside>
       ) : null}
@@ -122,6 +132,8 @@ export function AdminLayout() {
           className={cx(styles.menuPanel, 'on-dark')}
         >
           <AdminNav onNavigate={closeMenu} />
+
+          <ThemeToggle className={styles.theme} />
 
           <SignOutButton onSignOut={signOut} />
         </Drawer>

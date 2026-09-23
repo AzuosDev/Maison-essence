@@ -22,15 +22,31 @@
  */
 .footer {
   margin-top: var(--space-48);
-  background-color: var(--ink);
-  color: var(--sand);
+  background-color: var(--slab);
+  color: var(--slab-ink);
+
+  /*
+   * O filete que so aparece no tema escuro.
+   *
+   * No claro a laje preta contra o creme da 18:1 e se separa sozinha — o
+   * comentario acima vale inteiro. No escuro nao ha esse luxo: a laje
+   * (#16130e) contra o fundo (#0b0b0b) da 1,06:1, e o rodape simplesmente
+   * deixa de ser um bloco. Nao ha como ir mais escuro que a pagina, entao
+   * quem marca a emenda e a linha.
+   *
+   * `--line` faz o trabalho nos dois sem nenhuma condicional: no claro ele e
+   * #e3dacd contra o creme logo acima, quase invisivel, que e o que se quer
+   * ali; no escuro e #2e2a24 contra o quase preto, um fio discreto mas
+   * presente.
+   */
+  border-top: 1px solid var(--line);
 }
 
 /* ---- Newsletter -------------------------------------------------------- */
 
 .newsletter {
   padding-block: var(--space-48);
-  border-bottom: 1px solid rgb(250 247 242 / 0.12);
+  border-bottom: 1px solid color-mix(in srgb, var(--slab-ink) 12%, transparent);
 }
 
 @media (min-width: 64rem) {
@@ -92,7 +108,7 @@
  */
 .column {
   min-width: 0;
-  border-top: 1px solid rgb(250 247 242 / 0.12);
+  border-top: 1px solid color-mix(in srgb, var(--slab-ink) 12%, transparent);
 }
 
 .column:first-child {
@@ -136,7 +152,7 @@
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
   text-align: left;
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 /* O unico movimento do rodape, e o que diz de que lado a lista vai sair. */
@@ -162,7 +178,7 @@
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 /* ---- As listas --------------------------------------------------------- */
@@ -207,7 +223,7 @@
 .strong {
   display: block;
   font-size: var(--text-14);
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 @media (min-width: 40rem) {
@@ -238,8 +254,8 @@
   width: 2.75rem;
   height: 2.75rem;
 
-  color: var(--sand);
-  border: 1px solid rgb(250 247 242 / 0.25);
+  color: var(--slab-ink);
+  border: 1px solid color-mix(in srgb, var(--slab-ink) 25%, transparent);
   border-radius: var(--radius-pill);
 
   transition:
@@ -260,10 +276,24 @@
   gap: var(--space-8);
 
   padding-block: var(--space-24);
-  border-top: 1px solid rgb(250 247 242 / 0.12);
+  border-top: 1px solid color-mix(in srgb, var(--slab-ink) 12%, transparent);
 
   font-size: var(--text-12);
   color: var(--muted);
+}
+
+/*
+ * O controle de tema, na faixa legal.
+ *
+ * No celular ele vem **antes** dos dois textos, e nao depois: empilhados, o
+ * ultimo item fica a um dedo da borda inferior da tela, onde moram a barra
+ * do navegador e o gesto de voltar. Um alvo de 36px ali e o alvo que se erra.
+ * Como `order` so vale entre irmaos do mesmo flex, os dois paragrafos nao
+ * precisam de nada — basta este sair na frente.
+ */
+.theme {
+  order: -1;
+  margin-bottom: var(--space-8);
 }
 
 @media (min-width: 48rem) {
@@ -271,6 +301,19 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+
+    /* Tres itens numa linha so: com `nowrap`, a razao social inteira mais o
+       aviso de direitos mais a pilula estouravam a largura entre 768 e 900px
+       e o ultimo saia cortado pela beirada. */
+    flex-wrap: wrap;
+    gap: var(--space-16);
+  }
+
+  /* De volta ao fim da linha: o motivo de estar na frente era a borda de
+     baixo da tela do celular, que aqui nao existe. */
+  .theme {
+    order: 0;
+    margin-bottom: 0;
   }
 }
 

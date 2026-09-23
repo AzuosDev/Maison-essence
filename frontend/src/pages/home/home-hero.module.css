@@ -15,8 +15,8 @@
 
   /* Tokens locais para o par escuro/claro do bloco. O botao la embaixo os
      inverte para pintar a si mesmo sem escrever cor nova. */
-  --dark: var(--ink);
-  --light: var(--cream);
+  --dark: var(--slab);
+  --light: var(--slab-ink);
 
   background-color: var(--dark);
   color: var(--light);

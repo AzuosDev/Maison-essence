@@ -17,17 +17,43 @@
 :root {
   /* ---- Cor ------------------------------------------------------------ */
 
+  /*
+   * Diz ao navegador em que tema ele esta, e nao e decorativo: e o que pinta
+   * a barra de rolagem, o cursor de texto, o calendario do `<input type=date>`
+   * e o menu do `<select>` — superficies que nenhum CSS nosso alcanca. Sem
+   * ele, o tema escuro sai com uma barra de rolagem branca do lado.
+   */
+  color-scheme: light;
+
   --ink: #0e0e0e;
   --ink-soft: #3a3a3a;
   --muted: #8a8578;
-  --cream: #faf7f2;
-  --sand: #f1e9dd;
+  --bg: #faf7f2;
+  --bg-alt: #f1e9dd;
   --surface: #ffffff;
   --gold: #c0a062;
   --gold-deep: #9c7c3c;
   --line: #e3dacd;
   --success: #2e7d5b;
   --danger: #b3261e;
+
+  /*
+   * Os nomes antigos das duas cores de fundo, agora apelidos.
+   *
+   * `--cream` e `--sand` estao escritos em umas quarenta folhas e continuam
+   * valendo; o que mudou e que o valor deles mora em `--bg` e `--bg-alt`, que
+   * sao os nomes que o tema escuro usa. Trocar quarenta arquivos para
+   * renomear uma variavel seria muito risco por nenhum ganho.
+   *
+   * `var()` resolve na hora do uso, e nao aqui: quando o bloco escuro redefine
+   * `--bg`, `--cream` acompanha sozinho. E o que faz o tema inteiro virar sem
+   * que nenhum componente saiba que existe tema.
+   *
+   * Em codigo novo, prefira `--bg` e `--bg-alt`: "creme" e o nome de uma cor,
+   * e no escuro o valor e quase preto.
+   */
+  --cream: var(--bg);
+  --sand: var(--bg-alt);
 
   /*
    * ---- Onde cada cor pode ser texto -----------------------------------
@@ -56,26 +82,63 @@
      e a cor do canal, e muda se o canal mudar. */
   --whatsapp: #25d366;
 
+  /*
+   * ---- A laje ----------------------------------------------------------
+   *
+   * O bloco escuro que corta a pagina: o rodape, a barra de avisos, a
+   * assinatura da marca, a sidebar do painel e a tela de entrada dele.
+   *
+   * Par proprio, e nao `--ink` com `--cream` em cima, por causa do tema
+   * escuro. `--ink` e primeiro plano e inverte: no escuro ele fica claro, e
+   * quem pintasse o rodape com ele teria uma laje **clara** de ponta a ponta
+   * no pe de uma pagina escura — que e exatamente o brilho que quem escolhe
+   * tema escuro esta tentando evitar. A laje escurece nos dois temas; o que
+   * muda e a relacao com a pagina: no claro ela e o preto contra o creme, no
+   * escuro e um degrau acima do fundo, para continuar sendo um bloco e nao
+   * sumir dentro dele.
+   *
+   * Nao confunda com o botao primario, o selo e o chip selecionado: aqueles
+   * sao pequenos, continuam em `--ink`/`--cream` e invertem de proposito —
+   * botao claro sobre pagina escura e o que se espera ali.
+   */
+  --slab: #0e0e0e;
+  --slab-ink: #faf7f2;
+
   /* Painel administrativo. Fundo proprio, frio, para que o operador saiba
      pelo canto do olho que nao esta na loja. */
   --admin-bg: #f6f5fb;
-  --admin-sidebar: var(--ink);
-  --admin-item-active: rgb(192 160 98 / 0.14);
+  --admin-sidebar: var(--slab);
+  --admin-active: rgb(192 160 98 / 0.14);
+  --admin-item-active: var(--admin-active);
   --admin-item-border: 3px;
 
   /* ---- Cores derivadas -------------------------------------------------
      Nao sao cores novas: sao as da paleta com transparencia, para os usos
-     que precisam deixar o fundo aparecer. */
+     que precisam deixar o fundo aparecer.
 
-  /* O veu atras do modal e da gaveta: o preto da marca a meia opacidade. */
+     Escritas com `color-mix` sobre o token, e nao com o hexadecimal dele
+     repetido dentro de um `rgb()`. A diferenca so aparece no tema escuro:
+     `--success` muda de #2e7d5b para #4caf82, e o `rgb(46 125 91 / 0.1)`
+     escrito a mao continuaria sendo o verde do tema claro — um fundo de
+     aviso da cor errada, que ninguem nota porque e quase transparente. */
+
+  /*
+   * O veu atras do modal e da gaveta.
+   *
+   * Valor literal, e nao `var(--ink)`: `--ink` e o primeiro plano e inverte
+   * com o tema, e um veu claro sobre uma pagina escura ilumina em vez de
+   * apagar. O veu e sempre escuro, nos dois temas — o que muda e a forca,
+   * porque meio preto sobre uma pagina que ja e quase preta nao separa plano
+   * nenhum (ver o bloco escuro).
+   */
   --overlay: rgb(14 14 14 / 0.5);
 
   /* Realce de linha, item de lista sob o cursor: o dourado quase apagado. */
-  --gold-wash: rgb(192 160 98 / 0.12);
+  --gold-wash: color-mix(in srgb, var(--gold) 12%, transparent);
 
   /* Fundo de aviso e de erro, para o toast e a mensagem de formulario. */
-  --success-wash: rgb(46 125 91 / 0.1);
-  --danger-wash: rgb(179 38 30 / 0.08);
+  --success-wash: color-mix(in srgb, var(--success) 10%, transparent);
+  --danger-wash: color-mix(in srgb, var(--danger) 8%, transparent);
 
   /* ---- Tipografia ----------------------------------------------------- */
 
@@ -220,11 +283,103 @@
 }
 
 /*
- * Contexto escuro: o bloco da marca, a sidebar do painel, o botao primario.
+ * ---- O tema escuro -------------------------------------------------------
  *
- * Sobre o preto, `--gold-deep` some. A classe troca so a cor do anel de
+ * Tres estados, e nao dois:
+ *
+ *   sem atributo        segue o sistema operacional
+ *   data-theme="light"  claro, mesmo com o sistema no escuro
+ *   data-theme="dark"   escuro, mesmo com o sistema no claro
+ *
+ * O `:not([data-theme='light'])` dentro do `@media` e o que faz o segundo
+ * estado existir: sem ele, quem esta no escuro pelo sistema nao conseguiria
+ * escolher claro.
+ *
+ * ATENCAO: os dois blocos abaixo sao identicos e precisam continuar
+ * identicos. Um esta dentro de um `@media` e o outro nao, e CSS nao permite
+ * juntar os dois numa regra so. Editar um e esquecer o outro faz o tema
+ * mudar so para metade das pessoas — o pior tipo de defeito, porque quem
+ * edita esta sempre num dos dois casos e ve a mudanca funcionar.
+ *
+ * O teste `tokens.spec.ts` compara os dois e quebra na divergencia. Ele
+ * existe por isso.
+ *
+ * Nenhum componente sabe que ha tema. Tudo aqui redefine o mesmo punhado de
+ * tokens primitivos, e os apelidos (`--cream`, `--sand`) e as cores
+ * derivadas (`--gold-wash`, os washes) acompanham sozinhos porque foram
+ * escritos com `var()` e `color-mix`, que resolvem na hora do uso.
+ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+
+    --ink: #f2efe9;
+    --ink-soft: #cfc9be;
+    --muted: #8a8578;
+    --bg: #0b0b0b;
+    --bg-alt: #16130e;
+    --surface: #141210;
+    --gold: #c0a062;
+    --gold-deep: #d9be7e;
+    --line: #2e2a24;
+    --success: #4caf82;
+    --danger: #e5695f;
+
+    --slab: #16130e;
+    --slab-ink: #f2efe9;
+
+    --admin-bg: #0f0f14;
+    --admin-active: rgb(192 160 98 / 0.18);
+
+    --shadow:
+      0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.45);
+
+    --overlay: rgb(0 0 0 / 0.66);
+    --gold-wash: color-mix(in srgb, var(--gold) 18%, transparent);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --ink: #f2efe9;
+  --ink-soft: #cfc9be;
+  --muted: #8a8578;
+  --bg: #0b0b0b;
+  --bg-alt: #16130e;
+  --surface: #141210;
+  --gold: #c0a062;
+  --gold-deep: #d9be7e;
+  --line: #2e2a24;
+  --success: #4caf82;
+  --danger: #e5695f;
+
+  --slab: #16130e;
+  --slab-ink: #f2efe9;
+
+  --admin-bg: #0f0f14;
+  --admin-active: rgb(192 160 98 / 0.18);
+
+  --shadow:
+    0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.45);
+
+  --overlay: rgb(0 0 0 / 0.66);
+  --gold-wash: color-mix(in srgb, var(--gold) 18%, transparent);
+}
+
+/*
+ * Contexto escuro: a laje da marca, a sidebar do painel, o painel sobre a
+ * foto do banner.
+ *
+ * Sobre a laje, `--gold-deep` some. A classe troca so a cor do anel de
  * foco — o token continua sendo um — e quem a aplica e o componente que
  * pinta o proprio fundo de escuro.
+ *
+ * Continua valendo no tema escuro sem nenhuma troca, e e por isso que a laje
+ * tinha de ser um token proprio: as superficies que levam esta classe sao
+ * escuras nos dois temas. Se o rodape invertesse, esta regra passaria a por
+ * um anel dourado claro sobre um fundo claro.
  */
 .on-dark {
   --focus-color: var(--gold);

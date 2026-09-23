@@ -21,8 +21,8 @@
   height: var(--announcement-height);
   overflow: hidden;
 
-  background-color: var(--ink);
-  color: var(--cream);
+  background-color: var(--slab);
+  color: var(--slab-ink);
 }
 
 .viewport {

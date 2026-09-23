@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
 import { Container } from '@/components/ui';
+import { ThemeIconButton } from '@/features/theme';
 import { cx } from '@/lib/cx';
 import { BrandLogo } from './brand-logo';
 import { CartButton } from './cart-button';
@@ -150,6 +151,16 @@ export function StoreHeader() {
             </Link>
 
             <CartButton />
+
+            {/*
+              Depois da sacola, e nao antes.
+
+              A sacola e o fim da fileira por ser o destino da compra — e o
+              alvo que a mao procura sem olhar, no canto. O tema entra a
+              direita dela como o que e: uma preferencia, no lugar de menor
+              transito da barra.
+            */}
+            <ThemeIconButton />
           </div>
         </Container>
 

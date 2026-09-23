@@ -11,12 +11,12 @@
  */
 
 .badges {
-  --badge-title: var(--cream);
+  --badge-title: var(--slab-ink);
   --badge-note: var(--muted);
   --badge-icon: var(--gold);
   /* O dourado a 40%, como no rodape original: moldura que sugere, nao cerca. */
   --badge-icon-line: rgb(192 160 98 / 0.4);
-  --badge-rule: rgb(250 247 242 / 0.12);
+  --badge-rule: color-mix(in srgb, var(--slab-ink) 12%, transparent);
 
   display: grid;
   gap: var(--space-24);

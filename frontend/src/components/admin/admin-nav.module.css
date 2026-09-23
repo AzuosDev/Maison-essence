@@ -34,7 +34,7 @@
 
   font-size: var(--text-14);
   line-height: 1.2;
-  color: var(--sand);
+  color: var(--slab-ink);
   text-decoration: none;
 
   transition:
@@ -44,7 +44,7 @@
 
 .item:hover {
   background-color: var(--admin-item-active);
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 /*
@@ -58,7 +58,7 @@
 .active {
   background-color: var(--admin-item-active);
   border-left-color: var(--gold);
-  color: var(--cream);
+  color: var(--slab-ink);
   font-weight: var(--weight-medium);
 }
 
@@ -84,5 +84,5 @@
 .group {
   margin-top: var(--space-8);
   padding-top: var(--space-12);
-  border-top: 1px solid rgb(250 247 242 / 0.12);
+  border-top: 1px solid color-mix(in srgb, var(--slab-ink) 12%, transparent);
 }

@@ -28,7 +28,13 @@
   padding: var(--space-24) var(--space-8) var(--space-24) 0;
 
   background-color: var(--admin-sidebar);
-  color: var(--sand);
+  color: var(--slab-ink);
+
+  /* Mesmo filete do rodape da loja, pelo mesmo motivo: no tema claro a
+     coluna preta contra o conteudo quase branco se separa sozinha, e no
+     escuro a coluna (#16130e) e o conteudo (#0f0f14) sao vizinhos de
+     luminosidade. Sem a linha, as duas viram uma mancha so. */
+  border-right: 1px solid var(--line);
 }
 
 /*
@@ -62,7 +68,7 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-logo);
   text-indent: var(--tracking-logo);
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 .brandNote {
@@ -84,6 +90,26 @@
  * vazio de altura fixa: a coluna cresce com o numero de itens do menu, que
  * muda com o papel de quem entrou.
  */
+/*
+ * O controle de tema, no pe da coluna.
+ *
+ * Herda o `margin-top: auto` que era do "Sair": o par inteiro e que desce
+ * para o pe, e quem empurra tem de ser o primeiro dos dois. Com o `auto` nos
+ * dois, o vao livre se dividiria entre eles e os dois parariam no meio da
+ * coluna.
+ *
+ * O recuo lateral alinha a pilula com o texto dos itens do menu, que tem o
+ * filete de `--admin-item-border` a esquerda.
+ */
+.theme {
+  margin-top: auto;
+  padding-inline: var(--space-12);
+}
+
+.theme + .signOut {
+  margin-top: var(--space-16);
+}
+
 .signOut {
   display: flex;
   align-items: center;
@@ -111,7 +137,7 @@
 
 .signOut:hover {
   background-color: var(--admin-item-active);
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 .signOut:focus-visible {
@@ -137,11 +163,11 @@
   flex-direction: column;
 
   background-color: var(--admin-sidebar);
-  color: var(--sand);
+  color: var(--slab-ink);
 }
 
 .menuPanel h2 {
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 /* ---- O conteudo --------------------------------------------------------- */

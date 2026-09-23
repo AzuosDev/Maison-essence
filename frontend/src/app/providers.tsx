@@ -4,6 +4,7 @@ import { ToastProvider } from '@/components/ui';
 import { watchAccountCache } from '@/features/account/account-session';
 import { registerSessions } from '@/features/auth';
 import { watchCustomerCart } from '@/features/cart';
+import { ThemeProvider } from '@/features/theme';
 import { AppErrorBoundary } from './app-error-boundary';
 import { createQueryClient } from './query-client';
 
@@ -64,7 +65,16 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <AppErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <ToastProvider>{children}</ToastProvider>
+        {/*
+          O tema por fora do `ToastProvider`, e por fora de tudo o que
+          desenha: quem o troca esta no rodape, mas quem o le e cada token de
+          cor da aplicacao. Por dentro, uma tela fora do provedor cairia no
+          valor inerte e mostraria "Sistema" marcado mesmo com o escuro
+          escolhido.
+        */}
+        <ThemeProvider>
+          <ToastProvider>{children}</ToastProvider>
+        </ThemeProvider>
 
         {Devtools ? (
           <Suspense fallback={null}>

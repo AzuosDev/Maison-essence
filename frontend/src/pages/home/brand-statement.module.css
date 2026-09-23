@@ -16,8 +16,8 @@
   /* Os dois tokens capturados onde ainda valem os valores globais, para que
      `.action` possa inverte-los no botao contornado sem escrever cor nova.
      Mesmo arranjo do hero — a explicacao inteira esta la. */
-  --dark: var(--ink);
-  --light: var(--cream);
+  --dark: var(--slab);
+  --light: var(--slab-ink);
 
   background-color: var(--dark);
   color: var(--light);
@@ -52,7 +52,7 @@
   font-size: var(--text-22);
   line-height: 1.45;
   text-wrap: balance;
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 .note {
@@ -60,7 +60,7 @@
 
   font-size: var(--text-14);
   line-height: var(--leading-body);
-  color: rgb(250 247 242 / 0.7);
+  color: color-mix(in srgb, var(--light) 70%, transparent);
 }
 
 /* Os tokens invertidos para o botao contornado, como no hero. */

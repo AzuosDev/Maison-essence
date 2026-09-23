@@ -59,8 +59,8 @@
 .footer {
   margin-top: var(--space-96);
   padding-block: var(--space-48);
-  background-color: var(--ink);
-  color: var(--sand);
+  background-color: var(--slab);
+  color: var(--slab-ink);
 }
 
 .footerInner {
@@ -77,7 +77,7 @@
   text-transform: uppercase;
   letter-spacing: var(--tracking-logo);
   text-indent: var(--tracking-logo);
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
 .footerNote {

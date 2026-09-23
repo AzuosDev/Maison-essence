@@ -22,6 +22,46 @@
     />
 
     <title>Maison Essence</title>
+
+    <!--
+      O tema, antes da primeira pintura.
+
+      Sem isto a pagina abre no claro e vira escura quando o React monta: um
+      clarao na cara de quem escolheu tema escuro, justamente no ambiente em
+      que essa pessoa esta — quarto apagado, tela no maximo.
+
+      Precisa ser embutido e sincrono. Um `<script src>` seria baixado, e a
+      pintura aconteceria antes; um `defer` ou `type=module` roda depois do
+      HTML, que e tarde demais. Sao as unicas oito linhas de JavaScript solto
+      da aplicacao, e e por um motivo que nao tem contorno.
+
+      Repete a logica de `features/theme/theme.ts` — a chave, os nomes dos
+      modos e a regra de "system nao escreve atributo". Nao da para importar
+      o modulo aqui sem reintroduzir a espera que este script existe para
+      evitar. O teste `theme.spec.ts` le este arquivo e compara com as
+      constantes de la, para que as duas copias nao se separem.
+    -->
+    <script>
+      (function () {
+        try {
+          var mode = localStorage.getItem('maison.theme');
+
+          if (mode === 'light' || mode === 'dark') {
+            document.documentElement.setAttribute('data-theme', mode);
+          }
+
+          var dark =
+            mode === 'dark' ||
+            (mode !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+
+          document
+            .querySelector('meta[name="theme-color"]')
+            .setAttribute('content', dark ? '#16130e' : '#0e0e0e');
+        } catch (error) {
+          /* Armazenamento bloqueado: fica o tema do sistema, pela @media. */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

@@ -4,6 +4,7 @@ import { ROUTES } from '@/app/routes';
 import { Container } from '@/components/ui';
 import { useCategoryTree } from '@/features/catalog';
 import { useStoreSettings } from '@/features/settings';
+import { ThemeToggle } from '@/features/theme';
 import { cx } from '@/lib/cx';
 import { formatPhone } from '@/lib/format';
 import { useMediaQuery } from '@/lib/use-media-query';
@@ -155,6 +156,15 @@ export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, 
           </FooterColumn>
         </div>
 
+        {/*
+          A escolha de tema fica no rodape, e nao no cabecalho.
+
+          E uma preferencia, nao uma acao de compra: o cabecalho tem busca,
+          conta e sacola, e um quarto alvo ali disputaria espaco com a sacola
+          numa tela de 390px. No rodape ela fica onde as preferencias se
+          procuram, e na faixa legal — que ja e a zona utilitaria da pagina,
+          fora do caminho de quem esta comprando.
+        */}
         <div className={styles.legal}>
           {/* A linha do CNPJ so aparece quando ha um numero de verdade. Ver
               a explicacao em `store.constants.ts`. */}
@@ -163,6 +173,8 @@ export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, 
           <p>
             © {year} {storeName}. Todos os direitos reservados.
           </p>
+
+          <ThemeToggle className={styles.theme} />
         </div>
       </Container>
     </footer>

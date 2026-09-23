@@ -11,12 +11,12 @@
  */
 
 .form {
-  --news-title: var(--cream);
-  --news-note: rgb(250 247 242 / 0.72);
+  --news-title: var(--slab-ink);
+  --news-note: color-mix(in srgb, var(--slab-ink) 72%, transparent);
   --news-field-surface: transparent;
-  --news-field-line: rgb(250 247 242 / 0.25);
-  --news-field-ink: var(--cream);
-  --news-field-muted: rgb(250 247 242 / 0.6);
+  --news-field-line: color-mix(in srgb, var(--slab-ink) 25%, transparent);
+  --news-field-ink: var(--slab-ink);
+  --news-field-muted: color-mix(in srgb, var(--slab-ink) 60%, transparent);
   --news-field-focus: var(--gold);
 
   /*
@@ -25,8 +25,8 @@
    * preto — sobrava so o rotulo creme flutuando, sem nenhuma pilula em volta.
    * Ninguem via que ali havia um botao.
    */
-  --news-btn-bg: var(--cream);
-  --news-btn-fg: var(--ink);
+  --news-btn-bg: var(--slab-ink);
+  --news-btn-fg: var(--slab);
   --news-btn-hover: var(--gold);
 
   display: flex;

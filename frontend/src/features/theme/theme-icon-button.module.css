@@ -1,0 +1,78 @@
+/*
+ * O botao de tema do cabecalho.
+ *
+ * Repete a caixa dos botoes de icone da loja — 44px de alvo, pilula, dourado
+ * no hover — em vez de importar `icon-button.module.css`: aquele arquivo e de
+ * `components/store`, e neste projeto `features` nao importa de `components`
+ * (a direcao e a inversa, ver `theme-icons.tsx`). Quem usa este botao passa a
+ * classe do cabecalho por cima para o que e posicao.
+ *
+ * As medidas sao as mesmas de la de proposito. Se aquelas mudarem, estas
+ * precisam mudar junto — o botao fica encostado nos outros tres e um alvo de
+ * tamanho diferente no meio da fileira aparece.
+ */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* `flex: none` porque o botao mora numa linha flex apertada: sem ele o alvo
+     de 44px encolhe ate a largura do desenho e o dedo erra. */
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  color: var(--ink);
+  border-radius: var(--radius-pill);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.button:hover {
+  background-color: var(--gold-wash);
+  color: var(--gold-deep);
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/*
+ * O desenho troca sem piscar.
+ *
+ * Sol, lua e tela sao tres silhuetas diferentes, e a troca seca chama mais
+ * atencao que a mudanca de tema que a acompanha. Um quarto de giro com a
+ * opacidade entrando suaviza o corte sem virar animacao de brinquedo.
+ *
+ * `prefers-reduced-motion` desliga o giro e mantem a opacidade: quem pediu
+ * menos movimento nao pediu menos informacao.
+ */
+.button svg {
+  animation: swap var(--duration) var(--ease);
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotate(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button svg {
+    animation: none;
+  }
+}

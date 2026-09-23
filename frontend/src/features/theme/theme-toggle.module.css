@@ -1,0 +1,162 @@
+/*
+ * O controle de tema: um rotulo e tres segmentos numa pilula.
+ *
+ * A pilula e a forma de toda acao clicavel nesta loja (ver `--radius-button`
+ * em `tokens.css`), e e o que separa este controle do texto legal ao lado
+ * dele no rodape — sem ela, "Sistema Claro Escuro" leria como mais uma linha
+ * de rodape.
+ *
+ * ## Os tons
+ *
+ * O padrao e a laje: o rodape e a sidebar do painel, escuros nos dois temas.
+ * Por isso as cores saem de `--slab-ink`, que e claro nos dois — e nao de
+ * `--ink`, que inverte. `.page` e a versao para fundo de pagina.
+ *
+ * Os valores com `color-mix` em vez de tokens proprios: sao quatro
+ * transparencias de uma cor que ja existe, e cada uma seria um token novo
+ * usado uma vez so.
+ */
+
+.group {
+  /* O `fieldset` chega com borda, margem e padding do navegador, e os tres
+     estragam o alinhamento no rodape. */
+  margin: 0;
+  padding: 0;
+  border: none;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+
+  --toggle-ink: var(--slab-ink);
+  --toggle-line: color-mix(in srgb, var(--slab-ink) 25%, transparent);
+  --toggle-active-bg: color-mix(in srgb, var(--gold) 18%, transparent);
+  --toggle-active-ink: var(--slab-ink);
+  --toggle-hover-bg: color-mix(in srgb, var(--slab-ink) 10%, transparent);
+}
+
+/*
+ * Sobre o fundo da pagina.
+ *
+ * `--ink` e `--gold-deep` aqui, e nao `--slab-ink` e `--gold`: no tema claro
+ * o fundo da pagina e creme, e o dourado claro sobre creme da 2,33:1 — longe
+ * dos 3:1 que um elemento grafico pede. No tema escuro os dois tokens
+ * invertem sozinhos e a conta continua fechando.
+ */
+.page {
+  --toggle-ink: var(--ink-soft);
+  --toggle-line: var(--line);
+  --toggle-active-bg: var(--gold-wash);
+  --toggle-active-ink: var(--ink);
+  --toggle-hover-bg: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.legend {
+  /* `float` e o unico jeito de um `legend` participar do fluxo em vez de
+     ficar encaixado na borda do `fieldset`. Com `padding: 0` acima, ele nao
+     abre buraco nenhum. */
+  float: left;
+  padding: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.options {
+  display: flex;
+  /* `clear` por causa do `float` do legend acima. */
+  clear: both;
+
+  padding: 2px;
+  border: 1px solid var(--toggle-line);
+  border-radius: var(--radius-button);
+}
+
+.option {
+  position: relative;
+  display: flex;
+}
+
+/*
+ * O radio de verdade: invisivel, mas presente.
+ *
+ * `opacity: 0` com o elemento ainda ocupando a caixa do rotulo — e nao
+ * `display: none`, que o tiraria da ordem de foco e da navegacao por setas,
+ * que e metade do motivo de usar radio aqui.
+ */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.face {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 2.25rem de altura e o `--control-height-small` do sistema: o controle
+     mora numa linha de rodape, nao numa pilha de formulario. */
+  min-height: var(--control-height-small);
+  padding-inline: var(--space-16);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--toggle-ink);
+
+  border-radius: var(--radius-button);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.input:hover + .face {
+  background-color: var(--toggle-hover-bg);
+}
+
+.input:checked + .face {
+  background-color: var(--toggle-active-bg);
+  color: var(--toggle-active-ink);
+}
+
+/*
+ * O anel vai no rotulo, porque o radio e invisivel.
+ *
+ * `:focus-visible` e nao `:focus`: com `:focus`, clicar com o mouse deixaria
+ * o anel aceso no segmento escolhido ate alguem clicar fora.
+ */
+.input:focus-visible + .face {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/*
+ * No celular o controle ocupa a linha inteira e os tres segmentos dividem a
+ * largura em partes iguais. Empilhados a esquerda, os tres somavam 240px
+ * numa tela de 390 e sobrava um vao que fazia a pilula parecer cortada.
+ */
+@media (max-width: 47.99rem) {
+  .options {
+    width: 100%;
+  }
+
+  .option {
+    flex: 1;
+  }
+
+  .face {
+    width: 100%;
+    padding-inline: var(--space-8);
+  }
+}
