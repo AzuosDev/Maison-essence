@@ -1,11 +1,15 @@
 export {
+  createCategory,
   createProduct,
+  deleteCategory,
   deleteProduct,
   fetchAdminProduct,
   fetchOrder,
   listAdminCategories,
   listOrders,
   listProducts,
+  reorderCategories,
+  updateCategory,
   updateOrderNotes,
   updateOrderStatus,
   updateProduct,
@@ -24,6 +28,7 @@ export { adminKeys, type AdminOrderListParams, type AdminProductListParams } fro
 export {
   ADMIN_MAX_PAGE_SIZE,
   ADMIN_PAGE_SIZE,
+  CATEGORY_LIMITS,
   FULFILLMENT_MODES,
   ORDER_STATUSES,
   PAYMENT_METHODS,
@@ -46,11 +51,14 @@ export {
   type AdminProduct,
   type AdminVariant,
   type AdminVariantInput,
+  type CategoryBlockedDetails,
+  type CreateCategoryInput,
   type CreateProductInput,
   type FulfillmentMode,
   type OrderStatus,
   type PaymentMethod,
   type ProductStatusFilter,
+  type UpdateCategoryInput,
   type UpdateProductInput,
   type UploadFolder,
   type UploadSignature,
@@ -153,13 +161,32 @@ export {
 } from './product-form';
 
 export {
-  useAdminCategories,
   useDeleteProduct,
   useProduct,
   useProducts,
   useSaveProduct,
   useSetProductStatus,
+  type SaveProductInput,
 } from './use-products';
+
+export {
+  blockedBy,
+  countCategories,
+  flatten,
+  hasChildren,
+  menuOrder,
+  moveChild,
+  moveParent,
+  parentOptions,
+} from './category-tree';
+
+export {
+  useAdminCategories,
+  useCreateCategory,
+  useDeleteCategory,
+  useReorderCategories,
+  useUpdateCategory,
+} from './use-categories';
 
 export { useImageUpload, type ImageUpload, type UploadProgress } from './use-image-upload';
 

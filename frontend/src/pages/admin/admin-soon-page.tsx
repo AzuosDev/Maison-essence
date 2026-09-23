@@ -24,7 +24,6 @@ export default function AdminSoonPage() {
 /** O nome da area, tirado do proprio endereco. */
 function areaLabel(pathname: string): string {
   const labels: Record<string, string> = {
-    categorias: 'Categorias',
     'pronta-entrega': 'Pronta entrega',
     entrega: 'Entrega',
     pagamento: 'Pagamento',

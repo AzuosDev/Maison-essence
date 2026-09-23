@@ -7,7 +7,9 @@
 
 export {
   AlertIcon,
+  ArrowDownIcon,
   ArrowLeftIcon,
+  ArrowUpIcon,
   BanIcon,
   BottleIcon,
   CardIcon,
@@ -44,6 +46,7 @@ export {
 
 export { AdminNav, type AdminNavProps } from './admin-nav';
 export { CategoryPicker, type CategoryPickerProps } from './category-picker';
+export { CategoryTree, type CategoryTreeProps } from './category-tree';
 export { ConfirmDialog, type ConfirmDialogProps } from './confirm-dialog';
 export { ImageManager, type ImageManagerProps } from './image-manager';
 export { MissingRoute, type MissingRouteProps } from './missing-route';

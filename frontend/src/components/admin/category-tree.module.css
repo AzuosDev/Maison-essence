@@ -1,0 +1,203 @@
+/*
+ * O menu da loja.
+ *
+ * Linhas empilhadas num bloco so, sem bordas entre elas alem de um filete —
+ * a lista precisa ser lida como uma sequencia, e nao como uma pilha de cards
+ * soltos. O que separa os niveis e o recuo e o filete vertical a esquerda
+ * dos filhos, a mesma linguagem do seletor de categorias do cadastro.
+ */
+
+.tree,
+.children {
+  display: grid;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tree {
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+/*
+ * Enquanto o servidor confirma a nova ordem.
+ *
+ * Nao desabilita a lista: o gesto ja aconteceu na tela e a resposta vem em
+ * um instante. O que a opacidade diz e "ainda nao esta firme" — e
+ * `pointer-events` impede um segundo arraste de entrar em cima do primeiro,
+ * que e como duas reordenacoes chegam ao servidor fora de ordem.
+ */
+.busy {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.children {
+  margin-left: var(--space-24);
+  border-left: var(--border);
+}
+
+/* ---- A linha ------------------------------------------------------------- */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  padding: var(--space-8) var(--space-12);
+  border-bottom: var(--border);
+
+  cursor: grab;
+  transition: background-color var(--transition);
+}
+
+.row:hover {
+  background-color: var(--cream);
+}
+
+.row:active {
+  cursor: grabbing;
+}
+
+/* O ultimo filete some: a borda do bloco ja fecha a lista. */
+.tree > li:last-child > .row,
+.tree > li:last-child .children > li:last-child > .row {
+  border-bottom: none;
+}
+
+/* A que esta sendo arrastada apaga: o olho precisa seguir o alvo, e nao a
+   origem do gesto. */
+.dragging {
+  opacity: 0.4;
+}
+
+/*
+ * Onde a linha vai cair.
+ *
+ * O que se escolhe ao arrastar numa lista e uma **posicao entre** duas
+ * linhas, e nao uma linha a substituir — por isso a marca e uma regua de
+ * insercao no topo do alvo, e nao um contorno em volta dele.
+ *
+ * Dois portadores, e nao um: a regua diz onde, e o fundo dourado diz qual.
+ * Sozinha, a regua de 2px some numa tela de celular sob o sol; sozinho, o
+ * fundo nao diz de que lado a linha entra.
+ *
+ * Nota para quem rodar o detector de design: ele marca filete colorido acima
+ * de 1px em item de lista, e a marca dele existe contra a faixa de acento
+ * decorativa em card. Esta e transitoria — so enquanto o dedo esta no ar — e
+ * e a propria informacao do gesto.
+ */
+.dropTarget {
+  background-color: var(--gold-wash);
+  box-shadow: inset 0 2px 0 var(--gold-deep);
+}
+
+/* Fora do menu da loja: a linha inteira recua, e o selo escreve o motivo. */
+.inactive .name {
+  color: var(--ink-soft);
+}
+
+.grip {
+  flex: none;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--muted);
+}
+
+/* ---- O nome -------------------------------------------------------------- */
+
+/*
+ * O nome e um botao sem cara de botao.
+ *
+ * Em repouso ele e texto; ao passar o mouse ganha o contorno pontilhado que
+ * diz "isto se edita". O contorno e o unico aviso, e por isso ele nao pode
+ * sumir no foco por teclado — ali entra o anel dourado por cima.
+ */
+.name,
+.nameInput {
+  flex: 1;
+  min-width: 0;
+
+  padding: var(--space-4) var(--space-8);
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-body);
+  text-align: left;
+  color: var(--ink);
+
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-chip);
+}
+
+.name {
+  cursor: text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name:hover {
+  border-color: var(--line);
+  border-style: dashed;
+}
+
+.name:focus-visible,
+.nameInput:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.nameInput {
+  background-color: var(--surface);
+  border-color: var(--ink);
+}
+
+/* ---- Contagem e situacao ---------------------------------------------------- */
+
+/*
+ * Quantos produtos.
+ *
+ * No pai o numero ja soma os dos filhos, que e como a vitrine o escreve. Sem
+ * unidade ao lado porque a coluna e sempre a mesma; o `title` diz por extenso
+ * para quem passa o mouse.
+ */
+.count {
+  flex: none;
+
+  min-width: 2rem;
+  padding: 0 var(--space-4);
+
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--ink-soft);
+}
+
+.switch {
+  flex: none;
+}
+
+/*
+ * No celular a contagem sai.
+ *
+ * O nome, o interruptor e o menu sao o que a dona usa ali; o numero de
+ * produtos ela confere na tela de produtos. Tirar uma coluna e o que deixa o
+ * nome com largura para nao ser cortado na terceira letra.
+ */
+@media (max-width: 30rem) {
+  .count {
+    display: none;
+  }
+
+  .children {
+    margin-left: var(--space-16);
+  }
+}

@@ -1,7 +1,18 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
-import { useAdminSession, type AdminSessionResponse, type AdminUser, type UserRole } from '@/features/auth';
-import { changePassword, login, logout, type ChangePasswordInput, type LoginInput } from './admin-auth.api';
+import {
+  useAdminSession,
+  type AdminSessionResponse,
+  type AdminUser,
+  type UserRole,
+} from '@/features/auth';
+import {
+  changePassword,
+  login,
+  logout,
+  type ChangePasswordInput,
+  type LoginInput,
+} from './admin-auth.api';
 
 /**
  * A sessao do painel, do ponto de vista das telas.

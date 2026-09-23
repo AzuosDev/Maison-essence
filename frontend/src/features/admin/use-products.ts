@@ -3,7 +3,6 @@ import {
   createProduct,
   deleteProduct,
   fetchAdminProduct,
-  listAdminCategories,
   listProducts,
   updateProduct,
   updateProductStatus,
@@ -53,21 +52,6 @@ export function useProduct(id: string) {
     queryFn: ({ signal }) => fetchAdminProduct(id, signal),
     staleTime: STALE_TIME_MS,
     enabled: id !== '',
-  });
-}
-
-/**
- * A arvore de categorias.
- *
- * Duas telas dependem dela — o filtro da listagem e o seletor do formulario —
- * e ela quase nunca muda. Cinco minutos evitam que abrir e fechar o cadastro
- * de um produto refaca a mesma consulta a cada vez.
- */
-export function useAdminCategories() {
-  return useQuery({
-    queryKey: adminKeys.categories(),
-    queryFn: ({ signal }) => listAdminCategories(signal),
-    staleTime: 5 * 60_000,
   });
 }
 

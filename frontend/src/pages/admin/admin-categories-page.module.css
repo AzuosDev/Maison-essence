@@ -1,0 +1,151 @@
+/*
+ * As categorias.
+ *
+ * Titulo, uma linha de instrucao e o menu. Sem filtros: a lista inteira cabe
+ * na tela, e e vendo todas juntas que se decide a ordem entre elas.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-16);
+
+  /* O menu da loja nao melhora com 1360px: uma linha com nome, contagem e
+     interruptor esticada de ponta a ponta so afasta o nome do que o controla. */
+  max-width: 48rem;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  margin-bottom: var(--space-8);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+.count {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* No celular o botao ocupa a linha: e o alvo principal de quem chega aqui
+   para cadastrar. */
+.add {
+  flex: 1;
+  min-width: 100%;
+}
+
+/*
+ * A instrucao de uso.
+ *
+ * Fica escrita, e nao escondida num tooltip: arrastar para ordenar e clicar
+ * no nome para renomear sao dois gestos que ninguem descobre olhando, e a
+ * tela e usada poucas vezes por mes — tempo suficiente para esquecer.
+ */
+.hint {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/*
+ * "Desative" dentro da frase do dialogo.
+ *
+ * Sublinhado como um link porque e o que ele parece e o que ele faz: leva a
+ * outro desfecho. Botao, e nao link, porque nao ha endereco nenhum do outro
+ * lado — e uma acao.
+ */
+.inlineAction {
+  padding: 0;
+
+  background: none;
+  border: 0;
+
+  font: inherit;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.inlineAction:hover {
+  color: var(--gold-deep);
+}
+
+.inlineAction:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: 2.75rem;
+  padding-inline: var(--space-8);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.backLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.skeleton {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .add {
+    flex: none;
+    min-width: 0;
+  }
+}

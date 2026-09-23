@@ -126,7 +126,12 @@ export function lowStock(
     }
 
     for (const variant of product.variants) {
-      if (variant.isActive && !variant.allowBackorder && variant.stock > 0 && variant.stock <= threshold) {
+      if (
+        variant.isActive &&
+        !variant.allowBackorder &&
+        variant.stock > 0 &&
+        variant.stock <= threshold
+      ) {
         lines.push({ product, variant });
       }
     }

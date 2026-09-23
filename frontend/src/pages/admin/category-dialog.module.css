@@ -1,0 +1,36 @@
+/*
+ * O dialogo de categoria.
+ *
+ * Tres campos empilhados, sem colunas: sao curtos, e um formulario de tres
+ * linhas nao ganha nada sendo espalhado.
+ */
+
+.fields {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-8);
+}
+
+/*
+ * A explicacao que ocupa o lugar do campo de "dentro de".
+ *
+ * Fundo de areia e nao de aviso: nao houve erro nenhum — e uma regra do
+ * dominio, e ela esta sendo contada antes de a pessoa esbarrar nela.
+ */
+.locked {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}

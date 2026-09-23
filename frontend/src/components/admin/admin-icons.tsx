@@ -250,6 +250,25 @@ export function ArrowLeftIcon(props: IconProps) {
   );
 }
 
+/** Subir uma posicao na lista. Par de `ArrowDownIcon`. */
+export function ArrowUpIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 19V5" />
+      <path d="m6 11 6-6 6 6" />
+    </Icon>
+  );
+}
+
+export function ArrowDownIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 5v14" />
+      <path d="m6 13 6 6 6-6" />
+    </Icon>
+  );
+}
+
 /** Cancelar: o circulo cortado. Nao e a lixeira — pedido nao se apaga. */
 export function BanIcon(props: IconProps) {
   return (
