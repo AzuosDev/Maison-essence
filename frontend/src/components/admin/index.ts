@@ -35,17 +35,24 @@ export {
   ShieldIcon,
   SignOutIcon,
   SlidersIcon,
+  StarIcon,
   TrashIcon,
   TruckIcon,
+  UploadIcon,
   UsersIcon,
 } from './admin-icons';
 
 export { AdminNav, type AdminNavProps } from './admin-nav';
+export { CategoryPicker, type CategoryPickerProps } from './category-picker';
 export { ConfirmDialog, type ConfirmDialogProps } from './confirm-dialog';
+export { ImageManager, type ImageManagerProps } from './image-manager';
 export { MissingRoute, type MissingRouteProps } from './missing-route';
 export { OneTimeSecret, type OneTimeSecretProps } from './one-time-secret';
 export { OrderItems, type OrderItemsProps } from './order-items';
+export { RowMenu, type RowMenuItem, type RowMenuProps } from './row-menu';
 export { OrdersTable, type OrdersTableProps } from './orders-table';
+export { ProductsTable, type ProductsTableProps } from './products-table';
 export { StatCard, type StatCardProps } from './stat-card';
 export { UserActions, type UserActionsProps } from './user-actions';
 export { UsersTable, type UsersTableProps } from './users-table';
+export { VariantsEditor, type VariantsEditorProps } from './variants-editor';

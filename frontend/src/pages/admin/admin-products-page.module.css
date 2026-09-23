@@ -1,0 +1,135 @@
+/*
+ * O catalogo.
+ *
+ * Mesma arquitetura da tela de pedidos — titulo, recorte, resposta —, com
+ * uma diferenca: o botao de cadastrar fica na mesma linha do titulo, e nao
+ * junto dos filtros. Ele nao e um filtro, e a distancia impede que a dona o
+ * aperte enquanto tenta limpar o recorte.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+.count {
+  margin: 0;
+
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+/* No celular o botao ocupa a linha inteira: e o alvo principal da tela para
+   quem esta cadastrando a remessa que acabou de chegar. */
+.add {
+  flex: 1;
+  min-width: 100%;
+}
+
+/* ---- O recorte ------------------------------------------------------------- */
+
+.filters {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/*
+ * As tres pilulas de situacao.
+ *
+ * `<fieldset>` com legenda escondida, e nao `<div role="group">`: as pilulas
+ * sao um controle so, e o elemento nativo diz isso sem atributo. O bloco
+ * abaixo desfaz a moldura que o navegador desenha em volta de todo fieldset.
+ */
+.statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.category {
+  max-width: 24rem;
+}
+
+/* ---- A resposta -------------------------------------------------------------- */
+
+/*
+ * A lista velha enquanto a nova vem.
+ *
+ * `pointer-events: none` evita o clique num interruptor que esta prestes a
+ * sair da lista — o tipo de erro que so acontece com quem usa a tela rapido,
+ * que e quem a usa de verdade.
+ */
+.refreshing {
+  opacity: 0.55;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .add {
+    flex: none;
+    min-width: 0;
+  }
+
+  /*
+   * No desktop os controles cabem numa linha, com a busca levando o espaco
+   * que sobra: e nela que se digita.
+   *
+   * Quatro colunas para tres ou quatro filhos — "Limpar filtros" so existe
+   * com recorte valendo. A coluna vazia nao ocupa largura, e declarar so tres
+   * jogaria o botao para uma segunda linha sozinho.
+   */
+  .filters {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    align-items: center;
+  }
+
+  .category {
+    max-width: 16rem;
+  }
+}

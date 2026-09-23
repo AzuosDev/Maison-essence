@@ -1,12 +1,23 @@
 export {
+  createProduct,
+  deleteProduct,
   fetchAdminProduct,
   fetchOrder,
+  listAdminCategories,
   listOrders,
   listProducts,
   updateOrderNotes,
   updateOrderStatus,
+  updateProduct,
   updateProductStatus,
 } from './admin.api';
+
+export {
+  confirmUpload,
+  createUploadSignature,
+  deleteUpload,
+  uploadToCloudinary,
+} from './uploads.api';
 
 export { adminKeys, type AdminOrderListParams, type AdminProductListParams } from './admin.keys';
 
@@ -16,7 +27,13 @@ export {
   FULFILLMENT_MODES,
   ORDER_STATUSES,
   PAYMENT_METHODS,
+  PRODUCT_LIMITS,
+  PRODUCT_STATUS_FILTERS,
   SOLD_ORDER_STATUSES,
+  UPLOAD_FOLDERS,
+  type AdminCategory,
+  type AdminCategoryNode,
+  type AdminImageUrls,
   type AdminOrder,
   type AdminOrderAddress,
   type AdminOrderCustomer,
@@ -28,9 +45,16 @@ export {
   type AdminPage,
   type AdminProduct,
   type AdminVariant,
+  type AdminVariantInput,
+  type CreateProductInput,
   type FulfillmentMode,
   type OrderStatus,
   type PaymentMethod,
+  type ProductStatusFilter,
+  type UpdateProductInput,
+  type UploadFolder,
+  type UploadSignature,
+  type UploadedImage,
 } from './admin.types';
 
 export {
@@ -100,6 +124,44 @@ export {
 } from './order-filters';
 
 export { useOrder, useOrders, useSetOrderNotes, useSetOrderStatus } from './use-orders';
+
+export {
+  EMPTY_PRODUCT_FILTERS,
+  activeProductFilterCount,
+  productFiltersToSearch,
+  productListParams,
+  readProductFilters,
+  withProductFilter,
+  type ProductFilters,
+} from './product-filters';
+
+export {
+  draftFromProduct,
+  draftToCreate,
+  draftToUpdate,
+  duplicateVariant,
+  emptyProductDraft,
+  hasErrors,
+  moveImage,
+  newVariant,
+  removeImage,
+  setCover,
+  validateDraft,
+  type DraftErrors,
+  type ProductDraft,
+  type VariantDraft,
+} from './product-form';
+
+export {
+  useAdminCategories,
+  useDeleteProduct,
+  useProduct,
+  useProducts,
+  useSaveProduct,
+  useSetProductStatus,
+} from './use-products';
+
+export { useImageUpload, type ImageUpload, type UploadProgress } from './use-image-upload';
 
 export {
   AUDIT_ACTION_OPTIONS,

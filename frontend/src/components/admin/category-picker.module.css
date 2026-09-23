@@ -1,0 +1,64 @@
+/*
+ * A arvore de categorias.
+ *
+ * Um nivel de recuo, e so um — subcategoria nao tem filhos. O filete
+ * vertical a esquerda dos filhos e o que faz a relacao ser lida sem contar
+ * pixels de indentacao, e o que mantem o grupo legivel quando ele rola para
+ * fora da area visivel.
+ */
+
+.tree,
+.children {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.children {
+  margin-left: var(--space-12);
+  padding-left: var(--space-12);
+  border-left: var(--border);
+}
+
+.line {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/* O rotulo fica com todo o espaco restante: e ele o alvo de toque. */
+.checkbox {
+  flex: 1;
+  min-width: 0;
+}
+
+.count {
+  flex-shrink: 0;
+
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-soft);
+}
+
+.off {
+  flex-shrink: 0;
+
+  padding: 0 var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+  white-space: nowrap;
+}
+
+.empty {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}

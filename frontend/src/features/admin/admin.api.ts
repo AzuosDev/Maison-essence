@@ -1,6 +1,15 @@
 import { api, SESSION_SCOPES } from '@/lib/http';
 import type { AdminOrderListParams, AdminProductListParams } from './admin.keys';
-import type { AdminOrder, AdminOrderSummary, AdminPage, AdminProduct, OrderStatus } from './admin.types';
+import type {
+  AdminCategoryNode,
+  AdminOrder,
+  AdminOrderSummary,
+  AdminPage,
+  AdminProduct,
+  CreateProductInput,
+  OrderStatus,
+  UpdateProductInput,
+} from './admin.types';
 
 /**
  * As chamadas do painel.
@@ -104,4 +113,63 @@ export function updateProductStatus(
     { isActive },
     { scope: SESSION_SCOPES.ADMIN, ...(signal ? { signal } : {}) },
   );
+}
+
+/** Cria o produto. O endereco (`slug`) so pode ser escolhido aqui. */
+export function createProduct(
+  input: CreateProductInput,
+  signal?: AbortSignal,
+): Promise<AdminProduct> {
+  return api.post<AdminProduct>('/admin/products', input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Salva a edicao.
+ *
+ * O array de variantes vai **inteiro**: a lista enviada passa a ser a lista
+ * do produto, e o que sumiu dela e removido ou aposentado do lado de la. E
+ * por isso que a tela manda o que ela mostra, e nunca um pedaco.
+ */
+export function updateProduct(
+  id: string,
+  input: UpdateProductInput,
+  signal?: AbortSignal,
+): Promise<AdminProduct> {
+  return api.patch<AdminProduct>(`/admin/products/${encodeURIComponent(id)}`, input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Apaga o produto.
+ *
+ * Diferente do pedido, que so e cancelado: um produto cadastrado por engano
+ * nao tem historico a preservar. O servidor recusa quando ha pedido
+ * apontando para ele, e a tela mostra a frase de la.
+ */
+export function deleteProduct(id: string, signal?: AbortSignal): Promise<void> {
+  return api.delete<void>(`/admin/products/${encodeURIComponent(id)}`, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/* ---- Categorias ---------------------------------------------------------- */
+
+/**
+ * A arvore inteira, em uma chamada.
+ *
+ * Sem paginacao e sem filtro: uma loja de perfumes tem dezenas de
+ * categorias, nao milhares, e tanto o seletor do formulario quanto o filtro
+ * da listagem precisam dela completa para desenhar pai e filho juntos.
+ */
+export function listAdminCategories(signal?: AbortSignal): Promise<AdminCategoryNode[]> {
+  return api.get<AdminCategoryNode[]>('/admin/categories', {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
 }

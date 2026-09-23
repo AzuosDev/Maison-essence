@@ -198,3 +198,171 @@ export interface AdminProduct {
   createdAt: string;
   updatedAt: string;
 }
+
+/* ---- Os limites do cadastro --------------------------------------------- */
+
+/**
+ * Os tetos que o servidor impoe, repetidos aqui.
+ *
+ * Nao e duplicacao por descuido: sao dois projetos separados, e o painel
+ * precisa dos numeros **antes** de mandar, para dizer "so cabem mais duas
+ * fotos" em vez de receber um 400 depois do upload. A fonte continua sendo
+ * `products.constants.ts` e `schema-helpers.ts` do backend; qualquer
+ * divergencia aparece como uma recusa que a tela nao previu.
+ */
+export const PRODUCT_LIMITS = {
+  /** `MAX_IMAGES`. */
+  images: 12,
+  /** `MAX_VARIANTS`. */
+  variants: 50,
+  /** `MAX_STOCK`. */
+  stock: 1_000_000,
+  /** `MAX_CENTS`: R$ 999.999,99. */
+  priceCents: 99_999_999,
+  /** `MAX_SKU_LENGTH`. */
+  sku: 40,
+  /** `MAX_SLUG_LENGTH`. */
+  slug: 120,
+  name: 160,
+  brand: 80,
+  description: 5000,
+  variantLabel: 60,
+  tags: 20,
+  tagLength: 40,
+} as const;
+
+/* ---- Categorias --------------------------------------------------------- */
+
+export interface AdminCategory {
+  id: string;
+  name: string;
+  slug: string;
+  /** Enderecos antigos que ainda redirecionam para este. */
+  previousSlugs: string[];
+  parentId: string | null;
+  image: string;
+  order: number;
+  isActive: boolean;
+  /** No pai, ja somados os das subcategorias. */
+  productCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Um nivel de aninhamento, e so um: subcategoria nao tem filhos. */
+export interface AdminCategoryNode extends AdminCategory {
+  children: AdminCategory[];
+}
+
+/* ---- O que o cadastro manda de volta ------------------------------------- */
+
+/**
+ * Uma variante no corpo do `POST` e do `PATCH`.
+ *
+ * `id` presente identifica variante que ja existe; ausente, o servidor cria.
+ * O painel manda **o array inteiro** nas duas rotas e nao precisa saber o que
+ * mudou — quem descobre e o diff do lado de la. Mandar um array parcial
+ * apagaria as que ficaram de fora.
+ */
+export interface AdminVariantInput {
+  id?: string;
+  /** Sem ele, o servidor gera a partir do nome do produto e do label. */
+  sku?: string;
+  label?: string;
+  priceCents: number;
+  /** `null` tira o preco riscado da variante. */
+  compareAtPriceCents?: number | null;
+  stock?: number;
+  image?: string;
+  isActive?: boolean;
+  allowBackorder?: boolean;
+}
+
+export interface CreateProductInput {
+  name: string;
+  /** Opcional: sem ele, o endereco sai do nome. */
+  slug?: string;
+  description?: string;
+  brand?: string;
+  categoryIds?: string[];
+  /** `publicId`s do Cloudinary na ordem de exibicao. A primeira e a capa. */
+  images?: string[];
+  variants?: AdminVariantInput[];
+  isActive?: boolean;
+  isFeatured?: boolean;
+  isReadyToShip?: boolean;
+  tags?: string[];
+}
+
+/**
+ * A edicao nao mexe no endereco.
+ *
+ * `slug` fica de fora porque o link ja foi para o WhatsApp de alguem, e
+ * troca-lo exigiria guardar o anterior para redirecionar — uma operacao
+ * separada, que a API ainda nao publica para produto.
+ */
+export type UpdateProductInput = Omit<CreateProductInput, 'slug'>;
+
+/* ---- Envio de imagem ----------------------------------------------------- */
+
+/** As tres larguras que a API devolve prontas depois do upload. */
+export interface AdminImageUrls {
+  thumb: string;
+  card: string;
+  detail: string;
+}
+
+/**
+ * A autorizacao para mandar um arquivo direto ao Cloudinary.
+ *
+ * O arquivo **nao passa pelo backend**: ele vai do navegador para o
+ * Cloudinary, e o servidor so assina o envio e confere o resultado depois. E
+ * o que mantem uma funcao serverless fora do caminho de um JPEG de 4 MB.
+ *
+ * `params` viaja literal de proposito — sao exatamente os campos que foram
+ * assinados, e o navegador os repete sem alterar nada, acrescentando apenas
+ * `file` e `api_key`. Remontar essa lista aqui e o caminho mais curto para um
+ * "Invalid Signature" que nao diz qual campo divergiu.
+ */
+export interface UploadSignature {
+  cloudName: string;
+  apiKey: string;
+  timestamp: number;
+  signature: string;
+  folder: string;
+  /** Ja vem assinado: o navegador nao escolhe o identificador da foto. */
+  publicId: string;
+  uploadUrl: string;
+  params: Record<string, string | number>;
+  expiresAt: string;
+  /** Conferido aqui antes de enviar, e de novo no `confirm`. */
+  maxBytes: number;
+  allowedFormats: readonly string[];
+}
+
+/** Uma imagem ja guardada e conferida, pronta para ser vinculada. */
+export interface UploadedImage {
+  publicId: string;
+  folder: string;
+  format: string;
+  bytes: number;
+  width: number;
+  height: number;
+  urls: AdminImageUrls;
+}
+
+/** As pastas em que o painel pode escrever. Iguais as de `image-public-id.ts`. */
+export const UPLOAD_FOLDERS = {
+  products: 'products',
+  categories: 'categories',
+  banners: 'banners',
+} as const;
+
+export type UploadFolder = (typeof UPLOAD_FOLDERS)[keyof typeof UPLOAD_FOLDERS];
+
+/* ---- O filtro de status da listagem -------------------------------------- */
+
+/** `all` e o padrao: a dona quer ver o cadastro inteiro, e nao so o no ar. */
+export const PRODUCT_STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
+
+export type ProductStatusFilter = (typeof PRODUCT_STATUS_FILTERS)[number];

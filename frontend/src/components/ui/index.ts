@@ -83,6 +83,8 @@ export {
 
 export { Spinner, type SpinnerProps } from './spinner';
 
+export { Switch, type SwitchProps } from './switch';
+
 export {
   Tab,
   TabList,

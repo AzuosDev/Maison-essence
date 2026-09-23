@@ -1,0 +1,195 @@
+/*
+ * As fotos do produto.
+ *
+ * Uma grade que se adensa com a largura, com as fotos em quadrado. A capa —
+ * a primeira — recebe contorno dourado e um selo escrito: a posicao sozinha
+ * nao diz que aquela e a foto que a vitrine mostra, e a cor sozinha nao diz
+ * a quem nao a distingue.
+ */
+
+.manager {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  aspect-ratio: 1;
+
+  background-color: var(--sand);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+
+  cursor: grab;
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.item:active {
+  cursor: grabbing;
+}
+
+/* A capa: contorno dourado de 2px. E a unica foto com moldura propria. */
+.cover {
+  border: 2px solid var(--gold);
+}
+
+/*
+ * Onde a foto arrastada vai cair.
+ *
+ * O contorno tracejado aparece **antes** do solte e some depois, e e o unico
+ * jeito de saber onde o gesto vai terminar numa grade que nao abre espaco
+ * enquanto se arrasta.
+ */
+.dropTarget {
+  border: 2px dashed var(--gold-deep);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  /* A foto nao e arrastavel por si: quem carrega o arraste e o item inteiro,
+     e a imagem solta dentro dele iniciaria um segundo gesto, do navegador. */
+  pointer-events: none;
+}
+
+.coverTag {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+
+  padding: 0 var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--slab-ink);
+
+  background-color: var(--slab);
+  border-radius: var(--radius-chip);
+}
+
+/*
+ * A barra de ferramentas, no pe da foto.
+ *
+ * Sempre visivel, e nao so no `:hover`. Um controle que aparece ao passar o
+ * mouse nao existe no celular, e e no celular que a dona cadastra.
+ */
+.tools {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+
+  padding: var(--space-4);
+
+  /* A faixa escura garante contraste sobre qualquer foto — clara, escura ou
+     de frasco espelhado. Sem ela, o icone some em metade do catalogo. */
+  background-color: rgb(14 14 14 / 0.62);
+}
+
+.tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 1.75rem;
+  height: 1.75rem;
+
+  background: none;
+  border: 0;
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  line-height: 1;
+  color: #faf7f2;
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition),
+    opacity var(--transition);
+}
+
+.tool:hover:not(:disabled) {
+  background-color: rgb(250 247 242 / 0.22);
+}
+
+.tool:focus-visible {
+  outline: var(--focus-width) solid var(--gold);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.tool:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.toolDanger:hover:not(:disabled) {
+  background-color: var(--danger);
+}
+
+.toolIcon {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ---- Enviar ---------------------------------------------------------------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.hint {
+  flex: 1;
+  min-width: 12rem;
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--danger);
+}
+
+/*
+ * Quem pediu menos movimento nao perde nada aqui: o que se mexe e o contorno
+ * do alvo, que ja e instantaneo. Fica registrado para que ninguem acrescente
+ * uma animacao de reordenacao sem lembrar deste caso.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .tool {
+    transition: none;
+  }
+}

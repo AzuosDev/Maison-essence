@@ -26,6 +26,8 @@ export interface AdminOrderListParams {
 export interface AdminProductListParams {
   q?: string;
   categoryId?: string;
+  /** `all`, `active` ou `inactive`. Ausente vale como `all`. */
+  status?: string;
   page?: number;
   limit?: number;
   [key: string]: string | number | boolean | undefined;
@@ -41,6 +43,15 @@ export const adminKeys = {
   products: () => [...adminKeys.all, 'products'] as const,
   productList: (params: AdminProductListParams = {}) => [...adminKeys.products(), params] as const,
   product: (id: string) => [...adminKeys.products(), 'detail', id] as const,
+
+  /**
+   * A arvore de categorias.
+   *
+   * Sem parametros na chave: a rota devolve tudo, e quem filtra e a tela. Fica
+   * debaixo de `['admin']` como o resto, e por isso sair do painel a limpa
+   * junto — a arvore que o STAFF viu nao pode sobreviver a troca de sessao.
+   */
+  categories: () => [...adminKeys.all, 'categories'] as const,
 
   /** Os numeros da abertura do painel. */
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,

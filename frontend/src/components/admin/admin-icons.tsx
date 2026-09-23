@@ -260,6 +260,26 @@ export function BanIcon(props: IconProps) {
   );
 }
 
+/** Enviar foto: a seta que entra na caixa. */
+export function UploadIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 16V4" />
+      <path d="m7.5 8.5 4.5-4.5 4.5 4.5" />
+      <path d="M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" />
+    </Icon>
+  );
+}
+
+/** Destaque: a estrela da home. */
+export function StarIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m12 3.5 2.6 5.4 5.9.85-4.25 4.16 1 5.89L12 17.02l-5.25 2.78 1-5.89L3.5 9.75l5.9-.85z" />
+    </Icon>
+  );
+}
+
 export function ImageIcon(props: IconProps) {
   return (
     <Icon {...props}>

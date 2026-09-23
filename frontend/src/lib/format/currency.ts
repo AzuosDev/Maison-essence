@@ -72,6 +72,26 @@ export function centsFromInput(value: string): number | null {
   return negative ? -total : total;
 }
 
+/**
+ * O valor de um campo de preco do painel: `19990` vira `199,90`.
+ *
+ * Companheiro de `centsFromInput`, e a volta exata dele — o que sai daqui,
+ * relido por ele, devolve os mesmos centavos. Sem o simbolo da moeda e sem
+ * separador de milhar: os dois atrapalham quem esta editando o numero, e
+ * `centsFromInput` os aceita de volta se a pessoa quiser digita-los.
+ *
+ * Centavos sempre com duas casas, inclusive `,00`. Um campo que mostra
+ * `199` e relido como `199,00` esta certo, mas ler `199` ao lado de
+ * `89,90` na mesma coluna faz duvidar de qual dos dois tem centavos.
+ */
+export function centsToInput(cents: number): string {
+  const rounded = Math.trunc(cents);
+  const sign = rounded < 0 ? '-' : '';
+  const absolute = Math.abs(rounded);
+
+  return `${sign}${String(Math.trunc(absolute / 100))},${String(absolute % 100).padStart(2, '0')}`;
+}
+
 /** Separa os milhares com ponto: `150000` vira `1.500`. */
 function withThousands(reais: number): string {
   return String(reais).replace(/\B(?=(?:\d{3})+$)/g, '.');

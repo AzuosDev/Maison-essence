@@ -1,27 +1,17 @@
-import { useEffect, useRef, useState } from 'react';
-import { KeyIcon, MoreIcon, PencilIcon, PowerIcon } from './admin-icons';
-import styles from './user-actions.module.css';
+import { KeyIcon, PencilIcon, PowerIcon } from './admin-icons';
+import { RowMenu, type RowMenuItem } from './row-menu';
 
 /**
- * O menu de acoes de uma linha da tabela de usuarios.
+ * As acoes de uma linha da tabela de usuarios.
  *
- * ## Por que nao e um `<select>` nem tres botoes soltos
+ * A mecanica do menu — abrir, fechar por clique fora, por Escape ou por
+ * escolha, devolver o foco — mora em `RowMenu`, que a tabela de produtos usa
+ * tambem. O que fica aqui e o que so vale para usuarios: **quais** sao as
+ * acoes, em que ordem, e qual delas some.
  *
- * Tres botoes por linha somam doze alvos de toque numa tabela de quatro
- * contas, e o celular nao tem largura para eles. Um `<select>` seria lido
- * como "escolha um valor", e o que esta aqui sao acoes — uma delas
- * destrutiva.
- *
- * Entao e um botao que abre uma lista de botoes. O fechamento cobre os tres
- * caminhos de saida: clique fora, Escape, e a escolha de um item. O foco
- * volta para o botao que abriu, porque quem navega por teclado precisa
- * continuar de onde estava e nao no topo do documento.
- *
- * ## A acao destrutiva vem por ultimo, e em vermelho
- *
- * "Desativar" fica separada do resto por um filete. Nao e enfeite: e a
- * unica entrada da lista cuja consequencia atinge outra pessoa — quem esta
- * logado cai na proxima acao dele.
+ * "Desativar" e a unica cuja consequencia atinge outra pessoa — quem estiver
+ * logado cai na proxima acao dele —, e por isso vem por ultimo, em vermelho,
+ * separada do resto por um filete.
  */
 
 export interface UserActionsProps {
@@ -51,100 +41,22 @@ export function UserActions({
   isActive,
   isSelf = false,
 }: UserActionsProps) {
-  const [open, setOpen] = useState(false);
-  const container = useRef<HTMLDivElement>(null);
-  const trigger = useRef<HTMLButtonElement>(null);
+  const items: RowMenuItem[] = [
+    { label: 'Editar cadastro', icon: PencilIcon, onSelect: onEdit },
+    { label: 'Resetar senha', icon: KeyIcon, onSelect: onResetPassword },
+    { label: 'Encerrar todas as sessoes', icon: PowerIcon, onSelect: onRevokeSessions },
+  ];
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
+  if (!isSelf) {
+    items.push({
+      label: isActive ? 'Desativar' : 'Ativar',
+      icon: PowerIcon,
+      onSelect: onToggleStatus,
+      // Reativar nao atinge ninguem: so a retirada do acesso e vermelha.
+      tone: isActive ? 'danger' : 'default',
+      separated: true,
+    });
+  }
 
-    const close = (): void => {
-      setOpen(false);
-      trigger.current?.focus();
-    };
-
-    const onPointerDown = (event: PointerEvent): void => {
-      if (!container.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        close();
-      }
-    };
-
-    document.addEventListener('pointerdown', onPointerDown);
-    document.addEventListener('keydown', onKeyDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown);
-      document.removeEventListener('keydown', onKeyDown);
-    };
-  }, [open]);
-
-  /** Executa e fecha: nenhum item do menu deixa a lista aberta atras de si. */
-  const run = (action: () => void) => () => {
-    setOpen(false);
-    action();
-  };
-
-  return (
-    <div className={styles.container} ref={container}>
-      <button
-        type="button"
-        ref={trigger}
-        className={styles.trigger}
-        aria-expanded={open}
-        aria-haspopup="true"
-        aria-label={`Acoes de ${userName}`}
-        onClick={() => {
-          setOpen((value) => !value);
-        }}
-      >
-        <MoreIcon />
-      </button>
-
-      {open ? (
-        <ul className={styles.menu}>
-          <li>
-            <button type="button" className={styles.item} onClick={run(onEdit)}>
-              <PencilIcon className={styles.itemIcon} />
-              Editar cadastro
-            </button>
-          </li>
-
-          <li>
-            <button type="button" className={styles.item} onClick={run(onResetPassword)}>
-              <KeyIcon className={styles.itemIcon} />
-              Resetar senha
-            </button>
-          </li>
-
-          <li>
-            <button type="button" className={styles.item} onClick={run(onRevokeSessions)}>
-              <PowerIcon className={styles.itemIcon} />
-              Encerrar todas as sessoes
-            </button>
-          </li>
-
-          {isSelf ? null : (
-            <li className={styles.separated}>
-              <button
-                type="button"
-                className={isActive ? styles.danger : styles.item}
-                onClick={run(onToggleStatus)}
-              >
-                <PowerIcon className={styles.itemIcon} />
-                {isActive ? 'Desativar' : 'Ativar'}
-              </button>
-            </li>
-          )}
-        </ul>
-      ) : null}
-    </div>
-  );
+  return <RowMenu label={userName} items={items} />;
 }

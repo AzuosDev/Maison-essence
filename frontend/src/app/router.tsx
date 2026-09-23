@@ -228,11 +228,29 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
+        // O catalogo: a lista e o cadastro. `novo` e um literal e por isso
+        // vem antes de `:id` — o React Router casa o caminho mais especifico
+        // primeiro, mas a ordem declarada e o que a proxima pessoa le.
+        {
+          path: 'produtos',
+          lazy: page(() => import('@/pages/admin/admin-products-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+        {
+          path: 'produtos/novo',
+          lazy: page(() => import('@/pages/admin/admin-product-form-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+        {
+          path: 'produtos/:id',
+          lazy: page(() => import('@/pages/admin/admin-product-form-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
         // As areas que o menu ja lista e cujas telas entram nos proximos
         // passos. Existem agora para que um item do menu nunca jogue a dona
         // para fora do painel, na tela de 404 da loja.
         ...adminSoonRoutes([
-          'produtos',
           'categorias',
           'pronta-entrega',
           'entrega',

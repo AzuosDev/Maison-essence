@@ -1,0 +1,260 @@
+/*
+ * As variantes, nas duas formas.
+ *
+ * A tabela do desktop e uma planilha: colunas estreitas, campos sem rotulo
+ * visivel (o cabecalho ja o diz), e o olho descendo pela coluna de preco
+ * comparando as tres linhas — que e exatamente o que se faz ao cadastrar
+ * 50, 100 e 200 ml.
+ *
+ * O bloco do celular e um formulario: rotulo em cima do campo, campos em
+ * pares quando cabem, e o nome da variante virando titulo do bloco para que
+ * a lista continue navegavel com quatro variantes.
+ */
+
+.editor {
+  display: grid;
+  gap: var(--space-16);
+  justify-items: start;
+}
+
+.listError {
+  margin: 0;
+  padding: var(--space-12);
+  justify-self: stretch;
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}
+
+.hint {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+/* ---- A planilha do desktop ------------------------------------------------- */
+
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--space-8);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+
+  border-bottom: var(--border);
+  white-space: nowrap;
+}
+
+.table tbody tr + tr td {
+  border-top: var(--border);
+}
+
+/*
+ * As colunas numericas sao estreitas de proposito.
+ *
+ * `R$ 1.299,90` cabe em 8rem, e dar mais espaco a elas tiraria do nome da
+ * variante, que e o campo que a dona le para saber em qual linha esta.
+ */
+.priceCell {
+  width: 9rem;
+}
+
+.stockCell {
+  width: 7rem;
+}
+
+.imageCell {
+  width: 12rem;
+}
+
+/*
+ * Os dois interruptores empilhados na mesma celula.
+ *
+ * Alinhados a esquerda e com o rotulo escrito: "A venda" e "Sem estoque" sao
+ * perguntas diferentes, e sem as palavras dois interruptores iguais um sobre
+ * o outro nao dizem qual e qual.
+ */
+.availability {
+  display: grid;
+  gap: var(--space-8);
+  width: 9rem;
+}
+
+.smallSwitch {
+  font-size: var(--text-12);
+}
+
+.rowActions {
+  width: 1px;
+}
+
+/* ---- Os blocos do celular --------------------------------------------------- */
+
+.blocks {
+  display: grid;
+  gap: var(--space-16);
+  width: 100%;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.blockHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.blockTitle {
+  margin: 0;
+  min-width: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * Dois campos por linha quando cabem.
+ *
+ * `auto-fit` com piso de 8rem: em 360px eles ficam um por linha, e a partir
+ * de ~19rem de espaco util entram lado a lado. Preco e "preco de" juntos
+ * ajudam a comparar; separados, a pessoa rola entre um e outro.
+ */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-12);
+}
+
+.switches {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-top: var(--space-4);
+  border-top: var(--border);
+}
+
+/* ---- A foto da variante ------------------------------------------------------ */
+
+.imagePicker {
+  display: flex;
+  align-items: end;
+  gap: var(--space-8);
+}
+
+.variantThumb {
+  flex: none;
+
+  /* Alinha com o campo, e nao com o rotulo acima dele. */
+  margin-bottom: 0.375rem;
+
+  width: 2.25rem;
+  height: 2.25rem;
+
+  object-fit: cover;
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+}
+
+/* ---- Duplicar e remover -------------------------------------------------------- */
+
+.buttons {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.iconButton,
+.removeButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* 44px: o minimo que um dedo acerta sem ampliar a tela. */
+  width: 2.75rem;
+  height: 2.75rem;
+
+  background: none;
+  border: 0;
+  border-radius: var(--radius-chip);
+
+  color: var(--ink-soft);
+  cursor: pointer;
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.iconButton:hover:not(:disabled) {
+  background-color: var(--admin-bg);
+  color: var(--ink);
+}
+
+.removeButton {
+  color: var(--danger);
+}
+
+.removeButton:hover:not(:disabled) {
+  background-color: var(--danger-wash);
+}
+
+.iconButton:focus-visible,
+.removeButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.iconButton:disabled,
+.removeButton:disabled {
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.buttonIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
