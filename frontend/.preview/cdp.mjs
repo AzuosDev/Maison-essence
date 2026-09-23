@@ -8,11 +8,12 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { createRequire } from 'node:module';
 
-const require = createRequire('C:/Users/felip/OneDrive/Documentos/Meus Projetos/Maison-essence/frontend/');
+import { BROWSER, DIR, FRONTEND } from './env.mjs';
+
+const require = createRequire(FRONTEND);
 const WebSocket = require('ws');
 
-const DIR = 'C:/Users/felip/AppData/Local/Temp/claude/c--Users-felip-OneDrive-Documentos-Meus-Projetos-Maison-essence/6191bae7-8fa1-466c-ae81-41a89467b77d/scratchpad';
-const CHROME = 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = BROWSER;
 const BASE = 'http://localhost:5199/dev-preview.html';
 const PORT = 9333;
 

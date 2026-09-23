@@ -35,9 +35,25 @@ com toque e DPR 2), e salva em `<scratchpad>/shots/<etiqueta>/` uma fatia de
 espacamento. Grava tambem um `report.json` com largura de rolagem, overflow
 horizontal e alvos de toque menores que 40px.
 
-Os caminhos absolutos no topo de `cdp.mjs` e `probe.mjs` apontam para o
-scratchpad da maquina em que foram escritos. **Ajuste `DIR` nos dois arquivos**
-antes de rodar em outro computador.
+Nao ha caminho de maquina escrito nos scripts: `env.mjs` resolve os tres que
+eles precisam. A pasta de saida sai de `PREVIEW_DIR`, ou do diretorio temporario
+do sistema; o navegador e o primeiro Chromium encontrado — Chrome, senao Edge,
+que existe em toda maquina Windows —, ou o que `PREVIEW_BROWSER` apontar; e o
+`node_modules` do `ws` vem da propria posicao de `.preview/`.
+
+```sh
+PREVIEW_DIR=/caminho/para/as/capturas node .preview/cdp.mjs <etiqueta>
+```
+
+## Ver o rodape do celular aberto
+
+```sh
+node .preview/open-footer.mjs
+```
+
+As quatro colunas do rodape nascem fechadas no celular, entao a captura comum
+so mostra a fileira recolhida. Este script abre as quatro e grava
+`<saida>/shots/rodape-aberto.png`.
 
 ## Medir uma pagina
 

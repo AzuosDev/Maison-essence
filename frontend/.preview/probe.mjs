@@ -2,10 +2,10 @@
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { createRequire } from 'node:module';
-const require = createRequire('C:/Users/felip/OneDrive/Documentos/Meus Projetos/Maison-essence/frontend/');
+import { BROWSER, DIR, FRONTEND } from './env.mjs';
+const require = createRequire(FRONTEND);
 const WebSocket = require('ws');
-const DIR = 'C:/Users/felip/AppData/Local/Temp/claude/c--Users-felip-OneDrive-Documentos-Meus-Projetos-Maison-essence/6191bae7-8fa1-466c-ae81-41a89467b77d/scratchpad';
-const chrome = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', ['--remote-debugging-port=9334','--headless=new','--disable-gpu','--no-sandbox','--hide-scrollbars',`--user-data-dir=${DIR}/probe-profile`,'about:blank'], { stdio: 'ignore' });
+const chrome = spawn(BROWSER, ['--remote-debugging-port=9334','--headless=new','--disable-gpu','--no-sandbox','--hide-scrollbars',`--user-data-dir=${DIR}/probe-profile`,'about:blank'], { stdio: 'ignore' });
 let wsUrl;
 for (let i = 0; i < 60; i++) { try { wsUrl = (await (await fetch('http://127.0.0.1:9334/json/version')).json()).webSocketDebuggerUrl; break; } catch { await sleep(250); } }
 const socket = new WebSocket(wsUrl, { perMessageDeflate: false, maxPayload: 1 << 28 });
