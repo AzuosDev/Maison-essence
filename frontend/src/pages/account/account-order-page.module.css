@@ -1,0 +1,252 @@
+/*
+ * O pedido inteiro.
+ *
+ * Uma coluna no celular, duas a partir de 64rem — e nao 48rem: com o menu
+ * lateral da conta ja ocupando 15rem no desktop, dividir o que sobra em duas
+ * colunas antes disso deixaria a lista de itens estreita demais para o nome
+ * do produto caber numa linha.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+/* ---- O cabecalho ---------------------------------------------------------- */
+
+.back {
+  display: inline-block;
+  font-size: var(--text-14);
+  color: var(--muted);
+  transition: color var(--transition);
+}
+
+.back::before {
+  content: '← ';
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.headLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  align-items: center;
+  margin-top: var(--space-8);
+}
+
+/*
+ * O codigo e o titulo, em mono: e o que se le caractere a caractere e o que
+ * se dita no WhatsApp. `O` e `0` precisam ser diferentes.
+ */
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--text-22);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+}
+
+.placed {
+  margin-top: var(--space-4);
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  margin-top: var(--space-16);
+}
+
+.whatsapp {
+  display: inline-flex;
+  gap: var(--space-8);
+  align-items: center;
+  height: var(--control-height);
+  padding-inline: var(--space-16);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-chip);
+  transition:
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.whatsapp:hover {
+  color: var(--ink);
+  border-color: var(--whatsapp);
+}
+
+.whatsapp:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.whatsappIcon {
+  color: var(--whatsapp);
+}
+
+/* ---- As colunas ----------------------------------------------------------- */
+
+.columns {
+  display: grid;
+  gap: var(--space-24);
+  align-items: start;
+}
+
+@media (min-width: 64rem) {
+  .columns {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+
+.main,
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  min-width: 0;
+}
+
+.block {
+  padding: var(--space-16);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+@media (min-width: 40rem) {
+  .block {
+    padding: var(--space-24);
+  }
+}
+
+.blockTitle {
+  margin-bottom: var(--space-12);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-button);
+}
+
+/* ---- Os totais ------------------------------------------------------------ */
+
+.totals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding-top: var(--space-16);
+  margin-top: var(--space-16);
+  border-top: var(--border);
+}
+
+.totalRow {
+  display: flex;
+  gap: var(--space-16);
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.totalRow dd {
+  font-variant-numeric: tabular-nums;
+}
+
+.discount {
+  color: var(--success);
+}
+
+.grandTotal {
+  padding-top: var(--space-12);
+  margin-top: var(--space-4);
+  font-size: var(--text-18);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  border-top: var(--border);
+}
+
+/* ---- Entrega e pagamento --------------------------------------------------- */
+
+.fulfillment {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.fulfillmentLead {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+}
+
+.fulfillmentIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--muted);
+}
+
+.addressLines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.fulfillmentNote {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.payment {
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+}
+
+.paymentNote {
+  margin-top: var(--space-4);
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+/* ---- O pedido que nao esta aqui -------------------------------------------- */
+
+.notHere {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  max-width: 34rem;
+  padding: var(--space-24);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.notHereTitle {
+  font-size: var(--text-22);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+.notHereText {
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}

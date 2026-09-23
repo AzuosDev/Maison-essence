@@ -160,3 +160,108 @@ export function CardIcon(props: IconProps) {
     </Icon>
   );
 }
+
+/** O pedido fechado, na lista da conta. Caixa amarrada, e nao sacola. */
+export function BoxIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 3 4 7v10l8 4 8-4V7l-8-4Z" />
+      <path d="m4 7 8 4 8-4M12 11v10" />
+    </Icon>
+  );
+}
+
+/** O endereco salvo. */
+export function PinIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 21c4-4.5 6-7.7 6-10a6 6 0 1 0-12 0c0 2.3 2 5.5 6 10Z" />
+      <circle cx="12" cy="11" r="2.25" />
+    </Icon>
+  );
+}
+
+/** Pedir novamente: a seta que volta ao comeco. */
+export function RepeatIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 12a8 8 0 0 1 13.7-5.6L20 8" />
+      <path d="M20 4v4h-4" />
+      <path d="M20 12a8 8 0 0 1-13.7 5.6L4 16" />
+      <path d="M4 20v-4h4" />
+    </Icon>
+  );
+}
+
+/** Sair da conta. */
+export function ExitIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M15 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8" />
+      <path d="m16 15 4-3-4-3M20 12h-9" />
+    </Icon>
+  );
+}
+
+export function PencilIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 20h4L19.5 8.5a2.1 2.1 0 0 0-3-3L5 17v3Z" />
+      <path d="m14.5 6.5 3 3" />
+    </Icon>
+  );
+}
+
+export function TrashIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M5 7h14M10 7V5h4v2M7 7l.8 12.1a1.5 1.5 0 0 0 1.5 1.4h5.4a1.5 1.5 0 0 0 1.5-1.4L17 7" />
+      <path d="M10.5 11v6M13.5 11v6" />
+    </Icon>
+  );
+}
+
+/** O endereco padrao. Preenchida quando marcado — ver `filled`. */
+export function StarIcon({ filled = false, ...props }: IconProps & { filled?: boolean }) {
+  return (
+    <Icon fill={filled ? 'currentColor' : 'none'} {...props}>
+      <path d="m12 4 2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.6-4.8 2.6.9-5.4L4.2 9.7l5.4-.8L12 4Z" />
+    </Icon>
+  );
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M12 5v14M5 12h14" />
+    </Icon>
+  );
+}
+
+export function ChevronRightIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="m9.5 5 7 7-7 7" />
+    </Icon>
+  );
+}
+
+/** Mostrar a senha. O olho aberto. */
+export function EyeIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z" />
+      <circle cx="12" cy="12" r="3" />
+    </Icon>
+  );
+}
+
+/** Esconder a senha. O mesmo olho, riscado. */
+export function EyeOffIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M10.6 6.7A9.6 9.6 0 0 1 12 6.5c6 0 9.5 6 9.5 6a17 17 0 0 1-3 3.6M6.4 8A17 17 0 0 0 2.5 12.5s3.5 6 9.5 6c1.3 0 2.5-.3 3.6-.7" />
+      <path d="M9.9 10.4a3 3 0 0 0 4.2 4.2M4 4l16 16" />
+    </Icon>
+  );
+}

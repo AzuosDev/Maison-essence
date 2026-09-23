@@ -83,8 +83,37 @@ export const ROUTES = {
   account: {
     root: ROUTE_GROUPS.account,
 
-    /** A lista de pedidos da conta. A tela entra na area do cliente. */
+    /** O perfil: nome, e-mail e o telefone que identifica a conta. */
+    profile: ROUTE_GROUPS.account,
+
+    /**
+     * A entrada da loja.
+     *
+     * `entrar`, e nao `login`, como todo o resto dos enderecos que o cliente
+     * le. E a unica porta de autenticacao que ele encontra — a do painel mora
+     * em `/admin/entrar` e as duas nunca se cruzam: sessoes diferentes,
+     * armazenamentos diferentes, publicos diferentes.
+     */
+    login: `${ROUTE_GROUPS.account}/entrar`,
+
+    /** A lista de pedidos da conta. */
     orders: `${ROUTE_GROUPS.account}/pedidos`,
+
+    /**
+     * Um pedido da conta, pelo codigo.
+     *
+     * Pelo codigo e nao pelo id porque `ME-260922-4KP1` e o que o cliente tem
+     * a mao: esta na mensagem que ele mandou para a loja e no comprovante que
+     * guardou. E a mesma chave que `GET /customer/orders/:code` espera.
+     *
+     * Nao confunda com `/pedido/:code`, fora da conta: aquele e a confirmacao
+     * do que acabou de ser fechado, lida do proprio navegador, e existe para
+     * quem comprou como convidado. Este le do servidor e mostra o historico.
+     */
+    order: (code: string) => `${ROUTE_GROUPS.account}/pedidos/${encodeURIComponent(code)}`,
+
+    /** Os enderecos salvos. */
+    addresses: `${ROUTE_GROUPS.account}/enderecos`,
 
     /** O cadastro. */
     register: `${ROUTE_GROUPS.account}/criar`,

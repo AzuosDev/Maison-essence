@@ -144,11 +144,38 @@ const accountRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
-    // Os dois enderecos que a confirmacao do pedido ja oferece — "ver meus
-    // pedidos" para quem esta logado, "criar conta" para quem nao esta. As
-    // telas entram na area do cliente; ate la o placeholder responde, que e
-    // melhor do que um convite terminar em 404.
-    ...soonRoutes(['/conta/pedidos', '/conta/criar']),
+    // Entrar e criar conta ficam **dentro** da moldura da conta, ao
+    // contrario do painel, onde as telas de acesso ficam de fora. La a
+    // moldura contem o guarda que manda quem nao tem sessao para o login, e
+    // o login dentro dela se mandaria para si mesmo. Aqui nao ha guarda
+    // nenhum: a moldura so esconde a saudacao e o menu quando nao ha sessao,
+    // e as duas telas de acesso sao paginas da loja como qualquer outra.
+    {
+      path: 'entrar',
+      lazy: page(() => import('@/pages/account/account-login-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: 'criar',
+      lazy: page(() => import('@/pages/account/account-register-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
+    {
+      path: 'pedidos',
+      lazy: page(() => import('@/pages/account/account-orders-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: 'pedidos/:code',
+      lazy: page(() => import('@/pages/account/account-order-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: 'enderecos',
+      lazy: page(() => import('@/pages/account/account-addresses-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
   ],
 };
 

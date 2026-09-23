@@ -1,0 +1,140 @@
+/*
+ * O menu da conta.
+ *
+ * Duas formas, um componente: fila que rola no celular, coluna no desktop. A
+ * troca acontece em 1024px, que e onde o layout da conta abre a coluna
+ * lateral.
+ */
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.list {
+  display: flex;
+  gap: var(--space-8);
+  /*
+   * A fila rola de lado no celular sem cortar o item — `-webkit-overflow-
+   * scrolling` nao e mais necessario, mas o respiro lateral sim: sem os
+   * `padding` e `margin` negativos, o ultimo item encostaria na borda da
+   * tela e pareceria cortado em vez de rolavel.
+   */
+  padding-inline: var(--gutter);
+  margin-inline: calc(var(--gutter) * -1);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  height: var(--control-height);
+  padding-inline: var(--space-16);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  white-space: nowrap;
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  transition:
+    color var(--transition),
+    background-color var(--transition),
+    border-color var(--transition);
+}
+
+.item:hover {
+  color: var(--ink);
+  border-color: var(--gold);
+}
+
+.item:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/*
+ * O item aberto: tinta cheia. A cor nao e o unico sinal — `aria-current` vem
+ * do NavLink e e o que o leitor de tela anuncia.
+ */
+.active,
+.active:hover {
+  color: var(--cream);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/*
+ * Sair.
+ *
+ * Fora da lista, e nao como quarto item: os tres de cima levam a algum
+ * lugar, este encerra a sessao. Discreto de proposito — e uma acao que
+ * ninguem quer fazer sem querer, e a conta nao ganha nada empurrando a
+ * pessoa para fora.
+ */
+.signOut {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  align-self: flex-start;
+  padding: var(--space-8) var(--space-12);
+  margin-left: calc(var(--space-12) * -1);
+  font-size: var(--text-14);
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-chip);
+  transition: color var(--transition);
+}
+
+.signOut:hover {
+  color: var(--danger);
+}
+
+.signOut:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+@media (min-width: 64rem) {
+  .nav {
+    gap: var(--space-16);
+  }
+
+  .list {
+    flex-direction: column;
+    gap: var(--space-4);
+    padding-inline: 0;
+    margin-inline: 0;
+    overflow-x: visible;
+  }
+
+  .item {
+    border-color: transparent;
+    border-radius: var(--radius-chip);
+    background: none;
+  }
+
+  .item:hover {
+    background: var(--sand);
+    border-color: transparent;
+  }
+
+  .active,
+  .active:hover {
+    border-color: var(--ink);
+  }
+}

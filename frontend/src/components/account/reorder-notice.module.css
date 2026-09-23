@@ -1,0 +1,87 @@
+/*
+ * O que mudou desde o pedido repetido.
+ *
+ * Fundo de areia e nao de erro: nada falhou. O catalogo andou, e esta e a
+ * lista do que andou — informacao, com o tom de informacao.
+ */
+
+.notice {
+  padding: var(--space-16);
+  background: var(--sand);
+  border-radius: var(--radius-card);
+}
+
+.head {
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+.dismiss {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  margin: calc(var(--space-4) * -1);
+  color: var(--muted);
+  cursor: pointer;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-pill);
+  transition:
+    color var(--transition),
+    background-color var(--transition);
+}
+
+.dismiss:hover {
+  color: var(--ink);
+  background: var(--gold-wash);
+}
+
+.dismiss:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.group + .group {
+  padding-top: var(--space-12);
+  margin-top: var(--space-12);
+  border-top: 1px solid var(--line);
+}
+
+.group {
+  margin-top: var(--space-12);
+}
+
+.groupTitle {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-button);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-top: var(--space-8);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.list strong {
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}

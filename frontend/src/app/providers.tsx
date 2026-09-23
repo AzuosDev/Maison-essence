@@ -1,6 +1,7 @@
-import { Suspense, lazy, useState, type ReactNode } from 'react';
+import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ToastProvider } from '@/components/ui';
+import { watchAccountCache } from '@/features/account/account-session';
 import { registerSessions } from '@/features/auth';
 import { watchCustomerCart } from '@/features/cart';
 import { AppErrorBoundary } from './app-error-boundary';
@@ -49,6 +50,16 @@ export function Providers({ children }: ProvidersProps) {
   // hot reload com dados de antes da mudanca; aqui ele nasce e morre junto
   // com a aplicacao.
   const [queryClient] = useState(createQueryClient);
+
+  /**
+   * O cache da conta acompanha quem esta logado.
+   *
+   * Aqui, e nao no escopo do modulo como as duas assinaturas acima: esta
+   * precisa do `queryClient`, que nasce dentro do componente. O que se perde
+   * e o intervalo antes do primeiro efeito — e nele nao ha o que perder,
+   * porque um cache recem-criado nao tem dado de ninguem.
+   */
+  useEffect(() => watchAccountCache(queryClient), [queryClient]);
 
   return (
     <AppErrorBoundary>

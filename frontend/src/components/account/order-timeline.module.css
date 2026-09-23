@@ -1,0 +1,131 @@
+/*
+ * A trilha do pedido.
+ *
+ * Um trilho vertical de 1px atras das marcas, desenhado por `::before` no
+ * item — e nao por uma borda na lista, que desceria alem do ultimo passo e
+ * ficaria com um rabo solto embaixo.
+ */
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5rem 1fr;
+  gap: var(--space-16);
+  padding-bottom: var(--space-24);
+}
+
+/* O trilho, entre uma marca e a seguinte. O ultimo passo nao o desenha. */
+.step:not(:last-child)::before {
+  position: absolute;
+  top: 1.5rem;
+  bottom: 0;
+  left: 0.6875rem;
+  width: 1px;
+  content: '';
+  background: var(--line);
+}
+
+.step:last-child {
+  padding-bottom: 0;
+}
+
+.marker {
+  display: grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+}
+
+.check {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.label {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  line-height: 1.5rem;
+}
+
+.description {
+  margin-top: var(--space-4);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.at {
+  display: block;
+  margin-top: var(--space-4);
+  font-size: var(--text-12);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Os tres estados ------------------------------------------------------
+ *
+ * Cumprido: marca preenchida com a tinta da marca.
+ * Atual: anel dourado e o unico texto em tinta cheia — e para ele que o olho
+ *   vai ao abrir a tela.
+ * Pendente: tudo apagado, mas legivel. Saber o que ainda falta e parte de
+ *   saber onde se esta.
+ */
+
+.done .marker {
+  color: var(--cream);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.current .marker {
+  background: var(--gold-deep);
+  border-color: var(--gold-deep);
+  box-shadow: 0 0 0 4px var(--gold-wash);
+}
+
+.current .label {
+  color: var(--ink);
+}
+
+.pending .label,
+.pending .description {
+  color: var(--muted);
+}
+
+.pending .marker {
+  background: var(--cream);
+}
+
+/* "agora": o unico selo da trilha, no passo em que o pedido esta. */
+.now {
+  padding: 0.125rem var(--space-8);
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--gold-deep);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-button);
+  background: var(--gold-wash);
+  border-radius: var(--radius-pill);
+}
+
+.note {
+  padding-top: var(--space-16);
+  margin-top: var(--space-16);
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+  border-top: var(--border);
+}

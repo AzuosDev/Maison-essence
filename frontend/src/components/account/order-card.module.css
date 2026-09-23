@@ -1,0 +1,160 @@
+/*
+ * Um pedido na lista.
+ *
+ * Cartao em coluna, do celular ao desktop: os quatro dados — codigo, status,
+ * data e total — cabem numa coluna estreita sem apertar, e uma tabela que
+ * vira cartao abaixo de 640px seria duas marcacoes para o mesmo conteudo.
+ */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.card:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow);
+}
+
+/*
+ * O anel de foco fica no cartao, e nao no link esticado: quem chega pelo
+ * teclado precisa ver qual pedido esta selecionado, e o link invisivel nao
+ * tem forma propria para receber o anel.
+ */
+.card:focus-within {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.head {
+  display: flex;
+  gap: var(--space-12);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+}
+
+/*
+ * O link esticado: cobre o cartao inteiro e nao aparece. O foco dele e
+ * desenhado pelo `:focus-within` do cartao, acima.
+ */
+.link {
+  color: inherit;
+}
+
+.link::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  border-radius: var(--radius-card);
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.meta {
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  align-items: center;
+  justify-content: space-between;
+  padding-top: var(--space-12);
+  border-top: var(--border);
+}
+
+.total {
+  display: flex;
+  gap: var(--space-8);
+  align-items: baseline;
+  font-size: var(--text-18);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+}
+
+.totalLabel {
+  font-size: var(--text-12);
+  font-weight: var(--weight-regular);
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-button);
+}
+
+/*
+ * O botao da conversa.
+ *
+ * `position: relative` o poe acima do link esticado — e a unica coisa do
+ * cartao que escapa dele. Verde do canal, e nao da marca: quem reconhece o
+ * icone nao precisa ler o rotulo para saber para onde vai.
+ */
+.whatsapp {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  gap: var(--space-8);
+  align-items: center;
+  height: var(--control-height-small);
+  padding-inline: var(--space-12);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  transition:
+    color var(--transition),
+    border-color var(--transition);
+}
+
+.whatsapp:hover {
+  color: var(--ink);
+  border-color: var(--whatsapp);
+}
+
+.whatsapp:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.whatsappIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--whatsapp);
+}
+
+/*
+ * No celular o rotulo encolhe para caber ao lado do total sem quebrar a
+ * linha; o icone e o verde dizem o resto, e o nome completo continua no
+ * texto acessivel.
+ */
+.whatsappLabel {
+  display: none;
+}
+
+@media (min-width: 30rem) {
+  .whatsappLabel {
+    display: inline;
+  }
+}

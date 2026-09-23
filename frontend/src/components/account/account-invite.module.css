@@ -1,0 +1,115 @@
+/*
+ * O convite.
+ *
+ * Centralizado e com ar, como um cartao de boas-vindas — e nao como um aviso
+ * de acesso negado. A moldura e a areia da marca, e nao a faixa vermelha de
+ * erro: nada deu errado aqui, so ainda nao ha sessao.
+ */
+
+.invite {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 34rem;
+  padding: var(--space-32) var(--space-24) var(--space-24);
+  margin-inline: auto;
+  text-align: center;
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+@media (min-width: 40rem) {
+  .invite {
+    padding: var(--space-48) var(--space-48) var(--space-32);
+  }
+}
+
+.mark {
+  display: grid;
+  place-items: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  color: var(--gold-deep);
+  background: var(--sand);
+  border-radius: var(--radius-pill);
+}
+
+.title {
+  margin-top: var(--space-24);
+  font-size: var(--text-28);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+.description {
+  max-width: 28rem;
+  margin-top: var(--space-12);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/*
+ * A frase que de fato convence: o pedido de convidado entra na conta. Fica
+ * num bloco proprio, sobre areia, porque e a unica informacao desta tela que
+ * o cliente nao conseguiria adivinhar sozinho.
+ */
+.adoption {
+  padding: var(--space-12) var(--space-16);
+  margin-top: var(--space-24);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+  background: var(--sand);
+  border-radius: var(--radius-chip);
+}
+
+.adoption strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/*
+ * Empilhados no celular, lado a lado a partir do respiro de 640px. Empilhar
+ * e o padrao porque e onde isto e lido: o botao ocupa a largura toda e cai
+ * debaixo do polegar.
+ */
+.actions {
+  display: grid;
+  gap: var(--space-12);
+  width: 100%;
+  margin-top: var(--space-24);
+}
+
+@media (min-width: 40rem) {
+  .actions {
+    grid-auto-flow: column;
+    justify-content: center;
+  }
+}
+
+/*
+ * A saida. Separada por um filete porque nao e uma terceira opcao do mesmo
+ * bloco: e o lembrete de que este bloco inteiro e opcional.
+ */
+.escape {
+  width: 100%;
+  padding-top: var(--space-24);
+  margin-top: var(--space-24);
+  font-size: var(--text-14);
+  color: var(--muted);
+  border-top: var(--border);
+}
+
+.escapeLink {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--transition);
+}
+
+.escapeLink:hover {
+  text-decoration-color: var(--gold-deep);
+}

@@ -14,17 +14,30 @@
 
 .main {
   flex: 1;
-  padding-block: var(--space-48);
+  padding-block: var(--space-32) var(--space-64);
 }
 
+@media (min-width: 48rem) {
+  .main {
+    padding-block: var(--space-48) var(--space-96);
+  }
+}
+
+/*
+ * A saudacao. So aparece com sessao, e nao e um `<h1>`: o titulo da pagina
+ * pertence a pagina — "Meus pedidos", "ME-260922-4KP1" —, e um h1 fixo na
+ * moldura roubaria esse posto de todas elas.
+ */
 .heading {
-  padding-bottom: var(--space-24);
-  margin-bottom: var(--space-32);
+  padding-bottom: var(--space-16);
+  margin-bottom: var(--space-24);
   border-bottom: var(--border);
 }
 
-.title {
+.greeting {
+  font-family: var(--font-display);
   font-size: var(--text-28);
+  line-height: var(--leading-tight);
 }
 
 .subtitle {
@@ -35,21 +48,29 @@
 
 /*
  * Menu lateral a partir do desktop; empilhado no celular, onde a coluna
- * unica e a unica leitura possivel.
+ * unica e a unica leitura possivel — e onde o menu vira uma fila horizontal
+ * que rola, logo acima do conteudo.
  */
 .body {
   display: grid;
-  gap: var(--space-32);
+  gap: var(--space-24);
+  align-items: start;
 }
 
 @media (min-width: 64rem) {
   .body {
-    grid-template-columns: 16rem 1fr;
-    align-items: start;
+    grid-template-columns: 15rem 1fr;
+    gap: var(--space-48);
   }
 }
 
 .aside {
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-24));
+  min-width: 0;
+}
+
+@media (min-width: 64rem) {
+  .aside {
+    position: sticky;
+    top: calc(var(--header-height-compact) + var(--space-24));
+  }
 }

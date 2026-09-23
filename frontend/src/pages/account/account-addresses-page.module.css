@@ -1,0 +1,48 @@
+/*
+ * Os enderecos salvos.
+ *
+ * Duas colunas a partir de 48rem: o cartao de endereco e curto e alto, e uma
+ * coluna unica no desktop deixaria metade da tela vazia ao lado de tres
+ * cartoes empilhados.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-size: var(--text-22);
+  font-weight: var(--weight-medium);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-12);
+}
+
+@media (min-width: 48rem) {
+  .list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+}
+
+.limit {
+  padding: var(--space-12) var(--space-16);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+  background: var(--sand);
+  border-radius: var(--radius-chip);
+}

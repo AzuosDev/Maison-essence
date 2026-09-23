@@ -1,0 +1,118 @@
+/*
+ * Entrar e criar conta.
+ *
+ * As duas telas compartilham este arquivo porque sao a mesma tela com um
+ * campo a mais: mesma largura, mesma caixa, mesmo caminho de fuga embaixo.
+ * Dois modulos quase iguais divergiriam no primeiro ajuste de espaco.
+ */
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/*
+ * 26rem: a largura em que um campo de formulario ainda parece um campo de
+ * formulario. Mais largo que isso, no desktop, o input vira uma faixa e a
+ * distancia entre o rotulo e a borda direita fica estranha.
+ */
+.card {
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--space-24);
+  background: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  /*
+   * Campos maiores que os do resto da loja, e so aqui.
+   *
+   * Nao e capricho: este formulario e preenchido quase sempre no celular,
+   * com uma mao, e e a unica tela da area da conta em que errar o alvo
+   * significa nao entrar. O token continua sendo o mesmo — e o valor dele
+   * que muda neste contexto —, entao campo e botao continuam alinhados.
+   */
+  --control-height: 3.25rem;
+}
+
+@media (min-width: 40rem) {
+  .card {
+    padding: var(--space-32);
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-36);
+  line-height: var(--leading-tight);
+}
+
+.lead {
+  margin-top: var(--space-8);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  margin-top: var(--space-24);
+}
+
+.error {
+  padding: var(--space-12) var(--space-16);
+  margin-top: var(--space-16);
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--danger);
+  text-wrap: pretty;
+  background: var(--danger-wash);
+  border-radius: var(--radius-chip);
+}
+
+.errorLink {
+  font-weight: var(--weight-medium);
+  color: var(--danger);
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+}
+
+.alternative {
+  padding-top: var(--space-16);
+  margin-top: var(--space-24);
+  font-size: var(--text-14);
+  color: var(--muted);
+  text-align: center;
+  border-top: var(--border);
+}
+
+.link {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color var(--transition);
+}
+
+.link:hover {
+  text-decoration-color: var(--gold-deep);
+}
+
+/*
+ * A saida, fora da caixa.
+ *
+ * Fora e nao dentro de proposito: nao e uma terceira opcao do formulario, e
+ * o lembrete de que o formulario inteiro e opcional. A loja nao cobra conta
+ * de ninguem para vender.
+ */
+.escape {
+  margin-top: var(--space-24);
+  font-size: var(--text-14);
+  color: var(--muted);
+  text-align: center;
+}
