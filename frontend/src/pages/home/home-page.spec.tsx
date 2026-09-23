@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ToastProvider } from '@/components/ui';
 import { StoreSettingsProvider } from '@/features/settings';
+import stripStyles from './category-strip.module.css';
 import HomePage from './home-page';
 
 /**
@@ -277,5 +278,113 @@ test('prateleira sem produto some da pagina', async () => {
 
   await waitFor(() => {
     expect(screen.queryByRole('region', { name: 'Mais vendidos' })).toBeNull();
+  });
+});
+
+/* ---- A ordem das secoes -------------------------------------------------- */
+
+/**
+ * Os nomes das secoes da pagina, na ordem em que estao no documento.
+ *
+ * Le o DOM de uma vez, e nao secao por secao com `getByRole`: a lista de
+ * prateleiras se refaz quando as consultas respondem — uma que volta vazia
+ * some, e o que vem depois dela e remontado —, e uma referencia guardada
+ * antes disso aponta para um no que ja saiu da arvore. Comparar posicoes
+ * entre um no solto e um no vivo nao da erro: da uma resposta que o navegador
+ * escolhe, e o teste passaria ou falharia por motivo nenhum.
+ */
+function ordemDasSecoes(): string[] {
+  return screen
+    .getAllByRole('region')
+    .map((section) => section.getAttribute('aria-label') ?? nomeDoTitulo(section));
+}
+
+function nomeDoTitulo(section: Element): string {
+  const id = section.getAttribute('aria-labelledby');
+
+  return (id ? (document.getElementById(id)?.textContent ?? '') : '').trim();
+}
+
+test('as colecoes entram depois de duas prateleiras, e nao antes', async () => {
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Destaques' });
+
+  await waitFor(() => {
+    expect(ordemDasSecoes()).toEqual([
+      'Destaques',
+      'Pronta entrega',
+      'Descubra as colecoes',
+      'Sobre a Maison Essence',
+      'Mais vendidos',
+    ]);
+  });
+});
+
+/**
+ * A regressao que motivou o arranjo dinamico.
+ *
+ * Com as posicoes escritas a mao, uma loja sem nenhum destaque marcado —
+ * que e o estado de qualquer loja recem-cadastrada — desenhava o banner e,
+ * logo embaixo, as colecoes. A faixa que e a terceira secao virava a
+ * primeira, e o cliente batia numa tela de navegacao sem ter visto um
+ * perfume. As posicoes precisam valer sobre as prateleiras que aparecem.
+ */
+test('sem destaques, as colecoes continuam vindo depois de duas prateleiras', async () => {
+  prateleiras['featured'] = [];
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Pronta entrega' });
+
+  await waitFor(() => {
+    expect(ordemDasSecoes()).toEqual([
+      'Pronta entrega',
+      'Mais vendidos',
+      'Descubra as colecoes',
+      'Sobre a Maison Essence',
+    ]);
+  });
+});
+
+test('com uma prateleira so, as colecoes vem logo depois dela', async () => {
+  prateleiras['featured'] = [];
+  prateleiras['best-sellers'] = [];
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Pronta entrega' });
+
+  await waitFor(() => {
+    expect(ordemDasSecoes()).toEqual([
+      'Pronta entrega',
+      'Descubra as colecoes',
+      'Sobre a Maison Essence',
+    ]);
+  });
+});
+
+/**
+ * Sem prateleira nenhuma, quem encosta no banner sao as colecoes.
+ *
+ * O respiro de cima existe para separar duas secoes de mesmo tom; contra a
+ * foto escura do banner ele so empurra o conteudo para fora da primeira tela.
+ * Quem recebe esse tratamento e a primeira secao que sobrou, seja ela qual
+ * for — por isso o teste olha a faixa, e nao a prateleira.
+ */
+test('sem prateleira nenhuma, as colecoes encostam no banner', async () => {
+  prateleiras['featured'] = [];
+  prateleiras['ready-to-ship'] = [];
+  prateleiras['best-sellers'] = [];
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Descubra as colecoes' });
+
+  await waitFor(() => {
+    expect(ordemDasSecoes()).toEqual(['Descubra as colecoes', 'Sobre a Maison Essence']);
+    expect(screen.getByRole('region', { name: 'Descubra as colecoes' }).className).toContain(
+      stripStyles.flush,
+    );
   });
 });

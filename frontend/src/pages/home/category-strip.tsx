@@ -5,6 +5,7 @@ import { SectionHeading } from '@/components/store';
 import { Container, Skeleton } from '@/components/ui';
 import { useCategoryTree, type CategoryTree } from '@/features/catalog';
 import { imageProps } from '@/lib/cloudinary';
+import { cx } from '@/lib/cx';
 import styles from './category-strip.module.css';
 
 /**
@@ -21,7 +22,12 @@ import styles from './category-strip.module.css';
  */
 const MAX_CATEGORIES = 4;
 
-export function CategoryStrip() {
+interface CategoryStripProps {
+  /** Sem respiro em cima: a faixa encosta no que vem antes dela. */
+  flush?: boolean;
+}
+
+export function CategoryStrip({ flush = false }: CategoryStripProps) {
   const titleId = useId();
   const { data, isLoading, isError } = useCategoryTree();
 
@@ -32,7 +38,11 @@ export function CategoryStrip() {
   }
 
   return (
-    <section aria-labelledby={titleId} aria-busy={isLoading || undefined} className={styles.strip}>
+    <section
+      aria-labelledby={titleId}
+      aria-busy={isLoading || undefined}
+      className={cx(styles.strip, flush && styles.flush)}
+    >
       <Container>
         <SectionHeading
           title="Descubra as colecoes"

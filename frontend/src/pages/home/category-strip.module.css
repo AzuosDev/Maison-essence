@@ -12,6 +12,13 @@
   padding-block: var(--space-48);
 }
 
+/* Mesma regra da prateleira encostada no banner, e pelo mesmo motivo: a
+   faixa so cai nesta posicao quando nenhuma prateleira tem produto para
+   mostrar, e ai e ela que nao pode nascer com 64px de creme sobre a foto. */
+.flush {
+  padding-top: var(--space-24);
+}
+
 .list {
   display: grid;
 
@@ -36,6 +43,11 @@
 @media (min-width: 64rem) {
   .strip {
     padding-block: var(--space-64);
+  }
+
+  /* Depois de `.strip`: mesma especificidade, vale a ultima escrita. */
+  .flush {
+    padding-top: var(--space-24);
   }
 }
 

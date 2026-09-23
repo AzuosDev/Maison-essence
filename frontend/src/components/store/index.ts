@@ -65,7 +65,7 @@ export {
 export { ProductCard, type ProductCardProps } from './product-card';
 export { ProductCardSkeleton } from './product-card-skeleton';
 export { ProductGrid, type ProductGridProps } from './product-grid';
-export { ProductShelf } from './product-shelf';
+export { ProductShelf, shelfWillRender, type ShelfContent } from './product-shelf';
 export { SearchOverlay } from './search-overlay';
 export { SectionHeading } from './section-heading';
 export { StoreFooter } from './store-footer';

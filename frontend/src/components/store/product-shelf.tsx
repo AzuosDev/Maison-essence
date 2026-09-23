@@ -26,6 +26,32 @@ interface ProductShelfProps {
 const DEFAULT_SKELETON_COUNT = 8;
 
 /**
+ * O que a prateleira precisa saber para decidir se existe.
+ */
+export interface ShelfContent {
+  products: PublicProduct[] | undefined;
+  isLoading: boolean;
+  isError: boolean;
+}
+
+/**
+ * Esta prateleira vai desenhar alguma coisa?
+ *
+ * Prateleira sem produto nao vira secao vazia: some. Carregando ainda vale,
+ * porque os esqueletos ja ocupam a altura final — e se sumisse enquanto
+ * carrega, a pagina saltaria quando a resposta chegasse.
+ *
+ * E exportada porque a home precisa da mesma resposta antes de montar: e ela
+ * quem decide onde entram a faixa de colecoes e qual prateleira encosta no
+ * banner, e as duas dependem de quantas prateleiras de fato aparecem. Com a
+ * regra escrita duas vezes, bastaria mexer numa delas para a faixa reaparecer
+ * no lugar errado sem que nada quebrasse.
+ */
+export function shelfWillRender({ products, isLoading, isError }: ShelfContent): boolean {
+  return !isError && (isLoading || (products !== undefined && products.length > 0));
+}
+
+/**
  * Uma prateleira da vitrine: titulo, atalho para a secao inteira e a fileira
  * de produtos.
  *
@@ -130,7 +156,7 @@ export function ProductShelf({
     }
   };
 
-  if (isError || (!isLoading && (products === undefined || products.length === 0))) {
+  if (!shelfWillRender({ products, isLoading, isError })) {
     return null;
   }
 
