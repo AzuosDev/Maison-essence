@@ -18,6 +18,8 @@ interface ProductShelfProps {
   linkLabel?: string;
   skeletonCount?: number;
   tinted?: boolean;
+  /** Sem respiro em cima: a prateleira encosta no que vem antes dela. */
+  flush?: boolean;
   className?: string | undefined;
 }
 
@@ -57,6 +59,7 @@ export function ProductShelf({
   linkLabel = 'Ver todos',
   skeletonCount = DEFAULT_SKELETON_COUNT,
   tinted = false,
+  flush = false,
   className,
 }: ProductShelfProps) {
   const titleId = useId();
@@ -135,7 +138,7 @@ export function ProductShelf({
     <section
       aria-labelledby={titleId}
       aria-busy={isLoading || undefined}
-      className={cx(styles.shelf, tinted && styles.tinted, className)}
+      className={cx(styles.shelf, flush && styles.flush, tinted && styles.tinted, className)}
     >
       <Container>
         <SectionHeading title={title} description={description} titleId={titleId} />

@@ -12,6 +12,27 @@
   overflow: hidden;
 }
 
+/*
+ * A prateleira que nasce quase colada no que vem antes dela.
+ *
+ * E a primeira da home, logo abaixo do banner. O respiro de cima existe para
+ * separar duas secoes de mesmo tom; contra uma foto escura de ponta a ponta
+ * ele nao separa nada, so empurra o produto para fora da primeira tela.
+ *
+ * 24px, e nao zero: a borda da foto nao pode servir de linha de base para o
+ * titulo. Sem nenhum respiro, "DESTAQUES" encostava na beirada do banner e
+ * passava a se ler como legenda da foto, nao como comeco de secao — e ficava
+ * com mais espaco embaixo dele do que em cima, que e o contrario do que um
+ * titulo pede.
+ *
+ * Mora aqui, e nao numa folha da home passada por `className`, porque quem
+ * ganha entre duas regras de mesma especificidade e a ultima a ser injetada —
+ * e a ordem de injecao entre dois CSS Modules e do empacotador, nao nossa.
+ */
+.flush {
+  padding-top: var(--space-24);
+}
+
 .tinted {
   background-color: var(--sand);
 }
@@ -50,9 +71,12 @@
 
 /* ---- A fileira -------------------------------------------------------- */
 
+/* 24px, e nao 32: o titulo, a linha de apoio e o atalho ja formam um bloco de
+   respiro proprio, e somar mais um vao antes da fileira afastava o produto do
+   nome da secao que o anuncia. */
 .viewport {
   position: relative;
-  margin-top: var(--space-32);
+  margin-top: var(--space-24);
 }
 
 .track {
@@ -127,6 +151,12 @@
 @media (min-width: 64rem) {
   .shelf {
     padding-block: var(--space-64);
+  }
+
+  /* Depois de `.shelf`, e nao antes: sao regras de mesma especificidade, e a
+     que vale e a ultima escrita. */
+  .flush {
+    padding-top: var(--space-24);
   }
 
   .item {

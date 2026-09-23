@@ -310,6 +310,15 @@
     /* Panoramica, com um teto: em monitor largo o 16/9 puro daria um hero de
        810px de altura e empurraria a primeira prateleira para fora da tela.
 
+       O teto e de 32rem, e nao dos 42rem que eram. Com 42, um 1440x900 dava
+       177px de cabecalho mais 672 de banner: a primeira tela era o banner e
+       nada mais, e o cliente precisava rolar para descobrir que a loja vende
+       alguma coisa. Com 32 o banner termina em 689px e a primeira fileira de
+       produtos comeca em 861 — dentro da dobra, que e o que a referencia faz.
+       A 1440 de largura da uma faixa de 2,8:1, que continua sendo um banner
+       panoramico e nao uma tarja: o painel do texto ocupa cerca de 400px
+       mesmo com o titulo em duas linhas, e sobra folga.
+
        O `width: 100%` e obrigatorio ao lado do `max-height`. Sem ele, a caixa
        tem proporcao mas nao tem largura definida, e o navegador respeita a
        proporcao encolhendo a largura: o banner encolhia para 1195px e sobrava
@@ -318,7 +327,7 @@
        que e exatamente o que se quer de um banner panoramico. */
     width: 100%;
     aspect-ratio: 16 / 9;
-    max-height: 42rem;
+    max-height: 32rem;
   }
 
   .scrim {

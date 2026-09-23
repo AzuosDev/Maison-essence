@@ -41,6 +41,8 @@ export default function HomePage() {
     <>
       <HomeHero />
 
+      {/* Encostada no banner: o produto tem de aparecer na primeira tela, e
+          nao depois de uma faixa de creme que nao separa nada. */}
       <ProductShelf
         title="Destaques"
         description="A selecao da casa, trocada com frequencia."
@@ -49,6 +51,7 @@ export default function HomePage() {
         isError={featured.isError}
         to={ROUTES.products}
         linkLabel="Ver todos os produtos"
+        flush
       />
 
       {/* As colecoes vem depois da primeira prateleira, e nao antes dela.
