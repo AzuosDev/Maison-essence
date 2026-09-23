@@ -15,7 +15,7 @@
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .stepper {

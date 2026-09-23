@@ -30,11 +30,11 @@
   align-items: center;
   gap: var(--space-8);
   font-size: var(--text-12);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .link {
-  color: var(--muted);
+  color: var(--ink-soft);
   transition: color var(--transition);
 }
 

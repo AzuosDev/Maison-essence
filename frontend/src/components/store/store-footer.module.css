@@ -7,8 +7,15 @@
  * de reordenacao nenhuma.
  */
 
+/*
+ * O respiro antes do rodape e menor do que era.
+ *
+ * Com 96px, e a ultima prateleira em areia logo acima, sobrava uma faixa de
+ * creme entre as duas que se lia como buraco: nem parte da vitrine, nem parte
+ * do rodape. O preto ja separa o suficiente por conta propria.
+ */
 .footer {
-  margin-top: var(--space-96);
+  margin-top: var(--space-48);
   background-color: var(--ink);
   color: var(--sand);
 }

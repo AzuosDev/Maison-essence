@@ -12,11 +12,22 @@
 
 .form {
   --news-title: var(--cream);
+  --news-note: rgb(250 247 242 / 0.72);
   --news-field-surface: transparent;
   --news-field-line: rgb(250 247 242 / 0.25);
   --news-field-ink: var(--cream);
   --news-field-muted: rgb(250 247 242 / 0.6);
   --news-field-focus: var(--gold);
+
+  /*
+   * O botao tambem inverte com o tom, e isso nao era opcional: o primario
+   * pinta o fundo com `--ink`, e sobre o preto do rodape ele ficava preto no
+   * preto — sobrava so o rotulo creme flutuando, sem nenhuma pilula em volta.
+   * Ninguem via que ali havia um botao.
+   */
+  --news-btn-bg: var(--cream);
+  --news-btn-fg: var(--ink);
+  --news-btn-hover: var(--gold);
 
   display: flex;
   flex-direction: column;
@@ -26,11 +37,30 @@
 /* A faixa da home, sobre o areia. */
 .light {
   --news-title: var(--ink);
+  --news-note: var(--ink-soft);
   --news-field-surface: var(--surface);
   --news-field-line: var(--line);
   --news-field-ink: var(--ink);
-  --news-field-muted: var(--muted);
+  --news-field-muted: var(--ink-soft);
   --news-field-focus: var(--gold-deep);
+
+  --news-btn-bg: var(--ink);
+  --news-btn-fg: var(--cream);
+  --news-btn-hover: var(--gold-deep);
+}
+
+/*
+ * Os tres tokens chegam ao botao pelos nomes que o primitivo ja le. Sao
+ * trocados aqui, e nao no proprio componente, porque quem sabe em que fundo
+ * o formulario caiu e o formulario.
+ *
+ * No escuro o hover vai para `--gold` e nao para `--gold-deep`: o texto do
+ * botao e preto, e preto sobre dourado escuro nao alcanca o contraste minimo.
+ */
+.submit {
+  --ink: var(--news-btn-bg);
+  --cream: var(--news-btn-fg);
+  --gold-deep: var(--news-btn-hover);
 }
 
 @media (min-width: 40rem) {
@@ -60,10 +90,17 @@
   color: var(--news-title);
 }
 
+/*
+ * A linha de apoio embaixo do titulo.
+ *
+ * A cor vem do tom, e nao de um token fixo: este formulario aparece sobre o
+ * preto do rodape e sobre a areia da home, e um cinza escolhido para um dos
+ * dois some no outro. `--news-note` e claro no escuro e escuro no claro.
+ */
 .note {
   font-size: var(--text-12);
   line-height: var(--leading-body);
-  color: var(--muted);
+  color: var(--news-note);
 }
 
 /* A resposta do envio: some sozinha do fluxo quando nao ha nada a dizer. */

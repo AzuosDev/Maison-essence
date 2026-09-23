@@ -1,11 +1,13 @@
 /*
- * O cabecalho de secao da loja: filete dourado, titulo serifado, linha de
- * apoio.
+ * O cabecalho de secao da vitrine.
  *
- * O filete e um `<span>` vazio com `aria-hidden`, e nao um `::before` do
- * titulo, porque a distancia entre ele e o texto precisa ser o mesmo `gap`
- * que separa o titulo da linha de apoio — e pseudo-elemento nao participa de
- * `gap`.
+ * Serifada em caixa alta, grande, centralizada. A caixa alta e o que da a uma
+ * palavra sozinha — "DESTAQUES" — peso suficiente para dividir a pagina; em
+ * caixa baixa ela precisaria de um risco, de uma linha de apoio ou de um fundo
+ * para marcar que uma secao nova comecou.
+ *
+ * O espacamento entre letras nao e enfeite: em caixa alta as letras encostam
+ * uma na outra e a palavra vira um bloco macico.
  */
 
 .heading {
@@ -13,34 +15,43 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-12);
-
   text-align: center;
-}
-
-.rule {
-  width: 3rem;
-  height: 1px;
-  background-color: var(--gold);
 }
 
 .title {
   font-family: var(--font-display);
   font-size: var(--text-28);
+  font-weight: var(--weight-regular);
   line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+
+  /* O espacamento sobra depois da ultima letra e desloca a palavra para a
+     esquerda do centro. O recuo de uma unidade devolve o equilibrio. */
+  text-indent: var(--tracking-title);
+  text-transform: uppercase;
+  text-wrap: balance;
   color: var(--ink);
 }
 
 .description {
-  /* Medida de leitura: linha longa demais cansa, e aqui sao duas frases. */
-  max-width: 46ch;
-
+  max-width: 52ch;
   font-size: var(--text-14);
   line-height: var(--leading-body);
   color: var(--ink-soft);
 }
 
-@media (min-width: 64rem) {
+@media (min-width: 48rem) {
   .title {
     font-size: var(--text-36);
+  }
+}
+
+@media (min-width: 64rem) {
+  .title {
+    font-size: var(--text-48);
+  }
+
+  .description {
+    font-size: var(--text-16);
   }
 }

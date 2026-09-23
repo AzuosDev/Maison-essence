@@ -8,22 +8,23 @@ import { imageProps } from '@/lib/cloudinary';
 import styles from './category-strip.module.css';
 
 /**
- * A faixa de categorias principais.
+ * Quatro, e nao seis.
  *
- * "Principais" sao as raizes da arvore — as que a dona cadastrou no primeiro
- * nivel. As subcategorias ficam no menu do cabecalho e na pagina da
- * categoria; aqui elas so espremeriam os cards.
+ * A faixa mostrava seis categorias numa fileira que rolava, com fichas de
+ * 10rem. Em cartaz de 4/5 com o nome sobre a foto, quatro e o que cabe numa
+ * linha de desktop sem espremer — e cinco ou seis obrigariam a fileira a
+ * rolar de novo, que e o que a prateleira de produtos logo abaixo ja faz.
+ * Duas faixas que rolam, uma em cima da outra, competem pelo mesmo gesto.
  *
- * O corte em seis e de layout, nao de negocio: na grade do desktop, a partir
- * do setimo card a foto fica menor que a miniatura do carrinho. A loja que
- * crescer para oito categorias mostra as seis primeiras aqui e todas no
- * menu — que e onde quem procura uma categoria especifica vai olhar.
+ * As categorias que sobram nao somem: o menu do cabecalho e o painel de
+ * categorias trazem a arvore inteira.
  */
-const MAX_CATEGORIES = 6;
+const MAX_CATEGORIES = 4;
 
 export function CategoryStrip() {
   const titleId = useId();
   const { data, isLoading, isError } = useCategoryTree();
+
   const categories = (data ?? []).slice(0, MAX_CATEGORIES);
 
   if (isError || (!isLoading && categories.length === 0)) {
@@ -34,20 +35,20 @@ export function CategoryStrip() {
     <section aria-labelledby={titleId} aria-busy={isLoading || undefined} className={styles.strip}>
       <Container>
         <SectionHeading
-          title="Navegue por categoria"
+          title="Descubra as colecoes"
           description="Cada familia olfativa em um lugar so."
           titleId={titleId}
         />
 
         <ul className={styles.list}>
           {isLoading
-            ? Array.from({ length: 4 }, (_, index) => (
-                <li key={index} className={styles.item}>
+            ? Array.from({ length: MAX_CATEGORIES }, (_, index) => (
+                <li key={index}>
                   <Skeleton className={styles.card} />
                 </li>
               ))
             : categories.map((category) => (
-                <li key={category.id} className={styles.item}>
+                <li key={category.id}>
                   <CategoryCard category={category} />
                 </li>
               ))}
@@ -57,18 +58,11 @@ export function CategoryStrip() {
   );
 }
 
-/**
- * O card de uma categoria.
- *
- * O `alt` da foto fica vazio: o nome da categoria esta no proprio link, logo
- * abaixo. Um `alt` com "Masculino" faria o leitor de tela anunciar "Masculino
- * Masculino" — a foto e ilustracao do link, nao informacao a parte.
- */
 function CategoryCard({ category }: { category: CategoryTree }) {
   return (
     <Link to={ROUTES.category(category.slug)} className={styles.card}>
       <img
-        {...imageProps(category.image, 'card', '(min-width: 64rem) 16vw, 42vw')}
+        {...imageProps(category.image, 'card', '(min-width: 48rem) 24vw, 46vw')}
         alt=""
         className={styles.image}
         width={600}
@@ -81,11 +75,13 @@ function CategoryCard({ category }: { category: CategoryTree }) {
 
       <span className={styles.label}>
         <span className={styles.name}>{category.name}</span>
-        <br />
         <span className={styles.count}>
           {category.productCount} {category.productCount === 1 ? 'produto' : 'produtos'}
         </span>
       </span>
+
+      {/* Nao e um link: o cartaz inteiro ja e. Ver a explicacao no CSS. */}
+      <span className={styles.action}>Ver</span>
     </Link>
   );
 }

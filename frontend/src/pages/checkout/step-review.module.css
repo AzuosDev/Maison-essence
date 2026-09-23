@@ -53,7 +53,7 @@
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /*
@@ -109,7 +109,7 @@
 
   font-size: var(--text-12);
   line-height: var(--leading-body);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .items {
@@ -154,7 +154,7 @@
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* ---- Envio ----------------------------------------------------------------- */
@@ -164,5 +164,5 @@
 
   font-size: var(--text-12);
   line-height: var(--leading-body);
-  color: var(--muted);
+  color: var(--ink-soft);
 }

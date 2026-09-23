@@ -40,7 +40,7 @@
 .hint {
   font-size: var(--text-12);
   line-height: var(--leading-body);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .error {
@@ -78,11 +78,11 @@
 }
 
 .control::placeholder {
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .control:hover:not(:disabled):not([aria-invalid='true']) {
-  border-color: var(--muted);
+  border-color: var(--ink-soft);
 }
 
 .control:focus-visible {

@@ -31,8 +31,6 @@ export function SectionHeading({
 }: SectionHeadingProps) {
   return (
     <div className={cx(styles.heading, className)}>
-      <span className={styles.rule} aria-hidden="true" />
-
       <Tag id={titleId} className={styles.title}>
         {title}
       </Tag>

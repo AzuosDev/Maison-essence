@@ -88,6 +88,10 @@ export function ProductCard({
   const { min, max } = product.priceRangeCents;
   const priceLabel = formatCentsRange(product.priceRangeCents);
 
+  // A segunda foto do cadastro. `images[0]` e a capa, entao a alternativa e a
+  // seguinte — quando ela existe e nao repete a capa.
+  const hoverImage = product.images.find((image) => image !== product.coverImage);
+
   const add = () => {
     if (single) {
       addToCart(product, single);
@@ -122,11 +126,36 @@ export function ProductCard({
           // A proporcao ja esta no CSS; as medidas aqui existem para o
           // navegador que ainda nao aplicou a folha de estilo.
           width={600}
-          height={800}
+          height={600}
           loading={priority ? 'eager' : 'lazy'}
           fetchPriority={priority ? 'high' : 'auto'}
           decoding="async"
         />
+
+        {/*
+          A segunda foto, revelada quando o cursor entra no card.
+
+          E a pergunta que quem compra perfume faz antes de clicar — como e o
+          frasco de perto, vem na caixa — respondida sem tirar ninguem da
+          vitrine. So existe quando ha uma segunda foto cadastrada: produto de
+          foto unica fica com o avanco lento da primeira e nao pisca para ela
+          mesma.
+
+          `lazy` mesmo no card prioritario. Ela nunca e o maior elemento da
+          primeira tela, e carrega-la com prioridade tiraria banda justamente
+          da foto que e.
+        */}
+        {hoverImage === undefined ? null : (
+          <img
+            {...imageProps(hoverImage, 'card', sizes)}
+            alt=""
+            className={cx(styles.imageHover, !product.inStock && styles.soldOut)}
+            width={600}
+            height={600}
+            loading="lazy"
+            decoding="async"
+          />
+        )}
 
         <div className={styles.badges}>
           {product.inStock ? null : <Badge variant="danger">Esgotado</Badge>}
@@ -175,10 +204,23 @@ export function ProductCard({
 
         <p className={styles.promo}>{promo}</p>
 
+        {/*
+          O botao e contornado, e nao preenchido.
+
+          Numa fileira de cinco, cinco barras pretas cheias pesam mais que as
+          cinco fotos e a vitrine passa a ser uma lista de botoes. Contornado,
+          ele continua sendo claramente um botao — tem a altura e a pilula de
+          todos os outros — e cede o primeiro lugar para o produto. Ao passar
+          o mouse ele se enche de preto, que e quando a atencao de fato esta
+          nele.
+
+          Na pagina do produto o botao principal continua preenchido: la ele e
+          a acao da tela, e nao um entre cinco.
+        */}
         <div className={styles.action}>
           <Button
             block
-            variant={product.inStock ? 'primary' : 'secondary'}
+            variant="secondary"
             disabled={!product.inStock || variant === null}
             onClick={add}
           >
@@ -207,7 +249,9 @@ function buttonLabel(inStock: boolean, isSingle: boolean): string {
     return 'Esgotado';
   }
 
-  return isSingle ? 'Adicionar' : 'Escolher opcoes';
+  // "Ver opcoes", e nao "Escolher opcoes": o card tem 158px de largura no
+  // celular, e o rotulo longo ou quebra em duas linhas ou empurra o card.
+  return isSingle ? 'Adicionar' : 'Ver opcoes';
 }
 
 /**

@@ -67,7 +67,7 @@
   font-family: var(--font-body);
   font-size: var(--text-12);
   font-variant-numeric: tabular-nums;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .children {
@@ -92,7 +92,7 @@
 
 .empty {
   font-size: var(--text-14);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* O rodape do painel: o atalho para a vitrine inteira. */

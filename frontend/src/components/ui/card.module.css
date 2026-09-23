@@ -71,7 +71,7 @@
 
 .subtitle {
   font-size: var(--text-14);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .body {

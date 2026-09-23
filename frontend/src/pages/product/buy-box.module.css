@@ -26,7 +26,7 @@
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /*
@@ -69,7 +69,7 @@
 
 .compareAt {
   font-size: var(--text-16);
-  color: var(--muted);
+  color: var(--ink-soft);
   text-decoration: line-through;
 }
 
@@ -90,20 +90,22 @@
 
 .financed {
   font-size: var(--text-12);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /*
  * O preco no PIX.
  *
- * Destacado no dourado da marca porque e a forma de pagamento que a loja
- * prefere — e a que sai mais barata para os dois lados.
+ * Destacado no verde do sistema, e nao no dourado da marca: o dourado escuro
+ * tem 3.66:1 sobre o creme e reprova em 16px. O verde passa com 4.68:1 e ainda
+ * diz a coisa certa — esta linha e quanto o cliente economiza.
  */
 .pix {
   margin: var(--space-4) 0 0;
 
   font-size: var(--text-16);
-  color: var(--gold-deep);
+  font-weight: var(--weight-medium);
+  color: var(--success);
 }
 
 .pixOff {

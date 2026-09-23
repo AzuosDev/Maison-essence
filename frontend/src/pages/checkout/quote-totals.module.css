@@ -54,7 +54,7 @@
   display: block;
 
   font-size: var(--text-12);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .discount,

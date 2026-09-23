@@ -103,14 +103,36 @@ export function StoreHeader() {
             >
               <MenuIcon />
             </button>
+
+            {/*
+              A busca aberta, em forma de campo, e nao escondida atras de uma
+              lupa. Num catalogo de perfume o nome e a porta de entrada — o
+              cliente chega sabendo o que quer — e um campo visivel convida a
+              digitar de um jeito que um icone de 20px nao convida.
+
+              E um botao, e nao um `<input>`: quem digita precisa das sugestoes,
+              do historico e do Escape, e tudo isso ja existe pronto na
+              sobreposicao de busca. Um segundo campo aqui seria uma segunda
+              implementacao da mesma coisa, com metade dos recursos.
+            */}
+            <button
+              type="button"
+              className={styles.searchField}
+              onClick={() => {
+                setSearchOpen(true);
+              }}
+            >
+              <SearchIcon width="18" height="18" />
+              <span className={styles.searchLabel}>O que voce procura?</span>
+            </button>
           </div>
 
-          <BrandLogo compact={scrolled} />
+          <BrandLogo className={styles.logo} />
 
           <div className={styles.right}>
             <button
               type="button"
-              className={iconStyles.button}
+              className={cx(iconStyles.button, styles.searchButton)}
               onClick={() => {
                 setSearchOpen(true);
               }}
@@ -131,14 +153,23 @@ export function StoreHeader() {
           </div>
         </Container>
 
+        {/*
+          O menu numa faixa propria, abaixo da banda da marca.
+
+          Ele fica: antes encolhia ate sumir quando a pagina rolava, e a
+          navegacao desaparecia justamente na hora em que o cliente comeca a
+          procurar outra coisa. O que encolhe ao rolar e so a banda de cima.
+        */}
         <div className={styles.navRow}>
-          <MainNav
-            categoriesOpen={categoriesOpen}
-            panelId={panelId}
-            onToggleCategories={() => {
-              setCategoriesOpen((open) => !open);
-            }}
-          />
+          <Container className={styles.navInner}>
+            <MainNav
+              categoriesOpen={categoriesOpen}
+              panelId={panelId}
+              onToggleCategories={() => {
+                setCategoriesOpen((open) => !open);
+              }}
+            />
+          </Container>
         </div>
 
         {categoriesOpen ? (

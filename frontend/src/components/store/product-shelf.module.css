@@ -1,40 +1,126 @@
 /*
- * A prateleira: um cabecalho, uma grade de cards e o link para ver tudo.
+ * A prateleira: titulo, atalho e a fileira que rola na horizontal.
  *
- * Duas colunas no celular — e nao uma. Card unico por linha vira uma pagina
- * de rolagem infinita em que o cliente ve tres produtos antes de desistir;
- * em duas colunas ele ve seis na mesma altura de tela e compara. A foto 3:4
- * a 50vw ainda tem tamanho de sobra para o perfume ser reconhecido.
+ * A fileira sangra ate a borda da tela, e nao para no container. O card da
+ * ponta cortado pela beirada e o que diz "ha mais coisa aqui" — parado no
+ * limite do container, com uma faixa de creme depois dele, a prateleira
+ * pareceria terminada.
  */
 
 .shelf {
   padding-block: var(--space-48);
+  overflow: hidden;
 }
 
-/* A faixa de fundo areia, para separar prateleiras vizinhas sem filete. */
 .tinted {
   background-color: var(--sand);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-16);
+/*
+ * O atalho para a secao inteira, embaixo do titulo.
+ *
+ * Sublinhado desde o repouso: aqui ele nao esta dentro de um paragrafo, onde
+ * a cor bastaria para diferencia-lo do texto em volta — esta solto no meio de
+ * uma faixa de respiro, e sem o risco nao se le como link.
+ */
+.headingLink {
+  display: block;
+  width: fit-content;
+  margin: var(--space-12) auto 0;
 
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+
+  text-decoration: underline;
+  text-decoration-color: var(--gold-deep);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.4em;
+  transition:
+    color var(--transition),
+    text-decoration-color var(--transition);
+}
+
+.headingLink:hover {
+  color: var(--ink);
+  text-decoration-color: var(--gold-deep);
+}
+
+/* ---- A fileira -------------------------------------------------------- */
+
+.viewport {
+  position: relative;
   margin-top: var(--space-32);
 }
 
-.footer {
+.track {
   display: flex;
-  justify-content: center;
+  gap: var(--space-16);
 
-  margin-top: var(--space-32);
+  /* O recuo lateral e o do container, aplicado como respiro interno: o
+     primeiro card alinha com o titulo, e o ultimo tem onde parar quando a
+     fileira chega ao fim. */
+  padding-inline: var(--gutter);
+  margin: 0;
+  list-style: none;
+
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+
+  /*
+   * O `scroll-padding` acompanha o respiro interno, e nao e opcional.
+   *
+   * Com `scroll-snap-align: start`, o navegador encaixa a borda do card na
+   * borda do scrollport — que ignora o `padding`. Resultado: a fileira nascia
+   * rolada 40px, o primeiro card encostava na beirada da tela e a seta da
+   * esquerda acendia sem que ninguem tivesse rolado nada. Isto move o ponto
+   * de encaixe para depois do respiro.
+   */
+  scroll-padding-inline: var(--gutter);
+
+  /* A barra de rolagem some: a fileira ja se anuncia pelo card cortado na
+     beirada, e uma barra de 10px embaixo de cada prateleira somaria tres
+     riscos cinzas atravessando a vitrine. */
+  scrollbar-width: none;
+}
+
+.track::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * A largura do card no celular: 58%, e nao 44%.
+ *
+ * Com 44% o card tinha 158px, e nele nem "R$ 389,00 – R$ 479,00" nem "em ate
+ * 6x de R$ 64,83 sem juros" cabiam numa linha. Quebravam em duas — mas so nos
+ * cards que tinham faixa de preco ou parcelamento, e como a fileira iguala a
+ * altura de todos, os demais ganhavam um vao de vinte e poucos pixels acima
+ * do botao. A fileira inteira ficava irregular por causa de duas linhas de
+ * texto.
+ *
+ * Com 58% o card tem 208px, as duas linhas cabem, e a fileira mostra um card
+ * e meio — o que continua dizendo que ha mais coisa a direita.
+ */
+.item {
+  flex: 0 0 58%;
+  scroll-snap-align: start;
+
+  /* Sem isto, `min-width: auto` deixa o conteudo mais teimoso que a base:
+     basta um rotulo comprido dentro do card para ele estourar os 44% e sair
+     mais largo que os vizinhos. */
+  min-width: 0;
 }
 
 @media (min-width: 40rem) {
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .track {
     gap: var(--space-24);
+  }
+
+  .item {
+    flex-basis: 30%;
   }
 }
 
@@ -43,7 +129,95 @@
     padding-block: var(--space-64);
   }
 
-  .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  .item {
+    flex-basis: 23%;
+  }
+}
+
+@media (min-width: 80rem) {
+  .track {
+    /* No desktop a fileira volta a alinhar com o container em vez de sangrar
+       a tela inteira: em monitor largo, o card comecando a 16px da borda
+       esquerda deixaria o titulo centralizado longe de tudo. */
+    padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2));
+    scroll-padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2));
+  }
+
+  .item {
+    flex-basis: 18.4%;
+  }
+}
+
+/* ---- As setas --------------------------------------------------------- */
+
+.arrows {
+  display: none;
+}
+
+/*
+ * So onde ha mouse. `hover: hover` e nao uma largura: o que decide e o
+ * apontador, e existe tablet largo sem mouse e laptop estreito com um.
+ */
+@media (hover: hover) and (min-width: 64rem) {
+  .arrows {
+    display: block;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 38%;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+
+    color: var(--ink);
+    background-color: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow);
+
+    transform: translateY(-50%);
+    transition:
+      opacity var(--transition),
+      border-color var(--transition),
+      color var(--transition);
+  }
+
+  .arrow:hover:not(:disabled) {
+    color: var(--gold-deep);
+    border-color: var(--gold-deep);
+  }
+
+  /* A ponta da fileira: a seta apaga em vez de sumir. Sumindo, as duas
+     dancam de lugar a cada rolagem. */
+  .arrow:disabled {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .arrow:last-child {
+    right: var(--space-8);
+  }
+
+  /* Um desenho de seta so, virado. O giro vai dentro do `transform`, junto do
+     `translateY`: na propriedade `rotate` ele se aplicaria antes, e o
+     `translateY(-50%)` passaria a empurrar a seta para baixo. */
+  .arrowPrevious {
+    left: var(--space-8);
+    transform: translateY(-50%) rotate(180deg);
+  }
+}
+
+@media (min-width: 80rem) {
+  .arrow:last-child {
+    right: max(var(--space-8), calc((100vw - var(--container-max)) / 2 - 3.5rem));
+  }
+
+  .arrowPrevious {
+    left: max(var(--space-8), calc((100vw - var(--container-max)) / 2 - 3.5rem));
   }
 }

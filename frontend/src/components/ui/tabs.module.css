@@ -34,7 +34,7 @@
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--muted);
+  color: var(--ink-soft);
 
   background: none;
   border: none;

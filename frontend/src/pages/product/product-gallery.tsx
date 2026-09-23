@@ -57,6 +57,10 @@ export interface ProductGalleryProps {
 export function ProductGallery({ images, alt, index, onIndexChange }: ProductGalleryProps) {
   const isDesktop = useMediaQuery(DESKTOP);
   const canMagnify = useMediaQuery(FINE_POINTER);
+  // A coluna de miniaturas so e reservada na grade quando ela existe de
+  // fato. Produto de foto unica nao monta a lista, e um `grid-template`
+  // fixo em duas faixas jogaria a foto grande dentro dos 5rem da primeira.
+  const hasThumbs = isDesktop && images.length > 1;
 
   const pinch = usePinchZoom();
   const [origin, setOrigin] = useState<string | null>(null);
@@ -91,8 +95,8 @@ export function ProductGallery({ images, alt, index, onIndexChange }: ProductGal
     : pinch.style;
 
   return (
-    <div className={styles.gallery}>
-      {isDesktop && total > 1 ? (
+    <div className={cx(styles.gallery, hasThumbs && styles.galleryWithThumbs)}>
+      {hasThumbs ? (
         <ul className={styles.thumbs} aria-label="Fotos do produto">
           {images.map((publicId, position) => (
             <li key={publicId}>

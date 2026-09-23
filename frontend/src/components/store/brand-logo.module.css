@@ -18,20 +18,47 @@
   gap: var(--space-8);
 
   color: var(--ink);
-  transition:
-    gap var(--transition),
-    color var(--transition);
+
+  /* Sem transicao nas medidas: a assinatura encolhe junto com o cabecalho, e
+     animar largura, altura e corpo de fonte remede a pagina a cada quadro.
+     A troca e instantanea, como a do cabecalho que a contem. */
+  transition: color var(--transition);
 }
 
 /* Encolhido: o cabecalho passa esta classe ao rolar a pagina. */
+/*
+ * A assinatura deitada: monograma ao lado do nome.
+ *
+ * E a do cabecalho, onde so ha uma faixa de altura para trabalhar. A empilhada
+ * fica para o rodape e para o bloco da marca, que tem espaco para ela respirar.
+ */
 .compact {
-  --monogram-size: 1.75rem;
-  --monogram-text: var(--text-12);
-  --wordmark-text: var(--text-14);
+  --monogram-size: 2rem;
+  --monogram-text: var(--text-14);
+  --wordmark-text: var(--text-16);
 
   flex-direction: row;
   align-items: center;
   gap: var(--space-12);
+}
+
+/*
+ * No celular, "MAISON ESSENCE" em caixa alta com 0.28em de espacamento nao
+ * cabe entre o menu e os dois icones. A assinatura encolhe — e fecha o
+ * espacamento junto, que e o que de fato ocupa a largura — em vez de sumir:
+ * o nome da loja no alto da tela e o que diz ao cliente onde ele esta.
+ */
+@media (max-width: 30rem) {
+  .compact {
+    --wordmark-text: var(--text-12);
+
+    gap: var(--space-8);
+  }
+
+  .compact .wordmark {
+    letter-spacing: 0.16em;
+    text-indent: 0.16em;
+  }
 }
 
 .monogram {
@@ -54,11 +81,6 @@
 
   border: 1px solid var(--gold);
   border-radius: var(--radius-chip);
-
-  transition:
-    width var(--transition),
-    height var(--transition),
-    font-size var(--transition);
 }
 
 .wordmark {
@@ -70,8 +92,6 @@
   letter-spacing: var(--tracking-logo);
   text-indent: var(--tracking-logo);
   white-space: nowrap;
-
-  transition: font-size var(--transition);
 }
 
 /* No rodape e na gaveta, sobre fundo escuro. */

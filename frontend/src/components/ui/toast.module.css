@@ -34,9 +34,8 @@
   padding: var(--space-16);
 
   background-color: var(--surface);
-  border: var(--border);
-  border-left: 3px solid var(--ink);
-  border-radius: var(--radius-chip);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
   box-shadow: var(--shadow);
 
   pointer-events: auto;
@@ -44,22 +43,27 @@
 }
 
 /*
- * A cor do filete e o unico sinal cromatico, e ele nunca vai sozinho: o
- * texto diz o que aconteceu. Quem nao distingue verde de vermelho le
- * "pedido enviado" e "nao foi possivel salvar" igual.
+ * O sinal cromatico e o fundo lavado mais a borda inteira, e nao um filete
+ * grosso de um lado so — aquele filete e o carimbo mais reconhecivel de
+ * interface montada as pressas, e aqui ele era redundante: o fundo ja dizia
+ * a mesma coisa.
+ *
+ * A cor nunca vai sozinha: o texto diz o que aconteceu. Quem nao distingue
+ * verde de vermelho le "pedido enviado" e "nao foi possivel salvar" igual.
  */
 .success {
-  border-left-color: var(--success);
   background-color: var(--success-wash);
+  border-color: rgb(46 125 91 / 0.35);
 }
 
 .danger {
-  border-left-color: var(--danger);
   background-color: var(--danger-wash);
+  border-color: rgb(179 38 30 / 0.35);
 }
 
 .info {
-  border-left-color: var(--gold);
+  background-color: var(--gold-wash);
+  border-color: rgb(192 160 98 / 0.45);
 }
 
 .content {
@@ -124,7 +128,7 @@
   justify-content: center;
   width: 1.5rem;
   height: 1.5rem;
-  color: var(--muted);
+  color: var(--ink-soft);
   border-radius: var(--radius-chip);
   transition: color var(--transition);
 }

@@ -48,7 +48,7 @@
   max-width: 38ch;
   font-size: var(--text-14);
   line-height: var(--leading-body);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .actions {

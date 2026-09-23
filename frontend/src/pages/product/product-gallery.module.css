@@ -45,7 +45,7 @@
 }
 
 .thumb:hover {
-  border-color: var(--muted);
+  border-color: var(--ink-soft);
 }
 
 .thumbActive {
@@ -163,7 +163,13 @@
 }
 
 @media (min-width: 64rem) {
-  .gallery {
+  /*
+   * A faixa estreita da esquerda so entra na grade quando ha miniaturas para
+   * por nela. Produto de foto unica nao monta a lista — e com as duas
+   * colunas sempre declaradas, a foto grande caia na primeira faixa e a
+   * pagina inteira encolhia para os 5rem de uma miniatura.
+   */
+  .galleryWithThumbs {
     grid-template-columns: 5rem minmax(0, 1fr);
     gap: var(--space-16);
     align-items: start;

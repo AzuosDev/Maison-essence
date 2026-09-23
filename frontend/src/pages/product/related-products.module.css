@@ -52,7 +52,7 @@
 }
 
 .arrow:disabled {
-  color: var(--muted);
+  color: var(--ink-soft);
   cursor: not-allowed;
   opacity: 0.5;
 }

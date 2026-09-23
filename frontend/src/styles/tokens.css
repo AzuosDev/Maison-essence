@@ -29,6 +29,29 @@
   --success: #2e7d5b;
   --danger: #b3261e;
 
+  /*
+   * ---- Onde cada cor pode ser texto -----------------------------------
+   *
+   * Os numeros sao o contraste sobre o creme, que e o fundo da loja. A regra
+   * da WCAG e 4.5:1 para texto normal e 3:1 para texto grande (>=18px) e para
+   * elemento grafico — icone, filete, borda.
+   *
+   *   --ink        18.06:1  qualquer texto
+   *   --ink-soft   10.64:1  qualquer texto
+   *   --success     4.68:1  qualquer texto
+   *   --danger      6.12:1  qualquer texto
+   *   --muted       3.44:1  SO texto >=18px, ou grafico
+   *   --gold-deep   3.66:1  SO texto >=18px, ou grafico
+   *   --gold        2.33:1  NUNCA texto. So preenchimento, filete e borda.
+   *
+   * Sobre o preto a conta e outra e se inverte: ali `--muted` da 5.25:1 e e o
+   * cinza legitimo do rodape. O que nao pode e o de 12px sobre o creme.
+   *
+   * Na pratica: rotulo de 12px pede `--ink-soft`, nao `--muted`. A hierarquia
+   * entre um rotulo e um titulo se faz com corpo, peso e caixa — nao apagando
+   * a cor ate o texto sair do alcance de quem le.
+   */
+
   /* O verde oficial do WhatsApp, no botao flutuante. Nao e token de marca:
      e a cor do canal, e muda se o canal mudar. */
   --whatsapp: #25d366;
@@ -65,7 +88,11 @@
      fonte para eles custaria mais do que rende. */
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Escala 48/36/28/22/18/16/14/12. */
+  /* Escala 64/48/36/28/22/18/16/14/12.
+     O 64 entrou com a vitrine nova: titulo de secao e do banner em caixa
+     alta precisam de um degrau acima do 48, senao a pagina inteira fala no
+     mesmo tom e nada e destaque de nada. */
+  --text-64: 4rem;
   --text-48: 3rem;
   --text-36: 2.25rem;
   --text-28: 1.75rem;
@@ -87,6 +114,12 @@
   --tracking-logo: 0.28em;
   --tracking-button: 0.08em;
 
+  /* Titulo de secao em caixa alta na serifada. A caixa alta fecha o espaco
+     entre as letras por conta propria; sem abrir de volta, "DESTAQUES" vira
+     um bloco macico. Fica entre o botao e o logotipo porque o titulo e
+     grande — quanto maior o corpo, menos espacamento ele pede. */
+  --tracking-title: 0.12em;
+
   /* ---- Espaco --------------------------------------------------------- */
 
   --space-4: 0.25rem;
@@ -106,6 +139,20 @@
   --radius-modal: 16px;
   --radius-pill: 999px;
 
+  /*
+   * A forma de toda acao clicavel: a pilula.
+   *
+   * E o que separa, a um relance, o que se clica do que so se le. O cartao de
+   * produto e a foto sao retos, com o canto do `--radius-card`; botao, chip de
+   * filtro e campo de busca sao redondos. Com os dois no mesmo raio, a vitrine
+   * vira uma sequencia de retangulos iguais e o cliente precisa ler cada um
+   * para descobrir onde clicar.
+   *
+   * Token proprio, e nao `--radius-pill` escrito direto no botao, porque e uma
+   * decisao de linguagem: se um dia a loja voltar ao canto reto, muda aqui.
+   */
+  --radius-button: var(--radius-pill);
+
   --border: 1px solid var(--line);
 
   /* Uma sombra so, e discreta. Sombra colorida nao existe neste projeto, e
@@ -123,16 +170,24 @@
 
   /* ---- Layout --------------------------------------------------------- */
 
-  --container-max: 1280px;
+  /* Largura util. Subiu de 1280 para caber a grade de cinco colunas da
+     vitrine sem espremer o card: abaixo disso a quinta coluna fica estreita
+     demais para o nome do produto em duas linhas. */
+  --container-max: 1360px;
   --gutter: var(--space-16);
 
   /*
-   * O cabecalho tem duas alturas: a de repouso, com o monograma inteiro, e a
-   * encolhida, depois que a pagina rola. Sao tokens porque o layout da conta
-   * e o `scroll-padding` das ancoras precisam da mesma medida — e precisam
-   * dela na altura em que o cabecalho esta de fato quando a ancora chega.
+   * O cabecalho tem duas alturas: a de repouso e a encolhida, depois que a
+   * pagina rola. Sao tokens porque o layout da conta e o `scroll-padding` das
+   * ancoras precisam da mesma medida — e precisam dela na altura em que o
+   * cabecalho esta de fato quando a ancora chega.
+   *
+   * A medida e da banda da marca — busca, assinatura e sacola. A faixa do
+   * menu, embaixo dela, nao entra na conta: ela so existe no desktop, e o
+   * `scroll-padding` das ancoras precisa da altura do que de fato cobre o
+   * conteudo depois que a pagina rola.
    */
-  --header-height: 6.5rem;
+  --header-height: 5.5rem;
   --header-height-compact: 4rem;
 
   /** A barra de avisos, que rola junto com a pagina e nao gruda. */

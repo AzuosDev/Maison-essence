@@ -74,17 +74,19 @@
   font-weight: var(--weight-medium);
 }
 
+/* Verde, pelo mesmo motivo do preco no PIX: e desconto, e o dourado escuro
+   nao alcanca o contraste minimo em 14px. */
 .percent {
   font-size: var(--text-14);
   font-weight: var(--weight-semibold);
-  color: var(--gold-deep);
+  color: var(--success);
 }
 
 .savings {
   grid-column: 1 / -1;
 
   font-size: var(--text-12);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .nudge {

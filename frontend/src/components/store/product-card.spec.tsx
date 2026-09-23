@@ -127,7 +127,7 @@ test('produto de varias variantes abre o seletor antes de adicionar', async () =
     }),
   );
 
-  await user.click(screen.getByRole('button', { name: 'Escolher opcoes' }));
+  await user.click(screen.getByRole('button', { name: 'Ver opcoes' }));
 
   const dialogo = await screen.findByRole('dialog');
 

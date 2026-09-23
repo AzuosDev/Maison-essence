@@ -28,7 +28,7 @@
 
   font-size: var(--text-14);
   text-align: left;
-  color: var(--muted);
+  color: var(--ink-soft);
 
   background-color: var(--cream);
   border: var(--border);
@@ -38,7 +38,7 @@
 }
 
 .search:hover {
-  border-color: var(--muted);
+  border-color: var(--ink-soft);
 }
 
 .sectionTitle {
@@ -47,7 +47,7 @@
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* ---- Atalhos de topo --------------------------------------------------- */
@@ -109,7 +109,7 @@
 
 .empty {
   font-size: var(--text-14);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* ---- Institucional e contato ------------------------------------------- */

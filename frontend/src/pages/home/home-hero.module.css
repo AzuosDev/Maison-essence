@@ -1,26 +1,20 @@
 /*
- * O hero: foto de modelo a esquerda, bloco de texto a direita sobre preto.
+ * O hero: o banner ocupa a largura inteira e o texto vive sobre ele.
  *
- * ## Por que nao ha `position: absolute` aqui
+ * Antes eram duas colunas — foto de um lado, bloco preto do outro. A foto
+ * chegava cortada pela metade e o bloco preto era um retangulo vazio com tres
+ * linhas no meio. Banner de loja e uma imagem so, grande, com a frase dentro:
+ * e assim que o cliente ja esta acostumado a ler, e e o que da a foto o
+ * tamanho que ela precisa para valer a primeira tela.
  *
- * Os slides sao empilhados por grade — todos em `grid-area: 1 / 1` — e nao
- * sobrepostos com posicionamento absoluto. A diferenca aparece na conta da
- * altura: com grade, o container mede o slide mais alto e fica desse tamanho
- * desde o primeiro render; com `absolute`, os slides saem do fluxo e o
- * container colapsa, obrigando a uma altura fixa que nao acompanha o texto.
- * Banner com subtitulo de tres linhas e banner sem subtitulo convivem sem
- * ninguem medir nada.
- *
- * ## O truque das duas variaveis
- *
- * `--dark` e `--light` sao os tokens `--ink` e `--cream` capturados no `.hero`,
- * onde ainda valem os valores globais. E o que permite que `.action` inverta
- * os dois para o botao contornado sem escrever cor nova e sem cair num ciclo
- * de `var()` — trocar `--ink` por `var(--cream)` no mesmo elemento em que
- * `--cream` tambem esta sendo trocado nao funciona.
+ * O que segura o contraste do texto e o veu (`.scrim`), nao o corte.
  */
 
 .hero {
+  position: relative;
+
+  /* Tokens locais para o par escuro/claro do bloco. O botao la embaixo os
+     inverte para pintar a si mesmo sem escrever cor nova. */
   --dark: var(--ink);
   --light: var(--cream);
 
@@ -32,18 +26,21 @@
   display: grid;
 }
 
+/*
+ * Os slides ocupam a mesma celula e trocam por opacidade.
+ *
+ * `visibility` junto da opacidade porque so ela tira o slide inativo da ordem
+ * do Tab; o atraso na transicao a segura ate a opacidade terminar, senao o
+ * slide que sai desaparece de um golpe no primeiro quadro.
+ */
 .slide {
-  /* Todos na mesma celula: a pilha do carrossel. */
   grid-area: 1 / 1;
-
   display: grid;
   grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
 
   opacity: 0;
   visibility: hidden;
-
-  /* A visibilidade so muda no fim do esmaecimento, senao o slide que sai
-     desaparece de um golpe no primeiro quadro. */
   transition:
     opacity calc(var(--duration) * 3) var(--ease),
     visibility 0s linear calc(var(--duration) * 3);
@@ -59,78 +56,222 @@
 
 .media {
   position: relative;
+  grid-area: 1 / 1;
 
-  /* Retrato no celular: a foto de modelo pede altura, e a proporcao fixa
-     reserva a caixa antes de o arquivo chegar. */
+  /* Proporcao fixa: a caixa esta reservada antes de o arquivo chegar, e a
+     pagina nao salta quando ele chega nem quando o carrossel gira entre
+     banners de formatos diferentes. Retrato no celular, panoramica no
+     desktop — sao arquivos diferentes, servidos por `<picture>`. */
   aspect-ratio: 4 / 5;
-
   background-color: var(--ink-soft);
   overflow: hidden;
 }
 
+/*
+ * A foto, presa as quatro bordas da caixa.
+ *
+ * `position: absolute` e nao `height: 100%`. A imagem mora dentro de um
+ * `<picture>`, que e um elemento de fluxo normal sem altura propria: uma
+ * altura percentual ali dentro nao tem contra o que resolver, cai para
+ * `auto` e a foto volta a proporcao natural do arquivo. Era o que acontecia —
+ * a caixa tinha os 672px certos, a foto saia com 1920px, e o banner mostrava
+ * o terco de cima da arte em vez do corte centralizado que o `cover` deveria
+ * dar. Ancorada nas bordas, ela ignora o `<picture>` e obedece a caixa.
+ */
 .image {
+  position: absolute;
+  inset: 0;
+
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* ---- O bloco de texto ------------------------------------------------ */
+/*
+ * O veu que segura o contraste do texto.
+ *
+ * Nao e um escurecimento chapado da foto inteira: e um degrade que so fecha
+ * onde a frase cai — embaixo no celular, na faixa da esquerda no desktop. O
+ * resto da arte continua com a luz que o fornecedor deu a ela.
+ */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to top,
+    rgb(14 14 14 / 0.82) 0%,
+    rgb(14 14 14 / 0.55) 38%,
+    rgb(14 14 14 / 0.1) 70%,
+    rgb(14 14 14 / 0) 100%
+  );
+}
 
+/* ---- Banner que e a arte inteira -------------------------------------- */
+
+/*
+ * Banner sem titulo, chamada nem botao cadastrados chega com tudo desenhado
+ * dentro do arquivo: logo, frase e botao ja fazem parte da imagem. Aqui ele
+ * aparece inteiro, sem corte e sem veu — `cover` recortaria pelas beiradas,
+ * que e exatamente onde mora o que o fornecedor desenhou.
+ */
+.slideWide {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.mediaWide {
+  aspect-ratio: 2 / 1;
+  background-color: var(--dark);
+}
+
+.imageWide {
+  object-fit: contain;
+}
+
+/* ---- O bloco de texto ------------------------------------------------- */
+
+/*
+ * O texto fica na mesma celula da foto, encostado embaixo.
+ *
+ * `pointer-events: none` no bloco e `auto` no botao: sem isso o retangulo
+ * invisivel do bloco cobriria a foto e engoliria o clique das setas que
+ * passam por baixo dele.
+ */
 .panel {
+  grid-area: 1 / 1;
+  z-index: 1;
+
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: flex-end;
   gap: var(--space-16);
 
-  padding: var(--space-48) var(--gutter);
-}
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-32) var(--gutter) var(--space-48);
 
-.eyebrow {
-  font-size: var(--text-12);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-button);
-  text-transform: uppercase;
-  color: var(--gold);
+  pointer-events: none;
 }
 
 .title {
+  max-width: 16ch;
+
   font-family: var(--font-display);
   font-size: var(--text-36);
   line-height: var(--leading-tight);
+  text-wrap: balance;
   color: var(--light);
+
+  /* A sombra nao e decoracao: e a rede de seguranca para a foto clara que a
+     dona sobe sem avisar. O veu resolve o caso comum; isto resolve o resto. */
+  text-shadow: 0 1px 24px rgb(14 14 14 / 0.45);
 }
 
 .subtitle {
-  max-width: 40ch;
-
+  max-width: 44ch;
   font-size: var(--text-16);
   line-height: var(--leading-body);
-  color: rgb(250 247 242 / 0.75);
+  color: rgb(250 247 242 / 0.88);
+  text-shadow: 0 1px 16px rgb(14 14 14 / 0.5);
 }
 
 /*
- * O botao contornado.
+ * O botao do banner: creme cheio sobre a foto.
  *
- * `--ink` e `--cream` invertidos: o primitivo `Button` continua sendo o
- * mesmo, desenha a variante `secondary` com as regras dele, e o que muda sao
- * os dois tokens que ele le. Sem isto, o contorno preto sobre preto sumiria.
+ * O contornado que estava aqui antes dependia da foto atras dele para ter
+ * contraste — sobre uma area clara da arte, o contorno creme sumia. O botao
+ * cheio traz o proprio fundo.
  */
 .action {
   --ink: var(--light);
   --cream: var(--dark);
 
   margin-top: var(--space-8);
+  pointer-events: auto;
 }
 
-/* ---- Indicadores ----------------------------------------------------- */
+/* ---- As setas --------------------------------------------------------- */
+
+/*
+ * So aparecem onde ha mouse. `hover: hover` e nao uma largura minima: o que
+ * decide e o apontador, e ha tablet largo sem mouse e laptop estreito com um.
+ */
+.arrow {
+  display: none;
+}
+
+@media (hover: hover) and (min-width: 64rem) {
+  .arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+
+    color: var(--light);
+    background-color: rgb(14 14 14 / 0.35);
+    border: 1px solid rgb(250 247 242 / 0.3);
+    border-radius: var(--radius-pill);
+
+    /* O `translateY` mora aqui e nao no `top` porque o hover mexe na escala:
+       as duas transformacoes precisam estar na mesma declaracao, senao uma
+       apaga a outra. */
+    transform: translateY(-50%);
+    transition:
+      background-color var(--transition),
+      border-color var(--transition),
+      transform var(--transition);
+
+    --focus-color: var(--gold);
+  }
+
+  .arrow:hover {
+    background-color: rgb(14 14 14 / 0.7);
+    border-color: var(--gold);
+    transform: translateY(-50%) scale(1.06);
+  }
+
+  /*
+   * Um desenho de seta so, virado.
+   *
+   * O giro entra dentro do `transform`, junto do `translateY`, e nao na
+   * propriedade `rotate`. As duas se compoem nesta ordem: `rotate` primeiro,
+   * `transform` depois — e o `translateY(-50%)` do `transform` passaria a
+   * valer num sistema de coordenadas ja virado de cabeca para baixo, jogando
+   * a seta para baixo em vez de para cima. As duas setas terminavam a 88px
+   * uma da outra.
+   */
+  .arrowPrevious {
+    left: var(--space-24);
+    transform: translateY(-50%) rotate(180deg);
+  }
+
+  .arrowPrevious:hover {
+    transform: translateY(-50%) rotate(180deg) scale(1.06);
+  }
+
+  .arrowNext {
+    right: var(--space-24);
+  }
+}
+
+/* ---- Os indicadores --------------------------------------------------- */
 
 .indicators {
+  position: absolute;
+  right: 0;
+  bottom: var(--space-16);
+  left: 0;
+  z-index: 2;
+
   display: flex;
   justify-content: center;
   gap: var(--space-8);
-
-  padding-bottom: var(--space-24);
 }
 
 .indicator {
@@ -139,19 +280,18 @@
   height: 2px;
   padding: 0;
 
-  background-color: rgb(250 247 242 / 0.3);
+  background-color: rgb(250 247 242 / 0.45);
   border: 0;
   cursor: pointer;
+  transition:
+    background-color var(--transition),
+    transform var(--transition);
 
-  transition: background-color var(--transition);
+  --focus-color: var(--gold);
 }
 
-/*
- * A area de clique tem 44px de altura, o alvo minimo de toque, enquanto o
- * filete visivel tem 2px. O pseudo-elemento cresce o alvo sem engordar o
- * desenho — e sem os oito pixels de espaco morto que um `padding` criaria
- * entre um indicador e o vizinho.
- */
+/* O alvo de toque de 44px que o risco de 2px nao tem. Invisivel, centrado no
+   risco, e e nele que o dedo acerta. */
 .indicator::after {
   content: '';
   position: absolute;
@@ -160,52 +300,109 @@
 
 .indicatorActive {
   background-color: var(--gold);
+  transform: scaleY(2);
 }
 
-/* ---- Desktop --------------------------------------------------------- */
+/* ---- Desktop ---------------------------------------------------------- */
 
 @media (min-width: 64rem) {
-  .slide {
-    /* A foto ocupa a maior parte; o texto pede menos largura para nao virar
-       linha de oitenta caracteres. */
-    grid-template-columns: 55fr 45fr;
-    min-height: 36rem;
+  .media {
+    /* Panoramica, com um teto: em monitor largo o 16/9 puro daria um hero de
+       810px de altura e empurraria a primeira prateleira para fora da tela.
+
+       O `width: 100%` e obrigatorio ao lado do `max-height`. Sem ele, a caixa
+       tem proporcao mas nao tem largura definida, e o navegador respeita a
+       proporcao encolhendo a largura: o banner encolhia para 1195px e sobrava
+       uma tarja preta na direita da tela. Com a largura fixada, quem cede e a
+       proporcao, e o corte fica por conta do `object-fit: cover` da foto —
+       que e exatamente o que se quer de um banner panoramico. */
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: 42rem;
   }
 
-  .media {
-    /* No desktop quem manda na altura e o `min-height` do slide. */
-    aspect-ratio: auto;
-    height: 100%;
+  .scrim {
+    /* No desktop a frase esta na esquerda, nao embaixo: o veu vira com ela. */
+    background-image: linear-gradient(
+      to right,
+      rgb(14 14 14 / 0.78) 0%,
+      rgb(14 14 14 / 0.45) 42%,
+      rgb(14 14 14 / 0) 72%
+    );
   }
 
   .panel {
-    padding: var(--space-64);
+    justify-content: center;
+    gap: var(--space-24);
+    padding: var(--space-64) var(--space-48);
   }
 
   .title {
-    font-size: var(--text-48);
+    font-size: var(--text-64);
   }
 
-  /* Sobre a foto, no rodape do hero, como no mockup. */
+  .subtitle {
+    font-size: var(--text-18);
+  }
+
   .indicators {
-    position: relative;
-    margin-top: calc(var(--space-32) * -1);
-    padding-bottom: var(--space-32);
+    bottom: var(--space-32);
+  }
+
+  /* A faixa larga nao obedece ao `max-height` do banner com texto: quem manda
+     na altura dela e a proporcao da arte. O `max-width` e o limite do arquivo
+     — passar disso seria ampliar uma imagem de 2056px e entregar borrao. */
+  .slideWide {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mediaWide {
+    aspect-ratio: 21 / 9;
+    height: auto;
+    max-height: none;
+    max-width: 82rem;
+    margin-inline: auto;
   }
 }
 
-/* ---- O esqueleto ----------------------------------------------------- */
+/* ---- O hero sem banner nenhum ----------------------------------------- */
+
+/*
+ * Sem foto para dar altura, o bloco ficaria com a altura das tres linhas de
+ * texto e a home comecaria com uma tarja. O `min-height` o segura na mesma
+ * faixa que o banner de verdade ocupa.
+ */
+.fallback {
+  display: flex;
+  min-height: 24rem;
+}
+
+@media (min-width: 64rem) {
+  .fallback {
+    min-height: 32rem;
+  }
+}
+
+/* ---- O esqueleto ------------------------------------------------------ */
 
 .ghostPanel {
+  grid-area: 1 / 1;
+  z-index: 1;
+
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: var(--space-16);
 
-  padding: var(--space-48) var(--gutter);
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-32) var(--gutter) var(--space-48);
 }
 
 @media (min-width: 64rem) {
   .ghostPanel {
-    padding: var(--space-64);
+    justify-content: center;
+    padding: var(--space-64) var(--space-48);
   }
 }

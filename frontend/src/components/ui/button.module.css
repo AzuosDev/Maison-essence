@@ -25,7 +25,7 @@
   white-space: nowrap;
 
   border: 1px solid transparent;
-  border-radius: var(--radius-chip);
+  border-radius: var(--radius-button);
   cursor: pointer;
 
   transition:
@@ -112,9 +112,21 @@
 }
 
 /* Ocupa a linha inteira: o botao do passo do checkout e o do formulario. */
+/*
+ * O botao que ocupa a largura inteira do que o contem.
+ *
+ * E o unico que pode quebrar linha. O `nowrap` do botao comum existe para que
+ * um rotulo curto nao se parta em duas linhas no meio de uma barra de acoes —
+ * mas num botao de largura total ele se volta contra o layout: `nowrap` fixa
+ * a largura minima do botao no comprimento do rotulo, e como item de flex tem
+ * `min-width: auto`, essa largura sobe pelo card inteiro e o alarga. Era o que
+ * acontecia na vitrine: o card de "Escolher opcoes" saia 43px mais largo que
+ * os vizinhos e desalinhava a fileira.
+ */
 .block {
   display: flex;
   width: 100%;
+  white-space: normal;
 }
 
 /* ---- Carregando ------------------------------------------------------

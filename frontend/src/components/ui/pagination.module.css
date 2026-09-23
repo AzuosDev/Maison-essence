@@ -127,5 +127,5 @@
   align-items: center;
   justify-content: center;
   min-width: var(--control-height-small);
-  color: var(--muted);
+  color: var(--ink-soft);
 }

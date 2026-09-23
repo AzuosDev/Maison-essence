@@ -76,7 +76,7 @@
 .description {
   margin-top: var(--space-4);
   font-size: var(--text-14);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .close {

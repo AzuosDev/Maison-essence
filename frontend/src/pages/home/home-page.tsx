@@ -1,11 +1,9 @@
 import { ROUTES } from '@/app/routes';
-import { DeferredNewsletter, ProductShelf, TrustBadges } from '@/components/store';
-import { Container } from '@/components/ui';
+import { ProductShelf } from '@/components/store';
 import { useShelf } from '@/features/catalog';
 import { BrandStatement } from './brand-statement';
 import { CategoryStrip } from './category-strip';
 import { HomeHero } from './home-hero';
-import styles from './home-page.module.css';
 
 /**
  * A vitrine.
@@ -43,8 +41,6 @@ export default function HomePage() {
     <>
       <HomeHero />
 
-      <CategoryStrip />
-
       <ProductShelf
         title="Destaques"
         description="A selecao da casa, trocada com frequencia."
@@ -54,6 +50,12 @@ export default function HomePage() {
         to={ROUTES.products}
         linkLabel="Ver todos os produtos"
       />
+
+      {/* As colecoes vem depois da primeira prateleira, e nao antes dela.
+          Quem chega pelo banner quer ver produto, nao uma segunda tela de
+          navegacao: as categorias respondem "o que mais voce tem", que e a
+          pergunta de quem ja olhou a vitrine e nao se decidiu. */}
+      <CategoryStrip />
 
       <BrandStatement />
 
@@ -77,22 +79,14 @@ export default function HomePage() {
         to={ROUTES.products}
       />
 
-      <section className={styles.trust} aria-label="Como a loja trabalha">
-        <Container>
-          <TrustBadges tone="light" />
-        </Container>
-      </section>
+      {/*
+        Os selos de confianca e a newsletter nao se repetem aqui.
 
-      <section className={styles.newsletter} aria-label="Newsletter">
-        <Container>
-          {/* Sem cabecalho de secao aqui: o proprio formulario ja traz o
-              titulo e a linha de apoio dele, e repeti-los acima faria a
-              faixa anunciar "Receba as novidades" duas vezes. */}
-          <div className={styles.newsletterInner}>
-            <DeferredNewsletter tone="light" />
-          </div>
-        </Container>
-      </section>
+        O rodape ja traz os dois, em toda pagina da loja. Com as faixas claras
+        da home logo acima dele, o cliente via o mesmo campo de e-mail duas
+        vezes em 200px de rolagem, e os tres selos duas vezes em 400px — o que
+        nao reforca a mensagem, so faz a pagina parecer montada duas vezes.
+      */}
     </>
   );
 }

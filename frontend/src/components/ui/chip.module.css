@@ -53,7 +53,7 @@
 .count {
   font-size: var(--text-12);
   font-variant-numeric: tabular-nums;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .active .count {

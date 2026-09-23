@@ -34,7 +34,7 @@
   font-size: var(--text-12);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .value {
@@ -48,7 +48,7 @@
 
 /* O valor antigo riscado: ele e referencia, e nao alternativa. */
 .old {
-  color: var(--muted);
+  color: var(--ink-soft);
   text-decoration: line-through;
   text-decoration-thickness: 1px;
 }

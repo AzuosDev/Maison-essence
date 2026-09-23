@@ -85,7 +85,12 @@ export function NewsletterForm({ tone = 'dark' }: NewsletterFormProps) {
           className={styles.field}
         />
 
-        <Button type="submit" loading={isSubmitting} loadingLabel="Enviando">
+        <Button
+          type="submit"
+          loading={isSubmitting}
+          loadingLabel="Enviando"
+          className={styles.submit}
+        >
           Cadastrar
         </Button>
       </div>

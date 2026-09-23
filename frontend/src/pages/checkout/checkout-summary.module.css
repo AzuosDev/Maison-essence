@@ -39,7 +39,7 @@
   font-size: var(--text-12);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* ---- Quando a cotacao falha ---------------------------------------------- */

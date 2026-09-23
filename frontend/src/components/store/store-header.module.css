@@ -1,14 +1,16 @@
 /*
- * O cabecalho da loja.
+ * O cabecalho da loja: duas bandas.
  *
- * Fica fixo ao rolar e encolhe: a altura cai de 6.5rem para 4rem e o logo
- * passa de empilhado para em linha. As duas medidas sao tokens, e a
- * transicao anima `height` e `padding` com os mesmos 180ms de todo o resto.
+ * Em cima, sobre a areia da marca: busca a esquerda, assinatura no centro,
+ * conta e sacola a direita. Embaixo, sobre o branco: o menu do catalogo.
  *
- * `position: sticky` e nao `fixed`: com `sticky`, o cabecalho ocupa espaco no
- * fluxo enquanto esta no topo, e o conteudo comeca abaixo dele sem precisar
- * de um `padding-top` compensatorio que teria que ser mantido em sincronia
- * com a altura.
+ * A separacao existe porque as duas linhas respondem a perguntas diferentes.
+ * A de cima e "onde estou e o que ja escolhi"; a de baixo e "o que voce tem".
+ * Misturadas numa faixa so, a assinatura disputa espaco com sete categorias e
+ * perde — e o menu fica espremido entre o logotipo e os icones.
+ *
+ * Ao rolar, a banda de cima encolhe. O menu fica: antes ele sumia junto, e o
+ * cliente perdia a navegacao no momento exato em que comeca a procurar.
  */
 
 .header {
@@ -16,30 +18,43 @@
   top: 0;
   z-index: var(--z-header);
 
-  background-color: var(--surface);
+  /* A areia e o fundo da banda de cima; a de baixo pinta o proprio branco.
+     Sao as duas unicas faixas da loja que nao sao creme, e e o contraste
+     entre elas que marca a divisao sem precisar de uma linha. */
+  background-color: var(--sand);
   border-bottom: var(--border);
-
   transition: box-shadow var(--transition);
 }
 
-/* A sombra so aparece quando ha conteudo passando por baixo. */
 .scrolled {
   box-shadow: var(--shadow);
 }
 
-/*
- * A barra e um grid de tres colunas com o logo no meio: as laterais sao
- * `1fr` iguais, entao o logo fica centralizado na tela mesmo com um icone a
- * mais de um lado que do outro.
- */
+/* ---- A banda da marca ------------------------------------------------- */
+
 .bar {
   display: grid;
+
+  /* Tres colunas com as laterais de mesma largura: e o que mantem a
+     assinatura no centro otico da tela, e nao no centro do que sobrou entre
+     os dois lados. */
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-8);
 
+  /*
+   * A altura troca de um valor para o outro, sem transicao.
+   *
+   * O cabecalho e `sticky`, ou seja, esta no fluxo: animar a altura dele
+   * remede a pagina inteira a cada quadro da animacao — onze reflows para
+   * economizar 24px. Num celular modesto isso e exatamente o tipo de coisa
+   * que faz a rolagem engasgar.
+   *
+   * O que fica animado e a sombra, que e composta pela GPU e nao toca no
+   * layout. Ela e suficiente: o olho le "o cabecalho descolou da pagina", que
+   * e a informacao que a compactacao quer dar.
+   */
   height: var(--header-height);
-  transition: height var(--transition);
 }
 
 .scrolled .bar {
@@ -50,6 +65,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: var(--space-8);
   min-width: 0;
 }
 
@@ -61,7 +77,82 @@
   min-width: 0;
 }
 
-/* O hamburguer some quando o menu horizontal aparece. */
+/*
+ * A assinatura empilhada, como no repouso da marca.
+ *
+ * Ao rolar, ela deita e encolhe junto com a banda. Os tres numeros vem do
+ * proprio `BrandLogo`, que os expoe como variaveis justamente para o
+ * cabecalho poder reger o tamanho sem reimplementar o desenho.
+ */
+.logo {
+  min-width: 0;
+}
+
+.scrolled .logo {
+  --monogram-size: 1.75rem;
+  --monogram-text: var(--text-12);
+  --wordmark-text: var(--text-14);
+
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* ---- A busca em forma de campo ---------------------------------------- */
+
+/*
+ * So no desktop. No celular quem abre a busca e a lupa do canto direito: um
+ * campo de 200px ali dentro deixaria a assinatura sem lugar.
+ */
+.searchField {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .searchField {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+
+    width: 100%;
+    max-width: 18rem;
+    height: var(--control-height-small);
+    padding-inline: var(--space-16);
+
+    font-size: var(--text-14);
+    color: var(--ink-soft);
+    text-align: left;
+
+    background-color: var(--cream);
+    border: var(--border);
+    border-radius: var(--radius-pill);
+    cursor: pointer;
+    transition:
+      border-color var(--transition),
+      color var(--transition);
+  }
+
+  .searchField:hover {
+    border-color: var(--gold-deep);
+    color: var(--ink-soft);
+  }
+}
+
+.searchLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* A lupa do canto direito e a contraparte: existe onde o campo nao cabe. */
+@media (min-width: 64rem) {
+  .searchButton {
+    display: none;
+  }
+}
+
+/* ---- O menu lateral e a conta ----------------------------------------- */
+
 .menuButton {
   display: inline-flex;
 }
@@ -72,42 +163,8 @@
   }
 }
 
-/*
- * A fila do menu, na segunda linha.
- *
- * Ao rolar, ela nao some — encolhe ate zero e desaparece junto com a altura
- * do cabecalho. Sumir de uma vez faria o conteudo da pagina dar um salto de
- * 40px no primeiro toque do scroll.
- */
-.navRow {
-  display: none;
-  overflow: hidden;
-
-  transition:
-    height var(--transition),
-    opacity var(--transition);
-}
-
-@media (min-width: 64rem) {
-  .navRow {
-    display: flex;
-    justify-content: center;
-    height: 2.75rem;
-    opacity: 1;
-    border-top: var(--border);
-  }
-
-  .scrolled .navRow {
-    height: 0;
-    opacity: 0;
-    border-top-color: transparent;
-  }
-}
-
-/*
- * A conta so aparece no desktop: no celular ela esta na gaveta, e tres
- * icones a direita de uma tela de 375px espremem o logo.
- */
+/* O atalho da conta sai no celular: o menu lateral ja o traz, e tres icones
+   lado a lado numa barra de 390px nao deixam espaco para a assinatura. */
 .accountLink {
   display: none;
 }
@@ -115,5 +172,24 @@
 @media (min-width: 64rem) {
   .accountLink {
     display: inline-flex;
+  }
+}
+
+/* ---- A banda do menu -------------------------------------------------- */
+
+.navRow {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .navRow {
+    display: block;
+    border-top: var(--border);
+    background-color: var(--surface);
+  }
+
+  .navInner {
+    display: flex;
+    justify-content: center;
   }
 }

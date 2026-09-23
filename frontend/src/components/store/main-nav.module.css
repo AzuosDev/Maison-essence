@@ -1,9 +1,8 @@
 /*
- * O menu horizontal do cabecalho.
+ * O menu principal, na mesma linha do logotipo.
  *
- * So aparece a partir de 1024px. Abaixo disso o caminho e a gaveta — quatro
- * itens mais o logo e os icones nao cabem em 375px sem virar uma fila que
- * rola na horizontal, que e exatamente o que nao pode acontecer.
+ * Some no celular — la quem navega e o menu lateral, que cabe o catalogo
+ * inteiro sem espremer nada.
  */
 
 .nav {
@@ -12,7 +11,13 @@
 
 @media (min-width: 64rem) {
   .nav {
-    display: block;
+    display: flex;
+
+    /* Toma a sobra entre o logotipo e as acoes, e centra os itens nela: o
+       menu fica no meio da barra sem depender da largura dos dois lados. */
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
   }
 }
 
@@ -21,7 +26,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-32);
-
   padding: 0;
   margin: 0;
   list-style: none;
@@ -32,17 +36,17 @@
 }
 
 /*
- * Link e botao dividem a mesma aparencia: "Categorias" abre um painel e por
- * isso e um `<button>`, enquanto os outros tres sao enderecos e por isso sao
- * `<a>`. A diferenca importa para o teclado e para o leitor de tela, mas nao
- * deve aparecer no desenho.
+ * O item do menu.
+ *
+ * Alto o bastante para ser um alvo de mouse confortavel — o `padding-block`
+ * ocupa a altura inteira da barra, entao o clique pega a faixa toda e nao so
+ * as doze letras.
  */
 .link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
-
-  padding-block: var(--space-8);
+  padding-block: var(--space-16);
 
   font-family: var(--font-body);
   font-size: var(--text-12);
@@ -55,24 +59,39 @@
   background: none;
   border: none;
   cursor: pointer;
-
   transition: color var(--transition);
 }
 
 .link:hover {
-  color: var(--gold-deep);
+  /* O risco dourado embaixo e que marca o hover. A cor do texto fica no
+     preto: o dourado escuro reprova em 12px sobre o branco. */
+  color: var(--ink);
 }
 
-/* O filete dourado sob o item ativo e sob o painel aberto. */
+/*
+ * O risco dourado embaixo do item.
+ *
+ * Cresce do centro para as pontas em vez de aparecer inteiro: e o unico
+ * movimento do cabecalho, e um risco que surge de um golpe parece falha de
+ * renderizacao. `scaleX` e nao `width` porque so a transformacao roda fora da
+ * thread de layout — com `width`, o menu inteiro e remedido a cada quadro.
+ */
 .link::after {
   content: '';
   position: absolute;
-  left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 0.75rem;
+  left: 0;
+
   height: 1px;
-  background-color: transparent;
-  transition: background-color var(--transition);
+  background-color: var(--gold-deep);
+
+  transform: scaleX(0);
+  transition: transform var(--duration) var(--ease);
+}
+
+.link:hover::after {
+  transform: scaleX(1);
 }
 
 .active,
@@ -83,10 +102,9 @@
 
 .active::after,
 .open::after {
-  background-color: var(--gold);
+  transform: scaleX(1);
 }
 
-/* A seta de "Categorias", que gira meia volta quando o painel abre. */
 .chevron {
   transition: transform var(--transition);
 }

@@ -12,11 +12,14 @@
   align-items: center;
   justify-content: center;
 
+  /* `flex: none` porque o botao mora numa linha flex apertada: sem ele o alvo
+     de 44px encolhe ate a largura do desenho e o dedo erra. */
+  flex: none;
   width: 2.75rem;
   height: 2.75rem;
 
   color: var(--ink);
-  border-radius: var(--radius-chip);
+  border-radius: var(--radius-pill);
 
   transition:
     background-color var(--transition),

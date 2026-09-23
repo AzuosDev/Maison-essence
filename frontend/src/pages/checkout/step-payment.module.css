@@ -47,7 +47,7 @@
 
   font-size: var(--text-12);
   line-height: var(--leading-body);
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* ---- As parcelas ---------------------------------------------------------- */
@@ -99,7 +99,7 @@
 }
 
 .firstNote {
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 /* ---- O aviso do WhatsApp -------------------------------------------------- */

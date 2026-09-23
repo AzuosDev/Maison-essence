@@ -1,16 +1,11 @@
 /*
- * A faixa de categorias: carrossel no celular, grade no desktop.
+ * Os cartazes das categorias.
  *
- * O carrossel e rolagem nativa com `scroll-snap`, e nao um componente com
- * temporizador e botoes. Tres motivos, nessa ordem: o dedo ja sabe arrastar,
- * o teclado ja rola a lista com as setas, e o leitor de tela le uma lista de
- * links em vez de um widget que precisa explicar a si mesmo. O carrossel que
- * merece JavaScript e o do hero, que anda sozinho.
- *
- * No celular a lista sangra ate as bordas da janela — `margin` negativo de um
- * gutter, `padding` de um gutter de volta. E o corte do proximo card na
- * beirada que conta ao cliente que ha mais coisa a direita; uma lista que
- * termina certinha na margem parece completa.
+ * Nao sao miniaturas: sao quatro cartazes de vitrine, em retrato, com o nome
+ * da familia em cima da foto e um botao embaixo. Antes eram seis fichas de
+ * 10rem numa fileira que rolava, e o nome chapado sobre a foto mal se lia.
+ * Quatro cartazes grandes valem mais que seis pequenos: cada um tem tamanho
+ * para a foto contar o que ha dentro da categoria.
  */
 
 .strip {
@@ -18,36 +13,43 @@
 }
 
 .list {
-  display: flex;
+  display: grid;
+
+  /* Dois no celular, quatro a partir do tablet. Nunca tres: com tres, a
+     quarta categoria fica sozinha numa linha propria, ocupando um quarto da
+     largura e parecendo sobra. */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-16);
 
   margin-top: var(--space-32);
-  margin-inline: calc(var(--gutter) * -1);
-  padding-inline: var(--gutter);
-
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-
-  /* A barra de rolagem some: no celular ela ja e invisivel, e no desktop
-     esta faixa vira grade e nao rola. */
-  scrollbar-width: none;
+  padding: 0;
+  list-style: none;
 }
 
-.list::-webkit-scrollbar {
-  display: none;
+@media (min-width: 48rem) {
+  .list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
 }
 
-.item {
-  /* Dois cards e um pedaco do terceiro, que e o que convida a arrastar. */
-  flex: 0 0 42%;
-  scroll-snap-align: start;
+@media (min-width: 64rem) {
+  .strip {
+    padding-block: var(--space-64);
+  }
 }
+
+/* ---- O cartaz --------------------------------------------------------- */
 
 .card {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 
   aspect-ratio: 4 / 5;
+  padding: var(--space-24) var(--space-16);
   overflow: hidden;
 
   background-color: var(--sand);
@@ -55,11 +57,14 @@
 }
 
 .image {
+  position: absolute;
+  inset: 0;
+
   width: 100%;
   height: 100%;
   object-fit: cover;
 
-  transition: transform calc(var(--duration) * 3) var(--ease);
+  transition: transform calc(var(--duration) * 4) var(--ease);
 }
 
 .card:hover .image,
@@ -68,69 +73,99 @@
 }
 
 /*
- * O veu sob o nome.
+ * O veu.
  *
- * Sem ele, "Masculino" em creme sobre uma foto clara fica ilegivel — e qual
- * foto a dona vai subir nao e coisa que o CSS possa saber. O gradiente escurece
- * so o terco de baixo, onde o texto esta, e deixa a foto intacta no resto.
+ * Fecha em cima e embaixo, onde o texto e o botao caem, e abre no meio, onde
+ * esta o produto. Um escurecimento chapado apagaria a foto inteira para
+ * resolver o contraste de duas linhas.
  */
 .scrim {
   position: absolute;
   inset: 0;
 
-  background-image: linear-gradient(to top, rgb(14 14 14 / 0.75) 0%, rgb(14 14 14 / 0) 55%);
+  background-image: linear-gradient(
+    to bottom,
+    rgb(14 14 14 / 0.78) 0%,
+    rgb(14 14 14 / 0.4) 22%,
+    rgb(14 14 14 / 0.12) 42%,
+    rgb(14 14 14 / 0.12) 56%,
+    rgb(14 14 14 / 0.82) 100%
+  );
 }
 
 .label {
-  position: absolute;
-  right: var(--space-12);
-  bottom: var(--space-12);
-  left: var(--space-12);
-
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
   text-align: center;
 }
 
 .name {
-  font-family: var(--font-display);
-  font-size: var(--text-18);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-indent: var(--tracking-button);
+  text-transform: uppercase;
   line-height: var(--leading-tight);
   color: var(--cream);
+  text-shadow: 0 1px 12px rgb(14 14 14 / 0.6);
 }
 
 .count {
   font-size: var(--text-12);
-  letter-spacing: var(--tracking-button);
-  text-transform: uppercase;
-  color: rgb(250 247 242 / 0.7);
+  color: rgb(250 247 242 / 0.88);
+  text-shadow: 0 1px 12px rgb(14 14 14 / 0.7);
 }
 
-@media (min-width: 40rem) {
-  .item {
-    flex-basis: 28%;
-  }
+/*
+ * O botao do cartaz.
+ *
+ * Desenhado aqui, e nao com o componente de botao, porque o cartaz inteiro ja
+ * e o link: um `<a>` dentro de outro `<a>` e marcacao invalida, e dois alvos
+ * empilhados para o mesmo destino confundem quem navega por teclado. Isto e um
+ * `<span>` com cara de botao — o clique vem do cartaz.
+ */
+.action {
+  position: relative;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--control-height-small);
+  padding-inline: var(--space-24);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-indent: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--cream);
+
+  background-color: rgb(14 14 14 / 0.72);
+  border: 1px solid rgb(250 247 242 / 0.35);
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    color var(--transition);
+}
+
+.card:hover .action,
+.card:focus-visible .action {
+  color: var(--ink);
+  background-color: var(--cream);
+  border-color: var(--cream);
 }
 
 @media (min-width: 64rem) {
-  .strip {
-    padding-block: var(--space-64);
-  }
-
-  /* Vira grade: sem rolagem, sem sangria e sem snap. */
-  .list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: var(--space-24);
-
-    margin-inline: 0;
-    padding-inline: 0;
-    overflow-x: visible;
-  }
-
-  .item {
-    flex: initial;
-  }
-
   .name {
-    font-size: var(--text-22);
+    font-size: var(--text-14);
   }
+}
+
+/* O anel de foco do cartaz precisa do dourado claro: o escuro sumiria contra
+   a foto. */
+.card {
+  --focus-color: var(--gold);
 }

@@ -1,5 +1,6 @@
 import { ROUTES } from '@/app/routes';
 import { ButtonLink, Skeleton } from '@/components/ui';
+import { ChevronRightIcon } from '@/components/store/icons';
 import { useStoreSettings, type PublicBanner } from '@/features/settings';
 import { imageProps, imageSrcSet } from '@/lib/cloudinary';
 import { cx } from '@/lib/cx';
@@ -73,9 +74,36 @@ export function HomeHero() {
             position={position}
             total={banners.length}
             active={position === carousel.index}
+            storeName={settings?.storeName ?? 'Maison Essence'}
           />
         ))}
       </div>
+
+      {/* As setas sao a forma que quase todo mundo ja tenta primeiro num
+          banner que gira, e elas ficam so onde ha mouse: no toque, quem manda
+          e o arrasto e os indicadores, e duas setas sobre a foto comeriam o
+          canto da arte numa tela de 390px. */}
+      {banners.length > 1 ? (
+        <>
+          <button
+            type="button"
+            className={cx(styles.arrow, styles.arrowPrevious)}
+            onClick={carousel.previous}
+            aria-label="Banner anterior"
+          >
+            <ChevronRightIcon width="18" height="18" />
+          </button>
+
+          <button
+            type="button"
+            className={cx(styles.arrow, styles.arrowNext)}
+            onClick={carousel.next}
+            aria-label="Proximo banner"
+          >
+            <ChevronRightIcon width="18" height="18" />
+          </button>
+        </>
+      ) : null}
 
       {/* Sem rotulo de grupo em volta dos indicadores: cada botao ja diz
           "Banner 2 de 3", que e a informacao inteira. Um `role="group"` so
@@ -108,6 +136,8 @@ interface SlideProps {
   position: number;
   total: number;
   active: boolean;
+  /** Vira o `<h1>` invisivel quando a arte do banner ja traz o titulo dentro dela. */
+  storeName: string;
 }
 
 /**
@@ -118,38 +148,55 @@ interface SlideProps {
  * enxerga o que esta escondido, e o `tabIndex` do botao fecha a brecha do
  * navegador que ignorar a visibilidade.
  */
-function Slide({ banner, position, total, active }: SlideProps) {
+function Slide({ banner, position, total, active, storeName }: SlideProps) {
+  // Banner que ja traz logo, frase e botao desenhados dentro da propria arte
+  // chega aqui sem texto nenhum cadastrado. Dar a ele a grade de duas colunas
+  // deixaria metade do hero preta e vazia, com o rotulo solto no meio do
+  // nada. Nesse caso a arte e o hero inteiro. Basta a dona escrever um titulo
+  // no painel para o slide voltar a ser foto + bloco de texto.
+  const standalone = banner.title === '' && banner.subtitle === '' && banner.buttonLabel === '';
+
   return (
     <div
-      className={cx(styles.slide, active && styles.slideActive)}
+      className={cx(styles.slide, standalone && styles.slideWide, active && styles.slideActive)}
       aria-roledescription="slide"
       aria-label={`${position + 1} de ${total}`}
       aria-hidden={!active}
     >
-      <div className={styles.media}>
-        <BannerImage banner={banner} priority={position === 0} />
+      <div className={cx(styles.media, standalone && styles.mediaWide)}>
+        <BannerImage banner={banner} priority={position === 0} standalone={standalone} />
+
+        {/* O texto passou a viver sobre a foto, e foto de produto nao tem
+            compromisso de ser escura onde a frase cai. O veu garante o
+            contraste sem escurecer a arte inteira: ele e opaco onde o texto
+            esta e transparente no resto. */}
+        {standalone ? null : <span className={styles.scrim} aria-hidden="true" />}
       </div>
 
-      <div className={cx(styles.panel, 'on-dark')}>
-        <p className={styles.eyebrow}>Selecao Maison Essence</p>
+      {standalone ? (
+        // A home continua precisando de um `<h1>`: o titulo desenhado dentro
+        // do arquivo nao chega a quem usa leitor de tela nem ao buscador. So
+        // no primeiro slide, para nao repetir o cabecalho a cada banner.
+        position === 0 ? <h1 className="visually-hidden">{storeName}</h1> : null
+      ) : (
+        <div className={cx(styles.panel, 'on-dark')}>
+          {/* O `<h1>` da home. Os slides seguintes repetem a marcacao, mas so
+              um deles esta visivel por vez. */}
+          <h1 className={styles.title}>{banner.title}</h1>
 
-        {/* O `<h1>` da home. Os slides seguintes repetem a marcacao, mas so
-            um deles esta visivel por vez. */}
-        <h1 className={styles.title}>{banner.title}</h1>
+          {banner.subtitle === '' ? null : <p className={styles.subtitle}>{banner.subtitle}</p>}
 
-        {banner.subtitle === '' ? null : <p className={styles.subtitle}>{banner.subtitle}</p>}
-
-        {banner.buttonLabel === '' ? null : (
-          <ButtonLink
-            to={banner.link === '' ? ROUTES.products : banner.link}
-            variant="secondary"
-            className={styles.action}
-            tabIndex={active ? undefined : -1}
-          >
-            {banner.buttonLabel}
-          </ButtonLink>
-        )}
-      </div>
+          {banner.buttonLabel === '' ? null : (
+            <ButtonLink
+              to={banner.link === '' ? ROUTES.products : banner.link}
+              className={styles.action}
+              tabIndex={active ? undefined : -1}
+            >
+              {banner.buttonLabel}
+            </ButtonLink>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -161,18 +208,28 @@ function Slide({ banner, position, total, active }: SlideProps) {
  * lado. Repetir o texto no `alt` faria o leitor de tela anunciar a mesma
  * frase duas vezes.
  */
-function BannerImage({ banner, priority }: { banner: PublicBanner; priority: boolean }) {
+function BannerImage({
+  banner,
+  priority,
+  standalone,
+}: {
+  banner: PublicBanner;
+  priority: boolean;
+  standalone: boolean;
+}) {
   const desktop = imageSrcSet(banner.imageDesktop);
   const mobile = banner.imageMobile === '' ? banner.imageDesktop : banner.imageMobile;
 
   return (
     <picture>
-      {desktop ? <source media="(min-width: 64rem)" srcSet={desktop} sizes="60vw" /> : null}
+      {desktop ? (
+        <source media="(min-width: 64rem)" srcSet={desktop} sizes={standalone ? '100vw' : '60vw'} />
+      ) : null}
 
       <img
         {...imageProps(mobile, 'detail', '100vw')}
         alt=""
-        className={styles.image}
+        className={cx(styles.image, standalone && styles.imageWide)}
         width={1200}
         height={1500}
         loading={priority ? 'eager' : 'lazy'}
@@ -200,7 +257,6 @@ function HeroSkeleton() {
           </div>
 
           <div className={styles.ghostPanel}>
-            <Skeleton width="45%" height="0.75rem" />
             <Skeleton width="85%" height="2.25rem" />
             <Skeleton width="70%" height="1rem" />
             <Skeleton width="10rem" height="var(--control-height)" />
@@ -222,16 +278,15 @@ function HeroSkeleton() {
  */
 function HeroFallback({ storeName }: { storeName: string }) {
   return (
-    <section className={cx(styles.hero, 'on-dark')}>
+    <section className={cx(styles.hero, styles.fallback, 'on-dark')} aria-label={storeName}>
       <div className={styles.panel}>
-        <p className={styles.eyebrow}>{storeName}</p>
         <h1 className={styles.title}>Perfumes e velas selecionados</h1>
 
         <p className={styles.subtitle}>
           Uma selecao curta, escolhida peca a peca. Veja o que esta disponivel agora.
         </p>
 
-        <ButtonLink to={ROUTES.products} variant="secondary" className={styles.action}>
+        <ButtonLink to={ROUTES.products} className={styles.action}>
           Ver a vitrine
         </ButtonLink>
       </div>

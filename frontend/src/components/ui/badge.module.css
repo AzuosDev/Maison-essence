@@ -21,7 +21,7 @@
   text-transform: uppercase;
   white-space: nowrap;
 
-  border-radius: var(--radius-chip);
+  border-radius: var(--radius-pill);
 }
 
 /* O desconto, e o selo neutro de modo geral. */

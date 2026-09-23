@@ -31,7 +31,7 @@
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-soft);
 }
 
 .compactLabel {
@@ -149,7 +149,7 @@
     font-size: var(--text-12);
     font-weight: var(--weight-semibold);
     font-variant-numeric: tabular-nums;
-    color: var(--muted);
+    color: var(--ink-soft);
 
     transition:
       background-color var(--transition),
@@ -161,7 +161,7 @@
     font-size: var(--text-12);
     letter-spacing: var(--tracking-button);
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--ink-soft);
 
     transition: color var(--transition);
   }
