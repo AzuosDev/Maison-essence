@@ -18,6 +18,7 @@ export const AUDIT_ACTIONS = {
   SETTINGS_UPDATED: 'settings.updated',
   PAYMENT_SETTINGS_UPDATED: 'payment-settings.updated',
   PRODUCT_PRICE_CHANGED: 'product.price_changed',
+  CATALOG_IMPORTED: 'catalog.imported',
   ORDER_STATUS_CHANGED: 'order.status_changed',
 } as const;
 
@@ -29,6 +30,7 @@ export const AUDIT_TARGETS = {
   PRODUCT: 'product',
   ORDER: 'order',
   SETTINGS: 'settings',
+  CATALOG: 'catalog',
 } as const;
 
 export type AuditTargetKind = (typeof AUDIT_TARGETS)[keyof typeof AUDIT_TARGETS];

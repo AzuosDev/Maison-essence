@@ -4,6 +4,7 @@ import { AppConfigModule } from '../config/config.module.js';
 import { DatabaseModule } from '../database/database.module.js';
 import { AuditModule } from '../modules/audit/audit.module.js';
 import { AuthModule } from '../modules/auth/auth.module.js';
+import { CatalogImportModule } from '../modules/catalog-import/catalog-import.module.js';
 import {
   Category,
   CategorySchema,
@@ -51,6 +52,8 @@ import { DemoSeedService } from './demo-seed.service.js';
     // BootstrapService nao resolve o AuditService e o seed morre no boot.
     AuditModule,
     AuthModule,
+    // Traz o CatalogImportService para o npm run seed:catalog.
+    CatalogImportModule,
     MongooseModule.forFeature([
       { name: Category.name, schema: CategorySchema },
       { name: Product.name, schema: ProductSchema },

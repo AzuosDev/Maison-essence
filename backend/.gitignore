@@ -9,6 +9,16 @@ coverage/
 
 .vercel/
 
+# Log de rollback da importacao de catalogo: gerado quando o cluster nao
+# suporta transacao, para desfazer uma importacao interrompida.
+.catalog-import/
+
+# PDFs de catalogo de fornecedor (entrada) e fotos extraidas (saida) do
+# extrator de imagens. Binarios grandes que nao pertencem ao git; quem roda o
+# script coloca os PDFs em input/ e le o resultado em output/.
+scripts/catalog-images/input/
+scripts/catalog-images/output/
+
 logs/
 *.log
 npm-debug.log*

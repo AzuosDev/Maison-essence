@@ -42,6 +42,7 @@ acesso" e "Dados de demonstracao").
 ```bash
 npm run seed:superadmin
 npm run seed:demo
+npm run seed:catalog  # opcional: o catalogo de verdade, em vez do de exemplo
 ```
 
 Os dois sao idempotentes por chave natural, entao rodar de novo nao duplica
@@ -76,7 +77,8 @@ src/modules/users/    CRUD de usuarios administrativos e policy de acesso
 src/modules/rate-limit/ teto de chamadas de toda rota, contado no banco
 src/modules/audit/      trilha das acoes sensiveis do painel
 src/modules/          um diretorio por dominio, cada um com seus schemas
-src/seeds/            comandos de primeiro acesso e de dados de exemplo
+src/seeds/            comandos de primeiro acesso, de exemplo e de catalogo
+src/database/seeds/data/ o catalog.json que o seed:catalog importa
 src/schemas.ts        ponto unico de importacao dos schemas
 ```
 
@@ -887,6 +889,162 @@ e um publicId inventado nao resolve em conta nenhuma: renderizaria imagem
 quebrada no lugar do placeholder que o frontend ja sabe mostrar. Pela mesma
 razao a home fica sem banner, que exige uma imagem para existir.
 
+## Importacao do catalogo
+
+```bash
+npm run seed:catalog
+```
+
+Le [`src/database/seeds/data/catalog.json`](src/database/seeds/data/catalog.json)
+e importa categorias e produtos. E o comando da carga inicial e o da
+atualizacao de preco quando o fornecedor manda lista nova — nao o de dados de
+exemplo, que e o `seed:demo`.
+
+O arquivo e um objeto com duas chaves:
+
+```json
+{
+  "categories": [
+    { "slug": "perfumes", "name": "Perfumes", "parentSlug": null, "order": 1, "isActive": true }
+  ],
+  "products": [
+    {
+      "name": "Khamrah Qahwa",
+      "slug": "khamrah-qahwa",
+      "brand": null,
+      "description": "",
+      "categorySlugs": ["arabes-masculinos"],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0036",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+As categorias entram primeiro, as raizes (`parentSlug: null`) antes das filhas,
+e so entao os produtos — que resolvem `categorySlugs` para os `_id` reais. Os
+campos de metadados que o arquivo carrega (`$schema`, `generatedAt`,
+`currency`, `priceUnit`, `notes`) sao lidos por quem abre o arquivo e ignorados
+pela importacao. `sourceCatalog` tambem: o produto nao tem campo para guardar
+de qual lista de fornecedor a linha veio, e inventar um mudaria o formato que o
+painel le.
+
+### O vazio do arquivo nunca apaga o que existe
+
+Esta e a regra que da forma ao resto. A lista do fornecedor traz descricao
+vazia, foto nenhuma e estoque zero em todas as linhas; o banco, depois de umas
+semanas de painel, tem descricao escrita a mao, fotos subidas uma a uma e o
+estoque contado na prateleira. Gravar o arquivo por cima apagaria tudo isso de
+uma vez, em silencio.
+
+| Campo                             | Numa reimportacao                          |
+| --------------------------------- | ------------------------------------------ |
+| `name`, `parentSlug`              | o arquivo manda                            |
+| `priceCents`                      | o arquivo manda — **exceto** `0`           |
+| `brand`, `description`, `images`, `tags`, `categorySlugs`, `label` | o arquivo manda quando traz algo; vazio preserva o banco |
+| `stock`, `compareAtPriceCents`    | o arquivo manda quando traz algo; `0`/`null` preserva o banco |
+| `isActive`, `isFeatured`, `isReadyToShip`, `allowBackorder` | so na criacao; depois sao do painel |
+| `order` e `image` da categoria    | so na criacao; depois sao do menu do painel |
+
+Zero nao e preco de nada: uma exportacao quebrada, cheia de zeros, nao pode
+zerar o catalogo da loja. E o produto que a dona destacou na home continua
+destacado, e o que ela tirou de linha nao volta a vender porque a lista do
+fornecedor ainda o cita.
+
+### Variantes casam pelo SKU
+
+A variante que o arquivo traz e o banco tem e atualizada **no lugar**, com o
+mesmo `_id` — e o `_id` que o pedido guarda em `items.variantId`, e troca-lo
+quebraria a devolucao de estoque do cancelamento. A que so o arquivo traz
+nasce. A que so o banco tem e **desativada, nunca apagada**, pelo mesmo motivo.
+
+### Uma entrada ruim nao derruba as outras
+
+Cada produto e validado pelo `CreateProductDto` e cada categoria pelo
+`CreateCategoryDto` — os mesmos das rotas do painel, com as mesmas opcoes do
+pipe global, nao uma copia. Reprovar vira uma linha no relatorio, com slug e
+motivo, e a importacao segue para a proxima. Uma lista de 269 produtos com um
+preco digitado errado precisa importar 268.
+
+### Flags
+
+```bash
+npm run seed:catalog -- --dry-run            # simula e imprime o relatorio, sem gravar
+npm run seed:catalog -- --only=asad-elixir   # um produto so, para testar
+npm run seed:catalog -- --file=../lista.json # outro arquivo
+```
+
+`--only` limita os produtos; as categorias continuam entrando, senao o produto
+escolhido nao teria onde se encaixar.
+
+### O relatorio
+
+```
+Importacao concluida em 6.4s.
+Categorias  21 criadas, 0 atualizadas, 0 com falha
+Produtos    269 criados, 0 atualizados, 0 com falha
+Variantes   269 criadas, 0 desativadas
+Transacao   nao suportada por este cluster; gravado direto.
+
+Falharam 1:
+  asad-elixir: variants.0.priceCents: o preco deve ser um inteiro em centavos.
+```
+
+### Transacao, e o que fazer sem ela
+
+Transacao no Mongo exige replica set. O Atlas tem, e la a importacao inteira
+entra ou nao entra nada. Um `mongod` solto — o do desenvolvimento e o dos
+testes — nao tem, e nesse caso a importacao grava direto e deixa os ids do que
+criou em `.catalog-import/catalog-import-<timestamp>.json`, que e a unica forma
+de desfazer uma importacao que parou no meio.
+
+### Pela rota, para quem nao tem shell
+
+```
+POST /api/v1/admin/catalog/import?dryRun=true&only=<slug>
+```
+
+Restrita ao `SUPER_ADMIN`: uma importacao reescreve o preco do catalogo inteiro
+numa chamada, o que a deixa um degrau acima de `MANAGES_STORE`, que edita
+produto a produto. Faz o mesmo que o comando, a partir do mesmo servico, com
+tres diferencas que a Vercel impoe:
+
+- **Corpo ate 1 MB**, contra os 256 KB do resto da API. O teto sobe em um
+  caminho so; subi-lo para toda rota custaria memoria e tempo de funcao em
+  cada requisicao.
+- **Lotes de 50 produtos**, com orcamento de tempo. Chegando no teto, a
+  importacao para entre dois lotes — com produtos inteiros gravados — e
+  devolve `remaining`. Como tudo e idempotente pelo slug, mandar o mesmo
+  arquivo de novo termina o servico sem duplicar nada.
+- **O log de rollback vai no corpo da resposta**, e nao em arquivo: nao ha
+  disco para escrever na funcao.
+
+O arquivo pode ser colado inteiro, com `$schema` e tudo. A chave iniciada por
+cifrao seria recusada pelo guard de operadores do Mongo; ela e removida no
+parser desta rota, no nivel de cima do corpo, sem abrir excecao na defesa
+(ver `catalogImportParser` em [`src/bootstrap.ts`](src/bootstrap.ts)).
+
+A importacao deixa uma entrada `catalog.imported` na trilha de auditoria, com
+quem importou e os numeros do relatorio. Uma entrada por importacao, e nao uma
+por produto: quem investiga um preco quer saber que o catalogo foi importado,
+por quem e quando.
+
 ## Preparando o MongoDB Atlas
 
 1. **Cluster.** Em [cloud.mongodb.com](https://cloud.mongodb.com), crie um
@@ -1018,6 +1176,7 @@ a troca de senha — que sao os tres criterios de aceite do deploy.
 | `build`            | Compila para `dist/`                       |
 | `seed:superadmin`  | Cria o primeiro SUPER_ADMIN; idempotente   |
 | `seed:demo`        | Popula catalogo, entrega e configuracoes   |
+| `seed:catalog`     | Importa `catalog.json`; idempotente pelo slug |
 | `typecheck`        | `tsc --noEmit`                             |
 | `test`             | Testes unitarios                           |
 | `test:e2e`         | Testes de ponta a ponta                    |

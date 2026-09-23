@@ -1,4 +1,5 @@
 import { ConfigService } from '@nestjs/config';
+import { Logger } from '@nestjs/common';
 import type { INestApplicationContext } from '@nestjs/common';
 import type { Connection } from 'mongoose';
 import mongoose from 'mongoose';
@@ -25,6 +26,7 @@ import {
   UserSchema,
 } from '../src/schemas.js';
 import { DemoSeedRefusedError, DemoSeedService } from '../src/seeds/demo-seed.service.js';
+import { parseArgs, runCatalogImport } from '../src/seeds/catalog-command.js';
 import { runSeed } from '../src/seeds/seed-runner.js';
 
 /**
@@ -227,6 +229,65 @@ describe('seeds (e2e)', () => {
     });
   });
 
+  describe('seed:catalog', () => {
+    /** O comando inteiro, flags incluidas, pelo mesmo runner do npm run. */
+    function catalogSeed(argv: string[] = []) {
+      return seed((app) => runCatalogImport(app, new Logger('seed:catalog'), parseArgs(argv)));
+    }
+
+    it('le o arquivo padrao e importa o catalogo inteiro', async () => {
+      const report = await catalogSeed();
+
+      expect(report.failures).toEqual([]);
+      expect(report.products.created).toBe(269);
+      expect(await models.products.countDocuments({})).toBe(269);
+      expect(await models.categories.countDocuments({})).toBe(21);
+    }, 120_000);
+
+    it('rodar duas vezes cria zero na segunda e nao duplica', async () => {
+      await catalogSeed();
+
+      const second = await catalogSeed();
+
+      expect(second.products).toMatchObject({ created: 0, updated: 269, failed: 0 });
+      expect(await models.products.countDocuments({})).toBe(269);
+    }, 180_000);
+
+    it('--dry-run nao grava nada', async () => {
+      const report = await catalogSeed(['--dry-run']);
+
+      expect(report.dryRun).toBe(true);
+      expect(report.products.created).toBe(269);
+      expect(await models.products.countDocuments({})).toBe(0);
+    }, 120_000);
+
+    it('--only importa um produto so', async () => {
+      const report = await catalogSeed(['--only=khamrah-qahwa']);
+
+      expect(report.products.created).toBe(1);
+      expect(await models.products.countDocuments({})).toBe(1);
+      // As categorias continuam entrando: sem elas o produto nao teria onde
+      // se encaixar.
+      expect(await models.categories.countDocuments({})).toBe(21);
+    }, 60_000);
+
+    it('--file aponta outro arquivo, e o inexistente vira frase util', async () => {
+      await expect(
+        catalogSeed(['--file=./nao-existe.json']),
+      ).rejects.toThrow('Nao encontrei o arquivo');
+    });
+
+    it('sem transacao, deixa o log de rollback com os ids criados', async () => {
+      // O mongodb-memory-server e um mongod solto: nao ha replica set, logo
+      // nao ha transacao. E exatamente nesse cluster que uma importacao pela
+      // metade fica gravada, e o log e a unica forma de desfaze-la.
+      const report = await catalogSeed(['--only=khamrah-qahwa']);
+
+      expect(report.transactional).toBe(false);
+      expect(report.rollback?.productIds).toHaveLength(1);
+      expect(report.rollback?.categoryIds).toHaveLength(21);
+    }, 60_000);
+  });
   it('os dois seeds convivem: o painel tem dono e a loja tem catalogo', async () => {
     await bootstrapSuperAdmin();
     await seed((app) => app.get(DemoSeedService).run({ force: false }));

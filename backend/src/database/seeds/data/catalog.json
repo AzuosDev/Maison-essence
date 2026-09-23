@@ -1,0 +1,7426 @@
+{
+  "$schema": "maison-essence/catalog@1",
+  "generatedAt": "2026-09-22",
+  "currency": "BRL",
+  "priceUnit": "cents",
+  "notes": [
+    "Precos sao preco de venda ao consumidor, conforme confirmado.",
+    "stock vem 0 em todos os itens: a dona ajusta no painel.",
+    "images vazio: preenchido pelo script de extracao dos PDFs.",
+    "description vazio: preencher no painel ou por geracao posterior."
+  ],
+  "categories": [
+    {
+      "slug": "perfumes",
+      "name": "Perfumes",
+      "parentSlug": null,
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "slug": "arabes-masculinos",
+      "name": "Árabes Masculinos",
+      "parentSlug": "perfumes",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "slug": "arabes-femininos",
+      "name": "Árabes Femininos",
+      "parentSlug": "perfumes",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "slug": "importados-masculinos",
+      "name": "Importados Masculinos",
+      "parentSlug": "perfumes",
+      "order": 3,
+      "isActive": true
+    },
+    {
+      "slug": "importados-femininos",
+      "name": "Importados Femininos",
+      "parentSlug": "perfumes",
+      "order": 4,
+      "isActive": true
+    },
+    {
+      "slug": "miniaturas",
+      "name": "Miniaturas 25ml",
+      "parentSlug": null,
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "slug": "miniaturas-masculinas",
+      "name": "Miniaturas Masculinas",
+      "parentSlug": "miniaturas",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "slug": "miniaturas-femininas",
+      "name": "Miniaturas Femininas",
+      "parentSlug": "miniaturas",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "slug": "body-splash",
+      "name": "Body Splash",
+      "parentSlug": null,
+      "order": 3,
+      "isActive": true
+    },
+    {
+      "slug": "body-splash-masculino",
+      "name": "Body Splash Masculino",
+      "parentSlug": "body-splash",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "slug": "body-splash-feminino",
+      "name": "Body Splash Feminino",
+      "parentSlug": "body-splash",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "slug": "body-mist",
+      "name": "Body Mist",
+      "parentSlug": null,
+      "order": 4,
+      "isActive": true
+    },
+    {
+      "slug": "hidratantes",
+      "name": "Hidratantes",
+      "parentSlug": null,
+      "order": 5,
+      "isActive": true
+    },
+    {
+      "slug": "hidratante-masculino",
+      "name": "Hidratante Corporal Masculino",
+      "parentSlug": "hidratantes",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "slug": "hidratante-feminino",
+      "name": "Hidratante Corporal Feminino",
+      "parentSlug": "hidratantes",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "slug": "pasta-hidratante-masculina",
+      "name": "Pasta Hidratante Masculina",
+      "parentSlug": "hidratantes",
+      "order": 3,
+      "isActive": true
+    },
+    {
+      "slug": "pasta-hidratante-feminina",
+      "name": "Pasta Hidratante Feminina",
+      "parentSlug": "hidratantes",
+      "order": 4,
+      "isActive": true
+    },
+    {
+      "slug": "desodorantes",
+      "name": "Desodorantes",
+      "parentSlug": null,
+      "order": 6,
+      "isActive": true
+    },
+    {
+      "slug": "desodorante-masculino",
+      "name": "Desodorante Masculino",
+      "parentSlug": "desodorantes",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "slug": "desodorante-feminino",
+      "name": "Desodorante Feminino",
+      "parentSlug": "desodorantes",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "slug": "kits",
+      "name": "Kits",
+      "parentSlug": null,
+      "order": 7,
+      "isActive": true
+    }
+  ],
+  "products": [
+    {
+      "name": "Asad Tradicional",
+      "slug": "asad-tradicional",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0001",
+          "label": "",
+          "priceCents": 18500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Asad Zanzibar",
+      "slug": "asad-zanzibar",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0002",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Asad Elixir",
+      "slug": "asad-elixir",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0003",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Al Noble Safeer",
+      "slug": "al-noble-safeer",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0004",
+          "label": "",
+          "priceCents": 13500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Al Noble Ameer",
+      "slug": "al-noble-ameer",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0005",
+          "label": "",
+          "priceCents": 13500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Al Noble Wazeer",
+      "slug": "al-noble-wazeer",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0006",
+          "label": "",
+          "priceCents": 13500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Gold",
+      "slug": "fakhar-gold",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0007",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Platin",
+      "slug": "fakhar-platin",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0008",
+          "label": "",
+          "priceCents": 13500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Black",
+      "slug": "fakhar-black",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0009",
+          "label": "",
+          "priceCents": 17000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Philos Pura",
+      "slug": "philos-pura",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0010",
+          "label": "",
+          "priceCents": 15000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Rayhaan Elixir",
+      "slug": "rayhaan-elixir",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0011",
+          "label": "",
+          "priceCents": 26000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Jean Lowe Fantasme",
+      "slug": "jean-lowe-fantasme",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0012",
+          "label": "",
+          "priceCents": 17500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Spectre Amazonite",
+      "slug": "spectre-amazonite",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0013",
+          "label": "",
+          "priceCents": 12500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Spectre Ghost French Avenue",
+      "slug": "spectre-ghost-french-avenue",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0014",
+          "label": "",
+          "priceCents": 26500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Philos Opus Noir",
+      "slug": "philos-opus-noir",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0015",
+          "label": "",
+          "priceCents": 8500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Winners Trophy Gold",
+      "slug": "winners-trophy-gold",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0016",
+          "label": "",
+          "priceCents": 15000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Niche Emarati Khanjar",
+      "slug": "niche-emarati-khanjar",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0017",
+          "label": "",
+          "priceCents": 29000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Eternal Vanille",
+      "slug": "eternal-vanille",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0018",
+          "label": "",
+          "priceCents": 20500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Attar Gold",
+      "slug": "attar-gold",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0019",
+          "label": "",
+          "priceCents": 22500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Dream of Haze",
+      "slug": "dream-of-haze",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0020",
+          "label": "",
+          "priceCents": 26000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "The Kingdom",
+      "slug": "the-kingdom",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0021",
+          "label": "",
+          "priceCents": 17000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hawas For Him",
+      "slug": "hawas-for-him",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0022",
+          "label": "",
+          "priceCents": 18500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Musamam Black Intense",
+      "slug": "musamam-black-intense",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0023",
+          "label": "",
+          "priceCents": 32500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Jean Lowe Immortal",
+      "slug": "jean-lowe-immortal",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0024",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Unknown No Deep Woods",
+      "slug": "unknown-no-deep-woods",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0025",
+          "label": "",
+          "priceCents": 10500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sheriff",
+      "slug": "sheriff",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0026",
+          "label": "",
+          "priceCents": 13000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Liquid Brun",
+      "slug": "liquid-brun",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0027",
+          "label": "",
+          "priceCents": 27000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Bidaya Maktub La Vie",
+      "slug": "bidaya-maktub-la-vie",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0028",
+          "label": "",
+          "priceCents": 21000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Bidaya Habibi King",
+      "slug": "bidaya-habibi-king",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0029",
+          "label": "",
+          "priceCents": 21000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Dark Aoud",
+      "slug": "dark-aoud",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0030",
+          "label": "",
+          "priceCents": 10000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Salvo EDP",
+      "slug": "salvo-edp",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0031",
+          "label": "",
+          "priceCents": 14500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Rayhaan Cordova",
+      "slug": "rayhaan-cordova",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0032",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Mishlah",
+      "slug": "mishlah",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0033",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Khamrah Dukhan",
+      "slug": "khamrah-dukhan",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0034",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Khamrah",
+      "slug": "khamrah",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0035",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Khamrah Qahwa",
+      "slug": "khamrah-qahwa",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0036",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Odyssey Mandarin Sky",
+      "slug": "odyssey-mandarin-sky",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0037",
+          "label": "",
+          "priceCents": 20500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Odyssey Limoni Fresh",
+      "slug": "odyssey-limoni-fresh",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0038",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Afnan 9PM",
+      "slug": "afnan-9pm",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0039",
+          "label": "",
+          "priceCents": 19000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Afnan Supremacy Gold",
+      "slug": "afnan-supremacy-gold",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0040",
+          "label": "",
+          "priceCents": 20000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Afnan Turathi Eletric",
+      "slug": "afnan-turathi-eletric",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0041",
+          "label": "",
+          "priceCents": 25500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Maison So Candid Pour Homme",
+      "slug": "maison-so-candid-pour-homme",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0042",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Maison Glacier Bold",
+      "slug": "maison-glacier-bold",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0043",
+          "label": "",
+          "priceCents": 10500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Special Oud",
+      "slug": "special-oud",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0044",
+          "label": "",
+          "priceCents": 9000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Maison Jean Lowe Summer Vibes",
+      "slug": "maison-jean-lowe-summer-vibes",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0045",
+          "label": "",
+          "priceCents": 17500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit Intense",
+      "slug": "club-de-nuit-intense",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0046",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit Iconic",
+      "slug": "club-de-nuit-iconic",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0047",
+          "label": "",
+          "priceCents": 24000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Philos Shine",
+      "slug": "philos-shine",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0048",
+          "label": "",
+          "priceCents": 10000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Art of Universe",
+      "slug": "art-of-universe",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0049",
+          "label": "",
+          "priceCents": 21500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Attar",
+      "slug": "attar",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0050",
+          "label": "",
+          "priceCents": 11000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pisa",
+      "slug": "pisa",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0051",
+          "label": "",
+          "priceCents": 25000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "His Confession",
+      "slug": "his-confession",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0052",
+          "label": "",
+          "priceCents": 21500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Al Oud Glory Black",
+      "slug": "badee-al-oud-glory-black",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0053",
+          "label": "",
+          "priceCents": 15000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Galactic Men",
+      "slug": "galactic-men",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0054",
+          "label": "",
+          "priceCents": 10000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Khamrah Waha",
+      "slug": "khamrah-waha",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0055",
+          "label": "",
+          "priceCents": 38500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Jean Lowe Vibe",
+      "slug": "jean-lowe-vibe",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0056",
+          "label": "",
+          "priceCents": 17500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Turathi Blue",
+      "slug": "turathi-blue",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0057",
+          "label": "",
+          "priceCents": 23500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Vulcan Feu",
+      "slug": "vulcan-feu",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0058",
+          "label": "",
+          "priceCents": 31000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hayaati Preto",
+      "slug": "hayaati-preto",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0059",
+          "label": "",
+          "priceCents": 10000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "King of Arabia",
+      "slug": "king-of-arabia",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0060",
+          "label": "",
+          "priceCents": 20000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Vintage Radio",
+      "slug": "vintage-radio",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0061",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hawas Black",
+      "slug": "hawas-black",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0062",
+          "label": "",
+          "priceCents": 23500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Oud Mystery",
+      "slug": "oud-mystery",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0063",
+          "label": "",
+          "priceCents": 13000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Rayhaan Dark Leather",
+      "slug": "rayhaan-dark-leather",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0064",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Rayhaan Lion",
+      "slug": "rayhaan-lion",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0065",
+          "label": "",
+          "priceCents": 19500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Rayhaan Ocean Rush",
+      "slug": "rayhaan-ocean-rush",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0066",
+          "label": "",
+          "priceCents": 18500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Rayhaan Pacific",
+      "slug": "rayhaan-pacific",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0067",
+          "label": "",
+          "priceCents": 21000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Qaed Preto",
+      "slug": "qaed-preto",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0068",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Salvo Elixir",
+      "slug": "salvo-elixir",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0069",
+          "label": "",
+          "priceCents": 13000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Asad Bourbon",
+      "slug": "asad-bourbon",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0070",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Elixir",
+      "slug": "yara-elixir",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0071",
+          "label": "",
+          "priceCents": 19500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Moi",
+      "slug": "yara-moi",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0072",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Tous",
+      "slug": "yara-tous",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0073",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Rose",
+      "slug": "yara-rose",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0074",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Candy",
+      "slug": "yara-candy",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0075",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Angham",
+      "slug": "angham",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0076",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Ajwad",
+      "slug": "ajwad",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0077",
+          "label": "",
+          "priceCents": 11000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Dalal",
+      "slug": "dalal",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0078",
+          "label": "",
+          "priceCents": 30000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sakeena",
+      "slug": "sakeena",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0079",
+          "label": "",
+          "priceCents": 13000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Mallow Madness",
+      "slug": "mallow-madness",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0080",
+          "label": "",
+          "priceCents": 28000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Choco Overdose",
+      "slug": "choco-overdose",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0081",
+          "label": "",
+          "priceCents": 28000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Whipped Pleasure",
+      "slug": "whipped-pleasure",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0082",
+          "label": "",
+          "priceCents": 28000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Vanilla Freak",
+      "slug": "vanilla-freak",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0083",
+          "label": "",
+          "priceCents": 28000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Cookie Crave",
+      "slug": "cookie-crave",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0084",
+          "label": "",
+          "priceCents": 28000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Berry On Top",
+      "slug": "berry-on-top",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0085",
+          "label": "",
+          "priceCents": 28000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Bad Femme",
+      "slug": "bad-femme",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0086",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Afeef",
+      "slug": "afeef",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0087",
+          "label": "",
+          "priceCents": 45000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Victoria Lattafa",
+      "slug": "victoria-lattafa",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0088",
+          "label": "",
+          "priceCents": 18000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Atheeri",
+      "slug": "atheeri",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0089",
+          "label": "",
+          "priceCents": 41500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Ajwad Pink",
+      "slug": "ajwad-pink",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0090",
+          "label": "",
+          "priceCents": 11000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "La Vivacité Intensa",
+      "slug": "la-vivacite-intensa",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0091",
+          "label": "",
+          "priceCents": 10500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Al Watani Intense",
+      "slug": "al-watani-intense",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0092",
+          "label": "",
+          "priceCents": 11000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Durrat Love",
+      "slug": "durrat-love",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0093",
+          "label": "",
+          "priceCents": 21000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Eclaire Pistache",
+      "slug": "eclaire-pistache",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0094",
+          "label": "",
+          "priceCents": 19500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Maison Intrude",
+      "slug": "maison-intrude",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0095",
+          "label": "",
+          "priceCents": 12500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Thahaani",
+      "slug": "thahaani",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0096",
+          "label": "",
+          "priceCents": 12000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sabah Valentine",
+      "slug": "sabah-valentine",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0097",
+          "label": "",
+          "priceCents": 21000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit Maleka",
+      "slug": "club-de-nuit-maleka",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0098",
+          "label": "",
+          "priceCents": 25500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Maison Luminous Vivid",
+      "slug": "maison-luminous-vivid",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0099",
+          "label": "",
+          "priceCents": 9000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Maison La Rouge Baroque Extrait",
+      "slug": "maison-la-rouge-baroque-extrait",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0100",
+          "label": "",
+          "priceCents": 10500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Her Confession",
+      "slug": "her-confession",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0101",
+          "label": "",
+          "priceCents": 19500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Manaal Zafaran",
+      "slug": "manaal-zafaran",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0102",
+          "label": "",
+          "priceCents": 20500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yum Yum",
+      "slug": "yum-yum",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0103",
+          "label": "",
+          "priceCents": 25500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Amethyst",
+      "slug": "badee-amethyst",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0104",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Queen of Arabia",
+      "slug": "queen-of-arabia",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0105",
+          "label": "",
+          "priceCents": 32000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Mayar",
+      "slug": "mayar",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0106",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club Women",
+      "slug": "club-women",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0107",
+          "label": "",
+          "priceCents": 22500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sabah Sugar",
+      "slug": "sabah-sugar",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0108",
+          "label": "",
+          "priceCents": 11000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit Untold",
+      "slug": "club-de-nuit-untold",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0109",
+          "label": "",
+          "priceCents": 25000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sabah Garden of Eden",
+      "slug": "sabah-garden-of-eden",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0110",
+          "label": "",
+          "priceCents": 24000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sublime",
+      "slug": "sublime",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0111",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Noble Blush",
+      "slug": "noble-blush",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0112",
+          "label": "",
+          "priceCents": 16000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Emeer",
+      "slug": "emeer",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0113",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sabah Delilah",
+      "slug": "sabah-delilah",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0114",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Ameerati Vermelho",
+      "slug": "ameerati-vermelho",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0115",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Al Oud Honor",
+      "slug": "badee-al-oud-honor",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0116",
+          "label": "",
+          "priceCents": 15500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "La Rouge Baroque",
+      "slug": "la-rouge-baroque",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0117",
+          "label": "",
+          "priceCents": 9500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Rose",
+      "slug": "fakhar-rose",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0118",
+          "label": "",
+          "priceCents": 20000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Opera Rouge",
+      "slug": "opera-rouge",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0119",
+          "label": "",
+          "priceCents": 9000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Emaan",
+      "slug": "emaan",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0120",
+          "label": "",
+          "priceCents": 14000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Haya",
+      "slug": "haya",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0121",
+          "label": "",
+          "priceCents": 18500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Durrat",
+      "slug": "durrat",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0122",
+          "label": "",
+          "priceCents": 12000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Eclaire",
+      "slug": "eclaire",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0123",
+          "label": "",
+          "priceCents": 22000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Philos Centro",
+      "slug": "philos-centro",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0124",
+          "label": "",
+          "priceCents": 9500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Nebras Elixir",
+      "slug": "nebras-elixir",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0125",
+          "label": "",
+          "priceCents": 24000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Veneno Bianco",
+      "slug": "veneno-bianco",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0126",
+          "label": "",
+          "priceCents": 32000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Teriaq",
+      "slug": "teriaq",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "arabes-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0127",
+          "label": "",
+          "priceCents": 20000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "212 VIP Black 200ml",
+      "slug": "212-vip-black-200ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0128",
+          "label": "",
+          "priceCents": 61000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Silver Scent",
+      "slug": "silver-scent",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0129",
+          "label": "",
+          "priceCents": 15000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "212 Men Heroes 90ml",
+      "slug": "212-men-heroes-90ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0130",
+          "label": "",
+          "priceCents": 44000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Silver Scent Intense 100ml",
+      "slug": "silver-scent-intense-100ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0131",
+          "label": "",
+          "priceCents": 17000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Bleu de Chanel 150ml",
+      "slug": "bleu-de-chanel-150ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0132",
+          "label": "",
+          "priceCents": 150000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Invictus 200ml",
+      "slug": "invictus-200ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0133",
+          "label": "",
+          "priceCents": 53000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Invictus Victory 200ml",
+      "slug": "invictus-victory-200ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0134",
+          "label": "",
+          "priceCents": 67000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "CH Men 200ml",
+      "slug": "ch-men-200ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0135",
+          "label": "",
+          "priceCents": 53000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Invictus Parfum 200ml",
+      "slug": "invictus-parfum-200ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0136",
+          "label": "",
+          "priceCents": 59000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "212 VIP Men 200ml",
+      "slug": "212-vip-men-200ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-masculinos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0137",
+          "label": "",
+          "priceCents": 56500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fantasy Britney Spears",
+      "slug": "fantasy-britney-spears",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0138",
+          "label": "",
+          "priceCents": 21000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Jadore 100ml",
+      "slug": "jadore-100ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0139",
+          "label": "",
+          "priceCents": 81000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "La Vie Est Belle 100ml",
+      "slug": "la-vie-est-belle-100ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "importados-femininos"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0140",
+          "label": "",
+          "priceCents": 53500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Khamrah Qahwa 200ml",
+      "slug": "desodorante-khamrah-qahwa-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0141",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Khamrah 200ml",
+      "slug": "desodorante-khamrah-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0142",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Qaed Al Fursan 200ml",
+      "slug": "desodorante-qaed-al-fursan-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0143",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Fakhar Platinum 200ml",
+      "slug": "desodorante-fakhar-platinum-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0144",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Qaed Branco 200ml",
+      "slug": "desodorante-qaed-branco-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0145",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Amethyst 200ml",
+      "slug": "desodorante-amethyst-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0146",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Ameraat Al Arab 200ml",
+      "slug": "desodorante-ameraat-al-arab-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0147",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Mayar 200ml",
+      "slug": "desodorante-mayar-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0148",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Desodorante Ameerat Rose 200ml",
+      "slug": "desodorante-ameerat-rose-200ml",
+      "brand": "Lattafa",
+      "description": "",
+      "categorySlugs": [
+        "desodorante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0149",
+          "label": "200ml",
+          "priceCents": 2800,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Asad 25ml",
+      "slug": "kit-asad-25ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0150",
+          "label": "",
+          "priceCents": 27000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Asad Completo",
+      "slug": "kit-asad-completo",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0151",
+          "label": "",
+          "priceCents": 26000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Yara 5ml",
+      "slug": "kit-yara-5ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0152",
+          "label": "",
+          "priceCents": 9500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Masa 3 Itens",
+      "slug": "kit-masa-3-itens",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0153",
+          "label": "",
+          "priceCents": 25000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Badee Al Oud 5ml",
+      "slug": "kit-badee-al-oud-5ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0154",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Badee Al Oud 25ml",
+      "slug": "kit-badee-al-oud-25ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0155",
+          "label": "",
+          "priceCents": 18000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Kit Yara 25ml",
+      "slug": "kit-yara-25ml",
+      "brand": null,
+      "description": "",
+      "categorySlugs": [
+        "kits"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0156",
+          "label": "",
+          "priceCents": 23000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Delilah 250ml",
+      "slug": "body-mist-delilah-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0157",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Opera Noir 250ml",
+      "slug": "body-mist-opera-noir-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0158",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Opera Rouge 250ml",
+      "slug": "body-mist-opera-rouge-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0159",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist La Voie 250ml",
+      "slug": "body-mist-la-voie-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0160",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist La Vivacité 250ml",
+      "slug": "body-mist-la-vivacite-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0161",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist So Candid 250ml",
+      "slug": "body-mist-so-candid-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0162",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Love Spark 250ml",
+      "slug": "body-mist-love-spark-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0163",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Mia Dolcezza 250ml",
+      "slug": "body-mist-mia-dolcezza-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0164",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Pink Eclipse 250ml",
+      "slug": "body-mist-pink-eclipse-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0165",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Desirable 250ml",
+      "slug": "body-mist-desirable-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0166",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Bad Femme 250ml",
+      "slug": "body-mist-bad-femme-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0167",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Alive Now 250ml",
+      "slug": "body-mist-alive-now-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0168",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Pink Shimmer Secret 250ml",
+      "slug": "body-mist-pink-shimmer-secret-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0169",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Mist Chants 250ml",
+      "slug": "body-mist-chants-250ml",
+      "brand": "Maison Alhambra",
+      "description": "",
+      "categorySlugs": [
+        "body-mist"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Originais",
+      "variants": [
+        {
+          "sku": "ME-0170",
+          "label": "250ml",
+          "priceCents": 5500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Rose 25ml",
+      "slug": "fakhar-rose-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0171",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Tous 25ml",
+      "slug": "yara-tous-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0172",
+          "label": "25ml",
+          "priceCents": 4700,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara 25ml",
+      "slug": "yara-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0173",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Amber Rouge 25ml",
+      "slug": "amber-rouge-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0174",
+          "label": "25ml",
+          "priceCents": 5000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Royal Amber 25ml",
+      "slug": "royal-amber-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0175",
+          "label": "25ml",
+          "priceCents": 5000,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Tharwah Gold 25ml",
+      "slug": "tharwah-gold-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0176",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Al Oud Amethyst 25ml",
+      "slug": "badee-al-oud-amethyst-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0177",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Al Oud Sublime 25ml",
+      "slug": "badee-al-oud-sublime-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0178",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Al Oud Honor & Glory 25ml",
+      "slug": "badee-al-oud-honor-e-glory-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0179",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Souvenir Floral 25ml",
+      "slug": "souvenir-floral-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0180",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Emeer 25ml",
+      "slug": "emeer-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0181",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Moi 25ml",
+      "slug": "yara-moi-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0182",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Historic Doria 25ml",
+      "slug": "historic-doria-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0183",
+          "label": "25ml",
+          "priceCents": 5400,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Musamam White 25ml",
+      "slug": "musamam-white-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0184",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sabah Al Ward 25ml",
+      "slug": "sabah-al-ward-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0185",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Yara Candy 25ml",
+      "slug": "yara-candy-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0186",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Blush Noble 25ml",
+      "slug": "blush-noble-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0187",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Lattafa Nebras 25ml",
+      "slug": "lattafa-nebras-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0188",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Emaan 25ml",
+      "slug": "emaan-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0189",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Ajwad 25ml",
+      "slug": "ajwad-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0190",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Dania 25ml",
+      "slug": "dania-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0191",
+          "label": "25ml",
+          "priceCents": 4900,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Sakeena 25ml",
+      "slug": "sakeena-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-femininas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0192",
+          "label": "25ml",
+          "priceCents": 4700,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Al Noble Wazeer 25ml",
+      "slug": "al-noble-wazeer-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0193",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Badee Al Oud Oud For Glory 25ml",
+      "slug": "badee-al-oud-oud-for-glory-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0194",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Black 25ml",
+      "slug": "fakhar-black-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0195",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Fakhar Gold 25ml",
+      "slug": "fakhar-gold-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0196",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Asad 25ml",
+      "slug": "asad-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0197",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Khamrah 25ml",
+      "slug": "khamrah-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0198",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit Précieux 25ml",
+      "slug": "club-de-nuit-precieux-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0199",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Attar Al Wesal 25ml",
+      "slug": "attar-al-wesal-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0200",
+          "label": "25ml",
+          "priceCents": 5400,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit Iconic 25ml",
+      "slug": "club-de-nuit-iconic-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0201",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "The Kingdom Men 25ml",
+      "slug": "the-kingdom-men-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0202",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "9PM Afnan 25ml",
+      "slug": "9pm-afnan-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0203",
+          "label": "25ml",
+          "priceCents": 4600,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Spectre Ghost 25ml",
+      "slug": "spectre-ghost-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0204",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Asad Bourbon 25ml",
+      "slug": "asad-bourbon-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0205",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Al Noble Ameer 25ml",
+      "slug": "al-noble-ameer-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0206",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Club de Nuit 25ml",
+      "slug": "club-de-nuit-25ml",
+      "brand": "Arabic Collection",
+      "description": "",
+      "categorySlugs": [
+        "miniaturas-masculinas"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Arabic Collection",
+      "variants": [
+        {
+          "sku": "ME-0207",
+          "label": "25ml",
+          "priceCents": 4500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Fakhar Rose",
+      "slug": "body-splash-fakhar-rose",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0208",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Yara",
+      "slug": "body-splash-yara",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0209",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Sabah Al Ward",
+      "slug": "body-splash-sabah-al-ward",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0210",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Sabah Sugar",
+      "slug": "body-splash-sabah-sugar",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0211",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Club de Nuit Woman",
+      "slug": "body-splash-club-de-nuit-woman",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0212",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Angel",
+      "slug": "body-splash-angel",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0213",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash La Bomba",
+      "slug": "body-splash-la-bomba",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0214",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Atheeri",
+      "slug": "body-splash-atheeri",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0215",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Afeef",
+      "slug": "body-splash-afeef",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0216",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Royal Amber",
+      "slug": "body-splash-royal-amber",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0217",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Veneno Bianco",
+      "slug": "body-splash-veneno-bianco",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0218",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Yara Moi",
+      "slug": "body-splash-yara-moi",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0219",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Yara Candy",
+      "slug": "body-splash-yara-candy",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0220",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Xerjoff",
+      "slug": "body-splash-xerjoff",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0221",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Victoria",
+      "slug": "body-splash-victoria",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0222",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Club de Nuit Maleka",
+      "slug": "body-splash-club-de-nuit-maleka",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0223",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Asad Elixir",
+      "slug": "body-splash-asad-elixir",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0224",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Fakhar Black",
+      "slug": "body-splash-fakhar-black",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0225",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Asad",
+      "slug": "body-splash-asad",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0226",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Asad Bourbon",
+      "slug": "body-splash-asad-bourbon",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0227",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Asad Zanzibar",
+      "slug": "body-splash-asad-zanzibar",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0228",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Liquid Brun",
+      "slug": "body-splash-liquid-brun",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0229",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Club de Nuit",
+      "slug": "body-splash-club-de-nuit",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0230",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Fakhar Gold",
+      "slug": "body-splash-fakhar-gold",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0231",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Vulcan Feu",
+      "slug": "body-splash-vulcan-feu",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0232",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Khamrah",
+      "slug": "body-splash-khamrah",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0233",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Body Splash Al Noble Wazeer",
+      "slug": "body-splash-al-noble-wazeer",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "body-splash-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0234",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Angel",
+      "slug": "hidratante-angel",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0235",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Yara Tous",
+      "slug": "hidratante-yara-tous",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0236",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Good Girl",
+      "slug": "hidratante-good-girl",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0237",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Yara",
+      "slug": "hidratante-yara",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0238",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Fantasy",
+      "slug": "hidratante-fantasy",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0239",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Royal Amber",
+      "slug": "hidratante-royal-amber",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0240",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Fakhar Rose",
+      "slug": "hidratante-fakhar-rose",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0241",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Club de Nuit Woman",
+      "slug": "hidratante-club-de-nuit-woman",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0242",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Xerjoff",
+      "slug": "hidratante-xerjoff",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0243",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Sabah Al Ward",
+      "slug": "hidratante-sabah-al-ward",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0244",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Yara Candy",
+      "slug": "hidratante-yara-candy",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0245",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Yara Moi",
+      "slug": "hidratante-yara-moi",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0246",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Victoria",
+      "slug": "hidratante-victoria",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0247",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante La Bomba",
+      "slug": "hidratante-la-bomba",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0248",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Yara Elixir",
+      "slug": "hidratante-yara-elixir",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0249",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Sabah Sugar",
+      "slug": "hidratante-sabah-sugar",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-feminino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0250",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Club de Nuit",
+      "slug": "hidratante-club-de-nuit",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0251",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Asad",
+      "slug": "hidratante-asad",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0252",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Khamrah",
+      "slug": "hidratante-khamrah",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0253",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Fakhar Black",
+      "slug": "hidratante-fakhar-black",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0254",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Asad Bourbon",
+      "slug": "hidratante-asad-bourbon",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0255",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Asad Elixir",
+      "slug": "hidratante-asad-elixir",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0256",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Asad Zanzibar",
+      "slug": "hidratante-asad-zanzibar",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0257",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Club de Nuit Iconic",
+      "slug": "hidratante-club-de-nuit-iconic",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0258",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Hidratante Fakhar Gold",
+      "slug": "hidratante-fakhar-gold",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "hidratante-masculino"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0259",
+          "label": "",
+          "priceCents": 6500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Sabah Al Ward",
+      "slug": "pasta-hidratante-sabah-al-ward",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-feminina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0260",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Delina",
+      "slug": "pasta-hidratante-delina",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-feminina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0261",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Yara",
+      "slug": "pasta-hidratante-yara",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-feminina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0262",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Royal Amber",
+      "slug": "pasta-hidratante-royal-amber",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-feminina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0263",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Fakhar Rose",
+      "slug": "pasta-hidratante-fakhar-rose",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-feminina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0264",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Angel",
+      "slug": "pasta-hidratante-angel",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-feminina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0265",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Fakhar Gold",
+      "slug": "pasta-hidratante-fakhar-gold",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-masculina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0266",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Asad",
+      "slug": "pasta-hidratante-asad",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-masculina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0267",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Asad Bourbon",
+      "slug": "pasta-hidratante-asad-bourbon",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-masculina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0268",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "name": "Pasta Hidratante Club de Nuit",
+      "slug": "pasta-hidratante-club-de-nuit",
+      "brand": "Isabelle La Belle",
+      "description": "",
+      "categorySlugs": [
+        "pasta-hidratante-masculina"
+      ],
+      "images": [],
+      "tags": [],
+      "isActive": true,
+      "isFeatured": false,
+      "isReadyToShip": false,
+      "sourceCatalog": "AM Atacadista - Isabelle La Belle",
+      "variants": [
+        {
+          "sku": "ME-0269",
+          "label": "",
+          "priceCents": 11500,
+          "compareAtPriceCents": null,
+          "stock": 0,
+          "allowBackorder": false,
+          "image": null,
+          "isActive": true
+        }
+      ]
+    }
+  ]
+}

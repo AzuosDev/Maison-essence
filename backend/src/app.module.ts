@@ -9,6 +9,7 @@ import { HealthModule } from './health/health.module.js';
 import { AuditModule } from './modules/audit/audit.module.js';
 import { AuthModule } from './modules/auth/auth.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
+import { CatalogImportModule } from './modules/catalog-import/catalog-import.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
 import { CustomersModule } from './modules/customers/customers.module.js';
 import { DeliveryModule } from './modules/delivery/delivery.module.js';
@@ -34,6 +35,7 @@ import { UsersModule } from './modules/users/users.module.js';
     UsersModule,
     CategoriesModule,
     ProductsModule,
+    CatalogImportModule,
     UploadsModule,
     SettingsModule,
     DeliveryModule,

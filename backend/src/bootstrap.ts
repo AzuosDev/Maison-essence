@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
+import { json } from 'express';
+import type { RequestHandler } from 'express';
 import type {
   CorsOptions,
 } from '@nestjs/common/interfaces/external/cors-options.interface.js';
@@ -12,6 +14,7 @@ import { rejectMongoOperators } from './common/mongo-operator-guard.js';
 import { attachRequestId } from './common/request-id.middleware.js';
 import { apiSecurityHeaders, docsSecurityHeaders } from './common/security-headers.js';
 import { setupSwagger } from './common/swagger.js';
+import { MAX_IMPORT_BODY_SIZE } from './modules/catalog-import/catalog-import.constants.js';
 import type { Env } from './config/env.schema.js';
 import { parseCorsOrigins } from './config/env.schema.js';
 
@@ -31,6 +34,56 @@ export const DOCS_PATH = `${GLOBAL_PREFIX}/docs`;
  * memoria e tempo sao cobrados.
  */
 export const MAX_BODY_SIZE = '256kb';
+
+/** O unico caminho que recebe corpo maior que `MAX_BODY_SIZE`. */
+export const CATALOG_IMPORT_PATH = `${GLOBAL_PREFIX}/admin/catalog/import`;
+
+/**
+ * O parser da importacao de catalogo: 1 MB, e sem o cifrao do arquivo.
+ *
+ * Duas coisas acontecem aqui, e as duas existem para que o arquivo que a
+ * ferramenta gera possa ser colado inteiro no corpo, sem edicao a mao.
+ *
+ * **O tamanho.** O catalogo tem 175 KB e cresce a cada lista de fornecedor;
+ * o teto geral da API e 256 KB, calibrado para um produto por vez. Subir o
+ * teto geral para caber a importacao deixaria toda rota da API aceitando 1 MB
+ * — e o custo de recusar um corpo grande numa funcao serverless e cobrado em
+ * memoria e tempo. Entao o teto sobe em um caminho so.
+ *
+ * **O `$schema`.** O arquivo se identifica com `"$schema": "maison-essence/
+ * catalog@1"` na primeira linha, e o guard de operadores do Mongo recusa
+ * qualquer chave iniciada por cifrao — com razao: e assim que `{"$ne": null}`
+ * entra numa consulta. Abrir excecao no guard seria trocar uma defesa geral
+ * por uma conveniencia; entao a chave e **removida** aqui, no nivel de cima do
+ * corpo, antes de o guard olhar. Nada passa a ser confiado: o que sobra
+ * continua sendo inspecionado inteiro, e o `$schema` era metadado que a
+ * importacao nunca leu.
+ */
+function catalogImportParser(): RequestHandler {
+  const parse = json({ limit: MAX_IMPORT_BODY_SIZE });
+
+  return (request, response, next) => {
+    parse(request, response, (error?: unknown) => {
+      if (error !== undefined && error !== null) {
+        next(error);
+
+        return;
+      }
+
+      const body: unknown = request.body;
+
+      if (typeof body === 'object' && body !== null && !Array.isArray(body)) {
+        for (const key of Object.keys(body)) {
+          if (key.startsWith('$')) {
+            delete (body as Record<string, unknown>)[key];
+          }
+        }
+      }
+
+      next();
+    });
+  };
+}
 
 /**
  * Tudo o que a aplicacao precisa alem dos modulos.
@@ -64,6 +117,10 @@ export function configureApp(app: INestApplication): INestApplication {
   // padrao de 100 KB — o adaptador pula os dele ao ver que ja ha um parser
   // do mesmo tipo montado.
   const express = app as NestExpressApplication;
+
+  // Antes dos parsers gerais, e so no caminho da importacao: o primeiro a
+  // interpretar o corpo vence, e os seguintes o deixam em paz.
+  app.use(`/${CATALOG_IMPORT_PATH}`, catalogImportParser());
 
   express.useBodyParser('json', { limit: MAX_BODY_SIZE });
   express.useBodyParser('urlencoded', { limit: MAX_BODY_SIZE, extended: true });

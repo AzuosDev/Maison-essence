@@ -1,0 +1,23 @@
+{
+  // Typecheck de `scripts/`, separado do `tsconfig.json` da API de proposito:
+  // `nest build` usa `rootDir: src` por baixo, e um arquivo fora de `src/`
+  // nesse include e silenciosamente ignorado pelo build (nao da erro, so
+  // nao gera .js) — misturar os dois so criaria a falsa impressao de que
+  // `scripts/` esta sendo compilado com o resto da API.
+  //
+  // `dist/**/*.d.ts` entra porque `scripts/catalog-images/upload.ts` importa
+  // de `dist/` e nao de `src/`: ele precisa que o `SeedModule` real, ja
+  // compilado pelo `tsc` (com `emitDecoratorMetadata`), suba dentro do
+  // `runSeed` — o `tsx` que roda este script usa esbuild, que nao emite essa
+  // metadata, e o `JwtStrategy` (injecao por tipo, sem `@Inject()`) quebra
+  // silenciosamente se `SeedModule` for interpretado por ele em vez de pelo
+  // `tsc`. Rode `npm run build` antes de `npm run typecheck:scripts` a
+  // primeira vez, ou os arquivos `dist/*.d.ts` nao vao existir ainda.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "sourceMap": false
+  },
+  "include": ["src/**/*", "scripts/**/*", "dist/**/*.d.ts"]
+}
