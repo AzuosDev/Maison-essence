@@ -19,6 +19,12 @@ coverage/
 scripts/catalog-images/input/
 scripts/catalog-images/output/
 
+# Arte de banner e conteudo da loja, nao codigo: sao megabytes de PNG que
+# mudam a cada campanha. O que versiona e o script; os arquivos ficam na
+# maquina de quem sobe e no Cloudinary depois de subir.
+scripts/banners/art/*
+!scripts/banners/art/.gitkeep
+
 logs/
 *.log
 npm-debug.log*

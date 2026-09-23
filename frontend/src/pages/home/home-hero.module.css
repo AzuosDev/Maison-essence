@@ -111,20 +111,40 @@
 /*
  * Banner sem titulo, chamada nem botao cadastrados chega com tudo desenhado
  * dentro do arquivo: logo, frase e botao ja fazem parte da imagem. Aqui ele
- * aparece inteiro, sem corte e sem veu — `cover` recortaria pelas beiradas,
- * que e exatamente onde mora o que o fornecedor desenhou.
+ * aparece sem veu e sem bloco de texto por cima — o arquivo e o banner.
+ *
+ * ## A medida
+ *
+ * 1920 x 562,283, que e a faixa que a loja pediu. Nao e uma proporcao de
+ * catalogo — e uma medida de arte —, e por isso esta escrita como os dois
+ * numeros e nao reduzida a "3,4/1": quem for conferir contra o arquivo do
+ * design quer ver os mesmos numeros dos dois lados.
+ *
+ * A 1440 de largura da 422px de banner. E uma faixa, e nao um cartaz de
+ * tela cheia: sobra tela para a primeira fileira de produtos aparecer sem
+ * ninguem precisar rolar.
+ *
+ * ## Por que `cover` aqui, e `contain` seria errado
+ *
+ * A arte tem de encostar nas quatro bordas. Enquanto o arquivo enviado tiver
+ * a medida acima, os dois dao o mesmo resultado e a discussao e teorica; a
+ * diferenca aparece no arquivo que chega fora da medida — e ai `contain`
+ * encolheria a arte deixando tarja preta em volta, que e exatamente o
+ * defeito que esta regra existe para resolver. `cover` corta, e corte pelo
+ * centro de uma faixa larga tira margem; tarja lateral anuncia que a arte
+ * nao coube.
  */
 .slideWide {
   grid-template-columns: minmax(0, 1fr);
 }
 
 .mediaWide {
-  aspect-ratio: 2 / 1;
+  aspect-ratio: 1920 / 562.283;
   background-color: var(--dark);
 }
 
 .imageWide {
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* ---- O bloco de texto ------------------------------------------------- */
@@ -358,18 +378,28 @@
     bottom: var(--space-32);
   }
 
-  /* A faixa larga nao obedece ao `max-height` do banner com texto: quem manda
-     na altura dela e a proporcao da arte. O `max-width` e o limite do arquivo
-     — passar disso seria ampliar uma imagem de 2056px e entregar borrao. */
+  /*
+   * A faixa larga nao obedece ao `max-height` do banner com texto: quem manda
+   * na altura dela e a medida da arte, declarada la em cima.
+   *
+   * O `max-width` e o limite do arquivo: 120rem sao os 1920px que a arte tem,
+   * e passar disso seria amplia-la e entregar borrao. Em monitor mais largo o
+   * banner para de crescer e fica centrado.
+   */
   .slideWide {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .mediaWide {
-    aspect-ratio: 21 / 9;
+    /* A medida repetida aqui, e nao herdada da regra base: `.media` declara
+       16/9 neste mesmo `@media` e vem antes na folha. Entre duas regras de
+       mesma especificidade vale a ultima escrita, e sem esta linha o banner
+       de arte sairia com a proporcao do banner de foto — 810px de altura em
+       vez de 422. */
+    aspect-ratio: 1920 / 562.283;
     height: auto;
     max-height: none;
-    max-width: 82rem;
+    max-width: 120rem;
     margin-inline: auto;
   }
 }

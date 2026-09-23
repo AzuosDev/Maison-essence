@@ -21,6 +21,7 @@
     "seed:catalog": "npm run build && node dist/seeds/catalog.seed.js",
     "images:extract": "tsx scripts/catalog-images/extract.ts",
     "images:upload": "npm run build && tsx scripts/catalog-images/upload.ts",
+    "banners:upload": "npm run build && tsx scripts/banners/upload.ts",
     "lint": "oxlint --type-aware src/ api/ test/",
     "typecheck": "tsc --noEmit",
     "typecheck:scripts": "tsc --noEmit -p tsconfig.scripts.json",
