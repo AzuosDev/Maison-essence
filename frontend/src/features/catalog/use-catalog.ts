@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import {
   fetchCategory,
   fetchCategoryTree,
+  fetchLatest,
   fetchProduct,
   fetchShelf,
   fetchSuggestions,
@@ -92,6 +93,22 @@ export function useShelf(name: ShelfName, limit?: number) {
   return useQuery<PublicProduct[]>({
     queryKey: catalogKeys.shelf(name, limit),
     queryFn: ({ signal }) => fetchShelf(name, limit, signal),
+    staleTime: SHELF_STALE_TIME_MS,
+  });
+}
+
+/**
+ * A prateleira de novidades.
+ *
+ * Hook proprio, e nao `useShelf`, porque a origem e outra: as tres do
+ * `useShelf` sao rotas de prateleira, e esta e a listagem do catalogo com um
+ * teto. A chave e a politica de cache sao as mesmas de proposito — para a
+ * home ela e uma prateleira como as outras.
+ */
+export function useLatest(limit?: number) {
+  return useQuery<PublicProduct[]>({
+    queryKey: catalogKeys.shelf('latest', limit),
+    queryFn: ({ signal }) => fetchLatest(limit, signal),
     staleTime: SHELF_STALE_TIME_MS,
   });
 }

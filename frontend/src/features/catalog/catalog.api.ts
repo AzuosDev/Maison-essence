@@ -74,6 +74,34 @@ export function fetchShelf(
 }
 
 /**
+ * A prateleira de novidades: o catalogo inteiro, do mais novo para o mais
+ * velho.
+ *
+ * Nao tem rota propria como as outras tres, e nao precisa: e `GET /products`
+ * com `sort=newest` e um teto, que e exatamente a consulta que o backend faz
+ * dentro de `/products/featured` — so que sem o filtro. Criar um quarto
+ * endereco para repetir isso seria uma rota a mais para manter.
+ *
+ * O que a torna diferente das outras e que ela nao depende de ninguem: as
+ * outras tres respondem a marcacao no painel (destaque, pronta entrega) ou
+ * ao historico de pedidos (mais vendidos), e as tres saem vazias numa loja
+ * recem-cadastrada. Esta tem produto no minuto em que o catalogo tem — e e
+ * o que garante que a home nunca abra sem perfume nenhum.
+ *
+ * Devolve so os itens: quem consome e uma prateleira, que nao pagina.
+ */
+export const LATEST_SHELF_LIMIT = 12;
+
+export async function fetchLatest(
+  limit = LATEST_SHELF_LIMIT,
+  signal?: AbortSignal,
+): Promise<PublicProduct[]> {
+  const page = await fetchProducts({ sort: 'newest', limit }, signal);
+
+  return page.items;
+}
+
+/**
  * Um produto pelo endereco dele.
  *
  * Quem chama hoje e a prebusca do card no hover; a pagina do produto usa a

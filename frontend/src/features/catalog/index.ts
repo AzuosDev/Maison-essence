@@ -1,7 +1,9 @@
 export {
+  LATEST_SHELF_LIMIT,
   SUGGESTION_LIMIT,
   fetchCategory,
   fetchCategoryTree,
+  fetchLatest,
   fetchProduct,
   fetchProducts,
   fetchShelf,
@@ -89,6 +91,7 @@ export {
   asCategory,
   useCategory,
   useCategoryTree,
+  useLatest,
   usePrefetchProduct,
   useProduct,
   useSearchSuggestions,

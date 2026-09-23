@@ -50,8 +50,15 @@ export const catalogKeys = {
    */
   facets: (params: ProductListParams = {}) => [...catalogKeys.all, 'facets', params] as const,
 
-  /** As prateleiras da home: destaques, pronta entrega e mais vendidos. */
-  shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers', limit?: number) =>
+  /**
+   * As prateleiras da home.
+   *
+   * `latest` entra aqui junto das outras tres mesmo nao tendo rota propria —
+   * ela sai de `GET /products` ordenado por data. O que define a familia nao
+   * e o endereco, e a politica: as quatro sao listas curtas da home, com o
+   * mesmo frescor, e quem invalida "as prateleiras" tem de pegar as quatro.
+   */
+  shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers' | 'latest', limit?: number) =>
     [...catalogKeys.all, 'shelf', name, limit ?? null] as const,
 
   categories: () => [...catalogKeys.all, 'categories'] as const,

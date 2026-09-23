@@ -95,6 +95,15 @@ function produto(id: string, name: string, extras: Record<string, unknown> = {})
 
 /** O que cada rota responde. Um caso pode trocar uma entrada antes de montar. */
 let prateleiras: Record<string, unknown[]>;
+
+/**
+ * O que `GET /products` devolve.
+ *
+ * Separado das prateleiras porque nao e uma delas: e a listagem paginada do
+ * catalogo, e e de la que sai "Novidades" — a unica prateleira da home que nao
+ * depende de marcacao no painel nem de pedido nenhum.
+ */
+let catalogo: unknown[];
 let chamadas: string[];
 
 function jsonResponse(body: unknown): Response {
@@ -112,6 +121,8 @@ beforeEach(() => {
     'ready-to-ship': [produto('2', 'Yara', { isReadyToShip: true })],
     'best-sellers': [produto('3', 'Fakhar')],
   };
+
+  catalogo = [produto('4', 'Khamrah')];
 
   // O jsdom nao implementa `matchMedia`, e o carrossel o consulta para saber
   // se pode girar sozinho. Sem o duble, o hero quebra no primeiro render.
@@ -133,6 +144,14 @@ beforeEach(() => {
         if (url.includes(`/products/${nome}`)) {
           return Promise.resolve(jsonResponse(itens));
         }
+      }
+
+      // A listagem do catalogo, que e de onde sai "Novidades". Depois das
+      // prateleiras: `/products/featured` tambem casaria com `/products`.
+      if (url.includes('/products')) {
+        return Promise.resolve(
+          jsonResponse({ items: catalogo, page: 1, totalPages: 1, totalItems: catalogo.length }),
+        );
       }
 
       if (url.includes('/settings')) {
@@ -284,7 +303,7 @@ test('prateleira sem produto some da pagina', async () => {
 /* ---- A ordem das secoes -------------------------------------------------- */
 
 /**
- * Os nomes das secoes da pagina, na ordem em que estao no documento.
+ * Os titulos de secao da pagina, na ordem em que estao no documento.
  *
  * Le o DOM de uma vez, e nao secao por secao com `getByRole`: a lista de
  * prateleiras se refaz quando as consultas respondem — uma que volta vazia
@@ -292,17 +311,18 @@ test('prateleira sem produto some da pagina', async () => {
  * antes disso aponta para um no que ja saiu da arvore. Comparar posicoes
  * entre um no solto e um no vivo nao da erro: da uma resposta que o navegador
  * escolhe, e o teste passaria ou falharia por motivo nenhum.
+ *
+ * Pelos `<h2>`, e nao pelas regioes: o hero e uma regiao tambem — um
+ * carrossel com rotulo —, e uma lista de regioes mistura a moldura da pagina
+ * com o conteudo dela. O que este teste guarda e a ordem em que o cliente le
+ * os nomes das secoes, e essa ordem sao os titulos. A assinatura da marca nao
+ * tem titulo e por isso nao aparece aqui; a posicao dela esta garantida por
+ * andar dentro de `Collections`.
  */
 function ordemDasSecoes(): string[] {
   return screen
-    .getAllByRole('region')
-    .map((section) => section.getAttribute('aria-label') ?? nomeDoTitulo(section));
-}
-
-function nomeDoTitulo(section: Element): string {
-  const id = section.getAttribute('aria-labelledby');
-
-  return (id ? (document.getElementById(id)?.textContent ?? '') : '').trim();
+    .getAllByRole('heading', { level: 2 })
+    .map((titulo) => titulo.textContent?.trim() ?? '');
 }
 
 test('as colecoes entram depois de duas prateleiras, e nao antes', async () => {
@@ -315,9 +335,34 @@ test('as colecoes entram depois de duas prateleiras, e nao antes', async () => {
       'Destaques',
       'Pronta entrega',
       'Descubra as colecoes',
-      'Sobre a Maison Essence',
+      'Novidades',
       'Mais vendidos',
     ]);
+  });
+});
+
+/**
+ * A rede de seguranca da vitrine.
+ *
+ * Destaque e pronta entrega saem de marcacao no painel, e mais vendidos sai
+ * do historico de pedidos: as tres respondem vazio numa loja que acabou de
+ * subir o catalogo, que foi o estado em que esta home chegou a producao.
+ * Novidades sai do catalogo ordenado por data — se ha produto cadastrado, ela
+ * tem o que mostrar, e a home nunca abre sem um perfume na tela.
+ */
+test('com as tres prateleiras curadas vazias, novidades sustenta a vitrine', async () => {
+  prateleiras['featured'] = [];
+  prateleiras['ready-to-ship'] = [];
+  prateleiras['best-sellers'] = [];
+
+  abrirHome();
+
+  const novidades = await screen.findByRole('region', { name: 'Novidades' });
+
+  expect(await within(novidades).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
+
+  await waitFor(() => {
+    expect(ordemDasSecoes()).toEqual(['Novidades', 'Descubra as colecoes']);
   });
 });
 
@@ -340,9 +385,9 @@ test('sem destaques, as colecoes continuam vindo depois de duas prateleiras', as
   await waitFor(() => {
     expect(ordemDasSecoes()).toEqual([
       'Pronta entrega',
-      'Mais vendidos',
+      'Novidades',
       'Descubra as colecoes',
-      'Sobre a Maison Essence',
+      'Mais vendidos',
     ]);
   });
 });
@@ -350,17 +395,14 @@ test('sem destaques, as colecoes continuam vindo depois de duas prateleiras', as
 test('com uma prateleira so, as colecoes vem logo depois dela', async () => {
   prateleiras['featured'] = [];
   prateleiras['best-sellers'] = [];
+  catalogo = [];
 
   abrirHome();
 
   await screen.findByRole('region', { name: 'Pronta entrega' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual([
-      'Pronta entrega',
-      'Descubra as colecoes',
-      'Sobre a Maison Essence',
-    ]);
+    expect(ordemDasSecoes()).toEqual(['Pronta entrega', 'Descubra as colecoes']);
   });
 });
 
@@ -376,13 +418,14 @@ test('sem prateleira nenhuma, as colecoes encostam no banner', async () => {
   prateleiras['featured'] = [];
   prateleiras['ready-to-ship'] = [];
   prateleiras['best-sellers'] = [];
+  catalogo = [];
 
   abrirHome();
 
   await screen.findByRole('region', { name: 'Descubra as colecoes' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual(['Descubra as colecoes', 'Sobre a Maison Essence']);
+    expect(ordemDasSecoes()).toEqual(['Descubra as colecoes']);
     expect(screen.getByRole('region', { name: 'Descubra as colecoes' }).className).toContain(
       stripStyles.flush,
     );
