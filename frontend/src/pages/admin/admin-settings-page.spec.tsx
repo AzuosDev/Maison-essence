@@ -19,7 +19,9 @@ import AdminSettingsPage from './admin-settings-page';
  * - **so o que mudou viaja**, e o endereco campo a campo — corrigir o numero
  *   da casa nao pode apagar o ponto de referencia;
  * - **o que some do site sem avisar vira aviso escrito**;
- * - **o STAFF nao entra**: daqui se muda o numero para onde vai todo pedido.
+ * - **so o administrador do sistema entra**: nem o gerente da loja abre esta
+ *   area, porque o que se muda aqui e a moldura inteira e nao o dia de
+ *   vender.
  */
 
 const SETTINGS = {
@@ -203,7 +205,7 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
 /* ---- Abrir a tela ------------------------------------------------------------ */
 
 test('abre com o que esta gravado, e o numero legivel', async () => {
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -216,7 +218,7 @@ test('abre com o que esta gravado, e o numero legivel', async () => {
 });
 
 test('abrir a tela nao a deixa suja, nem com banner agendado', async () => {
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -227,13 +229,23 @@ test('abrir a tela nao a deixa suja, nem com banner agendado', async () => {
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
-test('o STAFF nao entra: daqui se muda o numero para onde vai todo pedido', async () => {
+test('o gerente da loja nao entra: isto nao e decisao do dia de vender', async () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  expect(
+    await screen.findByRole('heading', { name: /Esta area e de quem mantem o sistema/ }),
+  ).toBeDefined();
+});
+
+test('o STAFF tambem nao entra', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem administra a loja/ }),
+    await screen.findByRole('heading', { name: /Esta area e de quem mantem o sistema/ }),
   ).toBeDefined();
 });
 
@@ -242,7 +254,7 @@ test('o STAFF nao entra: daqui se muda o numero para onde vai todo pedido', asyn
 test('mudar o nome manda so o nome', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -264,7 +276,7 @@ test('mudar o nome manda so o nome', async () => {
 test('mudar o numero da casa nao manda o endereco inteiro', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -284,7 +296,7 @@ test('mudar o numero da casa nao manda o endereco inteiro', async () => {
 test('apagar o frete gratis geral manda null, e nao zero', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -301,7 +313,7 @@ test('apagar o frete gratis geral manda null, e nao zero', async () => {
 test('descartar devolve os campos ao que esta gravado', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -319,7 +331,7 @@ test('descartar devolve os campos ao que esta gravado', async () => {
 test('apagar o WhatsApp avisa que o pedido fica sem destino', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -333,7 +345,7 @@ test('apagar o WhatsApp avisa que o pedido fica sem destino', async () => {
 test('publicar uma pagina sem texto avisa, e diz qual e', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -348,7 +360,7 @@ test('publicar uma pagina sem texto avisa, e diz qual e', async () => {
 /* ---- O carrossel ------------------------------------------------------------------ */
 
 test('o banner que ja passou diz que encerrou, em vez de parecer no ar', async () => {
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -361,7 +373,7 @@ test('o banner que ja passou diz que encerrou, em vez de parecer no ar', async (
 test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -387,7 +399,7 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
 test('escrever numa pagina manda so aquela pagina', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -412,7 +424,7 @@ test('escrever numa pagina manda so aquela pagina', async () => {
 });
 
 test('a pagina fechada diz o essencial: publicada, e se ha o que publicar', async () => {
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 

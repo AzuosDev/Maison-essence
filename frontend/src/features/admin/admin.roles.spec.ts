@@ -23,8 +23,12 @@ test('o STAFF alcanca o inicio e os pedidos, e mais nada', () => {
   expect(areasFor(USER_ROLES.STAFF)).toEqual(['home', 'orders']);
 });
 
-test('a dona alcanca a loja inteira, menos a area de sistema', () => {
-  expect(areasFor(USER_ROLES.OWNER)).toEqual(ADMIN_AREAS.filter((area) => area !== 'system'));
+test('o gerente alcanca a loja, menos configuracoes e sistema', () => {
+  // As duas que sobram sao as que nao pertencem ao dia de vender: a area de
+  // sistema e a moldura da loja, que se acerta uma vez na implantacao.
+  expect(areasFor(USER_ROLES.OWNER)).toEqual(
+    ADMIN_AREAS.filter((area) => area !== 'settings' && area !== 'system'),
+  );
 });
 
 test('so o administrador do sistema alcanca todas as areas', () => {
@@ -44,12 +48,14 @@ test('o STAFF nao ve preco', () => {
   expect(canSeePrices(USER_ROLES.SUPER_ADMIN)).toBe(true);
 });
 
-test('o STAFF nao escreve no catalogo', () => {
+test('o STAFF nao escreve no catalogo, e o gerente escreve', () => {
+  // `canManageStore` continua valendo para catalogo, entrega e pagamento — o
+  // que saiu dele foram as configuracoes, que agora passam por `canSee`.
   expect(canManageStore(USER_ROLES.STAFF)).toBe(false);
   expect(canManageStore(USER_ROLES.OWNER)).toBe(true);
 });
 
-test('o catalogo e as configuracoes ficam fechados para o STAFF', () => {
+test('o catalogo e a entrega ficam fechados para o STAFF', () => {
   expect(canSee(USER_ROLES.STAFF, 'products')).toBe(false);
   expect(canSee(USER_ROLES.STAFF, 'settings')).toBe(false);
   expect(canSee(USER_ROLES.STAFF, 'delivery')).toBe(false);
@@ -61,8 +67,8 @@ test('o catalogo e as configuracoes ficam fechados para o STAFF', () => {
  *
  * O criterio de aceite e negativo — "o OWNER nao enxerga o item Sistema nem
  * acessa a rota" — e por isso os casos sao escritos dos dois lados: o que o
- * SUPER_ADMIN abre e o que a dona nao abre. Um `!==` invertido aqui poria a
- * criacao de usuarios nas maos de quem nao deve te-la.
+ * SUPER_ADMIN abre e o que o gerente nao abre. Um `!==` invertido aqui poria
+ * a criacao de usuarios nas maos de quem nao deve te-la.
  */
 
 test('o item Sistema so existe para o administrador do sistema', () => {
@@ -72,11 +78,19 @@ test('o item Sistema so existe para o administrador do sistema', () => {
   expect(canSee(undefined, 'system')).toBe(false);
 });
 
-test('o menu da dona termina em Configuracoes', () => {
+test('Configuracoes so existe para o administrador do sistema', () => {
+  // Nao e area de atendimento nem de operacao: o numero para onde vai todo
+  // pedido e o carrossel da home nao se mudam no dia a dia de vender.
+  expect(canSee(USER_ROLES.SUPER_ADMIN, 'settings')).toBe(true);
+  expect(canSee(USER_ROLES.OWNER, 'settings')).toBe(false);
+  expect(canSee(USER_ROLES.STAFF, 'settings')).toBe(false);
+});
+
+test('o menu do gerente termina em Pagamento', () => {
   const areas = areasFor(USER_ROLES.OWNER);
 
   expect(areas).not.toContain('system');
-  expect(areas.at(-1)).toBe('settings');
+  expect(areas.at(-1)).toBe('payments');
 });
 
 test('canManageSystem responde o mesmo que a area', () => {

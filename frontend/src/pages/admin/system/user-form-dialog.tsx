@@ -53,7 +53,7 @@ export type UserFormValues = z.output<typeof schema>;
  */
 const ROLE_OPTIONS = [
   { value: USER_ROLES.STAFF, label: `${ROLE_LABELS.STAFF} — pedidos, sem precos` },
-  { value: USER_ROLES.OWNER, label: `${ROLE_LABELS.OWNER} — a loja inteira` },
+  { value: USER_ROLES.OWNER, label: `${ROLE_LABELS.OWNER} — catalogo, pedidos e precos` },
   { value: USER_ROLES.SUPER_ADMIN, label: `${ROLE_LABELS.SUPER_ADMIN} — a loja e o sistema` },
 ];
 

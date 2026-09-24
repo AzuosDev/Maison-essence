@@ -199,7 +199,11 @@ test('a dona ve o menu inteiro, o faturamento e o total do pedido', async () => 
   const menu = screen.getByRole('navigation', { name: 'Areas do painel' });
 
   expect(within(menu).getByRole('link', { name: 'Produtos' })).toBeDefined();
-  expect(within(menu).getByRole('link', { name: 'Configuracoes' })).toBeDefined();
+  expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
+
+  // Configuracoes nao: a moldura da loja se acerta uma vez, com quem mantem
+  // o sistema, e nao no dia a dia de quem vende.
+  expect(within(menu).queryByRole('link', { name: 'Configuracoes' })).toBeNull();
 
   // O total do pedido na lista.
   expect(await screen.findByText('R$ 379,80')).toBeDefined();

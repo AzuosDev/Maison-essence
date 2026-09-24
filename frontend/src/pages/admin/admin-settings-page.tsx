@@ -5,7 +5,7 @@ import { AlertIcon, ArrowLeftIcon, BannerEditor, PagesEditor } from '@/component
 import { Button, EmptyState, Input, Skeleton, Switch, Textarea, useToast } from '@/components/ui';
 import {
   SETTINGS_LIMITS,
-  canManageStore,
+  canSee,
   draftFromStoreSettings,
   hasSettingsErrors,
   isSettingsDirty,
@@ -30,10 +30,10 @@ import styles from './admin-settings-page.module.css';
  * ## Cinco assuntos, uma tela, um botao
  *
  * Nome da loja, retirada, redes, carrossel e paginas moram no mesmo documento
- * e sao gravados pelo mesmo `PATCH`. Poderiam ser cinco telas, e nao sao: a
- * dona vem aqui uma vez a cada tantas semanas, quase sempre para mexer em uma
- * coisa so — e descobrir *qual das cinco telas* tem a barra de avisos custa
- * mais do que rolar uma pagina.
+ * e sao gravados pelo mesmo `PATCH`. Poderiam ser cinco telas, e nao sao:
+ * quem abre esta area o faz raramente, quase sempre para mexer em uma coisa
+ * so — e descobrir *qual das cinco telas* tem a barra de avisos custa mais do
+ * que rolar uma pagina.
  *
  * ## O que so se descobre depois
  *
@@ -42,10 +42,12 @@ import styles from './admin-settings-page.module.css';
  * onde ir), retirada ligada sem endereco, e pagina publicada sem texto. As
  * tres viram aviso escrito, no bloco onde foram causadas.
  *
- * ## O que o STAFF ve
+ * ## Quem entra
  *
- * Nada. Daqui se muda o numero para onde vai todo pedido da loja, e o backend
- * recusa inclusive a leitura.
+ * So o administrador do sistema — nem o gerente da loja, e muito menos o
+ * atendimento. O que se muda aqui nao e um produto: e a moldura inteira, e
+ * sao decisoes de implantacao, tomadas uma vez. O backend recusa pelo mesmo
+ * criterio, inclusive na leitura.
  */
 export default function AdminSettingsPage() {
   const role = useAdminRole();
@@ -53,12 +55,15 @@ export default function AdminSettingsPage() {
 
   usePageMeta({ title: 'Configuracoes — Painel', description: 'Acesso restrito.' });
 
-  if (!canManageStore(role)) {
+  // `canSee` e nao um `role === SUPER_ADMIN` escrito aqui: a tabela de areas
+  // e a unica fonte da regra, e e ela que o menu tambem consulta. Duas copias
+  // divergem no dia em que uma delas mudar.
+  if (!canSee(role, 'settings')) {
     return (
       <EmptyState
         as="h1"
-        title="Esta area e de quem administra a loja"
-        description="Daqui se muda o numero para onde vai todo pedido, o que a loja anuncia e o que ela publica. O seu acesso cobre o atendimento: o inicio do painel e os pedidos."
+        title="Esta area e de quem mantem o sistema"
+        description="Aqui ficam o nome da loja, o numero para onde vai todo pedido, o carrossel da home e as paginas do rodape — configuracoes que se acertam uma vez, com quem cuida do sistema. Para mudar alguma delas, fale com essa pessoa."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />

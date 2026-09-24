@@ -161,7 +161,7 @@ test('o OWNER que digita a URL recebe a tela de acesso negado, e nao um erro', a
   expect(screen.getByRole('link', { name: /Voltar para o inicio/ })).toBeDefined();
 });
 
-test('o OWNER nao ve o item Sistema na sidebar', () => {
+test('o OWNER nao ve Sistema nem Configuracoes na sidebar', () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirSistema();
@@ -169,7 +169,11 @@ test('o OWNER nao ve o item Sistema na sidebar', () => {
   const menu = screen.getByRole('navigation', { name: 'Areas do painel' });
 
   expect(within(menu).queryByRole('link', { name: 'Sistema' })).toBeNull();
-  expect(within(menu).getByRole('link', { name: 'Configuracoes' })).toBeDefined();
+  expect(within(menu).queryByRole('link', { name: 'Configuracoes' })).toBeNull();
+
+  // O que ele opera continua ali: o menu nao encolheu por acidente.
+  expect(within(menu).getByRole('link', { name: 'Pedidos' })).toBeDefined();
+  expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
 });
 
 test('o STAFF tambem nao entra', async () => {

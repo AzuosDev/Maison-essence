@@ -63,7 +63,7 @@ test('o diff em portugues do registro de usuario vira a mesma coisa', () => {
   });
 
   expect(lines).toEqual([
-    { path: 'role', label: 'Papel', from: 'Atendimento', to: 'Dona da loja' },
+    { path: 'role', label: 'Papel', from: 'Atendimento', to: 'Gerente da loja' },
   ]);
 });
 
