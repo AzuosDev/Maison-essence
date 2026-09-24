@@ -31,12 +31,17 @@ export const CUSTOMER_REFRESH_TOKEN_TTL_SECONDS = 30 * 24 * 60 * 60;
 /**
  * Piso de tamanho de senha, na criação de usuário e na troca.
  *
- * Doze e não oito: o painel tem poucas contas e nenhuma delas troca de senha
- * toda semana, então o custo de exigir uma senha longa e baixo e o ganho
- * contra ataque offline e direto. Nada de exigir símbolo ou maiúscula — o que
- * segura força bruta e comprimento.
+ * Quatro, a pedido da dona da loja, e vale dizer o que isso significa: o que
+ * segura força bruta e comprimento, e uma senha de quatro caracteres cai em
+ * segundos num ataque offline, se um dia o hash vazar. O argon2id encarece
+ * cada tentativa e o limite de `LOGIN_MAX_ATTEMPTS` por janela atrasa quem
+ * tenta pela porta da frente, mas nenhum dos dois cobre a diferença entre
+ * quatro e doze.
+ *
+ * Nada de exigir símbolo ou maiúscula: regra de composição empurra para
+ * "Senha@123" e não compra segurança.
  */
-export const PASSWORD_MIN_LENGTH = 12;
+export const PASSWORD_MIN_LENGTH = 4;
 
 /** Tentativas de login por janela, contadas por IP + e-mail. */
 export const LOGIN_MAX_ATTEMPTS = 5;

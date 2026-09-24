@@ -26,7 +26,7 @@ import styles from './admin-auth.module.css';
  * A resposta da troca já vem com a sessão nova, sem a marca: gravar essa
  * sessão e o que abre o painel, sem uma segunda consulta.
  *
- * ## O mínimo de doze
+ * ## O mínimo
  *
  * E a regra do backend (`PASSWORD_MIN_LENGTH`, em `auth.constants.ts`).
  * Conferir aqui também não e duplicação inutil: e a diferença entre o campo
@@ -34,8 +34,7 @@ import styles from './admin-auth.module.css';
  * recusa dele chega em inglês, crua do `class-validator`.
  *
  * Não confunda com os oito da conta de cliente (`CUSTOMER_PASSWORD_MIN_LENGTH`):
- * são números diferentes de propósito, porque as duas contas protegem coisas
- * diferentes. Esta muda preço, estoque e usuário.
+ * são números diferentes de propósito. O da loja continua em oito.
  */
 
 /**
@@ -45,7 +44,7 @@ import styles from './admin-auth.module.css';
  * divergiram, a tela aceitou uma senha que o servidor recusou, e quem estava
  * entrando pela primeira vez ficou preso aqui sem entender o motivo.
  */
-const MIN_LENGTH = 12;
+const MIN_LENGTH = 4;
 
 const schema = z
   .object({
