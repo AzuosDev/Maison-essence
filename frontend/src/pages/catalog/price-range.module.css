@@ -1,15 +1,15 @@
 /*
  * O slider duplo.
  *
- * O desenho e todo do trilho e do preenchimento, que sao dois elementos
- * comuns. Os dois `<input type="range">` ficam por cima, invisiveis, e so as
+ * O desenho e todo do trilho e do preenchimento, que são dois elementos
+ * comuns. Os dois `<input type="range">` ficam por cima, invisíveis, e só as
  * bolinhas aparecem — assim o comportamento continua sendo o nativo (arrasto,
- * toque, teclado, foco) e a aparencia e a da loja.
+ * toque, teclado, foco) e a aparência e a da loja.
  *
  * `pointer-events` e o que faz os dois conviverem: os inputs empilhados
  * cobrem o trilho inteiro, e se ambos recebessem o clique, o de cima
- * roubaria todo gesto. Desligando nos inputs e religando so nas bolinhas,
- * cada ponta responde ao seu proprio arrasto.
+ * roubaria todo gesto. Desligando nos inputs e religando só nas bolinhas,
+ * cada ponta responde ao seu próprio arrasto.
  */
 
 .field {
@@ -29,8 +29,8 @@
 .track {
   position: relative;
 
-  /* Altura do gesto, e nao do trilho: e a area em que o dedo acerta a
-     bolinha. O trilho visivel tem 2px e e desenhado pelo `::before`. */
+  /* Altura do gesto, e não do trilho: e a área em que o dedo acerta a
+     bolinha. O trilho visível tem 2px e e desenhado pelo `::before`. */
   height: var(--control-height-small);
 }
 
@@ -48,7 +48,7 @@
 }
 
 /* O trecho escolhido, entre as duas bolinhas. As duas pontas vem por
-   variavel, escritas pelo componente. */
+   variável, escritas pelo componente. */
 .fill {
   position: absolute;
   top: 50%;
@@ -74,7 +74,7 @@
   appearance: none;
   background: transparent;
 
-  /* O input inteiro e transparente ao clique; so a bolinha responde. */
+  /* O input inteiro e transparente ao clique; só a bolinha responde. */
   pointer-events: none;
 }
 
@@ -112,10 +112,10 @@
 }
 
 /*
- * O anel de foco vai na bolinha, e nao no input.
+ * O anel de foco vai na bolinha, e não no input.
  *
  * O input ocupa a largura inteira do trilho: um anel nele desenharia um
- * retangulo em volta de tudo, e quem navega por teclado nao saberia qual das
+ * retângulo em volta de tudo, e quem navega por teclado não saberia qual das
  * duas pontas esta prestes a mover.
  */
 .input:focus-visible::-webkit-slider-thumb {

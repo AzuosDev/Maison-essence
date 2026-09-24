@@ -33,7 +33,7 @@ import type { CustomerDocument } from './schemas/customer.schema.js';
 
 const DUPLICATE_KEY = 11000;
 
-/** De onde veio a chamada. Alimenta o registro da sessao. */
+/** De onde veio a chamada. Alimenta o registro da sessão. */
 export interface CustomerRequestContext {
   userAgent: string;
 }
@@ -41,14 +41,14 @@ export interface CustomerRequestContext {
 /**
  * Contas de cliente da loja.
  *
- * A conta e opcional por desenho: existe para quem quer acompanhar os proprios
- * pedidos e reaproveitar o endereco, e nada no checkout a exige. Por isso o
- * cadastro nao e uma porta de entrada — e uma porta lateral, aberta depois,
- * para um historico que ja existe.
+ * A conta e opcional por desenho: existe para quem quer acompanhar os próprios
+ * pedidos e reaproveitar o endereço, e nada no checkout a exige. Por isso o
+ * cadastro não e uma porta de entrada — e uma porta lateral, aberta depois,
+ * para um histórico que já existe.
  *
- * Reaproveita inteira a mecanica do painel: o mesmo `PasswordService`, o mesmo
- * `TokenService` e a mesma rotacao de refresh com deteccao de reuso. O que
- * muda e o que precisa mudar — segredo, audiencia, tempo de vida e a colecao
+ * Reaproveita inteira a mecânica do painel: o mesmo `PasswordService`, o mesmo
+ * `TokenService` e a mesma rotação de refresh com detecção de reuso. O que
+ * muda e o que precisa mudar — segredo, audiência, tempo de vida e a coleção
  * consultada —, e nada disso e decidido aqui: vem do `TOKEN_AUDIENCES.CUSTOMER`
  * que estas chamadas carregam.
  */
@@ -66,12 +66,12 @@ export class CustomerAuthService {
   ) {}
 
   /**
-   * Cria a conta e adota os pedidos que aquele telefone ja tinha feito.
+   * Cria a conta e adota os pedidos que aquele telefone já tinha feito.
    *
-   * Telefone repetido responde 409 dizendo o que houve, ao contrario do login,
-   * que nunca explica nada: aqui nao ha o que esconder — quem esta na tela
-   * acabou de digitar o proprio numero — e mandar essa pessoa para o login e a
-   * unica saida util.
+   * Telefone repetido responde 409 dizendo o que houve, ao contrário do login,
+   * que nunca explica nada: aqui não há o que esconder — quem esta na tela
+   * acabou de digitar o próprio número — e mandar essa pessoa para o login e a
+   * única saída útil.
    */
   async register(
     dto: RegisterCustomerDto,
@@ -100,12 +100,12 @@ export class CustomerAuthService {
    *
    * Todo caminho de recusa — telefone sem conta, senha errada, conta
    * desativada — devolve o mesmo 401 e demora o mesmo tanto, como no painel.
-   * A diferenca e que aqui o oraculo seria pior: descobrir quais telefones
+   * A diferença e que aqui o oráculo seria pior: descobrir quais telefones
    * tem conta na loja e descobrir quem comprou.
    */
   login(dto: LoginCustomerDto, context: CustomerRequestContext): Promise<CustomerSession> {
     return withMinimumDuration(LOGIN_MIN_DURATION_MS, async () => {
-      // `+passwordHash`: o campo e `select: false` no schema e so o login o pede.
+      // `+passwordHash`: o campo e `select: false` no schema e só o login o pede.
       const customer = await this.customers
         .findOne({ phone: dto.phone })
         .select('+passwordHash')
@@ -122,13 +122,13 @@ export class CustomerAuthService {
       customer.lastLoginAt = lastLoginAt;
 
       /**
-       * A adocao roda em todo login, e nao so no cadastro.
+       * A adoção roda em todo login, e não só no cadastro.
        *
-       * O cliente com conta tambem compra deslogado — e o caminho padrao da
-       * loja, e o mais rapido. Sem isso, o pedido que ele fez no celular sem
-       * entrar nunca apareceria no historico, e o telefone e a mesma chave nos
-       * dois casos. Custa um `updateMany` filtrado por indice, e so encontra
-       * algo quando ha algo a encontrar.
+       * O cliente com conta também compra deslogado — e o caminho padrão da
+       * loja, e o mais rápido. Sem isso, o pedido que ele fez no celular sem
+       * entrar nunca apareceria no histórico, e o telefone e a mesma chave nos
+       * dois casos. Custa um `updateMany` filtrado por índice, e só encontra
+       * algo quando há algo a encontrar.
        */
       await this.adoptGuestOrders(customer);
 
@@ -139,10 +139,10 @@ export class CustomerAuthService {
   /**
    * Troca um refresh token da loja por um par novo.
    *
-   * A rotacao e a deteccao de reuso acontecem em `RefreshTokenService.claim`,
-   * o mesmo do painel, com a audiencia da loja. Aqui fica so o que depende da
-   * conta: quem foi desativado entre uma renovacao e outra perde todas as
-   * sessoes em vez de ganhar um token novo.
+   * A rotação e a detecção de reuso acontecem em `RefreshTokenService.claim`,
+   * o mesmo do painel, com a audiência da loja. Aqui fica só o que depende da
+   * conta: quem foi desativado entre uma renovação e outra perde todas as
+   * sessões em vez de ganhar um token novo.
    */
   async refresh(rawToken: string, context: CustomerRequestContext): Promise<CustomerSession> {
     const claimed = await this.sessions.claim(rawToken, TOKEN_AUDIENCES.CUSTOMER);
@@ -157,17 +157,17 @@ export class CustomerAuthService {
     return this.issueSession(customer, context, claimed.tokenId);
   }
 
-  /** A conta inteira, com os enderecos salvos. */
+  /** A conta inteira, com os endereços salvos. */
   async profile(customerId: string): Promise<CustomerView> {
     return toCustomerView(await this.findById(customerId));
   }
 
   /**
-   * Edita a propria conta.
+   * Edita a própria conta.
    *
    * Campo ausente fica como esta; `addresses`, quando vem, substitui a lista
-   * inteira — e a forma que o formulario de enderecos usa, e a unica que
-   * permite remover um endereco sem uma rota so para isso.
+   * inteira — e a forma que o formulário de endereços usa, e a única que
+   * permite remover um endereço sem uma rota só para isso.
    */
   async update(customerId: string, dto: UpdateCustomerDto): Promise<CustomerView> {
     const customer = await this.findById(customerId);
@@ -191,9 +191,9 @@ export class CustomerAuthService {
    * Liga a esta conta os pedidos feitos como convidado com o mesmo telefone.
    *
    * O telefone e a chave natural: foi o que o cliente informou no checkout e e
-   * o que a dona usa para responder. Um pedido que ja pertence a alguma conta
-   * nunca e tocado — o filtro exige `customerId: null` —, entao a operacao e
-   * idempotente e nao tem como roubar o historico de outra conta.
+   * o que a dona usa para responder. Um pedido que já pertence a alguma conta
+   * nunca e tocado — o filtro exige `customerId: null` —, então a operação e
+   * idempotente e não tem como roubar o histórico de outra conta.
    */
   private async adoptGuestOrders(customer: CustomerDocument): Promise<number> {
     const result = await this.orders
@@ -207,11 +207,11 @@ export class CustomerAuthService {
   }
 
   /**
-   * A lista de enderecos pronta para gravar.
+   * A lista de endereços pronta para gravar.
    *
-   * O `_id` de cada endereco e preservado quando o formulario manda o `id`:
-   * corrigir o numero da casa nao pode fazer o endereco trocar de identidade,
-   * porque e por ela que a tela sabe qual cartao editar. Endereco sem `id` e
+   * O `_id` de cada endereço e preservado quando o formulário manda o `id`:
+   * corrigir o número da casa não pode fazer o endereço trocar de identidade,
+   * porque e por ela que a tela sabe qual cartão editar. Endereço sem `id` e
    * novo e ganha o seu.
    */
   private async plannedAddresses(
@@ -233,12 +233,12 @@ export class CustomerAuthService {
   }
 
   /**
-   * Nenhum endereco pode apontar para cidade que a loja nao atende.
+   * Nenhum endereço pode apontar para cidade que a loja não atende.
    *
-   * A conferencia acontece na gravacao, e nao na leitura: a cidade pode ser
-   * desativada depois, e um endereco salvo que deixou de ser atendido continua
-   * sendo o endereco da pessoa — quem recusa a entrega e o fechamento do
-   * pedido, com a mensagem certa, e nao a tela de cadastro.
+   * A conferência acontece na gravação, e não na leitura: a cidade pode ser
+   * desativada depois, e um endereço salvo que deixou de ser atendido continua
+   * sendo o endereço da pessoa — quem recusa a entrega e o fechamento do
+   * pedido, com a mensagem certa, e não a tela de cadastro.
    */
   private async assertCitiesAreServed(
     addresses: readonly CustomerAddressDto[],
@@ -289,15 +289,15 @@ export class CustomerAuthService {
       : null;
 
     if (!found) {
-      // O token e valido e a conta sumiu: so acontece se ela for removida no
-      // meio de uma sessao.
+      // O token e válido e a conta sumiu: só acontece se ela for removida no
+      // meio de uma sessão.
       throw new UnauthorizedException(CUSTOMER_NOT_FOUND_MESSAGE);
     }
 
     return found;
   }
 
-  /** Salva traduzindo as colisoes de telefone e e-mail em 409. */
+  /** Salva traduzindo as colisões de telefone e e-mail em 409. */
   private async save(customer: CustomerDocument): Promise<CustomerDocument> {
     try {
       return await customer.save();

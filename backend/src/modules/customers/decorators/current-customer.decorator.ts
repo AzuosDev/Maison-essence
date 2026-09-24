@@ -6,7 +6,7 @@ import type { AuthenticatedCustomer } from '../customer-auth.types.js';
 type RequestWithCustomer = Request & { customer?: AuthenticatedCustomer };
 
 /**
- * Cliente ja resolvido pelo guard. Nao vai ao banco: o `CustomerJwtStrategy`
+ * Cliente já resolvido pelo guard. Não vai ao banco: o `CustomerJwtStrategy`
  * carregou e validou a conta no mesmo request.
  */
 export const CurrentCustomer = createParamDecorator(
@@ -14,7 +14,7 @@ export const CurrentCustomer = createParamDecorator(
     const request = context.switchToHttp().getRequest<RequestWithCustomer>();
 
     if (!request.customer) {
-      // So acontece se alguem usar o decorator numa rota sem `@CustomerAuth()`.
+      // Só acontece se alguém usar o decorator numa rota sem `@CustomerAuth()`.
       throw new UnauthorizedException('Autenticação necessária.');
     }
 
@@ -25,7 +25,7 @@ export const CurrentCustomer = createParamDecorator(
 /**
  * O cliente logado, ou `null`.
  *
- * Para as rotas que funcionam dos dois jeitos — o checkout, hoje a unica.
+ * Para as rotas que funcionam dos dois jeitos — o checkout, hoje a única.
  * Depende do `OptionalCustomerGuard` ter passado antes; sem ele, o valor e
  * sempre `null`, que e o comportamento seguro: o pedido sai como convidado.
  */

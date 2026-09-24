@@ -16,32 +16,32 @@ import styles from './variants-editor.module.css';
  *
  * ## Por que um produto sempre tem pelo menos uma
  *
- * No dominio nao existe produto sem variante: o preco, o SKU e o estoque
- * moram nela, e nao no produto. O "produto simples" — um frasco so — e uma
- * variante unica com o nome em branco, e a tela diz isso em vez de esconder
- * a secao: quem cadastra precisa saber onde o preco esta guardado para
+ * No domínio não existe produto sem variante: o preço, o SKU e o estoque
+ * moram nela, e não no produto. O "produto simples" — um frasco só — e uma
+ * variante única com o nome em branco, e a tela diz isso em vez de esconder
+ * a seção: quem cadastra precisa saber onde o preço esta guardado para
  * saber onde muda-lo depois.
  *
  * ## Duplicar e o gesto principal
  *
- * Um perfume entra em 50 ml, 100 ml e 200 ml pelo mesmo preco por mililitro,
+ * Um perfume entra em 50 ml, 100 ml e 200 ml pelo mesmo preço por mililitro,
  * com o mesmo estoque inicial e a mesma foto. Preencher a segunda linha do
  * zero e refazer seis campos para trocar um. Duplicar copia o trabalho e
- * descarta a identidade — `id` e `sku` saem fora, porque sao unicos por
+ * descarta a identidade — `id` e `sku` saem fora, porque são únicos por
  * variante (ver `duplicateVariant`).
  *
  * ## A foto sai da galeria do produto
  *
- * Nao ha upload por variante. A variante escolhe **uma das fotos que o
- * produto ja tem**, e por isso o campo e um seletor e nao um botao de
+ * Não há upload por variante. A variante escolhe **uma das fotos que o
+ * produto já tem**, e por isso o campo e um seletor e não um botão de
  * enviar: manter duas galerias obrigaria a dona a decidir, a cada foto, em
  * qual das duas ela vai — e a resposta certa e sempre "nas duas".
  *
  * ## No celular cada variante e um bloco
  *
- * Nove campos numa linha de tabela nao cabem em 360px, e uma tabela com
- * rolagem horizontal num formulario faz perder o campo enquanto se digita. O
- * bloco empilhado mantem rotulo e campo juntos, que e o que um formulario
+ * Nove campos numa linha de tabela não cabem em 360px, e uma tabela com
+ * rolagem horizontal num formulário faz perder o campo enquanto se digita. O
+ * bloco empilhado mantem rótulo e campo juntos, que e o que um formulário
  * precisa.
  */
 
@@ -54,7 +54,7 @@ export interface VariantsEditorProps {
   /** As fotos do produto, para o seletor de imagem da variante. */
   images: readonly string[];
   errors: DraftErrors;
-  /** Desligado para quem so pode ler. */
+  /** Desligado para quem só pode ler. */
   disabled?: boolean;
 }
 
@@ -78,8 +78,8 @@ export function VariantsEditor({
       next.push(variant);
 
       if (variant.key === key) {
-        // A copia entra logo abaixo da original, e nao no fim da lista: e ali
-        // que o olho esta, e e ali que a diferenca entre as duas sera escrita.
+        // A copia entra logo abaixo da original, e não no fim da lista: e ali
+        // que o olho esta, e e ali que a diferença entre as duas será escrita.
         next.push(duplicateVariant(variant));
       }
     }
@@ -159,7 +159,7 @@ interface ListProps {
   errors: DraftErrors;
   imageOptions: { value: string; label: string }[];
   disabled: boolean;
-  /** A ultima variante nao pode sair: produto sem variante nao existe. */
+  /** A última variante não pode sair: produto sem variante não existe. */
   canRemove: boolean;
   onUpdate: (key: string, patch: Partial<VariantDraft>) => void;
   onDuplicate: (key: string) => void;
@@ -489,13 +489,13 @@ function VariantBlocks({
   );
 }
 
-/* ---- Pedacos compartilhados -------------------------------------------------- */
+/* ---- Pedaços compartilhados -------------------------------------------------- */
 
 /**
  * A foto da variante, escolhida entre as do produto.
  *
- * A miniatura ao lado do seletor existe porque "Foto 3" nao diz nada: a dona
- * escolhe pelo frasco, e nao pelo numero.
+ * A miniatura ao lado do seletor existe porque "Foto 3" não diz nada: a dona
+ * escolhe pelo frasco, e não pelo número.
  */
 function VariantImage({
   variant,
@@ -575,7 +575,7 @@ function RowButtons({
         type="button"
         className={styles.removeButton}
         aria-label={`Remover a variante ${String(index + 1)}`}
-        // A ultima nao sai: sem variante, o produto nao tem preco nem estoque,
+        // A última não sai: sem variante, o produto não tem preço nem estoque,
         // e o servidor recusa o cadastro com 422.
         title={canRemove ? 'Remover' : 'Todo produto precisa de uma variante'}
         disabled={disabled || !canRemove}

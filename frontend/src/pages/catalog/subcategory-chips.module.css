@@ -1,7 +1,7 @@
 /*
  * A faixa horizontal de subcategorias.
  *
- * Rola na horizontal sempre — tambem no desktop, onde quase nunca precisa.
+ * Rola na horizontal sempre — também no desktop, onde quase nunca precisa.
  * Uma faixa que quebra em duas linhas quando a categoria tem muitas filhas
  * empurraria a grade para baixo por uma quantidade que muda de categoria
  * para categoria; rolando, a altura e a mesma em todas.
@@ -9,9 +9,9 @@
 
 .strip {
   /*
-   * Sangra ate as bordas da tela no celular, desfazendo o respiro do
-   * container. A pilula cortada no canto e o que avisa que ha mais para o
-   * lado; terminando na margem, a faixa parece completa e ninguem arrasta.
+   * Sangra até as bordas da tela no celular, desfazendo o respiro do
+   * container. A pílula cortada no canto e o que avisa que há mais para o
+   * lado; terminando na margem, a faixa parece completa e ninguém arrasta.
    */
   margin-inline: calc(var(--gutter) * -1);
   padding-block: var(--space-8);
@@ -27,7 +27,7 @@
   /* A barra de rolagem some, o arrasto continua. */
   scrollbar-width: none;
 
-  /* Cada pilula para alinhada a esquerda, e nao no meio do arrasto. */
+  /* Cada pílula para alinhada a esquerda, e não no meio do arrasto. */
   scroll-snap-type: x proximate;
 }
 

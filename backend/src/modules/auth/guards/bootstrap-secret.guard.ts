@@ -11,13 +11,13 @@ export const BOOTSTRAP_UNAUTHORIZED_MESSAGE = 'Segredo de bootstrap inválido.';
 /**
  * Porteiro de `POST /auth/bootstrap`.
  *
- * Sem `BOOTSTRAP_SECRET` no ambiente a rota responde **404**, e nao 403: uma
- * vez removida a variavel — que e o que o README manda fazer depois do
+ * Sem `BOOTSTRAP_SECRET` no ambiente a rota responde **404**, e não 403: uma
+ * vez removida a variável — que e o que o README manda fazer depois do
  * primeiro acesso — a rota deixa de existir para quem estiver do lado de fora
  * procurando por ela.
  *
- * A comparacao passa por SHA-256 antes do `timingSafeEqual` por dois motivos:
- * a funcao exige buffers do mesmo tamanho, e comparar o digest impede que o
+ * A comparação passa por SHA-256 antes do `timingSafeEqual` por dois motivos:
+ * a função exige buffers do mesmo tamanho, e comparar o digest impede que o
  * tamanho da resposta entregue o tamanho do segredo.
  */
 @Injectable()

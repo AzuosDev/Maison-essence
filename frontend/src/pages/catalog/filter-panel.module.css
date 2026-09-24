@@ -1,9 +1,9 @@
 /*
  * A barra de filtros.
  *
- * Sem moldura propria: quem desenha a caixa em volta e a pagina, porque a
- * coluna do desktop tem filete e a gaveta do celular nao — ela ja esta
- * dentro de um painel. O que esta aqui e so o ritmo interno dos grupos.
+ * Sem moldura própria: quem desenha a caixa em volta e a página, porque a
+ * coluna do desktop tem filete e a gaveta do celular não — ela já esta
+ * dentro de um painel. O que esta aqui e só o ritmo interno dos grupos.
  */
 
 .panel {
@@ -45,11 +45,11 @@
 }
 
 /*
- * A lista de marcas rola dentro do proprio grupo.
+ * A lista de marcas rola dentro do próprio grupo.
  *
- * O teto existe para que uma loja com quarenta marcas nao empurre as caixas
+ * O teto existe para que uma loja com quarenta marcas não empurre as caixas
  * de disponibilidade para fora da tela — no desktop a coluna e fixa, e o que
- * fica abaixo da dobra dela nao e encontrado.
+ * fica abaixo da dobra dela não e encontrado.
  */
 .brands {
   display: flex;
@@ -58,7 +58,7 @@
   max-height: 14rem;
   overflow-y: auto;
 
-  /* O anel de foco do item nao pode ser cortado pela borda do scroll. */
+  /* O anel de foco do item não pode ser cortado pela borda do scroll. */
   padding: var(--focus-offset);
   margin: calc(var(--focus-offset) * -1);
 }

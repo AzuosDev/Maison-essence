@@ -9,25 +9,25 @@ import { errorMessage } from '@/lib/http';
 import styles from './user-form-dialog.module.css';
 
 /**
- * Criar e editar um usuario do painel.
+ * Criar e editar um usuário do painel.
  *
- * ## Um dialogo para os dois, e nao dois formularios
+ * ## Um diálogo para os dois, e não dois formulários
  *
- * Os campos sao os mesmos — nome, e-mail, papel — e o que muda e o titulo, o
- * botao e o que acontece depois. Duplicar isso significaria que uma regra
- * nova ("e-mail no maximo 160") entraria em um dos dois e seria esquecida no
+ * Os campos são os mesmos — nome, e-mail, papel — e o que muda e o título, o
+ * botão e o que acontece depois. Duplicar isso significaria que uma regra
+ * nova ("e-mail no máximo 160") entraria em um dos dois e seria esquecida no
  * outro.
  *
- * A senha nao e campo de nenhum dos dois. Na criacao ela e gerada pelo
+ * A senha não e campo de nenhum dos dois. Na criação ela e gerada pelo
  * painel e mostrada depois que o servidor aceita — ver
- * `temporary-password.ts`; na edicao ela tem rota propria, porque trocar
- * senha e uma acao e nao a edicao de um campo.
+ * `temporary-password.ts`; na edição ela tem rota própria, porque trocar
+ * senha e uma ação e não a edição de um campo.
  *
- * ## Dialogo, e nao pagina
+ * ## Diálogo, e não página
  *
- * Tres campos nao justificam sair da lista e perder o contexto. E o
- * contrario do formulario de produto, que tem variantes, imagens e
- * categorias e precisa da pagina inteira.
+ * Três campos não justificam sair da lista e perder o contexto. E o
+ * contrário do formulário de produto, que tem variantes, imagens e
+ * categorias e precisa da página inteira.
  */
 
 const schema = z.object({
@@ -44,23 +44,23 @@ const schema = z.object({
 export type UserFormValues = z.output<typeof schema>;
 
 /**
- * Os papeis, do menor alcance para o maior.
+ * Os papéis, do menor alcance para o maior.
  *
- * Nesta ordem de proposito: quem escolhe le de cima para baixo e encontra
- * primeiro o papel que serve para a maioria dos casos — alguem que vai
+ * Nesta ordem de propósito: quem escolhe lê de cima para baixo e encontra
+ * primeiro o papel que serve para a maioria dos casos — alguém que vai
  * ajudar a responder no WhatsApp. Colocar "Administrador" no topo o
- * transformaria no caminho de menor esforco.
+ * transformaria no caminho de menor esforço.
  */
 const ROLE_OPTIONS = [
   { value: USER_ROLES.STAFF, label: `${ROLE_LABELS.STAFF} — pedidos, sem preços` },
-  { value: USER_ROLES.OWNER, label: `${ROLE_LABELS.OWNER} — catalogo, pedidos e preços` },
+  { value: USER_ROLES.OWNER, label: `${ROLE_LABELS.OWNER} — catálogo, pedidos e preços` },
   { value: USER_ROLES.SUPER_ADMIN, label: `${ROLE_LABELS.SUPER_ADMIN} — a loja e o sistema` },
 ];
 
 export interface UserFormDialogProps {
   open: boolean;
   onClose: () => void;
-  /** Ausente na criacao. Presente, o dialogo edita este registro. */
+  /** Ausente na criação. Presente, o diálogo edita este registro. */
   user?: SystemUser | undefined;
   onSubmit: (values: UserFormValues) => void;
   isPending: boolean;
@@ -87,9 +87,9 @@ export function UserFormDialog({
     defaultValues: { name: '', email: '', role: USER_ROLES.STAFF },
   });
 
-  // O dialogo nao desmonta entre uma abertura e outra, entao o formulario
-  // guardaria o que foi digitado da ultima vez — inclusive o nome de outra
-  // pessoa, na edicao seguinte. Recarregar na abertura resolve.
+  // O diálogo não desmonta entre uma abertura e outra, então o formulário
+  // guardaria o que foi digitado da última vez — inclusive o nome de outra
+  // pessoa, na edição seguinte. Recarregar na abertura resolve.
   useEffect(() => {
     if (!open) {
       return;

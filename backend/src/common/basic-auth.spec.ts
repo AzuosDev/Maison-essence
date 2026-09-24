@@ -26,7 +26,7 @@ describe('matchesBasicAuth', () => {
   });
 
   it('aceita senha com dois pontos dentro', () => {
-    // A comparacao e da linha inteira 'usuario:senha', como o esquema Basic
+    // A comparação e da linha inteira 'usuário:senha', como o esquema Basic
     // define: o separador e o primeiro dois-pontos, e o resto e a senha.
     const credentials = { user: 'docs', password: 'a:b:c-senha-longa' };
 

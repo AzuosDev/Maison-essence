@@ -2,7 +2,7 @@
  * O campo de texto.
  *
  * A base — altura, borda, raio de 4px, estados — vem de `field.module.css`,
- * compartilhada com o seletor e a area de texto. Aqui fica so o que e do
+ * compartilhada com o seletor e a área de texto. Aqui fica só o que e do
  * input: os adornos das pontas.
  */
 
@@ -13,9 +13,9 @@
 }
 
 /*
- * Prefixo e sufixo: o `R$` do campo de preco, o `%` do desconto, a lupa da
- * busca. Ficam sobre o campo, e o `padding` do input e que abre espaco — o
- * texto digitado nao pode passar por baixo deles.
+ * Prefixo e sufixo: o `R$` do campo de preço, o `%` do desconto, a lupa da
+ * busca. Ficam sobre o campo, e o `padding` do input e que abre espaço — o
+ * texto digitado não pode passar por baixo deles.
  */
 .affix {
   position: absolute;
@@ -23,7 +23,7 @@
   align-items: center;
   font-size: var(--text-14);
   color: var(--ink-soft);
-  /* O clique atravessa e cai no campo, como se o adorno nao existisse. */
+  /* O clique atravessa e cai no campo, como se o adorno não existisse. */
   pointer-events: none;
 }
 
@@ -43,7 +43,7 @@
   padding-right: var(--space-48);
 }
 
-/* Preco, quantidade, parcela: numero em largura fixa nao dança no grid. */
+/* Preço, quantidade, parcela: número em largura fixa não dança no grid. */
 .numeric {
   font-variant-numeric: tabular-nums;
 }

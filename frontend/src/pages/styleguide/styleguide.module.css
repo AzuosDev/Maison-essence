@@ -1,8 +1,8 @@
 /*
  * O styleguide.
  *
- * Ferramenta de revisao, nao pagina da loja: existe so em desenvolvimento e
- * nao entra no bundle de producao. Ainda assim, usa os mesmos tokens que
+ * Ferramenta de revisão, não página da loja: existe só em desenvolvimento e
+ * não entra no bundle de produção. Ainda assim, usa os mesmos tokens que
  * tudo o mais — e ele que precisa mostrar a verdade sobre eles.
  */
 
@@ -64,7 +64,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-24);
-  /* O cabecalho fixo nao pode cobrir o titulo da secao ancorada. */
+  /* O cabeçalho fixo não pode cobrir o título da seção ancorada. */
   scroll-margin-top: var(--space-96);
 }
 

@@ -20,18 +20,18 @@ import {
 } from '../payments.constants.js';
 
 /**
- * Edicao das regras de pagamento. Campo omitido fica como esta.
+ * Edição das regras de pagamento. Campo omitido fica como esta.
  *
- * A chave PIX nao e validada aqui e sim no servico: ela so faz sentido junto
- * do `pixKeyType`, que pode estar chegando nesta mesma requisicao ou ja estar
- * gravado, e um decorator de campo nao enxerga o par. Ver `pix-key.ts`.
+ * A chave PIX não e validada aqui e sim no serviço: ela só faz sentido junto
+ * do `pixKeyType`, que pode estar chegando nesta mesma requisição ou já estar
+ * gravado, e um decorator de campo não enxerga o par. Ver `pix-key.ts`.
  */
 export class UpdatePaymentSettingsDto {
   @IsOptional()
   @IsBoolean()
   acceptsPix?: boolean;
 
-  /** Vazio remove a chave e tira o PIX do ar mesmo com a opcao ligada. */
+  /** Vazio remove a chave e tira o PIX do ar mesmo com a opção ligada. */
   @IsOptional()
   @IsString()
   @MaxLength(MAX_PIX_KEY_LENGTH)
@@ -59,8 +59,8 @@ export class UpdatePaymentSettingsDto {
   maxInstallments?: number;
 
   /**
-   * Ate aqui o total e dividido sem juros. Nao pode passar de
-   * `maxInstallments` — a regra vale tambem para o seed e para um script, e
+   * Até aqui o total e dividido sem juros. Não pode passar de
+   * `maxInstallments` — a regra vale também para o seed e para um script, e
    * por isso mora no schema, que a recusa com 422.
    */
   @IsOptional()
@@ -70,8 +70,8 @@ export class UpdatePaymentSettingsDto {
   interestFreeUpTo?: number;
 
   /**
-   * Juros ao mes. Aceita fracao de proposito: 1,99% ao mes e o que a
-   * maquininha cobra, e arredondar para 2% muda a ultima parcela.
+   * Juros ao mês. Aceita fração de propósito: 1,99% ao mês e o que a
+   * maquininha cobra, e arredondar para 2% muda a última parcela.
    */
   @IsOptional()
   @IsNumber({ maxDecimalPlaces: 2 }, { message: 'os juros ao mês aceitam até duas casas' })
@@ -79,7 +79,7 @@ export class UpdatePaymentSettingsDto {
   @Max(MAX_MONTHLY_INTEREST_PERCENT)
   monthlyInterestPercent?: number;
 
-  /** Abaixo disto a opcao de parcelamento nao e oferecida. */
+  /** Abaixo disto a opção de parcelamento não e oferecida. */
   @IsOptional()
   @IsInt({ message: 'a parcela mínima deve ser um inteiro em centavos' })
   @Min(0)

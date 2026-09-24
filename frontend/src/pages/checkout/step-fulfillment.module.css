@@ -1,26 +1,26 @@
 /*
  * Entrega ou retirada.
  *
- * A escolha vem primeiro e ocupa espaco de escolha: dois cartoes largos, e
- * nao dois pontinhos numa lista. Tudo o que aparece depois — o endereco da
- * loja ou o seletor de cidade com a taxa — e consequencia deles.
+ * A escolha vem primeiro e ocupa espaço de escolha: dois cartões largos, e
+ * não dois pontinhos numa lista. Tudo o que aparece depois — o endereço da
+ * loja ou o seletor de cidade com a taxa — e consequência deles.
  */
 
-/* ---- Os dois cartoes ------------------------------------------------------ */
+/* ---- Os dois cartões ------------------------------------------------------ */
 
 .modes {
-  /* O `RadioGroup` entra em modo horizontal e as opcoes viram itens de um
+  /* O `RadioGroup` entra em modo horizontal e as opções viram itens de um
      flex com quebra: no desktop elas dividem a linha, no celular cada uma
      fica com a sua. Ver `.choice`. */
   margin: 0;
 }
 
 /*
- * Os dois cartoes dividem a linha e quebram quando nao cabem.
+ * Os dois cartões dividem a linha e quebram quando não cabem.
  *
- * Aqui so a largura: a moldura, o estado marcado e o anel de foco sao da
- * variante `card` do proprio `Radio`, em `components/ui`. E a divisao de
- * sempre — o primitivo decide a aparencia, a tela decide a posicao.
+ * Aqui só a largura: a moldura, o estado marcado e o anel de foco são da
+ * variante `card` do próprio `Radio`, em `components/ui`. E a divisão de
+ * sempre — o primitivo decide a aparência, a tela decide a posição.
  */
 .choice {
   flex: 1 1 14rem;
@@ -66,7 +66,7 @@
   color: var(--ink-soft);
 }
 
-/* O endereco em linhas, como se escreve num envelope. */
+/* O endereço em linhas, como se escreve num envelope. */
 .address {
   display: grid;
   gap: var(--space-4);
@@ -95,7 +95,7 @@
 /*
  * A taxa, colada no seletor de cidade.
  *
- * Sem o respiro de 24px que separa os outros blocos: ela nao e um campo, e
+ * Sem o respiro de 24px que separa os outros blocos: ela não e um campo, e
  * a resposta ao campo de cima. O `margin-top` negativo a encosta na ajuda do
  * seletor, e a faixa de areia amarra as duas como um par.
  */
@@ -112,7 +112,7 @@
   transition: opacity var(--transition);
 }
 
-/* A cotacao esta no ar: o valor antigo esmaece em vez de sumir. */
+/* A cotação esta no ar: o valor antigo esmaece em vez de sumir. */
 .feeUpdating {
   opacity: 0.55;
 }
@@ -147,7 +147,7 @@
   color: var(--ink-soft);
 }
 
-/* ---- Os enderecos salvos -------------------------------------------------- */
+/* ---- Os endereços salvos -------------------------------------------------- */
 
 .saved {
   display: grid;
@@ -231,12 +231,12 @@
 
 @media (min-width: 40rem) {
   /*
-   * Duas colunas, com numero e complemento dividindo a linha.
+   * Duas colunas, com número e complemento dividindo a linha.
    *
-   * Sao os dois unicos campos curtos do endereco. Rua, bairro e ponto de
-   * referencia ocupam a linha inteira porque o conteudo deles e longo — um
+   * São os dois únicos campos curtos do endereço. Rua, bairro e ponto de
+   * referência ocupam a linha inteira porque o conteúdo deles e longo — um
    * "Rua Coronel Antonio Luiz" espremido em meia coluna rola dentro do
-   * proprio campo enquanto a pessoa digita.
+   * próprio campo enquanto a pessoa digita.
    */
   .fields {
     grid-template-columns: repeat(2, minmax(0, 1fr));

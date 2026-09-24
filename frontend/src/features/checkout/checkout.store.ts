@@ -17,61 +17,61 @@ import {
 /**
  * O checkout em andamento, guardado no navegador.
  *
- * Existe por um criterio de aceite — "recarregar no meio do checkout nao
- * perde nada" — e esse criterio nao e capricho. O checkout e a tela onde o
+ * Existe por um critério de aceite — "recarregar no meio do checkout não
+ * perde nada" — e esse critério não e capricho. O checkout e a tela onde o
  * cliente sai para conferir o CEP no aplicativo dos Correios, atende o
  * telefone, troca de aba e volta; no celular, trocar de aplicativo e o
- * suficiente para o navegador descartar a pagina. Um estado so em memoria
- * faria cada uma dessas idas apagar o endereco inteiro, e a pessoa recomeca
+ * suficiente para o navegador descartar a página. Um estado só em memória
+ * faria cada uma dessas idas apagar o endereço inteiro, e a pessoa recomeca
  * — ou desiste, que e o que costuma acontecer no quarto campo.
  *
  * ## O que atravessa o armazenamento
  *
  * Tudo o que o cliente **escolheu ou digitou**: a etapa em que parou, o modo
- * de entrega, a cidade, o endereco, a forma de pagamento, o parcelamento, o
+ * de entrega, a cidade, o endereço, a forma de pagamento, o parcelamento, o
  * nome e o WhatsApp.
  *
- * E nada mais. Nao ha total, nao ha taxa de entrega, nao ha valor de
- * parcela. A razao e a mesma que mantem preco fora da sacola: um total
- * gravado aqui sobrevive ao reajuste, a promocao que acabou e a taxa que a
+ * E nada mais. Não há total, não há taxa de entrega, não há valor de
+ * parcela. A razão e a mesma que mantem preço fora da sacola: um total
+ * gravado aqui sobrevive ao reajuste, a promoção que acabou e a taxa que a
  * dona mudou ontem, e volta intacto na tela de quem deixou a aba aberta
- * durante a noite — que leria um numero e pagaria outro. Todo valor em reais
+ * durante a noite — que leria um número e pagaria outro. Todo valor em reais
  * desta tela vem de `POST /cart/quote`, refeito a cada mudanca de qualquer
  * campo daqui.
  *
- * ## Por que os campos ficam aqui, e nao num formulario
+ * ## Por que os campos ficam aqui, e não num formulário
  *
- * O resto da loja valida com `react-hook-form`, e este nao. A diferenca e a
- * persistencia: o formulario mantem o proprio estado interno, e sincroniza-lo
+ * O resto da loja valida com `react-hook-form`, e este não. A diferença e a
+ * persistência: o formulário mantem o próprio estado interno, e sincroniza-lo
  * com o armazenamento a cada tecla exigiria um efeito em cima do `watch` —
  * com a janela entre digitar e sincronizar sendo exatamente o instante em
  * que o celular descarta a aba. Com os campos no store, o que esta na tela e
- * o que esta guardado, sem intermediario. A validacao continua sendo Zod,
- * em `checkout.schema.ts`, rodada na hora de avancar.
+ * o que esta guardado, sem intermediário. A validação continua sendo Zod,
+ * em `checkout.schema.ts`, rodada na hora de avançar.
  */
 
 interface CheckoutState {
   /** Em qual das quatro etapas o cliente parou. */
   step: CheckoutStep;
 
-  /** `null` ate ele escolher. Nao ha modo padrao: escolher e a etapa 2. */
+  /** `null` até ele escolher. Não há modo padrão: escolher e a etapa 2. */
   mode: FulfillmentMode | null;
 
   /** O id da cidade atendida. Vazio na retirada e antes da escolha. */
   cityId: string;
 
   /**
-   * O endereco, que sobrevive a troca de modo.
+   * O endereço, que sobrevive a troca de modo.
    *
-   * Quem digitou o endereco, experimentou a retirada e voltou para a entrega
-   * encontra o que escreveu. Na retirada ele simplesmente nao e exigido nem
+   * Quem digitou o endereço, experimentou a retirada e voltou para a entrega
+   * encontra o que escreveu. Na retirada ele simplesmente não e exigido nem
    * enviado — ver `fulfillmentSchema`.
    */
   address: CheckoutAddress;
 
   method: PaymentMethod | null;
 
-  /** Sempre 1 no PIX, que nao parcela. */
+  /** Sempre 1 no PIX, que não parcela. */
   installments: number;
 
   contact: CheckoutContact;
@@ -82,9 +82,9 @@ interface CheckoutState {
 
   chooseMode: (mode: FulfillmentMode) => void;
   chooseCity: (cityId: string) => void;
-  /** Um campo do endereco por vez, como o `onChange` do campo entrega. */
+  /** Um campo do endereço por vez, como o `onChange` do campo entrega. */
   setAddressField: (field: keyof CheckoutAddress, value: string) => void;
-  /** O endereco salvo da conta, aplicado de uma vez. */
+  /** O endereço salvo da conta, aplicado de uma vez. */
   applySavedAddress: (address: CheckoutAddress, cityId: string) => void;
 
   chooseMethod: (method: PaymentMethod) => void;
@@ -92,7 +92,7 @@ interface CheckoutState {
 
   setContactField: (field: keyof CheckoutContact, value: string) => void;
 
-  /** Pedido fechado: o checkout volta ao inicio, sem rastro do anterior. */
+  /** Pedido fechado: o checkout volta ao início, sem rastro do anterior. */
   reset: () => void;
 }
 
@@ -124,9 +124,9 @@ export const useCheckout = create<CheckoutState>()(
       },
 
       chooseMode: (mode) => {
-        // A cidade nao e apagada ao trocar para a retirada: quem volta para a
-        // entrega encontra a que ja tinha escolhido. Quem manda na taxa e o
-        // modo, e a cotacao so recebe a cidade quando o modo e entrega.
+        // A cidade não e apagada ao trocar para a retirada: quem volta para a
+        // entrega encontra a que já tinha escolhido. Quem manda na taxa e o
+        // modo, e a cotação só recebe a cidade quando o modo e entrega.
         set({ mode });
       },
 
@@ -139,17 +139,17 @@ export const useCheckout = create<CheckoutState>()(
       },
 
       applySavedAddress: (address, cityId) => {
-        // A cidade so e trocada quando o endereco salvo tem uma que a loja
+        // A cidade só e trocada quando o endereço salvo tem uma que a loja
         // ainda atende: quem resolve isso e quem chamou, comparando com a
         // lista de `/delivery-cities`. Vazio aqui significa "mantenha a que
-        // estava", e nao "apague a escolha".
+        // estava", e não "apague a escolha".
         set((state) => ({ address, cityId: cityId === '' ? state.cityId : cityId }));
       },
 
       chooseMethod: (method) => {
-        // O PIX nao parcela. Voltar o contador a 1 evita que o "6x" escolhido
-        // no cartao continue no corpo da cotacao depois da troca — o servidor
-        // ignoraria, mas a tela leria o proprio estado e escreveria "6x" no
+        // O PIX não parcela. Voltar o contador a 1 evita que o "6x" escolhido
+        // no cartão continue no corpo da cotação depois da troca — o servidor
+        // ignoraria, mas a tela leria o próprio estado e escreveria "6x" no
         // resumo de um pagamento a vista.
         set(method === PAYMENT_METHODS.PIX ? { method, installments: 1 } : { method });
       },
@@ -174,7 +174,7 @@ export const useCheckout = create<CheckoutState>()(
       /**
        * Os campos escritos um a um, como na sacola.
        *
-       * Nao e `...state` com omissoes: a lista curta e o que obriga quem
+       * Não e `...state` com omissões: a lista curta e o que obriga quem
        * acrescentar um campo a escreve-lo aqui e a responder por que ele
        * precisa sobreviver ao fechamento do navegador. E o lugar onde um
        * `totalCents` tentaria entrar.
@@ -194,15 +194,15 @@ export const useCheckout = create<CheckoutState>()(
 
 /* ---- Os seletores --------------------------------------------------------
  *
- * Funcoes soltas, como na sacola: `useCheckout(checkoutStep)` re-renderiza a
- * trilha quando a etapa muda, e nao a cada tecla digitada no endereco.
+ * Funções soltas, como na sacola: `useCheckout(checkoutStep)` re-renderiza a
+ * trilha quando a etapa muda, e não a cada tecla digitada no endereço.
  */
 
 export function checkoutStep(state: CheckoutState): CheckoutStep {
   return state.step;
 }
 
-/** O endereco sera pedido: so na entrega. */
+/** O endereço será pedido: só na entrega. */
 export function needsAddress(state: CheckoutState): boolean {
   return state.mode === 'delivery';
 }

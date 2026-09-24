@@ -10,22 +10,22 @@ import ProductPage from './product-page';
 import buyBox from './buy-box.module.css';
 
 /**
- * A pagina do produto contra a API.
+ * A página do produto contra a API.
  *
- * Os casos aqui sao os criterios de aceite escritos como codigo, e sao
- * justamente os que uma revisao visual nao pega:
+ * Os casos aqui são os critérios de aceite escritos como código, e são
+ * justamente os que uma revisão visual não pega:
  *
- * 1. **Trocar de variante** move quatro coisas ao mesmo tempo — preco, foto,
- *    estoque e endereco. Uma tela que troca o preco e esquece a URL parece
+ * 1. **Trocar de variante** move quatro coisas ao mesmo tempo — preço, foto,
+ *    estoque e endereço. Uma tela que troca o preço e esquece a URL parece
  *    perfeita em tela e manda o link errado para o WhatsApp.
- * 2. **A previa compartilhada** vive em tags do `<head>`, que ninguem ve ao
- *    revisar a pagina: ela so aparece quando o link ja esta na conversa.
- * 3. **A variante esgotada** precisa estar visivel *e* fora de alcance, e a
- *    segunda metade e invisivel numa captura de tela.
+ * 2. **A prévia compartilhada** vive em tags do `<head>`, que ninguém vê ao
+ *    revisar a página: ela só aparece quando o link já esta na conversa.
+ * 3. **A variante esgotada** precisa estar visível *e* fora de alcance, e a
+ *    segunda metade e invisível numa captura de tela.
  *
- * O Cloudinary entra por `vi.mock` do modulo de ambiente: sem um `cloud
- * name`, o helper de imagem devolve o marcador local e a previa nasceria sem
- * foto — que e um estado de desenvolvimento, e nao o que a loja publica.
+ * O Cloudinary entra por `vi.mock` do módulo de ambiente: sem um `cloud
+ * name`, o helper de imagem devolve o marcador local e a prévia nasceria sem
+ * foto — que e um estado de desenvolvimento, e não o que a loja publica.
  */
 
 vi.mock('@/lib/env', () => ({
@@ -176,12 +176,12 @@ afterEach(() => {
 });
 
 /**
- * A pagina montada como a loja a monta, menos a moldura.
+ * A página montada como a loja a monta, menos a moldura.
  *
- * O roteador e de memoria e comeca no endereco do produto: e ele que da o
- * slug a `useParams` e a query string a `useSearchParams` — sem ele nao ha o
- * que testar no criterio da URL. Devolve o roteador para que o caso consiga
- * ler o endereco depois do clique.
+ * O roteador e de memória e começa no endereço do produto: e ele que da o
+ * slug a `useParams` e a query string a `useSearchParams` — sem ele não há o
+ * que testar no critério da URL. Devolve o roteador para que o caso consiga
+ * ler o endereço depois do clique.
  */
 async function abrirProduto(entrada = '/produtos/asad-lattafa') {
   const client = new QueryClient({
@@ -222,9 +222,9 @@ function radio(nome: RegExp): HTMLInputElement {
 }
 
 /**
- * O preco em destaque, e nao qualquer "R$ 189,90" da tela.
+ * O preço em destaque, e não qualquer "R$ 189,90" da tela.
  *
- * Cada pilula de variante mostra o proprio preco, entao o mesmo valor
+ * Cada pílula de variante mostra o próprio preço, então o mesmo valor
  * aparece duas vezes: no seletor e no destaque. Buscar por texto pegaria os
  * dois e o teste passaria mesmo se o destaque nunca mudasse — que e
  * exatamente a falha que este caso existe para pegar.
@@ -237,7 +237,7 @@ test('trocar de variante atualiza preço, foto, estoque e o endereço', async ()
   const usuario = userEvent.setup();
   const router = await abrirProduto();
 
-  // A pagina abre na mais barata entre as disponiveis, e o aviso de estoque
+  // A página abre na mais barata entre as disponíveis, e o aviso de estoque
   // baixo dela aparece junto.
   expect(precoDestaque()).toBe('R$ 189,90');
   expect(screen.getByText('Restam apenas 2 unidades')).toBeTruthy();
@@ -250,14 +250,14 @@ test('trocar de variante atualiza preço, foto, estoque e o endereço', async ()
     expect(precoDestaque()).toBe('R$ 289,90');
   });
 
-  // A foto segue a variante, porque os 100ml tem foto propria.
+  // A foto segue a variante, porque os 100ml tem foto própria.
   expect(fotoPrincipal().src).toContain('produtos/asad-100');
 
-  // Estoque de 9 nao e estoque baixo: o aviso da variante anterior sai da
-  // tela, em vez de continuar valendo para uma opcao que nao e a escolhida.
+  // Estoque de 9 não e estoque baixo: o aviso da variante anterior sai da
+  // tela, em vez de continuar valendo para uma opção que não e a escolhida.
   expect(screen.queryByText('Restam apenas 2 unidades')).toBeNull();
 
-  // E o endereco carrega a variante: e o link que vai para a conversa.
+  // E o endereço carrega a variante: e o link que vai para a conversa.
   expect(router.state.location.search).toBe('?variante=v100');
 });
 
@@ -273,8 +273,8 @@ test('a variante esgotada aparece na lista e não pode ser escolhida', async () 
   const usuario = userEvent.setup();
   await abrirProduto();
 
-  // Visivel — quem veio atras dos 200ml precisa saber que eles existem — e
-  // anunciada como esgotada a quem ouve a pagina.
+  // Visível — quem veio atrás dos 200ml precisa saber que eles existem — e
+  // anunciada como esgotada a quem ouve a página.
   const esgotada = radio(/200ml/);
 
   expect(esgotada).toBeTruthy();
@@ -301,7 +301,7 @@ test('a prévia compartilhada leva a foto e o preço da variante escolhida', asy
   expect(conteudoDaMeta('meta[property="og:type"]')).toBe('product');
   expect(conteudoDaMeta('meta[name="twitter:card"]')).toBe('summary_large_image');
 
-  // A foto da previa e uma URL absoluta do Cloudinary: caminho relativo nao
+  // A foto da prévia e uma URL absoluta do Cloudinary: caminho relativo não
   // serve para rastreador nenhum.
   const imagem = conteudoDaMeta('meta[property="og:image"]');
 
@@ -314,8 +314,8 @@ test('a prévia compartilhada leva a foto e o preço da variante escolhida', asy
     expect(conteudoDaMeta('meta[property="og:image"]')).toContain('produtos/asad-100');
   });
 
-  // O canonico continua sem o parametro de variante: e o mesmo produto, e
-  // dois enderecos indexados dividiriam a relevancia entre si.
+  // O canônico continua sem o parâmetro de variante: e o mesmo produto, e
+  // dois endereços indexados dividiriam a relevância entre si.
   expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(
     'http://localhost:3000/produtos/asad-lattafa',
   );
@@ -341,17 +341,17 @@ test('os dados estruturados descrevem uma oferta por variante', async () => {
   expect(dados['@type']).toBe('Product');
   expect(dados.brand.name).toBe('Lattafa');
 
-  // Preco com ponto decimal e sem simbolo, como a especificacao pede.
+  // Preço com ponto decimal e sem símbolo, como a especificação pede.
   expect(dados.offers.map((offer) => offer.price)).toEqual(['189.90', '289.90', '389.90']);
 
-  // A disponibilidade acompanha o estoque de cada uma, e nao a do produto.
+  // A disponibilidade acompanha o estoque de cada uma, e não a do produto.
   expect(dados.offers.map((offer) => offer.availability)).toEqual([
     'https://schema.org/InStock',
     'https://schema.org/InStock',
     'https://schema.org/OutOfStock',
   ]);
 
-  // Cada oferta aponta para o endereco que abre justamente ela.
+  // Cada oferta aponta para o endereço que abre justamente ela.
   expect(dados.offers[1]?.url).toContain('?variante=v100');
 });
 
@@ -366,11 +366,11 @@ test('a quantidade para no estoque da variante escolhida', async () => {
 
   expect(campo.value).toBe('2');
 
-  // Duas unidades e todo o estoque dos 50ml: o botao para aqui, em vez de
-  // deixar o cliente pedir tres e levar a recusa so no checkout.
+  // Duas unidades e todo o estoque dos 50ml: o botão para aqui, em vez de
+  // deixar o cliente pedir três e levar a recusa só no checkout.
   expect(mais.disabled).toBe(true);
 
-  // Trocar de opcao volta a quantidade para um e libera o teto novo.
+  // Trocar de opção volta a quantidade para um e libera o teto novo.
   await usuario.click(radio(/100ml/));
 
   await waitFor(() => {

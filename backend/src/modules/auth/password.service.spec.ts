@@ -28,12 +28,12 @@ describe('PasswordService', () => {
     await passwords.verify(withHash, 'qualquer-uma');
     const present = Date.now() - comparedAt;
 
-    // Os dois caminhos passam pelo argon2; a comparacao e frouxa de proposito,
-    // porque o que importa e nao haver uma ordem de grandeza de diferenca.
+    // Os dois caminhos passam pelo argon2; a comparação e frouxa de propósito,
+    // porque o que importa e não haver uma ordem de grandeza de diferença.
     expect(missing).toBeGreaterThan(present / 10);
   });
 
-  it('recusa hash em formato inválido sem lancar', async () => {
+  it('recusa hash em formato inválido sem lançar', async () => {
     await expect(passwords.verify('nao-e-um-hash', 'qualquer-uma')).resolves.toBe(false);
   });
 });

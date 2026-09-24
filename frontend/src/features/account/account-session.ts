@@ -8,21 +8,21 @@ import { accountKeys } from './account.keys';
  * ## O caso que isto evita
  *
  * O navegador de casa e compartilhado. A irma sai da conta, a outra entra, e
- * o TanStack Query — que nao sabe de sessao — serve a lista de pedidos que
- * ja tinha em maos enquanto a consulta nova viaja. Por um segundo, a segunda
- * pessoa le os pedidos da primeira.
+ * o TanStack Query — que não sabe de sessão — serve a lista de pedidos que
+ * já tinha em mãos enquanto a consulta nova viaja. Por um segundo, a segunda
+ * pessoa lê os pedidos da primeira.
  *
- * Um segundo basta. Entao a troca de sessao **remove** tudo debaixo de
+ * Um segundo basta. Então a troca de sessão **remove** tudo debaixo de
  * `['account']`, em vez de invalidar: invalidar mantem o dado antigo em cena
- * ate a resposta nova chegar, que e exatamente o comportamento errado aqui.
- * O catalogo, que e publico e esta na mesma aba, nao e tocado.
+ * até a resposta nova chegar, que e exatamente o comportamento errado aqui.
+ * O catálogo, que e público e esta na mesma aba, não e tocado.
  *
- * ## Por que uma assinatura, e nao um `onSuccess` no botao de sair
+ * ## Por que uma assinatura, e não um `onSuccess` no botão de sair
  *
- * Porque a maior parte das saidas nao passa por botao nenhum. O cliente HTTP
- * encerra a sessao sozinho quando a renovacao falha — token vencido, conta
+ * Porque a maior parte das saídas não passa por botão nenhum. O cliente HTTP
+ * encerra a sessão sozinho quando a renovação falha — token vencido, conta
  * desativada, refresh reusado —, e isso acontece longe de qualquer
- * componente. A assinatura pega os dois caminhos com um codigo so.
+ * componente. A assinatura pega os dois caminhos com um código só.
  */
 export function watchAccountCache(client: QueryClient): () => void {
   let previousId = useCustomerSession.getState().user?.id ?? null;

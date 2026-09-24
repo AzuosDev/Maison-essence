@@ -46,7 +46,7 @@ describe('redactSensitive', () => {
 
   it('máscara o telefone escrito de qualquer jeito', () => {
     expect(redactSensitive('pedido de (88) 99999-1234')).toBe('pedido de 88*******34');
-    // O codigo do pais sai fora da conta; o que resta e o numero local.
+    // O código do pais sai fora da conta; o que resta e o número local.
     expect(redactSensitive('whatsapp 5588999991234')).toBe('whatsapp 88*******34');
   });
 
@@ -54,7 +54,7 @@ describe('redactSensitive', () => {
     const line = '{"code":"ME-260921-4KP1","orderId":"6ab16cee8e4c6a7c5be79b96"}';
 
     // O id do Mongo tem 24 caracteres: curto demais para a regra do hash, que
-    // so pega 32 ou mais. Fosse o contrario, todo log de pedido viraria
+    // só pega 32 ou mais. Fosse o contrário, todo log de pedido viraria
     // "[hash]" e a trilha perderia justamente o que serve para procurar.
     expect(redactSensitive(line)).toBe(line);
   });

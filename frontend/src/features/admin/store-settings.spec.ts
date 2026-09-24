@@ -19,15 +19,15 @@ import {
 } from './store-settings';
 
 /**
- * As configuracoes da loja.
+ * As configurações da loja.
  *
- * Duas coisas erram em silencio aqui, e as duas sao caras:
+ * Duas coisas erram em silêncio aqui, e as duas são caras:
  *
- * - **o numero do WhatsApp mal normalizado** nao da erro no painel. Da erro
- *   na mao do cliente, na hora de enviar o pedido, e ninguem fica sabendo;
+ * - **o número do WhatsApp mal normalizado** não da erro no painel. Da erro
+ *   na mão do cliente, na hora de enviar o pedido, e ninguém fica sabendo;
  * - **a data do banner indo e voltando entre instante e dia** faria a tela
  *   se achar suja a cada abertura, e a dona aprenderia a ignorar a barra de
- *   salvar — que e o unico aviso de que ha algo por gravar.
+ *   salvar — que e o único aviso de que há algo por gravar.
  */
 
 const BANNER: AdminBanner = {
@@ -79,7 +79,7 @@ function draft(patch: Partial<SettingsDraft> = {}): SettingsDraft {
   return { ...draftFromSettings(settings()), ...patch };
 }
 
-/** As paginas do rascunho com uma delas alterada. */
+/** As páginas do rascunho com uma delas alterada. */
 function withPage(
   pages: readonly PageDraft[],
   slug: InstitutionalPageSlug,
@@ -112,7 +112,7 @@ test('o número sem código do pais ganha o 55; o estrangeiro passa intacto', ()
 });
 
 test('sem mínimo geral de frete, o campo fica vazio', () => {
-  // `0,00` seria frete gratis em qualquer pedido, que e outra coisa.
+  // `0,00` seria frete grátis em qualquer pedido, que e outra coisa.
   expect(draftFromSettings(settings({ freeShippingMinCents: null })).freeShippingMin).toBe('');
   expect(draftFromSettings(settings()).freeShippingMin).toBe('200,00');
 });
@@ -123,7 +123,7 @@ test('abrir a tela e não mexer em nada não gera chamada', () => {
 });
 
 test('o banner agendado vai e volta entre instante e dia sem se mexer', () => {
-  // E a regressao que a nota no topo do modulo descreve: sem isto, a barra de
+  // E a regressão que a nota no topo do módulo descreve: sem isto, a barra de
   // salvar apareceria sozinha a cada abertura da tela.
   const agendado = settings({
     banners: [{ ...BANNER, startsAt: dayStartISO('2026-11-20'), endsAt: dayEndISO('2026-11-30') }],
@@ -136,7 +136,7 @@ test('o banner agendado vai e volta entre instante e dia sem se mexer', () => {
   expect(changesOf(aberto, agendado)).toBeNull();
 });
 
-/* ---- A validacao ---------------------------------------------------------------- */
+/* ---- A validação ---------------------------------------------------------------- */
 
 test('o que veio do servidor passa', () => {
   expect(hasSettingsErrors(validateSettings(draft(), settings()))).toBe(false);
@@ -156,7 +156,7 @@ test('o e-mail não pode ser apagado, porque o servidor recusaria o vazio', () =
 
   expect(erros.contactEmail).toBeDefined();
 
-  // Numa loja que nunca teve e-mail, o campo vazio nao e erro nenhum.
+  // Numa loja que nunca teve e-mail, o campo vazio não e erro nenhum.
   expect(
     validateSettings(draft({ contactEmail: '' }), settings({ contactEmail: '' })).contactEmail,
   ).toBeUndefined();
@@ -176,7 +176,7 @@ test('o endereço da retirada não exige campo nenhum, mas confere o formato', (
     },
   });
 
-  // Faltar endereco vira aviso, e nao erro: a dona escreve a rua hoje e o CEP
+  // Faltar endereço vira aviso, e não erro: a dona escreve a rua hoje e o CEP
   // quando encontrar.
   expect(validateSettings(vazio, settings()).address).toBeUndefined();
 
@@ -249,7 +249,7 @@ test('escrever o número com pontuação não conta como mudanca', () => {
 });
 
 test('o endereço viaja campo a campo, e não inteiro', () => {
-  // Corrigir o numero da casa nao pode apagar o ponto de referencia — o
+  // Corrigir o número da casa não pode apagar o ponto de referência — o
   // servidor funde o que chega com o que esta gravado.
   const mudado = draft({ pickupAddress: { ...draft().pickupAddress, number: '130' } });
 
@@ -335,7 +335,7 @@ test('o banner sabe dizer se esta no ar, agendado ou encerrado', () => {
 });
 
 test('o último dia conta inteiro: o banner que termina hoje ainda esta no ar', () => {
-  // "ate 25/12" nao pode sair do ar as 00h01 do dia 25.
+  // "até 25/12" não pode sair do ar as 00h01 do dia 25.
   const agora = new Date('2026-12-25T12:00:00');
 
   expect(bannerStatus({ ...draft().banners[0]!, endsOn: '2026-12-25' }, agora)).toBe('live');

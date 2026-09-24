@@ -1,5 +1,5 @@
 /**
- * Ciclo de vida do pedido. Como nao ha gateway de pagamento, quem move o
+ * Ciclo de vida do pedido. Como não há gateway de pagamento, quem move o
  * status e sempre a dona pelo painel.
  */
 export const ORDER_STATUSES = {
@@ -19,9 +19,9 @@ export const ORDER_STATUS_VALUES: readonly OrderStatus[] = Object.values(ORDER_S
  * Os status que contam como venda fechada.
  *
  * `PENDING_CONTACT` fica de fora: e o pedido que o cliente montou e ainda
- * nao virou conversa no WhatsApp, e metade deles nunca vira. `CANCELLED`
- * tambem, por motivo obvio. Os mais vendidos da vitrine e qualquer relatorio
- * de faturamento leem daqui, para nao divergirem um do outro.
+ * não virou conversa no WhatsApp, e metade deles nunca vira. `CANCELLED`
+ * também, por motivo obvio. Os mais vendidos da vitrine e qualquer relatório
+ * de faturamento leem daqui, para não divergirem um do outro.
  */
 export const SOLD_ORDER_STATUSES: readonly OrderStatus[] = [
   ORDER_STATUSES.CONFIRMED,

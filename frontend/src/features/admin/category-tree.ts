@@ -2,33 +2,33 @@ import { isApiError } from '@/lib/http';
 import type { AdminCategory, AdminCategoryNode, CategoryBlockedDetails } from './admin.types';
 
 /**
- * A arvore de categorias, como a tela a manipula.
+ * A árvore de categorias, como a tela a manipula.
  *
  * ## Por que a ordem do menu e uma lista plana
  *
  * O servidor guarda **um** campo `order` por categoria, e a rota de
- * reordenacao grava `order = indice` para cada id que recebe. Nao ha "ordem
- * dentro do pai": o que existe e uma numeracao unica, e a arvore se forma
- * depois, agrupando por `parentId` e ordenando cada nivel por `order`.
+ * reordenação grava `order = indice` para cada id que recebe. Não há "ordem
+ * dentro do pai": o que existe e uma numeração única, e a árvore se forma
+ * depois, agrupando por `parentId` e ordenando cada nível por `order`.
  *
- * Isso tem uma consequencia pratica que vale registrar: se a lista for
+ * Isso tem uma consequência prática que vale registrar: se a lista for
  * mandada em **ordem de menu** — cada pai seguido dos filhos dele —, os
- * indices resultantes ordenam corretamente os dois niveis de uma vez. Pai A
+ * índices resultantes ordenam corretamente os dois níveis de uma vez. Pai A
  * vira 0, os filhos dele 1 e 2, pai B vira 3; no topo, 0 vem antes de 3, e
  * dentro de A, 1 vem antes de 2. Uma lista em qualquer outra ordem embaralha
  * o menu sem que nada reclame.
  *
- * ## Arrastar move dentro do nivel, e nao entre niveis
+ * ## Arrastar move dentro do nível, e não entre níveis
  *
  * Um pai troca de lugar com outro pai; um filho troca de lugar com os irmaos
- * dele. Mudar de pai e outra operacao — um `PATCH` com `parentId` —, e
- * misturar as duas num gesto so faria um arraste desatento tirar a
+ * dele. Mudar de pai e outra operação — um `PATCH` com `parentId` —, e
+ * misturar as duas num gesto só faria um arraste desatento tirar a
  * subcategoria de onde ela estava sem dizer.
  *
- * ## Tudo aqui e funcao pura
+ * ## Tudo aqui e função pura
  *
- * A ordem do menu e o tipo de coisa que erra em silencio: ninguem confere a
- * sequencia de oito categorias olhando, e o defeito so aparece na loja, para
+ * A ordem do menu e o tipo de coisa que erra em silêncio: ninguém confere a
+ * sequência de oito categorias olhando, e o defeito só aparece na loja, para
  * o cliente.
  */
 
@@ -38,10 +38,10 @@ export function menuOrder(tree: readonly AdminCategoryNode[]): string[] {
 }
 
 /**
- * Move uma categoria principal de posicao, levando os filhos junto.
+ * Move uma categoria principal de posição, levando os filhos junto.
  *
- * Os filhos acompanham porque eles moram **dentro** do no: a arvore e o
- * modelo, e a lista plana so aparece na hora de mandar.
+ * Os filhos acompanham porque eles moram **dentro** do no: a árvore e o
+ * modelo, e a lista plana só aparece na hora de mandar.
  */
 export function moveParent(
   tree: readonly AdminCategoryNode[],
@@ -65,7 +65,7 @@ export function moveChild(
   );
 }
 
-/** Todas as categorias, pais e filhos, numa lista so. */
+/** Todas as categorias, pais e filhos, numa lista só. */
 export function flatten(tree: readonly AdminCategoryNode[]): AdminCategory[] {
   return tree.flatMap((parent) => [parent, ...parent.children]);
 }
@@ -76,15 +76,15 @@ export function countCategories(tree: readonly AdminCategoryNode[]): number {
 }
 
 /**
- * As opcoes de "dentro de", para mover uma categoria de pai.
+ * As opções de "dentro de", para mover uma categoria de pai.
  *
- * So categorias principais entram, e nunca a propria categoria: uma
- * subcategoria nao pode ter filhos (o servidor recusa com
+ * Só categorias principais entram, e nunca a própria categoria: uma
+ * subcategoria não pode ter filhos (o servidor recusa com
  * `NESTING_TOO_DEEP_MESSAGE`) e nada pode ser pai de si mesmo.
  *
- * Uma categoria **que ja tem filhos** tambem nao pode virar subcategoria — o
+ * Uma categoria **que já tem filhos** também não pode virar subcategoria — o
  * servidor recusa com `HAS_CHILDREN_MESSAGE` —, e quem chama trata isso
- * escondendo a opcao inteira, e nao filtrando a lista.
+ * escondendo a opção inteira, e não filtrando a lista.
  */
 export function parentOptions(
   tree: readonly AdminCategoryNode[],
@@ -95,16 +95,16 @@ export function parentOptions(
     .map((parent) => ({ value: parent.id, label: parent.name }));
 }
 
-/** A categoria tem subcategorias e por isso nao pode virar subcategoria. */
+/** A categoria tem subcategorias e por isso não pode virar subcategoria. */
 export function hasChildren(tree: readonly AdminCategoryNode[], id: string): boolean {
   return tree.some((parent) => parent.id === id && parent.children.length > 0);
 }
 
 /**
- * O que impediu a exclusao, quando o servidor recusou com 409.
+ * O que impediu a exclusão, quando o servidor recusou com 409.
  *
- * Devolve `null` para qualquer outro erro — sem rede, sessao expirada, id que
- * nao existe. So o 409 desta rota carrega as contagens, e so ele merece a
+ * Devolve `null` para qualquer outro erro — sem rede, sessão expirada, id que
+ * não existe. Só o 409 desta rota carrega as contagens, e só ele merece a
  * oferta de desativar no lugar.
  */
 export function blockedBy(error: unknown): CategoryBlockedDetails | null {

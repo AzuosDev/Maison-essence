@@ -23,28 +23,28 @@ import styles from './product-card.module.css';
  * O card de produto, usado em toda a loja.
  *
  * Home, vitrine, categoria, busca e relacionados desenham este componente e
- * nenhum outro. Ele recebe o `PublicProduct` como a API o entrega e nao busca
- * nada por conta propria — com uma excecao deliberada: as regras de
- * parcelamento, que sao uma consulta so para a visita inteira e que o
+ * nenhum outro. Ele recebe o `PublicProduct` como a API o entrega e não busca
+ * nada por conta própria — com uma exceção deliberada: as regras de
+ * parcelamento, que são uma consulta só para a visita inteira e que o
  * TanStack Query deduplica entre os vinte cards de uma grade.
  *
- * ## O botao
+ * ## O botão
  *
- * Com **uma** variante, "Adicionar" poe o item na sacola e acabou. Com duas
- * ou mais, abre o seletor rapido — porque o card nao tem como saber se o
+ * Com **uma** variante, "Adicionar" põe o item na sacola e acabou. Com duas
+ * ou mais, abre o seletor rápido — porque o card não tem como saber se o
  * cliente quer os 50ml ou os 100ml, e adivinhar seria colocar o errado na
- * sacola. Produto esgotado mostra o botao desabilitado em vez de escondido:
- * o espaco continua ocupado e a grade nao muda de altura entre um card e o
+ * sacola. Produto esgotado mostra o botão desabilitado em vez de escondido:
+ * o espaço continua ocupado e a grade não muda de altura entre um card e o
  * vizinho.
  *
  * ## A foto
  *
- * Dois links levam ao produto — a foto e o nome —, mas so um entra na ordem
- * do Tab. A foto vai com `tabIndex={-1}` e `aria-hidden`, senao quem navega
+ * Dois links levam ao produto — a foto e o nome —, mas só um entra na ordem
+ * do Tab. A foto vai com `tabIndex={-1}` e `aria-hidden`, senão quem navega
  * por teclado pararia duas vezes em cada card para chegar ao mesmo lugar.
  */
 
-/** O `sizes` da grade padrao: quatro colunas no desktop, duas no celular. */
+/** O `sizes` da grade padrão: quatro colunas no desktop, duas no celular. */
 const DEFAULT_SIZES = '(min-width: 64rem) 25vw, (min-width: 40rem) 33vw, 50vw';
 
 export interface ProductCardProps {
@@ -53,16 +53,16 @@ export interface ProductCardProps {
    * O card esta na primeira dobra.
    *
    * A foto carrega de imediato, sem `lazy`, e com prioridade alta. Vale para
-   * os primeiros cards da primeira prateleira e para mais ninguem: prioridade
+   * os primeiros cards da primeira prateleira e para mais ninguém: prioridade
    * em tudo e prioridade em nada, e a imagem do hero perderia a corrida.
    */
   priority?: boolean;
-  /** O `sizes` do `<img>`, quando a grade nao e a padrao. */
+  /** O `sizes` do `<img>`, quando a grade não e a padrão. */
   sizes?: string;
   /**
    * O termo buscado, realcado no nome.
    *
-   * So a pagina de busca passa isto. Vazio em todo o resto da loja, e o nome
+   * Só a página de busca passa isto. Vazio em todo o resto da loja, e o nome
    * sai limpo.
    */
   highlight?: string;
@@ -88,8 +88,8 @@ export function ProductCard({
   const { min, max } = product.priceRangeCents;
   const priceLabel = formatCentsRange(product.priceRangeCents);
 
-  // A segunda foto do cadastro. `images[0]` e a capa, entao a alternativa e a
-  // seguinte — quando ela existe e nao repete a capa.
+  // A segunda foto do cadastro. `images[0]` e a capa, então a alternativa e a
+  // seguinte — quando ela existe e não repete a capa.
   const hoverImage = product.images.find((image) => image !== product.coverImage);
 
   const add = () => {
@@ -108,9 +108,9 @@ export function ProductCard({
 
   return (
     <article className={cx(styles.card, className)}>
-      {/* A prebusca fica nos dois links, e nao no card inteiro: sao eles que
-          levam ao produto, e sao eles que o cursor atravessa a caminho do
-          clique. O `onFocus` do link do nome — o unico do card que recebe
+      {/* A prebusca fica nos dois links, e não no card inteiro: são eles que
+          levam ao produto, e são eles que o cursor atravessa a caminho do
+          clique. O `onFocus` do link do nome — o único do card que recebe
           foco — e o equivalente para quem navega por teclado. */}
       <Link
         to={ROUTES.product(product.slug)}
@@ -123,8 +123,8 @@ export function ProductCard({
           {...imageProps(product.coverImage, 'card', sizes)}
           alt=""
           className={cx(styles.image, !product.inStock && styles.soldOut)}
-          // A proporcao ja esta no CSS; as medidas aqui existem para o
-          // navegador que ainda nao aplicou a folha de estilo.
+          // A proporção já esta no CSS; as medidas aqui existem para o
+          // navegador que ainda não aplicou a folha de estilo.
           width={600}
           height={600}
           loading={priority ? 'eager' : 'lazy'}
@@ -136,13 +136,13 @@ export function ProductCard({
           A segunda foto, revelada quando o cursor entra no card.
 
           E a pergunta que quem compra perfume faz antes de clicar — como e o
-          frasco de perto, vem na caixa — respondida sem tirar ninguem da
-          vitrine. So existe quando ha uma segunda foto cadastrada: produto de
-          foto unica fica com o avanco lento da primeira e nao pisca para ela
+          frasco de perto, vem na caixa — respondida sem tirar ninguém da
+          vitrine. Só existe quando há uma segunda foto cadastrada: produto de
+          foto única fica com o avanco lento da primeira e não pisca para ela
           mesma.
 
-          `lazy` mesmo no card prioritario. Ela nunca e o maior elemento da
-          primeira tela, e carrega-la com prioridade tiraria banda justamente
+          `lazy` mesmo no card prioritário. Ela nunca e o maior elemento da
+          primeira tela, e carrega-lá com prioridade tiraria banda justamente
           da foto que e.
         */}
         {hoverImage === undefined ? null : (
@@ -249,18 +249,18 @@ function buttonLabel(inStock: boolean, isSingle: boolean): string {
     return 'Esgotado';
   }
 
-  // "Ver opcoes", e nao "Escolher opcoes": o card tem 158px de largura no
-  // celular, e o rotulo longo ou quebra em duas linhas ou empurra o card.
+  // "Ver opções", e não "Escolher opções": o card tem 158px de largura no
+  // celular, e o rótulo longo ou quebra em duas linhas ou empurra o card.
   return isSingle ? 'Adicionar' : 'Ver opções';
 }
 
 /**
- * "em ate 6x de R$ 41,58 sem juros", ou nada.
+ * "em até 6x de R$ 41,58 sem juros", ou nada.
  *
- * Nada em tres casos: as regras ainda nao chegaram, a loja nao aceita cartao,
- * ou o preco e baixo demais para dividir sem furar a parcela minima. Nos tres
+ * Nada em três casos: as regras ainda não chegaram, a loja não aceita cartão,
+ * ou o preço e baixo demais para dividir sem furar a parcela mínima. Nos três
  * a linha fica vazia — e continua ocupando a altura dela, por causa do
- * `min-height` em `.installment`. E o que impede o botao de pular para baixo
+ * `min-height` em `.installment`. E o que impede o botão de pular para baixo
  * quando `GET /payment-settings` responde depois do produto.
  */
 function InstallmentLine({ priceCents }: { priceCents: number }) {

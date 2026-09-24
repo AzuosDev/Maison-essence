@@ -2,11 +2,11 @@
  * Um pedido, inteiro.
  *
  * Duas colunas no desktop: a larga com o que foi pedido, a estreita com os
- * dados que se confere. No celular vira uma coluna so, e a ordem do DOM ja e
- * a ordem certa — itens, mensagem, anotacao, e depois status, cliente,
+ * dados que se confere. No celular vira uma coluna só, e a ordem do DOM já e
+ * a ordem certa — itens, mensagem, anotação, e depois status, cliente,
  * entrega, pagamento, valores.
  *
- * As acoes ficam acima das duas, e nao dentro de uma delas: elas valem para
+ * As ações ficam acima das duas, e não dentro de uma delas: elas valem para
  * o pedido, e no celular precisam estar ao alcance do polegar sem rolagem.
  */
 
@@ -15,7 +15,7 @@
   gap: var(--space-24);
 }
 
-/* ---- O cabecalho --------------------------------------------------------- */
+/* ---- O cabeçalho --------------------------------------------------------- */
 
 .header {
   display: grid;
@@ -57,9 +57,9 @@
 }
 
 /*
- * O codigo do pedido e o titulo da tela.
+ * O código do pedido e o título da tela.
  *
- * Em largura fixa de proposito: e um identificador que se compara caractere
+ * Em largura fixa de propósito: e um identificador que se compara caractere
  * a caractere com o que a cliente colou no WhatsApp, e a serifada com
  * numerais proporcionais atrapalha exatamente essa leitura.
  */
@@ -81,7 +81,7 @@
   color: var(--ink-soft);
 }
 
-/* ---- As acoes rapidas ----------------------------------------------------- */
+/* ---- As ações rápidas ----------------------------------------------------- */
 
 .actions {
   display: flex;
@@ -90,13 +90,13 @@
 }
 
 /*
- * "Abrir conversa": o link com peso de botao primario.
+ * "Abrir conversa": o link com peso de botão primário.
  *
- * Desenhado aqui e nao herdado do `<Button>` porque e um `<a>` — a acao sai
- * da aplicacao, e o porque esta escrito no componente. Os valores sao os
- * mesmos da acao primaria do sistema (preenchimento em `--ink`, texto creme,
- * altura de controle, pilula), e e de proposito que ele nao invente um
- * terceiro tipo de botao para a mesma tela.
+ * Desenhado aqui e não herdado do `<Button>` porque e um `<a>` — a ação sai
+ * da aplicação, e o porque esta escrito no componente. Os valores são os
+ * mesmos da ação primária do sistema (preenchimento em `--ink`, texto creme,
+ * altura de controle, pílula), e e de propósito que ele não invente um
+ * terceiro tipo de botão para a mesma tela.
  */
 .openChat {
   display: inline-flex;
@@ -122,7 +122,7 @@
   color: var(--cream);
 
   /* Sobre o preenchimento escuro o anel dourado escuro some, e a variante
-     primaria faz esta mesma troca. O token continua sendo um. */
+     primária faz esta mesma troca. O token continua sendo um. */
   --focus-color: var(--gold);
 
   transition:
@@ -144,8 +144,8 @@
  * Cancelar fica longe das outras duas.
  *
  * `margin-inline-start: auto` empurra para a outra ponta da fileira no
- * desktop. No celular, onde tudo quebra em linha, a ordem do DOM ja o deixa
- * por ultimo — e a distancia vertical faz o mesmo trabalho.
+ * desktop. No celular, onde tudo quebra em linha, a ordem do DOM já o deixa
+ * por último — e a distância vertical faz o mesmo trabalho.
  */
 .cancel {
   margin-inline-start: auto;
@@ -196,8 +196,8 @@
   color: var(--ink-soft);
 }
 
-/* Cola no titulo: o `gap` do bloco separaria os dois como se fossem
-   assuntos diferentes, e a nota explica o titulo. */
+/* Cola no título: o `gap` do bloco separaria os dois como se fossem
+   assuntos diferentes, e a nota explica o título. */
 .panelNote {
   margin: calc(var(--space-12) * -1) 0 0;
 
@@ -253,7 +253,7 @@
 /*
  * O telefone, com alvo de toque cheio.
  *
- * O botao mais apertado desta tela no celular, e o mais usado: e por ele que
+ * O botão mais apertado desta tela no celular, e o mais usado: e por ele que
  * a dona sai do painel para a conversa.
  */
 .phone {
@@ -295,8 +295,8 @@
 /*
  * O aviso do pedido cancelado.
  *
- * Ocupa o lugar do seletor, e nao aparece ao lado dele desabilitado: um
- * controle cinza convida a tentar, e o que ha para dizer aqui e que nao ha
+ * Ocupa o lugar do seletor, e não aparece ao lado dele desabilitado: um
+ * controle cinza convida a tentar, e o que há para dizer aqui e que não há
  * mais o que escolher.
  */
 .finalNote {
@@ -316,12 +316,12 @@
 /*
  * O texto como foi para o WhatsApp.
  *
- * `<pre>` porque as quebras de linha sao o conteudo: a mensagem foi montada
- * com elas, e e assim que ela chegou na conversa. `user-select: all` nao
- * entra — a dona as vezes quer copiar so o trecho do endereco.
+ * `<pre>` porque as quebras de linha são o conteúdo: a mensagem foi montada
+ * com elas, e e assim que ela chegou na conversa. `user-select: all` não
+ * entra — a dona as vezes quer copiar só o trecho do endereço.
  *
- * Em largura fixa por ser transcricao, e nao prosa da interface. O limite de
- * altura evita que um pedido de quinze itens empurre a anotacao para fora da
+ * Em largura fixa por ser transcrição, e não prosa da interface. O limite de
+ * altura evita que um pedido de quinze itens empurre a anotação para fora da
  * tela; o bloco rola dentro de si.
  */
 .message {
@@ -343,7 +343,7 @@
   tab-size: 2;
 }
 
-/* ---- A anotacao ------------------------------------------------------------------- */
+/* ---- A anotação ------------------------------------------------------------------- */
 
 .noteActions {
   display: flex;
@@ -379,7 +379,7 @@
   color: var(--ink);
 }
 
-/* O total fecha a lista com um filete e ganha corpo: e o numero que a dona
+/* O total fecha a lista com um filete e ganha corpo: e o número que a dona
    confere contra o comprovante. */
 .grandTotal {
   padding-top: var(--space-8);
@@ -408,11 +408,11 @@
   }
 
   /*
-   * A coluna estreita tem largura fixa, e nao uma fracao.
+   * A coluna estreita tem largura fixa, e não uma fração.
    *
-   * O que mora nela — status, telefone, endereco, valores — tem largura
-   * natural propria e nao melhora esticando. O que ganha o espaco extra de
-   * uma tela larga e a lista de itens e a mensagem, que sao o conteudo.
+   * O que mora nela — status, telefone, endereço, valores — tem largura
+   * natural própria e não melhora esticando. O que ganha o espaço extra de
+   * uma tela larga e a lista de itens e a mensagem, que são o conteúdo.
    */
   .columns {
     grid-template-columns: minmax(0, 1fr) 21rem;

@@ -3,12 +3,12 @@ import { cx } from '@/lib/cx';
 import styles from './skeleton.module.css';
 
 /**
- * O formato do conteudo antes de ele chegar.
+ * O formato do conteúdo antes de ele chegar.
  *
- * `aria-hidden` sempre: para quem usa leitor de tela, um retangulo cinza nao
- * e informacao nenhuma, e anunciar vinte deles e ruido. Quem avisa que a
- * pagina esta carregando e o `Spinner`, com o seu `role="status"`, ou o
- * proprio conteudo quando aparece.
+ * `aria-hidden` sempre: para quem usa leitor de tela, um retângulo cinza não
+ * e informação nenhuma, e anunciar vinte deles e ruído. Quem avisa que a
+ * página esta carregando e o `Spinner`, com o seu `role="status"`, ou o
+ * próprio conteúdo quando aparece.
  */
 
 export type SkeletonVariant = 'text' | 'title' | 'image' | 'block';
@@ -17,7 +17,7 @@ export type SkeletonProps = ComponentPropsWithoutRef<'div'> & {
   variant?: SkeletonVariant;
   /** Circular: a miniatura redonda, o avatar. */
   circle?: boolean;
-  /** Largura e altura livres, para o bloco que nao e nenhum dos formatos. */
+  /** Largura e altura livres, para o bloco que não e nenhum dos formatos. */
   width?: string;
   height?: string;
 };
@@ -43,7 +43,7 @@ export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(function Skele
 });
 
 export type SkeletonTextProps = ComponentPropsWithoutRef<'div'> & {
-  /** Quantas linhas. A ultima sai mais curta, como num paragrafo de verdade. */
+  /** Quantas linhas. A última sai mais curta, como num parágrafo de verdade. */
   lines?: number;
 };
 

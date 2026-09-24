@@ -9,17 +9,17 @@ import {
 } from './product-filters';
 
 /**
- * O recorte do catalogo.
+ * O recorte do catálogo.
  *
- * Os mesmos tres riscos do recorte de pedidos — endereco adulterado virando
- * consulta invalida, pagina que nao volta ao inicio, filtro invisivel — com
- * um eixo a mais: a categoria, que chega como id e nao pode ser mandada ao
+ * Os mesmos três riscos do recorte de pedidos — endereço adulterado virando
+ * consulta inválida, página que não volta ao início, filtro invisível — com
+ * um eixo a mais: a categoria, que chega como id e não pode ser mandada ao
  * servidor sem conferir a forma.
  */
 
 const ID = '68d1f2a3c4b5e6f708192a3b';
 
-test('le o recorte que o endereço descreve', () => {
+test('lê o recorte que o endereço descreve', () => {
   const filters = readProductFilters(
     new URLSearchParams(`q=asad&categoria=${ID}&status=inactive&page=2`),
   );
@@ -33,7 +33,7 @@ test('endereço vazio e o recorte padrão', () => {
 
 test('categoria que não tem forma de id e ignorada', () => {
   // `@IsMongoId` recusaria com 400, e a lista inteira sumiria por causa de um
-  // endereco colado torto.
+  // endereço colado torto.
   expect(readProductFilters(new URLSearchParams('categoria=masculino')).categoryId).toBe('');
   expect(readProductFilters(new URLSearchParams('categoria=123')).categoryId).toBe('');
 });
@@ -63,7 +63,7 @@ test('campo vazio não viaja para a API', () => {
 
   expect(params.q).toBeUndefined();
   expect(params.categoryId).toBeUndefined();
-  // `all` e a ausencia de filtro, e nao um valor a mandar.
+  // `all` e a ausência de filtro, e não um valor a mandar.
   expect(params.status).toBeUndefined();
 });
 

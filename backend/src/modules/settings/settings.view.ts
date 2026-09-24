@@ -11,7 +11,7 @@ import type {
 } from './schemas/store-settings.schema.js';
 import { whatsappLinkOf } from './whatsapp-number.js';
 
-/** Endereco de retirada como as duas pontas o veem. */
+/** Endereço de retirada como as duas pontas o veem. */
 export interface AddressView {
   street: string;
   number: string;
@@ -46,9 +46,9 @@ export interface BannerView {
 /**
  * Banner como a home o recebe.
  *
- * Sem `isActive` e sem as datas de proposito: o que chega a vitrine ja passou
+ * Sem `isActive` e sem as datas de propósito: o que chega a vitrine já passou
  * pelo filtro do agendamento, e a campanha que a dona deixou programada para
- * a Black Friday nao precisa circular no HTML da loja duas semanas antes.
+ * a Black Friday não precisa circular no HTML da loja duas semanas antes.
  */
 export interface PublicBannerView {
   id: string;
@@ -60,23 +60,23 @@ export interface PublicBannerView {
   link: string;
 }
 
-/** Pagina institucional no painel. */
+/** Página institucional no painel. */
 export interface PageView extends EditablePage {}
 
-/** Pagina institucional aberta no site. */
+/** Página institucional aberta no site. */
 export interface PublicPageView {
   slug: InstitutionalPageSlug;
   title: string;
   content: string;
 }
 
-/** O que o rodape precisa para montar a lista de links. */
+/** O que o rodapé precisa para montar a lista de links. */
 export interface PublicPageSummary {
   slug: InstitutionalPageSlug;
   title: string;
 }
 
-/** As configuracoes como o painel as ve: tudo, inclusive o que nao esta no ar. */
+/** As configurações como o painel as vê: tudo, inclusive o que não esta no ar. */
 export interface SettingsView {
   storeName: string;
   whatsappNumber: string;
@@ -87,7 +87,7 @@ export interface SettingsView {
   pickupAddress: AddressView;
   pickupInstructions: string;
   socialLinks: SocialLinksView;
-  /** Minimo para frete gratis em qualquer cidade. `null` desliga a regra. */
+  /** Mínimo para frete grátis em qualquer cidade. `null` desliga a regra. */
   freeShippingMinCents: number | null;
   banners: BannerView[];
   institutionalPages: PageView[];
@@ -95,29 +95,29 @@ export interface SettingsView {
 }
 
 /**
- * As configuracoes como a loja aberta as ve.
+ * As configurações como a loja aberta as vê.
  *
  * Subconjunto seguro: fica de fora tudo que e estado do painel — banner
- * agendado ou desligado, pagina despublicada, o `updatedAt` que denuncia
+ * agendado ou desligado, página despublicada, o `updatedAt` que denuncia
  * quando a dona mexeu na loja. O que entra e o que o site desenha em toda
- * pagina: cabecalho, rodape, barra de avisos e o botao do WhatsApp.
+ * página: cabeçalho, rodapé, barra de avisos e o botão do WhatsApp.
  */
 export interface PublicSettingsView {
   storeName: string;
   whatsappNumber: string;
-  /** Pronto para o `href`. Vazio quando a loja ainda nao tem numero. */
+  /** Pronto para o `href`. Vazio quando a loja ainda não tem número. */
   whatsappLink: string;
   announcementText: string;
   contactEmail: string;
   businessHours: string;
   socialLinks: SocialLinksView;
   pickupEnabled: boolean;
-  /** `null` quando a retirada esta desligada: endereco que nao se usa nao sai. */
+  /** `null` quando a retirada esta desligada: endereço que não se usa não sai. */
   pickupAddress: AddressView | null;
   pickupInstructions: string;
   /**
-   * Minimo para frete gratis, para a sacola dizer quanto falta. Sai aqui e
-   * nao so na lista de cidades porque a barra de "faltam R$ 30,00" aparece
+   * Mínimo para frete grátis, para a sacola dizer quanto falta. Sai aqui e
+   * não só na lista de cidades porque a barra de "faltam R$ 30,00" aparece
    * antes de o cliente escolher para onde a entrega vai.
    */
   freeShippingMinCents: number | null;
@@ -165,12 +165,12 @@ export function toPublicSettingsView(
   };
 }
 
-/** As cinco paginas, com o que estiver gravado por cima dos padroes. */
+/** As cinco páginas, com o que estiver gravado por cima dos padrões. */
 export function toPageViews(settings: StoreSettingsDocument): PageView[] {
   return mergeInstitutionalPages(settings.institutionalPages.map(toEditablePage));
 }
 
-/** So as publicadas, na ordem do painel. */
+/** Só as publicadas, na ordem do painel. */
 export function toPublicPageSummaries(settings: StoreSettingsDocument): PublicPageSummary[] {
   return toPageViews(settings)
     .filter((page) => page.isActive)
@@ -210,7 +210,7 @@ export function toPublicBannerView(banner: Banner): PublicBannerView {
   return {
     id: banner.id,
     imageDesktop: banner.imageDesktop,
-    // O celular cai na arte de desktop quando nao ha arte propria.
+    // O celular cai na arte de desktop quando não há arte própria.
     imageMobile: banner.imageMobile || banner.imageDesktop,
     title: banner.title,
     subtitle: banner.subtitle,

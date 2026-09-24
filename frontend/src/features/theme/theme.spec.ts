@@ -12,7 +12,7 @@ import {
   writeStoredMode,
 } from './theme';
 
-/** Um `localStorage` de mentira, com o minimo que as funcoes pedem. */
+/** Um `localStorage` de mentira, com o mínimo que as funções pedem. */
 function armazenamento(inicial: Record<string, string> = {}) {
   const dados = new Map(Object.entries(inicial));
 
@@ -46,7 +46,7 @@ describe('a escolha guardada', () => {
     expect(readStoredMode(armazenamento())).toBe('system');
   });
 
-  test('le o que foi guardado', () => {
+  test('lê o que foi guardado', () => {
     expect(readStoredMode(armazenamento({ [THEME_STORAGE_KEY]: 'dark' }))).toBe('dark');
   });
 
@@ -63,9 +63,9 @@ describe('a escolha guardada', () => {
   });
 
   /**
-   * `localStorage` **lanca** numa aba anonima com dados de site bloqueados —
-   * nao devolve `null`. Sem a guarda, a loja inteira deixaria de montar por
-   * causa da preferencia de tema.
+   * `localStorage` **lança** numa aba anonima com dados de site bloqueados —
+   * não devolve `null`. Sem a guarda, a loja inteira deixaria de montar por
+   * causa da preferência de tema.
    */
   test('armazenamento bloqueado não derruba a leitura nem a escrita', () => {
     expect(() => readStoredMode(bloqueado)).not.toThrow();
@@ -98,7 +98,7 @@ test('isThemeMode recusa o que não e modo', () => {
   expect(isThemeMode(2)).toBe(false);
 });
 
-/* ---- As duas copias da logica ------------------------------------------- */
+/* ---- As duas copias da lógica ------------------------------------------- */
 
 const indexHtml = readFileSync(
   fileURLToPath(new URL('../../../index.html', import.meta.url)),
@@ -106,15 +106,15 @@ const indexHtml = readFileSync(
 );
 
 /**
- * O script embutido no `index.html` repete esta logica.
+ * O script embutido no `index.html` repete esta lógica.
  *
  * Ele existe porque o tema precisa estar no documento antes da primeira
- * pintura, e importar um modulo ali reintroduziria a espera que ele evita.
- * O preco e uma copia — e o risco da copia e ela se separar do original sem
+ * pintura, e importar um módulo ali reintroduziria a espera que ele evita.
+ * O preço e uma copia — e o risco da copia e ela se separar do original sem
  * que nada quebre: o tema continuaria funcionando depois que o React monta,
- * so piscaria claro na abertura. Ninguem repara nisso numa revisao.
+ * só piscaria claro na abertura. Ninguém repara nisso numa revisão.
  *
- * Estes tres casos amarram as duas pontas.
+ * Estes três casos amarram as duas pontas.
  */
 describe('o script que roda antes da pintura', () => {
   test('usa a mesma chave de armazenamento', () => {
@@ -122,8 +122,8 @@ describe('o script que roda antes da pintura', () => {
   });
 
   test('escreve o atributo só para os modos explicitos', () => {
-    // `system` nao pode aparecer como valor de `data-theme`: nao ha seletor
-    // para essa palavra em `tokens.css`, e a pagina ficaria presa no claro.
+    // `system` não pode aparecer como valor de `data-theme`: não há seletor
+    // para essa palavra em `tokens.css`, e a página ficaria presa no claro.
     expect(indexHtml).toContain("mode === 'light' || mode === 'dark'");
     expect(indexHtml).not.toContain("'data-theme', 'system'");
   });

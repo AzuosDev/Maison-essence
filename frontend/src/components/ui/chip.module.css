@@ -1,9 +1,9 @@
 /*
- * A pilula de categoria.
+ * A pílula de categoria.
  *
  * Borda de 1px na `--line` quando em repouso; escolhida, inverte para fundo
- * `--ink` com texto creme. Sao os dois unicos estados que a especificacao
- * define, e sao os dois de que o filtro precisa.
+ * `--ink` com texto creme. São os dois únicos estados que a especificação
+ * define, e são os dois de que o filtro precisa.
  */
 
 .chip {

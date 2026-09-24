@@ -9,11 +9,11 @@ import { DeliveryService } from './delivery.service.js';
 /**
  * As cidades que a loja atende, para a sacola e o checkout.
  *
- * Cache do catalogo, e nao o das configuracoes: aqui viaja preco. A taxa
- * entra na conta que o cliente ve antes de mandar o pedido, e uma janela
+ * Cache do catálogo, e não o das configurações: aqui viaja preço. A taxa
+ * entra na conta que o cliente vê antes de mandar o pedido, e uma janela
  * curta na borda e o que evita que um reajuste demore cinco minutos para
- * chegar a tela de quem ja esta comprando. O ETag encurta o resto — muda no
- * instante em que a dona grava a cidade ou o minimo global de frete gratis.
+ * chegar a tela de quem já esta comprando. O ETag encurta o resto — muda no
+ * instante em que a dona grava a cidade ou o mínimo global de frete grátis.
  */
 @Public()
 @CdnCache()

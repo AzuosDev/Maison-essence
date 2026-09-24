@@ -1,6 +1,6 @@
 /*
- * A largura util da pagina: 1280px com gutter de 24px no desktop e 16px no
- * mobile. O gutter vem do token, que ja troca sozinho no breakpoint.
+ * A largura útil da página: 1280px com gutter de 24px no desktop e 16px no
+ * mobile. O gutter vem do token, que já troca sozinho no breakpoint.
  */
 
 .container {

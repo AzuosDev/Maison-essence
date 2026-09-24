@@ -3,11 +3,11 @@ import type { AdminUser, Customer } from './auth.types';
 import { createSession } from './session-store';
 
 /**
- * As duas sessoes da aplicacao, criadas uma vez.
+ * As duas sessões da aplicação, criadas uma vez.
  *
- * Os nomes no `localStorage` sao diferentes pelo mesmo motivo que os cookies
- * do backend sao: painel e loja convivem no mesmo navegador — a dona compra
- * na propria loja — e uma chave so faria o ultimo login derrubar o outro. Em
+ * Os nomes no `localStorage` são diferentes pelo mesmo motivo que os cookies
+ * do backend são: painel e loja convivem no mesmo navegador — a dona compra
+ * na própria loja — e uma chave só faria o último login derrubar o outro. Em
  * desenvolvimento, onde os dois rodam no mesmo `localhost`, isso deixaria de
  * ser hipotese.
  */
@@ -30,11 +30,11 @@ export const useCustomerSession = customerSession.useStore;
 export const useAdminSession = adminSession.useStore;
 
 /**
- * Apresenta as duas sessoes ao cliente HTTP.
+ * Apresenta as duas sessões ao cliente HTTP.
  *
- * Chamada uma vez, no modulo de providers, antes de a aplicacao renderizar —
- * e nao dentro de um efeito. Um efeito rodaria depois do primeiro render, e
- * uma requisicao disparada nesse intervalo sairia sem token e sem conseguir
+ * Chamada uma vez, no módulo de providers, antes de a aplicação renderizar —
+ * e não dentro de um efeito. Um efeito rodaria depois do primeiro render, e
+ * uma requisição disparada nesse intervalo sairia sem token e sem conseguir
  * renovar.
  */
 export function registerSessions(): void {

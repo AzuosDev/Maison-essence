@@ -16,9 +16,9 @@ import { MAX_DELIVERY_CITY_ORDER, MAX_ESTIMATED_DAYS } from '../delivery.constan
 /**
  * Cadastro de uma cidade atendida.
  *
- * Nao ha CEP nem integracao com os Correios: a dona escolhe as cidades para
+ * Não há CEP nem integração com os Correios: a dona escolhe as cidades para
  * onde leva e quanto cobra em cada uma. E o modelo que corresponde a como a
- * entrega acontece — moto propria em Sobral, transportadora para Fortaleza.
+ * entrega acontece — moto própria em Sobral, transportadora para Fortaleza.
  */
 export class CreateDeliveryCityDto {
   @IsString()
@@ -26,7 +26,7 @@ export class CreateDeliveryCityDto {
   @MaxLength(120)
   name: string;
 
-  /** Sigla de duas letras. Aceita minuscula: o schema grava em maiuscula. */
+  /** Sigla de duas letras. Aceita minúscula: o schema grava em maiúscula. */
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim().toUpperCase() : value,
   )
@@ -34,13 +34,13 @@ export class CreateDeliveryCityDto {
   @Length(2, 2, { message: 'o estado e a sigla de duas letras, como CE' })
   state: string;
 
-  /** Taxa em centavos. Zero e legitimo: e a cidade em que a loja nao cobra. */
+  /** Taxa em centavos. Zero e legitimo: e a cidade em que a loja não cobra. */
   @IsInt({ message: 'a taxa deve ser um inteiro em centavos — R$ 15,00 se escreve 1500' })
   @Min(0)
   @Max(MAX_CENTS)
   feeCents: number;
 
-  /** Prazo em dias uteis. Zero e entrega no mesmo dia. */
+  /** Prazo em dias úteis. Zero e entrega no mesmo dia. */
   @IsOptional()
   @IsInt()
   @Min(0)
@@ -48,7 +48,7 @@ export class CreateDeliveryCityDto {
   estimatedDays?: number;
 
   /**
-   * Frete gratis nesta cidade a partir deste valor. `null` ou ausente deixa a
+   * Frete grátis nesta cidade a partir deste valor. `null` ou ausente deixa a
    * cidade sob a regra global da loja, que esta em `StoreSettings`.
    */
   @IsOptional()

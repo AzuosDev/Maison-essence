@@ -71,10 +71,10 @@
 }
 
 /*
- * O campo nao usa o primitivo `Input`: aqui ele nao tem rotulo visivel, nem
+ * O campo não usa o primitivo `Input`: aqui ele não tem rótulo visível, nem
  * borda, nem altura de controle — e um campo de 22px que ocupa a linha
- * inteira. Forcar o primitivo a virar isto custaria mais props do que o
- * proprio estilo.
+ * inteira. Forçar o primitivo a virar isto custaria mais props do que o
+ * próprio estilo.
  */
 .input {
   flex: 1;
@@ -93,7 +93,7 @@
   color: var(--ink-soft);
 }
 
-/* O X do navegador no `type="search"`, que nao segue a paleta. */
+/* O X do navegador no `type="search"`, que não segue a paleta. */
 .input::-webkit-search-cancel-button {
   appearance: none;
 }
@@ -212,7 +212,7 @@
   color: var(--danger);
 }
 
-/* ---- Sugestao de produto ---------------------------------------------- */
+/* ---- Sugestão de produto ---------------------------------------------- */
 
 .suggestion {
   display: flex;
@@ -246,7 +246,7 @@
 .suggestionName {
   font-size: var(--text-14);
   color: var(--ink);
-  /* Nome longo corta em vez de empurrar o preco para fora. */
+  /* Nome longo corta em vez de empurrar o preço para fora. */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

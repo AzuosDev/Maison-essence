@@ -4,15 +4,15 @@ import styles from './announcement-bar.module.css';
 /**
  * A barra preta do topo, com o aviso da loja rolando.
  *
- * O texto vem de `announcementText` das configuracoes — a dona edita no
- * painel e a barra muda sem deploy. Quando nao ha texto, a barra nao existe:
+ * O texto vem de `announcementText` das configurações — a dona edita no
+ * painel e a barra muda sem deploy. Quando não há texto, a barra não existe:
  * uma faixa preta vazia no topo da loja e pior que faixa nenhuma.
  *
  * O aviso e escrito duas vezes no markup, e a segunda copia e
- * `aria-hidden`. Ela existe so para o desenho: e o que faz o texto reentrar
+ * `aria-hidden`. Ela existe só para o desenho: e o que faz o texto reentrar
  * pela direita no instante em que o primeiro sai pela esquerda, sem o vazio
- * que uma faixa de copia unica deixaria. Para quem ouve a pagina, o aviso
- * continua sendo um so.
+ * que uma faixa de copia única deixaria. Para quem ouve a página, o aviso
+ * continua sendo um só.
  */
 export function AnnouncementBar() {
   const { settings } = useStoreSettings();

@@ -1,23 +1,23 @@
 /**
  * Os primitivos do design system.
  *
- * O que entra aqui nao sabe nada sobre a loja nem sobre o painel: um botao
- * nao conhece produto, e um cartao nao conhece pedido. O que conhece mora em
+ * O que entra aqui não sabe nada sobre a loja nem sobre o painel: um botão
+ * não conhece produto, e um cartão não conhece pedido. O que conhece mora em
  * `components/store` e `components/admin`.
  *
- * Tres regras valem para todos, sem excecao:
+ * Três regras valem para todos, sem exceção:
  *
  * 1. **Encaminham `ref`.** Focar um campo depois de um erro, medir um
- *    elemento, rolar ate ele — tudo isso precisa do no do DOM.
- * 2. **Aceitam `className`.** O primitivo decide a aparencia; quem usa
- *    decide a posicao e a largura no layout.
+ *    elemento, rolar até ele — tudo isso precisa do no do DOM.
+ * 2. **Aceitam `className`.** O primitivo decide a aparência; quem usa
+ *    decide a posição e a largura no layout.
  * 3. **Herdam os tipos do elemento nativo.** `ComponentPropsWithoutRef` faz
  *    `autoComplete`, `maxLength` e `aria-*` funcionarem sem que nenhum deles
  *    precise ser redeclarado — e sem que um deles fique de fora por
  *    esquecimento.
  *
- * Cor, espaco, raio e duracao saem sempre de `styles/tokens.css`. Nenhum
- * modulo daqui escreve um hexadecimal.
+ * Cor, espaço, raio e duração saem sempre de `styles/tokens.css`. Nenhum
+ * módulo daqui escreve um hexadecimal.
  */
 
 export {

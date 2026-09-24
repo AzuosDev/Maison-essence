@@ -41,31 +41,31 @@ import styles from './admin-payments-page.module.css';
 /**
  * As regras de pagamento da loja.
  *
- * ## Esta tela nao processa pagamento nenhum
+ * ## Esta tela não processa pagamento nenhum
  *
  * Nada aqui cobra: a cliente paga por fora — PIX no aplicativo do banco,
- * cartao na maquininha ou no link que a dona manda. O que se decide nesta
- * tela e o que o checkout **anuncia**, e e por isso que cada numero daqui
- * vale dinheiro: e a promessa que a loja faz antes de combinar a cobranca.
+ * cartão na maquininha ou no link que a dona manda. O que se decide nesta
+ * tela e o que o checkout **anuncia**, e e por isso que cada número daqui
+ * vale dinheiro: e a promessa que a loja faz antes de combinar a cobrança.
  *
- * ## Por que ha botao de salvar, ao contrario da tela de entrega
+ * ## Por que há botão de salvar, ao contrário da tela de entrega
  *
- * Na tabela de taxas cada campo grava ao sair dele, porque la a dona esta
+ * Na tabela de taxas cada campo grava ao sair dele, porque lá a dona esta
  * reajustando cinco cidades e conferindo uma contra a outra. Aqui e o
- * oposto: sao seis numeros que se afetam, e a pergunta nao e "quanto custa"
- * e sim "como fica a lista". A previa ao lado responde isso enquanto se
- * digita — e responder antes de gravar so tem sentido se gravar for um
+ * oposto: são seis números que se afetam, e a pergunta não e "quanto custa"
+ * e sim "como fica a lista". A prévia ao lado responde isso enquanto se
+ * digita — e responder antes de gravar só tem sentido se gravar for um
  * segundo passo.
  *
- * ## A previa mostra o que ainda nao vale
+ * ## A prévia mostra o que ainda não vale
  *
- * E o risco desta tela: a lista ao lado muda na hora e parece ja estar no
- * ar. Por isso a barra de salvar nao diz so "Salvar" — ela diz que as
- * mudancas ainda nao valem para quem esta comprando agora.
+ * E o risco desta tela: a lista ao lado muda na hora e parece já estar no
+ * ar. Por isso a barra de salvar não diz só "Salvar" — ela diz que as
+ * mudancas ainda não valem para quem esta comprando agora.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * Nada. A chave PIX e o endereco para onde vai o dinheiro da loja, e o
+ * Nada. A chave PIX e o endereço para onde vai o dinheiro da loja, e o
  * backend recusa inclusive a leitura.
  */
 export default function AdminPaymentsPage() {
@@ -118,7 +118,7 @@ export default function AdminPaymentsPage() {
   );
 }
 
-/* ---- O formulario ------------------------------------------------------------- */
+/* ---- O formulário ------------------------------------------------------------- */
 
 /** R$ 300: a faixa da maioria dos pedidos, e o valor que o plano pede. */
 const DEFAULT_PREVIEW_AMOUNT = '300,00';
@@ -152,7 +152,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
       onSuccess: (saved) => {
         // O servidor devolve a chave normalizada — `+5588...` onde foi
         // digitado `(88) 9...`. Reabrir o rascunho com a resposta e o que faz
-        // o campo mostrar o que esta gravado, e nao o que foi enviado.
+        // o campo mostrar o que esta gravado, e não o que foi enviado.
         setDraft(draftFromPaymentSettings(saved));
         setTouched(false);
         toast({
@@ -284,9 +284,9 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
                 <Select
                   label="Sem juros até"
                   block
-                  // As opcoes acima do maximo ficam desabilitadas em vez de
+                  // As opções acima do máximo ficam desabilitadas em vez de
                   // sumirem: some-las faria o campo mudar de tamanho a cada
-                  // troca do maximo, e esconderia o porque de 12 nao estar la.
+                  // troca do máximo, e esconderia o porque de 12 não estar lá.
                   options={interestFreeOptions(draft.maxInstallments)}
                   value={draft.interestFreeUpTo}
                   error={errors.interestFreeUpTo}
@@ -379,10 +379,10 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
 /* ---- Os avisos ----------------------------------------------------------------- */
 
 /**
- * O que o servidor aceita e provavelmente nao era a intencao.
+ * O que o servidor aceita e provavelmente não era a intenção.
  *
- * Aviso, e nao erro: nao bloqueia, nao usa vermelho e nao pede confirmacao. A
- * loja pode mesmo querer ficar sem cartao por uma semana — o que ela nao pode
+ * Aviso, e não erro: não bloqueia, não usa vermelho e não pede confirmação. A
+ * loja pode mesmo querer ficar sem cartão por uma semana — o que ela não pode
  * e ficar sem saber que ficou.
  */
 function Warning({ warning }: { warning: PaymentWarning }) {
@@ -394,7 +394,7 @@ function Warning({ warning }: { warning: PaymentWarning }) {
   );
 }
 
-/* ---- As opcoes dos seletores ---------------------------------------------------- */
+/* ---- As opções dos seletores ---------------------------------------------------- */
 
 const PIX_KEY_TYPE_OPTIONS = (Object.keys(PIX_KEY_LABELS) as PixKeyType[]).map((type) => ({
   value: type,
@@ -404,10 +404,10 @@ const PIX_KEY_TYPE_OPTIONS = (Object.keys(PIX_KEY_LABELS) as PixKeyType[]).map((
 /**
  * De 1 a 24, como o servidor aceita.
  *
- * Um seletor e nao um campo numerico: sao vinte e quatro valores possiveis e
+ * Um seletor e não um campo numérico: são vinte e quatro valores possíveis e
  * nenhum outro, e um `<input type="number">` deixaria digitar 36 para ouvir um
- * nao depois. No celular tambem e a diferenca entre a roda do sistema e um
- * teclado numerico inteiro para escolher um numero de dois digitos.
+ * não depois. No celular também e a diferença entre a roda do sistema e um
+ * teclado numérico inteiro para escolher um número de dois digitos.
  */
 const INSTALLMENT_OPTIONS = Array.from({ length: PAYMENT_LIMITS.installments }, (_, index) => {
   const count = index + 1;
@@ -416,11 +416,11 @@ const INSTALLMENT_OPTIONS = Array.from({ length: PAYMENT_LIMITS.installments }, 
 });
 
 /**
- * As mesmas opcoes, com as que passam do maximo desabilitadas.
+ * As mesmas opções, com as que passam do máximo desabilitadas.
  *
- * Desabilitadas e nao removidas: some-las faria a lista encurtar e alongar a
- * cada troca do maximo, e esconderia o motivo de 12 nao estar la. O servidor
- * recusa o par com 422, e a validacao da tela diz a mesma coisa em palavras
+ * Desabilitadas e não removidas: some-las faria a lista encurtar e alongar a
+ * cada troca do máximo, e esconderia o motivo de 12 não estar lá. O servidor
+ * recusa o par com 422, e a validação da tela diz a mesma coisa em palavras
  * para quem chegar ali pelo teclado.
  */
 function interestFreeOptions(maxInstallments: string): SelectOption[] {

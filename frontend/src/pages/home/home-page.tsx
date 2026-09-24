@@ -13,30 +13,30 @@ import { CategoryStrip } from './category-strip';
 import { HomeHero } from './home-hero';
 
 /**
- * Depois de quantas prateleiras entram as colecoes e a assinatura da marca.
+ * Depois de quantas prateleiras entram as coleções e a assinatura da marca.
  *
- * Quem chega pelo banner veio ver perfume, e as colecoes respondem "o que
- * mais voce tem" — que e a pergunta de quem ja passou os olhos pela vitrine e
- * nao se decidiu. Uma prateleira so nao e vitrine suficiente para justificar
+ * Quem chega pelo banner veio ver perfume, e as coleções respondem "o que
+ * mais você tem" — que e a pergunta de quem já passou os olhos pela vitrine e
+ * não se decidiu. Uma prateleira só não e vitrine suficiente para justificar
  * a pergunta.
  *
- * Tres, e nao duas: as tres primeiras sao o bloco de marcas, e a faixa de
- * colecoes com a assinatura preta atras dela entrando entre a segunda e a
+ * Três, e não duas: as três primeiras são o bloco de marcas, e a faixa de
+ * coleções com a assinatura preta atrás dela entrando entre a segunda e a
  * terceira partia o bloco ao meio — duas marcas, uma parede escura, mais uma
- * marca. O numero acompanha o tamanho do bloco de abertura; nao e uma
- * preferencia por "tres prateleiras antes de navegar".
+ * marca. O número acompanha o tamanho do bloco de abertura; não e uma
+ * preferência por "três prateleiras antes de navegar".
  */
 const SECTIONS_BEFORE_COLLECTIONS = 3;
 
 /**
- * As marcas que ganham prateleira propria, escritas como estao no cadastro.
+ * As marcas que ganham prateleira própria, escritas como estão no cadastro.
  *
- * Texto literal porque marca e campo livre no painel: nao ha tabela de
- * marcas, e o filtro do backend casa a marca inteira ignorando maiuscula. O
- * preco disso e que renomear "Lattafa" para "Lattafa Perfumes" no painel
+ * Texto literal porque marca e campo livre no painel: não há tabela de
+ * marcas, e o filtro do backend casa a marca inteira ignorando maiúscula. O
+ * preço disso e que renomear "Lattafa" para "Lattafa Perfumes" no painel
  * esvazia a prateleira — e, como prateleira vazia some, ela desapareceria da
  * home sem nenhum erro. Ficam aqui, juntas e nomeadas, para que esse dia seja
- * uma edicao obvia num lugar so.
+ * uma edição obvia num lugar só.
  */
 const BRANDS = {
   isabelle: 'Isabelle La Belle',
@@ -55,7 +55,7 @@ interface Shelf {
   /**
    * Quantos esqueletos desenhar enquanto carrega.
    *
-   * Existe por causa das prateleiras de marca, que trazem cinco: com o padrao
+   * Existe por causa das prateleiras de marca, que trazem cinco: com o padrão
    * de oito, a fileira nascia com oito cards em branco e encolhia para cinco
    * quando a resposta chegava — e as setas acendiam e apagavam junto.
    */
@@ -65,70 +65,70 @@ interface Shelf {
 /**
  * A vitrine.
  *
- * ## A ordem das secoes
+ * ## A ordem das seções
  *
- * Banner, as tres prateleiras de marca, as colecoes, a assinatura da marca e
- * as tres prateleiras de venda.
+ * Banner, as três prateleiras de marca, as coleções, a assinatura da marca e
+ * as três prateleiras de venda.
  *
- * **As marcas abrem a vitrine.** Quem chega pelo banner ve primeiro de quem
- * e o que a loja vende, e so depois a curadoria da casa. E uma inversao em
- * relacao ao arranjo anterior, onde "Destaques" — a prateleira que a dona
- * marca a mao — encostava no banner.
+ * **As marcas abrem a vitrine.** Quem chega pelo banner vê primeiro de quem
+ * e o que a loja vende, e só depois a curadoria da casa. E uma inversão em
+ * relação ao arranjo anterior, onde "Destaques" — a prateleira que a dona
+ * marca a mão — encostava no banner.
  *
  * **Pronta entrega vem antes de mais vendidos** porque e o que de fato vende
  * aqui: quem compra perfume numa loja pequena do interior quer saber o que da
- * para levar hoje, e nao o que a loja mais vendeu no trimestre. Destaques vem
- * antes das duas por ser a prateleira que a dona controla a mao.
+ * para levar hoje, e não o que a loja mais vendeu no trimestre. Destaques vem
+ * antes das duas por ser a prateleira que a dona controla a mão.
  *
- * **As tres de marca sao a rede de seguranca da pagina.** Destaque e pronta
- * entrega saem de marcacao no painel e mais vendidos sai do historico de
- * pedidos: as tres respondem vazio numa loja que acabou de subir o catalogo,
- * e foi o que aconteceu uma vez — catalogo inteiro cadastrado, nenhum produto
+ * **As três de marca são a rede de segurança da página.** Destaque e pronta
+ * entrega saem de marcação no painel e mais vendidos sai do histórico de
+ * pedidos: as três respondem vazio numa loja que acabou de subir o catálogo,
+ * e foi o que aconteceu uma vez — catálogo inteiro cadastrado, nenhum produto
  * marcado, nenhum pedido, e a home abria no banner e ia direto para as
- * colecoes. As de marca saem do proprio catalogo e tem produto no minuto em
- * que o catalogo tem.
+ * coleções. As de marca saem do próprio catálogo e tem produto no minuto em
+ * que o catálogo tem.
  *
  * O papel era de "Novidades", que ficava em terceiro e foi retirada daqui. A
- * diferenca que isso faz: novidades dependia so de existir produto, e estas
+ * diferença que isso faz: novidades dependia só de existir produto, e estas
  * dependem de a marca estar escrita no cadastro como esta em `BRANDS`. Ver o
- * comentario de la.
+ * comentário de lá.
  *
- * A assinatura da marca fica entre as colecoes e a ultima prateleira, e nao
- * no fim da pagina: ela e preta, o rodape tambem, e uma encostada no outro
- * viram um bloco escuro so com dois textos dentro.
+ * A assinatura da marca fica entre as coleções e a última prateleira, e não
+ * no fim da página: ela e preta, o rodapé também, e uma encostada no outro
+ * viram um bloco escuro só com dois textos dentro.
  *
- * ## Por que as posicoes se resolvem em tempo de execucao
+ * ## Por que as posições se resolvem em tempo de execução
  *
- * `ProductShelf` some quando nao ha produto — prateleira vazia nao vira secao
- * com um titulo e o nada embaixo. So que isso muda a pagina: numa loja sem
- * nenhum destaque marcado, a home montada a mao desenhava o banner e, logo
- * embaixo, as colecoes. A faixa que deveria ser a terceira secao virava a
- * primeira, e o cliente batia no banner e numa tela de navegacao sem ter
+ * `ProductShelf` some quando não há produto — prateleira vazia não vira seção
+ * com um título e o nada embaixo. Só que isso muda a página: numa loja sem
+ * nenhum destaque marcado, a home montada a mão desenhava o banner e, logo
+ * embaixo, as coleções. A faixa que deveria ser a terceira seção virava a
+ * primeira, e o cliente batia no banner e numa tela de navegação sem ter
  * visto um perfume.
  *
- * Por isso a lista e filtrada antes de desenhar: as posicoes valem sobre as
- * prateleiras que de fato aparecem, e nao sobre as que foram escritas aqui.
- * Quem encosta no banner e a primeira que sobrou, e as colecoes entram depois
+ * Por isso a lista e filtrada antes de desenhar: as posições valem sobre as
+ * prateleiras que de fato aparecem, e não sobre as que foram escritas aqui.
+ * Quem encosta no banner e a primeira que sobrou, e as coleções entram depois
  * da terceira.
  *
- * ## Por que nao ha uma consulta so
+ * ## Por que não há uma consulta só
  *
- * Cada prateleira chama a sua rota. Poderiam ser uma chamada unica que
- * devolvesse tudo, e seria uma requisicao em vez de sete — mas elas sao
- * independentes, saem em paralelo, tem cache de borda proprio e falham
- * separadas. Com a chamada unica, um erro em "mais vendidos" apagaria os
+ * Cada prateleira chama a sua rota. Poderiam ser uma chamada única que
+ * devolvesse tudo, e seria uma requisição em vez de sete — mas elas são
+ * independentes, saem em paralelo, tem cache de borda próprio e falham
+ * separadas. Com a chamada única, um erro em "mais vendidos" apagaria os
  * destaques junto.
  *
- * Sete e nao seis porque a terceira prateleira consulta duas marcas: o filtro
+ * Sete e não seis porque a terceira prateleira consulta duas marcas: o filtro
  * de marca do backend aceita uma por vez (ver `useBrandsShelf`).
  *
- * ## Layout que nao salta
+ * ## Layout que não salta
  *
- * Toda secao ocupa a altura final desde o primeiro quadro: o hero pela
- * proporcao fixa da foto, as prateleiras pelos esqueletos — que sao o proprio
+ * Toda seção ocupa a altura final desde o primeiro quadro: o hero pela
+ * proporção fixa da foto, as prateleiras pelos esqueletos — que são o próprio
  * card com as linhas em branco — e a faixa de categorias pelo card de mesma
- * proporcao. O unico dado que chega depois e o parcelamento, e a linha dele
- * ja vem com altura reservada no card.
+ * proporção. O único dado que chega depois e o parcelamento, e a linha dele
+ * já vem com altura reservada no card.
  */
 export default function HomePage() {
   const featured = useShelf('featured');
@@ -141,16 +141,16 @@ export default function HomePage() {
 
   const shelves: Shelf[] = [
     /*
-     * As marcas abrem a pagina, em bloco e encostadas no banner.
+     * As marcas abrem a página, em bloco e encostadas no banner.
      *
-     * Tres fileiras seguidas de nome de marca so funcionam juntas: separadas
+     * Três fileiras seguidas de nome de marca só funcionam juntas: separadas
      * por uma prateleira de venda no meio, elas parariam de se ler como "as
-     * marcas da casa" e virariam tres secoes soltas repetindo o mesmo
-     * formato. Por isso as tres andam coladas, e a faixa de colecoes espera
-     * as tres passarem (ver `SECTIONS_BEFORE_COLLECTIONS`).
+     * marcas da casa" e virariam três seções soltas repetindo o mesmo
+     * formato. Por isso as três andam coladas, e a faixa de coleções espera
+     * as três passarem (ver `SECTIONS_BEFORE_COLLECTIONS`).
      *
-     * Cada uma leva para a vitrine ja filtrada pela marca — a prateleira e
-     * amostra de cinco, nao o acervo.
+     * Cada uma leva para a vitrine já filtrada pela marca — a prateleira e
+     * amostra de cinco, não o acervo.
      */
     {
       key: 'brand-isabelle',
@@ -176,12 +176,12 @@ export default function HomePage() {
       description: 'Body mist de 250ml e desodorantes de 200ml.',
 
       /*
-       * Para a vitrine inteira, e nao para uma das duas marcas.
+       * Para a vitrine inteira, e não para uma das duas marcas.
        *
-       * O filtro da vitrine e de uma marca por vez, entao nao ha endereco que
+       * O filtro da vitrine e de uma marca por vez, então não há endereço que
        * mostre exatamente esta fileira. Mandar para uma das duas escolheria a
        * dedo qual metade da prateleira o cliente perde no clique; a vitrine
-       * abre com o filtro de marca a mao e ele escolhe.
+       * abre com o filtro de marca a mão e ele escolhe.
        */
       to: ROUTES.products,
       linkLabel: 'Ver a vitrine e filtrar por marca',
@@ -189,8 +189,8 @@ export default function HomePage() {
       skeletonCount: BRAND_SHELF_LIMIT,
     },
 
-    /* As de venda, depois das colecoes: a curadoria da casa vem quando o
-       cliente ja sabe de quem sao os perfumes. */
+    /* As de venda, depois das coleções: a curadoria da casa vem quando o
+       cliente já sabe de quem são os perfumes. */
     {
       key: 'featured',
       title: 'Destaques',
@@ -220,14 +220,14 @@ export default function HomePage() {
   const visible = shelves.filter((shelf) => shelfWillRender(shelf.content));
 
   /*
-   * Depois de qual das prateleiras visiveis entram as colecoes.
+   * Depois de qual das prateleiras visíveis entram as coleções.
    *
-   * O minimo, e nao a constante direto: numa loja com uma prateleira so,
-   * esperar pela segunda jogaria as colecoes para o fim da pagina. `-1` no
-   * fim porque o que se compara e o indice.
+   * O mínimo, e não a constante direto: numa loja com uma prateleira só,
+   * esperar pela segunda jogaria as coleções para o fim da página. `-1` no
+   * fim porque o que se compara e o índice.
    *
-   * Com nenhuma prateleira visivel o valor e -1 e nao casa com indice nenhum
-   * — que e o certo, porque ai as colecoes ja saem antes do laco.
+   * Com nenhuma prateleira visível o valor e -1 e não casa com índice nenhum
+   * — que e o certo, porque aí as coleções já saem antes do laço.
    */
   const collectionsAfter = Math.min(SECTIONS_BEFORE_COLLECTIONS, visible.length) - 1;
 
@@ -254,24 +254,24 @@ export default function HomePage() {
               ? {}
               : { skeletonCount: shelf.skeletonCount })}
             // A primeira encosta no banner: o respiro de cima separa duas
-            // secoes de mesmo tom, e contra a foto escura ele so empurra o
+            // seções de mesmo tom, e contra a foto escura ele só empurra o
             // produto para fora da primeira tela.
             flush={index === 0}
             /*
-             * O fundo em areia alterna por posicao, e nao por prateleira: e o
+             * O fundo em areia alterna por posição, e não por prateleira: e o
              * que garante que duas fileiras seguidas nunca saiam no mesmo
-             * tom, mesmo quando uma delas nao tem produto e some.
+             * tom, mesmo quando uma delas não tem produto e some.
              *
-             * A conta e feita **a partir da faixa de colecoes**, e nao da
-             * primeira prateleira. A faixa nao tem fundo proprio — ela e o
-             * creme da pagina —, entao a fileira imediatamente acima dela
+             * A conta e feita **a partir da faixa de coleções**, e não da
+             * primeira prateleira. A faixa não tem fundo próprio — ela e o
+             * creme da página —, então a fileira imediatamente acima dela
              * precisa ser a de areia; sendo creme, as duas encostam sem
              * nenhuma mudanca de tom e a vitrine parece continuar dentro da
              * faixa. Contando da primeira, isso dependia de quantas
              * prateleiras havia antes da faixa: com quatro dava certo, com as
-             * tres de marca dava errado.
+             * três de marca dava errado.
              *
-             * Do outro lado da faixa nao ha o que resolver: a assinatura da
+             * Do outro lado da faixa não há o que resolver: a assinatura da
              * marca e preta e separa sozinha.
              */
             tinted={(index - collectionsAfter) % 2 === 0}
@@ -296,10 +296,10 @@ export default function HomePage() {
 /**
  * O resultado da consulta reduzido ao que decide se a prateleira aparece.
  *
- * Serve as sete. Nao pede `ReturnType<typeof useShelf>` de proposito: o que
- * a home precisa de uma consulta sao tres campos, e exigir o tipo inteiro do
+ * Serve as sete. Não pede `ReturnType<typeof useShelf>` de propósito: o que
+ * a home precisa de uma consulta são três campos, e exigir o tipo inteiro do
  * `useQuery` deixaria de fora a prateleira de duas marcas, que nasce de um
- * `useQueries` combinado e nao e um `useQuery`. Com a forma minima, a home
+ * `useQueries` combinado e não e um `useQuery`. Com a forma mínima, a home
  * trata as sete como prateleira, sem saber de onde cada uma vem.
  */
 function contentOf(query: {
@@ -311,13 +311,13 @@ function contentOf(query: {
 }
 
 /**
- * As colecoes e a assinatura da marca, que andam juntas.
+ * As coleções e a assinatura da marca, que andam juntas.
  *
- * Sao duas secoes, nao uma, mas nunca aparecem separadas: a assinatura existe
+ * São duas seções, não uma, mas nunca aparecem separadas: a assinatura existe
  * para responder "quem e essa loja de quem eu nunca ouvi falar?", e o lugar
  * dela e depois de o cliente ter visto o que a loja vende e como ela se
- * organiza. Mante-las num componente so e o que impede que um remanejamento
- * futuro mande o preto da assinatura encostar no preto do rodape.
+ * organiza. Mante-las num componente só e o que impede que um remanejamento
+ * futuro mande o preto da assinatura encostar no preto do rodapé.
  */
 function Collections({ flush = false }: { flush?: boolean }) {
   return (

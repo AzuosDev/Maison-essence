@@ -33,7 +33,7 @@ describe('diffOf', () => {
       { banners: { bbb: { title: 'Ano novo' } } },
     );
 
-    // Banner que nasce ou some entra inteiro, e nao um campo por linha: dez
+    // Banner que nasce ou some entra inteiro, e não um campo por linha: dez
     // linhas "de nada para alguma coisa" escondem o que de fato aconteceu.
     expect(changes).toEqual({
       'banners.aaa': { from: { title: 'Natal' }, to: undefined },

@@ -9,28 +9,28 @@ import styles from './image-manager.module.css';
 /**
  * As fotos do produto: enviar, reordenar, escolher a capa.
  *
- * ## A ordem e a capa sao a mesma coisa
+ * ## A ordem e a capa são a mesma coisa
  *
- * Nao ha campo de capa no cadastro. A **primeira** foto do array e a capa, e
- * por isso arrastar uma foto para o inicio e o gesto que a promove. O botao
- * "Definir como capa" existe porque o gesto sozinho nao se anuncia — e ele
+ * Não há campo de capa no cadastro. A **primeira** foto do array e a capa, e
+ * por isso arrastar uma foto para o início e o gesto que a promove. O botão
+ * "Definir como capa" existe porque o gesto sozinho não se anuncia — e ele
  * que ensina a regra na primeira vez.
  *
- * ## Arrastar nao pode ser o unico jeito
+ * ## Arrastar não pode ser o único jeito
  *
- * Arrastar e o gesto rapido no desktop, e no celular ele briga com a rolagem
- * da pagina. Cada foto tem, alem dele, dois botoes de mover — e sao eles que
- * funcionam no teclado. Uma galeria que so responde ao arraste e uma galeria
- * que metade das pessoas nao consegue ordenar.
+ * Arrastar e o gesto rápido no desktop, e no celular ele briga com a rolagem
+ * da página. Cada foto tem, além dele, dois botões de mover — e são eles que
+ * funcionam no teclado. Uma galeria que só responde ao arraste e uma galeria
+ * que metade das pessoas não consegue ordenar.
  *
- * ## O que acontece com a foto de um cadastro nao salvo
+ * ## O que acontece com a foto de um cadastro não salvo
  *
  * Ela fica na conta do Cloudinary sem produto apontando para ela.
- * `use-image-upload.ts` explica por que a limpeza nao acontece aqui.
+ * `use-image-upload.ts` explica por que a limpeza não acontece aqui.
  */
 
 export interface ImageManagerProps {
-  /** `publicId`s na ordem de exibicao. A primeira e a capa. */
+  /** `publicId`s na ordem de exibição. A primeira e a capa. */
   images: readonly string[];
   onChange: (images: string[]) => void;
   /** Envia os arquivos e devolve os `publicId`s que entraram. */
@@ -64,7 +64,7 @@ export function ImageManager({
     }
 
     // O corte acontece antes do envio: mandar doze fotos para descobrir que
-    // so tres cabem gastaria a rede da dona por nada.
+    // só três cabem gastaria a rede da dona por nada.
     const accepted = [...files].slice(0, Math.max(room, 0));
     const uploaded = await onUpload(accepted);
 
@@ -88,11 +88,11 @@ export function ImageManager({
         <ul className={styles.grid}>
           {images.map((publicId, index) => (
             /*
-              O detector avisa que um `<li>` nao deveria ouvir eventos de
-              ponteiro, e a preocupacao dele e legitima: um alvo que so
-              responde ao arraste nao existe para quem usa teclado. Aqui ela
-              esta atendida — os quatro botoes dentro do item fazem tudo o que
-              o arraste faz, e sao eles o caminho principal. O arraste e o
+              O detector avisa que um `<li>` não deveria ouvir eventos de
+              ponteiro, e a preocupação dele e legitima: um alvo que só
+              responde ao arraste não existe para quem usa teclado. Aqui ela
+              esta atendida — os quatro botões dentro do item fazem tudo o que
+              o arraste faz, e são eles o caminho principal. O arraste e o
               atalho de quem tem mouse.
             */
             // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -112,8 +112,8 @@ export function ImageManager({
                 setOver(null);
               }}
               onDragOver={(event: DragEvent) => {
-                // Sem isto o navegador recusa o solte: `dragover` so libera o
-                // alvo quando o padrao e cancelado.
+                // Sem isto o navegador recusa o solte: `dragover` só libera o
+                // alvo quando o padrão e cancelado.
                 event.preventDefault();
                 setOver(index);
               }}
@@ -136,7 +136,7 @@ export function ImageManager({
 
               <div className={styles.tools}>
                 <ToolButton
-                  label={`Mover a foto ${String(index + 1)} para tras`}
+                  label={`Mover a foto ${String(index + 1)} para trás`}
                   disabled={busy || index === 0}
                   onClick={() => {
                     onChange(moveImage(images, index, index - 1));
@@ -191,8 +191,8 @@ export function ImageManager({
           disabled={busy || room <= 0}
           onChange={(event) => {
             void receive(event.target.files);
-            // Zera o campo: escolher o mesmo arquivo duas vezes seguidas nao
-            // dispara `change` de novo se o valor continuar la.
+            // Zera o campo: escolher o mesmo arquivo duas vezes seguidas não
+            // dispara `change` de novo se o valor continuar lá.
             event.target.value = '';
           }}
         />

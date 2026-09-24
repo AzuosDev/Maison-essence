@@ -3,10 +3,10 @@ import type { PaymentsService } from './payments.service.js';
 import type { PaymentSettingsDocument } from './schemas/payment-settings.schema.js';
 
 /**
- * As regras de pagamento como o servico as le, sem Mongo no caminho.
+ * As regras de pagamento como o serviço as lê, sem Mongo no caminho.
  *
- * O `InstallmentService` so precisa de quatro numeros e de um booleano do
- * documento de configuracoes; montar um documento Mongoose inteiro para
+ * O `InstallmentService` só precisa de quatro números e de um booleano do
+ * documento de configurações; montar um documento Mongoose inteiro para
  * entrega-los transformaria um teste de conta em um teste de banco.
  */
 function settingsWith(overrides: Partial<PaymentSettingsDocument> = {}): PaymentSettingsDocument {
@@ -30,7 +30,7 @@ describe('InstallmentService', () => {
   it('não oferece parcela nenhuma quando a loja não aceita cartão', async () => {
     const service = serviceWith(settingsWith({ acceptsCard: false }));
 
-    // Lista vazia, e nao uma opcao a vista: quem chama nao precisa perguntar
+    // Lista vazia, e não uma opção a vista: quem chama não precisa perguntar
     // antes se pode perguntar.
     await expect(service.buildOptions(50_000)).resolves.toEqual([]);
   });
@@ -48,7 +48,7 @@ describe('InstallmentService', () => {
 
     const options = await service.buildOptions(10_000);
 
-    // R$ 100 com parcela minima de R$ 20: de 1x a 5x, e nada alem disso.
+    // R$ 100 com parcela mínima de R$ 20: de 1x a 5x, e nada além disso.
     expect(options.map((option) => option.number)).toEqual([1, 2, 3, 4, 5]);
     expect(options.every((option) => option.installmentCents >= 2_000)).toBe(true);
   });
@@ -72,8 +72,8 @@ describe('InstallmentService', () => {
       settingsWith({ maxInstallments: 12, interestFreeUpTo: 3, monthlyInterestPercent: 2.5 }),
     );
 
-    // Valores escolhidos por darem divisao inexata: 100 / 3, 100,01 / 6,
-    // 999,99 / 7. E onde o centavo se perde quando alguem soma float.
+    // Valores escolhidos por darem divisão inexata: 100 / 3, 100,01 / 6,
+    // 999,99 / 7. E onde o centavo se perde quando alguém soma float.
     for (const totalCents of [10_000, 10_001, 99_999, 1, 33_333]) {
       const options = await service.buildOptions(totalCents);
 
@@ -82,7 +82,7 @@ describe('InstallmentService', () => {
           option.firstInstallmentCents + option.installmentCents * (option.number - 1);
 
         expect(sum).toBe(option.totalCents);
-        // A sobra vai para a primeira parcela, nunca para a ultima, e nunca
+        // A sobra vai para a primeira parcela, nunca para a última, e nunca
         // inverte a ordem: a primeira e a maior, ou igual as outras.
         expect(option.firstInstallmentCents).toBeGreaterThanOrEqual(option.installmentCents);
       }

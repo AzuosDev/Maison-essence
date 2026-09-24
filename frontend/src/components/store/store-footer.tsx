@@ -16,25 +16,25 @@ import { TrustBadges } from './trust-badges';
 import styles from './store-footer.module.css';
 
 /**
- * A largura em que as colunas do rodape passam a caber lado a lado. E a
- * mesma da folha de estilo, e precisa chegar ao JavaScript porque a diferenca
- * entre os dois tamanhos nao e so de aparencia: no celular cada coluna e um
- * botao que abre e fecha uma regiao, e no desktop e um titulo com a lista
- * sempre visivel. Sao duas arvores, nao duas aparencias.
+ * A largura em que as colunas do rodapé passam a caber lado a lado. E a
+ * mesma da folha de estilo, e precisa chegar ao JavaScript porque a diferença
+ * entre os dois tamanhos não e só de aparência: no celular cada coluna e um
+ * botão que abre e fecha uma região, e no desktop e um título com a lista
+ * sempre visível. São duas árvores, não duas aparências.
  */
 const COLUMNS = '(min-width: 40rem)';
 
 /**
- * O rodape da loja.
+ * O rodapé da loja.
  *
  * Quatro colunas — institucional, categorias, contato e redes —, o cadastro
- * na newsletter, os selos de confianca e a linha legal. Tudo o que e da loja
- * vem da API: as paginas institucionais de `GET /pages`, as categorias de
- * `GET /categories` e contato e redes das configuracoes. O que nao existe
- * cadastrado simplesmente nao desenha, em vez de deixar um titulo de coluna
+ * na newsletter, os selos de confiança e a linha legal. Tudo o que e da loja
+ * vem da API: as páginas institucionais de `GET /pages`, as categorias de
+ * `GET /categories` e contato e redes das configurações. O que não existe
+ * cadastrado simplesmente não desenha, em vez de deixar um título de coluna
  * com o vazio embaixo.
  *
- * Encaminha `ref` porque o botao flutuante do WhatsApp precisa observar
+ * Encaminha `ref` porque o botão flutuante do WhatsApp precisa observar
  * quando este elemento entra na tela para sair da frente dele.
  */
 export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, ref) {
@@ -126,7 +126,7 @@ export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, 
           </FooterColumn>
 
           <FooterColumn title="Redes" collapsible={collapsible}>
-            <p className={styles.text}>Novidades, lancamentos e os bastidores da loja.</p>
+            <p className={styles.text}>Novidades, lançamentos e os bastidores da loja.</p>
 
             <div className={styles.social}>
               {settings?.socialLinks.instagram ? (
@@ -183,26 +183,26 @@ export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, 
 
 interface FooterColumnProps {
   title: string;
-  /** No celular a coluna e um acordeao; a partir de 40rem, uma coluna. */
+  /** No celular a coluna e um acordeão; a partir de 40rem, uma coluna. */
   collapsible: boolean;
   children: ReactNode;
 }
 
 /**
- * Uma coluna do rodape — ou, no celular, uma fileira do acordeao.
+ * Uma coluna do rodapé — ou, no celular, uma fileira do acordeão.
  *
- * O botao e `aria-expanded` mais `aria-controls`, e nao um `<details>`. O
- * elemento nativo seria mais curto de escrever, mas ele guarda o proprio
+ * O botão e `aria-expanded` mais `aria-controls`, e não um `<details>`. O
+ * elemento nativo seria mais curto de escrever, mas ele guarda o próprio
  * estado no DOM: para manter as quatro sempre abertas no desktop seria
- * preciso ou sobrescrever a folha do navegador — que nas versoes recentes
- * esconde o conteudo por `content-visibility` num pseudo-elemento, e nao mais
+ * preciso ou sobrescrever a folha do navegador — que nas versões recentes
+ * esconde o conteúdo por `content-visibility` num pseudo-elemento, e não mais
  * por `display` num filho — ou escrever o atributo `open` de fora a cada
- * mudanca de largura. Os dois caminhos sao mais frageis do que nao montar o
- * botao quando ele nao serve.
+ * mudanca de largura. Os dois caminhos são mais frageis do que não montar o
+ * botão quando ele não serve.
  *
  * Todas nascem fechadas. Deixar uma aberta quebraria a fileira logo no
- * primeiro olhar, e o que ela guardaria — o WhatsApp — ja esta no botao
- * flutuante que acompanha a pagina inteira.
+ * primeiro olhar, e o que ela guardaria — o WhatsApp — já esta no botão
+ * flutuante que acompanha a página inteira.
  */
 function FooterColumn({ title, collapsible, children }: FooterColumnProps) {
   const [open, setOpen] = useState(false);

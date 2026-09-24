@@ -4,13 +4,13 @@ import { api, registerSession, SESSION_SCOPES, type SessionPort } from '@/lib/ht
 /**
  * O refresh compartilhado.
  *
- * E a unica parte do cliente HTTP que so quebra sob concorrencia — e falha
- * calada: a sessao cai sozinha, em producao, para quem estava com duas abas
- * abertas ou com a home pedindo tres prateleiras de uma vez. Nao da para
- * testar isso a mao, entao esta aqui.
+ * E a única parte do cliente HTTP que só quebra sob concorrência — e falha
+ * calada: a sessão cai sozinha, em produção, para quem estava com duas abas
+ * abertas ou com a home pedindo três prateleiras de uma vez. Não da para
+ * testar isso a mão, então esta aqui.
  *
  * O `fetch` e trocado por um dublê para que os testes descrevam o que o
- * backend faria — rotacionar o refresh token, recusar o token ja gasto — sem
+ * backend faria — rotacionar o refresh token, recusar o token já gasto — sem
  * precisar da API no ar.
  */
 
@@ -105,7 +105,7 @@ test('uma chamada que chega depois do refresh não pede outro', async () => {
   await api.get('/a');
   expect(refreshCalls).toBe(1);
 
-  // A segunda ja sai com T2 e nem chega a tomar 401.
+  // A segunda já sai com T2 e nem chega a tomar 401.
   await api.get('/b');
   expect(refreshCalls).toBe(1);
 });

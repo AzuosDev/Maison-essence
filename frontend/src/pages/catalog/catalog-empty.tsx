@@ -5,34 +5,34 @@ import { useShelf } from '@/features/catalog';
 import styles from './catalog-empty.module.css';
 
 /**
- * A tela de "nao achei nada".
+ * A tela de "não achei nada".
  *
- * Desenhada, e nao um espaco em branco onde a grade estaria — e o terceiro
- * criterio de aceite desta pagina. Um grid vazio nao conta ao cliente se a
+ * Desenhada, e não um espaço em branco onde a grade estaria — e o terceiro
+ * critério de aceite desta página. Um grid vazio não conta ao cliente se a
  * loja acabou, se a busca falhou ou se ele mesmo apertou um filtro demais.
  *
- * Tres coisas precisam estar aqui, e as tres tem a mesma finalidade: que a
- * visita nao termine nesta tela.
+ * Três coisas precisam estar aqui, e as três tem a mesma finalidade: que a
+ * visita não termine nesta tela.
  *
  * 1. **O motivo**, em uma frase. "Nenhum produto com estes filtros" e
  *    diferente de "nenhum produto nesta categoria", e o texto vem de quem
- *    sabe qual e o caso — a pagina.
- * 2. **A saida imediata**: limpar os filtros. So aparece quando ha filtro
- *    para limpar; numa categoria genuinamente vazia o botao seria uma
+ *    sabe qual e o caso — a página.
+ * 2. **A saída imediata**: limpar os filtros. Só aparece quando há filtro
+ *    para limpar; numa categoria genuinamente vazia o botão seria uma
  *    promessa falsa.
- * 3. **Produtos alternativos.** A prateleira de mais vendidos ja esta no
- *    cache de quem passou pela home, entao ela aparece de imediato e sem
- *    custo de rede. E a diferenca entre um beco sem saida e um desvio.
+ * 3. **Produtos alternativos.** A prateleira de mais vendidos já esta no
+ *    cache de quem passou pela home, então ela aparece de imediato e sem
+ *    custo de rede. E a diferença entre um beco sem saída e um desvio.
  */
 
 export interface CatalogEmptyProps {
   title: string;
   description: string;
-  /** Sem filtro aplicado, o botao de limpar nao faz sentido e nao aparece. */
+  /** Sem filtro aplicado, o botão de limpar não faz sentido e não aparece. */
   onClear?: (() => void) | undefined;
 }
 
-/** Quantos alternativos sugerir. Uma fileira, e nao uma segunda vitrine. */
+/** Quantos alternativos sugerir. Uma fileira, e não uma segunda vitrine. */
 const SUGGESTION_COUNT = 4;
 
 export function CatalogEmpty({ title, description, onClear }: CatalogEmptyProps) {
@@ -60,8 +60,8 @@ export function CatalogEmpty({ title, description, onClear }: CatalogEmptyProps)
         }
       />
 
-      {/* A prateleira some quando nao ha o que sugerir — loja recem-montada,
-          ou nenhum pedido ainda. Um "Talvez voce goste" seguido de nada
+      {/* A prateleira some quando não há o que sugerir — loja recem-montada,
+          ou nenhum pedido ainda. Um "Talvez você goste" seguido de nada
           seria pior que o vazio sozinho. */}
       {isPending || suggestions.length > 0 ? (
         <section className={styles.suggestions} aria-labelledby="catalogo-sugestoes">

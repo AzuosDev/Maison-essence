@@ -7,17 +7,17 @@ import styles from './quantity-discounts.module.css';
 /**
  * A escada do desconto progressivo: quanto se ganha levando mais.
  *
- * O card da vitrine anuncia so o primeiro degrau — "leve 3 e ganhe 10%" —
+ * O card da vitrine anuncia só o primeiro degrau — "leve 3 e ganhe 10%" —
  * porque e a chamada mais barata de atender. Aqui aparece a escada inteira,
- * com **o valor em reais de cada degrau**, que e o numero que decide a
- * compra: "ganhe 15%" e abstrato, "economize R$ 85,50" nao.
+ * com **o valor em reais de cada degrau**, que e o número que decide a
+ * compra: "ganhe 15%" e abstrato, "economize R$ 85,50" não.
  *
- * Cada degrau e um botao: clicar ajusta a quantidade para o minimo dele. E a
- * diferenca entre informar que existe um desconto e deixar o cliente
+ * Cada degrau e um botão: clicar ajusta a quantidade para o mínimo dele. E a
+ * diferença entre informar que existe um desconto e deixar o cliente
  * aproveita-lo sem contar nos dedos.
  *
  * As contas saem de `linePricing`, que e a mesma regra do servidor. O valor
- * final continua sendo o da cotacao — o que esta aqui e a promessa que ela
+ * final continua sendo o da cotação — o que esta aqui e a promessa que ela
  * vai cumprir.
  */
 
@@ -85,7 +85,7 @@ export function QuantityDiscounts({
   );
 }
 
-/** `Falta 1` ou `Faltam 2`: a concordancia que a frase pede. */
+/** `Falta 1` ou `Faltam 2`: a concordância que a frase pede. */
 function missingLabel(missing: number): string {
   return missing === 1 ? 'Falta 1 unidade' : `Faltam ${String(missing)} unidades`;
 }

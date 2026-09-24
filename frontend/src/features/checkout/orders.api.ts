@@ -10,17 +10,17 @@ import {
 } from './order.types';
 
 /**
- * `POST /orders`: o unico lugar do checkout onde alguma coisa passa a
+ * `POST /orders`: o único lugar do checkout onde alguma coisa passa a
  * existir.
  *
- * O escopo e o da loja, que e o padrao do cliente HTTP — e nao `scope: null`
- * como na cotacao. A diferenca e o que liga o pedido a conta: com sessao de
- * cliente, o token sobe junto e o servidor grava o `customerId`; sem sessao,
- * nao ha cabecalho nenhum e o pedido nasce de convidado, que continua sendo
- * o caminho padrao. Nada neste corpo muda entre os dois casos — exigir
- * cadastro na ultima tela seria perder a venda ali.
+ * O escopo e o da loja, que e o padrão do cliente HTTP — e não `scope: null`
+ * como na cotação. A diferença e o que liga o pedido a conta: com sessão de
+ * cliente, o token sobe junto e o servidor grava o `customerId`; sem sessão,
+ * não há cabeçalho nenhum e o pedido nasce de convidado, que continua sendo
+ * o caminho padrão. Nada neste corpo muda entre os dois casos — exigir
+ * cadastro na última tela seria perder a venda ali.
  *
- * Nada de dinheiro sobe daqui alem de `expectedTotalCents`, e ele nao entra
+ * Nada de dinheiro sobe daqui além de `expectedTotalCents`, e ele não entra
  * em conta nenhuma: serve para ser comparado com o total que o servidor
  * recalcula do zero. Divergiu, volta `409` — e e isso que `quoteConflictOf`
  * traduz.
@@ -30,14 +30,14 @@ export function createOrder(input: CreateOrderInput, signal?: AbortSignal): Prom
 }
 
 /**
- * Le um `409` de cotacao divergente, ou devolve `null` para todo o resto.
+ * Lê um `409` de cotação divergente, ou devolve `null` para todo o resto.
  *
  * O servidor manda `{ reason, quote }` no `details` justamente para a tela
- * nao precisar comparar dois objetos para descobrir o que mudou — ele ja
- * sabe, porque foi ele quem refez a conta. Esta funcao so confere que o que
+ * não precisar comparar dois objetos para descobrir o que mudou — ele já
+ * sabe, porque foi ele quem refez a conta. Esta função só confere que o que
  * chegou tem a forma prometida antes de a tela confiar nela: um `409` de
- * outra natureza, ou um corpo sem a cotacao, cai como erro comum e vira a
- * mensagem generica, em vez de abrir um modal comparando `undefined` com
+ * outra natureza, ou um corpo sem a cotação, cai como erro comum e vira a
+ * mensagem genérica, em vez de abrir um modal comparando `undefined` com
  * `undefined`.
  */
 export function quoteConflictOf(error: unknown): QuoteConflict | null {
@@ -55,16 +55,16 @@ export function quoteConflictOf(error: unknown): QuoteConflict | null {
 }
 
 /**
- * Classifica o que nao foi conflito de cotacao.
+ * Classifica o que não foi conflito de cotação.
  *
- * Tres desfechos, porque a tela oferece tres coisas diferentes — ver
- * `ORDER_FAILURE_KINDS`. O `429` e lido pelo status e nao pelo texto: a
+ * Três desfechos, porque a tela oferece três coisas diferentes — ver
+ * `ORDER_FAILURE_KINDS`. O `429` e lido pelo status e não pelo texto: a
  * frase do limite pode ser reescrita no backend a qualquer momento, e o
- * numero nao.
+ * número não.
  *
  * A mensagem sai sempre do erro, nunca daqui. O servidor escreve em
- * portugues e escreve para quem vai ler; duplicar esse texto no frontend
- * criaria duas versoes da mesma explicacao.
+ * português e escreve para quem vai ler; duplicar esse texto no frontend
+ * criaria duas versões da mesma explicação.
  */
 export function orderFailureOf(error: unknown): OrderFailure {
   const at = Date.now();
@@ -88,11 +88,11 @@ function isMismatchReason(value: unknown): value is QuoteMismatchReason {
 }
 
 /**
- * A cotacao do `details`, conferida pelos campos que a tela vai ler.
+ * A cotação do `details`, conferida pelos campos que a tela vai ler.
  *
- * `totalCents` e `items` bastam: sao o que o modal compara e o que a sacola
+ * `totalCents` e `items` bastam: são o que o modal compara e o que a sacola
  * precisa para remontar as linhas. Validar a resposta inteira campo a campo
- * seria reescrever o contrato do backend aqui dentro, e a divergencia real —
+ * seria reescrever o contrato do backend aqui dentro, e a divergência real —
  * um campo renomeado — apareceria de qualquer jeito, em TypeScript, na
  * primeira leitura.
  */

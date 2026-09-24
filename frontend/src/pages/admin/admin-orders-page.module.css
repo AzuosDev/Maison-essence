@@ -2,9 +2,9 @@
  * A lista de pedidos.
  *
  * A tela e um funil de cima para baixo: a pergunta (a busca), o recorte (as
- * pilulas e o periodo), a resposta (a tabela). O espaco entre os tres e
- * maior do que o espaco dentro de cada um, que e o que permite achar o
- * proprio lugar sem ler nada.
+ * pílulas e o período), a resposta (a tabela). O espaço entre os três e
+ * maior do que o espaço dentro de cada um, que e o que permite achar o
+ * próprio lugar sem ler nada.
  */
 
 .page {
@@ -28,9 +28,9 @@
 }
 
 /*
- * A contagem embaixo do titulo.
+ * A contagem embaixo do título.
  *
- * `--ink-soft`, e nao `--muted`: sao 14px, e o cinza de rotulo nao alcanca
+ * `--ink-soft`, e não `--muted`: são 14px, e o cinza de rótulo não alcança
  * 4.5:1 nesse corpo (ver a tabela de contraste em `tokens.css`).
  */
 .count {
@@ -51,14 +51,14 @@
 /*
  * A fileira de status rola na horizontal no celular.
  *
- * Sete pilulas nao cabem em 360px, e quebrar em tres linhas empurraria a
+ * Sete pílulas não cabem em 360px, e quebrar em três linhas empurraria a
  * tabela para fora da dobra — justamente na tela que a dona abre com o
- * polegar. O `scroll-padding` mantem a pilula escolhida inteira quando ela
- * para na borda, e a barra some porque a fileira ja se anuncia rolavel pelo
- * corte da ultima pilula.
+ * polegar. O `scroll-padding` mantem a pílula escolhida inteira quando ela
+ * para na borda, e a barra some porque a fileira já se anuncia rolável pelo
+ * corte da última pílula.
  *
- * E um `<fieldset>` com a legenda escondida, e nao uma `<div role="group">`:
- * as sete pilulas sao um controle so — "filtrar por status" —, e o elemento
+ * E um `<fieldset>` com a legenda escondida, e não uma `<div role="group">`:
+ * as sete pílulas são um controle só — "filtrar por status" —, e o elemento
  * nativo diz isso sem precisar de atributo. O bloco abaixo desfaz a moldura
  * que o navegador desenha em volta de todo fieldset.
  */
@@ -81,12 +81,12 @@
 }
 
 /*
- * O periodo: dois campos de data e a saida.
+ * O período: dois campos de data e a saída.
  *
  * `auto-fit` com piso de 9rem porque o campo de data nativo tem largura
- * minima propria — abaixo disso o navegador corta o "aaaa" e a pessoa
+ * mínima própria — abaixo disso o navegador corta o "aaaa" e a pessoa
  * digita no escuro. Em 360px eles ficam um por linha; a partir de 320px de
- * espaco util, lado a lado.
+ * espaço útil, lado a lado.
  */
 .period {
   display: grid;
@@ -96,10 +96,10 @@
 }
 
 /*
- * "Limpar filtros" alinhado com o pe dos campos, e nao com o rotulo deles.
+ * "Limpar filtros" alinhado com o pé dos campos, e não com o rótulo deles.
  *
- * O `align-items: end` do container ja faz isso; a altura fixa existe para
- * que o botao nao encolha ate o texto quando ele cai sozinho numa linha.
+ * O `align-items: end` do container já faz isso; a altura fixa existe para
+ * que o botão não encolha até o texto quando ele cai sozinho numa linha.
  */
 .clear {
   min-height: var(--control-height);
@@ -111,10 +111,10 @@
 /*
  * A lista velha enquanto a nova vem.
  *
- * Meio segundo de opacidade reduzida diz "isto ainda nao e a resposta" sem
+ * Meio segundo de opacidade reduzida diz "isto ainda não e a resposta" sem
  * tirar a resposta anterior da tela. `pointer-events: none` evita o clique
- * num pedido que esta prestes a sair da lista — o tipo de erro que so
- * acontece com quem usa a tela rapido, que e quem a usa de verdade.
+ * num pedido que esta prestes a sair da lista — o tipo de erro que só
+ * acontece com quem usa a tela rápido, que e quem a usa de verdade.
  */
 .refreshing {
   opacity: 0.55;
@@ -138,8 +138,8 @@
     font-size: var(--text-36);
   }
 
-  /* No desktop o periodo nao precisa da linha inteira: dois campos e o
-     botao cabem a esquerda, e a tabela ganha o resto da altura. */
+  /* No desktop o período não precisa da linha inteira: dois campos e o
+     botão cabem a esquerda, e a tabela ganha o resto da altura. */
   .period {
     grid-template-columns: 12rem 12rem auto;
     justify-content: start;

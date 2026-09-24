@@ -5,12 +5,12 @@ import type { CartQuote } from './quote.types';
 /**
  * `POST /cart/quote`: quanto da isto, agora.
  *
- * `scope: null` porque a sacola e de quem ainda nao se identificou — exigir
- * sessao para ver o total seria perder a venda antes dela comecar. Quem esta
- * logado tambem passa por aqui: a cotacao nao muda com a conta.
+ * `scope: null` porque a sacola e de quem ainda não se identificou — exigir
+ * sessão para ver o total seria perder a venda antes dela começar. Quem esta
+ * logado também passa por aqui: a cotação não muda com a conta.
  *
- * E um `POST` que nao cria nada. O servidor responde `200`, nao reserva
- * estoque e nao deixa rastro; pode ser repetido a vontade — que e
+ * E um `POST` que não cria nada. O servidor responde `200`, não reserva
+ * estoque e não deixa rastro; pode ser repetido a vontade — que e
  * exatamente o que a sacola faz a cada clique no mais e no menos.
  */
 export function fetchCartQuote(input: QuoteInput, signal?: AbortSignal): Promise<CartQuote> {

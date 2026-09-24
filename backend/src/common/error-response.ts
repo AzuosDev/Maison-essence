@@ -5,9 +5,9 @@ export interface ErrorResponseBody {
   message: string | string[];
   error: string;
   /**
-   * Dados que a recusa precisa carregar alem do texto. Vem de quem lancou a
-   * excecao, e so quando ha o que dizer: o 409 de excluir categoria manda
-   * quantos produtos estao vinculados, e o painel monta o aviso com o numero
+   * Dados que a recusa precisa carregar além do texto. Vem de quem lancou a
+   * exceção, e só quando há o que dizer: o 409 de excluir categoria manda
+   * quantos produtos estão vinculados, e o painel monta o aviso com o número
    * sem ter que extrai-lo da frase.
    */
   details?: Record<string, unknown>;
@@ -20,11 +20,11 @@ export type ErrorContent = Pick<ErrorResponseBody, 'statusCode' | 'message'> &
   Partial<Pick<ErrorResponseBody, 'error' | 'details'>>;
 
 /**
- * O formato unico de erro da API.
+ * O formato único de erro da API.
  *
- * Mora aqui, e nao no filtro de excecoes, porque nem toda recusa passa por
+ * Mora aqui, e não no filtro de exceções, porque nem toda recusa passa por
  * ele: o que barra operador do Mongo no corpo responde antes do Nest entrar em
- * cena (ver `mongo-operator-guard.ts`), e quem consome a API nao tem por que
+ * cena (ver `mongo-operator-guard.ts`), e quem consome a API não tem por que
  * receber dois formatos de erro dependendo de onde a recusa nasceu.
  */
 export function errorResponseBody(content: ErrorContent, path: string): ErrorResponseBody {

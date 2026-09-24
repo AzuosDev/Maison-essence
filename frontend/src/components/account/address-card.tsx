@@ -7,41 +7,41 @@ import styles from './address-card.module.css';
 
 export interface AddressCardProps {
   address: AccountAddress;
-  /** O nome da cidade, resolvido a partir de `cityId`. Vazio quando nao ha. */
+  /** O nome da cidade, resolvido a partir de `cityId`. Vazio quando não há. */
   cityName: string;
   onEdit: (address: AccountAddress) => void;
   onMakeDefault: (address: AccountAddress) => void;
   onDelete: (address: AccountAddress) => void;
-  /** Ha uma gravacao em andamento: os botoes param de aceitar clique. */
+  /** Há uma gravação em andamento: os botões param de aceitar clique. */
   busy: boolean;
 }
 
 /**
- * Um endereco salvo.
+ * Um endereço salvo.
  *
- * ## O apelido e o titulo, e ele pode nao existir
+ * ## O apelido e o título, e ele pode não existir
  *
- * "Casa", "Trabalho", "Casa da minha mae" — e o que a pessoa procura quando
- * tem tres enderecos parecidos, e nenhum deles se distingue pela rua. Mas
- * quem tem um endereco so nao batiza o lugar onde mora, entao o apelido e
- * opcional e a falta dele nao deixa um titulo vazio: vira "Meu endereco".
+ * "Casa", "Trabalho", "Casa da minha mãe" — e o que a pessoa procura quando
+ * tem três endereços parecidos, e nenhum deles se distingue pela rua. Mas
+ * quem tem um endereço só não batiza o lugar onde mora, então o apelido e
+ * opcional e a falta dele não deixa um título vazio: vira "Meu endereço".
  *
- * ## Excluir confirma na propria linha
+ * ## Excluir confirma na própria linha
  *
- * Sem modal. O que se perde aqui e um endereco que pode ser redigitado em
+ * Sem modal. O que se perde aqui e um endereço que pode ser redigitado em
  * trinta segundos — interromper a tela inteira, prender o foco e escurecer o
  * fundo por causa disso seria um susto desproporcional ao estrago.
  *
- * O que a confirmacao **precisa** ter e o alvo a vista, e por isso ela
- * acontece dentro do cartao: os botoes somem e a pergunta ocupa o lugar
- * deles, com o endereco continuando escrito logo acima. Numa lista de tres
- * cartoes parecidos, um dialogo flutuante perguntando "tem certeza?" nao
+ * O que a confirmação **precisa** ter e o alvo a vista, e por isso ela
+ * acontece dentro do cartão: os botões somem e a pergunta ocupa o lugar
+ * deles, com o endereço continuando escrito logo acima. Numa lista de três
+ * cartões parecidos, um diálogo flutuante perguntando "tem certeza?" não
  * diria de qual deles se esta falando.
  *
- * ## O padrao e um estado, nao um botao repetido
+ * ## O padrão e um estado, não um botão repetido
  *
- * O endereco marcado mostra o selo e **nao** oferece "usar como padrao" —
- * um botao que nao muda nada e uma promessa quebrada. Os outros oferecem.
+ * O endereço marcado mostra o selo e **não** oferece "usar como padrão" —
+ * um botão que não muda nada e uma promessa quebrada. Os outros oferecem.
  */
 export function AddressCard({
   address,
@@ -55,12 +55,12 @@ export function AddressCard({
   const keepRef = useRef<HTMLButtonElement>(null);
 
   /**
-   * O foco segue a confirmacao.
+   * O foco segue a confirmação.
    *
-   * Clicar em "Excluir" apaga o proprio botao que foi clicado, e com ele o
+   * Clicar em "Excluir" apaga o próprio botão que foi clicado, e com ele o
    * foco — que cairia no `<body>`, deixando quem navega por teclado sem
    * lugar nenhum e quem usa leitor de tela sem saber que algo apareceu. O
-   * foco vai para **"Manter"**, e nao para "Excluir": um Enter reflexo
+   * foco vai para **"Manter"**, e não para "Excluir": um Enter reflexo
    * precisa desistir, nunca apagar.
    */
   useEffect(() => {
@@ -69,8 +69,8 @@ export function AddressCard({
     }
   }, [confirming]);
 
-  // Numa lista de cartoes parecidos, tres botoes chamados "Editar" soam
-  // iguais para quem ouve a tela. O nome acessivel leva o apelido junto.
+  // Numa lista de cartões parecidos, três botões chamados "Editar" soam
+  // iguais para quem ouve a tela. O nome acessível leva o apelido junto.
   const name = address.label === '' ? 'Meu endereço' : address.label;
 
   const lines = addressLines({

@@ -5,25 +5,25 @@ import { settingsKeys } from './settings.keys';
 import type { PublicPageSummary, PublicSettings } from './settings.types';
 
 /**
- * As configuracoes da loja, buscadas uma vez e distribuidas por contexto.
+ * As configurações da loja, buscadas uma vez e distribuidas por contexto.
  *
- * Quem faz as chamadas e o layout da loja, no topo da arvore. Cabecalho,
- * rodape, barra de avisos e o botao do WhatsApp leem daqui — nenhum deles
- * chama a API por conta propria.
+ * Quem faz as chamadas e o layout da loja, no topo da árvore. Cabeçalho,
+ * rodapé, barra de avisos e o botão do WhatsApp leem daqui — nenhum deles
+ * chama a API por conta própria.
  *
- * O TanStack Query ja deduplicaria as chamadas pela chave, entao o contexto
- * nao existe para evitar requisicao repetida: existe para tornar a regra
- * visivel. Com ele, um componente que tentasse buscar de novo teria que
- * importar a funcao, escrever a propria `useQuery` e ignorar o hook que esta
- * a mao — coisa que se ve na revisao. Sem ele, o segundo `useQuery` seria
- * indistinguivel do primeiro.
+ * O TanStack Query já deduplicaria as chamadas pela chave, então o contexto
+ * não existe para evitar requisição repetida: existe para tornar a regra
+ * visível. Com ele, um componente que tentasse buscar de novo teria que
+ * importar a função, escrever a própria `useQuery` e ignorar o hook que esta
+ * a mão — coisa que se vê na revisão. Sem ele, o segundo `useQuery` seria
+ * indistinguível do primeiro.
  *
- * Os dados nao mudam durante a visita, entao o `staleTime` e longo: a dona
- * trocar o texto da barra de avisos aparece na proxima navegacao completa, e
- * nao ha por que revalidar isso a cada troca de rota.
+ * Os dados não mudam durante a visita, então o `staleTime` e longo: a dona
+ * trocar o texto da barra de avisos aparece na próxima navegação completa, e
+ * não há por que revalidar isso a cada troca de rota.
  */
 
-/** Meia hora. A resposta ja vem com cinco minutos de cache na borda. */
+/** Meia hora. A resposta já vem com cinco minutos de cache na borda. */
 const STALE_TIME_MS = 30 * 60 * 1000;
 
 interface StoreSettingsContextValue {
@@ -60,12 +60,12 @@ export function StoreSettingsProvider({ children }: { children: ReactNode }) {
 }
 
 /**
- * As configuracoes, ou `undefined` enquanto carregam.
+ * As configurações, ou `undefined` enquanto carregam.
  *
- * Nao ha tela de carregamento no lugar da loja: a moldura desenha com o que
- * tem. O cabecalho aparece sem a barra de avisos por um instante, e o botao
- * do WhatsApp so aparece quando ha numero — que e exatamente o que deve
- * acontecer quando a loja ainda nao configurou um.
+ * Não há tela de carregamento no lugar da loja: a moldura desenha com o que
+ * tem. O cabeçalho aparece sem a barra de avisos por um instante, e o botão
+ * do WhatsApp só aparece quando há número — que e exatamente o que deve
+ * acontecer quando a loja ainda não configurou um.
  */
 export function useStoreSettings(): StoreSettingsContextValue {
   const context = useContext(StoreSettingsContext);

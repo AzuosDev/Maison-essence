@@ -4,21 +4,21 @@ import { ADMIN_PAGE_SIZE, PRODUCT_STATUS_FILTERS, type ProductStatusFilter } fro
 /**
  * O recorte da listagem de produtos.
  *
- * Mesmo desenho do de pedidos (`order-filters.ts`) e pelas mesmas razoes: o
- * recorte mora no endereco, para que o card "Sem estoque" da abertura possa
+ * Mesmo desenho do de pedidos (`order-filters.ts`) e pelas mesmas razões: o
+ * recorte mora no endereço, para que o card "Sem estoque" da abertura possa
  * apontar para um filtro, para que a dona consiga mandar o link de um recorte
- * e para que o botao voltar devolva a lista como ela estava.
+ * e para que o botão voltar devolva a lista como ela estava.
  *
- * O que muda sao os eixos. Aqui nao ha periodo — ninguem procura produto por
- * data de cadastro — e ha **categoria**, que e como a dona pensa o catalogo:
- * ela nao procura "Asad", procura "o que eu tenho de masculino".
+ * O que muda são os eixos. Aqui não há período — ninguém procura produto por
+ * data de cadastro — e há **categoria**, que e como a dona pensa o catálogo:
+ * ela não procura "Asad", procura "o que eu tenho de masculino".
  */
 
 export interface ProductFilters {
   /** Busca por nome e marca. */
   q: string;
   categoryId: string;
-  /** `all` e o padrao: o cadastro inteiro, no ar ou nao. */
+  /** `all` e o padrão: o cadastro inteiro, no ar ou não. */
   status: ProductStatusFilter;
   page: number;
 }
@@ -33,10 +33,10 @@ export const EMPTY_PRODUCT_FILTERS: ProductFilters = {
 const STATUS_VALUES: readonly string[] = PRODUCT_STATUS_FILTERS;
 
 /**
- * `ObjectId` em hexadecimal, so a forma.
+ * `ObjectId` em hexadecimal, só a forma.
  *
- * Existe para nao mandar lixo ao servidor: `@IsMongoId` recusaria com 400, e
- * a lista inteira desapareceria por causa de um endereco colado torto. Uma
+ * Existe para não mandar lixo ao servidor: `@IsMongoId` recusaria com 400, e
+ * a lista inteira desapareceria por causa de um endereço colado torto. Uma
  * categoria que **existe** e outra pergunta, e quem a responde e a consulta.
  */
 const OBJECT_ID = /^[0-9a-f]{24}$/i;
@@ -55,13 +55,13 @@ export function readProductFilters(search: URLSearchParams): ProductFilters {
 }
 
 /**
- * O endereco que descreve o recorte.
+ * O endereço que descreve o recorte.
  *
- * `categoria` em portugues, e nao `categoryId`: e um endereco que a dona le e
+ * `categoria` em português, e não `categoryId`: e um endereço que a dona lê e
  * manda para quem ajuda, como o resto das rotas do painel. `status` e `page`
- * ficam em ingles porque sao os nomes que a API ja usa e que ninguem le.
+ * ficam em inglês porque são os nomes que a API já usa e que ninguém lê.
  *
- * O que esta no padrao nao entra: `/admin/produtos` diz o mesmo que
+ * O que esta no padrão não entra: `/admin/produtos` diz o mesmo que
  * `/admin/produtos?q=&categoria=&status=all&page=1`, e e mais curto de mandar.
  */
 export function productFiltersToSearch(filters: ProductFilters): Record<string, string> {
@@ -98,10 +98,10 @@ export function productListParams(filters: ProductFilters): AdminProductListPara
 }
 
 /**
- * Quantos filtros estao valendo.
+ * Quantos filtros estão valendo.
  *
- * `all` nao conta, porque nao e um recorte: e a ausencia dele. A pagina
- * tambem nao — ela e onde a pessoa esta, e nao o que ela pediu.
+ * `all` não conta, porque não e um recorte: e a ausência dele. A página
+ * também não — ela e onde a pessoa esta, e não o que ela pediu.
  */
 export function activeProductFilterCount(filters: ProductFilters): number {
   return (
@@ -111,14 +111,14 @@ export function activeProductFilterCount(filters: ProductFilters): number {
   );
 }
 
-/** Um recorte novo, sempre de volta a primeira pagina. */
+/** Um recorte novo, sempre de volta a primeira página. */
 export function withProductFilter(
   filters: ProductFilters,
   patch: Partial<ProductFilters>,
 ): ProductFilters {
-  // Mudar de categoria estando na pagina 4 e pedir um recorte que talvez
-  // tenha uma so: sem este reset, a resposta e uma lista vazia que parece
-  // "nao ha produtos nesta categoria".
+  // Mudar de categoria estando na página 4 e pedir um recorte que talvez
+  // tenha uma só: sem este reset, a resposta e uma lista vazia que parece
+  // "não há produtos nesta categoria".
   const page = patch.page ?? 1;
 
   return { ...filters, ...patch, page };

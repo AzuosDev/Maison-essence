@@ -1,19 +1,19 @@
 import type { ProductDocument, ProductVariant } from './schemas/product.schema.js';
 
-/** O minimo para decidir se o produto tem variantes: a vitrine le lean, sem `id`. */
+/** O mínimo para decidir se o produto tem variantes: a vitrine lê lean, sem `id`. */
 type LabelledVariant = Pick<ProductVariant, 'label'>;
 
-/** O minimo para a faixa de preco, pelo mesmo motivo. */
+/** O mínimo para a faixa de preço, pelo mesmo motivo. */
 type PricedVariant = Pick<ProductVariant, 'priceCents'>;
 
-/** Variante como o painel a ve. */
+/** Variante como o painel a vê. */
 export interface ProductVariantView {
   id: string;
   sku: string;
   label: string;
   priceCents: number;
   compareAtPriceCents: number | null;
-  /** Desconto desta variante. Zero quando nao ha preco de comparacao. */
+  /** Desconto desta variante. Zero quando não há preço de comparação. */
   discountPercent: number;
   stock: number;
   image: string;
@@ -35,14 +35,14 @@ export interface ProductView {
   description: string;
   brand: string;
   categoryIds: string[];
-  /** `publicId`s do Cloudinary na ordem de exibicao. */
+  /** `publicId`s do Cloudinary na ordem de exibição. */
   images: string[];
-  /** A primeira imagem. A da variante, quando existe, a substitui na selecao. */
+  /** A primeira imagem. A da variante, quando existe, a substitui na seleção. */
   coverImage: string;
   variants: ProductVariantView[];
   /**
-   * `false` no produto simples — variante unica e sem label. E o que permite
-   * a tela esconder a secao de variantes em vez de mostrar uma linha vazia.
+   * `false` no produto simples — variante única e sem label. E o que permite
+   * a tela esconder a seção de variantes em vez de mostrar uma linha vazia.
    */
   hasVariants: boolean;
   priceRangeCents: PriceRange;
@@ -59,8 +59,8 @@ export interface ProductView {
 
 export function toProductView(product: ProductDocument): ProductView {
   const variants = product.variants.map(toVariantView);
-  // Os calculos do card descrevem o que esta a venda, e nao o que a dona
-  // deixou guardado no cadastro: variante desativada nao entra em nenhum.
+  // Os cálculos do card descrevem o que esta a venda, e não o que a dona
+  // deixou guardado no cadastro: variante desativada não entra em nenhum.
   const active = variants.filter((variant) => variant.isActive);
 
   return {
@@ -91,7 +91,7 @@ export function toVariantView(variant: ProductVariant): ProductVariantView {
   const stock = variant.stock;
 
   return {
-    // `id` e o virtual do subdocumento: a variante tem identidade propria, e
+    // `id` e o virtual do subdocumento: a variante tem identidade própria, e
     // e por ela que o PATCH casa a lista recebida com a que esta gravada.
     id: variant.id,
     sku: variant.sku,
@@ -103,15 +103,15 @@ export function toVariantView(variant: ProductVariant): ProductVariantView {
     image: variant.image,
     isActive: variant.isActive,
     allowBackorder: variant.allowBackorder,
-    // Com `allowBackorder`, estoque zero nao impede a venda: a dona encomenda
-    // ao distribuidor depois do pedido, que e como metade do catalogo gira.
+    // Com `allowBackorder`, estoque zero não impede a venda: a dona encomenda
+    // ao distribuidor depois do pedido, que e como metade do catálogo gira.
     isAvailable: variant.isActive && (stock > 0 || variant.allowBackorder),
   };
 }
 
 /**
  * Produto simples e o que tem exatamente uma variante sem label. Qualquer
- * outra coisa — duas variantes, ou uma so mas chamada de "100 ml" — e um
+ * outra coisa — duas variantes, ou uma só mas chamada de "100 ml" — e um
  * produto com variantes, e a tela mostra o seletor.
  */
 export function hasVariants(variants: readonly LabelledVariant[]): boolean {
@@ -119,8 +119,8 @@ export function hasVariants(variants: readonly LabelledVariant[]): boolean {
 }
 
 /**
- * Menor e maior preco. Sem variante ativa, cai para a lista inteira: o painel
- * mostrando "R$ 0,00" num produto so desativado parece defeito, nao estado.
+ * Menor e maior preço. Sem variante ativa, cai para a lista inteira: o painel
+ * mostrando "R$ 0,00" num produto só desativado parece defeito, não estado.
  */
 export function priceRangeOf(variants: readonly PricedVariant[]): PriceRange {
   const prices = variants.map((variant) => variant.priceCents);
@@ -133,8 +133,8 @@ export function priceRangeOf(variants: readonly PricedVariant[]): PriceRange {
 /**
  * Desconto em pontos percentuais inteiros, sempre para baixo.
  *
- * `Math.floor` e nao `Math.round` de proposito: anunciar 20% quando o
- * desconto real e 19,6% e propaganda enganosa, e o troco da conta nao vale o
+ * `Math.floor` e não `Math.round` de propósito: anunciar 20% quando o
+ * desconto real e 19,6% e propaganda enganosa, e o troco da conta não vale o
  * risco. Para baixo, o cliente sempre paga menos do que a etiqueta promete.
  */
 export function discountOf(priceCents: number, compareAtPriceCents: number | null): number {

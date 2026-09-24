@@ -37,12 +37,12 @@ export interface ShelfContent {
 /**
  * Esta prateleira vai desenhar alguma coisa?
  *
- * Prateleira sem produto nao vira secao vazia: some. Carregando ainda vale,
- * porque os esqueletos ja ocupam a altura final — e se sumisse enquanto
- * carrega, a pagina saltaria quando a resposta chegasse.
+ * Prateleira sem produto não vira seção vazia: some. Carregando ainda vale,
+ * porque os esqueletos já ocupam a altura final — e se sumisse enquanto
+ * carrega, a página saltaria quando a resposta chegasse.
  *
  * E exportada porque a home precisa da mesma resposta antes de montar: e ela
- * quem decide onde entram a faixa de colecoes e qual prateleira encosta no
+ * quem decide onde entram a faixa de coleções e qual prateleira encosta no
  * banner, e as duas dependem de quantas prateleiras de fato aparecem. Com a
  * regra escrita duas vezes, bastaria mexer numa delas para a faixa reaparecer
  * no lugar errado sem que nada quebrasse.
@@ -52,28 +52,28 @@ export function shelfWillRender({ products, isLoading, isError }: ShelfContent):
 }
 
 /**
- * Uma prateleira da vitrine: titulo, atalho para a secao inteira e a fileira
+ * Uma prateleira da vitrine: título, atalho para a seção inteira e a fileira
  * de produtos.
  *
- * ## Por que fileira que rola, e nao grade
+ * ## Por que fileira que rola, e não grade
  *
  * Com grade, oito produtos viram duas linhas no desktop e quatro no celular —
- * e tres prateleiras assim faziam a home passar de dez mil pixels de altura no
- * telefone. Quem rola tudo aquilo chega ao rodape exausto e sem ter visto a
+ * e três prateleiras assim faziam a home passar de dez mil pixels de altura no
+ * telefone. Quem rola tudo aquilo chega ao rodapé exausto e sem ter visto a
  * terceira prateleira.
  *
  * Na fileira, cada prateleira ocupa a altura de um card. O cliente varre na
- * horizontal o que interessa e desce rapido para a proxima secao — que e como
+ * horizontal o que interessa e desce rápido para a próxima seção — que e como
  * se anda numa loja de verdade, passando os olhos pela prateleira e seguindo.
  *
  * ## A rolagem e do navegador
  *
- * Nao ha estado de slide, nem indice, nem temporizador: e `overflow-x` com
+ * Não há estado de slide, nem índice, nem temporizador: e `overflow-x` com
  * `scroll-snap`. O arrasto no touch, a roda inclinada do trackpad, o arrastar
  * da barra e o salto do navegador para revelar um link que recebeu foco — tudo
- * isso ja funciona, de graca e do jeito que a plataforma faz. As setas so
- * chamam `scrollBy`; elas sao um atalho de mouse por cima do que ja anda
- * sozinho, e nao o mecanismo.
+ * isso já funciona, de graça e do jeito que a plataforma faz. As setas só
+ * chamam `scrollBy`; elas são um atalho de mouse por cima do que já anda
+ * sozinho, e não o mecanismo.
  */
 export function ProductShelf({
   title,
@@ -92,7 +92,7 @@ export function ProductShelf({
   const trackRef = useRef<HTMLUListElement>(null);
 
   // Onde a fileira esta: e o que decide se cada seta tem para onde levar.
-  // Uma seta que nao faz nada e pior que seta nenhuma.
+  // Uma seta que não faz nada e pior que seta nenhuma.
   const [reach, setReach] = useState({ start: true, end: false });
 
   const measure = useCallback((): void => {
@@ -103,7 +103,7 @@ export function ProductShelf({
     }
 
     // A folga de 2px absorve o arredondamento de subpixel do navegador: sem
-    // ela, a fileira rolada ate o fim quase nunca bate exatamente no limite e
+    // ela, a fileira rolada até o fim quase nunca bate exatamente no limite e
     // a seta da direita fica acesa sem ter para onde ir.
     const maxScroll = track.scrollWidth - track.clientWidth;
 
@@ -117,7 +117,7 @@ export function ProductShelf({
   // celular, arrastar a janela. Sem ela, com poucos produtos a fileira cabe
   // inteira na tela e a seta da direita ficaria acesa sem ter para onde ir.
   //
-  // `ResizeObserver` existe em todo navegador que a loja atende, mas nao no
+  // `ResizeObserver` existe em todo navegador que a loja atende, mas não no
   // jsdom dos testes; a guarda e para ele.
   useEffect(() => {
     const track = trackRef.current;
@@ -136,7 +136,7 @@ export function ProductShelf({
   }, [measure]);
 
   // Uma lista nova muda o `scrollWidth` sem mudar a caixa da fileira, e o
-  // observador acima nao dispara: quem ele observa e o elemento, e ele
+  // observador acima não dispara: quem ele observa e o elemento, e ele
   // continua do mesmo tamanho com dois ou com doze cards dentro.
   const count = products?.length ?? 0;
 
@@ -150,8 +150,8 @@ export function ProductShelf({
     const track = trackRef.current;
 
     if (track) {
-      // Uma tela por clique, menos um card de sobreposicao: o produto que
-      // estava na beirada continua visivel e o cliente nao perde o fio.
+      // Uma tela por clique, menos um card de sobreposição: o produto que
+      // estava na beirada continua visível e o cliente não perde o fio.
       track.scrollBy({ left: direction * track.clientWidth * 0.85, behavior: 'smooth' });
     }
   };
@@ -169,8 +169,8 @@ export function ProductShelf({
       <Container>
         <SectionHeading title={title} description={description} titleId={titleId} />
 
-        {/* O atalho fica logo abaixo do titulo, e nao no fim da fileira: no
-            fim, ele so aparece para quem rolou a prateleira inteira — ou
+        {/* O atalho fica logo abaixo do título, e não no fim da fileira: no
+            fim, ele só aparece para quem rolou a prateleira inteira — ou
             seja, para quem menos precisa dele. */}
         {to ? (
           <Link to={to} className={styles.headingLink}>
@@ -180,10 +180,10 @@ export function ProductShelf({
       </Container>
 
       {/*
-        A fileira sangra ate a borda da tela de proposito. O `Container` para
-        no titulo: se ele envolvesse a fileira tambem, o card da ponta
-        terminaria no limite do container e daria a impressao de que a
-        prateleira acaba ali. Sangrando, o card sai pela beirada e diz que ha
+        A fileira sangra até a borda da tela de proposito. O `Container` para
+        no título: se ele envolvesse a fileira também, o card da ponta
+        terminaria no limite do container e daria a impressão de que a
+        prateleira acaba ali. Sangrando, o card sai pela beirada e diz que há
         mais coisa a direita sem precisar de nenhuma legenda.
       */}
       <div className={styles.viewport}>
@@ -202,12 +202,12 @@ export function ProductShelf({
         </ul>
 
         {/*
-          As setas so existem onde ha mouse. No toque, arrastar e o gesto
+          As setas só existem onde há mouse. No toque, arrastar e o gesto
           nativo — e duas setas sobre a fileira comeriam a largura de meio card
           numa tela de 390px.
 
-          `aria-hidden` porque elas nao acrescentam nada a quem nao usa mouse:
-          os links dos produtos ja estao todos na ordem do Tab, e o navegador
+          `aria-hidden` porque elas não acrescentam nada a quem não usa mouse:
+          os links dos produtos já estão todos na ordem do Tab, e o navegador
           rola a fileira sozinho para revelar o que recebeu foco.
         */}
         <div className={styles.arrows} aria-hidden="true">

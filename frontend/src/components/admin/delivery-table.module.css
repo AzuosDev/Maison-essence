@@ -5,8 +5,8 @@
  * alinhada para que os cinco valores se comparem de cima a baixo — que e o
  * gesto que a tela existe para servir.
  *
- * No celular cada cidade e um bloco de formulario, com os rotulos escritos.
- * Seis campos numa linha nao cabem em 360px, e uma planilha com rolagem
+ * No celular cada cidade e um bloco de formulário, com os rótulos escritos.
+ * Seis campos numa linha não cabem em 360px, e uma planilha com rolagem
  * horizontal faz perder o campo enquanto se digita.
  */
 
@@ -49,7 +49,7 @@
  * Enquanto o servidor confirma a nova ordem.
  *
  * `pointer-events` impede um segundo arraste de entrar em cima do primeiro,
- * que e como duas reordenacoes chegam fora de ordem do outro lado.
+ * que e como duas reordenações chegam fora de ordem do outro lado.
  */
 .busy {
   opacity: 0.6;
@@ -81,10 +81,10 @@
 }
 
 /*
- * Taxa, prazo e frete gratis em larguras fixas.
+ * Taxa, prazo e frete grátis em larguras fixas.
  *
- * Fixas para que as colunas se alinhem linha a linha: a comparacao entre
- * cinco taxas so funciona se elas comecarem no mesmo x.
+ * Fixas para que as colunas se alinhem linha a linha: a comparação entre
+ * cinco taxas só funciona se elas comecarem no mesmo x.
  */
 .feeCell {
   width: 9rem;
@@ -110,11 +110,11 @@
 }
 
 /*
- * A frase que a cliente le, embaixo do numero.
+ * A frase que a cliente lê, embaixo do número.
  *
- * `Ate 2 dias uteis` e `segue a loja` nao sao rotulos do campo: sao a
- * traducao do que o numero significa do outro lado. Por isso vem depois dele,
- * e nao acima.
+ * `Ate 2 dias uteis` e `segue a loja` não são rótulos do campo: são a
+ * tradução do que o número significa do outro lado. Por isso vem depois dele,
+ * e não acima.
  */
 .daysLabel,
 .freeLabel {
@@ -132,7 +132,7 @@
 }
 
 /*
- * Onde a linha vai cair: a regua de insercao no topo do alvo, como na arvore
+ * Onde a linha vai cair: a regua de inserção no topo do alvo, como na árvore
  * de categorias. O fundo dourado diz qual linha, a regua diz de que lado.
  */
 .dropTarget td,
@@ -144,12 +144,12 @@
 /*
  * Salvo agora.
  *
- * Um segundo de verde e depois o normal. E a unica confirmacao que existe —
- * nao ha botao de salvar —, e sem ela gravar ao sair do campo fica
- * indistinguivel de nao gravar.
+ * Um segundo de verde e depois o normal. E a única confirmação que existe —
+ * não há botão de salvar —, e sem ela gravar ao sair do campo fica
+ * indistinguível de não gravar.
  *
- * A transicao e so na volta: a cor entra na hora e se apaga devagar, que e a
- * forma de um aviso que ja foi lido.
+ * A transição e só na volta: a cor entra na hora e se apaga devagar, que e a
+ * forma de um aviso que já foi lido.
  */
 .saved td,
 .saved.block {
@@ -212,8 +212,8 @@
   white-space: nowrap;
 }
 
-/* UF e taxa lado a lado: sao os dois campos curtos, e juntos eles cabem
-   numa linha ate em 360px. */
+/* UF e taxa lado a lado: são os dois campos curtos, e juntos eles cabem
+   numa linha até em 360px. */
 .pair {
   display: grid;
   grid-template-columns: 5.5rem minmax(0, 1fr);

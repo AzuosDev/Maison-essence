@@ -5,7 +5,7 @@ import { MAX_DELIVERY_CITY_ORDER } from '../delivery.constants.js';
  * A nova ordem da lista de cidades, do topo para o fim.
  *
  * Mesma escolha do reorder de categorias: o painel manda a lista inteira
- * depois de arrastar um item, e a posicao gravada e o indice na lista. A
+ * depois de arrastar um item, e a posição gravada e o índice na lista. A
  * ordem importa na tela do checkout — a cidade da loja fica em primeiro
  * porque e a de quase todo pedido.
  */

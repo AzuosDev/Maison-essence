@@ -9,13 +9,13 @@ import styles from './variant-picker.module.css';
 /**
  * A escolha da variante, sem sair da vitrine.
  *
- * O card so abre este modal quando ha mais de uma opcao — com uma so, ele
+ * O card só abre este modal quando há mais de uma opção — com uma só, ele
  * adiciona direto, porque escolher entre uma coisa e um clique cobrado por
  * nada. Ver `soleVariant` em `features/catalog/product-display.ts`.
  *
  * Variante esgotada aparece na lista, desabilitada, em vez de ser omitida.
- * Some-la faria o cliente que procura os 100ml achar que o produto nunca teve
- * esse tamanho; mostrando-a esgotada, ele entende que e questao de voltar
+ * Some-lá faria o cliente que procura os 100ml achar que o produto nunca teve
+ * esse tamanho; mostrando-a esgotada, ele entende que e questão de voltar
  * depois — e pode levar outro tamanho agora.
  */
 interface VariantPickerProps {
@@ -26,13 +26,13 @@ interface VariantPickerProps {
 
 export function VariantPicker({ product, open, onClose }: VariantPickerProps) {
   const addToCart = useAddToCart();
-  // A opcao mais barata **entre as disponiveis** ja vem marcada: abrir o
-  // seletor com uma variante esgotada em foco deixaria o botao desabilitado
+  // A opção mais barata **entre as disponíveis** já vem marcada: abrir o
+  // seletor com uma variante esgotada em foco deixaria o botão desabilitado
   // sem o cliente ter feito nada.
   //
-  // Inicializada no primeiro render, e nao reposta por efeito: o card so
-  // monta este componente depois do clique e o desmonta ao fechar, entao
-  // cada abertura e um componente novo, com a escolha ja no lugar.
+  // Inicializada no primeiro render, e não reposta por efeito: o card só
+  // monta este componente depois do clique e o desmonta ao fechar, então
+  // cada abertura e um componente novo, com a escolha já no lugar.
   const [selectedId, setSelectedId] = useState(() => firstAvailableId(product));
 
   const selected = product.variants.find((variant) => variant.id === selectedId) ?? null;
@@ -112,7 +112,7 @@ export function VariantPicker({ product, open, onClose }: VariantPickerProps) {
   );
 }
 
-/** A mais barata entre as disponiveis; vazio quando nao ha nenhuma. */
+/** A mais barata entre as disponíveis; vazio quando não há nenhuma. */
 function firstAvailableId(product: PublicProduct): string {
   const available = product.variants.filter((variant) => variant.isAvailable);
 

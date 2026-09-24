@@ -25,29 +25,29 @@ import { usePageMeta } from '@/lib/use-page-meta';
 import styles from './admin-settings-page.module.css';
 
 /**
- * As configuracoes da loja.
+ * As configurações da loja.
  *
- * ## Cinco assuntos, uma tela, um botao
+ * ## Cinco assuntos, uma tela, um botão
  *
- * Nome da loja, retirada, redes, carrossel e paginas moram no mesmo documento
- * e sao gravados pelo mesmo `PATCH`. Poderiam ser cinco telas, e nao sao:
- * quem abre esta area o faz raramente, quase sempre para mexer em uma coisa
- * so — e descobrir *qual das cinco telas* tem a barra de avisos custa mais do
- * que rolar uma pagina.
+ * Nome da loja, retirada, redes, carrossel e páginas moram no mesmo documento
+ * e são gravados pelo mesmo `PATCH`. Poderiam ser cinco telas, e não são:
+ * quem abre esta área o faz raramente, quase sempre para mexer em uma coisa
+ * só — e descobrir *qual das cinco telas* tem a barra de avisos custa mais do
+ * que rolar uma página.
  *
- * ## O que so se descobre depois
+ * ## O que só se descobre depois
  *
- * Tres configuracoes desta tela sao aceitas pelo servidor e somem do site sem
- * dizer nada: loja sem WhatsApp (o pedido fechado no checkout nao tem para
- * onde ir), retirada ligada sem endereco, e pagina publicada sem texto. As
- * tres viram aviso escrito, no bloco onde foram causadas.
+ * Três configurações desta tela são aceitas pelo servidor e somem do site sem
+ * dizer nada: loja sem WhatsApp (o pedido fechado no checkout não tem para
+ * onde ir), retirada ligada sem endereço, e página publicada sem texto. As
+ * três viram aviso escrito, no bloco onde foram causadas.
  *
  * ## Quem entra
  *
- * So o administrador do sistema — nem o gerente da loja, e muito menos o
- * atendimento. O que se muda aqui nao e um produto: e a moldura inteira, e
- * sao decisoes de implantacao, tomadas uma vez. O backend recusa pelo mesmo
- * criterio, inclusive na leitura.
+ * Só o administrador do sistema — nem o gerente da loja, e muito menos o
+ * atendimento. O que se muda aqui não e um produto: e a moldura inteira, e
+ * são decisões de implantação, tomadas uma vez. O backend recusa pelo mesmo
+ * critério, inclusive na leitura.
  */
 export default function AdminSettingsPage() {
   const role = useAdminRole();
@@ -55,8 +55,8 @@ export default function AdminSettingsPage() {
 
   usePageMeta({ title: 'Configurações — Painel', description: 'Acesso restrito.' });
 
-  // `canSee` e nao um `role === SUPER_ADMIN` escrito aqui: a tabela de areas
-  // e a unica fonte da regra, e e ela que o menu tambem consulta. Duas copias
+  // `canSee` e não um `role === SUPER_ADMIN` escrito aqui: a tabela de áreas
+  // e a única fonte da regra, e e ela que o menu também consulta. Duas copias
   // divergem no dia em que uma delas mudar.
   if (!canSee(role, 'settings')) {
     return (
@@ -101,7 +101,7 @@ export default function AdminSettingsPage() {
   );
 }
 
-/* ---- O formulario ------------------------------------------------------------- */
+/* ---- O formulário ------------------------------------------------------------- */
 
 function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
   const { toast } = useToast();
@@ -133,9 +133,9 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
 
     save.mutate(changes, {
       onSuccess: (saved) => {
-        // O servidor devolve tudo normalizado — o numero so com digitos, a
-        // sigla em maiuscula — e os banners novos ja com os seus `id`. Sem
-        // reabrir o rascunho com a resposta, o proximo salvamento mandaria os
+        // O servidor devolve tudo normalizado — o número só com digitos, a
+        // sigla em maiúscula — e os banners novos já com os seus `id`. Sem
+        // reabrir o rascunho com a resposta, o próximo salvamento mandaria os
         // banners de novo sem `id` e criaria copias deles.
         setDraft(draftFromStoreSettings(saved));
         setTouched(false);
@@ -209,7 +209,7 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
                 block
                 maxLength={SETTINGS_LIMITS.businessHours}
                 placeholder="Seg a Sex, 9h as 18h"
-                hint="Texto livre, como a cliente le no rodapé."
+                hint="Texto livre, como a cliente lê no rodapé."
                 value={draft.businessHours}
                 error={errors.businessHours}
                 onChange={(event) => {
@@ -391,8 +391,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
           </h2>
 
           <p className={styles.cardHint}>
-            Viram os icones do rodapé. Cole o endereço inteiro ou só o arroba — o site monta o link
-            a partir do que estiver aqui. Em branco, o icone não aparece.
+            Viram os ícones do rodapé. Cole o endereço inteiro ou só o arroba — o site monta o link
+            a partir do que estiver aqui. Em branco, o ícone não aparece.
           </p>
 
           <div className={styles.pair}>
@@ -500,8 +500,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
 /**
  * O que o servidor aceita e que some do site sem dizer nada.
  *
- * Aviso, e nao erro: nao bloqueia, nao usa vermelho e nao pede confirmacao. A
- * loja pode mesmo querer ficar um dia sem a barra de avisos — o que ela nao
+ * Aviso, e não erro: não bloqueia, não usa vermelho e não pede confirmação. A
+ * loja pode mesmo querer ficar um dia sem a barra de avisos — o que ela não
  * pode e ficar sem saber que ficou.
  */
 function Warnings({

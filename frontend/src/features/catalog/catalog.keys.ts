@@ -1,15 +1,15 @@
 /**
- * As chaves de cache do catalogo.
+ * As chaves de cache do catálogo.
  *
- * Toda chave do TanStack Query nasce aqui, e nenhuma e escrita a mao dentro
- * de um componente. O motivo e a invalidacao: quando o painel salva um
- * produto, alguem precisa dizer "esqueca tudo o que e catalogo", e isso so
- * funciona se as chaves compartilharem o mesmo prefixo. Chave escrita a mao
- * em uma tela e a chave que ninguem invalida.
+ * Toda chave do TanStack Query nasce aqui, e nenhuma e escrita a mão dentro
+ * de um componente. O motivo e a invalidação: quando o painel salva um
+ * produto, alguém precisa dizer "esqueca tudo o que e catálogo", e isso só
+ * funciona se as chaves compartilharem o mesmo prefixo. Chave escrita a mão
+ * em uma tela e a chave que ninguém inválida.
  *
- * O formato segue a hierarquia do proprio cache: `['catalog']` e a raiz,
- * `['catalog', 'products']` e a familia, e a lista inclui os filtros, porque
- * duas buscas diferentes sao dois resultados diferentes.
+ * O formato segue a hierarquia do próprio cache: `['catalog']` e a raiz,
+ * `['catalog', 'products']` e a família, e a lista inclui os filtros, porque
+ * duas buscas diferentes são dois resultados diferentes.
  */
 
 /** Filtros da vitrine, como `GET /products` os aceita. */
@@ -37,15 +37,15 @@ export const catalogKeys = {
   productList: (params: ProductListParams = {}) => [...catalogKeys.products(), params] as const,
   product: (slug: string) => [...catalogKeys.products(), 'detail', slug] as const,
 
-  /** As sugestoes da caixa de busca, por termo ja normalizado. */
+  /** As sugestões da caixa de busca, por termo já normalizado. */
   suggestions: (term: string) => [...catalogKeys.all, 'suggestions', term] as const,
 
   /**
-   * As marcas e o teto de preco que a barra de filtros oferece.
+   * As marcas e o teto de preço que a barra de filtros oferece.
    *
-   * Chave propria, e nao a da listagem: as opcoes de filtro mudam com a
-   * categoria e com a busca, mas nao com a marca escolhida nem com a pagina
-   * — senao a lista de marcas encolheria para uma so assim que alguem
+   * Chave própria, e não a da listagem: as opções de filtro mudam com a
+   * categoria e com a busca, mas não com a marca escolhida nem com a página
+   * — senão a lista de marcas encolheria para uma só assim que alguém
    * clicasse numa delas.
    */
   facets: (params: ProductListParams = {}) => [...catalogKeys.all, 'facets', params] as const,
@@ -53,10 +53,10 @@ export const catalogKeys = {
   /**
    * As prateleiras da home.
    *
-   * `latest` entra aqui junto das outras tres mesmo nao tendo rota propria —
-   * ela sai de `GET /products` ordenado por data. O que define a familia nao
-   * e o endereco, e a politica: as quatro sao listas curtas da home, com o
-   * mesmo frescor, e quem invalida "as prateleiras" tem de pegar as quatro.
+   * `latest` entra aqui junto das outras três mesmo não tendo rota própria —
+   * ela sai de `GET /products` ordenado por data. O que define a família não
+   * e o endereço, e a política: as quatro são listas curtas da home, com o
+   * mesmo frescor, e quem inválida "as prateleiras" tem de pegar as quatro.
    */
   shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers' | 'latest', limit?: number) =>
     [...catalogKeys.all, 'shelf', name, limit ?? null] as const,
@@ -64,13 +64,13 @@ export const catalogKeys = {
   /**
    * Uma prateleira de marca, por marca.
    *
-   * Dentro da familia `shelf` de proposito: e uma lista curta da home, com o
-   * mesmo frescor das outras, e quem invalida "as prateleiras" precisa pegar
+   * Dentro da família `shelf` de propósito: e uma lista curta da home, com o
+   * mesmo frescor das outras, e quem inválida "as prateleiras" precisa pegar
    * estas junto. O `'brand'` antes do nome e o que impede uma marca chamada
    * `latest` de colidir com a chave da prateleira de novidades.
    *
-   * A marca entra normalizada para minuscula porque o filtro do backend
-   * ignora caixa: `Lattafa` e `lattafa` sao a mesma resposta, e duas chaves
+   * A marca entra normalizada para minúscula porque o filtro do backend
+   * ignora caixa: `Lattafa` e `lattafa` são a mesma resposta, e duas chaves
    * para ela seriam duas idas ao servidor pelo mesmo dado.
    */
   brandShelf: (brand: string, limit?: number) =>

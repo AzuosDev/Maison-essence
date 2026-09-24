@@ -5,34 +5,34 @@ import { RouteErrorBoundary } from './route-error-boundary';
 import { ROUTE_GROUPS, ROUTES } from './routes';
 
 /**
- * O mapa da aplicacao.
+ * O mapa da aplicação.
  *
- * Tres grupos, e a separacao e mais que organizacao de pastas.
+ * Três grupos, e a separação e mais que organização de pastas.
  *
- * - **Loja** (`/`): publica, indexavel, e a unica que o cliente encontra pelo
+ * - **Loja** (`/`): publica, indexável, e a única que o cliente encontra pelo
  *   Google.
- * - **Conta** (`/conta`): a mesma moldura da loja, mas exige sessao de
+ * - **Conta** (`/conta`): a mesma moldura da loja, mas exige sessão de
  *   cliente.
- * - **Painel** (`/painel`): outra moldura, outra sessao, outro publico.
+ * - **Painel** (`/painel`): outra moldura, outra sessão, outro público.
  *
- * Cada grupo tem o seu layout e o seu `errorElement`, e cada pagina tambem
- * tem o seu: um erro na pagina do produto nao pode apagar a loja inteira.
+ * Cada grupo tem o seu layout e o seu `errorElement`, e cada página também
+ * tem o seu: um erro na página do produto não pode apagar a loja inteira.
  *
  * ## Carregamento sob demanda
  *
- * Toda pagina entra por `lazy`, e nenhuma e importada no topo deste arquivo.
- * O motivo e direto: o painel administrativo tem tabela, formulario e
+ * Toda página entra por `lazy`, e nenhuma e importada no topo deste arquivo.
+ * O motivo e direto: o painel administrativo tem tabela, formulário e
  * upload, e nada disso pode pesar no primeiro acesso de quem abriu a loja no
- * celular para ver um perfume. Os layouts, sim, vem no bundle inicial — sao
+ * celular para ver um perfume. Os layouts, sim, vem no bundle inicial — são
  * pequenos e todo mundo precisa de um deles.
  */
 
 /**
- * Uma pagina carregada sob demanda.
+ * Uma página carregada sob demanda.
  *
- * O `lazy` do React Router espera um modulo com `Component`; as paginas
- * exportam `default`, como e a convencao. Esta funcao faz a traducao em um
- * lugar so, em vez de repetir o `.then(...)` em cada rota.
+ * O `lazy` do React Router espera um módulo com `Component`; as páginas
+ * exportam `default`, como e a convenção. Esta função faz a tradução em um
+ * lugar só, em vez de repetir o `.then(...)` em cada rota.
  */
 function page(load: () => Promise<{ default: ComponentType }>) {
   return async () => ({ Component: (await load()).default });
@@ -49,9 +49,9 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
-    // A listagem: quatro enderecos, uma tela. O que muda entre eles e o
-    // cabecalho e o contexto — a categoria fixa, a bandeira fixa, o termo
-    // buscado —, e cada modulo abaixo e so isso. O miolo mora em
+    // A listagem: quatro endereços, uma tela. O que muda entre eles e o
+    // cabeçalho e o contexto — a categoria fixa, a bandeira fixa, o termo
+    // buscado —, e cada módulo abaixo e só isso. O miolo mora em
     // `pages/catalog/catalog-view`, que os quatro compartilham.
     {
       path: '/produtos',
@@ -74,10 +74,10 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
-    // A pagina do produto, logo abaixo das listagens que levam a ela. A
-    // ordem no arquivo nao muda o casamento das rotas — quem decide e a
+    // A página do produto, logo abaixo das listagens que levam a ela. A
+    // ordem no arquivo não muda o casamento das rotas — quem decide e a
     // especificidade do caminho —, mas segue a ordem em que o cliente
-    // navega, que e como a proxima pessoa vai procurar aqui dentro.
+    // navega, que e como a próxima pessoa vai procurar aqui dentro.
     {
       path: '/produtos/:slug',
       lazy: page(() => import('@/pages/product/product-page')),
@@ -91,16 +91,16 @@ const storeRoutes: RouteObject = {
     },
 
     // O fechamento do pedido, logo depois da sacola que leva a ele. Entra
-    // por `lazy` como todas as outras: `zod` e os quatro passos so sao
-    // baixados por quem chega a esta tela, e nao por quem abriu a home.
+    // por `lazy` como todas as outras: `zod` e os quatro passos só são
+    // baixados por quem chega a esta tela, e não por quem abriu a home.
     {
       path: '/checkout',
       lazy: page(() => import('@/pages/checkout/checkout-page')),
       ErrorBoundary: RouteErrorBoundary,
     },
 
-    // A confirmacao, logo depois do checkout que leva a ela. Fica no grupo
-    // da loja, e nao em `/conta`, porque o pedido de convidado termina aqui
+    // A confirmação, logo depois do checkout que leva a ela. Fica no grupo
+    // da loja, e não em `/conta`, porque o pedido de convidado termina aqui
     // do mesmo jeito que o do cliente cadastrado.
     {
       path: '/pedido/:code',
@@ -108,16 +108,16 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
-    // Os enderecos que a moldura ja aponta e cujas telas entram nos proximos
-    // passos. Existem agora para que nenhum link do cabecalho ou do rodape
-    // caia num 404 — o placeholder e o mesmo modulo para todos, e cada rota
+    // Os endereços que a moldura já aponta e cujas telas entram nos próximos
+    // passos. Existem agora para que nenhum link do cabeçalho ou do rodapé
+    // caia num 404 — o placeholder e o mesmo módulo para todos, e cada rota
     // troca a sua entrada quando a tela dela chegar.
     ...soonRoutes(['/institucional/:slug']),
 
     {
-      // O curinga fica no grupo da loja de proposito: e ele que pega
-      // qualquer endereco desconhecido da aplicacao, inclusive os que comecam
-      // com `/conta` ou `/painel` e nao casam com nenhuma rota de la.
+      // O curinga fica no grupo da loja de propósito: e ele que pega
+      // qualquer endereço desconhecido da aplicação, inclusive os que começam
+      // com `/conta` ou `/painel` e não casam com nenhuma rota de lá.
       path: '*',
       lazy: page(() => import('@/pages/not-found/not-found-page')),
       ErrorBoundary: RouteErrorBoundary,
@@ -145,11 +145,11 @@ const accountRoutes: RouteObject = {
     },
 
     // Entrar e criar conta ficam **dentro** da moldura da conta, ao
-    // contrario do painel, onde as telas de acesso ficam de fora. La a
-    // moldura contem o guarda que manda quem nao tem sessao para o login, e
-    // o login dentro dela se mandaria para si mesmo. Aqui nao ha guarda
-    // nenhum: a moldura so esconde a saudacao e o menu quando nao ha sessao,
-    // e as duas telas de acesso sao paginas da loja como qualquer outra.
+    // contrário do painel, onde as telas de acesso ficam de fora. La a
+    // moldura contem o guarda que manda quem não tem sessão para o login, e
+    // o login dentro dela se mandaria para si mesmo. Aqui não há guarda
+    // nenhum: a moldura só esconde a saudação e o menu quando não há sessão,
+    // e as duas telas de acesso são páginas da loja como qualquer outra.
     {
       path: 'entrar',
       lazy: page(() => import('@/pages/account/account-login-page')),
@@ -183,8 +183,8 @@ const accountRoutes: RouteObject = {
  * O painel.
  *
  * As duas telas de acesso — entrar e trocar a senha — ficam **fora** da
- * moldura do painel, e nao e organizacao: a moldura contem o guarda que
- * manda quem nao tem sessao para a tela de entrada. Com a entrada dentro
+ * moldura do painel, e não e organização: a moldura contem o guarda que
+ * manda quem não tem sessão para a tela de entrada. Com a entrada dentro
  * dela, o guarda mandaria a tela de entrada para a tela de entrada, para
  * sempre.
  */
@@ -213,9 +213,9 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // Os pedidos: a lista e o detalhe. A lista le o recorte do proprio
-        // endereco (`?status=...`), e por isso o card da abertura consegue
-        // apontar para um filtro; o detalhe entra por id, e nao por codigo,
+        // Os pedidos: a lista e o detalhe. A lista lê o recorte do próprio
+        // endereço (`?status=...`), e por isso o card da abertura consegue
+        // apontar para um filtro; o detalhe entra por id, e não por código,
         // porque e o id que as rotas administrativas do backend aceitam.
         {
           path: 'pedidos',
@@ -228,9 +228,9 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // O catalogo: a lista e o cadastro. `novo` e um literal e por isso
-        // vem antes de `:id` — o React Router casa o caminho mais especifico
-        // primeiro, mas a ordem declarada e o que a proxima pessoa le.
+        // O catálogo: a lista e o cadastro. `novo` e um literal e por isso
+        // vem antes de `:id` — o React Router casa o caminho mais específico
+        // primeiro, mas a ordem declarada e o que a próxima pessoa lê.
         {
           path: 'produtos',
           lazy: page(() => import('@/pages/admin/admin-products-page')),
@@ -254,8 +254,8 @@ const adminRoutes: RouteObject = {
         },
 
         // A tabela de taxas por cidade, e as regras de pagamento. As duas
-        // ficam fora do alcance do STAFF pelo proprio backend; as telas
-        // repetem o recorte para nao pedir o que sera recusado.
+        // ficam fora do alcance do STAFF pelo próprio backend; as telas
+        // repetem o recorte para não pedir o que será recusado.
         {
           path: 'entrega',
           lazy: page(() => import('@/pages/admin/admin-delivery-page')),
@@ -274,8 +274,8 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // A prateleira: o catalogo recortado no que esta em pronta entrega.
-        // Endereco proprio, e nao `produtos?readyToShip`, porque nao e um
+        // A prateleira: o catálogo recortado no que esta em pronta entrega.
+        // Endereço próprio, e não `produtos?readyToShip`, porque não e um
         // recorte que se experimenta — e um lugar que se confere, e o link
         // dele fica no menu.
         {
@@ -284,8 +284,8 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // A area de sistema, do SUPER_ADMIN. Fica dentro da moldura do
-        // painel — e nao num grupo proprio — porque quem chega aqui sem o
+        // A área de sistema, do SUPER_ADMIN. Fica dentro da moldura do
+        // painel — e não num grupo próprio — porque quem chega aqui sem o
         // papel precisa continuar a um clique de onde queria ir: o menu
         // permanece ao lado da tela de acesso negado. O recorte por papel e
         // do `SystemLayout`, e o backend recusa de todo jeito.
@@ -317,11 +317,11 @@ const adminRoutes: RouteObject = {
 };
 
 /**
- * O endereco antigo do painel.
+ * O endereço antigo do painel.
  *
- * `/painel` respondia por ele ate agora, e pode estar salvo no navegador de
- * quem ja usou. Redireciona em vez de responder 404 — inclusive os caminhos
- * abaixo dele, que vao todos para a abertura.
+ * `/painel` respondia por ele até agora, e pode estar salvo no navegador de
+ * quem já usou. Redireciona em vez de responder 404 — inclusive os caminhos
+ * abaixo dele, que vão todos para a abertura.
  */
 const adminLegacyRoutes: RouteObject = {
   path: ROUTE_GROUPS.adminLegacy,
@@ -330,16 +330,16 @@ const adminLegacyRoutes: RouteObject = {
 };
 
 /**
- * O styleguide, so em desenvolvimento.
+ * O styleguide, só em desenvolvimento.
  *
- * O `import.meta.env.DEV` vira `false` literal no build de producao, e com
- * isso o ternario inteiro morre na analise estatica do Rollup: o `import()`
- * some junto, e a pagina nao vira nem um chunk carregado sob demanda. Uma
- * rota escondida atras de um `if` dentro do componente teria o efeito
- * contrario — o codigo continuaria no bundle, so que inalcancavel.
+ * O `import.meta.env.DEV` vira `false` literal no build de produção, e com
+ * isso o ternário inteiro morre na análise estática do Rollup: o `import()`
+ * some junto, e a página não vira nem um chunk carregado sob demanda. Uma
+ * rota escondida atrás de um `if` dentro do componente teria o efeito
+ * contrário — o código continuaria no bundle, só que inalcancável.
  *
- * Fica fora dos tres grupos porque nao pertence a nenhum: nao e loja, nao e
- * conta e nao e painel. E uma bancada de trabalho, com moldura propria.
+ * Fica fora dos três grupos porque não pertence a nenhum: não e loja, não e
+ * conta e não e painel. E uma bancada de trabalho, com moldura própria.
  */
 const devRoutes: RouteObject[] = import.meta.env.DEV
   ? [

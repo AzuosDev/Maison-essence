@@ -1,10 +1,10 @@
 /*
- * O cabecalho da listagem.
+ * O cabeçalho da listagem.
  *
- * Alinhado a esquerda, e nao centralizado como o cabecalho das secoes da
- * home. A diferenca e de funcao: o titulo da home e um convite, e o da
- * listagem e uma etiqueta — o cliente le de relance para confirmar que
- * chegou onde queria, e o olho volta mais rapido ao canto esquerdo.
+ * Alinhado a esquerda, e não centralizado como o cabeçalho das seções da
+ * home. A diferença e de função: o título da home e um convite, e o da
+ * listagem e uma etiqueta — o cliente lê de relance para confirmar que
+ * chegou onde queria, e o olho volta mais rápido ao canto esquerdo.
  */
 
 .header {
@@ -34,9 +34,9 @@
 /*
  * A contagem de resultados.
  *
- * A altura e reservada com os mesmos tokens que desenham a linha, e nao com
- * um numero medido: o texto so preenche um espaco que ja existia, e a grade
- * abaixo nao se move quando a consulta responde.
+ * A altura e reservada com os mesmos tokens que desenham a linha, e não com
+ * um número medido: o texto só preenche um espaço que já existia, e a grade
+ * abaixo não se move quando a consulta responde.
  */
 .count {
   min-height: calc(var(--text-14) * var(--leading-body));

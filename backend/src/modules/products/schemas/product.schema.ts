@@ -18,25 +18,25 @@ import { Category } from '../../categories/schemas/category.schema.js';
 import { MAX_STOCK } from '../products.constants.js';
 
 /**
- * Variante de um produto: o que de fato tem preco e estoque.
+ * Variante de um produto: o que de fato tem preço e estoque.
  *
- * Fica embutida no produto, nao em colecao propria, porque nunca e consultada
+ * Fica embutida no produto, não em coleção própria, porque nunca e consultada
  * sozinha — toda leitura de variante acontece no contexto do produto.
  */
 @Schema(embeddedSchemaOptions())
 export class ProductVariant extends EmbeddedSchema {
-  /** Unico dentro do produto, garantido pela validacao em `Product`. */
+  /** Único dentro do produto, garantido pela validação em `Product`. */
   @Prop(textProp({ required: true, max: 40, uppercase: true }))
   sku: string;
 
-  /** `100ml`, `Asad Elixir`. Vazio no produto simples, de variante unica. */
+  /** `100ml`, `Asad Elixir`. Vazio no produto simples, de variante única. */
   @Prop(textProp({ max: 60, default: '' }))
   label: string;
 
   @Prop(centsProp({ required: true }))
   priceCents: number;
 
-  /** Preco "de", riscado no card. Quando presente, maior que `priceCents`. */
+  /** Preço "de", riscado no card. Quando presente, maior que `priceCents`. */
   @Prop(centsProp({ default: null }))
   compareAtPriceCents: number | null;
 
@@ -60,7 +60,7 @@ export type ProductVariantDocument = HydratedDocument<ProductVariant>;
 export const ProductVariantSchema = createSchema(ProductVariant);
 
 ProductVariantSchema.pre('validate', function () {
-  // Preco riscado menor que o de venda vira desconto negativo no card.
+  // Preço riscado menor que o de venda vira desconto negativo no card.
   if (this.compareAtPriceCents != null && this.compareAtPriceCents <= this.priceCents) {
     this.invalidate(
       'compareAtPriceCents',
@@ -69,7 +69,7 @@ ProductVariantSchema.pre('validate', function () {
   }
 });
 
-/** Produto do catalogo. Nucleo do sistema: e ele que a loja vende. */
+/** Produto do catálogo. Nucleo do sistema: e ele que a loja vende. */
 @Schema(baseSchemaOptions({ collection: 'products' }))
 export class Product extends BaseSchema {
   @Prop(textProp({ required: true, max: 160 }))
@@ -87,7 +87,7 @@ export class Product extends BaseSchema {
   @Prop({ type: [SchemaTypes.ObjectId], ref: Category.name, default: [] })
   categoryIds: Types.ObjectId[];
 
-  /** `publicId`s do Cloudinary na ordem de exibicao. O primeiro e a capa. */
+  /** `publicId`s do Cloudinary na ordem de exibição. O primeiro e a capa. */
   @Prop({ type: [String], default: [] })
   images: string[];
 
@@ -101,7 +101,7 @@ export class Product extends BaseSchema {
   @Prop({ type: Boolean, default: false })
   isFeatured: boolean;
 
-  /** Secao "pronta entrega". */
+  /** Seção "pronta entrega". */
   @Prop({ type: Boolean, default: false })
   isReadyToShip: boolean;
 
@@ -116,8 +116,8 @@ export const ProductSchema = createSchema(Product);
 applySlugFrom(ProductSchema, 'name');
 
 ProductSchema.pre('validate', function () {
-  // Produto sem variante nao existe. O produto simples e um produto com uma
-  // unica variante de label vazio, e a API esconde isso na leitura.
+  // Produto sem variante não existe. O produto simples e um produto com uma
+  // única variante de label vazio, e a API esconde isso na leitura.
   if (this.variants.length === 0) {
     this.invalidate('variants', 'o produto precisa de ao menos uma variante');
 
@@ -136,7 +136,7 @@ ProductSchema.index({ slug: 1 }, { unique: true });
 /**
  * Busca textual com peso maior no nome: quem procura "asad" quer o perfume
  * chamado Asad antes de todos os da marca Lattafa. `portuguese` liga o
- * stemming e a lista de stopwords da lingua, entao "velas" acha "vela".
+ * stemming e a lista de stopwords da lingua, então "velas" acha "vela".
  */
 ProductSchema.index(
   { name: 'text', brand: 'text' },

@@ -36,31 +36,31 @@ import { usePageMeta } from '@/lib/use-page-meta';
 import styles from './admin-products-page.module.css';
 
 /**
- * O catalogo.
+ * O catálogo.
  *
  * ## A cena de uso
  *
- * Diferente da tela de pedidos, esta nao e aberta com uma pergunta pronta.
+ * Diferente da tela de pedidos, esta não e aberta com uma pergunta pronta.
  * Ela e aberta para **conferir**: o que acabou, o que esta fora do ar, o que
  * falta cadastrar da remessa que chegou. Por isso o primeiro controle depois
- * da busca e o status — "me mostre o que nao esta no ar" — e a categoria vem
+ * da busca e o status — "me mostre o que não esta no ar" — e a categoria vem
  * logo em seguida, que e como a dona pensa o estoque.
  *
- * ## O recorte mora no endereco
+ * ## O recorte mora no endereço
  *
- * Mesma regra da tela de pedidos, e pelo mesmo motivo pratico: o card "Sem
+ * Mesma regra da tela de pedidos, e pelo mesmo motivo prático: o card "Sem
  * estoque" da abertura do painel aponta para ca, e a dona manda o link de um
  * recorte para quem ajuda a conferir.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * A lista, sem preco e sem editar. Ele consulta o catalogo para responder no
+ * A lista, sem preço e sem editar. Ele consulta o catálogo para responder no
  * WhatsApp — "tem o de 100 ml?" — e essa pergunta se responde com nome,
- * variante e estoque. O interruptor e o menu de acoes nao aparecem para ele,
+ * variante e estoque. O interruptor e o menu de ações não aparecem para ele,
  * e o backend recusa de todo jeito.
  */
 
-/** O tempo que a digitacao precisa parar antes de virar consulta. */
+/** O tempo que a digitação precisa parar antes de virar consulta. */
 const SEARCH_DELAY_MS = 300;
 
 const STATUS_CHIPS: { value: ProductStatusFilter; label: string }[] = [
@@ -174,7 +174,7 @@ export default function AdminProductsPage() {
             {!isPending && products.length === 0 ? (
               <EmptyState
                 as="h2"
-                title={activeCount > 0 ? 'Nenhum produto neste recorte' : 'O catalogo esta vazio'}
+                title={activeCount > 0 ? 'Nenhum produto neste recorte' : 'O catálogo esta vazio'}
                 description={
                   activeCount > 0
                     ? 'Mude a situação, a categoria ou o que esta na busca.'
@@ -243,9 +243,9 @@ export default function AdminProductsPage() {
               setDeleting(null);
             },
             onError: (cause) => {
-              // A recusa mais comum e "ha pedidos apontando para este
-              // produto", e a frase do servidor diz **quantos**. Traduzi-la
-              // aqui perderia o numero, que e o que faz a dona entender.
+              // A recusa mais comum e "há pedidos apontando para este
+              // produto", e a frase do servidor diz **quantos**. Traduzi-lá
+              // aqui perderia o número, que e o que faz a dona entender.
               toast({
                 variant: 'danger',
                 title: 'O produto não foi excluído',
@@ -324,11 +324,11 @@ function namesOf(tree: readonly AdminCategoryNode[]): Map<string, string> {
 }
 
 /**
- * As opcoes do filtro, com a subcategoria recuada.
+ * As opções do filtro, com a subcategoria recuada.
  *
- * O travessao antes do nome do filho e a unica indentacao que um `<option>`
- * aceita: espaco em branco no inicio e colapsado pelo navegador, e
- * `<optgroup>` nao pode ser escolhido — e a dona filtra por "Masculino"
+ * O travessão antes do nome do filho e a única indentação que um `<option>`
+ * aceita: espaço em branco no início e colapsado pelo navegador, e
+ * `<optgroup>` não pode ser escolhido — e a dona filtra por "Masculino"
  * tanto quanto por "Amadeirado".
  */
 function optionsOf(tree: readonly AdminCategoryNode[]): { value: string; label: string }[] {
@@ -342,7 +342,7 @@ function optionsOf(tree: readonly AdminCategoryNode[]): { value: string; label: 
 
 function summary(total: number | undefined, isPending: boolean, filtered: boolean): string {
   if (isPending || total === undefined) {
-    return 'Carregando o catalogo';
+    return 'Carregando o catálogo';
   }
 
   const noun = total === 1 ? 'produto' : 'produtos';

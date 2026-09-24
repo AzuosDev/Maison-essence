@@ -1,8 +1,8 @@
 /*
  * O pedido inteiro.
  *
- * Uma coluna no celular, duas a partir de 64rem — e nao 48rem: com o menu
- * lateral da conta ja ocupando 15rem no desktop, dividir o que sobra em duas
+ * Uma coluna no celular, duas a partir de 64rem — e não 48rem: com o menu
+ * lateral da conta já ocupando 15rem no desktop, dividir o que sobra em duas
  * colunas antes disso deixaria a lista de itens estreita demais para o nome
  * do produto caber numa linha.
  */
@@ -13,7 +13,7 @@
   gap: var(--space-24);
 }
 
-/* ---- O cabecalho ---------------------------------------------------------- */
+/* ---- O cabeçalho ---------------------------------------------------------- */
 
 .back {
   display: inline-block;
@@ -39,7 +39,7 @@
 }
 
 /*
- * O codigo e o titulo, em mono: e o que se le caractere a caractere e o que
+ * O código e o título, em mono: e o que se lê caractere a caractere e o que
  * se dita no WhatsApp. `O` e `0` precisam ser diferentes.
  */
 .code {
@@ -224,7 +224,7 @@
   text-wrap: pretty;
 }
 
-/* ---- O pedido que nao esta aqui -------------------------------------------- */
+/* ---- O pedido que não esta aqui -------------------------------------------- */
 
 .notHere {
   display: flex;

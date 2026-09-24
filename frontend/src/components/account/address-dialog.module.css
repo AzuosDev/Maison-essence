@@ -1,9 +1,9 @@
 /*
- * O formulario de endereco.
+ * O formulário de endereço.
  *
- * Uma coluna, campo abaixo de campo. A unica excecao e rua e numero, que
- * dividem a linha a partir de 640px — e assim que se escreve um endereco, e
- * um campo de numero ocupando a largura toda parece pedir mais do que pede.
+ * Uma coluna, campo abaixo de campo. A única exceção e rua e número, que
+ * dividem a linha a partir de 640px — e assim que se escreve um endereço, e
+ * um campo de número ocupando a largura toda parece pedir mais do que pede.
  */
 
 .form {
@@ -39,8 +39,8 @@
 }
 
 /*
- * A frase que substitui a caixa de "usar como padrao" no primeiro endereco.
- * Nao e aviso: e a explicacao do que vai acontecer de todo jeito.
+ * A frase que substitui a caixa de "usar como padrão" no primeiro endereço.
+ * Não e aviso: e a explicação do que vai acontecer de todo jeito.
  */
 .note {
   padding: var(--space-12) var(--space-16);
@@ -52,7 +52,7 @@
 }
 
 /*
- * As acoes: no celular empilhadas, com o envio em cima — o polegar alcanca o
+ * As ações: no celular empilhadas, com o envio em cima — o polegar alcança o
  * de baixo primeiro, e o de baixo aqui e "cancelar", que e o que se aperta
  * sem querer.
  */

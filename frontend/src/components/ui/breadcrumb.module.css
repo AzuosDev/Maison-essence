@@ -1,19 +1,19 @@
 /*
- * O fio de pao: Inicio / Masculino / Asad Lattafa.
+ * O fio de pão: Início / Masculino / Asad Lattafa.
  *
- * Texto pequeno e discreto — e orientacao, nao conteudo. No celular rola na
+ * Texto pequeno e discreto — e orientação, não conteúdo. No celular rola na
  * horizontal em vez de quebrar em duas linhas: uma trilha quebrada deixa de
  * parecer uma trilha.
  *
  * O alvo de toque sai do texto e vai para a faixa inteira: 44px de altura e
- * o espaco ate o separador em preenchimento. E aqui, e nao num `::after` de
- * area invisivel, porque `.nav` rola — uma area que transborda para cima e
+ * o espaço até o separador em preenchimento. E aqui, e não num `::after` de
+ * área invisível, porque `.nav` rola — uma área que transborda para cima e
  * para baixo do scrollport vira rolagem vertical dentro de um elemento que
- * so deveria rolar na horizontal.
+ * só deveria rolar na horizontal.
  *
  * O recuo negativo devolve o alinhamento: com preenchimento lateral no
- * link, o primeiro rotulo comecaria 8px a direita do titulo da pagina logo
- * abaixo. Puxar o scrollport inteiro para tras encosta os dois de volta, e
+ * link, o primeiro rótulo comecaria 8px a direita do título da página logo
+ * abaixo. Puxar o scrollport inteiro para trás encosta os dois de volta, e
  * cabe na calha de 16px do container.
  */
 
@@ -27,7 +27,7 @@
   display: none;
 }
 
-/* Sem `gap`: o respiro de 8px agora vem do preenchimento de cada rotulo, e
+/* Sem `gap`: o respiro de 8px agora vem do preenchimento de cada rótulo, e
    somar os dois abriria a trilha ao dobro. */
 .list {
   display: flex;
@@ -65,13 +65,13 @@
   text-underline-offset: 0.2em;
 }
 
-/* A pagina atual: sem link, e em tinta cheia. */
+/* A página atual: sem link, e em tinta cheia. */
 .current {
   color: var(--ink-soft);
   font-weight: var(--weight-medium);
 }
 
-/* O separador. `aria-hidden` no markup: a barra nao e conteudo. */
+/* O separador. `aria-hidden` no markup: a barra não e conteúdo. */
 .separator {
   color: var(--line);
 }

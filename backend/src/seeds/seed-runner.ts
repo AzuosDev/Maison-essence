@@ -10,9 +10,9 @@ export type SeedTask = (app: INestApplicationContext, logger: Logger) => Promise
 
 /**
  * Casca comum dos comandos de seed: sobe o contexto do Nest sem HTTP, confere
- * os indices, roda a tarefa e fecha a conexao.
+ * os índices, roda a tarefa e fecha a conexão.
  *
- * Erro nao vira stack trace crua no terminal e o processo sai com codigo 1 —
+ * Erro não vira stack trace crua no terminal e o processo sai com código 1 —
  * um seed que falha dentro de um script de deploy precisa parar o script.
  */
 export async function runSeed(name: string, task: SeedTask): Promise<void> {
@@ -20,8 +20,8 @@ export async function runSeed(name: string, task: SeedTask): Promise<void> {
   let app: INestApplicationContext | undefined;
 
   try {
-    // Sobe calado e so depois liga o `log`: o "InstanceLoader ... dependencies
-    // initialized" de cada modulo nao diz nada a quem rodou um seed, mas o que
+    // Sobe calado e só depois liga o `log`: o "InstanceLoader ... dependencies
+    // initialized" de cada módulo não diz nada a quem rodou um seed, mas o que
     // o seed tem a dizer, sim.
     app = await NestFactory.createApplicationContext(SeedModule, {
       abortOnError: false,
@@ -41,17 +41,17 @@ export async function runSeed(name: string, task: SeedTask): Promise<void> {
 }
 
 /**
- * Cria os indices que faltam antes de gravar qualquer coisa.
+ * Cria os índices que faltam antes de gravar qualquer coisa.
  *
  * `autoIndex` fica desligado fora de desenvolvimento (ver `database.module`),
- * entao um banco recem-criado no Atlas nao tem indice nenhum — nem o unico de
- * `users.email`, que e o que impede dois usuarios com o mesmo login. Como o
- * seed e a primeira coisa que roda contra esse banco, e aqui que os indices
+ * então um banco recém-criado no Atlas não tem índice nenhum — nem o único de
+ * `users.email`, que e o que impede dois usuários com o mesmo login. Como o
+ * seed e a primeira coisa que roda contra esse banco, e aqui que os índices
  * nascem.
  *
- * `createIndexes` e nao `syncIndexes`: este so cria o que falta, enquanto o
- * outro apaga o que nao estiver no schema — nao e um comando de seed que deve
- * decidir derrubar indice de um banco em producao.
+ * `createIndexes` e não `syncIndexes`: este só cria o que falta, enquanto o
+ * outro apaga o que não estiver no schema — não e um comando de seed que deve
+ * decidir derrubar índice de um banco em produção.
  */
 async function ensureIndexes(app: INestApplicationContext, logger: Logger): Promise<void> {
   const connection = app.get<Connection>(getConnectionToken());
@@ -61,8 +61,8 @@ async function ensureIndexes(app: INestApplicationContext, logger: Logger): Prom
     try {
       await model.createIndexes();
     } catch (error: unknown) {
-      // Indice ja existente com outras opcoes: e divergencia entre o schema e
-      // o banco, nao motivo para abortar o seed.
+      // Índice já existente com outras opções: e divergência entre o schema e
+      // o banco, não motivo para abortar o seed.
       logger.warn(
         `Índices de ${model.modelName}: ${error instanceof Error ? error.message : String(error)}`,
       );

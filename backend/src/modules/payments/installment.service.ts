@@ -5,23 +5,23 @@ import { toInstallmentRules } from './payment-settings.view.js';
 import { PaymentsService } from './payments.service.js';
 
 /**
- * As opcoes de parcelamento de um total.
+ * As opções de parcelamento de um total.
  *
- * Fonte unica, como o `DeliveryService` e para a taxa de entrega: o card do
+ * Fonte única, como o `DeliveryService` e para a taxa de entrega: o card do
  * produto, o checkout e a mensagem do WhatsApp perguntam aqui em vez de cada
- * um dividir o total pelo numero de parcelas. Divisao inteira com juros e
- * arredondamento reescrita em tres lugares diverge em um deles, e a
- * divergencia aparece no centavo que o cliente confere.
+ * um dividir o total pelo número de parcelas. Divisão inteira com juros e
+ * arredondamento reescrita em três lugares diverge em um deles, e a
+ * divergência aparece no centavo que o cliente confere.
  */
 @Injectable()
 export class InstallmentService {
   constructor(private readonly payments: PaymentsService) {}
 
   /**
-   * As parcelas possiveis para este total, da a vista ate o maximo permitido.
+   * As parcelas possíveis para este total, da a vista até o máximo permitido.
    *
-   * Lista vazia quando a loja nao aceita cartao: nao ha opcao a oferecer, e
-   * quem chama nao precisa perguntar antes se pode perguntar.
+   * Lista vazia quando a loja não aceita cartão: não há opção a oferecer, e
+   * quem chama não precisa perguntar antes se pode perguntar.
    */
   async buildOptions(totalCents: number): Promise<InstallmentOption[]> {
     const settings = await this.payments.current();

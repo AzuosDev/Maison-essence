@@ -1,7 +1,7 @@
 /**
- * Ponto unico de importacao dos schemas do dominio.
+ * Ponto único de importação dos schemas do domínio.
  *
- * Os modulos do Nest registram os seus models a partir daqui:
+ * Os módulos do Nest registram os seus models a partir daqui:
  *
  * ```ts
  * import { Product, ProductSchema } from '../../schemas.js';
@@ -9,12 +9,12 @@
  * MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]);
  * ```
  *
- * Cada schema continua morando no diretorio do seu dominio, em
- * `src/modules/<dominio>/schemas/`. Este arquivo so reune as exportacoes, para
- * que um seed ou um script de manutencao nao precise conhecer a arvore inteira.
+ * Cada schema continua morando no diretório do seu domínio, em
+ * `src/modules/<dominio>/schemas/`. Este arquivo só reune as exportações, para
+ * que um seed ou um script de manutenção não precise conhecer a árvore inteira.
  */
 
-// Enumeracoes. Objetos const, nunca `enum` nativo, com os tipos derivados.
+// Enumerações. Objetos const, nunca `enum` nativo, com os tipos derivados.
 export * from './common/enums/fulfillment-mode.js';
 export * from './common/enums/institutional-page.js';
 export * from './common/enums/order-status.js';
@@ -32,14 +32,14 @@ export { MAX_CENTS } from './database/schema-helpers.js';
 export { MAX_SLUG_LENGTH, slugify } from './database/slug.js';
 export { SingletonSchema } from './database/singleton.schema.js';
 
-// Acesso e usuarios.
+// Acesso e usuários.
 export * from './modules/audit/schemas/audit-entry.schema.js';
 export * from './modules/users/schemas/user.schema.js';
 export * from './modules/auth/schemas/refresh-token.schema.js';
 export * from './modules/auth/schemas/login-attempt.schema.js';
 export * from './modules/rate-limit/schemas/rate-limit-hit.schema.js';
 
-// Catalogo.
+// Catálogo.
 export * from './modules/categories/schemas/category.schema.js';
 export * from './modules/products/schemas/product.schema.js';
 export * from './modules/products/schemas/quantity-discount.schema.js';

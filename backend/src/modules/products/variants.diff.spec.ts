@@ -32,7 +32,7 @@ describe('planVariants', () => {
   });
 
   it('apenas desativa a variante que sumiu da lista mas já foi vendida', () => {
-    // Apagar quebraria a devolucao de estoque do cancelamento, que procura a
+    // Apagar quebraria a devolução de estoque do cancelamento, que procura a
     // variante pelo `items.variantId` do pedido.
     const { plans } = planVariants(
       [{ id: CEM_ML, priceCents: 19_990 }],

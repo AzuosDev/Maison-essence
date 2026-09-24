@@ -20,22 +20,22 @@ import styles from './admin-nav.module.css';
  * O menu do painel.
  *
  * Um componente para os dois lugares onde ele aparece — a coluna escura do
- * desktop e a gaveta do celular —, porque sao a mesma lista. O que muda e
+ * desktop e a gaveta do celular —, porque são a mesma lista. O que muda e
  * quem o contem.
  *
- * ## O que nao aparece
+ * ## O que não aparece
  *
- * O menu desenha apenas o que o papel abre. Um STAFF ve dois itens, e nao
- * oito com seis desabilitados: item cinza que nao clica e um convite a
- * perguntar "por que nao posso?", e a resposta seria uma conversa sobre
- * permissao no meio do expediente. O guarda de rota cobre o endereco
- * digitado a mao, e o backend recusa de todo jeito.
+ * O menu desenha apenas o que o papel abre. Um STAFF vê dois itens, e não
+ * oito com seis desabilitados: item cinza que não clica e um convite a
+ * perguntar "por que não posso?", e a resposta seria uma conversa sobre
+ * permissão no meio do expediente. O guarda de rota cobre o endereço
+ * digitado a mão, e o backend recusa de todo jeito.
  *
  * ## O item ativo
  *
  * Fundo dourado translucido e um filete dourado a esquerda. O `NavLink` do
  * React Router marca `aria-current="page"` sozinho — a cor conta para quem
- * ve, e o atributo conta para quem ouve.
+ * vê, e o atributo conta para quem ouve.
  */
 
 interface NavItem {
@@ -43,7 +43,7 @@ interface NavItem {
   label: string;
   to: string;
   icon: ComponentType<SVGProps<SVGSVGElement>>;
-  /** Casa so o endereco exato. Vale para a raiz do painel. */
+  /** Casa só o endereço exato. Vale para a raiz do painel. */
   end?: boolean;
   /** Abre um grupo novo: desenha o filete acima do item. */
   startsGroup?: boolean;
@@ -68,7 +68,7 @@ const ITEMS: readonly NavItem[] = [
 ];
 
 export interface AdminNavProps {
-  /** Fecha a gaveta depois do clique. Sem isso, o celular navega por tras do veu. */
+  /** Fecha a gaveta depois do clique. Sem isso, o celular navega por trás do véu. */
   onNavigate?: (() => void) | undefined;
 }
 

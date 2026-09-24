@@ -1,4 +1,4 @@
-/** O que o PATCH manda em cada posicao do array de variantes. */
+/** O que o PATCH manda em cada posição do array de variantes. */
 export interface VariantInput {
   /** Ausente em variante nova: e assim que o painel diz "esta eu acabei de criar". */
   id?: string;
@@ -16,10 +16,10 @@ export interface VariantInput {
  * O que fazer com cada variante depois de comparar a lista recebida com a
  * que esta gravada.
  *
- * `retire` e o caso que existe para proteger o historico: a variante saiu da
+ * `retire` e o caso que existe para proteger o histórico: a variante saiu da
  * lista, mas algum pedido aponta para ela. Apagar o subdocumento quebraria a
- * devolucao de estoque do cancelamento, que procura a variante pelo
- * `items.variantId` do pedido — entao ela fica, desativada, fora da vitrine e
+ * devolução de estoque do cancelamento, que procura a variante pelo
+ * `items.variantId` do pedido — então ela fica, desativada, fora da vitrine e
  * fora do painel de vendas.
  */
 export type VariantPlan =
@@ -29,20 +29,20 @@ export type VariantPlan =
   | { action: 'drop'; id: string };
 
 export interface VariantChanges {
-  /** Na ordem em que o painel mandou; as aposentadas vao para o fim. */
+  /** Na ordem em que o painel mandou; as aposentadas vão para o fim. */
   plans: VariantPlan[];
-  /** Ids citados que nao sao deste produto. Quem chamou responde 422. */
+  /** Ids citados que não são deste produto. Quem chamou responde 422. */
   unknownIds: string[];
 }
 
 /**
  * Compara o array completo de variantes recebido com o que o produto tem.
  *
- * O painel manda a lista inteira a cada gravacao, e nao uma lista de
- * operacoes: e o array que a tela edita, e reconstruir o diff aqui evita que
+ * O painel manda a lista inteira a cada gravação, e não uma lista de
+ * operações: e o array que a tela edita, e reconstruir o diff aqui evita que
  * o front tenha que rastrear o que mexeu. Variante com `id` conhecido e
  * atualizada no lugar, sem `id` e criada, e a que sumiu da lista sai — de
- * vez, se nunca foi vendida, ou apenas desativada, se ja foi.
+ * vez, se nunca foi vendida, ou apenas desativada, se já foi.
  */
 export function planVariants(
   incoming: readonly VariantInput[],

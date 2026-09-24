@@ -60,9 +60,9 @@ describe('SanitizeResponseInterceptor', () => {
   });
 
   /**
-   * O mesmo objeto em dois ramos da resposta nao e ciclo. A regra de desconto
-   * que o produto anuncia no card e a primeira da escada dele sao a mesma
-   * referencia, e as duas precisam chegar inteiras na vitrine.
+   * O mesmo objeto em dois ramos da resposta não e ciclo. A regra de desconto
+   * que o produto anuncia no card e a primeira da escada dele são a mesma
+   * referência, e as duas precisam chegar inteiras na vitrine.
    */
   it('mantem a referência repetida que não e ciclo', async () => {
     const tier = { minQty: 3, percentOff: 10 };

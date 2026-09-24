@@ -10,23 +10,23 @@ export interface RateLimitInput extends RateLimitRule {
 }
 
 /**
- * O mesmo contador do guard, para quem precisa limitar por algo que nao e o
+ * O mesmo contador do guard, para quem precisa limitar por algo que não e o
  * IP.
  *
  * O caso que existe hoje e o pedido: o limite por IP fica no guard, mas o
- * limite por telefone so pode ser conferido depois que o numero foi
- * normalizado, ja dentro do servico. Sao os dois lados do mesmo flood — a
- * mesma maquina insistindo e o mesmo cliente chegando de outra.
+ * limite por telefone só pode ser conferido depois que o número foi
+ * normalizado, já dentro do serviço. São os dois lados do mesmo flood — a
+ * mesma máquina insistindo e o mesmo cliente chegando de outra.
  *
- * Recebe o armazenamento pelo token do throttler, e nao pela classe: assim e
- * literalmente o mesmo objeto que o guard usa, e nao ha como as duas contagens
+ * Recebe o armazenamento pelo token do throttler, e não pela classe: assim e
+ * literalmente o mesmo objeto que o guard usa, e não há como as duas contagens
  * divergirem um dia.
  */
 @Injectable()
 export class RateLimitService {
   constructor(@Inject(ThrottlerStorage) private readonly storage: ThrottlerStorage) {}
 
-  /** Conta mais uma chamada e lanca 429 quando ela passa do teto. */
+  /** Conta mais uma chamada e lança 429 quando ela passa do teto. */
   async consume(input: RateLimitInput): Promise<void> {
     const windowMs = input.windowSeconds * 1000;
     const record = await this.storage.increment(

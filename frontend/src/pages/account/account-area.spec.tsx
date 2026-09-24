@@ -14,25 +14,25 @@ import AccountOrdersPage from './account-orders-page';
 import AccountRegisterPage from './account-register-page';
 
 /**
- * A area do cliente contra a API.
+ * A área do cliente contra a API.
  *
- * Os tres criterios de aceite, escritos como codigo, mais o que o enunciado
- * chama de sete e e a decisao estrutural desta area:
+ * Os três critérios de aceite, escritos como código, mais o que o enunciado
+ * chama de sete e e a decisão estrutural desta área:
  *
  * 1. **Criar conta com o telefone de um pedido de convidado traz aquele
  *    pedido.** A metade que cabe ao frontend e mandar para cima **o mesmo
- *    numero** — a adocao e do servidor, e ela procura por telefone. Um
- *    digito diferente aqui, ou o `55` na frente, e um historico que nunca
+ *    número** — a adoção e do servidor, e ela procura por telefone. Um
+ *    digito diferente aqui, ou o `55` na frente, e um histórico que nunca
  *    aparece.
  * 2. **Pedir novamente monta o carrinho e ignora os itens inativos.**
- *    Conferido no que foi parar na sacola, e nao no que a tela desenhou.
- * 3. **O checkout continua funcionando sem login.** Nao ha caso aqui, e a
- *    ausencia e a prova: `checkout-page.spec.tsx` roda inteiro sem nunca
+ *    Conferido no que foi parar na sacola, e não no que a tela desenhou.
+ * 3. **O checkout continua funcionando sem login.** Não há caso aqui, e a
+ *    ausência e a prova: `checkout-page.spec.tsx` roda inteiro sem nunca
  *    chamar `signIn`, e nada nesta entrega tocou o checkout. Um caso novo
- *    aqui so duplicaria aquele arquivo.
+ *    aqui só duplicaria aquele arquivo.
  * 4. **Nenhum ponto da loja tem parede de login.** O convite aparece **no
- *    endereco que a pessoa digitou**, e nao depois de um redirecionamento —
- *    e sempre com a saida para a loja a vista.
+ *    endereço que a pessoa digitou**, e não depois de um redirecionamento —
+ *    e sempre com a saída para a loja a vista.
  */
 
 const CONFIG = {
@@ -126,9 +126,9 @@ const DETALHE = {
 };
 
 /**
- * A cotacao do "pedir novamente": o primeiro item vale, o segundo saiu.
+ * A cotação do "pedir novamente": o primeiro item vale, o segundo saiu.
  *
- * E o caso do criterio de aceite — a sacola tem de receber um item so, e a
+ * E o caso do critério de aceite — a sacola tem de receber um item só, e a
  * tela tem de dizer qual ficou de fora.
  */
 const COTACAO = {
@@ -165,7 +165,7 @@ const COTACAO = {
       discountCents: 0,
       lineTotalCents: 0,
       unavailable: true,
-      unavailableReason: 'Este produto saiu do catalogo.',
+      unavailableReason: 'Este produto saiu do catálogo.',
     },
   ],
   fulfillment: {
@@ -200,7 +200,7 @@ function jsonResponse(body: unknown, status = 200): Response {
 /** O corpo de cada chamada que saiu, por rota. E por ele que os casos conferem. */
 let enviado: Record<string, unknown> = {};
 
-/** O que a lista da conta devolve. O caso do cadastro comeca com ela vazia. */
+/** O que a lista da conta devolve. O caso do cadastro começa com ela vazia. */
 let pedidosDaConta: unknown[] = [];
 
 beforeEach(() => {
@@ -329,18 +329,18 @@ function entrarComoCliente(): void {
 }
 
 /**
- * A area monta num roteador de dados.
+ * A área monta num roteador de dados.
  *
  * O layout da conta traz o `<ScrollRestoration>`, que exige um roteador
  * criado por `createMemoryRouter` — o mesmo motivo do teste da moldura da
  * loja.
  */
 /**
- * Um campo do formulario que esta em cena.
+ * Um campo do formulário que esta em cena.
  *
- * Escopado ao `<form>`, e nao a tela inteira: a moldura da loja vem junto
- * nestes casos, e o rodape tambem tem um "E-mail". Buscar na tela toda
- * acharia os dois e o caso quebraria por um motivo que nao e o dele.
+ * Escopado ao `<form>`, e não a tela inteira: a moldura da loja vem junto
+ * nestes casos, e o rodapé também tem um "E-mail". Buscar na tela toda
+ * acharia os dois e o caso quebraria por um motivo que não e o dele.
  */
 function campo(nome: string): HTMLElement {
   const form = document.querySelector('form');
@@ -384,14 +384,14 @@ function abrirConta(endereco: string) {
   };
 }
 
-/* ---- Criterio 4: a conta e convite, nunca parede ---------------------------- */
+/* ---- Critério 4: a conta e convite, nunca parede ---------------------------- */
 
 test('sem sessão, os pedidos mostram o convite no mesmo endereço', async () => {
   const { router } = abrirConta('/conta/pedidos');
 
   expect(await screen.findByText('Seus pedidos ficam guardados aqui')).toBeTruthy();
 
-  // A prova de que nao houve parede: o endereco continua sendo o que a
+  // A prova de que não houve parede: o endereço continua sendo o que a
   // pessoa digitou. Um `<Navigate to="/conta/entrar">` teria trocado por
   // outro, e o "voltar" do navegador a jogaria de volta aqui para sempre.
   expect(router.state.location.pathname).toBe('/conta/pedidos');
@@ -424,25 +424,25 @@ test('com sessão, o menu aparece e a saudação traz o telefone da conta', asyn
 
   expect(within(menu).getByRole('link', { name: 'Meus pedidos' })).toBeTruthy();
 
-  // O telefone e a identidade da conta, e esta escrito onde se ve de
-  // relance: e o que explica por que um pedido antigo esta ou nao na lista.
+  // O telefone e a identidade da conta, e esta escrito onde se vê de
+  // relance: e o que explica por que um pedido antigo esta ou não na lista.
   expect(screen.getByText(/\(88\) 99999-8888/)).toBeTruthy();
   expect(await screen.findByText('ME-260901-AB12')).toBeTruthy();
 });
 
-/* ---- Criterio 1: o pedido de convidado entra na conta ----------------------- */
+/* ---- Critério 1: o pedido de convidado entra na conta ----------------------- */
 
 test('criar conta com o telefone do pedido traz aquele pedido para a lista', async () => {
   const usuario = userEvent.setup();
 
-  // A conta ainda nao existe: o pedido esta solto, ligado so ao telefone.
+  // A conta ainda não existe: o pedido esta solto, ligado só ao telefone.
   pedidosDaConta = [];
 
-  // A confirmacao do pedido manda o telefone do convidado na URL. E por ele
+  // A confirmação do pedido manda o telefone do convidado na URL. E por ele
   // que o servidor liga as compras anteriores a conta nova.
   abrirConta('/conta/criar?telefone=88999998888');
 
-  // O campo ja chega preenchido e formatado: pedir o numero de novo criaria
+  // O campo já chega preenchido e formatado: pedir o número de novo criaria
   // a chance de ele ser digitado diferente.
   expect(campo('Celular')).toHaveProperty('value', '(88) 99999-8888');
 
@@ -451,14 +451,14 @@ test('criar conta com o telefone do pedido traz aquele pedido para a lista', asy
   await usuario.type(campo('Senha'), 'segredo12345');
   await usuario.click(screen.getByRole('button', { name: 'Criar conta' }));
 
-  // A metade que cabe ao frontend: subiu **o mesmo numero**, em onze digitos
-  // e sem o codigo do pais — que e como o pedido o guardou.
+  // A metade que cabe ao frontend: subiu **o mesmo número**, em onze digitos
+  // e sem o código do pais — que e como o pedido o guardou.
   await waitFor(() => {
     expect(enviado.register).toMatchObject({ phone: '88999998888' });
   });
 
   // E a metade que aparece para quem cadastrou: o pedido feito como
-  // convidada ja esta na lista.
+  // convidada já esta na lista.
   expect(await screen.findByText('ME-260901-AB12')).toBeTruthy();
   expect(screen.getByText('Entregue')).toBeTruthy();
 });
@@ -467,7 +467,7 @@ test('o telefone digitado com o código do pais sobe normalizado', async () => {
   const usuario = userEvent.setup();
 
   // Quem cola de um contato salvo quase sempre traz o `55` junto. Se ele
-  // subisse, a conta nasceria com um numero que nenhum pedido tem.
+  // subisse, a conta nasceria com um número que nenhum pedido tem.
   abrirConta('/conta/criar?telefone=5588999998888');
 
   await usuario.type(campo('Nome'), 'Maria Silva');
@@ -498,9 +498,9 @@ test('entrar volta para a tela que trouxe a pessoa até aqui', async () => {
   expect(await screen.findByText('ME-260901-AB12')).toBeTruthy();
 });
 
-/* ---- Criterio 2: pedir novamente ------------------------------------------- */
+/* ---- Critério 2: pedir novamente ------------------------------------------- */
 
-test('pedir novamente monta o carrinho e deixa de fora o item que saiu do catalogo', async () => {
+test('pedir novamente monta o carrinho e deixa de fora o item que saiu do catálogo', async () => {
   const usuario = userEvent.setup();
 
   entrarComoCliente();
@@ -510,7 +510,7 @@ test('pedir novamente monta o carrinho e deixa de fora o item que saiu do catalo
 
   await usuario.click(screen.getByRole('button', { name: /Pedir novamente/ }));
 
-  // O que foi perguntado ao servidor: as duas linhas do pedido, sem preco.
+  // O que foi perguntado ao servidor: as duas linhas do pedido, sem preço.
   await waitFor(() => {
     expect(enviado.quote).toMatchObject({
       items: [
@@ -520,19 +520,19 @@ test('pedir novamente monta o carrinho e deixa de fora o item que saiu do catalo
     });
   });
 
-  // O que foi parar na sacola: so o que a cotacao disse que ainda vale.
+  // O que foi parar na sacola: só o que a cotação disse que ainda vale.
   await waitFor(() => {
     expect(useCart.getState().lines).toEqual([{ productId: 'p1', variantId: 'v1', quantity: 1 }]);
   });
 
-  // E a tela diz qual ficou de fora, e por que — na pagina, e nao num aviso
+  // E a tela diz qual ficou de fora, e por que — na página, e não num aviso
   // que some em cinco segundos.
   const aviso = await screen.findByRole('region', {
-    name: 'O catalogo mudou desde este pedido',
+    name: 'O catálogo mudou desde este pedido',
   });
 
   expect(within(aviso).getByText('Khamrah Qahwa')).toBeTruthy();
-  expect(within(aviso).getByText(/saiu do catalogo/)).toBeTruthy();
+  expect(within(aviso).getByText(/saiu do catálogo/)).toBeTruthy();
 });
 
 /* ---- O detalhe --------------------------------------------------------------- */
@@ -547,8 +547,8 @@ test('o detalhe mostra itens, valores, endereço e pagamento', async () => {
   expect(screen.getByText('Rua das Flores, 120')).toBeTruthy();
   expect(screen.getByText('PIX')).toBeTruthy();
 
-  // Os valores sao os que o servidor congelou, e nenhum e recalculado aqui:
-  // o subtotal, a taxa de entrega e o total sao tres numeros do pedido.
+  // Os valores são os que o servidor congelou, e nenhum e recalculado aqui:
+  // o subtotal, a taxa de entrega e o total são três números do pedido.
   expect(screen.getByText('R$ 379,80')).toBeTruthy();
   expect(screen.getByText('R$ 15,00')).toBeTruthy();
   expect(screen.getByText('R$ 394,80')).toBeTruthy();
@@ -560,9 +560,9 @@ test('a trilha mostra as datas que o pedido guarda, e nada além delas', async (
 
   await screen.findByRole('heading', { name: 'ME-260901-AB12' });
 
-  // Pedido entregue: cinco passos, e so dois com horario — o de criacao e o
-  // da ultima mudanca. Os tres do meio aconteceram e a data nao existe deste
-  // lado, entao a tela explica a ausencia em vez de inventar.
+  // Pedido entregue: cinco passos, e só dois com horário — o de criação e o
+  // da última mudanca. Os três do meio aconteceram e a data não existe deste
+  // lado, então a tela explica a ausência em vez de inventar.
   const trilha = screen.getByText('Andamento').closest('section');
 
   expect(trilha).not.toBeNull();
@@ -572,7 +572,7 @@ test('a trilha mostra as datas que o pedido guarda, e nada além delas', async (
   ).toBeTruthy();
 });
 
-test('o pedido de outra conta não vira erro generico', async () => {
+test('o pedido de outra conta não vira erro genérico', async () => {
   entrarComoCliente();
 
   vi.stubGlobal(
@@ -592,8 +592,8 @@ test('o pedido de outra conta não vira erro generico', async () => {
 
   abrirConta('/conta/pedidos/ME-260901-ZZZZ');
 
-  // O 404 do servidor quer dizer "nao e desta conta", e nao "quebrou". E o
-  // motivo acionavel — o telefone — esta escrito.
+  // O 404 do servidor quer dizer "não e desta conta", e não "quebrou". E o
+  // motivo acionável — o telefone — esta escrito.
   expect(await screen.findByRole('heading', { name: /não esta nesta conta/ })).toBeTruthy();
 
   expect(screen.getByText(/ligados ao telefone informado no fechamento/)).toBeTruthy();

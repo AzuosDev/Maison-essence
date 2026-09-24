@@ -1,12 +1,12 @@
 /*
- * O cabecalho de secao da vitrine.
+ * O cabeçalho de seção da vitrine.
  *
  * Serifada em caixa alta, grande, centralizada. A caixa alta e o que da a uma
- * palavra sozinha — "DESTAQUES" — peso suficiente para dividir a pagina; em
+ * palavra sozinha — "DESTAQUES" — peso suficiente para dividir a página; em
  * caixa baixa ela precisaria de um risco, de uma linha de apoio ou de um fundo
- * para marcar que uma secao nova comecou.
+ * para marcar que uma seção nova começou.
  *
- * O espacamento entre letras nao e enfeite: em caixa alta as letras encostam
+ * O espacamento entre letras não e enfeite: em caixa alta as letras encostam
  * uma na outra e a palavra vira um bloco macico.
  */
 
@@ -25,7 +25,7 @@
   line-height: var(--leading-tight);
   letter-spacing: var(--tracking-title);
 
-  /* O espacamento sobra depois da ultima letra e desloca a palavra para a
+  /* O espacamento sobra depois da última letra e desloca a palavra para a
      esquerda do centro. O recuo de uma unidade devolve o equilibrio. */
   text-indent: var(--tracking-title);
   text-transform: uppercase;

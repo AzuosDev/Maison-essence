@@ -25,8 +25,8 @@ import { ProductsService } from './products.service.js';
 /**
  * Produtos pelo painel.
  *
- * Mesma divisao das categorias: gravar e da dona (`MANAGES_STORE`), ler e do
- * STAFF tambem, que precisa consultar preco e estoque para atender no
+ * Mesma divisão das categorias: gravar e da dona (`MANAGES_STORE`), ler e do
+ * STAFF também, que precisa consultar preço e estoque para atender no
  * WhatsApp sem poder remarcar nada.
  */
 @Roles(...MANAGES_STORE)

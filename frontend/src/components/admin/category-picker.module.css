@@ -1,10 +1,10 @@
 /*
- * A arvore de categorias.
+ * A árvore de categorias.
  *
- * Um nivel de recuo, e so um — subcategoria nao tem filhos. O filete
- * vertical a esquerda dos filhos e o que faz a relacao ser lida sem contar
- * pixels de indentacao, e o que mantem o grupo legivel quando ele rola para
- * fora da area visivel.
+ * Um nível de recuo, e só um — subcategoria não tem filhos. O filete
+ * vertical a esquerda dos filhos e o que faz a relação ser lida sem contar
+ * pixels de indentação, e o que mantem o grupo legível quando ele rola para
+ * fora da área visível.
  */
 
 .tree,
@@ -27,7 +27,7 @@
   gap: var(--space-8);
 }
 
-/* O rotulo fica com todo o espaco restante: e ele o alvo de toque. */
+/* O rótulo fica com todo o espaço restante: e ele o alvo de toque. */
 .checkbox {
   flex: 1;
   min-width: 0;

@@ -1,8 +1,8 @@
 /*
- * O menu de acoes de uma linha de tabela.
+ * O menu de ações de uma linha de tabela.
  *
- * Ancorado a direita do botao e alinhado pela borda direita: a coluna de
- * acoes e a ultima da tabela, e um menu que abrisse para a direita sairia da
+ * Ancorado a direita do botão e alinhado pela borda direita: a coluna de
+ * ações e a última da tabela, e um menu que abrisse para a direita sairia da
  * tela.
  */
 
@@ -17,7 +17,7 @@
   align-items: center;
   justify-content: center;
 
-  /* 44px: o minimo que um dedo acerta sem ampliar a tela. */
+  /* 44px: o mínimo que um dedo acerta sem ampliar a tela. */
   width: 2.75rem;
   height: 2.75rem;
 
@@ -110,7 +110,7 @@
   opacity: 0.7;
 }
 
-/* O filete que afasta o que nao se desfaz do resto da lista. */
+/* O filete que afasta o que não se desfaz do resto da lista. */
 .separated {
   margin-top: var(--space-4);
   padding-top: var(--space-4);

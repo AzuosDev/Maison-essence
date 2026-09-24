@@ -12,49 +12,49 @@ import styles from './quote-conflict-modal.module.css';
  * O pedido foi recusado porque a conta mudou — e agora e o cliente quem
  * decide.
  *
- * O servidor refaz a cotacao inteira antes de gravar e compara com o total
- * que estava na tela. Se o preco subiu, um desconto venceu ou a ultima
- * unidade acabou entre montar a sacola e apertar o botao, ele responde `409`
- * com a cotacao nova. Nada e gravado.
+ * O servidor refaz a cotação inteira antes de gravar e compara com o total
+ * que estava na tela. Se o preço subiu, um desconto venceu ou a última
+ * unidade acabou entre montar a sacola e apertar o botão, ele responde `409`
+ * com a cotação nova. Nada e gravado.
  *
  * Esta e uma das poucas telas do projeto em que um modal e a resposta certa,
- * e nao a preguicosa: ha uma decisao que nao pode ser adiada, o fluxo nao
+ * e não a preguicosa: há uma decisão que não pode ser adiada, o fluxo não
  * pode seguir sem ela, e continuar por baixo — reenviando com o valor novo —
- * significaria cobrar um preco que ninguem viu. Por isso o veu tambem nao
- * fecha por clique: sair daqui e escolher, nao escapar.
+ * significaria cobrar um preço que ninguém viu. Por isso o véu também não
+ * fecha por clique: sair daqui e escolher, não escapar.
  *
- * ## Os dois numeros, lado a lado
+ * ## Os dois números, lado a lado
  *
  * O valor que estava na tela e o valor recalculado, um ao lado do outro, com
- * a diferenca escrita por extenso. E a unica forma de a pessoa decidir em
- * dois segundos — comparar dois totais de memoria, num modal, e o tipo de
- * esforco que termina em "deixa pra la".
+ * a diferença escrita por extenso. E a única forma de a pessoa decidir em
+ * dois segundos — comparar dois totais de memória, num modal, e o tipo de
+ * esforço que termina em "deixa pra lá".
  *
- * ## Duas saidas diferentes, conforme o motivo
+ * ## Duas saídas diferentes, conforme o motivo
  *
- * Valor ou parcelamento: da para confirmar e seguir, porque nao falta nada
- * para o pedido existir — so mudou quanto ele custa.
+ * Valor ou parcelamento: da para confirmar e seguir, porque não falta nada
+ * para o pedido existir — só mudou quanto ele custa.
  *
- * Item indisponivel ou estoque perdido: nao ha o que confirmar. Reenviar a
- * mesma sacola com um item que nao existe mais produziria o mesmo `409`, e o
- * botao seria uma promessa que so pode falhar.
+ * Item indisponível ou estoque perdido: não há o que confirmar. Reenviar a
+ * mesma sacola com um item que não existe mais produziria o mesmo `409`, e o
+ * botão seria uma promessa que só pode falhar.
  *
  * O que o modal oferece nesse caso e o gesto que resolve: tirar da sacola
- * exatamente os itens que o servidor marcou como indisponiveis. O cliente ve
- * quais sao, na lista logo acima do botao, e nao precisa procurar entre as
- * proprias linhas qual foi. Quem prefere decidir com calma tem o "revisar os
+ * exatamente os itens que o servidor marcou como indisponíveis. O cliente vê
+ * quais são, na lista logo acima do botão, e não precisa procurar entre as
+ * próprias linhas qual foi. Quem prefere decidir com calma tem o "revisar os
  * itens" ao lado.
  */
 
 export interface QuoteConflictModalProps {
   conflict: QuoteConflict | null;
-  /** O total que estava na tela quando o cliente apertou o botao. */
+  /** O total que estava na tela quando o cliente apertou o botão. */
   previousTotalCents: number;
-  /** Segue com o valor novo. So aparece quando o motivo permite. */
+  /** Segue com o valor novo. Só aparece quando o motivo permite. */
   onConfirm: () => void;
   /**
-   * Tira da sacola os itens que o servidor marcou como indisponiveis e volta
-   * a etapa de itens. So aparece quando ha algum para tirar.
+   * Tira da sacola os itens que o servidor marcou como indisponíveis e volta
+   * a etapa de itens. Só aparece quando há algum para tirar.
    */
   onRemoveUnavailable: () => void;
   /** Volta para a etapa de itens, onde o problema pode ser resolvido. */
@@ -84,8 +84,8 @@ export function QuoteConflictModal({
       onClose={onClose}
       title={TITLES[conflict.reason]}
       description={conflict.message}
-      // Uma decisao de valor nao se fecha por clique fora. O Escape continua
-      // funcionando, e o botao de revisar esta a mao: as duas saidas sao
+      // Uma decisão de valor não se fecha por clique fora. O Escape continua
+      // funcionando, e o botão de revisar esta a mão: as duas saídas são
       // deliberadas.
       closeOnOverlayClick={false}
       closeLabel="Fechar sem enviar o pedido"
@@ -132,10 +132,10 @@ export function QuoteConflictModal({
 /**
  * Quanto mudou, em uma frase.
  *
- * A subtracao aqui nao e um preco: os dois totais vieram prontos do
- * servidor, ninguem paga por esta diferenca e ela nao entra em corpo de
- * requisicao nenhum. E leitura — a frase que poupa a pessoa de comparar dois
- * numeros de seis digitos com o olho.
+ * A subtração aqui não e um preço: os dois totais vieram prontos do
+ * servidor, ninguém paga por esta diferença e ela não entra em corpo de
+ * requisição nenhum. E leitura — a frase que poupa a pessoa de comparar dois
+ * números de seis digitos com o olho.
  */
 function Difference({
   previousTotalCents,
@@ -186,10 +186,10 @@ function UnavailableList({ items }: { items: QuoteConflict['quote']['items'] }) 
 }
 
 /**
- * O titulo nomeia o que aconteceu, e nao o que o sistema fez.
+ * O título nomeia o que aconteceu, e não o que o sistema fez.
  *
  * "O valor do pedido mudou" diz ao cliente o que ele precisa saber. "Erro
- * 409" e "Conflito na cotacao" descrevem o programa.
+ * 409" e "Conflito na cotação" descrevem o programa.
  */
 const TITLES: Record<QuoteConflict['reason'], string> = {
   [QUOTE_MISMATCH_REASONS.TOTAL]: 'O valor do pedido mudou',

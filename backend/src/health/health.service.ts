@@ -43,7 +43,7 @@ export class HealthService {
     const database = this.describeDatabase();
 
     return {
-      // So `connected` e saudavel: com bufferCommands desligado, qualquer
+      // Só `connected` e saudável: com bufferCommands desligado, qualquer
       // outro estado significa que as queries deste request iriam falhar.
       status: database.status === 'connected' ? 'ok' : 'error',
       uptime: Math.round(process.uptime() * 1000) / 1000,

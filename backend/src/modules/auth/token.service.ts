@@ -17,26 +17,26 @@ import type {
 import { TOKEN_AUDIENCES, TOKEN_TYPES } from './auth.types.js';
 import type { UserDocument } from '../users/schemas/user.schema.js';
 
-/** O minimo que um access token de cliente precisa saber da conta. */
+/** O mínimo que um access token de cliente precisa saber da conta. */
 export interface CustomerPrincipal {
   id: string;
   credentialVersion: number;
 }
 
 /**
- * Assina e confere os tokens das duas audiencias.
+ * Assina e confere os tokens das duas audiências.
  *
  * Cada token tem o seu segredo, passado explicitamente na chamada em vez de
- * registrado no `JwtModule`: com um segredo global seria facil assinar o
- * refresh com a chave do access sem ninguem notar, e ai um refresh token
+ * registrado no `JwtModule`: com um segredo global seria fácil assinar o
+ * refresh com a chave do access sem ninguém notar, e aí um refresh token
  * passaria pelo guard como se fosse access.
  *
- * Painel e loja compartilham este servico de proposito — e a mesma mecanica de
- * assinatura, expiracao e rotacao, e duas implementacoes dela divergiriam na
- * primeira correcao. O que nao compartilham e nada que de acesso: segredo,
- * audiencia e tempo de vida sao proprios de cada lado, e a verificacao exige
- * os tres. Um token de cliente apresentado ao painel falha na assinatura antes
- * mesmo de alguem olhar as claims.
+ * Painel e loja compartilham este serviço de propósito — e a mesma mecânica de
+ * assinatura, expiração e rotação, e duas implementações dela divergiriam na
+ * primeira correção. O que não compartilham e nada que de acesso: segredo,
+ * audiência e tempo de vida são próprios de cada lado, e a verificação exige
+ * os três. Um token de cliente apresentado ao painel falha na assinatura antes
+ * mesmo de alguém olhar as claims.
  */
 @Injectable()
 export class TokenService {
@@ -62,7 +62,7 @@ export class TokenService {
     });
   }
 
-  /** O access token da loja. Sem papel, sem e-mail: so a conta e a versao. */
+  /** O access token da loja. Sem papel, sem e-mail: só a conta e a versão. */
   signCustomerAccessToken(customer: CustomerPrincipal): Promise<string> {
     const payload: CustomerAccessTokenPayload = {
       sub: customer.id,
@@ -141,12 +141,12 @@ export class TokenService {
   }
 
   /**
-   * Diz se o token e um access token de cliente valido, sem lancar.
+   * Diz se o token e um access token de cliente válido, sem lançar.
    *
-   * Serve a duas perguntas que nao sao autenticacao. O guard do painel a usa
-   * para distinguir "credencial invalida" de "credencial da loja em area de
+   * Serve a duas perguntas que não são autenticação. O guard do painel a usa
+   * para distinguir "credencial inválida" de "credencial da loja em área de
    * painel"; o checkout a usa para reconhecer o cliente logado sem nunca
-   * exigir que ele esteja. Nos dois casos, resposta negativa nao e erro.
+   * exigir que ele esteja. Nos dois casos, resposta negativa não e erro.
    */
   async readCustomerAccessToken(
     token: string,
@@ -169,14 +169,14 @@ export class TokenService {
         audience,
       });
     } catch {
-      // Assinatura invalida, audiencia errada, token expirado e token
+      // Assinatura inválida, audiência errada, token expirado e token
       // adulterado caem todos aqui, e todos respondem a mesma coisa: nada do
       // que o jsonwebtoken diz no erro interessa a quem chamou.
       throw new UnauthorizedException('Sessão inválida.');
     }
   }
 
-  /** O segredo de cada combinacao de audiencia e tipo de token. */
+  /** O segredo de cada combinação de audiência e tipo de token. */
   private secret(audience: TokenAudience, kind: 'access' | 'refresh'): string {
     if (audience === TOKEN_AUDIENCES.CUSTOMER) {
       return kind === TOKEN_TYPES.ACCESS
@@ -191,11 +191,11 @@ export class TokenService {
 }
 
 /**
- * A sessao da loja dura mais que a do painel.
+ * A sessão da loja dura mais que a do painel.
  *
- * Quem compra volta semanas depois e nao tem senha no gerenciador: pedir login
+ * Quem compra volta semanas depois e não tem senha no gerenciador: pedir login
  * de novo a cada sete dias e o tipo de atrito que faz o cliente fechar a aba e
- * mandar mensagem no WhatsApp. O painel e o contrario — a sessao curta e
+ * mandar mensagem no WhatsApp. O painel e o contrário — a sessão curta e
  * barata para quem entra todo dia e cara para quem roubou o token.
  */
 function refreshTtlOf(audience: TokenAudience): number {

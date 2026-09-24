@@ -9,11 +9,11 @@ import { PaymentsService } from './payments.service.js';
 /**
  * As formas de pagamento que a loja aberta anuncia.
  *
- * Cinco minutos na borda (`SETTINGS_CACHE`), como as configuracoes da loja:
- * sao regras que mudam algumas vezes por ano e que a vitrine consulta em toda
- * visita, para escrever "em ate 3x sem juros" no card e montar o checkout. O
- * ETag encurta a janela real — desligar o cartao no painel muda a etiqueta na
- * mesma hora, e a proxima revalidacao ja entrega a resposta sem a opcao.
+ * Cinco minutos na borda (`SETTINGS_CACHE`), como as configurações da loja:
+ * são regras que mudam algumas vezes por ano e que a vitrine consulta em toda
+ * visita, para escrever "em até 3x sem juros" no card e montar o checkout. O
+ * ETag encurta a janela real — desligar o cartão no painel muda a etiqueta na
+ * mesma hora, e a próxima revalidação já entrega a resposta sem a opção.
  */
 @Public()
 @CdnCache(SETTINGS_CACHE)

@@ -1,9 +1,9 @@
 /*
  * O menu da loja.
  *
- * Linhas empilhadas num bloco so, sem bordas entre elas alem de um filete —
- * a lista precisa ser lida como uma sequencia, e nao como uma pilha de cards
- * soltos. O que separa os niveis e o recuo e o filete vertical a esquerda
+ * Linhas empilhadas num bloco só, sem bordas entre elas além de um filete —
+ * a lista precisa ser lida como uma sequência, e não como uma pilha de cards
+ * soltos. O que separa os níveis e o recuo e o filete vertical a esquerda
  * dos filhos, a mesma linguagem do seletor de categorias do cadastro.
  */
 
@@ -26,10 +26,10 @@
 /*
  * Enquanto o servidor confirma a nova ordem.
  *
- * Nao desabilita a lista: o gesto ja aconteceu na tela e a resposta vem em
- * um instante. O que a opacidade diz e "ainda nao esta firme" — e
+ * Não desabilita a lista: o gesto já aconteceu na tela e a resposta vem em
+ * um instante. O que a opacidade diz e "ainda não esta firme" — e
  * `pointer-events` impede um segundo arraste de entrar em cima do primeiro,
- * que e como duas reordenacoes chegam ao servidor fora de ordem.
+ * que e como duas reordenações chegam ao servidor fora de ordem.
  */
 .busy {
   opacity: 0.6;
@@ -64,13 +64,13 @@
   cursor: grabbing;
 }
 
-/* O ultimo filete some: a borda do bloco ja fecha a lista. */
+/* O último filete some: a borda do bloco já fecha a lista. */
 .tree > li:last-child > .row,
 .tree > li:last-child .children > li:last-child > .row {
   border-bottom: none;
 }
 
-/* A que esta sendo arrastada apaga: o olho precisa seguir o alvo, e nao a
+/* A que esta sendo arrastada apaga: o olho precisa seguir o alvo, e não a
    origem do gesto. */
 .dragging {
   opacity: 0.4;
@@ -79,18 +79,18 @@
 /*
  * Onde a linha vai cair.
  *
- * O que se escolhe ao arrastar numa lista e uma **posicao entre** duas
- * linhas, e nao uma linha a substituir — por isso a marca e uma regua de
- * insercao no topo do alvo, e nao um contorno em volta dele.
+ * O que se escolhe ao arrastar numa lista e uma **posição entre** duas
+ * linhas, e não uma linha a substituir — por isso a marca e uma regua de
+ * inserção no topo do alvo, e não um contorno em volta dele.
  *
- * Dois portadores, e nao um: a regua diz onde, e o fundo dourado diz qual.
+ * Dois portadores, e não um: a regua diz onde, e o fundo dourado diz qual.
  * Sozinha, a regua de 2px some numa tela de celular sob o sol; sozinho, o
- * fundo nao diz de que lado a linha entra.
+ * fundo não diz de que lado a linha entra.
  *
  * Nota para quem rodar o detector de design: ele marca filete colorido acima
  * de 1px em item de lista, e a marca dele existe contra a faixa de acento
- * decorativa em card. Esta e transitoria — so enquanto o dedo esta no ar — e
- * e a propria informacao do gesto.
+ * decorativa em card. Esta e transitoria — só enquanto o dedo esta no ar — e
+ * e a própria informação do gesto.
  */
 .dropTarget {
   background-color: var(--gold-wash);
@@ -112,10 +112,10 @@
 /* ---- O nome -------------------------------------------------------------- */
 
 /*
- * O nome e um botao sem cara de botao.
+ * O nome e um botão sem cara de botão.
  *
  * Em repouso ele e texto; ao passar o mouse ganha o contorno pontilhado que
- * diz "isto se edita". O contorno e o unico aviso, e por isso ele nao pode
+ * diz "isto se edita". O contorno e o único aviso, e por isso ele não pode
  * sumir no foco por teclado — ali entra o anel dourado por cima.
  */
 .name,
@@ -160,12 +160,12 @@
   border-color: var(--ink);
 }
 
-/* ---- Contagem e situacao ---------------------------------------------------- */
+/* ---- Contagem e situação ---------------------------------------------------- */
 
 /*
  * Quantos produtos.
  *
- * No pai o numero ja soma os dos filhos, que e como a vitrine o escreve. Sem
+ * No pai o número já soma os dos filhos, que e como a vitrine o escreve. Sem
  * unidade ao lado porque a coluna e sempre a mesma; o `title` diz por extenso
  * para quem passa o mouse.
  */
@@ -188,9 +188,9 @@
 /*
  * No celular a contagem sai.
  *
- * O nome, o interruptor e o menu sao o que a dona usa ali; o numero de
+ * O nome, o interruptor e o menu são o que a dona usa ali; o número de
  * produtos ela confere na tela de produtos. Tirar uma coluna e o que deixa o
- * nome com largura para nao ser cortado na terceira letra.
+ * nome com largura para não ser cortado na terceira letra.
  */
 @media (max-width: 30rem) {
   .count {

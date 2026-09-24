@@ -9,8 +9,8 @@ import type { Product, ProductVariant } from './schemas/product.schema.js';
  * Produto como ele sai do banco na leitura da vitrine: documento cru, sem
  * hidratar.
  *
- * A vitrine nunca grava, e hidratar um documento do Mongoose so para le-lo
- * custa tempo de funcao serverless. O preco e nao ter os virtuais: o `_id` do
+ * A vitrine nunca grava, e hidratar um documento do Mongoose só para lê-lo
+ * custa tempo de função serverless. O preço e não ter os virtuais: o `_id` do
  * subdocumento vem cru, e e daqui que sai o `id` da variante.
  */
 export type LeanVariant = Omit<ProductVariant, 'id'> & { _id: Types.ObjectId };
@@ -21,22 +21,22 @@ export interface LeanProduct extends Omit<Product, 'id' | 'variants' | 'descript
 }
 
 /**
- * O produto com a descricao junto.
+ * O produto com a descrição junto.
  *
- * A listagem nao traz esse campo — sao ate cinco mil caracteres por linha que
- * o card nao exibe —, e o tipo separado e o que impede a vitrine de tentar
- * ler o que ela nao pediu.
+ * A listagem não traz esse campo — são até cinco mil caracteres por linha que
+ * o card não exibe —, e o tipo separado e o que impede a vitrine de tentar
+ * ler o que ela não pediu.
  */
 export interface LeanProductFull extends LeanProduct {
   description: string;
 }
 
 /**
- * Variante como o cliente a ve.
+ * Variante como o cliente a vê.
  *
- * Nao e o mesmo objeto do painel, e a diferenca e o ponto: `sku` e controle
- * interno de estoque, `isActive` nao existe aqui porque variante desativada
- * nem chega a ser listada, e `allowBackorder` e politica de compra da dona.
+ * Não e o mesmo objeto do painel, e a diferença e o ponto: `sku` e controle
+ * interno de estoque, `isActive` não existe aqui porque variante desativada
+ * nem chega a ser listada, e `allowBackorder` e política de compra da dona.
  */
 export interface PublicVariantView {
   id: string;
@@ -48,14 +48,14 @@ export interface PublicVariantView {
   stock: number;
   isAvailable: boolean;
   /**
-   * Venda sob encomenda: disponivel sem estoque em maos. E o que impede o
+   * Venda sob encomenda: disponível sem estoque em mãos. E o que impede o
    * seletor de quantidade de travar em zero num produto que esta a venda.
    */
   onDemand: boolean;
   image: string;
 }
 
-/** Produto no card da vitrine. Sem descricao: o card nao a exibe. */
+/** Produto no card da vitrine. Sem descrição: o card não a exibe. */
 export interface PublicProductView {
   id: string;
   name: string;
@@ -72,22 +72,22 @@ export interface PublicProductView {
   isFeatured: boolean;
   isReadyToShip: boolean;
   tags: string[];
-  /** A chamada de desconto progressivo. `null` quando nao ha regra. */
+  /** A chamada de desconto progressivo. `null` quando não há regra. */
   quantityDiscount: QuantityDiscountTier | null;
 }
 
-/** Categoria no fio de pao da pagina do produto. */
+/** Categoria no fio de pão da página do produto. */
 export interface PublicProductCategory {
   id: string;
   name: string;
   slug: string;
 }
 
-/** Produto na sua propria pagina: tudo do card, mais o que so ela mostra. */
+/** Produto na sua própria página: tudo do card, mais o que só ela mostra. */
 export interface PublicProductDetailView extends PublicProductView {
   description: string;
   categories: PublicProductCategory[];
-  /** A escada inteira, para a pagina mostrar quanto se ganha levando mais. */
+  /** A escada inteira, para a página mostrar quanto se ganha levando mais. */
   quantityDiscounts: QuantityDiscountTier[];
   related: PublicProductView[];
 }
@@ -96,8 +96,8 @@ export function toPublicProductView(
   product: LeanProduct,
   quantityDiscount: QuantityDiscountTier | null,
 ): PublicProductView {
-  // Variante desativada nao aparece, nem entra em nenhuma conta: para o
-  // cliente ela simplesmente nao existe.
+  // Variante desativada não aparece, nem entra em nenhuma conta: para o
+  // cliente ela simplesmente não existe.
   const variants = product.variants.filter((variant) => variant.isActive).map(toPublicVariantView);
 
   return {
@@ -128,8 +128,8 @@ export function toPublicVariantView(variant: LeanVariant): PublicVariantView {
     priceCents: variant.priceCents,
     compareAtPriceCents: variant.compareAtPriceCents,
     discountPercent: discountOf(variant.priceCents, variant.compareAtPriceCents),
-    // Negativo nao chega aqui pelo schema, mas o `max` deixa o contrato
-    // explicito: o numero que a vitrine recebe e quanto da para levar.
+    // Negativo não chega aqui pelo schema, mas o `max` deixa o contrato
+    // explicito: o número que a vitrine recebe e quanto da para levar.
     stock: Math.max(0, variant.stock),
     isAvailable: variant.stock > 0 || variant.allowBackorder,
     onDemand,

@@ -1,7 +1,7 @@
 /**
  * Os componentes que sabem o que e o painel.
  *
- * Conhecem papel, pedido, produto do ponto de vista de quem opera — e nao
+ * Conhecem papel, pedido, produto do ponto de vista de quem opera — e não
  * aparecem na loja. O que serve aos dois lados desce para `components/ui`.
  */
 

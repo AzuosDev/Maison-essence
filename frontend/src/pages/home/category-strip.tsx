@@ -9,16 +9,16 @@ import { cx } from '@/lib/cx';
 import styles from './category-strip.module.css';
 
 /**
- * Quatro, e nao seis.
+ * Quatro, e não seis.
  *
  * A faixa mostrava seis categorias numa fileira que rolava, com fichas de
  * 10rem. Em cartaz de 4/5 com o nome sobre a foto, quatro e o que cabe numa
  * linha de desktop sem espremer — e cinco ou seis obrigariam a fileira a
- * rolar de novo, que e o que a prateleira de produtos logo abaixo ja faz.
+ * rolar de novo, que e o que a prateleira de produtos logo abaixo já faz.
  * Duas faixas que rolam, uma em cima da outra, competem pelo mesmo gesto.
  *
- * As categorias que sobram nao somem: o menu do cabecalho e o painel de
- * categorias trazem a arvore inteira.
+ * As categorias que sobram não somem: o menu do cabeçalho e o painel de
+ * categorias trazem a árvore inteira.
  */
 const MAX_CATEGORIES = 4;
 
@@ -90,7 +90,7 @@ function CategoryCard({ category }: { category: CategoryTree }) {
         </span>
       </span>
 
-      {/* Nao e um link: o cartaz inteiro ja e. Ver a explicacao no CSS. */}
+      {/* Não e um link: o cartaz inteiro já e. Ver a explicação no CSS. */}
       <span className={styles.action}>Ver</span>
     </Link>
   );

@@ -16,23 +16,23 @@ import styles from './tabs.module.css';
 /**
  * As abas.
  *
- * O teclado segue o que a convencao de acessibilidade define para o padrao
- * `tablist`, e sao duas regras que juntas fazem a diferenca:
+ * O teclado segue o que a convenção de acessibilidade define para o padrão
+ * `tablist`, e são duas regras que juntas fazem a diferença:
  *
- * - **Setas trocam de aba, Tab sai da fila.** Dentro da lista, so a aba
+ * - **Setas trocam de aba, Tab sai da fila.** Dentro da lista, só a aba
  *   selecionada esta na ordem do Tab (`tabIndex` 0; as outras, -1). E o que
- *   impede que uma pagina com seis abas exija seis Tabs para chegar ao
- *   conteudo.
- * - **A selecao acompanha o foco.** Setas ja trocam o painel, sem precisar
- *   de Enter. E o comportamento esperado quando os paineis sao leves, como
- *   sao aqui.
+ *   impede que uma página com seis abas exija seis Tabs para chegar ao
+ *   conteúdo.
+ * - **A seleção acompanha o foco.** Setas já trocam o painel, sem precisar
+ *   de Enter. E o comportamento esperado quando os paineis são leves, como
+ *   são aqui.
  *
- * `Home` e `End` vao para a primeira e a ultima, e a fila circula: seta a
- * direita na ultima volta para a primeira.
+ * `Home` e `End` vão para a primeira e a última, e a fila circula: seta a
+ * direita na última volta para a primeira.
  *
- * O tratador de teclado fica em cada aba, e nao na lista. Alem de ser onde o
+ * O tratador de teclado fica em cada aba, e não na lista. Além de ser onde o
  * foco esta de fato, e o que mantem a lista um container sem comportamento —
- * um `role="tablist"` que escuta teclas precisaria ser focavel, e nao deve
+ * um `role="tablist"` que escuta teclas precisaria ser focável, e não deve
  * ser.
  */
 
@@ -57,7 +57,7 @@ function useTabs(): TabsContextValue {
 export interface TabsProps {
   /** Controlado por quem usa. Junto de `onChange`. */
   value?: string;
-  /** Nao controlado: a aba que abre selecionada. */
+  /** Não controlado: a aba que abre selecionada. */
   defaultValue?: string;
   onChange?: (value: string) => void;
   className?: string | undefined;
@@ -74,7 +74,7 @@ export function Tabs({ value, defaultValue = '', onChange, className, children }
     (next: string) => {
       // O estado interno e atualizado mesmo no modo controlado: se quem
       // controla decidir ignorar a troca, o componente volta para o valor
-      // dele no proximo render, e nao fica com dois valores em disputa.
+      // dele no próximo render, e não fica com dois valores em disputa.
       setInternal(next);
       onChange?.(next);
     },
@@ -91,7 +91,7 @@ export function Tabs({ value, defaultValue = '', onChange, className, children }
 }
 
 export type TabListProps = ComponentPropsWithoutRef<'div'> & {
-  /** O que esta sendo escolhido. Obrigatorio: a lista precisa de nome. */
+  /** O que esta sendo escolhido. Obrigatório: a lista precisa de nome. */
   'aria-label': string;
 };
 
@@ -120,7 +120,7 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(function Tab(
 
     if (next) {
       event.preventDefault();
-      // Focar ja seleciona: o `onFocus` da aba vizinha cuida disso.
+      // Focar já seleciona: o `onFocus` da aba vizinha cuida disso.
       next.focus();
     }
   };
@@ -133,8 +133,8 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(function Tab(
       id={`${baseId}-tab-${value}`}
       aria-selected={selected}
       aria-controls={`${baseId}-panel-${value}`}
-      // So a selecionada esta na ordem do Tab. As outras se alcancam pelas
-      // setas, que e como o padrao manda.
+      // Só a selecionada esta na ordem do Tab. As outras se alcancam pelas
+      // setas, que e como o padrão manda.
       tabIndex={selected ? 0 : -1}
       onFocus={(event) => {
         onFocus?.(event);
@@ -171,8 +171,8 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(function TabPa
       role="tabpanel"
       id={`${baseId}-panel-${value}`}
       aria-labelledby={`${baseId}-tab-${value}`}
-      // O painel entra na ordem do Tab: depois de escolher a aba, o proximo
-      // Tab leva ao conteudo dela, e nao para fora do bloco.
+      // O painel entra na ordem do Tab: depois de escolher a aba, o próximo
+      // Tab leva ao conteúdo dela, e não para fora do bloco.
       tabIndex={0}
       className={cx(styles.panel, className)}
       {...props}
@@ -181,11 +181,11 @@ export const TabPanel = forwardRef<HTMLDivElement, TabPanelProps>(function TabPa
 });
 
 /**
- * A aba que a tecla pede, ou `null` quando a tecla nao e de navegacao.
+ * A aba que a tecla pede, ou `null` quando a tecla não e de navegação.
  *
- * As irmas sao lidas do DOM, e nao de uma lista em estado: as abas podem ser
- * condicionais, e o DOM e a unica fonte que ja sabe quais existem agora e
- * quais estao desabilitadas.
+ * As irmas são lidas do DOM, e não de uma lista em estado: as abas podem ser
+ * condicionais, e o DOM e a única fonte que já sabe quais existem agora e
+ * quais estão desabilitadas.
  */
 function siblingFor(event: KeyboardEvent<HTMLButtonElement>): HTMLButtonElement | null {
   const keys = ['ArrowRight', 'ArrowLeft', 'Home', 'End'];

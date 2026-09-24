@@ -1,20 +1,20 @@
 /**
  * O painel como a API o entrega.
  *
- * Espelho das views administrativas do backend, escrito a mao porque as duas
- * pastas sao projetos separados. A diferenca para os tipos da loja nao e
- * cosmetica: aqui aparecem `sku`, `isActive`, `stock` real e as anotacoes
- * internas do pedido — tudo o que a vitrine nunca ve.
+ * Espelho das views administrativas do backend, escrito a mão porque as duas
+ * pastas são projetos separados. A diferença para os tipos da loja não e
+ * cosmética: aqui aparecem `sku`, `isActive`, `stock` real e as anotações
+ * internas do pedido — tudo o que a vitrine nunca vê.
  *
- * As datas chegam como texto ISO. Nao sao convertidas para `Date` na
- * fronteira de proposito: o que a tela faz com elas e formatar e comparar, e
- * as duas coisas funcionam no texto ordenavel que o JSON ja traz.
+ * As datas chegam como texto ISO. Não são convertidas para `Date` na
+ * fronteira de propósito: o que a tela faz com elas e formatar e comparar, e
+ * as duas coisas funcionam no texto ordenável que o JSON já traz.
  */
 
 import type { PixKeyType } from '@/features/payments';
 import type { InstitutionalPageSlug } from '@/features/settings';
 
-/* ---- Paginacao ---------------------------------------------------------- */
+/* ---- Paginação ---------------------------------------------------------- */
 
 export interface AdminPage<T> {
   items: T[];
@@ -27,7 +27,7 @@ export interface AdminPage<T> {
 /** O teto que `MAX_PAGE_SIZE` impoe nas listagens administrativas. */
 export const ADMIN_MAX_PAGE_SIZE = 100;
 
-/** O tamanho de pagina das tabelas do painel. */
+/** O tamanho de página das tabelas do painel. */
 export const ADMIN_PAGE_SIZE = 20;
 
 /* ---- Pedidos ------------------------------------------------------------ */
@@ -47,8 +47,8 @@ export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
  * Os status que contam como venda fechada.
  *
  * Copia fiel de `SOLD_ORDER_STATUSES` no backend, e a fidelidade e o ponto:
- * o faturamento que o painel mostra precisa ser o mesmo numero que qualquer
- * relatorio do servidor daria. `PENDING_CONTACT` fica de fora porque metade
+ * o faturamento que o painel mostra precisa ser o mesmo número que qualquer
+ * relatório do servidor daria. `PENDING_CONTACT` fica de fora porque metade
  * desses pedidos nunca vira conversa; `CANCELLED`, por motivo obvio.
  */
 export const SOLD_ORDER_STATUSES: readonly OrderStatus[] = [
@@ -74,7 +74,7 @@ export interface AdminOrderSummary {
   code: string;
   status: OrderStatus;
   customerName: string;
-  /** So digitos: e com ele que se monta o link da conversa. */
+  /** Só digitos: e com ele que se monta o link da conversa. */
   phone: string;
   /** `(88) 99999-9999`, pronto pela API. */
   phoneLabel: string;
@@ -82,11 +82,11 @@ export interface AdminOrderSummary {
   /**
    * Como o pagamento foi combinado.
    *
-   * No resumo, e nao so no detalhe: e a coluna que a dona le antes de abrir
-   * a conversa. Um PIX pendente pede uma frase, um cartao em 6x pede outra.
+   * No resumo, e não só no detalhe: e a coluna que a dona lê antes de abrir
+   * a conversa. Um PIX pendente pede uma frase, um cartão em 6x pede outra.
    */
   payment: AdminOrderPayment;
-  /** Unidades somadas, e nao o numero de linhas. */
+  /** Unidades somadas, e não o número de linhas. */
   itemCount: number;
   totalCents: number;
   createdAt: string;
@@ -119,7 +119,7 @@ export interface AdminOrderFulfillment {
   cityName: string;
   state: string;
   estimatedDays: number;
-  /** `null` na retirada: nao ha endereco a preencher. */
+  /** `null` na retirada: não há endereço a preencher. */
   address: AdminOrderAddress | null;
 }
 
@@ -144,7 +144,7 @@ export interface AdminOrderCustomer {
   email: string;
 }
 
-/** O pedido inteiro, como so o painel o ve. */
+/** O pedido inteiro, como só o painel o vê. */
 export interface AdminOrder {
   id: string;
   code: string;
@@ -158,7 +158,7 @@ export interface AdminOrder {
   whatsappMessage: string;
   /** Conversa interna da loja. Nunca sai para o cliente. */
   notes: string;
-  /** Quando o cancelamento devolveu o estoque. `null` enquanto nao houve. */
+  /** Quando o cancelamento devolveu o estoque. `null` enquanto não houve. */
   stockRestoredAt: string | null;
   createdAt: string;
   updatedAt: string;
@@ -194,7 +194,7 @@ export interface AdminProduct {
   priceRangeCents: { min: number; max: number };
   discountPercent: number;
   inStock: boolean;
-  /** Somado entre as variantes ativas. E o numero da coluna de estoque. */
+  /** Somado entre as variantes ativas. E o número da coluna de estoque. */
   totalStock: number;
   isActive: boolean;
   isFeatured: boolean;
@@ -209,11 +209,11 @@ export interface AdminProduct {
 /**
  * Os tetos que o servidor impoe, repetidos aqui.
  *
- * Nao e duplicacao por descuido: sao dois projetos separados, e o painel
- * precisa dos numeros **antes** de mandar, para dizer "so cabem mais duas
+ * Não e duplicação por descuido: são dois projetos separados, e o painel
+ * precisa dos números **antes** de mandar, para dizer "só cabem mais duas
  * fotos" em vez de receber um 400 depois do upload. A fonte continua sendo
  * `products.constants.ts` e `schema-helpers.ts` do backend; qualquer
- * divergencia aparece como uma recusa que a tela nao previu.
+ * divergência aparece como uma recusa que a tela não previu.
  */
 export const PRODUCT_LIMITS = {
   /** `MAX_IMAGES`. */
@@ -242,19 +242,19 @@ export interface AdminCategory {
   id: string;
   name: string;
   slug: string;
-  /** Enderecos antigos que ainda redirecionam para este. */
+  /** Endereços antigos que ainda redirecionam para este. */
   previousSlugs: string[];
   parentId: string | null;
   image: string;
   order: number;
   isActive: boolean;
-  /** No pai, ja somados os das subcategorias. */
+  /** No pai, já somados os das subcategorias. */
   productCount: number;
   createdAt: string;
   updatedAt: string;
 }
 
-/** Um nivel de aninhamento, e so um: subcategoria nao tem filhos. */
+/** Um nível de aninhamento, e só um: subcategoria não tem filhos. */
 export interface AdminCategoryNode extends AdminCategory {
   children: AdminCategory[];
 }
@@ -264,9 +264,9 @@ export interface AdminCategoryNode extends AdminCategory {
 /**
  * Uma variante no corpo do `POST` e do `PATCH`.
  *
- * `id` presente identifica variante que ja existe; ausente, o servidor cria.
- * O painel manda **o array inteiro** nas duas rotas e nao precisa saber o que
- * mudou — quem descobre e o diff do lado de la. Mandar um array parcial
+ * `id` presente identifica variante que já existe; ausente, o servidor cria.
+ * O painel manda **o array inteiro** nas duas rotas e não precisa saber o que
+ * mudou — quem descobre e o diff do lado de lá. Mandar um array parcial
  * apagaria as que ficaram de fora.
  */
 export interface AdminVariantInput {
@@ -275,7 +275,7 @@ export interface AdminVariantInput {
   sku?: string;
   label?: string;
   priceCents: number;
-  /** `null` tira o preco riscado da variante. */
+  /** `null` tira o preço riscado da variante. */
   compareAtPriceCents?: number | null;
   stock?: number;
   image?: string;
@@ -285,12 +285,12 @@ export interface AdminVariantInput {
 
 export interface CreateProductInput {
   name: string;
-  /** Opcional: sem ele, o endereco sai do nome. */
+  /** Opcional: sem ele, o endereço sai do nome. */
   slug?: string;
   description?: string;
   brand?: string;
   categoryIds?: string[];
-  /** `publicId`s do Cloudinary na ordem de exibicao. A primeira e a capa. */
+  /** `publicId`s do Cloudinary na ordem de exibição. A primeira e a capa. */
   images?: string[];
   variants?: AdminVariantInput[];
   isActive?: boolean;
@@ -300,17 +300,17 @@ export interface CreateProductInput {
 }
 
 /**
- * A edicao nao mexe no endereco.
+ * A edição não mexe no endereço.
  *
- * `slug` fica de fora porque o link ja foi para o WhatsApp de alguem, e
- * troca-lo exigiria guardar o anterior para redirecionar — uma operacao
- * separada, que a API ainda nao publica para produto.
+ * `slug` fica de fora porque o link já foi para o WhatsApp de alguém, e
+ * troca-lo exigiria guardar o anterior para redirecionar — uma operação
+ * separada, que a API ainda não publica para produto.
  */
 export type UpdateProductInput = Omit<CreateProductInput, 'slug'>;
 
 /* ---- Envio de imagem ----------------------------------------------------- */
 
-/** As tres larguras que a API devolve prontas depois do upload. */
+/** As três larguras que a API devolve prontas depois do upload. */
 export interface AdminImageUrls {
   thumb: string;
   card: string;
@@ -318,16 +318,16 @@ export interface AdminImageUrls {
 }
 
 /**
- * A autorizacao para mandar um arquivo direto ao Cloudinary.
+ * A autorização para mandar um arquivo direto ao Cloudinary.
  *
- * O arquivo **nao passa pelo backend**: ele vai do navegador para o
- * Cloudinary, e o servidor so assina o envio e confere o resultado depois. E
- * o que mantem uma funcao serverless fora do caminho de um JPEG de 4 MB.
+ * O arquivo **não passa pelo backend**: ele vai do navegador para o
+ * Cloudinary, e o servidor só assina o envio e confere o resultado depois. E
+ * o que mantem uma função serverless fora do caminho de um JPEG de 4 MB.
  *
- * `params` viaja literal de proposito — sao exatamente os campos que foram
+ * `params` viaja literal de propósito — são exatamente os campos que foram
  * assinados, e o navegador os repete sem alterar nada, acrescentando apenas
  * `file` e `api_key`. Remontar essa lista aqui e o caminho mais curto para um
- * "Invalid Signature" que nao diz qual campo divergiu.
+ * "Invalid Signature" que não diz qual campo divergiu.
  */
 export interface UploadSignature {
   cloudName: string;
@@ -335,7 +335,7 @@ export interface UploadSignature {
   timestamp: number;
   signature: string;
   folder: string;
-  /** Ja vem assinado: o navegador nao escolhe o identificador da foto. */
+  /** Já vem assinado: o navegador não escolhe o identificador da foto. */
   publicId: string;
   uploadUrl: string;
   params: Record<string, string | number>;
@@ -345,7 +345,7 @@ export interface UploadSignature {
   allowedFormats: readonly string[];
 }
 
-/** Uma imagem ja guardada e conferida, pronta para ser vinculada. */
+/** Uma imagem já guardada e conferida, pronta para ser vinculada. */
 export interface UploadedImage {
   publicId: string;
   folder: string;
@@ -367,7 +367,7 @@ export type UploadFolder = (typeof UPLOAD_FOLDERS)[keyof typeof UPLOAD_FOLDERS];
 
 /* ---- O filtro de status da listagem -------------------------------------- */
 
-/** `all` e o padrao: a dona quer ver o cadastro inteiro, e nao so o no ar. */
+/** `all` e o padrão: a dona quer ver o cadastro inteiro, e não só o no ar. */
 export const PRODUCT_STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
 
 export type ProductStatusFilter = (typeof PRODUCT_STATUS_FILTERS)[number];
@@ -376,7 +376,7 @@ export type ProductStatusFilter = (typeof PRODUCT_STATUS_FILTERS)[number];
 
 export interface CreateCategoryInput {
   name: string;
-  /** Opcional: sem ele, o endereco sai do nome. */
+  /** Opcional: sem ele, o endereço sai do nome. */
   slug?: string;
   /** `null` ou ausente cria uma categoria principal. */
   parentId?: string | null;
@@ -386,16 +386,16 @@ export interface CreateCategoryInput {
 }
 
 /**
- * A edicao de categoria. Campo omitido fica como esta.
+ * A edição de categoria. Campo omitido fica como esta.
  *
- * `parentId` aceita `null` **de verdade**, e nao apenas a ausencia: omitir
+ * `parentId` aceita `null` **de verdade**, e não apenas a ausência: omitir
  * deixa o pai como esta, e mandar `null` promove a subcategoria a categoria
- * principal. Sao duas intencoes diferentes, e o tipo precisa saber
+ * principal. São duas intenções diferentes, e o tipo precisa saber
  * distingui-las.
  *
- * O endereco (`slug`) esta aqui, ao contrario do produto: a categoria guarda
- * os enderecos antigos em `previousSlugs` e o servidor redireciona, entao
- * renomear a URL nao quebra o link que ja circulou.
+ * O endereço (`slug`) esta aqui, ao contrário do produto: a categoria guarda
+ * os endereços antigos em `previousSlugs` e o servidor redireciona, então
+ * renomear a URL não quebra o link que já circulou.
  */
 export type UpdateCategoryInput = Partial<CreateCategoryInput>;
 
@@ -404,16 +404,16 @@ export const CATEGORY_LIMITS = {
   name: 80,
   /** `MAX_SLUG_LENGTH`. */
   slug: 120,
-  /** `MAX_CATEGORY_ORDER`: o teto do campo de posicao, e da lista de reorder. */
+  /** `MAX_CATEGORY_ORDER`: o teto do campo de posição, e da lista de reorder. */
   order: 9999,
 } as const;
 
 /**
- * O que o 409 de exclusao carrega.
+ * O que o 409 de exclusão carrega.
  *
  * O servidor recusa apagar categoria que ainda tem subcategoria ou produto
  * ativo, e manda as contagens junto porque a pergunta seguinte e sempre
- * "quantos?". `canDeactivate` e a saida que ele oferece no lugar.
+ * "quantos?". `canDeactivate` e a saída que ele oferece no lugar.
  */
 export interface CategoryBlockedDetails {
   subcategoryCount: number;
@@ -424,29 +424,29 @@ export interface CategoryBlockedDetails {
 /* ---- Entrega ------------------------------------------------------------- */
 
 /**
- * Uma cidade atendida, como o painel a ve.
+ * Uma cidade atendida, como o painel a vê.
  *
- * Nao ha CEP nem integracao com os Correios: a dona escolhe as cidades para
+ * Não há CEP nem integração com os Correios: a dona escolhe as cidades para
  * onde leva e quanto cobra em cada uma. E o modelo que corresponde a como a
- * entrega acontece de verdade — moto propria em Sobral, transportadora para
+ * entrega acontece de verdade — moto própria em Sobral, transportadora para
  * Fortaleza.
  */
 export interface AdminDeliveryCity {
   id: string;
   name: string;
-  /** Sigla de duas letras, gravada em maiuscula. */
+  /** Sigla de duas letras, gravada em maiúscula. */
   state: string;
-  /** Zero e legitimo: e a cidade em que a loja nao cobra. */
+  /** Zero e legitimo: e a cidade em que a loja não cobra. */
   feeCents: number;
-  /** Dias uteis. Zero e entrega no mesmo dia. */
+  /** Dias úteis. Zero e entrega no mesmo dia. */
   estimatedDays: number;
   /**
-   * Frete gratis nesta cidade a partir deste valor.
+   * Frete grátis nesta cidade a partir deste valor.
    *
-   * `null` **nao** e "sem frete gratis": e "sem regra propria", e a cidade
-   * fica sob o minimo global da loja, que mora em Configuracoes. A distincao
+   * `null` **não** e "sem frete grátis": e "sem regra própria", e a cidade
+   * fica sob o mínimo global da loja, que mora em Configurações. A distinção
    * importa na hora de salvar — mandar `null` apaga a regra da cidade, e
-   * omitir o campo nao mexe nela.
+   * omitir o campo não mexe nela.
    */
   minOrderForFreeCents: number | null;
   isActive: boolean;
@@ -465,13 +465,13 @@ export interface CreateDeliveryCityInput {
   order?: number;
 }
 
-/** Edicao de cidade. Campo omitido fica como esta. */
+/** Edição de cidade. Campo omitido fica como esta. */
 export type UpdateDeliveryCityInput = Partial<CreateDeliveryCityInput>;
 
 /** Os limites que o servidor impoe ao cadastro de cidade. */
 export const DELIVERY_LIMITS = {
   name: 120,
-  /** `MAX_ESTIMATED_DAYS`: tres meses ja e prazo de encomenda. */
+  /** `MAX_ESTIMATED_DAYS`: três meses já e prazo de encomenda. */
   estimatedDays: 90,
   /** `MAX_CENTS`. */
   feeCents: 99_999_999,
@@ -482,52 +482,52 @@ export const DELIVERY_LIMITS = {
 /* ---- Pagamento ----------------------------------------------------------- */
 
 /**
- * As regras de pagamento, como so o painel as ve.
+ * As regras de pagamento, como só o painel as vê.
  *
- * A diferenca para `PublicPaymentSettings` e uma linha: a chave PIX inteira.
- * Ela nao sai na rota publica — e o endereco para onde vai o dinheiro da
- * loja, e so faz sentido no fim do pedido, junto do valor e do titular. Aqui
+ * A diferença para `PublicPaymentSettings` e uma linha: a chave PIX inteira.
+ * Ela não sai na rota publica — e o endereço para onde vai o dinheiro da
+ * loja, e só faz sentido no fim do pedido, junto do valor e do titular. Aqui
  * ela precisa aparecer, porque e aqui que se confere se esta certa.
  *
  * Nenhum pagamento e processado pelo sistema. Estes campos descrevem o que a
- * loja aceita e alimentam a conta das parcelas; a cobranca acontece por fora.
+ * loja aceita e alimentam a conta das parcelas; a cobrança acontece por fora.
  */
 export interface AdminPaymentSettings {
   acceptsPix: boolean;
-  /** Vazia e o estado em que a loja nasce — e o PIX nao pode ser oferecido. */
+  /** Vazia e o estado em que a loja nasce — e o PIX não pode ser oferecido. */
   pixKey: string;
   pixKeyType: PixKeyType;
-  /** Incide so sobre o subtotal de produtos, nunca sobre a entrega. */
+  /** Incide só sobre o subtotal de produtos, nunca sobre a entrega. */
   pixDiscountPercent: number;
   acceptsCard: boolean;
   maxInstallments: number;
-  /** Ate aqui, divisao simples. Acima, tabela price. */
+  /** Até aqui, divisão simples. Acima, tabela price. */
   interestFreeUpTo: number;
-  /** O unico percentual fracionario do projeto: 1,99 e o valor da maquininha. */
+  /** O único percentual fracionário do projeto: 1,99 e o valor da maquininha. */
   monthlyInterestPercent: number;
-  /** Opcao cuja parcela cai abaixo disto nao e oferecida. */
+  /** Opção cuja parcela cai abaixo disto não e oferecida. */
   minInstallmentCents: number;
   updatedAt: string;
 }
 
 /**
- * Edicao das regras. Campo omitido fica como esta.
+ * Edição das regras. Campo omitido fica como esta.
  *
  * `pixKey` e `pixKeyType` viajam juntos quando qualquer um dos dois muda: o
- * servidor confere o par, e trocar so o tipo deixaria gravada uma chave que o
- * cliente nao consegue usar.
+ * servidor confere o par, e trocar só o tipo deixaria gravada uma chave que o
+ * cliente não consegue usar.
  */
 export type UpdatePaymentSettingsInput = Partial<Omit<AdminPaymentSettings, 'updatedAt'>>;
 
 /** Os tetos que o servidor impoe as regras de pagamento. */
 export const PAYMENT_LIMITS = {
-  /** `MAX_INSTALLMENTS`: cartao nenhum aceita mais. */
+  /** `MAX_INSTALLMENTS`: cartão nenhum aceita mais. */
   installments: 24,
   /** `MAX_MONTHLY_INTEREST_PERCENT`. */
   monthlyInterestPercent: 20,
   /**
-   * `MAX_PIX_DISCOUNT_PERCENT`. Metade do pedido ja e absurdo, e o teto existe
-   * para o zero a mais nao virar promocao: 50 no lugar de 5 e erro de dedo.
+   * `MAX_PIX_DISCOUNT_PERCENT`. Metade do pedido já e absurdo, e o teto existe
+   * para o zero a mais não virar promoção: 50 no lugar de 5 e erro de dedo.
    */
   pixDiscountPercent: 50,
   /** `MAX_PIX_KEY_LENGTH`. */
@@ -536,19 +536,19 @@ export const PAYMENT_LIMITS = {
   minInstallmentCents: 99_999_999,
 } as const;
 
-/* ---- Configuracoes da loja ------------------------------------------------ */
+/* ---- Configurações da loja ------------------------------------------------ */
 
-/** O endereco da retirada na loja. */
+/** O endereço da retirada na loja. */
 export interface AdminPickupAddress {
   street: string;
   number: string;
   complement: string;
   district: string;
   city: string;
-  /** Sigla de duas letras, gravada em maiuscula. */
+  /** Sigla de duas letras, gravada em maiúscula. */
   state: string;
   zipCode: string;
-  /** Ponto de referencia. Em cidade pequena vale mais que o CEP. */
+  /** Ponto de referência. Em cidade pequena vale mais que o CEP. */
   reference: string;
 }
 
@@ -558,15 +558,15 @@ export interface AdminSocialLinks {
 }
 
 /**
- * Um banner do carrossel, como o painel o ve.
+ * Um banner do carrossel, como o painel o vê.
  *
- * As datas e o `isActive` sao dois desligamentos diferentes, e os dois
+ * As datas e o `isActive` são dois desligamentos diferentes, e os dois
  * existem: a janela agenda a estreia e a retirada, o interruptor tira do ar
- * agora sem perder as datas que ja foram escolhidas.
+ * agora sem perder as datas que já foram escolhidas.
  */
 export interface AdminBanner {
   id: string;
-  /** `publicId` do Cloudinary. Banner sem arte nao existe. */
+  /** `publicId` do Cloudinary. Banner sem arte não existe. */
   imageDesktop: string;
   /** Vazio faz a home cair na arte de desktop. */
   imageMobile: string;
@@ -577,12 +577,12 @@ export interface AdminBanner {
   order: number;
   /** ISO. `null` e "desde sempre". */
   startsAt: string | null;
-  /** ISO. `null` e "ate segunda ordem". O instante em que o banner **sai**. */
+  /** ISO. `null` e "até segunda ordem". O instante em que o banner **sai**. */
   endsAt: string | null;
   isActive: boolean;
 }
 
-/** Uma pagina institucional. O slug e fixo; some dele so titulo e conteudo. */
+/** Uma página institucional. O slug e fixo; some dele só título e conteúdo. */
 export interface AdminInstitutionalPage {
   slug: InstitutionalPageSlug;
   title: string;
@@ -591,10 +591,10 @@ export interface AdminInstitutionalPage {
   isActive: boolean;
 }
 
-/** As configuracoes como so o painel as ve: inclusive o que nao esta no ar. */
+/** As configurações como só o painel as vê: inclusive o que não esta no ar. */
 export interface AdminStoreSettings {
   storeName: string;
-  /** So digitos, com codigo do pais: `5588999999999`. */
+  /** Só digitos, com código do pais: `5588999999999`. */
   whatsappNumber: string;
   announcementText: string;
   contactEmail: string;
@@ -603,10 +603,10 @@ export interface AdminStoreSettings {
   pickupAddress: AdminPickupAddress;
   pickupInstructions: string;
   socialLinks: AdminSocialLinks;
-  /** Minimo para frete gratis em qualquer cidade. `null` desliga a regra. */
+  /** Mínimo para frete grátis em qualquer cidade. `null` desliga a regra. */
   freeShippingMinCents: number | null;
   banners: AdminBanner[];
-  /** As cinco, sempre, mesmo as que ninguem escreveu ainda. */
+  /** As cinco, sempre, mesmo as que ninguém escreveu ainda. */
   institutionalPages: AdminInstitutionalPage[];
   updatedAt: string;
 }
@@ -614,8 +614,8 @@ export interface AdminStoreSettings {
 /**
  * Um banner no corpo do `PATCH`.
  *
- * `id` presente identifica banner que ja existe; ausente, o servidor cria.
- * Manter o `id` e o que preserva a identidade da arte entre gravacoes — e e
+ * `id` presente identifica banner que já existe; ausente, o servidor cria.
+ * Manter o `id` e o que preserva a identidade da arte entre gravações — e e
  * por ele que o servidor sabe que a imagem ainda esta em uso.
  */
 export interface BannerInput {
@@ -632,7 +632,7 @@ export interface BannerInput {
   isActive?: boolean;
 }
 
-/** Uma pagina no corpo do `PATCH`. So o slug e obrigatorio. */
+/** Uma página no corpo do `PATCH`. Só o slug e obrigatório. */
 export interface InstitutionalPageInput {
   slug: InstitutionalPageSlug;
   title?: string;
@@ -641,16 +641,16 @@ export interface InstitutionalPageInput {
 }
 
 /**
- * Edicao das configuracoes. Campo omitido fica como esta.
+ * Edição das configurações. Campo omitido fica como esta.
  *
- * Tres comportamentos convivem neste corpo, e a diferenca e do servidor:
+ * Três comportamentos convivem neste corpo, e a diferença e do servidor:
  *
  * - campo simples substitui o gravado;
- * - `pickupAddress` e `socialLinks` fundem campo a campo — corrigir o numero
- *   da casa nao pode apagar o ponto de referencia;
- * - `banners` substitui o array inteiro, porque e uma lista ordenavel e o que
- *   sumiu dela foi removido de proposito;
- * - `institutionalPages` atualiza por `slug`, e a pagina que nao vier fica
+ * - `pickupAddress` e `socialLinks` fundem campo a campo — corrigir o número
+ *   da casa não pode apagar o ponto de referência;
+ * - `banners` substitui o array inteiro, porque e uma lista ordenável e o que
+ *   sumiu dela foi removido de propósito;
+ * - `institutionalPages` atualiza por `slug`, e a página que não vier fica
  *   como esta.
  */
 export interface UpdateStoreSettingsInput {
@@ -668,7 +668,7 @@ export interface UpdateStoreSettingsInput {
   institutionalPages?: InstitutionalPageInput[];
 }
 
-/** Os limites que o servidor impoe as configuracoes. */
+/** Os limites que o servidor impoe as configurações. */
 export const SETTINGS_LIMITS = {
   storeName: 80,
   announcementText: 200,
@@ -676,7 +676,7 @@ export const SETTINGS_LIMITS = {
   businessHours: 200,
   pickupInstructions: 500,
   socialLink: 200,
-  /** `MAX_BANNERS`: limite de tela — carrossel maior ninguem ve ate o fim. */
+  /** `MAX_BANNERS`: limite de tela — carrossel maior ninguém vê até o fim. */
   banners: 12,
   bannerTitle: 120,
   bannerSubtitle: 200,

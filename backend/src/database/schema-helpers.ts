@@ -8,10 +8,10 @@ import type {
 import { SchemaTypes } from 'mongoose';
 
 /**
- * Teto de qualquer campo monetario: R$ 999.999,99 em centavos.
+ * Teto de qualquer campo monetário: R$ 999.999,99 em centavos.
  *
- * Existe para transformar erro de digitacao em erro de validacao. Sem teto,
- * um zero a mais no painel vira um pedido de um milhao de reais e so aparece
+ * Existe para transformar erro de digitação em erro de validação. Sem teto,
+ * um zero a mais no painel vira um pedido de um milhão de reais e só aparece
  * na mensagem do WhatsApp.
  */
 export const MAX_CENTS = 99_999_999;
@@ -19,24 +19,24 @@ export const MAX_CENTS = 99_999_999;
 /**
  * Teto de tempo de qualquer consulta ao banco.
  *
- * A funcao serverless da Vercel tem tempo maximo de execucao, e uma consulta
- * pendurada nao volta com erro util: a funcao e cortada e quem chamou recebe
+ * A função serverless da Vercel tem tempo máximo de execução, e uma consulta
+ * pendurada não volta com erro útil: a função e cortada e quem chamou recebe
  * um 504 sem mensagem, sem log e sem pista do que travou. Com `maxTimeMS`, o
- * proprio servidor do Mongo aborta a operacao e devolve um erro nomeado, que
+ * próprio servidor do Mongo aborta a operação e devolve um erro nomeado, que
  * vira linha de log e resposta.
  *
- * Cinco segundos e folgado para tudo o que esta API faz — as consultas sao
- * indexadas e as colecoes sao pequenas — e ainda cabe com margem dentro do
- * teto da funcao. Consulta que passa disso esta errada, nao lenta.
+ * Cinco segundos e folgado para tudo o que esta API faz — as consultas são
+ * indexadas e as coleções são pequenas — e ainda cabe com margem dentro do
+ * teto da função. Consulta que passa disso esta errada, não lenta.
  */
 export const DB_MAX_TIME_MS = 5000;
 
 /**
- * Operacoes de consulta que recebem o teto de tempo.
+ * Operações de consulta que recebem o teto de tempo.
  *
- * Escrita de documento unico (`save`, `create`) fica de fora porque o
- * Mongoose nao expoe `maxTimeMS` nesse caminho — e o risco ali e outro: quem
- * pendura uma conexao e a varredura, nao o insert de um documento por `_id`.
+ * Escrita de documento único (`save`, `create`) fica de fora porque o
+ * Mongoose não expoe `maxTimeMS` nesse caminho — e o risco ali e outro: quem
+ * pendura uma conexão e a varredura, não o insert de um documento por `_id`.
  */
 const TIMED_QUERIES: MongooseQueryOrDocumentMiddleware[] = [
   'countDocuments',
@@ -58,15 +58,15 @@ const TIMED_QUERIES: MongooseQueryOrDocumentMiddleware[] = [
  * `SchemaFactory.createForClass` com o comportamento que todo schema do
  * projeto precisa.
  *
- * Sao dois acrescimos, os dois por query e nao por documento.
+ * São dois acrescimos, os dois por query e não por documento.
  *
- * `runValidators`: o Mongoose nao valida `findOneAndUpdate` por padrao, entao
+ * `runValidators`: o Mongoose não valida `findOneAndUpdate` por padrão, então
  * um `priceCents` decimal seria recusado no `save()` e aceito no `PATCH` do
  * painel — que e justamente o caminho que a dona usa todo dia.
  *
- * `maxTimeMS`: o teto de tempo (ver `DB_MAX_TIME_MS`). Fica aqui, e nao em
- * cada chamada, porque "toda consulta tem teto" so e verdade se ninguem
- * precisar lembrar — e todo schema do projeto nasce nesta funcao.
+ * `maxTimeMS`: o teto de tempo (ver `DB_MAX_TIME_MS`). Fica aqui, e não em
+ * cada chamada, porque "toda consulta tem teto" só e verdade se ninguém
+ * precisar lembrar — e todo schema do projeto nasce nesta função.
  */
 export function createSchema<T>(target: Type<T>): Schema<T> {
   const schema = SchemaFactory.createForClass(target);
@@ -83,7 +83,7 @@ export function createSchema<T>(target: Type<T>): Schema<T> {
     },
   );
 
-  // A agregacao nao e uma query e tem a sua propria forma de receber opcoes.
+  // A agregação não e uma query e tem a sua própria forma de receber opções.
   schema.pre('aggregate', function () {
     this.option({ maxTimeMS: DB_MAX_TIME_MS });
   });
@@ -92,26 +92,26 @@ export function createSchema<T>(target: Type<T>): Schema<T> {
 }
 
 interface TextPropOptions {
-  /** Tamanho maximo. Obrigatorio: campo de texto sem teto e campo sem contrato. */
+  /** Tamanho máximo. Obrigatório: campo de texto sem teto e campo sem contrato. */
   max: number;
   required?: boolean;
   default?: string;
   lowercase?: boolean;
   uppercase?: boolean;
-  /** Indice unico no proprio campo, para os casos em que o valor e a chave natural. */
+  /** Índice único no próprio campo, para os casos em que o valor e a chave natural. */
   unique?: boolean;
-  /** Ignora documentos sem o campo no indice unico. */
+  /** Ignora documentos sem o campo no índice único. */
   sparse?: boolean;
   match?: [RegExp, string];
-  /** Nao devolve o campo nas consultas, a menos que pedido explicitamente. */
+  /** Não devolve o campo nas consultas, a menos que pedido explicitamente. */
   select?: boolean;
 }
 
 /**
- * Campo de texto exibivel: sempre com `trim` e sempre com tamanho maximo.
+ * Campo de texto exibível: sempre com `trim` e sempre com tamanho máximo.
  *
- * O `trim` importa mais do que parece aqui: um espaco sobrando no fim do nome
- * do produto muda o slug gerado e quebra o link ja compartilhado.
+ * O `trim` importa mais do que parece aqui: um espaço sobrando no fim do nome
+ * do produto muda o slug gerado e quebra o link já compartilhado.
  */
 export function textProp(options: TextPropOptions): SchemaTypeOptions<string> {
   const { max, match, ...rest } = options;
@@ -133,7 +133,7 @@ interface EnumPropOptions<T extends string> {
 
 /**
  * Campo restrito a uma lista de valores. Recebe o array `readonly` dos objetos
- * const de `src/common/enums/` e o copia, porque o Mongoose guarda a referencia
+ * const de `src/common/enums/` e o copia, porque o Mongoose guarda a referência
  * e a mutaria se pudesse.
  */
 export function enumProp<T extends string>(
@@ -155,16 +155,16 @@ interface IntegerPropOptions {
   max?: number;
   required?: boolean;
   default?: number | null;
-  /** Mensagem propria, para o erro falar a lingua do dominio. */
+  /** Mensagem própria, para o erro falar a lingua do domínio. */
   message?: string;
 }
 
 /**
- * Campo numerico inteiro.
+ * Campo numérico inteiro.
  *
- * A validacao e uma so, em vez de `min`/`max` nativos mais um validador de
+ * A validação e uma só, em vez de `min`/`max` nativos mais um validador de
  * inteiro, porque o Mongoose roda validador em valor `null` e os campos
- * opcionais entrariam em erro so por estarem vazios.
+ * opcionais entrariam em erro só por estarem vazios.
  */
 export function integerProp(options: IntegerPropOptions = {}): SchemaTypeOptions<number> {
   const { min = 0, max = Number.MAX_SAFE_INTEGER, message, required, default: value } = options;
@@ -187,7 +187,7 @@ export function integerProp(options: IntegerPropOptions = {}): SchemaTypeOptions
 }
 
 /**
- * Valor monetario, sempre inteiro em centavos.
+ * Valor monetário, sempre inteiro em centavos.
  *
  * Nenhum campo de dinheiro no projeto e decimal: R$ 199,90 se escreve `19990`.
  * Ponto flutuante acumula erro no parcelamento, onde o total e dividido e
@@ -210,11 +210,11 @@ interface PercentPropOptions {
   default?: number;
   min?: number;
   max?: number;
-  /** Permite fracao. Usado so nos juros mensais, onde 1,99% e um valor legitimo. */
+  /** Permite fração. Usado só nos juros mensais, onde 1,99% e um valor legitimo. */
   fractional?: boolean;
 }
 
-/** Percentual de 0 a 100. Inteiro, salvo onde a fracao faz parte do negocio. */
+/** Percentual de 0 a 100. Inteiro, salvo onde a fração faz parte do negócio. */
 export function percentProp(options: PercentPropOptions = {}): SchemaTypeOptions<number> {
   const { min = 0, max = 100, fractional = false, ...rest } = options;
 
@@ -239,14 +239,14 @@ export function percentProp(options: PercentPropOptions = {}): SchemaTypeOptions
 }
 
 interface ObjectIdPropOptions {
-  /** Nome do model referenciado. Omitido de proposito nos snapshots do pedido. */
+  /** Nome do model referenciado. Omitido de propósito nos snapshots do pedido. */
   ref?: string;
   required?: boolean;
   index?: boolean;
   default?: null;
 }
 
-/** Referencia a outro documento. */
+/** Referência a outro documento. */
 export function objectIdProp(options: ObjectIdPropOptions = {}): SchemaTypeOptions<unknown> {
   return {
     type: SchemaTypes.ObjectId,

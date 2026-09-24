@@ -16,22 +16,22 @@ import iconStyles from './icon-button.module.css';
 import styles from './store-header.module.css';
 
 /**
- * O cabecalho da loja.
+ * O cabeçalho da loja.
  *
  * Fica fixo ao rolar e encolhe — a altura cai, o logo passa de empilhado
  * para em linha e a fila do menu se recolhe. Quem decide isso e o
- * `useScrolled`, que devolve um booleano em vez da posicao do scroll: o
- * componente so renderiza nas duas travessias do limiar, e nao a cada pixel.
+ * `useScrolled`, que devolve um booleano em vez da posição do scroll: o
+ * componente só renderiza nas duas travessias do limiar, e não a cada pixel.
  *
- * Tres coisas abrem daqui — o painel de categorias, a busca e a gaveta do
- * celular — e as tres sao estado deste componente. O painel mora aqui, e nao
+ * Três coisas abrem daqui — o painel de categorias, a busca e a gaveta do
+ * celular — e as três são estado deste componente. O painel mora aqui, e não
  * dentro do `MainNav`, porque precisa da largura da tela inteira: como filho
  * do `<header>`, que e o elemento posicionado, ele se estica de ponta a
  * ponta; dentro do container de 1280px, ficaria preso a ele.
  *
- * Vive em `components/store`, e nao no layout, porque a area da conta do
- * cliente usa o mesmo cabecalho: para quem esta comprando, "meus pedidos" e
- * uma pagina da loja, nao outro site.
+ * Vive em `components/store`, e não no layout, porque a área da conta do
+ * cliente usa o mesmo cabeçalho: para quem esta comprando, "meus pedidos" e
+ * uma página da loja, não outro site.
  */
 export function StoreHeader() {
   const scrolled = useScrolled();
@@ -45,13 +45,13 @@ export function StoreHeader() {
   const headerRef = useRef<HTMLElement>(null);
 
   // Navegou: o painel fecha. Sem isto, clicar numa categoria trocaria a
-  // pagina por tras de um painel que continua aberto por cima dela — e o
-  // botao "voltar" do navegador faria o mesmo.
+  // página por trás de um painel que continua aberto por cima dela — e o
+  // botão "voltar" do navegador faria o mesmo.
   //
   // O ajuste acontece durante o render, comparando com o caminho anterior, e
-  // nao num efeito. E o padrao que o React documenta para estado que precisa
-  // acompanhar uma mudanca de valor: o efeito so renderizaria de novo depois
-  // de o painel ja ter aparecido por um quadro sobre a pagina nova.
+  // não num efeito. E o padrão que o React documenta para estado que precisa
+  // acompanhar uma mudanca de valor: o efeito só renderizaria de novo depois
+  // de o painel já ter aparecido por um quadro sobre a página nova.
   const [lastPath, setLastPath] = useState(location.pathname);
 
   if (lastPath !== location.pathname) {
@@ -59,8 +59,8 @@ export function StoreHeader() {
     setCategoriesOpen(false);
   }
 
-  // O painel nao e um dialogo e nao prende o foco, entao o Escape e o clique
-  // fora precisam ser tratados aqui. Os dois so escutam enquanto ele esta
+  // O painel não e um diálogo e não prende o foco, então o Escape e o clique
+  // fora precisam ser tratados aqui. Os dois só escutam enquanto ele esta
   // aberto — um listener permanente no documento para um painel que passa a
   // maior parte do tempo fechado e desperdicio.
   useEffect(() => {
@@ -106,15 +106,15 @@ export function StoreHeader() {
             </button>
 
             {/*
-              A busca aberta, em forma de campo, e nao escondida atras de uma
+              A busca aberta, em forma de campo, e não escondida atrás de uma
               lupa. Num catalogo de perfume o nome e a porta de entrada — o
-              cliente chega sabendo o que quer — e um campo visivel convida a
-              digitar de um jeito que um icone de 20px nao convida.
+              cliente chega sabendo o que quer — e um campo visível convida a
+              digitar de um jeito que um icone de 20px não convida.
 
-              E um botao, e nao um `<input>`: quem digita precisa das sugestoes,
-              do historico e do Escape, e tudo isso ja existe pronto na
-              sobreposicao de busca. Um segundo campo aqui seria uma segunda
-              implementacao da mesma coisa, com metade dos recursos.
+              E um botão, e não um `<input>`: quem digita precisa das sugestões,
+              do histórico e do Escape, e tudo isso já existe pronto na
+              sobreposição de busca. Um segundo campo aqui seria uma segunda
+              implementação da mesma coisa, com metade dos recursos.
             */}
             <button
               type="button"
@@ -153,11 +153,11 @@ export function StoreHeader() {
             <CartButton />
 
             {/*
-              Depois da sacola, e nao antes.
+              Depois da sacola, e não antes.
 
               A sacola e o fim da fileira por ser o destino da compra — e o
-              alvo que a mao procura sem olhar, no canto. O tema entra a
-              direita dela como o que e: uma preferencia, no lugar de menor
+              alvo que a mão procura sem olhar, no canto. O tema entra a
+              direita dela como o que e: uma preferência, no lugar de menor
               transito da barra.
             */}
             <ThemeIconButton />
@@ -165,11 +165,11 @@ export function StoreHeader() {
         </Container>
 
         {/*
-          O menu numa faixa propria, abaixo da banda da marca.
+          O menu numa faixa própria, abaixo da banda da marca.
 
-          Ele fica: antes encolhia ate sumir quando a pagina rolava, e a
-          navegacao desaparecia justamente na hora em que o cliente comeca a
-          procurar outra coisa. O que encolhe ao rolar e so a banda de cima.
+          Ele fica: antes encolhia até sumir quando a página rolava, e a
+          navegação desaparecia justamente na hora em que o cliente começa a
+          procurar outra coisa. O que encolhe ao rolar e só a banda de cima.
         */}
         <div className={styles.navRow}>
           <Container className={styles.navInner}>

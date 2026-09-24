@@ -1,9 +1,9 @@
 /*
- * O botao flutuante do WhatsApp.
+ * O botão flutuante do WhatsApp.
  *
- * Circulo de 56px no canto inferior direito, acima do rodape. Fica em todas
- * as paginas da loja porque e o unico canal de atendimento que ela tem: o
- * pedido termina la, a duvida sobre o perfume termina la, e a troca tambem.
+ * Círculo de 56px no canto inferior direito, acima do rodapé. Fica em todas
+ * as páginas da loja porque e o único canal de atendimento que ela tem: o
+ * pedido termina lá, a dúvida sobre o perfume termina lá, e a troca também.
  */
 
 .button {
@@ -44,9 +44,9 @@
 }
 
 /*
- * O rodape entrou na tela: o botao sobe para nao cobrir os links dele.
+ * O rodapé entrou na tela: o botão sobe para não cobrir os links dele.
  *
- * Sobe, e nao some: quem rolou ate o fim da pagina e justamente quem esta
+ * Sobe, e não some: quem rolou até o fim da página e justamente quem esta
  * decidindo perguntar alguma coisa.
  */
 .raised {

@@ -1,16 +1,16 @@
 /*
- * O cabecalho da loja: duas bandas.
+ * O cabeçalho da loja: duas bandas.
  *
  * Em cima, sobre a areia da marca: busca a esquerda, assinatura no centro,
- * conta e sacola a direita. Embaixo, sobre o branco: o menu do catalogo.
+ * conta e sacola a direita. Embaixo, sobre o branco: o menu do catálogo.
  *
- * A separacao existe porque as duas linhas respondem a perguntas diferentes.
- * A de cima e "onde estou e o que ja escolhi"; a de baixo e "o que voce tem".
- * Misturadas numa faixa so, a assinatura disputa espaco com sete categorias e
- * perde — e o menu fica espremido entre o logotipo e os icones.
+ * A separação existe porque as duas linhas respondem a perguntas diferentes.
+ * A de cima e "onde estou e o que já escolhi"; a de baixo e "o que você tem".
+ * Misturadas numa faixa só, a assinatura disputa espaço com sete categorias e
+ * perde — e o menu fica espremido entre o logotipo e os ícones.
  *
  * Ao rolar, a banda de cima encolhe. O menu fica: antes ele sumia junto, e o
- * cliente perdia a navegacao no momento exato em que comeca a procurar.
+ * cliente perdia a navegação no momento exato em que começa a procurar.
  */
 
 .header {
@@ -18,9 +18,9 @@
   top: 0;
   z-index: var(--z-header);
 
-  /* A areia e o fundo da banda de cima; a de baixo pinta o proprio branco.
-     Sao as duas unicas faixas da loja que nao sao creme, e e o contraste
-     entre elas que marca a divisao sem precisar de uma linha. */
+  /* A areia e o fundo da banda de cima; a de baixo pinta o próprio branco.
+     São as duas únicas faixas da loja que não são creme, e e o contraste
+     entre elas que marca a divisão sem precisar de uma linha. */
   background-color: var(--sand);
   border-bottom: var(--border);
   transition: box-shadow var(--transition);
@@ -35,24 +35,24 @@
 .bar {
   display: grid;
 
-  /* Tres colunas com as laterais de mesma largura: e o que mantem a
-     assinatura no centro otico da tela, e nao no centro do que sobrou entre
+  /* Três colunas com as laterais de mesma largura: e o que mantem a
+     assinatura no centro otico da tela, e não no centro do que sobrou entre
      os dois lados. */
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-8);
 
   /*
-   * A altura troca de um valor para o outro, sem transicao.
+   * A altura troca de um valor para o outro, sem transição.
    *
-   * O cabecalho e `sticky`, ou seja, esta no fluxo: animar a altura dele
-   * remede a pagina inteira a cada quadro da animacao — onze reflows para
+   * O cabeçalho e `sticky`, ou seja, esta no fluxo: animar a altura dele
+   * remede a página inteira a cada quadro da animação — onze reflows para
    * economizar 24px. Num celular modesto isso e exatamente o tipo de coisa
    * que faz a rolagem engasgar.
    *
-   * O que fica animado e a sombra, que e composta pela GPU e nao toca no
-   * layout. Ela e suficiente: o olho le "o cabecalho descolou da pagina", que
-   * e a informacao que a compactacao quer dar.
+   * O que fica animado e a sombra, que e composta pela GPU e não toca no
+   * layout. Ela e suficiente: o olho lê "o cabeçalho descolou da página", que
+   * e a informação que a compactação quer dar.
    */
   height: var(--header-height);
 }
@@ -80,9 +80,9 @@
 /*
  * A assinatura empilhada, como no repouso da marca.
  *
- * Ao rolar, ela deita e encolhe junto com a banda. Os tres numeros vem do
- * proprio `BrandLogo`, que os expoe como variaveis justamente para o
- * cabecalho poder reger o tamanho sem reimplementar o desenho.
+ * Ao rolar, ela deita e encolhe junto com a banda. Os três números vem do
+ * próprio `BrandLogo`, que os expoe como variáveis justamente para o
+ * cabeçalho poder reger o tamanho sem reimplementar o desenho.
  */
 .logo {
   min-width: 0;
@@ -101,7 +101,7 @@
 /* ---- A busca em forma de campo ---------------------------------------- */
 
 /*
- * So no desktop. No celular quem abre a busca e a lupa do canto direito: um
+ * Só no desktop. No celular quem abre a busca e a lupa do canto direito: um
  * campo de 200px ali dentro deixaria a assinatura sem lugar.
  */
 .searchField {
@@ -144,7 +144,7 @@
   white-space: nowrap;
 }
 
-/* A lupa do canto direito e a contraparte: existe onde o campo nao cabe. */
+/* A lupa do canto direito e a contraparte: existe onde o campo não cabe. */
 @media (min-width: 64rem) {
   .searchButton {
     display: none;
@@ -163,8 +163,8 @@
   }
 }
 
-/* O atalho da conta sai no celular: o menu lateral ja o traz, e tres icones
-   lado a lado numa barra de 390px nao deixam espaco para a assinatura. */
+/* O atalho da conta sai no celular: o menu lateral já o traz, e três ícones
+   lado a lado numa barra de 390px não deixam espaço para a assinatura. */
 .accountLink {
   display: none;
 }

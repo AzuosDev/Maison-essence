@@ -4,19 +4,19 @@ import type { ImageUrls } from './cloudinary.url.js';
 /**
  * O que o painel precisa para enviar o arquivo direto ao Cloudinary.
  *
- * `params` vai literal de proposito: sao exatamente os campos que foram
- * assinados, e o navegador deve repeti-los sem alterar nada, acrescentando so
+ * `params` vai literal de propósito: são exatamente os campos que foram
+ * assinados, e o navegador deve repeti-los sem alterar nada, acrescentando só
  * `file` e `api_key`. Deixar o frontend remontar essa lista e convidar o
- * "Invalid Signature" que nao diz qual campo divergiu.
+ * "Invalid Signature" que não diz qual campo divergiu.
  */
 export interface UploadSignature {
   cloudName: string;
   apiKey: string;
   timestamp: number;
   signature: string;
-  /** Caminho completo da pasta de destino, so para exibicao. */
+  /** Caminho completo da pasta de destino, só para exibição. */
   folder: string;
-  /** O identificador que a foto tera. Ja vai assinado: o navegador nao escolhe. */
+  /** O identificador que a foto terá. Já vai assinado: o navegador não escolhe. */
   publicId: string;
   uploadUrl: string;
   params: Record<string, string | number>;
@@ -26,7 +26,7 @@ export interface UploadSignature {
   allowedFormats: readonly string[];
 }
 
-/** Uma imagem ja guardada e conferida, pronta para ser vinculada. */
+/** Uma imagem já guardada e conferida, pronta para ser vinculada. */
 export interface UploadedImage {
   publicId: string;
   folder: UploadFolder;
@@ -37,7 +37,7 @@ export interface UploadedImage {
   urls: ImageUrls;
 }
 
-/** Onde uma imagem esta em uso, quando a remocao e recusada. */
+/** Onde uma imagem esta em uso, quando a remoção e recusada. */
 export interface ImageReferences {
   products: number;
   categories: number;

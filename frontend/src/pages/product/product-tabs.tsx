@@ -12,39 +12,39 @@ import { Markdown } from '@/lib/markdown';
 import styles from './product-tabs.module.css';
 
 /**
- * O que o cliente le depois de decidir olhar de perto.
+ * O que o cliente lê depois de decidir olhar de perto.
  *
- * Tres abas: o texto do produto, o modo de uso e a politica de trocas. A
- * primeira e do produto; as outras duas sao paginas institucionais, lidas
- * pelo endereco — e essa escolha e o ponto deste arquivo.
+ * Três abas: o texto do produto, o modo de uso e a política de trocas. A
+ * primeira e do produto; as outras duas são páginas institucionais, lidas
+ * pelo endereço — e essa escolha e o ponto deste arquivo.
  *
- * ## Por que as duas ultimas nao sao texto escrito aqui
+ * ## Por que as duas últimas não são texto escrito aqui
  *
- * Politica de trocas e prazo de devolucao mudam, e mudam por motivo legal.
- * Escritas no frontend, cada ajuste de uma virgula viraria uma publicacao —
- * e, pior, a pagina `/institucional/trocas-e-devolucoes` passaria a dizer
- * uma coisa enquanto a aba do produto diz outra. Vindo da mesma rota, ha uma
- * versao so do texto e quem a edita e a dona, no painel.
+ * Política de trocas e prazo de devolução mudam, e mudam por motivo legal.
+ * Escritas no frontend, cada ajuste de uma vírgula viraria uma publicação —
+ * e, pior, a página `/institucional/trocas-e-devolucoes` passaria a dizer
+ * uma coisa enquanto a aba do produto diz outra. Vindo da mesma rota, há uma
+ * versão só do texto e quem a edita e a dona, no painel.
  *
- * ## A aba so existe quando a pagina existe
+ * ## A aba só existe quando a página existe
  *
- * `useInstitutionalPage` confere a listagem que a moldura da loja ja
- * carregou antes de pedir qualquer coisa: pagina nao publicada nao vira
- * requisicao nem 404, vira aba ausente. O rotulo sai do titulo que a dona
- * escreveu, e nao de uma constante daqui — se ela renomear "Trocas e
- * devolucoes" para "Trocas, devolucoes e garantia", a aba acompanha.
+ * `useInstitutionalPage` confere a listagem que a moldura da loja já
+ * carregou antes de pedir qualquer coisa: página não publicada não vira
+ * requisição nem 404, vira aba ausente. O rótulo sai do título que a dona
+ * escreveu, e não de uma constante daqui — se ela renomear "Trocas e
+ * devoluções" para "Trocas, devoluções e garantia", a aba acompanha.
  *
  * ## O modo de uso
  *
- * O backend tem hoje cinco enderecos institucionais fixos, e `modo-de-uso`
- * nao esta entre eles. A aba pergunta por ele mesmo assim e cai em
- * `como-comprar` enquanto ele nao existir: e a pagina que responde a duvida
+ * O backend tem hoje cinco endereços institucionais fixos, e `modo-de-uso`
+ * não esta entre eles. A aba pergunta por ele mesmo assim e cai em
+ * `como-comprar` enquanto ele não existir: e a página que responde a dúvida
  * do mesmo momento — o cliente decidiu e quer saber como isso vira pedido.
  * No dia em que `modo-de-uso` for publicado, a aba passa a mostra-lo sem
  * nenhuma linha nova aqui.
  */
 
-/** O endereco que a aba prefere, quando a loja o publicar. */
+/** O endereço que a aba prefere, quando a loja o publicar. */
 const USAGE_SLUG = 'modo-de-uso';
 
 interface TabDefinition {
@@ -56,8 +56,8 @@ interface TabDefinition {
 export function ProductTabs({ product }: { product: PublicProductDetail }) {
   const { pages } = useStoreSettings();
 
-  // Tres consultas em ordem fixa: hook nao pode nascer dentro de condicao, e
-  // as que apontam para pagina nao publicada ja vem desligadas de dentro.
+  // Três consultas em ordem fixa: hook não pode nascer dentro de condição, e
+  // as que apontam para página não publicada já vem desligadas de dentro.
   const usage = useInstitutionalPage(USAGE_SLUG);
   const howToBuy = useInstitutionalPage(INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY);
   const returns = useInstitutionalPage(INSTITUTIONAL_PAGE_SLUGS.RETURNS);
@@ -86,8 +86,8 @@ export function ProductTabs({ product }: { product: PublicProductDetail }) {
 
   // A aba escolhida vale enquanto ela existir. As institucionais chegam
   // depois do produto, e a lista pode crescer debaixo da escolha; sem esta
-  // conferencia, um `defaultValue` fixado na montagem deixaria a tela sem
-  // painel nenhum quando a primeira aba ainda nao existia.
+  // conferência, um `defaultValue` fixado na montagem deixaria a tela sem
+  // painel nenhum quando a primeira aba ainda não existia.
   const active = tabs.some((tab) => tab.value === chosen) ? chosen : (tabs[0]?.value ?? '');
 
   return (
@@ -112,12 +112,12 @@ export function ProductTabs({ product }: { product: PublicProductDetail }) {
 }
 
 /**
- * A aba de uma pagina institucional, quando ha pagina.
+ * A aba de uma página institucional, quando há página.
  *
- * O rotulo sai do resumo que a moldura ja tem em maos, e nao da resposta da
- * pagina: assim a aba aparece com o nome certo no primeiro quadro, e so o
- * miolo dela espera a rede. O contrario faria a fila de abas crescer na cara
- * do cliente depois que ele ja tinha comecado a ler.
+ * O rótulo sai do resumo que a moldura já tem em mãos, e não da resposta da
+ * página: assim a aba aparece com o nome certo no primeiro quadro, e só o
+ * miolo dela espera a rede. O contrário faria a fila de abas crescer na cara
+ * do cliente depois que ele já tinha comecado a ler.
  */
 function pushPageTab(
   tabs: TabDefinition[],
@@ -147,7 +147,7 @@ function pushPageTab(
   });
 }
 
-/** O titulo que a dona deu a pagina, ou `null` quando ela nao esta na lista. */
+/** O título que a dona deu a página, ou `null` quando ela não esta na lista. */
 function titleOf(pages: readonly PublicPageSummary[], slug: string): string | null {
   return pages.find((page) => page.slug === slug)?.title ?? null;
 }

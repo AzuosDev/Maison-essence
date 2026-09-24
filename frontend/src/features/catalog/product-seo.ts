@@ -6,36 +6,36 @@ import type { PublicProductDetail, PublicVariant } from './catalog.types';
 /**
  * O que o WhatsApp, o Google e o Instagram leem de um produto.
  *
- * Funcao pura, e de proposito: e ela que o hook `usePageMeta` chama no
+ * Função pura, e de propósito: e ela que o hook `usePageMeta` chama no
  * navegador e e ela que o prerender do build vai chamar para escrever as
- * mesmas tags no HTML. Uma previa montada no componente nao poderia ser
- * reaproveitada pelo prerender, e ai haveria duas versoes da mesma previa —
- * a que o cliente ve depois do JavaScript e a que o rastreador leu antes.
+ * mesmas tags no HTML. Uma prévia montada no componente não poderia ser
+ * reaproveitada pelo prerender, e aí haveria duas versões da mesma prévia —
+ * a que o cliente vê depois do JavaScript e a que o rastreador leu antes.
  *
- * ## A previa do WhatsApp
+ * ## A prévia do WhatsApp
  *
  * E o canal principal desta loja: o link do produto vai para a conversa, e o
- * que chega do outro lado e foto, titulo e descricao. Por isso a descricao
- * daqui **comeca pelo preco** quando o produto nao tem texto proprio: um
- * cartao que diz "Asad Lattafa — R$ 189,90, pronta entrega" vende; um que
- * repete o nome do produto duas vezes, nao.
+ * que chega do outro lado e foto, título e descrição. Por isso a descrição
+ * daqui **começa pelo preço** quando o produto não tem texto próprio: um
+ * cartão que diz "Asad Lattafa — R$ 189,90, pronta entrega" vende; um que
+ * repete o nome do produto duas vezes, não.
  */
 
-/** Quanto o cartao de previa mostra antes de cortar. */
+/** Quanto o cartão de prévia mostra antes de cortar. */
 const DESCRIPTION_LIMIT = 160;
 
 export interface ProductMetaInput {
   product: PublicProductDetail;
-  /** A variante escolhida, quando ha uma. Decide a foto e o preco do cartao. */
+  /** A variante escolhida, quando há uma. Decide a foto e o preço do cartão. */
   variant: PublicVariant | null;
-  /** O endereco canonico do produto, absoluto e sem parametros. */
+  /** O endereço canônico do produto, absoluto e sem parâmetros. */
   url: string;
 }
 
 export function productMeta({ product, variant, url }: ProductMetaInput): PageMeta {
   const description = metaDescriptionOf(product, variant);
 
-  // A foto da previa e a da variante escolhida, quando ela tem uma: o link
+  // A foto da prévia e a da variante escolhida, quando ela tem uma: o link
   // do 100ml compartilhado no WhatsApp mostra o frasco de 100ml.
   const chosenImage = variant !== null && variant.image !== '' ? variant.image : product.coverImage;
   const image = absoluteImageOf(chosenImage);
@@ -51,10 +51,10 @@ export function productMeta({ product, variant, url }: ProductMetaInput): PageMe
 }
 
 /**
- * A descricao da previa: o texto do produto, ou o preco quando nao ha texto.
+ * A descrição da prévia: o texto do produto, ou o preço quando não há texto.
  *
  * O texto do painel vem com quebras de linha e pode ter cinco mil
- * caracteres; o cartao mostra uma linha e meia. Cortar na palavra — e nao no
+ * caracteres; o cartão mostra uma linha e meia. Cortar na palavra — e não no
  * caractere — e o que evita o "Perfume amadeirado com notas de sanda…"
  * terminando no meio de "sandalo".
  */
@@ -83,14 +83,14 @@ export function metaDescriptionOf(
 /**
  * Os dados estruturados do produto.
  *
- * Uma oferta por variante, cada uma com preco, disponibilidade e o endereco
+ * Uma oferta por variante, cada uma com preço, disponibilidade e o endereço
  * que abre justamente ela — e o que permite ao Google mostrar "a partir de
  * R$ 180" e levar o clique para o tamanho certo. A marca vai como `Brand`, e
- * some quando o produto nao tem uma: `{"name": ""}` e pior que a ausencia,
+ * some quando o produto não tem uma: `{"name": ""}` e pior que a ausência,
  * porque e um campo preenchido com nada.
  *
- * Os precos vao com ponto decimal e sem simbolo — `189.90` —, que e o que a
- * especificacao pede. O `R$ 189,90` da tela e outra coisa, e serve a outro
+ * Os preços vão com ponto decimal e sem símbolo — `189.90` —, que e o que a
+ * especificação pede. O `R$ 189,90` da tela e outra coisa, e serve a outro
  * leitor.
  */
 export function productJsonLd(product: PublicProductDetail, url: string): Record<string, unknown> {
@@ -120,12 +120,12 @@ export function productJsonLd(product: PublicProductDetail, url: string): Record
 }
 
 /**
- * A URL absoluta da foto, ou `null` quando nao ha foto.
+ * A URL absoluta da foto, ou `null` quando não há foto.
  *
  * `imageUrl` devolve o marcador local (`/placeholder-product.svg`) quando o
- * `publicId` esta vazio ou o Cloudinary nao esta configurado — e um caminho
- * relativo nao serve para rastreador nenhum. Um endereco que nao comeca com
- * `http` e tratado como ausencia de imagem: sem foto, o cartao do WhatsApp
+ * `publicId` esta vazio ou o Cloudinary não esta configurado — e um caminho
+ * relativo não serve para rastreador nenhum. Um endereço que não começa com
+ * `http` e tratado como ausência de imagem: sem foto, o cartão do WhatsApp
  * fica pequeno, que e melhor do que ficar quebrado.
  */
 function absoluteImageOf(publicId: string): string | null {
@@ -134,17 +134,17 @@ function absoluteImageOf(publicId: string): string | null {
   return src.startsWith('http') ? src : null;
 }
 
-/** `18990` vira `189.90`: o formato da especificacao, sem simbolo nem virgula. */
+/** `18990` vira `189.90`: o formato da especificação, sem símbolo nem vírgula. */
 function decimalOf(cents: number): string {
   return (cents / 100).toFixed(2);
 }
 
-/** Quebras de linha e espacos repetidos viram um espaco so. */
+/** Quebras de linha e espaços repetidos viram um espaço só. */
 function collapse(text: string): string {
   return text.replace(/\s+/g, ' ').trim();
 }
 
-/** Corta na ultima palavra inteira que couber. */
+/** Corta na última palavra inteira que couber. */
 function truncate(text: string, limit: number): string {
   if (text.length <= limit) {
     return text;

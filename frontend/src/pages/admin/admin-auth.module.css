@@ -1,15 +1,15 @@
 /*
  * As duas telas de acesso ao painel: entrar e trocar a senha.
  *
- * Uma folha para as duas porque sao a mesma tela com outro formulario —
- * mesma caixa, mesmo logotipo, mesmo lugar na pagina. Duas folhas iguais
+ * Uma folha para as duas porque são a mesma tela com outro formulário —
+ * mesma caixa, mesmo logotipo, mesmo lugar na página. Duas folhas iguais
  * seriam duas chances de uma delas ficar dois pixels diferente.
  *
  * ## O fundo escuro
  *
- * Nao e capricho: e o sinal de que aqui nao e a loja. Quem chegou por engano
- * entende antes de ler, e a dona reconhece a porta de servico da propria
- * casa. A caixa clara no meio e a mesma superficie de todo formulario do
+ * Não e capricho: e o sinal de que aqui não e a loja. Quem chegou por engano
+ * entende antes de ler, e a dona reconhece a porta de serviço da própria
+ * casa. A caixa clara no meio e a mesma superficie de todo formulário do
  * projeto.
  */
 
@@ -89,10 +89,10 @@
 }
 
 /*
- * A recusa, acima do formulario e nao dentro de um campo.
+ * A recusa, acima do formulário e não dentro de um campo.
  *
- * "E-mail ou senha nao conferem" nao pertence a nenhum dos dois campos — e
- * essa e justamente a informacao que a mensagem nao pode dar.
+ * "E-mail ou senha não conferem" não pertence a nenhum dos dois campos — e
+ * essa e justamente a informação que a mensagem não pode dar.
  */
 .error {
   margin: 0;
@@ -106,7 +106,7 @@
   color: var(--danger);
 }
 
-/* Sair, na tela de troca de senha: uma saida, nao uma acao. */
+/* Sair, na tela de troca de senha: uma saída, não uma ação. */
 .link {
   justify-self: center;
 

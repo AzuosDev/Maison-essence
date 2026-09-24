@@ -4,17 +4,17 @@ import { PIX_KEY_TYPES } from '../common/enums/payment-method.js';
 import type { PixKeyType } from '../common/enums/payment-method.js';
 
 /**
- * Conteudo do `npm run seed:demo`: uma loja pequena e inteira, para o frontend
+ * Conteúdo do `npm run seed:demo`: uma loja pequena e inteira, para o frontend
  * ter o que desenhar antes de existir cadastro de verdade.
  *
- * So dados, sem Mongoose: quem grava e o `DemoSeedService`. Cada registro tem
+ * Só dados, sem Mongoose: quem grava e o `DemoSeedService`. Cada registro tem
  * a sua chave natural (o slug, o par cidade+estado), porque e por ela que o
- * seed decide entre criar e atualizar — rodar duas vezes nao pode dobrar o
- * catalogo.
+ * seed decide entre criar e atualizar — rodar duas vezes não pode dobrar o
+ * catálogo.
  *
- * Nenhum registro traz imagem. O schema guarda `publicId` do Cloudinary, nao
- * URL, e publicId inventado nao resolve em conta nenhuma: renderizaria imagem
- * quebrada no lugar do placeholder que o frontend ja sabe mostrar.
+ * Nenhum registro traz imagem. O schema guarda `publicId` do Cloudinary, não
+ * URL, e publicId inventado não resolve em conta nenhuma: renderizaria imagem
+ * quebrada no lugar do placeholder que o frontend já sabe mostrar.
  */
 
 export interface DemoCategory {
@@ -134,7 +134,7 @@ export const DEMO_PRODUCTS: readonly DemoProduct[] = [
   {
     name: 'La Vie Est Belle',
     slug: 'la-vie-est-belle',
-    description: 'Iris, patchouli e praline. Classico francês, original lacrado e com caixa.',
+    description: 'Iris, patchouli e praline. Clássico francês, original lacrado e com caixa.',
     brand: 'Lancome',
     categorySlugs: ['perfumes-importados'],
     isFeatured: true,
@@ -177,7 +177,7 @@ export const DEMO_PRODUCTS: readonly DemoProduct[] = [
     ],
   },
   {
-    name: 'Vela Aromatica Lavanda',
+    name: 'Vela Aromática Lavanda',
     slug: 'vela-aromatica-lavanda',
     description:
       'Cera vegetal e pavio de algodão, feita a mão. Cerca de 40 horas de queima no pote grande.',
@@ -211,7 +211,7 @@ export const DEMO_CITIES: readonly DemoCity[] = [
     state: 'CE',
     feeCents: 1000,
     estimatedDays: 1,
-    // Regra propria, mais generosa que a global: e a entrega na cidade da loja.
+    // Regra própria, mais generosa que a global: e a entrega na cidade da loja.
     minOrderForFreeCents: 15_000,
     order: 1,
   },
@@ -220,7 +220,7 @@ export const DEMO_CITIES: readonly DemoCity[] = [
     state: 'CE',
     feeCents: 2500,
     estimatedDays: 3,
-    // Sem regra propria: cai na regra global de `StoreSettings`.
+    // Sem regra própria: cai na regra global de `StoreSettings`.
     minOrderForFreeCents: null,
     order: 2,
   },
@@ -262,7 +262,7 @@ export const DEMO_INSTITUTIONAL_PAGES: readonly DemoInstitutionalPage[] = [
 
 export const DEMO_STORE_SETTINGS = {
   storeName: 'Maison Essence',
-  // Numero de exemplo: troque no painel antes de mostrar a loja para alguem.
+  // Número de exemplo: troque no painel antes de mostrar a loja para alguém.
   whatsappNumber: '5588999999999',
   announcementText: 'Frete grátis acima de R$ 250 para todo o Ceará',
   contactEmail: 'contato@maisonessence.com.br',

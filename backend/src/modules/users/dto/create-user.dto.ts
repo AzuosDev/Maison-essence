@@ -21,8 +21,8 @@ export class CreateUserDto {
   role: UserRole;
 
   /**
-   * Senha temporaria, definida por quem cria. O registro nasce com
-   * `mustChangePassword`, entao ela so serve para o primeiro login.
+   * Senha temporária, definida por quem cria. O registro nasce com
+   * `mustChangePassword`, então ela só serve para o primeiro login.
    */
   @IsString()
   @MinLength(PASSWORD_MIN_LENGTH)

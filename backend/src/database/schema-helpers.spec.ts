@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import { centsProp, enumProp, integerProp, percentProp, textProp } from './schema-helpers.js';
 
 /**
- * Declarado para o generic do `Schema` ser explicito: a inferencia a partir de
+ * Declarado para o generic do `Schema` ser explicito: a inferência a partir de
  * sete campos de `SchemaTypeOptions` estoura o limite de profundidade do
  * TypeScript (TS2589).
  */
@@ -72,7 +72,7 @@ describe('centsProp', () => {
   });
 
   it('rejeita texto que não e número', async () => {
-    // O cast falha antes da validacao: o erro e de tipo, nao de regra.
+    // O cast falha antes da validação: o erro e de tipo, não de regra.
     expect((await errorsOf({ priceCents: 'gratis' })).priceCents).toBeDefined();
   });
 });

@@ -1,9 +1,9 @@
 /*
  * O resumo do pedido.
  *
- * Fundo branco sobre o creme da pagina, e nao uma caixa com borda pesada: o
+ * Fundo branco sobre o creme da página, e não uma caixa com borda pesada: o
  * que separa este bloco da lista a esquerda e a mudanca de superficie, que
- * ja basta. No desktop ele gruda ao rolar — a lista pode ter doze itens, e o
+ * já basta. No desktop ele gruda ao rolar — a lista pode ter doze itens, e o
  * total nunca deve sair da tela.
  */
 
@@ -38,11 +38,11 @@
 }
 
 /*
- * Durante o recalculo, os numeros antigos esmaecem em vez de sumir.
+ * Durante o recálculo, os números antigos esmaecem em vez de sumir.
  *
- * E a diferenca entre "estamos conferindo" e "perdemos a conta". O resumo e
+ * E a diferença entre "estamos conferindo" e "perdemos a conta". O resumo e
  * refeito a cada mudanca de quantidade, e uma coluna que pisca vazia a cada
- * clique faz a tela parecer instavel justamente quando o cliente esta
+ * clique faz a tela parecer instável justamente quando o cliente esta
  * somando de cabeca.
  */
 .recalculating {
@@ -68,7 +68,7 @@
   color: var(--gold-deep);
 }
 
-/* "a calcular" e o valor desta linha, e nao uma nota de rodape. */
+/* "a calcular" e o valor desta linha, e não uma nota de rodapé. */
 .pending {
   font-style: normal;
   color: var(--ink-soft);
@@ -105,7 +105,7 @@
   color: var(--danger);
 }
 
-/* ---- Quando a cotacao falha --------------------------------------------- */
+/* ---- Quando a cotação falha --------------------------------------------- */
 
 .failed {
   display: grid;
@@ -124,8 +124,8 @@
   .summary {
     position: sticky;
 
-    /* Abaixo do cabecalho encolhido, que e a altura que ele tem depois de a
-       pagina rolar — e rolar e a unica forma de chegar ate aqui. */
+    /* Abaixo do cabeçalho encolhido, que e a altura que ele tem depois de a
+       página rolar — e rolar e a única forma de chegar até aqui. */
     top: calc(var(--header-height-compact) + var(--space-24));
   }
 }

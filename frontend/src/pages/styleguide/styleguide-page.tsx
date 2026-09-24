@@ -37,15 +37,15 @@ import styles from './styleguide.module.css';
 /**
  * O styleguide.
  *
- * E a bancada de revisao do design system: todo primitivo, em todos os
- * estados, na mesma tela. Serve para tres coisas que uma pagina da loja nao
+ * E a bancada de revisão do design system: todo primitivo, em todos os
+ * estados, na mesma tela. Serve para três coisas que uma página da loja não
  * serve — comparar variantes lado a lado, conferir se algum componente
  * escapou dos tokens, e testar teclado e leitor de tela sem precisar montar
  * um fluxo de compra.
  *
- * So existe em desenvolvimento. A rota e o `import()` ficam dentro de um
+ * Só existe em desenvolvimento. A rota e o `import()` ficam dentro de um
  * `import.meta.env.DEV` em `app/router.tsx`, que o Vite substitui por
- * `false` no build — e o bundle de producao nem chega a conter este arquivo.
+ * `false` no build — e o bundle de produção nem chega a conter este arquivo.
  */
 
 const SECTIONS = [
@@ -281,7 +281,7 @@ function TypographySection() {
         <Sample label="Corpo em Jost">
           <p style={{ lineHeight: 'var(--leading-body)' }}>
             Perfume amadeirado com notas de baunilha e âmbar. O texto de corpo usa Jost 400 com
-            entrelinha de 1.6 — a medida que sustenta um paragrafo longo sem cansar.
+            entrelinha de 1.6 — a medida que sustenta um parágrafo longo sem cansar.
           </p>
         </Sample>
 
@@ -365,7 +365,7 @@ function ButtonSection() {
   );
 }
 
-/* ------------------------------------------------------------- formulario */
+/* ------------------------------------------------------------- formulário */
 
 function FormSection() {
   const [cidade, setCidade] = useState('');
@@ -559,7 +559,7 @@ function CardSection() {
   );
 }
 
-/* --------------------------------------------------------------- dialogos */
+/* --------------------------------------------------------------- diálogos */
 
 function DialogSection() {
   const [modal, setModal] = useState(false);
@@ -658,7 +658,7 @@ function DialogSection() {
             }
           >
             <p>
-              O produto sai do catalogo na hora. Os pedidos já feitos continuam com o nome e o preço
+              O produto sai do catálogo na hora. Os pedidos já feitos continuam com o nome e o preço
               de quando foram fechados.
             </p>
           </Modal>
@@ -735,7 +735,7 @@ function FeedbackSection() {
     <Section
       id="feedback"
       title="Skeleton, Spinner e Toast"
-      note="O esqueleto e aria-hidden — vinte retangulos cinza não são informação. Quem anuncia o carregamento e o Spinner."
+      note="O esqueleto e aria-hidden — vinte retângulos cinza não são informação. Quem anuncia o carregamento e o Spinner."
     >
       <div className={styles.samples}>
         <Sample label="Skeleton">
@@ -814,14 +814,14 @@ function FeedbackSection() {
   );
 }
 
-/* ------------------------------------------------------------- navegacao */
+/* ------------------------------------------------------------- navegação */
 
 function NavigationSection() {
   return (
     <Section
       id="navegacao"
       title="Tabs e Accordion"
-      note="Nas abas, as setas trocam e o Tab sai da fila. Na sanfona, as setas movem entre os gatilhos. Home e End vao para as pontas nos dois."
+      note="Nas abas, as setas trocam e o Tab sai da fila. Na sanfona, as setas movem entre os gatilhos. Home e End vão para as pontas nos dois."
     >
       <div className={`${styles.samples} ${styles.wide}`}>
         <Sample label="Tabs" wide>

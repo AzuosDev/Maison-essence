@@ -1,7 +1,7 @@
 /**
  * Os componentes que sabem o que e a loja.
  *
- * Conhecem produto, sacola, categoria e as configuracoes da loja — e nao
+ * Conhecem produto, sacola, categoria e as configurações da loja — e não
  * aparecem no painel. O que serve aos dois lados desce para `components/ui`.
  */
 
@@ -17,24 +17,24 @@ export { MainNav } from './main-nav';
 export { MessageScreen } from './message-screen';
 export { MobileMenu } from './mobile-menu';
 /**
- * `NewsletterForm` nao e reexportado aqui, e a ausencia e proposital.
+ * `NewsletterForm` não e reexportado aqui, e a ausência e proposital.
  *
- * Uma reexportacao estatica neste barril torna o modulo alcancavel a partir
- * do layout da loja — que importa daqui — e o Rollup o empacota no pedaco
+ * Uma reexportação estática neste barril torna o módulo alcancável a partir
+ * do layout da loja — que importa daqui — e o Rollup o empacota no pedaço
  * inicial junto com `zod` e `react-hook-form`. O `lazy` de
- * `DeferredNewsletter` continuaria compilando e o formulario continuaria
- * funcionando: o unico sintoma seria o pedaco inicial treze kilobytes mais
- * gordo, que ninguem percebe numa revisao. Quem precisar do formulario
+ * `DeferredNewsletter` continuaria compilando e o formulário continuaria
+ * funcionando: o único sintoma seria o pedaço inicial treze kilobytes mais
+ * gordo, que ninguém percebe numa revisão. Quem precisar do formulário
  * sincrono importa de './newsletter-form'.
  */
 export { DeferredNewsletter } from './deferred-newsletter';
 export { Highlight, type HighlightProps } from './highlight';
 
 /**
- * Os icones, para as telas que os desenham fora desta pasta.
+ * Os ícones, para as telas que os desenham fora desta pasta.
  *
- * Nao pesam no pedaco inicial: o cabecalho e o rodape ja importam metade
- * deles, e cada um e um punhado de `<path>` sem dependencia nenhuma.
+ * Não pesam no pedaço inicial: o cabeçalho e o rodapé já importam metade
+ * deles, e cada um e um punhado de `<path>` sem dependência nenhuma.
  */
 export {
   BoxIcon,

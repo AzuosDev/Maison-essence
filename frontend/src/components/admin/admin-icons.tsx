@@ -1,20 +1,20 @@
 import type { SVGProps } from 'react';
 
 /**
- * Os icones do painel, desenhados a mao.
+ * Os ícones do painel, desenhados a mão.
  *
- * Mesmo sistema dos icones da loja — grade de 24, traco de 1.5, sem
+ * Mesmo sistema dos ícones da loja — grade de 24, traço de 1.5, sem
  * preenchimento, `currentColor` — e um arquivo separado pelo mesmo motivo que
- * `components/admin` existe: o painel nao importa da loja e a loja nao
- * importa do painel. O que os dois compartilham sao os tokens e os
+ * `components/admin` existe: o painel não importa da loja e a loja não
+ * importa do painel. O que os dois compartilham são os tokens e os
  * primitivos.
  *
- * Nenhuma biblioteca de icones. Trinta desenhos de uma ou duas linhas pesam
+ * Nenhuma biblioteca de ícones. Trinta desenhos de uma ou duas linhas pesam
  * menos que o `import` de um pacote, e todos saem com o mesmo peso de
- * traco — que e o que faz um menu parecer desenhado por uma pessoa so.
+ * traço — que e o que faz um menu parecer desenhado por uma pessoa só.
  *
- * `aria-hidden` por padrao: icone dentro de botao nao e informacao, e o nome
- * acessivel vem do texto ou do `aria-label` de quem o contem.
+ * `aria-hidden` por padrão: ícone dentro de botão não e informação, e o nome
+ * acessível vem do texto ou do `aria-label` de quem o contem.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;
@@ -150,7 +150,7 @@ export function SignOutIcon(props: IconProps) {
   );
 }
 
-/* ---- As acoes ----------------------------------------------------------- */
+/* ---- As ações ----------------------------------------------------------- */
 
 export function PlusIcon(props: IconProps) {
   return (
@@ -169,7 +169,7 @@ export function SearchIcon(props: IconProps) {
   );
 }
 
-/** As tres bolinhas do menu de acoes da linha. */
+/** As três bolinhas do menu de ações da linha. */
 export function MoreIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -191,7 +191,7 @@ export function TrashIcon(props: IconProps) {
   );
 }
 
-/** A pega de arrastar: seis pontos, como em toda lista reordenavel. */
+/** A pega de arrastar: seis pontos, como em toda lista reordenável. */
 export function GripIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -240,7 +240,7 @@ export function ChevronRightIcon(props: IconProps) {
   );
 }
 
-/** A volta para a lista. Seta, e nao chevron: chevron aponta, seta leva. */
+/** A volta para a lista. Seta, e não chevron: chevron aponta, seta leva. */
 export function ArrowLeftIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -250,7 +250,7 @@ export function ArrowLeftIcon(props: IconProps) {
   );
 }
 
-/** Subir uma posicao na lista. Par de `ArrowDownIcon`. */
+/** Subir uma posição na lista. Par de `ArrowDownIcon`. */
 export function ArrowUpIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -269,7 +269,7 @@ export function ArrowDownIcon(props: IconProps) {
   );
 }
 
-/** Cancelar: o circulo cortado. Nao e a lixeira — pedido nao se apaga. */
+/** Cancelar: o círculo cortado. Não e a lixeira — pedido não se apaga. */
 export function BanIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -318,13 +318,13 @@ export function ChatIcon(props: IconProps) {
   );
 }
 
-/* ---- A area de sistema --------------------------------------------------- */
+/* ---- A área de sistema --------------------------------------------------- */
 
 /**
  * Sistema: o escudo.
  *
- * E o unico item do menu que nao e uma coisa da loja, e o desenho diz isso —
- * nenhum outro icone daqui tem essa silhueta.
+ * E o único item do menu que não e uma coisa da loja, e o desenho diz isso —
+ * nenhum outro ícone daqui tem essa silhueta.
  */
 export function ShieldIcon(props: IconProps) {
   return (
@@ -334,7 +334,7 @@ export function ShieldIcon(props: IconProps) {
   );
 }
 
-/** Usuarios: uma pessoa, e a segunda atras dela. */
+/** Usuários: uma pessoa, e a segunda atrás dela. */
 export function UsersIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -346,7 +346,7 @@ export function UsersIcon(props: IconProps) {
   );
 }
 
-/** Auditoria: o relogio que anda para tras. */
+/** Auditoria: o relógio que anda para trás. */
 export function HistoryIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -357,7 +357,7 @@ export function HistoryIcon(props: IconProps) {
   );
 }
 
-/** Saude: o tracado do monitor. */
+/** Saúde: o tracado do monitor. */
 export function PulseIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -378,7 +378,7 @@ export function KeyIcon(props: IconProps) {
   );
 }
 
-/** Encerrar sessoes: o botao de desligar. */
+/** Encerrar sessões: o botão de desligar. */
 export function PowerIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -398,7 +398,7 @@ export function PencilIcon(props: IconProps) {
   );
 }
 
-/** Recarregar: a seta que volta ao inicio. */
+/** Recarregar: a seta que volta ao início. */
 export function RefreshIcon(props: IconProps) {
   return (
     <Icon {...props}>

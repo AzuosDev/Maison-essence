@@ -8,10 +8,10 @@ import styles from './select.module.css';
  *
  * Um `<select>` nativo por dentro. No celular isso abre o seletor do
  * sistema — a roda do iOS, a lista do Android — e nenhuma lista desenhada a
- * mao chega perto disso em usabilidade ou em acessibilidade. O que o
+ * mão chega perto disso em usabilidade ou em acessibilidade. O que o
  * componente faz e desenhar a caixa e a seta, e cuidar da moldura do campo.
  *
- * As opcoes entram como dados (`options`) e nao como `children`: e o formato
+ * As opções entram como dados (`options`) e não como `children`: e o formato
  * que vem da API — cidades, categorias, status — e evita o `.map` repetido
  * em cada tela.
  */
@@ -26,9 +26,9 @@ export type SelectProps = FieldOwnProps &
   Omit<ComponentPropsWithoutRef<'select'>, 'className' | 'children'> & {
     options: readonly SelectOption[];
     /**
-     * O texto da primeira opcao, desabilitada, para quando nada foi
-     * escolhido: "Escolha uma cidade". Sem ele, o `<select>` abre ja com a
-     * primeira opcao real marcada e quem nao mexeu no campo parece ter
+     * O texto da primeira opção, desabilitada, para quando nada foi
+     * escolhido: "Escolha uma cidade". Sem ele, o `<select>` abre já com a
+     * primeira opção real marcada e quem não mexeu no campo parece ter
      * escolhido.
      */
     placeholder?: string;
@@ -87,7 +87,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select
           {...props}
         >
           {placeholder === undefined ? null : (
-            // `disabled` para que nao de para voltar a "nao escolhido"
+            // `disabled` para que não de para voltar a "não escolhido"
             // depois de escolher, e `value=""` para que o campo continue
             // vazio para o `required`.
             <option value="" disabled>

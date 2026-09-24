@@ -4,13 +4,13 @@ import { MAX_PUBLIC_ID_NAME_LENGTH } from '../../../common/image-public-id.js';
 /**
  * O que o painel devolve depois que o Cloudinary aceitou o arquivo.
  *
- * O `publicId` nao e validado por `@Matches` aqui de proposito: a recusa de
- * pasta e regra de dominio e merece 422 com frase propria, e nao o 400 do
+ * O `publicId` não e validado por `@Matches` aqui de propósito: a recusa de
+ * pasta e regra de domínio e merece 422 com frase própria, e não o 400 do
  * validador. Quem a enuncia e o `UploadsService`.
  *
- * Os metadados sao aceitos porque o painel ja os tem em maos, mas nao sao
- * acreditados: o servico confere o arquivo na conta e responde com os numeros
- * de la. Tudo aqui e afirmacao do cliente.
+ * Os metadados são aceitos porque o painel já os tem em mãos, mas não são
+ * acreditados: o serviço confere o arquivo na conta e responde com os números
+ * de lá. Tudo aqui e afirmação do cliente.
  */
 export class ConfirmUploadDto {
   @IsString()

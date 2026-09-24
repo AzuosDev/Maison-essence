@@ -6,7 +6,8 @@ describe('generateSku', () => {
   });
 
   it('tira acento, como o slug faz', () => {
-    expect(generateSku('Perfume Árabe', '', new Set())).toBe('PERFUME-ÁRABE');
+    // Sem acento do lado direito de propósito: e o que o caso cobra.
+    expect(generateSku('Perfume Árabe', '', new Set())).toBe('PERFUME-ARABE');
   });
 
   it('desvia com sufixo quando o código já esta ocupado no produto', () => {

@@ -1,9 +1,9 @@
 /*
  * Um pedido na lista.
  *
- * Cartao em coluna, do celular ao desktop: os quatro dados — codigo, status,
+ * Cartão em coluna, do celular ao desktop: os quatro dados — código, status,
  * data e total — cabem numa coluna estreita sem apertar, e uma tabela que
- * vira cartao abaixo de 640px seria duas marcacoes para o mesmo conteudo.
+ * vira cartão abaixo de 640px seria duas marcações para o mesmo conteúdo.
  */
 
 .card {
@@ -26,9 +26,9 @@
 }
 
 /*
- * O anel de foco fica no cartao, e nao no link esticado: quem chega pelo
- * teclado precisa ver qual pedido esta selecionado, e o link invisivel nao
- * tem forma propria para receber o anel.
+ * O anel de foco fica no cartão, e não no link esticado: quem chega pelo
+ * teclado precisa ver qual pedido esta selecionado, e o link invisível não
+ * tem forma própria para receber o anel.
  */
 .card:focus-within {
   outline: var(--focus-ring);
@@ -50,8 +50,8 @@
 }
 
 /*
- * O link esticado: cobre o cartao inteiro e nao aparece. O foco dele e
- * desenhado pelo `:focus-within` do cartao, acima.
+ * O link esticado: cobre o cartão inteiro e não aparece. O foco dele e
+ * desenhado pelo `:focus-within` do cartão, acima.
  */
 .link {
   color: inherit;
@@ -104,11 +104,11 @@
 }
 
 /*
- * O botao da conversa.
+ * O botão da conversa.
  *
- * `position: relative` o poe acima do link esticado — e a unica coisa do
- * cartao que escapa dele. Verde do canal, e nao da marca: quem reconhece o
- * icone nao precisa ler o rotulo para saber para onde vai.
+ * `position: relative` o põe acima do link esticado — e a única coisa do
+ * cartão que escapa dele. Verde do canal, e não da marca: quem reconhece o
+ * ícone não precisa ler o rótulo para saber para onde vai.
  */
 .whatsapp {
   position: relative;
@@ -145,9 +145,9 @@
 }
 
 /*
- * No celular o rotulo encolhe para caber ao lado do total sem quebrar a
- * linha; o icone e o verde dizem o resto, e o nome completo continua no
- * texto acessivel.
+ * No celular o rótulo encolhe para caber ao lado do total sem quebrar a
+ * linha; o ícone e o verde dizem o resto, e o nome completo continua no
+ * texto acessível.
  */
 .whatsappLabel {
   display: none;

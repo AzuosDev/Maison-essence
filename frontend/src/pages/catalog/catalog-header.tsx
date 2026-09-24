@@ -2,17 +2,17 @@ import { Breadcrumb, Skeleton, type BreadcrumbItem } from '@/components/ui';
 import styles from './catalog-header.module.css';
 
 /**
- * O cabecalho da listagem: onde voce esta, o que esta vendo e quantos sao.
+ * O cabeçalho da listagem: onde você esta, o que esta vendo e quantos são.
  *
  * ## A contagem
  *
- * Fica numa linha de altura reservada, e nao aparece do nada quando a
- * consulta responde. Sem a reserva, a chegada do numero empurraria a grade
+ * Fica numa linha de altura reservada, e não aparece do nada quando a
+ * consulta responde. Sem a reserva, a chegada do número empurraria a grade
  * inteira para baixo alguns pixels — que e exatamente o salto de layout que
- * o criterio de aceite proibe, so que no lugar onde ninguem procura.
+ * o critério de aceite proibe, só que no lugar onde ninguém procura.
  *
  * Enquanto carrega, a linha mostra um tracinho em vez de "0 produtos": zero
- * e uma informacao, e anuncia-la antes de saber seria mentir por um
+ * e uma informação, e anuncia-lá antes de saber seria mentir por um
  * instante — bastante para o cliente achar que a categoria esta vazia.
  */
 
@@ -20,10 +20,10 @@ export interface CatalogHeaderProps {
   breadcrumb: readonly BreadcrumbItem[];
   title: string;
   description?: string | undefined;
-  /** `undefined` enquanto a consulta nao respondeu. */
+  /** `undefined` enquanto a consulta não respondeu. */
   totalItems: number | undefined;
   isLoading: boolean;
-  /** O titulo ainda nao chegou — o nome da categoria vem de outra consulta. */
+  /** O título ainda não chegou — o nome da categoria vem de outra consulta. */
   isTitleLoading?: boolean;
 }
 

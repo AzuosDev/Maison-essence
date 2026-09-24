@@ -3,12 +3,12 @@ import type { NextFunction, Request, RequestHandler, Response } from 'express';
 import { errorResponseBody } from './error-response.js';
 
 /**
- * Quantos niveis do corpo sao percorridos.
+ * Quantos níveis do corpo são percorridos.
  *
- * O corpo ja chega limitado a 256 KB, mas 256 KB de colchetes aninhados sao
- * cem mil niveis, e uma travessia recursiva estouraria a pilha — ou seja, um
+ * O corpo já chega limitado a 256 KB, mas 256 KB de colchetes aninhados são
+ * cem mil níveis, e uma travessia recursiva estouraria a pilha — ou seja, um
  * 500 de presente para quem mandar o corpo certo. A travessia aqui e iterativa
- * e ainda assim para no teto: nada neste dominio tem dez niveis de
+ * e ainda assim para no teto: nada neste domínio tem dez níveis de
  * profundidade, e o que tiver merece ser recusado.
  */
 const MAX_DEPTH = 10;
@@ -16,25 +16,25 @@ const MAX_DEPTH = 10;
 export const MONGO_OPERATOR_MESSAGE =
   'O corpo da requisição tem um campo com nome inválido.';
 
-/** Diz qual campo reprovou, para o erro de integracao ser corrigivel. */
+/** Diz qual campo reprovou, para o erro de integração ser corrigível. */
 export function forbiddenKeyMessage(key: string): string {
   return `${MONGO_OPERATOR_MESSAGE} Nome recusado: "${key}".`;
 }
 
 /**
- * Procura no corpo uma chave que o Mongo leria como instrucao.
+ * Procura no corpo uma chave que o Mongo leria como instrução.
  *
- * Duas formas importam. A chave iniciada por cifrao e um operador —
- * `{"email": {"$ne": null}}` num filtro devolve o primeiro usuario que existir,
- * e `{"$set": ...}` numa atualizacao escreve onde quiser. A chave com ponto e
- * um caminho — `{"role.0": "SUPER_ADMIN"}` alcanca dentro de um documento que
- * o codigo achava que estava tratando como valor.
+ * Duas formas importam. A chave iniciada por cifrão e um operador —
+ * `{"email": {"$ne": null}}` num filtro devolve o primeiro usuário que existir,
+ * e `{"$set": ...}` numa atualização escreve onde quiser. A chave com ponto e
+ * um caminho — `{"role.0": "SUPER_ADMIN"}` alcança dentro de um documento que
+ * o código achava que estava tratando como valor.
  *
- * Nada disso passa pelos DTOs, que ja descartam o que nao conhecem. A defesa
- * aqui e para o que nao passa por DTO: a consulta montada a partir de um
- * objeto, o `updateOne` que recebe um bloco inteiro, e o proximo endpoint que
- * alguem escrever sem lembrar da regra. Recusar na porta custa uma travessia
- * por requisicao e nao depende de cada rota estar certa.
+ * Nada disso passa pelos DTOs, que já descartam o que não conhecem. A defesa
+ * aqui e para o que não passa por DTO: a consulta montada a partir de um
+ * objeto, o `updateOne` que recebe um bloco inteiro, e o próximo endpoint que
+ * alguém escrever sem lembrar da regra. Recusar na porta custa uma travessia
+ * por requisição e não depende de cada rota estar certa.
  *
  * Devolve o nome da chave reprovada, ou `null` quando o corpo esta limpo.
  */
@@ -72,8 +72,8 @@ export function findForbiddenKey(body: unknown): string | null {
  * Recusa com 400 o corpo que carrega operador do Mongo.
  *
  * Entra como middleware do Express, depois do parser e antes das rotas: assim
- * vale para toda rota da API, inclusive as que nao declaram DTO, e vale
- * tambem para o corpo que nenhum controller chega a ler.
+ * vale para toda rota da API, inclusive as que não declaram DTO, e vale
+ * também para o corpo que nenhum controller chega a ler.
  */
 export function rejectMongoOperators(): RequestHandler {
   return (request: Request, response: Response, next: NextFunction): void => {

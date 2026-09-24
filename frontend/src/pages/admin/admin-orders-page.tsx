@@ -24,36 +24,36 @@ import styles from './admin-orders-page.module.css';
  *
  * ## A cena de uso
  *
- * A dona nao abre esta tela para navegar por ela. Ela abre com uma pergunta
- * ja formada, quase sempre uma destas duas:
+ * A dona não abre esta tela para navegar por ela. Ela abre com uma pergunta
+ * já formada, quase sempre uma destas duas:
  *
  * - "**cade o pedido de quem acabou de me mandar mensagem**" — e ela tem na
- *   mao o codigo colado da conversa ou os digitos do numero que ligou;
+ *   mão o código colado da conversa ou os digitos do número que ligou;
  * - "**o que esta esperando resposta**" — que e o clique que vem do card da
  *   abertura do painel.
  *
  * Por isso a busca e o primeiro controle e ocupa a linha inteira, e por isso
- * o status e uma fileira de pilulas em vez de um `<select>`: o recorte mais
- * usado do painel precisa custar um toque, e nao abrir-escolher-fechar.
+ * o status e uma fileira de pílulas em vez de um `<select>`: o recorte mais
+ * usado do painel precisa custar um toque, e não abrir-escolher-fechar.
  *
- * O periodo vem por ultimo porque e o filtro de quem esta conferindo o mes,
- * e nao de quem esta atendendo.
+ * O período vem por último porque e o filtro de quem esta conferindo o mês,
+ * e não de quem esta atendendo.
  *
- * ## O recorte mora no endereco
+ * ## O recorte mora no endereço
  *
- * Nao em `useState`. `features/admin/order-filters.ts` explica as tres
- * razoes; a curta e que o card "Esperando contato" da abertura aponta para
+ * Não em `useState`. `features/admin/order-filters.ts` explica as três
+ * razões; a curta e que o card "Esperando contato" da abertura aponta para
  * `?status=PENDING_CONTACT`, e que a dona manda o link da lista para quem
  * ajuda no atendimento.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
  * A lista inteira, sem a coluna de total. A forma de pagamento continua, que
- * e o que ele precisa para responder — "Cartao 6x" diz como o cliente vai
- * pagar, e nao quanto a loja ganha.
+ * e o que ele precisa para responder — "Cartão 6x" diz como o cliente vai
+ * pagar, e não quanto a loja ganha.
  */
 
-/** O tempo que a digitacao precisa parar antes de virar consulta. */
+/** O tempo que a digitação precisa parar antes de virar consulta. */
 const SEARCH_DELAY_MS = 300;
 
 export default function AdminOrdersPage() {
@@ -64,10 +64,10 @@ export default function AdminOrdersPage() {
   usePageMeta({ title: 'Pedidos — Painel', description: 'Acesso restrito.' });
 
   const apply = (patch: Partial<OrderFilters>): void => {
-    // `replace` no lugar de empilhar: quem digitou "ME-2609" nao quer apertar
-    // voltar sete vezes para sair da lista. A mudanca de pagina e a de status
-    // tambem sao substituicoes — o historico guarda por onde a pessoa andou,
-    // e nao cada ajuste de recorte.
+    // `replace` no lugar de empilhar: quem digitou "ME-2609" não quer apertar
+    // voltar sete vezes para sair da lista. A mudanca de página e a de status
+    // também são substituições — o histórico guarda por onde a pessoa andou,
+    // e não cada ajuste de recorte.
     setSearch(orderFiltersToSearch(withFilter(filters, patch)), { replace: true });
   };
 
@@ -100,8 +100,8 @@ export default function AdminOrdersPage() {
 
         {/*
           A fileira de status. "Todos" primeiro, e depois a ordem do ciclo de
-          vida do pedido — que e a ordem em que a dona procura o proximo
-          passo, e nao a alfabetica.
+          vida do pedido — que e a ordem em que a dona procura o próximo
+          passo, e não a alfabetica.
         */}
         <fieldset className={styles.statuses}>
           <legend className="visually-hidden">Filtrar por status</legend>
@@ -120,8 +120,8 @@ export default function AdminOrdersPage() {
               key={option.value}
               active={filters.status === option.value}
               onClick={() => {
-                // Clicar no status que ja esta valendo o desliga. E o gesto
-                // que se espera de uma pilula, e evita a viagem ate "Todos"
+                // Clicar no status que já esta valendo o desliga. E o gesto
+                // que se espera de uma pílula, e evita a viagem até "Todos"
                 // do outro lado da fileira.
                 apply({ status: filters.status === option.value ? '' : option.value });
               }}
@@ -171,8 +171,8 @@ export default function AdminOrdersPage() {
           {/*
             O recuo de opacidade marca a lista velha enquanto a nova vem. A
             alternativa seria trocar por esqueleto a cada tecla digitada, e
-            ai a tela pisca mais do que informa: o esqueleto e so para quando
-            ainda nao ha nada o que mostrar.
+            aí a tela pisca mais do que informa: o esqueleto e só para quando
+            ainda não há nada o que mostrar.
           */}
           <div className={isFetching && !isPending ? styles.refreshing : undefined}>
             {!isPending && orders.length === 0 ? (
@@ -214,15 +214,15 @@ export default function AdminOrdersPage() {
 /* ---- A busca ------------------------------------------------------------- */
 
 /**
- * O campo de busca, que espera a digitacao parar.
+ * O campo de busca, que espera a digitação parar.
  *
- * Tem estado proprio porque o campo precisa responder a cada tecla enquanto
- * o **endereco** so muda depois da pausa: escrever na URL a cada letra
+ * Tem estado próprio porque o campo precisa responder a cada tecla enquanto
+ * o **endereço** só muda depois da pausa: escrever na URL a cada letra
  * geraria uma consulta por caractere.
  *
- * O `useEffect` de sincronia existe para o caminho de volta — o botao
- * voltar, o "Limpar filtros", o link colado com `?q=` ja preenchido. Sem
- * ele, o endereco mudaria e o campo continuaria com o texto antigo.
+ * O `useEffect` de sincronia existe para o caminho de volta — o botão
+ * voltar, o "Limpar filtros", o link colado com `?q=` já preenchido. Sem
+ * ele, o endereço mudaria e o campo continuaria com o texto antigo.
  */
 function SearchField({ value, onSearch }: { value: string; onSearch: (q: string) => void }) {
   const [typed, setTyped] = useState(value);
@@ -236,9 +236,9 @@ function SearchField({ value, onSearch }: { value: string; onSearch: (q: string)
     if (settled !== value) {
       onSearch(settled);
     }
-    // `onSearch` e `value` mudam a cada render da pagina — a funcao fecha
+    // `onSearch` e `value` mudam a cada render da página — a função fecha
     // sobre os filtros atuais. O que dispara a busca e o texto ter parado de
-    // mudar, e so ele pertence a esta lista.
+    // mudar, e só ele pertence a esta lista.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settled]);
 
@@ -265,7 +265,7 @@ function SearchField({ value, onSearch }: { value: string; onSearch: (q: string)
 /**
  * "47 pedidos", "3 pedidos neste recorte", "Carregando os pedidos".
  *
- * A palavra "neste recorte" so aparece com filtro valendo, e e ela que evita
+ * A palavra "neste recorte" só aparece com filtro valendo, e e ela que evita
  * a leitura errada mais cara desta tela: "3 pedidos" num filtro esquecido de
  * setembro parece a loja inteira.
  */

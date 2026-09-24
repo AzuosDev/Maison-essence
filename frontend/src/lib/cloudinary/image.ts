@@ -1,30 +1,30 @@
 import { env } from '@/lib/env';
 
 /**
- * A URL de uma imagem do catalogo.
+ * A URL de uma imagem do catálogo.
  *
- * Espelha `uploads/cloudinary.url.ts` do backend, transformacao por
- * transformacao, e a igualdade e o ponto: a API guarda so o `publicId` e
+ * Espelha `uploads/cloudinary.url.ts` do backend, transformação por
+ * transformação, e a igualdade e o ponto: a API guarda só o `publicId` e
  * monta a URL na leitura com esta mesma regra. Se as duas pontas divergirem,
- * o navegador pede uma variante que ninguem mais pede e o cache do Cloudinary
+ * o navegador pede uma variante que ninguém mais pede e o cache do Cloudinary
  * deixa de ajudar — a primeira visita de cada foto passa a custar o
  * processamento inteiro.
  *
- * As tres transformacoes fixas:
+ * As três transformações fixas:
  *
  * - `f_auto` entrega webp (ou avif) para quem suporta e jpg para o resto,
  *   decidindo pelo `Accept` do navegador;
- * - `q_auto` escolhe a compressao pelo conteudo da imagem;
- * - `c_limit` com a largura do contexto so reduz, nunca amplia: foto pequena
- *   nao vira borrao esticado.
+ * - `q_auto` escolhe a compressão pelo conteúdo da imagem;
+ * - `c_limit` com a largura do contexto só reduz, nunca amplia: foto pequena
+ *   não vira borrão esticado.
  */
 
 /**
  * Larguras de entrega por contexto, iguais as do backend.
  *
  * - `thumb`: miniatura do carrinho, da linha do pedido e da galeria;
- * - `card`: o card da vitrine, que e 3:4 em grid de ate quatro colunas;
- * - `detail`: a foto grande da pagina do produto.
+ * - `card`: o card da vitrine, que e 3:4 em grid de até quatro colunas;
+ * - `detail`: a foto grande da página do produto.
  */
 export const IMAGE_WIDTHS = { thumb: 400, card: 600, detail: 1200 } as const;
 
@@ -35,11 +35,11 @@ export const IMAGE_PRESETS = Object.keys(IMAGE_WIDTHS) as ImagePreset[];
 const TRANSFORMATION = 'f_auto,q_auto,c_limit';
 
 /**
- * Enquanto nao ha foto.
+ * Enquanto não há foto.
  *
  * Produto sem imagem, `publicId` vazio ou ambiente de desenvolvimento sem
- * conta do Cloudinary caem todos aqui — e o card desenha um retangulo
- * discreto em vez de um icone de imagem quebrada.
+ * conta do Cloudinary caem todos aqui — e o card desenha um retângulo
+ * discreto em vez de um ícone de imagem quebrada.
  */
 export const IMAGE_PLACEHOLDER = '/placeholder-product.svg';
 
@@ -53,7 +53,7 @@ export function imageUrl(publicId: string | null | undefined, preset: ImagePrese
 }
 
 /**
- * O `srcset` do mesmo `publicId` nas tres larguras.
+ * O `srcset` do mesmo `publicId` nas três larguras.
  *
  * Vai junto do `src` e de um `sizes` que a tela informa: e assim que o
  * celular baixa a foto de 400px e o desktop retina baixa a de 1200px, sem
@@ -70,10 +70,10 @@ export function imageSrcSet(publicId: string | null | undefined): string | undef
 }
 
 /**
- * Tudo o que um `<img>` de catalogo precisa, de uma vez.
+ * Tudo o que um `<img>` de catálogo precisa, de uma vez.
  *
- * `sizes` e obrigatorio quando ha `srcSet`: sem ele o navegador assume
- * `100vw` e escolhe a maior imagem ate no celular.
+ * `sizes` e obrigatório quando há `srcSet`: sem ele o navegador assume
+ * `100vw` e escolhe a maior imagem até no celular.
  */
 export function imageProps(
   publicId: string | null | undefined,

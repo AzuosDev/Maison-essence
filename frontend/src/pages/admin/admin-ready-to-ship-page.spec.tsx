@@ -13,13 +13,13 @@ import AdminReadyToShipPage from './admin-ready-to-ship-page';
  *
  * O que estes casos cobram:
  *
- * - **o recorte nao vem do endereco**: `readyToShip` e a tela, e precisa
+ * - **o recorte não vem do endereço**: `readyToShip` e a tela, e precisa
  *   viajar em toda consulta;
  * - **tirar da prateleira tira a linha da lista**, com o caminho de volta no
- *   aviso — sem ele, um clique errado numa conferencia de vinte caixas nao
+ *   aviso — sem ele, um clique errado numa conferência de vinte caixas não
  *   teria como ser desfeito;
- * - **o cruzamento que so esta tela enxerga**: na prateleira e fora do ar;
- * - **o STAFF confere, e nao mexe.**
+ * - **o cruzamento que só esta tela enxerga**: na prateleira e fora do ar;
+ * - **o STAFF confere, e não mexe.**
  */
 
 const PRODUCTS = [
@@ -54,7 +54,7 @@ const PRODUCTS = [
     hasVariants: false,
     priceRangeCents: { min: 21_900, max: 21_900 },
     totalStock: 2,
-    // Na prateleira e fora do ar: a caixa esta na loja e ninguem compra.
+    // Na prateleira e fora do ar: a caixa esta na loja e ninguém compra.
     isActive: false,
     isFeatured: false,
     isReadyToShip: true,
@@ -70,7 +70,7 @@ let items = PRODUCTS;
 type Product = (typeof PRODUCTS)[number];
 type Patch = Partial<Product>;
 
-/** O `PATCH` do produto, aplicado no catalogo que o mock guarda. */
+/** O `PATCH` do produto, aplicado no catálogo que o mock guarda. */
 function applyPatch(product: Product, id: string, patch: Patch): Product {
   return product.id === id ? { ...product, ...patch } : product;
 }
@@ -106,8 +106,8 @@ beforeEach(() => {
 
       if (method === 'GET') {
         // O recorte e do servidor, e o teste depende disso: e a refetch
-        // depois do `PATCH` que confirma que a linha saiu de verdade, e nao
-        // so da tela.
+        // depois do `PATCH` que confirma que a linha saiu de verdade, e não
+        // só da tela.
         const visible = url.includes('readyToShip=true')
           ? items.filter((product) => product.isReadyToShip)
           : items;
@@ -186,8 +186,8 @@ test('a consulta sempre pede só a prateleira', async () => {
 
   await screen.findByRole('link', { name: 'Asad 100ml' });
 
-  // `readyToShip` nao vem do endereco: ele e a tela. Sem viajar, a lista
-  // seria o catalogo inteiro com outro titulo.
+  // `readyToShip` não vem do endereço: ele e a tela. Sem viajar, a lista
+  // seria o catálogo inteiro com outro título.
   const listagem = calls.find((call) => call.url.includes('/admin/products'));
 
   expect(listagem?.url).toContain('readyToShip=true');
@@ -212,7 +212,7 @@ test('buscar mantem o recorte da prateleira', async () => {
   });
 });
 
-/* ---- O que so esta tela enxerga ------------------------------------------------- */
+/* ---- O que só esta tela enxerga ------------------------------------------------- */
 
 test('avisa o que esta na prateleira e fora do ar', async () => {
   signInAs(USER_ROLES.OWNER);
@@ -244,8 +244,8 @@ test('tirar da prateleira manda só a marca, e a linha some', async () => {
     expect(JSON.parse(write?.body ?? '{}')).toEqual({ isReadyToShip: false });
   });
 
-  // A lista mostra so o que esta na prateleira: manter a linha com a marca
-  // desligada seria a tela discordando do proprio recorte.
+  // A lista mostra só o que esta na prateleira: manter a linha com a marca
+  // desligada seria a tela discordando do próprio recorte.
   expect(screen.queryByRole('link', { name: 'Asad 100ml' })).toBeNull();
 });
 
@@ -283,7 +283,7 @@ test('o STAFF confere a prateleira, e não mexe nela', async () => {
 
 /* ---- A prateleira vazia ------------------------------------------------------------ */
 
-test('a prateleira vazia explica onde se poe um produto nela', async () => {
+test('a prateleira vazia explica onde se põe um produto nela', async () => {
   items = [];
 
   signInAs(USER_ROLES.OWNER);

@@ -13,14 +13,14 @@ import AdminPaymentsPage from './admin-payments-page';
  *
  * O que estes casos cobram:
  *
- * - **a previa e ao vivo e le o rascunho**, que e a razao de a tela existir
+ * - **a prévia e ao vivo e lê o rascunho**, que e a razão de a tela existir
  *   desse jeito: a dona decide olhando a lista, antes de gravar;
- * - **a barra diz que o que se ve ainda nao vale**, porque a previa mudando
- *   na hora e facil de ler como "ja esta no ar";
- * - **so o que mudou viaja**, num documento unico que o celular da dona pode
+ * - **a barra diz que o que se vê ainda não vale**, porque a prévia mudando
+ *   na hora e fácil de ler como "já esta no ar";
+ * - **só o que mudou viaja**, num documento único que o celular da dona pode
  *   estar editando ao mesmo tempo;
  * - **a chave PIX e conferida contra o tipo antes de viajar**;
- * - **o STAFF nao entra**: aqui esta a chave para onde vai o dinheiro.
+ * - **o STAFF não entra**: aqui esta a chave para onde vai o dinheiro.
  */
 
 const SETTINGS = {
@@ -67,7 +67,7 @@ beforeEach(() => {
       }
 
       // O servidor devolve o documento inteiro com o que foi mandado por
-      // cima, ja normalizado. E disso que a tela reabre o rascunho.
+      // cima, já normalizado. E disso que a tela reabre o rascunho.
       const patch = JSON.parse(typeof init?.body === 'string' ? init.body : '{}') as object;
 
       return Promise.resolve(jsonResponse({ ...SETTINGS, ...patch }));
@@ -129,7 +129,7 @@ test('abre com as regras gravadas, e a chave pontuada', async () => {
 
   const key = await screen.findByRole('textbox', { name: 'Chave PIX' });
 
-  // Onze digitos corridos ninguem confere olhando, e conferir e a unica
+  // Onze digitos corridos ninguém confere olhando, e conferir e a única
   // coisa que se faz neste campo.
   expect((key as HTMLInputElement).value).toBe('123.456.789-01');
   expect((screen.getByRole('textbox', { name: 'Juros ao mês' }) as HTMLInputElement).value).toBe(
@@ -147,7 +147,7 @@ test('o STAFF não entra: aqui esta a chave para onde vai o dinheiro', async () 
   ).toBeDefined();
 });
 
-/* ---- A previa ao vivo ---------------------------------------------------------- */
+/* ---- A prévia ao vivo ---------------------------------------------------------- */
 
 test('a prévia de R$ 300 separa o que tem juros do que não tem', async () => {
   signInAs(USER_ROLES.OWNER);
@@ -158,10 +158,10 @@ test('a prévia de R$ 300 separa o que tem juros do que não tem', async () => {
 
   const painel = previa();
 
-  // Ate 6x sem juros: 3x de R$ 100,00, e o total nao muda.
+  // Até 6x sem juros: 3x de R$ 100,00, e o total não muda.
   expect(within(painel).getByText('de R$ 100,00')).toBeDefined();
 
-  // 7x ja e tabela price, e o total sobe. Os mesmos centavos do backend.
+  // 7x já e tabela price, e o total sobe. Os mesmos centavos do backend.
   expect(within(painel).getByText('de R$ 46,33')).toBeDefined();
   expect(within(painel).getByText('R$ 324,35')).toBeDefined();
 });
@@ -182,7 +182,7 @@ test('mexer no limite sem juros muda a lista antes de salvar', async () => {
     expect(within(previa()).queryByText('de R$ 75,00')).toBeNull();
   });
 
-  // E nada viajou: a previa le o rascunho, nao o que esta gravado.
+  // E nada viajou: a prévia lê o rascunho, não o que esta gravado.
   expect(lastWrite()).toBeUndefined();
 });
 
@@ -213,8 +213,8 @@ test('num pedido pequeno, a parcela mínima corta a lista e diz que cortou', asy
   await user.clear(amount);
   await user.type(amount, '90,00');
 
-  // R$ 90 em 5x daria R$ 18, abaixo do minimo de R$ 20. A lista acaba em 4x,
-  // e a unica pista disso e esta frase.
+  // R$ 90 em 5x daria R$ 18, abaixo do mínimo de R$ 20. A lista acaba em 4x,
+  // e a única pista disso e esta frase.
   expect(await within(previa()).findByText(/Acima de 4x a parcela fica abaixo de/)).toBeDefined();
   expect(within(previa()).queryByText('de R$ 18,00')).toBeNull();
 });
@@ -333,7 +333,7 @@ test('PIX ligado sem chave avisa, e mesmo assim deixa salvar', async () => {
 
   await user.clear(key);
 
-  // O servidor aceita. O que ele nao faz e avisar que o PIX parou de
+  // O servidor aceita. O que ele não faz e avisar que o PIX parou de
   // aparecer para a cliente.
   expect(await screen.findByText(/sem chave cadastrada ele não aparece/)).toBeDefined();
   expect(screen.getByRole('button', { name: 'Salvar' })).toBeDefined();

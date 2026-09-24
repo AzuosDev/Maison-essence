@@ -5,17 +5,17 @@ import { CatalogView } from './catalog-view';
 /**
  * A busca: `/busca?q=amadeirado`.
  *
- * A mesma listagem de `/produtos`, com duas diferencas.
+ * A mesma listagem de `/produtos`, com duas diferenças.
  *
- * O termo vem da query string e ja e um filtro como os outros — quem o le e
- * `filtersFromSearch`, dentro de `CatalogView`. Nao ha estado de busca
- * separado aqui: por isso a URL de uma busca filtrada tambem e
- * compartilhavel, e `?q=oud&marca=Lattafa&estoque=1` reabre exatamente a
+ * O termo vem da query string e já e um filtro como os outros — quem o lê e
+ * `filtersFromSearch`, dentro de `CatalogView`. Não há estado de busca
+ * separado aqui: por isso a URL de uma busca filtrada também e
+ * compartilhável, e `?q=oud&marca=Lattafa&estoque=1` reabre exatamente a
  * mesma tela.
  *
  * E os nomes saem com o termo realcado, para o cliente entender por que cada
  * produto apareceu. "Limpar filtros" preserva o termo: quem esta numa busca
- * quer soltar o recorte, e nao voltar ao catalogo inteiro.
+ * quer soltar o recorte, e não voltar ao catálogo inteiro.
  */
 export default function SearchPage() {
   const [search] = useSearchParams();

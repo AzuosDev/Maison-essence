@@ -66,7 +66,7 @@ describe('isDefaultAt', () => {
   });
 
   it('com dois marcados, o primeiro vence e o outro perde a marca', () => {
-    // Duas casas padrao fariam o checkout escolher no escuro.
+    // Duas casas padrão fariam o checkout escolher no escuro.
     const lista = [address({ isDefault: true }), address({ isDefault: true })];
 
     expect([isDefaultAt(lista, 0), isDefaultAt(lista, 1)]).toEqual([true, false]);

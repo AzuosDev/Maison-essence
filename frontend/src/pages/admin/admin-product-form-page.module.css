@@ -1,12 +1,12 @@
 /*
  * O cadastro do produto.
  *
- * Uma coluna so, do celular ao desktop. A tentacao seria abrir duas no
- * desktop — campos de um lado, fotos do outro —, e seria pior: cada secao
+ * Uma coluna só, do celular ao desktop. A tentação seria abrir duas no
+ * desktop — campos de um lado, fotos do outro —, e seria pior: cada seção
  * depende da anterior (a variante escolhe entre as fotos que acabaram de
  * subir), e duas colunas quebrariam essa leitura de cima para baixo.
  *
- * O que muda no desktop e a largura util e o recuo do titulo de cada secao,
+ * O que muda no desktop e a largura útil e o recuo do título de cada seção,
  * que passa a ficar na margem, ao lado dos campos.
  */
 
@@ -14,12 +14,12 @@
   display: grid;
   gap: var(--space-24);
 
-  /* Um formulario nao melhora com 1360px de largura: o campo de nome esticado
-     de ponta a ponta e mais dificil de ler do que um de 40rem. */
+  /* Um formulário não melhora com 1360px de largura: o campo de nome esticado
+     de ponta a ponta e mais difícil de ler do que um de 40rem. */
   max-width: 60rem;
 }
 
-/* ---- O cabecalho ----------------------------------------------------------- */
+/* ---- O cabeçalho ----------------------------------------------------------- */
 
 .header {
   display: grid;
@@ -75,7 +75,7 @@
   color: var(--ink);
 }
 
-/* ---- As secoes --------------------------------------------------------------- */
+/* ---- As seções --------------------------------------------------------------- */
 
 .form {
   display: grid;
@@ -135,14 +135,14 @@
   color: var(--danger);
 }
 
-/* ---- A barra de acoes --------------------------------------------------------- */
+/* ---- A barra de ações --------------------------------------------------------- */
 
 /*
- * Grudada no pe da janela.
+ * Grudada no pé da janela.
  *
- * `position: sticky` e nao `fixed`: sticky respeita a largura da coluna de
- * conteudo e nao cobre a sidebar do painel. A margem negativa e o padding
- * devolvem a barra ate a borda do conteudo, para que o fundo a atravesse por
+ * `position: sticky` e não `fixed`: sticky respeita a largura da coluna de
+ * conteúdo e não cobre a sidebar do painel. A margem negativa e o padding
+ * devolvem a barra até a borda do conteúdo, para que o fundo a atravesse por
  * inteiro em vez de terminar num degrau.
  */
 .bar {
@@ -167,7 +167,7 @@
   gap: var(--space-8);
 }
 
-/* Excluir vai para a outra ponta: e a unica acao da barra que nao volta. */
+/* Excluir vai para a outra ponta: e a única ação da barra que não volta. */
 .delete {
   margin-inline-end: auto;
   color: var(--danger);
@@ -195,7 +195,7 @@
   }
 
   /*
-   * No desktop os dois interruptores de vitrine ficam lado a lado: sao tres
+   * No desktop os dois interruptores de vitrine ficam lado a lado: são três
    * escolhas curtas e independentes, e empilha-las deixaria um vazio a
    * direita do bloco.
    */

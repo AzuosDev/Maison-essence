@@ -1,4 +1,4 @@
-/* A tela de usuarios: a barra de acoes e a lista. */
+/* A tela de usuários: a barra de ações e a lista. */
 
 .page {
   display: grid;
@@ -8,8 +8,8 @@
 /*
  * Busca e "Novo acesso" na mesma linha no desktop, empilhados no celular.
  *
- * A busca vem antes do botao na ordem do DOM porque e essa a ordem de uso:
- * quem abre esta tela quase sempre vem procurar alguem, e cadastrar e o caso
+ * A busca vem antes do botão na ordem do DOM porque e essa a ordem de uso:
+ * quem abre esta tela quase sempre vem procurar alguém, e cadastrar e o caso
  * raro.
  */
 .toolbar {

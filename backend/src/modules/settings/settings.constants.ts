@@ -1,15 +1,15 @@
 /**
  * Quantos banners a home aceita.
  *
- * Limite de tela, nao de negocio: um carrossel com mais que isso ninguem
- * assiste ate o fim, e o array vive dentro do documento de configuracoes.
+ * Limite de tela, não de negócio: um carrossel com mais que isso ninguém
+ * assiste até o fim, e o array vive dentro do documento de configurações.
  */
 export const MAX_BANNERS = 12;
 
 /** Teto do campo `order` — o mesmo declarado no schema do banner. */
 export const MAX_BANNER_ORDER = 9999;
 
-/** Teto do conteudo de uma pagina institucional, igual ao do schema. */
+/** Teto do conteúdo de uma página institucional, igual ao do schema. */
 export const MAX_PAGE_CONTENT_LENGTH = 20_000;
 
 export const PAGE_NOT_FOUND_MESSAGE = 'Página não encontrada.';

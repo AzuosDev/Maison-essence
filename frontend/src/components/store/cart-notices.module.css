@@ -1,8 +1,8 @@
 /*
  * Os dois avisos da sacola.
  *
- * O peso visual separa um do outro antes da leitura: o que exige decisao
- * tem caixa, fundo e botao; o que so informa e uma linha.
+ * O peso visual separa um do outro antes da leitura: o que exige decisão
+ * tem caixa, fundo e botão; o que só informa e uma linha.
  */
 
 /* ---- O que saiu --------------------------------------------------------- */
@@ -53,11 +53,11 @@
 }
 
 /*
- * O botao do aviso e sobrio de proposito.
+ * O botão do aviso e sobrio de propósito.
  *
- * Remover itens e a saida comoda, nao a recomendada: pode ser que o cliente
- * prefira esperar o produto voltar. Um botao vermelho cheio empurraria a
- * decisao que a loja prefere, e nao a que ele prefere.
+ * Remover itens e a saída comoda, não a recomendada: pode ser que o cliente
+ * prefira esperar o produto voltar. Um botão vermelho cheio empurraria a
+ * decisão que a loja prefere, e não a que ele prefere.
  */
 .action {
   padding: var(--space-8) var(--space-16);
@@ -93,8 +93,8 @@
 /*
  * Uma linha, com um filete dourado a esquerda.
  *
- * Sem caixa e sem fundo cheio: o recado nao pede nada de ninguem, e um
- * cartao inteiro para dizer "os valores estao em dia" roubaria a atencao do
+ * Sem caixa e sem fundo cheio: o recado não pede nada de ninguém, e um
+ * cartão inteiro para dizer "os valores estão em dia" roubaria a atenção do
  * que importa, que e a lista logo abaixo.
  */
 .prices {

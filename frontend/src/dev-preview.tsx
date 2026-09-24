@@ -1,9 +1,9 @@
 /*
- * Entrada descartavel de desenvolvimento.
+ * Entrada descartável de desenvolvimento.
  *
- * Nao entra no build: existe so para abrir a loja sem backend e sem banco,
+ * Não entra no build: existe só para abrir a loja sem backend e sem banco,
  * com dados de exemplo, enquanto o visual e revisado. Apague este arquivo,
- * o `dev-preview.html` e o `.env.preview` quando a revisao terminar.
+ * o `dev-preview.html` e o `.env.preview` quando a revisão terminar.
  */
 
 /* eslint-disable */
@@ -114,7 +114,7 @@ const CATEGORIES = [
   { name: 'Perfumes Masculinos', photo: PHOTOS[0]!, count: 24 },
   { name: 'Perfumes Femininos', photo: PHOTOS[1]!, count: 31 },
   { name: 'Árabes', photo: PHOTOS[4]!, count: 18 },
-  { name: 'Velas Aromaticas', photo: PHOTOS[3]!, count: 12 },
+  { name: 'Velas Aromáticas', photo: PHOTOS[3]!, count: 12 },
   { name: 'Difusores', photo: PHOTOS[5]!, count: 9 },
   { name: 'Kits e Presentes', photo: PHOTOS[6]!, count: 7 },
 ].map((entry, index) => ({
@@ -164,7 +164,7 @@ const SETTINGS = {
       imageDesktop: PHOTOS[4]!,
       imageMobile: PHOTOS[4]!,
       title: 'A coleção de inverno chegou',
-      subtitle: 'Âmbares, madeiras e baunilhas selecionados peca a peca.',
+      subtitle: 'Âmbares, madeiras e baunilhas selecionados peça a peça.',
       buttonLabel: 'Ver a coleção',
       link: '/produtos',
     },

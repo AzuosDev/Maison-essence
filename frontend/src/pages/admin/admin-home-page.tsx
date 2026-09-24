@@ -24,23 +24,23 @@ import styles from './admin-home-page.module.css';
  * A abertura do painel.
  *
  * Responde, na ordem, as perguntas de quem acabou de abrir a loja: **o que
- * chegou**, **o que esta me esperando**, **como vai o mes**, **o que esta
- * faltando**. Os quatro numeros levam a lista que os explica, a lista dos
- * ultimos dez pedidos vem logo abaixo, e o aviso de estoque fecha a tela.
+ * chegou**, **o que esta me esperando**, **como vai o mês**, **o que esta
+ * faltando**. Os quatro números levam a lista que os explica, a lista dos
+ * últimos dez pedidos vem logo abaixo, e o aviso de estoque fecha a tela.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * Dois dos quatro cards. Faturamento do mes e produtos esgotados pertencem a
- * quem administra o catalogo; a lista de pedidos aparece sem a coluna de
- * total. Nao e a tela escondendo por precaucao — e o mesmo recorte que o
+ * Dois dos quatro cards. Faturamento do mês e produtos esgotados pertencem a
+ * quem administra o catálogo; a lista de pedidos aparece sem a coluna de
+ * total. Não e a tela escondendo por precaução — e o mesmo recorte que o
  * backend aplica, e que faz o papel existir.
  *
  * ## De onde vem o faturamento
  *
- * Nao ha rota de metricas na API. Os numeros sao somados aqui, a partir das
+ * Não há rota de metricas na API. Os números são somados aqui, a partir das
  * listagens — `features/admin/dashboard.ts` explica a conta e o limite dela.
- * Quando a soma parar na primeira pagina, o card diz que o valor e um piso,
- * em vez de mostrar um total que nao e total.
+ * Quando a soma parar na primeira página, o card diz que o valor e um piso,
+ * em vez de mostrar um total que não e total.
  */
 export default function AdminHomePage() {
   const role = useAdminRole();
@@ -169,7 +169,7 @@ export default function AdminHomePage() {
   );
 }
 
-/** "Bom dia" ate as 12, "Boa tarde" ate as 18, "Boa noite" depois. */
+/** "Bom dia" até as 12, "Boa tarde" até as 18, "Boa noite" depois. */
 function greeting(now: Date = new Date()): string {
   const hour = now.getHours();
 
@@ -183,9 +183,9 @@ function greeting(now: Date = new Date()): string {
 /**
  * "Bom dia, Rayane".
  *
- * So o primeiro nome, que e como a dona assina e como a equipe se chama. Sem
- * nome — a sessao guardada nao tem o usuario, so os tokens — fica so a
- * saudacao: "Bom dia," com a virgula orfa e pior do que "Bom dia".
+ * Só o primeiro nome, que e como a dona assina e como a equipe se chama. Sem
+ * nome — a sessão guardada não tem o usuário, só os tokens — fica só a
+ * saudação: "Bom dia," com a vírgula orfa e pior do que "Bom dia".
  */
 function welcome(name: string | undefined): string {
   const first = name === undefined ? '' : (name.trim().split(' ')[0] ?? '');

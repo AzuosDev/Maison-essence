@@ -29,8 +29,8 @@ describe('versionedEtag', () => {
   it('muda quando o corpo muda sozinho, com a mesma data de alteração', () => {
     const updatedAt = new Date('2026-09-20T12:00:00Z');
 
-    // O caso do banner agendado: ninguem tocou nas configuracoes, mas a home
-    // de hoje nao e a de ontem.
+    // O caso do banner agendado: ninguém tocou nas configurações, mas a home
+    // de hoje não e a de ontem.
     expect(versionedEtag(updatedAt, { banners: ['natal'] })).not.toBe(
       versionedEtag(updatedAt, { banners: [] }),
     );

@@ -3,28 +3,28 @@ import { cx } from '@/lib/cx';
 import styles from './empty-state.module.css';
 
 /**
- * O vazio com explicacao: sacola sem itens, busca sem resultado, painel sem
+ * O vazio com explicação: sacola sem itens, busca sem resultado, painel sem
  * pedidos do dia.
  *
- * Nunca e so "nada encontrado". Diz o que aconteceu e oferece a saida — e a
- * saida importa mais que o texto: uma busca sem resultado com um botao
+ * Nunca e só "nada encontrado". Diz o que aconteceu e oferece a saída — e a
+ * saída importa mais que o texto: uma busca sem resultado com um botão
  * "ver todos os perfumes" recupera a visita que um vazio mudo perderia.
  */
 export type EmptyStateProps = Omit<ComponentPropsWithoutRef<'div'>, 'title'> & {
   title: string;
   description?: ReactNode;
-  /** Um simbolo curto dentro do circulo de areia. */
+  /** Um símbolo curto dentro do círculo de areia. */
   icon?: ReactNode;
-  /** Um botao, ou dois. Nunca mais que isso. */
+  /** Um botão, ou dois. Nunca mais que isso. */
   actions?: ReactNode;
   /** Menos respiro: dentro de um card ou da gaveta da sacola. */
   compact?: boolean;
   /**
-   * O nivel do titulo no documento.
+   * O nível do título no documento.
    *
-   * `h1` existe para o vazio que **e** a tela: um pedido que nao abriu, uma
-   * pagina que nao existe. Nesses casos o estado vazio ocupa o lugar do
-   * conteudo inteiro, e um documento sem `h1` deixa quem navega por titulos
+   * `h1` existe para o vazio que **e** a tela: um pedido que não abriu, uma
+   * página que não existe. Nesses casos o estado vazio ocupa o lugar do
+   * conteúdo inteiro, e um documento sem `h1` deixa quem navega por títulos
    * sem ponto de partida.
    */
   as?: 'h1' | 'h2' | 'h3' | 'p';

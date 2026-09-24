@@ -10,16 +10,16 @@ import { ThemeToggle } from './theme-toggle';
 /**
  * O controle de tema contra o documento de verdade.
  *
- * O que importa aqui nao e o desenho: e o atributo no `<html>`, que e a unica
- * coisa que `tokens.css` le. Um controle que marca a opcao certa sem escrever
- * o atributo parece funcionar e nao muda cor nenhuma.
+ * O que importa aqui não e o desenho: e o atributo no `<html>`, que e a única
+ * coisa que `tokens.css` lê. Um controle que marca a opção certa sem escrever
+ * o atributo parece funcionar e não muda cor nenhuma.
  */
 
 beforeEach(() => {
   localStorage.clear();
   document.documentElement.removeAttribute('data-theme');
 
-  // O jsdom nao implementa `matchMedia`, e o provedor o consulta para
+  // O jsdom não implementa `matchMedia`, e o provedor o consulta para
   // resolver o modo `system`.
   vi.stubGlobal(
     'matchMedia',
@@ -53,7 +53,7 @@ test('as três opções são um grupo de radio, com o sistema marcado de início
   expect(screen.getByRole('radio', { name: /sistema/i })).toHaveProperty('checked', true);
 });
 
-test('escolher escuro escreve o atributo que o CSS le', async () => {
+test('escolher escuro escreve o atributo que o CSS lê', async () => {
   const user = userEvent.setup();
 
   abrir();
@@ -66,9 +66,9 @@ test('escolher escuro escreve o atributo que o CSS le', async () => {
 /**
  * Voltar para o sistema **apaga** o atributo.
  *
- * Nao escreve `data-theme="system"`: nao ha seletor para essa palavra em
- * `tokens.css`, e a pagina ficaria presa no claro mesmo com o aparelho no
- * escuro. E a ausencia do atributo que devolve a decisao para a `@media`.
+ * Não escreve `data-theme="system"`: não há seletor para essa palavra em
+ * `tokens.css`, e a página ficaria presa no claro mesmo com o aparelho no
+ * escuro. E a ausência do atributo que devolve a decisão para a `@media`.
  */
 test('voltar para o sistema remove o atributo em vez de escrever a palavra', async () => {
   const user = userEvent.setup();
@@ -102,14 +102,14 @@ test('a escolha guardada já vem marcada no primeiro render', () => {
   expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
 });
 
-/** O rotulo visivel e uma palavra; o grupo precisa dizer do que ele e. */
+/** O rótulo visível e uma palavra; o grupo precisa dizer do que ele e. */
 test('o grupo tem rótulo visível', () => {
   abrir();
 
   expect(screen.getByRole('group', { name: 'Tema' })).toBeDefined();
 });
 
-/* ---- O botao do cabecalho ------------------------------------------------ */
+/* ---- O botão do cabeçalho ------------------------------------------------ */
 
 function abrirBotao() {
   return render(
@@ -120,10 +120,10 @@ function abrirBotao() {
 }
 
 /**
- * A roda tem tres paradas e volta ao comeco.
+ * A roda tem três paradas e volta ao começo.
  *
- * Tres e o numero que torna um botao que gira aceitavel: o pior caso para
- * voltar ao que estava sao dois toques. Com quatro ou mais, girar deixa de
+ * Três e o número que torna um botão que gira aceitável: o pior caso para
+ * voltar ao que estava são dois toques. Com quatro ou mais, girar deixa de
  * ser atalho e vira caca.
  */
 test('o botão gira entre os três modos e volta ao sistema', async () => {
@@ -131,7 +131,7 @@ test('o botão gira entre os três modos e volta ao sistema', async () => {
 
   abrirBotao();
 
-  // Comeca no sistema: sem atributo, quem decide e a @media.
+  // Começa no sistema: sem atributo, quem decide e a @media.
   expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
 
   await user.click(screen.getByRole('button'));
@@ -145,10 +145,10 @@ test('o botão gira entre os três modos e volta ao sistema', async () => {
 });
 
 /**
- * O nome acessivel diz o estado **e** o destino.
+ * O nome acessível diz o estado **e** o destino.
  *
- * E a resposta a objecao de sempre contra um botao que gira: sem dizer para
- * onde vai, o proximo toque e um chute.
+ * E a resposta a objeção de sempre contra um botão que gira: sem dizer para
+ * onde vai, o próximo toque e um chute.
  */
 test('o botão anuncia o tema atual e para onde vai', async () => {
   const user = userEvent.setup();

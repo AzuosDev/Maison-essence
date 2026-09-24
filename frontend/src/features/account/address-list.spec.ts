@@ -4,15 +4,15 @@ import type { AccountAddress, AddressInput } from './account.types';
 import { addAddress, editAddress, makeDefault, removeAddress, toInputs } from './address-list';
 
 /**
- * Os enderecos salvos, como lista.
+ * Os endereços salvos, como lista.
  *
- * Toda acao da tela vira um `PATCH /customer/me` com a lista inteira, e o
- * que estes casos protegem e a unica regra que nao perdoa distracao:
- * **exatamente um endereco marcado como padrao, e ele e o que a pessoa
+ * Toda ação da tela vira um `PATCH /customer/me` com a lista inteira, e o
+ * que estes casos protegem e a única regra que não perdoa distração:
+ * **exatamente um endereço marcado como padrão, e ele e o que a pessoa
  * escolheu**.
  *
  * O servidor resolveria empates sozinho — o primeiro marcado vence, e sem
- * ninguem marcado o primeiro assume —, mas resolveria em silencio: a tela
+ * ninguém marcado o primeiro assume —, mas resolveria em silêncio: a tela
  * mandaria dois marcados e a lista voltaria diferente do que estava na tela.
  */
 
@@ -47,7 +47,7 @@ function form(over: Partial<AddressForm> = {}): AddressForm {
   };
 }
 
-/** Quais posicoes estao marcadas. Uma so deve voltar em toda operacao. */
+/** Quais posições estão marcadas. Uma só deve voltar em toda operação. */
 function defaults(list: readonly AddressInput[]): number[] {
   return list.flatMap((address, index) => (address.isDefault ? [index] : []));
 }
@@ -63,7 +63,7 @@ test('a cidade ausente não vira string vazia no corpo', () => {
 });
 
 test('o primeiro endereço da conta e padrão mesmo sem a caixa marcada', () => {
-  // A caixa nem aparece na tela nesse caso. Uma lista sem padrao faria cada
+  // A caixa nem aparece na tela nesse caso. Uma lista sem padrão faria cada
   // tela decidir sozinha qual usar, e elas decidiriam diferente.
   const list = addAddress([], form({ isDefault: false }));
 
@@ -93,8 +93,8 @@ test('marcar um endereço desmarca todos os outros', () => {
 });
 
 test('editar preserva o id, que e o que liga o endereço ao que esta gravado', () => {
-  // Sem o id, o servidor trataria a edicao como um endereco novo e o antigo
-  // sumiria — e um pedido que aponta para ele ficaria orfao.
+  // Sem o id, o servidor trataria a edição como um endereço novo e o antigo
+  // sumiria — e um pedido que aponta para ele ficaria orfão.
   const list = editAddress(toInputs([saved({ id: 'a1' })]), 'a1', form({ street: 'Rua Nova' }));
 
   expect(list[0]?.id).toBe('a1');
@@ -123,7 +123,7 @@ test('desmarcar o padrão quando ele e o único não tira a marca de ninguém', 
 
 test('editar um endereço que sumiu entre abrir e salvar não o ressuscita', () => {
   // Outra aba o excluiu. Gravar a lista com ele de volta desfaria uma
-  // exclusao que a pessoa fez de proposito.
+  // exclusão que a pessoa fez de propósito.
   const current = toInputs([saved({ id: 'a1', isDefault: true })]);
   const list = editAddress(current, 'sumiu', form());
 
@@ -155,7 +155,7 @@ test('excluir o último devolve lista vazia, e não uma lista com um fantasma', 
 });
 
 test('nenhuma operação deixa mais de um marcado', () => {
-  // A garantia que o servidor nao precisa desempatar. Duas marcas fariam a
+  // A garantia que o servidor não precisa desempatar. Duas marcas fariam a
   // lista voltar diferente do que a pessoa acabou de ver.
   const bagunca = toInputs([
     saved({ id: 'a1', isDefault: true }),

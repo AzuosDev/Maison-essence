@@ -2,10 +2,10 @@ import type { UserRole } from '../../common/enums/user-role.js';
 import type { UserDocument } from '../users/schemas/user.schema.js';
 
 /**
- * Discriminador gravado dentro do proprio token.
+ * Discriminador gravado dentro do próprio token.
  *
- * Os dois tokens tem segredos diferentes, entao a troca ja seria barrada na
- * assinatura; a claim existe como segunda barreira e para o erro sair legivel
+ * Os dois tokens tem segredos diferentes, então a troca já seria barrada na
+ * assinatura; a claim existe como segunda barreira e para o erro sair legível
  * no log em vez de "invalid signature".
  */
 export const TOKEN_TYPES = {
@@ -18,12 +18,12 @@ export type TokenType = (typeof TOKEN_TYPES)[keyof typeof TOKEN_TYPES];
 /**
  * Para quem o token foi emitido: o painel ou a loja.
  *
- * Vai na claim `aud` e e conferida na verificacao. Os segredos ja sao
- * diferentes, entao um token de cliente nunca passaria pela assinatura do
- * painel — a audiencia existe para que a separacao esteja escrita dentro do
- * proprio token, legivel por quem depura e obrigatoria para quem verifica. E
+ * Vai na claim `aud` e e conferida na verificação. Os segredos já são
+ * diferentes, então um token de cliente nunca passaria pela assinatura do
+ * painel — a audiência existe para que a separação esteja escrita dentro do
+ * próprio token, legível por quem depura e obrigatória para quem verifica. E
  * e ela que permite ao guard do painel reconhecer um token de cliente e
- * responder "esta area nao e sua" em vez de "credencial invalida".
+ * responder "esta área não e sua" em vez de "credencial inválida".
  */
 export const TOKEN_AUDIENCES = {
   ADMIN: 'maison-essence/admin',
@@ -35,11 +35,11 @@ export type TokenAudience = (typeof TOKEN_AUDIENCES)[keyof typeof TOKEN_AUDIENCE
 /**
  * Claims do access token do cliente.
  *
- * Nao ha `role`, e a ausencia e o ponto: nao existe papel administrativo que
- * caiba neste payload, entao nenhum valor vindo daqui pode virar permissao de
+ * Não há `role`, e a ausência e o ponto: não existe papel administrativo que
+ * caiba neste payload, então nenhum valor vindo daqui pode virar permissão de
  * painel. O que identifica a conta e o `sub`; `credentialVersion` faz o mesmo
- * que no painel — trocar a senha ou desativar a conta invalida na hora os
- * tokens ja emitidos.
+ * que no painel — trocar a senha ou desativar a conta inválida na hora os
+ * tokens já emitidos.
  */
 export interface CustomerAccessTokenPayload {
   sub: string;
@@ -57,7 +57,7 @@ export interface AccessTokenPayload {
   role: UserRole;
   /**
    * Copia de `User.credentialVersion`. O guard compara com o valor do banco:
-   * incrementar la invalida na hora todo access token ja emitido, sem esperar
+   * incrementar lá inválida na hora todo access token já emitido, sem esperar
    * os 15 minutos.
    */
   credentialVersion: number;
@@ -69,8 +69,8 @@ export interface AccessTokenPayload {
 }
 
 /**
- * Claims do refresh token. Carrega o minimo: o `jti` e o `_id` do documento em
- * `refresh_tokens`, e e por ele que a rotacao encontra a sessao.
+ * Claims do refresh token. Carrega o mínimo: o `jti` e o `_id` do documento em
+ * `refresh_tokens`, e e por ele que a rotação encontra a sessão.
  */
 export interface RefreshTokenPayload {
   sub: string;
@@ -80,7 +80,7 @@ export interface RefreshTokenPayload {
   exp?: number;
 }
 
-/** Usuario autenticado, como o guard o anexa ao request. */
+/** Usuário autenticado, como o guard o anexa ao request. */
 export interface AuthenticatedUser {
   id: string;
   name: string;
@@ -92,11 +92,11 @@ export interface AuthenticatedUser {
   lastLoginAt: Date | null;
 }
 
-/** Par de tokens emitido no login e em cada rotacao. */
+/** Par de tokens emitido no login e em cada rotação. */
 export interface IssuedTokens {
   accessToken: string;
   refreshToken: string;
-  /** Validade do access token em segundos, para o front agendar a renovacao. */
+  /** Validade do access token em segundos, para o front agendar a renovação. */
   expiresIn: number;
 }
 
@@ -107,11 +107,11 @@ export interface AuthSession extends IssuedTokens {
 }
 
 /**
- * Projeta o documento do usuario no que a sessao expoe.
+ * Projeta o documento do usuário no que a sessão expoe.
  *
  * Existe para que `passwordHash` nunca chegue perto da resposta por descuido:
- * o que o guard anexa ao request e o que `/auth/me` devolve sao este objeto,
- * montado campo a campo, e nao o documento do Mongoose.
+ * o que o guard anexa ao request e o que `/auth/me` devolve são este objeto,
+ * montado campo a campo, e não o documento do Mongoose.
  */
 export function toAuthenticatedUser(user: UserDocument): AuthenticatedUser {
   return {

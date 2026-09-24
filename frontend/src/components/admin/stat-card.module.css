@@ -1,8 +1,8 @@
 /*
- * O card de numero da abertura.
+ * O card de número da abertura.
  *
  * Superficie branca sobre o fundo frio do painel, com a borda fina do
- * sistema. Sem sombra: sao quatro caixas lado a lado, e quatro sombras
+ * sistema. Sem sombra: são quatro caixas lado a lado, e quatro sombras
  * fariam a primeira tela do painel parecer flutuar inteira.
  */
 
@@ -80,10 +80,10 @@
 }
 
 /*
- * O card que pede acao.
+ * O card que pede ação.
  *
- * Fundo dourado apagado e o numero no dourado escuro — o mesmo par que o
- * menu usa no item ativo. O icone acompanha, e com tudo em dia nenhum card
+ * Fundo dourado apagado e o número no dourado escuro — o mesmo par que o
+ * menu usa no item ativo. O ícone acompanha, e com tudo em dia nenhum card
  * acende.
  */
 .alert {

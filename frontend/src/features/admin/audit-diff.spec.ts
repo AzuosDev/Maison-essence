@@ -4,8 +4,8 @@ import { describeAction, describeField, describeValue, diffOf, isSensitive } fro
 /**
  * A trilha traduzida.
  *
- * O que estes casos protegem e a leitura: a auditoria so serve se quem abre
- * entende o que aconteceu sem consultar o codigo do backend. As duas formas
+ * O que estes casos protegem e a leitura: a auditoria só serve se quem abre
+ * entende o que aconteceu sem consultar o código do backend. As duas formas
  * de diff que o servidor grava — `{ from, to }` e `{ de, para }` — precisam
  * sair iguais do outro lado.
  */
@@ -15,8 +15,8 @@ test('a ação conhecida sai por extenso', () => {
 });
 
 test('a ação desconhecida sai como veio, e não some', () => {
-  // A trilha guarda dois anos: uma acao criada depois desta versao do painel
-  // tem de aparecer, ainda que sem traducao.
+  // A trilha guarda dois anos: uma ação criada depois desta versão do painel
+  // tem de aparecer, ainda que sem tradução.
   expect(describeAction('estoque.ajustado')).toBe('estoque.ajustado');
 });
 
@@ -75,7 +75,7 @@ test('o fato solto não inventa um valor anterior', () => {
 });
 
 test('o que o servidor apagou continua apagado', () => {
-  // A redacao acontece antes de gravar. O que esta em teste e que a tela nao
+  // A redação acontece antes de gravar. O que esta em teste e que a tela não
   // desfaz o trabalho dela ao formatar.
   const lines = diffOf({
     changes: { pixKey: { from: '[redigido]', to: '[redigido]' } },
@@ -86,6 +86,6 @@ test('o que o servidor apagou continua apagado', () => {
 });
 
 test('uma ação sem diff nenhum devolve lista vazia', () => {
-  // O login e sobre quem agiu: nao ha o que explicar em "entrou no painel".
+  // O login e sobre quem agiu: não há o que explicar em "entrou no painel".
   expect(diffOf({ changes: null, details: null })).toEqual([]);
 });

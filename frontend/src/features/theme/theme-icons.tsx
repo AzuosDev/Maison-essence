@@ -1,22 +1,22 @@
 import type { SVGProps } from 'react';
 
 /**
- * Os tres icones do tema.
+ * Os três ícones do tema.
  *
- * Moram aqui, e nao em `components/store/icons.tsx` junto dos outros, por
- * causa da direcao das dependencias: neste projeto `components` importa de
- * `features`, e nunca o contrario. O controle de tema e usado pela loja e
- * pelo painel, entao ele nao pode morar na pasta de nenhum dos dois — e, se
- * fica em `features`, nao alcanca o conjunto de icones de la.
+ * Moram aqui, e não em `components/store/icons.tsx` junto dos outros, por
+ * causa da direção das dependências: neste projeto `components` importa de
+ * `features`, e nunca o contrário. O controle de tema e usado pela loja e
+ * pelo painel, então ele não pode morar na pasta de nenhum dos dois — e, se
+ * fica em `features`, não alcança o conjunto de ícones de lá.
  *
- * O preco e este involucro de nove linhas repetido. Vale menos que inverter
+ * O preço e este involucro de nove linhas repetido. Vale menos que inverter
  * a regra por um desenho.
  *
- * Mesmo traco dos demais: 24 de caixa, 1.5 de espessura, sem preenchimento,
- * `currentColor`. Escolhidos para se distinguirem **pela silhueta** e nao
- * pelo detalhe — o botao mostra um por vez e quem olha precisa saber qual e
- * sem parar para examinar. Um retangulo, um circulo com raios e uma foice
- * nao se confundem a 20px.
+ * Mesmo traço dos demais: 24 de caixa, 1.5 de espessura, sem preenchimento,
+ * `currentColor`. Escolhidos para se distinguirem **pela silhueta** e não
+ * pelo detalhe — o botão mostra um por vez e quem olha precisa saber qual e
+ * sem parar para examinar. Um retângulo, um círculo com raios e uma foice
+ * não se confundem a 20px.
  */
 
 type IconProps = SVGProps<SVGSVGElement>;

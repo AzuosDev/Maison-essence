@@ -15,28 +15,28 @@ import {
 import { ADMIN_MAX_PAGE_SIZE, ORDER_STATUSES, type AdminOrderSummary } from './admin.types';
 
 /**
- * Os numeros da abertura do painel.
+ * Os números da abertura do painel.
  *
  * Quatro consultas, e cada uma responde uma pergunta que a dona faz de
  * manha:
  *
- * 1. **O mes** — os pedidos desde o dia primeiro. Dela saem duas respostas:
- *    o faturamento e quantos pedidos entraram hoje, porque os de hoje estao
- *    dentro do mes e a lista vem do mais novo para o mais antigo. Duas
+ * 1. **O mês** — os pedidos desde o dia primeiro. Dela saem duas respostas:
+ *    o faturamento e quantos pedidos entraram hoje, porque os de hoje estão
+ *    dentro do mês e a lista vem do mais novo para o mais antigo. Duas
  *    consultas para o mesmo intervalo seriam uma ida a rede a toa.
- * 2. **Pendentes de contato** — so a contagem. `limit: 1` e de proposito: a
- *    resposta que interessa e `totalItems`, e nao os pedidos.
- * 3. **Os ultimos dez** — a lista que ela realmente abre.
+ * 2. **Pendentes de contato** — só a contagem. `limit: 1` e de propósito: a
+ *    resposta que interessa e `totalItems`, e não os pedidos.
+ * 3. **Os últimos dez** — a lista que ela realmente abre.
  * 4. **Os produtos** — para o esgotados e o estoque baixo.
  *
- * Quatro `useQuery` fixos, e nao um `useQueries` com array: a lista nunca
- * muda de tamanho, e assim cada consulta mantem o tipo dela sem conversao
+ * Quatro `useQuery` fixos, e não um `useQueries` com array: a lista nunca
+ * muda de tamanho, e assim cada consulta mantem o tipo dela sem conversão
  * nenhuma no meio do caminho.
  *
  * ## Um minuto de frescor
  *
  * O painel fica aberto o dia inteiro numa aba. Um minuto e curto o bastante
- * para o numero acompanhar o expediente e longo o bastante para a tela nao
+ * para o número acompanhar o expediente e longo o bastante para a tela não
  * repetir quatro consultas a cada troca de aba.
  */
 const STALE_TIME_MS = 60_000;

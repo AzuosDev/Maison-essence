@@ -7,15 +7,15 @@ import { ROUTES } from './routes';
 /**
  * O que aparece quando uma rota quebra.
  *
- * Registrado como `errorElement` em cada rota, e nao so uma vez na raiz — e a
- * diferenca importa: um erro na pagina do produto troca o miolo da pagina e
- * deixa o cabecalho, o rodape e a sacola de pe, em vez de apagar a loja
+ * Registrado como `errorElement` em cada rota, e não só uma vez na raiz — e a
+ * diferença importa: um erro na página do produto troca o miolo da página e
+ * deixa o cabeçalho, o rodapé e a sacola de pé, em vez de apagar a loja
  * inteira e levar o cliente para uma tela branca. Quem esta comprando
  * continua tendo por onde sair.
  *
- * O React Router captura aqui tanto o erro de renderizacao quanto o que o
- * carregamento da rota lancar — inclusive o `import()` do lazy que falha
- * porque a conexao caiu no meio.
+ * O React Router captura aqui tanto o erro de renderização quanto o que o
+ * carregamento da rota lançar — inclusive o `import()` do lazy que falha
+ * porque a conexão caiu no meio.
  */
 export function RouteErrorBoundary() {
   const error = useRouteError();
@@ -30,7 +30,7 @@ export function RouteErrorBoundary() {
       description={description}
       actions={
         <>
-          {/* `navigate(0)` recarrega so a rota, sem recarregar o documento:
+          {/* `navigate(0)` recarrega só a rota, sem recarregar o documento:
               o que estava na sacola continua na sacola. */}
           <Button
             onClick={() => {
@@ -44,7 +44,7 @@ export function RouteErrorBoundary() {
           </ButtonLink>
         </>
       }
-      // O detalhe tecnico so em desenvolvimento: em producao ele nao ajuda
+      // O detalhe técnico só em desenvolvimento: em produção ele não ajuda
       // quem esta comprando e ainda conta mais do que deveria sobre a API.
       {...(import.meta.env.DEV ? { details: technicalDetails(error) } : {})}
     />
@@ -52,7 +52,7 @@ export function RouteErrorBoundary() {
 }
 
 /**
- * A frase que o cliente le, pelo tipo de erro.
+ * A frase que o cliente lê, pelo tipo de erro.
  *
  * Nenhuma delas culpa quem esta lendo, e todas dizem o que fazer a seguir.
  */
@@ -78,7 +78,7 @@ function describe(error: unknown): { title: string; description: string } {
     };
   }
 
-  // Resposta de rota do proprio React Router (`throw new Response(...)`).
+  // Resposta de rota do próprio React Router (`throw new Response(...)`).
   if (isRouteErrorResponse(error)) {
     return {
       title: 'Não foi possível carregar esta página',

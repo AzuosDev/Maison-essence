@@ -1,9 +1,9 @@
 /**
  * Regras do carrossel da home.
  *
- * Funcoes puras, longe do Mongoose, porque sao elas que decidem o que o
- * cliente ve: qual banner esta no ar agora e em que ordem. Testa-las sem
- * banco e o que permite escrever o caso "promocao que terminou ontem" sem
+ * Funções puras, longe do Mongoose, porque são elas que decidem o que o
+ * cliente vê: qual banner esta no ar agora e em que ordem. Testa-las sem
+ * banco e o que permite escrever o caso "promoção que terminou ontem" sem
  * montar um documento inteiro.
  */
 
@@ -18,13 +18,13 @@ export interface ScheduledBanner {
 /**
  * Se o banner esta no ar neste instante.
  *
- * O inicio e inclusivo e o fim e exclusivo: `endsAt` e o instante em que o
- * banner *sai*, nao o ultimo em que aparece. E como a dona pensa ao agendar
- * o Natal — "ate dia 25" significa que no dia 26, a zero hora, a arte ja
+ * O início e inclusivo e o fim e exclusivo: `endsAt` e o instante em que o
+ * banner *sai*, não o último em que aparece. E como a dona pensa ao agendar
+ * o Natal — "até dia 25" significa que no dia 26, a zero hora, a arte já
  * saiu do ar.
  *
  * `isActive` e o desligamento manual, independente do agendamento: serve
- * para tirar a arte do ar agora sem perder as datas que ja foram escolhidas.
+ * para tirar a arte do ar agora sem perder as datas que já foram escolhidas.
  */
 export function isBannerLive(banner: ScheduledBanner, now: Date): boolean {
   if (!banner.isActive) {
@@ -51,12 +51,12 @@ export function liveBanners<T extends ScheduledBanner>(
 }
 
 /**
- * Se o periodo de exibicao faz sentido.
+ * Se o período de exibição faz sentido.
  *
- * Um banner que termina antes de comecar nunca apareceria, e o painel
- * silenciosamente mostraria uma campanha salva que ninguem veria. Vale so
+ * Um banner que termina antes de começar nunca apareceria, e o painel
+ * silenciosamente mostraria uma campanha salva que ninguém veria. Vale só
  * quando as duas datas existem: uma ponta aberta significa "desde sempre" ou
- * "ate segunda ordem".
+ * "até segunda ordem".
  */
 export function hasValidWindow(banner: Pick<ScheduledBanner, 'startsAt' | 'endsAt'>): boolean {
   if (banner.startsAt === null || banner.endsAt === null) {
@@ -67,11 +67,11 @@ export function hasValidWindow(banner: Pick<ScheduledBanner, 'startsAt' | 'endsA
 }
 
 /**
- * Ids citados pelo painel que nao sao de banner nenhum.
+ * Ids citados pelo painel que não são de banner nenhum.
  *
  * O PATCH manda o array inteiro do carrossel, e banner com `id` e banner que
- * ja existe — manter o `id` e o que preserva a identidade da imagem entre
- * gravacoes. Id desconhecido quase sempre significa que outra pessoa apagou
+ * já existe — manter o `id` e o que preserva a identidade da imagem entre
+ * gravações. Id desconhecido quase sempre significa que outra pessoa apagou
  * o banner enquanto esta tela estava aberta, e sobrescrever nesse estado
  * ressuscitaria o que acabou de ser removido.
  */

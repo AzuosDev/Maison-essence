@@ -3,7 +3,7 @@ import { IsEmail, IsIn, IsOptional, IsString, MaxLength, MinLength } from 'class
 import type { UserRole } from '../../../common/enums/user-role.js';
 import { USER_ROLE_VALUES } from '../../../common/enums/user-role.js';
 
-/** Edicao de cadastro. Status e senha tem rota propria: sao acoes, nao campos. */
+/** Edição de cadastro. Status e senha tem rota própria: são ações, não campos. */
 export class UpdateUserDto {
   @IsOptional()
   @IsString()

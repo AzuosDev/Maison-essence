@@ -10,7 +10,7 @@ import {
 import { MAX_SLUG_LENGTH, applySlugFrom } from '../../../database/slug.js';
 import { MAX_CATEGORY_ORDER } from '../categories.constants.js';
 
-/** Categoria do catalogo. Aceita um unico nivel de subcategoria, via `parentId`. */
+/** Categoria do catálogo. Aceita um único nível de subcategoria, via `parentId`. */
 @Schema(baseSchemaOptions({ collection: 'categories' }))
 export class Category extends BaseSchema {
   @Prop(textProp({ required: true, max: 80 }))
@@ -20,8 +20,8 @@ export class Category extends BaseSchema {
   slug: string;
 
   /**
-   * Slugs que esta categoria ja teve. Permite responder o link antigo com um
-   * redirecionamento em vez de 404 — o endereco anterior continua circulando
+   * Slugs que esta categoria já teve. Permite responder o link antigo com um
+   * redirecionamento em vez de 404 — o endereço anterior continua circulando
    * no WhatsApp depois que a dona renomeia a categoria.
    */
   @Prop({ type: [String], default: [] })
@@ -34,12 +34,12 @@ export class Category extends BaseSchema {
   @Prop(objectIdProp({ ref: 'Category', default: null }))
   parentId: Types.ObjectId | null;
 
-  /** `publicId` do Cloudinary, nao a URL: trocar de conta ou de transformacao
-   * depois nao exige migrar dado nenhum. */
+  /** `publicId` do Cloudinary, não a URL: trocar de conta ou de transformação
+   * depois não exige migrar dado nenhum. */
   @Prop(textProp({ max: 200, default: '' }))
   image: string;
 
-  /** Posicao no menu. A rota de reorder regrava a lista inteira. */
+  /** Posição no menu. A rota de reorder regrava a lista inteira. */
   @Prop(integerProp({ default: 0, max: MAX_CATEGORY_ORDER }))
   order: number;
 
@@ -55,5 +55,5 @@ applySlugFrom(CategorySchema, 'name');
 
 CategorySchema.index({ slug: 1 }, { unique: true });
 CategorySchema.index({ previousSlugs: 1 });
-// Monta a arvore do menu: filhos de um pai, ja na ordem certa.
+// Monta a árvore do menu: filhos de um pai, já na ordem certa.
 CategorySchema.index({ parentId: 1, order: 1 });

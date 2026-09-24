@@ -9,27 +9,27 @@ import styles from './product-gallery.module.css';
  * A galeria do produto.
  *
  * Uma foto grande e um jeito de chegar as outras — miniaturas em coluna no
- * desktop, pontos no celular. Os dois conjuntos fazem a mesma coisa, entao
- * so um e montado: com os dois no documento e um escondido por CSS, quem usa
- * leitor de tela ouviria "foto 2" duas vezes e nao saberia qual das duas
+ * desktop, pontos no celular. Os dois conjuntos fazem a mesma coisa, então
+ * só um e montado: com os dois no documento e um escondido por CSS, quem usa
+ * leitor de tela ouviria "foto 2" duas vezes e não saberia qual das duas
  * listas esta vendo.
  *
  * ## Ampliar, de dois jeitos
  *
  * No desktop, o cursor e a lupa: a foto amplia duas vezes e o ponto sob o
- * cursor fica parado, porque e para la que a pessoa esta olhando. E o
- * comportamento de vitrine que todo mundo ja conhece, e nao pede clique
+ * cursor fica parado, porque e para lá que a pessoa esta olhando. E o
+ * comportamento de vitrine que todo mundo já conhece, e não pede clique
  * nenhum.
  *
  * No celular, a pinca — `usePinchZoom`, que explica o gesto. As duas coisas
- * nao coexistem: o aparelho ou tem cursor fino ou tem dedo.
+ * não coexistem: o aparelho ou tem cursor fino ou tem dedo.
  *
  * ## A troca de foto
  *
- * Quem controla o indice e a pagina, e nao a galeria. E o que permite a
- * escolha de uma variante com foto propria trocar a foto principal — a
- * pagina resolve qual foto e a da variante e diz qual mostrar. Uma galeria
- * com indice proprio precisaria ser avisada por efeito, e piscaria na foto
+ * Quem controla o índice e a página, e não a galeria. E o que permite a
+ * escolha de uma variante com foto própria trocar a foto principal — a
+ * página resolve qual foto e a da variante e diz qual mostrar. Uma galeria
+ * com índice próprio precisaria ser avisada por efeito, e piscaria na foto
  * antiga antes de obedecer.
  */
 
@@ -39,7 +39,7 @@ const DESKTOP = '(min-width: 64rem)';
 /** Aparelho com cursor de verdade: e onde a lupa faz sentido. */
 const FINE_POINTER = '(hover: hover) and (pointer: fine)';
 
-/** Quanto a lupa amplia. Duas vezes le o rotulo sem virar mosaico. */
+/** Quanto a lupa amplia. Duas vezes lê o rótulo sem virar mosaico. */
 const MAGNIFIER_SCALE = 2;
 
 /** A foto ocupa metade da tela no desktop e a largura inteira no celular. */
@@ -57,8 +57,8 @@ export interface ProductGalleryProps {
 export function ProductGallery({ images, alt, index, onIndexChange }: ProductGalleryProps) {
   const isDesktop = useMediaQuery(DESKTOP);
   const canMagnify = useMediaQuery(FINE_POINTER);
-  // A coluna de miniaturas so e reservada na grade quando ela existe de
-  // fato. Produto de foto unica nao monta a lista, e um `grid-template`
+  // A coluna de miniaturas só e reservada na grade quando ela existe de
+  // fato. Produto de foto única não monta a lista, e um `grid-template`
   // fixo em duas faixas jogaria a foto grande dentro dos 5rem da primeira.
   const hasThumbs = isDesktop && images.length > 1;
 
@@ -69,8 +69,8 @@ export function ProductGallery({ images, alt, index, onIndexChange }: ProductGal
   const total = images.length;
 
   const select = (next: number): void => {
-    // A ampliacao nao sobrevive a troca de foto: ficar no 3x sobre um canto
-    // da foto nova nao e o que ninguem pediu ao clicar na miniatura.
+    // A ampliação não sobrevive a troca de foto: ficar no 3x sobre um canto
+    // da foto nova não e o que ninguém pediu ao clicar na miniatura.
     pinch.reset();
     setOrigin(null);
     onIndexChange(next);
@@ -108,7 +108,7 @@ export function ProductGallery({ images, alt, index, onIndexChange }: ProductGal
                 onClick={() => {
                   select(position);
                 }}
-                // A foto grande ja fica pronta antes do clique.
+                // A foto grande já fica pronta antes do clique.
                 onMouseEnter={() => {
                   select(position);
                 }}

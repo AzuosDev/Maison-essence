@@ -2,22 +2,22 @@ import { cx } from '@/lib/cx';
 import styles from './section-heading.module.css';
 
 /**
- * O cabecalho de uma secao da loja.
+ * O cabeçalho de uma seção da loja.
  *
- * Filete dourado, titulo em serifada e uma linha de apoio opcional, tudo
+ * Filete dourado, título em serifada e uma linha de apoio opcional, tudo
  * centralizado — e o desenho que separa as prateleiras da home e que a
  * vitrine reaproveita.
  *
- * O nivel do titulo e escolhido por quem usa, e isso nao e preferencia de
- * estilo: a home tem um `<h1>` so, no hero, e as prateleiras abaixo dele sao
- * `<h2>`. Um componente que fixasse `<h2>` obrigaria a proxima tela que
+ * O nível do título e escolhido por quem usa, e isso não e preferência de
+ * estilo: a home tem um `<h1>` só, no hero, e as prateleiras abaixo dele são
+ * `<h2>`. Um componente que fixasse `<h2>` obrigaria a próxima tela que
  * precisar de `<h3>` a copia-lo inteiro.
  */
 interface SectionHeadingProps {
   title: string;
   description?: string | undefined;
   as?: 'h2' | 'h3';
-  /** O `id` do titulo, para o `aria-labelledby` da secao. */
+  /** O `id` do título, para o `aria-labelledby` da seção. */
   titleId?: string | undefined;
   className?: string | undefined;
 }

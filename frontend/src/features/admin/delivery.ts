@@ -11,38 +11,38 @@ import {
  *
  * ## Por que a linha guarda texto
  *
- * Mesma razao do cadastro de produto: no banco a taxa e um inteiro em
+ * Mesma razão do cadastro de produto: no banco a taxa e um inteiro em
  * centavos, na tela e o que a dona esta digitando, e no meio do caminho ela
  * passa por `1`, `15`, `15,` — nenhum dos quais e um valor. O rascunho guarda
- * texto, e a conversao acontece uma vez, na saida, depois de validar.
+ * texto, e a conversão acontece uma vez, na saída, depois de validar.
  *
- * ## Tres campos, tres significados de "vazio"
+ * ## Três campos, três significados de "vazio"
  *
- * - **taxa vazia** e invalida. Zero e legitimo — "nao cobro para entregar
- *   aqui" —, mas em branco nao diz nada, e uma cidade sem taxa cadastrada
- *   nao pode entrar no checkout.
+ * - **taxa vazia** e inválida. Zero e legitimo — "não cobro para entregar
+ *   aqui" —, mas em branco não diz nada, e uma cidade sem taxa cadastrada
+ *   não pode entrar no checkout.
  * - **prazo vazio** vira zero, que significa "no mesmo dia". E o valor que a
  *   loja usa na cidade dela.
- * - **frete gratis vazio** e `null`, e `null` nao e "nao tem frete gratis":
- *   e "esta cidade nao tem regra propria", e ela passa a seguir o minimo
+ * - **frete grátis vazio** e `null`, e `null` não e "não tem frete grátis":
+ *   e "esta cidade não tem regra própria", e ela passa a seguir o mínimo
  *   global da loja. Confundir os dois faria a dona apagar sem querer a
- *   isencao de uma cidade achando que estava apagando nada.
+ *   isenção de uma cidade achando que estava apagando nada.
  *
  * ## Por que existe um diff
  *
- * A linha e salva ao sair do campo, e quase sempre um campo so mudou. Mandar
- * a linha inteira a cada saida sobrescreveria com valores antigos o que outra
- * aba — ou a propria dona, em outra linha — acabou de mudar. `changesOf`
- * devolve so o que difere do que veio do servidor.
+ * A linha e salva ao sair do campo, e quase sempre um campo só mudou. Mandar
+ * a linha inteira a cada saída sobrescreveria com valores antigos o que outra
+ * aba — ou a própria dona, em outra linha — acabou de mudar. `changesOf`
+ * devolve só o que difere do que veio do servidor.
  */
 
-/** Uma linha da tabela, com os numeros como texto. */
+/** Uma linha da tabela, com os números como texto. */
 export interface CityDraft {
   name: string;
   state: string;
   /** `15,00`. */
   fee: string;
-  /** Dias uteis, como inteiro digitado. */
+  /** Dias úteis, como inteiro digitado. */
   days: string;
   /** Vazio quando a cidade segue a regra global da loja. */
   freeFrom: string;
@@ -51,15 +51,15 @@ export interface CityDraft {
 /** Onde os erros aparecem, por campo. */
 export type CityErrors = Partial<Record<keyof CityDraft, string>>;
 
-/** A cidade salva, aberta para edicao. */
+/** A cidade salva, aberta para edição. */
 export function draftFromCity(city: AdminDeliveryCity): CityDraft {
   return {
     name: city.name,
     state: city.state,
     fee: centsToInput(city.feeCents),
     days: String(city.estimatedDays),
-    // `null` e "sem regra propria", e vira campo vazio — e nao `0,00`, que
-    // seria "frete gratis em qualquer pedido".
+    // `null` e "sem regra própria", e vira campo vazio — e não `0,00`, que
+    // seria "frete grátis em qualquer pedido".
     freeFrom: city.minOrderForFreeCents === null ? '' : centsToInput(city.minOrderForFreeCents),
   };
 }
@@ -72,8 +72,8 @@ export function emptyCityDraft(): CityDraft {
 /**
  * O que impede a linha de ser salva.
  *
- * Confere o que o servidor conferiria, e nada alem: uma tela que inventa
- * regra propria recusa o que a API aceitaria, e quem esta do outro lado nao
+ * Confere o que o servidor conferiria, e nada além: uma tela que inventa
+ * regra própria recusa o que a API aceitaria, e quem esta do outro lado não
  * tem como saber qual das duas esta errada.
  */
 export function validateCity(draft: CityDraft): CityErrors {
@@ -127,7 +127,7 @@ export function hasCityErrors(errors: CityErrors): boolean {
   return Object.keys(errors).length > 0;
 }
 
-/** O corpo do `POST`. A validacao ja passou quando esta funcao e chamada. */
+/** O corpo do `POST`. A validação já passou quando esta função e chamada. */
 export function draftToCreate(draft: CityDraft): CreateDeliveryCityInput {
   return {
     name: draft.name.trim(),
@@ -139,9 +139,9 @@ export function draftToCreate(draft: CityDraft): CreateDeliveryCityInput {
 }
 
 /**
- * Só o que mudou em relacao ao que veio do servidor.
+ * Só o que mudou em relação ao que veio do servidor.
  *
- * Devolve `null` quando nada mudou, e quem chama usa isso para nao gastar uma
+ * Devolve `null` quando nada mudou, e quem chama usa isso para não gastar uma
  * chamada — sair de um campo sem alterar nada e o gesto mais comum de quem
  * esta conferindo a tabela.
  */
@@ -184,9 +184,9 @@ export function changesOf(
  * O prazo em palavras, igual ao que a loja escreve.
  *
  * Copia fiel de `estimatedLabelOf` do backend, e a fidelidade e o ponto: o
- * prazo que a dona ve no painel precisa ser a mesma frase que a cliente le no
- * checkout. "Ate" porque o numero cadastrado e o pior caso — prometer "em 3
- * dias" e criar reclamacao no segundo dia.
+ * prazo que a dona vê no painel precisa ser a mesma frase que a cliente lê no
+ * checkout. "Até" porque o número cadastrado e o pior caso — prometer "em 3
+ * dias" e criar reclamação no segundo dia.
  */
 export function estimatedLabel(days: number): string {
   if (days <= 0) {

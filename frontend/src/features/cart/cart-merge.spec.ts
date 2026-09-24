@@ -6,10 +6,10 @@ import { MAX_LINE_QUANTITY, type CartLine } from './cart.types';
 /**
  * A mescla de sacolas, que e a conta do login.
  *
- * Somar quantidade parece trivial ate a primeira sacola em que o mesmo
- * perfume aparece em dois tamanhos: ai a diferenca entre "mesma linha" e
+ * Somar quantidade parece trivial até a primeira sacola em que o mesmo
+ * perfume aparece em dois tamanhos: aí a diferença entre "mesma linha" e
  * "linha diferente" decide se o cliente leva dois frascos ou quatro. Os
- * casos abaixo sao essa diferenca, mais o que chega do `localStorage`, que e
+ * casos abaixo são essa diferença, mais o que chega do `localStorage`, que e
  * texto que qualquer coisa pode ter escrito.
  */
 
@@ -72,11 +72,11 @@ test('cada cliente tem a sua, e uma não vê a da outra', () => {
 });
 
 /**
- * O caso que este modulo existe para conter.
+ * O caso que este módulo existe para conter.
  *
- * Uma versao anterior desta loja guardava `unitPriceCents` na linha, e essas
- * sacolas continuam no navegador de quem comprou antes. O preco de la nao
- * pode atravessar a leitura — ele tem semanas e nao vale nada.
+ * Uma versão anterior desta loja guardava `unitPriceCents` na linha, e essas
+ * sacolas continuam no navegador de quem comprou antes. O preço de lá não
+ * pode atravessar a leitura — ele tem semanas e não vale nada.
  */
 test('preço vindo de uma sacola antiga e descartado na leitura', () => {
   localStorage.setItem(

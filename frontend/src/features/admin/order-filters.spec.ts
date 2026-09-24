@@ -12,16 +12,16 @@ import {
 /**
  * O recorte da tela de pedidos.
  *
- * Tres coisas erram em silencio aqui, e sao as tres que estes casos cobram:
- * um endereco adulterado que vira consulta invalida, um fuso que perde os
- * pedidos da noite, e uma pagina que nao volta ao inicio quando o filtro
- * muda — o defeito que faz a lista aparecer vazia e a dona concluir que nao
+ * Três coisas erram em silêncio aqui, e são as três que estes casos cobram:
+ * um endereço adulterado que vira consulta inválida, um fuso que perde os
+ * pedidos da noite, e uma página que não volta ao início quando o filtro
+ * muda — o defeito que faz a lista aparecer vazia e a dona concluir que não
  * vendeu nada.
  */
 
-/* ---- O que o endereco diz ------------------------------------------------ */
+/* ---- O que o endereço diz ------------------------------------------------ */
 
-test('le o recorte que o endereço descreve', () => {
+test('lê o recorte que o endereço descreve', () => {
   const filters = readOrderFilters(
     new URLSearchParams('q=ME-260922&status=CONFIRMED&from=2026-09-01&to=2026-09-30&page=3'),
   );
@@ -40,8 +40,8 @@ test('endereço vazio e o recorte vazio', () => {
 });
 
 test('status desconhecido vira qualquer status', () => {
-  // Alguem traduziu o valor a mao, ou colou um endereco de uma versao
-  // anterior. O resultado precisa ser a lista inteira, e nao um filtro que
+  // Alguém traduziu o valor a mão, ou colou um endereço de uma versão
+  // anterior. O resultado precisa ser a lista inteira, e não um filtro que
   // o backend recusa com 400.
   expect(readOrderFilters(new URLSearchParams('status=ENTREGUE')).status).toBe('');
 });
@@ -59,7 +59,7 @@ test('página inválida volta a ser a primeira', () => {
   expect(readOrderFilters(new URLSearchParams('page=abc')).page).toBe(1);
 });
 
-/* ---- O que o endereco escreve -------------------------------------------- */
+/* ---- O que o endereço escreve -------------------------------------------- */
 
 test('o que esta vazio não entra no endereço', () => {
   expect(orderFiltersToSearch(EMPTY_ORDER_FILTERS)).toEqual({});
@@ -98,13 +98,13 @@ test('campo vazio não viaja para a API', () => {
 test('o período vira instante no fuso de quem esta olhando', () => {
   const params = orderListParams({ ...EMPTY_ORDER_FILTERS, from: '2026-09-22', to: '2026-09-22' });
 
-  // Sem a conversao, `2026-09-22` viraria meia-noite UTC — e o pedido das
+  // Sem a conversão, `2026-09-22` viraria meia-noite UTC — e o pedido das
   // 22h do dia 21 em Fortaleza cairia dentro do filtro de "a partir do dia
   // 22". O instante precisa ser a meia-noite local.
   expect(new Date(String(params.from)).getHours()).toBe(0);
   expect(new Date(String(params.from)).getDate()).toBe(22);
 
-  // E o fim do dia e o dia inteiro: "ate 22/09" inclui o pedido das 23h50.
+  // E o fim do dia e o dia inteiro: "até 22/09" inclui o pedido das 23h50.
   expect(new Date(String(params.to)).getHours()).toBe(23);
   expect(new Date(String(params.to)).getDate()).toBe(22);
 });

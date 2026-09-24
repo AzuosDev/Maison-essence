@@ -9,20 +9,20 @@ import { formatBrazilianPhone } from './phone.js';
  * A mensagem que o cliente envia para a loja, montada no servidor.
  *
  * Montar isto no frontend seria entregar o texto do pedido a quem tem o
- * console aberto: a dona le a mensagem e acredita nela — e ela quem confere o
- * total, o endereco e a forma de pagamento antes de separar o perfume. O texto
+ * console aberto: a dona lê a mensagem e acredita nela — e ela quem confere o
+ * total, o endereço e a forma de pagamento antes de separar o perfume. O texto
  * precisa vir do mesmo lugar que gravou o pedido, e o que esta aqui e
  * exatamente o que fica em `Order.whatsappMessage`.
  *
- * Funcao pura, sem banco e sem HTTP, porque o layout e o tipo de coisa que se
+ * Função pura, sem banco e sem HTTP, porque o layout e o tipo de coisa que se
  * confere lendo: cada linha deste arquivo vira uma linha na tela do celular da
  * dona, e um teste que compara texto e mais honesto do que um que conta
  * campos.
  *
- * Sobre a formatacao do WhatsApp: `*texto*` vira negrito no aplicativo, e a
+ * Sobre a formatação do WhatsApp: `*texto*` vira negrito no aplicativo, e a
  * quebra de linha e `\n` mesmo — o `encodeURIComponent` a transforma em `%0A`,
- * que e o que faz a mensagem chegar quebrada em vez de virar um paragrafo
- * unico ilegivel.
+ * que e o que faz a mensagem chegar quebrada em vez de virar um parágrafo
+ * único ilegível.
  */
 
 /** Um item do pedido, como a mensagem precisa dele. */
@@ -36,7 +36,7 @@ export interface WhatsappItem {
   lineTotalCents: number;
 }
 
-/** O endereco de entrega, ja copiado do pedido. */
+/** O endereço de entrega, já copiado do pedido. */
 export interface WhatsappAddress {
   street: string;
   number: string;
@@ -53,15 +53,15 @@ export interface WhatsappFulfillment {
   state: string;
   estimatedDays: number;
   feeCents: number;
-  /** Por que a entrega saiu de graca. Vazio quando ha taxa. */
+  /** Por que a entrega saiu de graça. Vazio quando há taxa. */
   freeReason: string;
   /** `null` na retirada. */
   address: WhatsappAddress | null;
-  /** Onde e como retirar, das configuracoes da loja. */
+  /** Onde e como retirar, das configurações da loja. */
   pickupInstructions: string;
 }
 
-/** A forma de pagamento escolhida, ja resolvida contra as regras da loja. */
+/** A forma de pagamento escolhida, já resolvida contra as regras da loja. */
 export interface WhatsappPayment {
   method: PaymentMethod;
   installments: number;
@@ -70,12 +70,12 @@ export interface WhatsappPayment {
   /** A primeira parcela, que carrega o centavo do arredondamento. */
   firstInstallmentCents: number;
   hasInterest: boolean;
-  /** Quanto o cliente paga no fim, ja com juros quando houver. */
+  /** Quanto o cliente paga no fim, já com juros quando houver. */
   financedTotalCents: number;
 }
 
 export interface WhatsappTotals {
-  /** Soma das linhas ja com o desconto por quantidade descontado. */
+  /** Soma das linhas já com o desconto por quantidade descontado. */
   subtotalCents: number;
   discountTotalCents: number;
   deliveryFeeCents: number;
@@ -118,10 +118,10 @@ export function buildWhatsappMessage(order: WhatsappOrder): string {
 /**
  * O link que abre a conversa com a mensagem preenchida.
  *
- * Vazio quando a loja ainda nao cadastrou o numero: o pedido continua gravado
- * e visivel no painel, e o que falta e o caminho ate o WhatsApp. Devolver um
- * `wa.me/` sem numero seria pior — abriria o aplicativo num erro que o cliente
- * nao tem como resolver.
+ * Vazio quando a loja ainda não cadastrou o número: o pedido continua gravado
+ * e visível no painel, e o que falta e o caminho até o WhatsApp. Devolver um
+ * `wa.me/` sem número seria pior — abriria o aplicativo num erro que o cliente
+ * não tem como resolver.
  */
 export function whatsappUrlOf(storeNumber: string, message: string): string {
   return storeNumber === ''
@@ -130,11 +130,11 @@ export function whatsappUrlOf(storeNumber: string, message: string): string {
 }
 
 /**
- * Duas ou tres linhas por item: o que e, quanto custa e o desconto quando ha.
+ * Duas ou três linhas por item: o que e, quanto custa e o desconto quando há.
  *
  * O item vem numerado porque a dona confere a mensagem contra os frascos que
- * separou na bancada, e "o terceiro" e mais rapido de achar do que o nome
- * inteiro de um arabe que ela leu de relance.
+ * separou na bancada, e "o terceiro" e mais rápido de achar do que o nome
+ * inteiro de um árabe que ela leu de relance.
  */
 function itemLines(item: WhatsappItem, position: number): string[] {
   const name =
@@ -153,12 +153,12 @@ function itemLines(item: WhatsappItem, position: number): string[] {
 }
 
 /**
- * O resumo dos valores, escrito para fechar na conta de quem le.
+ * O resumo dos valores, escrito para fechar na conta de quem lê.
  *
  * O subtotal aqui e o bruto — a soma das linhas antes do desconto por
- * quantidade — e nao o `subtotalCents` do pedido, que ja vem descontado. E a
- * unica forma de as quatro linhas somarem o total na ponta do lapis: exibir o
- * subtotal liquido e ainda mostrar a linha de desconto faria o desconto
+ * quantidade — e não o `subtotalCents` do pedido, que já vem descontado. E a
+ * única forma de as quatro linhas somarem o total na ponta do lapis: exibir o
+ * subtotal líquido e ainda mostrar a linha de desconto faria o desconto
  * aparecer duas vezes para quem conferisse.
  */
 function summaryLines(totals: WhatsappTotals, fulfillment: WhatsappFulfillment): string[] {
@@ -175,7 +175,7 @@ function summaryLines(totals: WhatsappTotals, fulfillment: WhatsappFulfillment):
   ];
 }
 
-/** A taxa, ou a isencao com o motivo que a cidade ou a loja deram. */
+/** A taxa, ou a isenção com o motivo que a cidade ou a loja deram. */
 function feeLine(totals: WhatsappTotals, fulfillment: WhatsappFulfillment): string {
   return totals.deliveryFeeCents === 0
     ? `Entrega: grátis${fulfillment.freeReason === '' ? '' : ` (${fulfillment.freeReason})`}`
@@ -185,10 +185,10 @@ function feeLine(totals: WhatsappTotals, fulfillment: WhatsappFulfillment): stri
 /**
  * Uma linha dizendo como o cliente vai pagar.
  *
- * No cartao parcelado vai junto a primeira parcela quando ela difere das
- * outras. Sao centavos, e e justamente por serem centavos que precisam estar
- * escritos: a diferenca entre "3x de R$ 33,33" e o que a fatura mostra e a
- * primeira duvida que chega no WhatsApp.
+ * No cartão parcelado vai junto a primeira parcela quando ela difere das
+ * outras. São centavos, e e justamente por serem centavos que precisam estar
+ * escritos: a diferença entre "3x de R$ 33,33" e o que a fatura mostra e a
+ * primeira dúvida que chega no WhatsApp.
  */
 function paymentLine(payment: WhatsappPayment): string {
   if (payment.method === PAYMENT_METHODS.PIX) {
@@ -229,7 +229,7 @@ function fulfillmentLines(fulfillment: WhatsappFulfillment): string[] {
   ];
 }
 
-/** `Rua X, 123 - Apto 2` e o resto, cada pedaco so quando existe. */
+/** `Rua X, 123 - Apto 2` e o resto, cada pedaço só quando existe. */
 function addressLines(address: WhatsappAddress): string[] {
   const street = [address.street, address.number].filter(Boolean).join(', ');
 

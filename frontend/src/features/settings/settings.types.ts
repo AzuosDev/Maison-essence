@@ -1,10 +1,10 @@
 /**
- * As configuracoes da loja, como a API publica as entrega.
+ * As configurações da loja, como a API publica as entrega.
  *
  * Espelho de `PublicSettingsView` e `PublicPageSummary` do backend, escrito a
- * mao porque as duas pastas sao projetos separados. Sao os campos que a
- * moldura da loja desenha em toda pagina — barra de avisos, cabecalho,
- * rodape e o botao do WhatsApp.
+ * mão porque as duas pastas são projetos separados. São os campos que a
+ * moldura da loja desenha em toda página — barra de avisos, cabeçalho,
+ * rodapé e o botão do WhatsApp.
  */
 
 export interface AddressView {
@@ -23,7 +23,7 @@ export interface SocialLinks {
   tiktok: string;
 }
 
-/** Banner da home, ja filtrado pelo agendamento. */
+/** Banner da home, já filtrado pelo agendamento. */
 export interface PublicBanner {
   id: string;
   imageDesktop: string;
@@ -36,9 +36,9 @@ export interface PublicBanner {
 
 export interface PublicSettings {
   storeName: string;
-  /** So digitos, com codigo do pais: `5588999999999`. */
+  /** Só digitos, com código do pais: `5588999999999`. */
   whatsappNumber: string;
-  /** `https://wa.me/<numero>`, pronto para o `href`. Vazio quando nao ha numero. */
+  /** `https://wa.me/<numero>`, pronto para o `href`. Vazio quando não há número. */
   whatsappLink: string;
   /** O texto que rola na barra preta do topo. */
   announcementText: string;
@@ -53,8 +53,8 @@ export interface PublicSettings {
 }
 
 /**
- * Os enderecos institucionais sao fixos: a dona edita titulo e conteudo,
- * nunca o endereco, porque esses links circulam no WhatsApp.
+ * Os endereços institucionais são fixos: a dona edita título e conteúdo,
+ * nunca o endereço, porque esses links circulam no WhatsApp.
  */
 export const INSTITUTIONAL_PAGE_SLUGS = {
   ABOUT: 'quem-somos',
@@ -67,22 +67,22 @@ export const INSTITUTIONAL_PAGE_SLUGS = {
 export type InstitutionalPageSlug =
   (typeof INSTITUTIONAL_PAGE_SLUGS)[keyof typeof INSTITUTIONAL_PAGE_SLUGS];
 
-/** O que o rodape precisa para montar a lista de links institucionais. */
+/** O que o rodapé precisa para montar a lista de links institucionais. */
 export interface PublicPageSummary {
   slug: InstitutionalPageSlug;
   title: string;
 }
 
 /**
- * Uma pagina institucional inteira, com o texto.
+ * Uma página institucional inteira, com o texto.
  *
- * O `slug` e `string`, e nao `InstitutionalPageSlug`: as abas da pagina do
- * produto leem paginas pelo endereco, e a lista fechada pode ganhar um item
- * no backend antes de este arquivo saber dele. O que garante que a pagina
- * existe nao e o tipo — e a listagem de `/pages`, que so traz o que esta
+ * O `slug` e `string`, e não `InstitutionalPageSlug`: as abas da página do
+ * produto leem páginas pelo endereço, e a lista fechada pode ganhar um item
+ * no backend antes de este arquivo saber dele. O que garante que a página
+ * existe não e o tipo — e a listagem de `/pages`, que só traz o que esta
  * publicado.
  *
- * O conteudo e Markdown, do jeito que a dona escreveu no painel. Quem
+ * O conteúdo e Markdown, do jeito que a dona escreveu no painel. Quem
  * renderiza e `lib/markdown`.
  */
 export interface PublicPage {

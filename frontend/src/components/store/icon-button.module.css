@@ -1,8 +1,8 @@
 /*
- * Os botoes de icone do cabecalho: lupa, sacola, hamburguer.
+ * Os botões de ícone do cabeçalho: lupa, sacola, hamburguer.
  *
- * Alvo de toque de 44px, que e o minimo confortavel no celular, mesmo com o
- * icone desenhado em 20px. O quadrado invisivel em volta e o que faz o dedo
+ * Alvo de toque de 44px, que e o mínimo confortável no celular, mesmo com o
+ * ícone desenhado em 20px. O quadrado invisível em volta e o que faz o dedo
  * acertar de primeira.
  */
 
@@ -12,8 +12,8 @@
   align-items: center;
   justify-content: center;
 
-  /* `flex: none` porque o botao mora numa linha flex apertada: sem ele o alvo
-     de 44px encolhe ate a largura do desenho e o dedo erra. */
+  /* `flex: none` porque o botão mora numa linha flex apertada: sem ele o alvo
+     de 44px encolhe até a largura do desenho e o dedo erra. */
   flex: none;
   width: 2.75rem;
   height: 2.75rem;
@@ -34,8 +34,8 @@
 /*
  * O contador da sacola.
  *
- * Fica no canto do icone e nunca cresce alem de duas casas — "99+" cabe, e
- * uma sacola com mais de 99 itens nao existe nesta loja.
+ * Fica no canto do ícone e nunca cresce além de duas casas — "99+" cabe, e
+ * uma sacola com mais de 99 itens não existe nesta loja.
  */
 .counter {
   position: absolute;
@@ -64,17 +64,17 @@
 /*
  * A batida do contador quando um item entra.
  *
- * Sai de 1, cresce e volta — nunca comeca invisivel nem fora do lugar. Um
+ * Sai de 1, cresce e volta — nunca começa invisível nem fora do lugar. Um
  * contador que nasce em `scale(0)` piscaria a cada item adicionado, e o que
- * se quer aqui e o oposto: chamar o olho para um numero que **ja estava**
+ * se quer aqui e o oposto: chamar o olho para um número que **já estava**
  * ali e acabou de mudar.
  *
  * O dourado no meio do caminho e a marca aparecendo por um quarto de
- * segundo. Ele volta ao preto sozinho: o contador e informacao permanente, e
- * informacao permanente nesta loja e preta.
+ * segundo. Ele volta ao preto sozinho: o contador e informação permanente, e
+ * informação permanente nesta loja e preta.
  *
  * `prefers-reduced-motion` e tratado globalmente em `reset.css`, que reduz
- * toda animacao a 0,01ms — esta inclusive.
+ * toda animação a 0,01ms — esta inclusive.
  */
 .bump {
   animation: bump 320ms var(--ease);

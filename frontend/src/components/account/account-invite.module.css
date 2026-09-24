@@ -1,9 +1,9 @@
 /*
  * O convite.
  *
- * Centralizado e com ar, como um cartao de boas-vindas — e nao como um aviso
- * de acesso negado. A moldura e a areia da marca, e nao a faixa vermelha de
- * erro: nada deu errado aqui, so ainda nao ha sessao.
+ * Centralizado e com ar, como um cartão de boas-vindas — e não como um aviso
+ * de acesso negado. A moldura e a areia da marca, e não a faixa vermelha de
+ * erro: nada deu errado aqui, só ainda não há sessão.
  */
 
 .invite {
@@ -51,8 +51,8 @@
 
 /*
  * A frase que de fato convence: o pedido de convidado entra na conta. Fica
- * num bloco proprio, sobre areia, porque e a unica informacao desta tela que
- * o cliente nao conseguiria adivinhar sozinho.
+ * num bloco próprio, sobre areia, porque e a única informação desta tela que
+ * o cliente não conseguiria adivinhar sozinho.
  */
 .adoption {
   padding: var(--space-12) var(--space-16);
@@ -72,7 +72,7 @@
 
 /*
  * Empilhados no celular, lado a lado a partir do respiro de 640px. Empilhar
- * e o padrao porque e onde isto e lido: o botao ocupa a largura toda e cai
+ * e o padrão porque e onde isto e lido: o botão ocupa a largura toda e cai
  * debaixo do polegar.
  */
 .actions {
@@ -90,7 +90,7 @@
 }
 
 /*
- * A saida. Separada por um filete porque nao e uma terceira opcao do mesmo
+ * A saída. Separada por um filete porque não e uma terceira opção do mesmo
  * bloco: e o lembrete de que este bloco inteiro e opcional.
  */
 .escape {

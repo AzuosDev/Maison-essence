@@ -14,7 +14,7 @@ describe('normalizeBrazilianPhone', () => {
   });
 
   it('recusa fixo de oito digitos', () => {
-    // O pedido vai para o WhatsApp: numero que nao recebe WhatsApp nao serve.
+    // O pedido vai para o WhatsApp: número que não recebe WhatsApp não serve.
     expect(normalizeBrazilianPhone('8836110000')).toBeNull();
   });
 
@@ -42,7 +42,7 @@ describe('normalizeBrazilianPhone', () => {
 });
 
 describe('formatBrazilianPhone', () => {
-  it('escreve o número como se le', () => {
+  it('escreve o número como se lê', () => {
     expect(formatBrazilianPhone('88999999999')).toBe('(88) 99999-9999');
   });
 

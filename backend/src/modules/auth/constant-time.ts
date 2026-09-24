@@ -1,12 +1,12 @@
 /**
- * Roda a operacao e so devolve o resultado depois de `minimumMs`.
+ * Roda a operação e só devolve o resultado depois de `minimumMs`.
  *
- * E um piso, nao um relogio: operacao mais lenta que o piso nao e cortada. O
- * que ele elimina e a diferenca sistematica entre caminhos — responder em 5 ms
- * quando o e-mail nao existe e em 60 ms quando existe entrega a lista de
- * usuarios a quem so cronometra as respostas.
+ * E um piso, não um relógio: operação mais lenta que o piso não e cortada. O
+ * que ele elimina e a diferença sistemática entre caminhos — responder em 5 ms
+ * quando o e-mail não existe e em 60 ms quando existe entrega a lista de
+ * usuários a quem só cronometra as respostas.
  *
- * O `finally` cobre tambem a falha: o 401 espera o mesmo tanto que o 200.
+ * O `finally` cobre também a falha: o 401 espera o mesmo tanto que o 200.
  */
 export async function withMinimumDuration<T>(
   minimumMs: number,

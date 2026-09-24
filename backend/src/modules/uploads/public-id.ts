@@ -7,16 +7,16 @@ import { slugify } from '../../database/slug.js';
 const MAX_NAME_SLUG_LENGTH = 60;
 
 /**
- * Monta o identificador da foto: pasta, nome legivel e sorteio.
+ * Monta o identificador da foto: pasta, nome legível e sorteio.
  *
  * O nome vem do arquivo que a dona escolheu, passado pelo mesmo `slugify` do
  * resto do projeto — `Asad Lattafa.jpg` vira `asad-lattafa-9f3a1c2b`, que ela
- * reconhece na biblioteca do Cloudinary. Identificador so sorteado seria
- * unico e ilegivel, e a conta viraria um monte de hexadecimal.
+ * reconhece na biblioteca do Cloudinary. Identificador só sorteado seria
+ * único e ilegível, e a conta viraria um monte de hexadecimal.
  *
- * O sorteio no fim garante que duas fotos de mesmo nome nao se sobrescrevam —
- * e, como o `publicId` inteiro vai assinado, tambem impede que uma assinatura
- * reaproveitada substitua uma foto ja publicada.
+ * O sorteio no fim garante que duas fotos de mesmo nome não se sobrescrevam —
+ * e, como o `publicId` inteiro vai assinado, também impede que uma assinatura
+ * reaproveitada substitua uma foto já publicada.
  */
 export function buildPublicId(folder: UploadFolder, filename?: string): string {
   const name = slugify(stripExtension(filename ?? ''))
@@ -27,7 +27,7 @@ export function buildPublicId(folder: UploadFolder, filename?: string): string {
   return `${UPLOAD_FOLDERS[folder]}/${name.length > 0 ? `${name}-${suffix}` : suffix}`;
 }
 
-/** `asad.jpg` vira `asad`; `asad.v2` fica como esta se nao parecer extensao. */
+/** `asad.jpg` vira `asad`; `asad.v2` fica como esta se não parecer extensão. */
 function stripExtension(filename: string): string {
   return filename.replace(/\.[a-z0-9]{1,5}$/i, '');
 }

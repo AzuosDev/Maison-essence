@@ -52,7 +52,7 @@
   height: 100%;
   background: var(--ink);
 
-  /* A barra cresce quando o passo avanca: o movimento e o recado, e sem ele
+  /* A barra cresce quando o passo avança: o movimento e o recado, e sem ele
      o salto de 25% acontece entre dois quadros e passa despercebido. */
   transition: inline-size var(--duration) var(--ease);
 }
@@ -72,8 +72,8 @@
    * Quatro colunas iguais, ligadas por um filete.
    *
    * O filete e um `::before` que atravessa cada item a partir do segundo, e
-   * nao uma linha de fundo atras de tudo: assim ele comeca e termina nos
-   * marcadores, e nao sobra ponta para fora do primeiro e do ultimo.
+   * não uma linha de fundo atrás de tudo: assim ele começa e termina nos
+   * marcadores, e não sobra ponta para fora do primeiro e do último.
    */
   .trail {
     display: grid;
@@ -103,8 +103,8 @@
     background: var(--line);
   }
 
-  /* O trecho ja percorrido fica escuro: a linha conta a mesma historia que
-     os marcadores, para quem le a trilha de longe. */
+  /* O trecho já percorrido fica escuro: a linha conta a mesma história que
+     os marcadores, para quem lê a trilha de longe. */
   .done::before,
   .current::before {
     background: var(--ink);
@@ -124,7 +124,7 @@
     text-align: center;
   }
 
-  /* So o passo cumprido e um `<button>`; o resto e `<span>`. */
+  /* Só o passo cumprido e um `<button>`; o resto e `<span>`. */
   button.link {
     cursor: pointer;
   }
@@ -167,10 +167,10 @@
   }
 
   /*
-   * Cumprido: circulo preto com o visto.
+   * Cumprido: círculo preto com o visto.
    *
-   * O preto cheio e o mesmo do botao primario — e o unico peso forte da
-   * paleta, e aqui ele marca o que ja foi resolvido.
+   * O preto cheio e o mesmo do botão primário — e o único peso forte da
+   * paleta, e aqui ele marca o que já foi resolvido.
    */
   .done .marker {
     background: var(--ink);
@@ -191,9 +191,9 @@
   }
 
   /*
-   * Atual: contorno preto e rotulo preto, sem preenchimento.
+   * Atual: contorno preto e rótulo preto, sem preenchimento.
    *
-   * A diferenca entre cumprido e atual nao e de cor, e de peso: um esta
+   * A diferença entre cumprido e atual não e de cor, e de peso: um esta
    * resolvido (cheio), o outro esta em aberto (contorno). Usar duas cores
    * para isso exigiria uma terceira cor na paleta e diria menos.
    */

@@ -1,10 +1,10 @@
 /*
- * O painel de categorias: largura total, abaixo do cabecalho.
+ * O painel de categorias: largura total, abaixo do cabeçalho.
  *
- * So existe a partir de 1024px — no celular e no tablet o caminho das
- * categorias e a gaveta, com a arvore em acordeao. Um painel de colunas numa
- * tela de 375px viraria uma lista vertical enorme escondida atras de um
- * hover que nao existe no toque.
+ * Só existe a partir de 1024px — no celular e no tablet o caminho das
+ * categorias e a gaveta, com a árvore em acordeão. Um painel de colunas numa
+ * tela de 375px viraria uma lista vertical enorme escondida atrás de um
+ * hover que não existe no toque.
  */
 
 .panel {
@@ -26,7 +26,7 @@
 }
 
 /*
- * Colunas que se acomodam sozinhas: cada categoria ocupa no minimo 12rem, e
+ * Colunas que se acomodam sozinhas: cada categoria ocupa no mínimo 12rem, e
  * o navegador decide quantas cabem. Sem media query, e sem coluna orfa
  * quando a dona cadastra a sexta categoria.
  */
@@ -95,7 +95,7 @@
   color: var(--ink-soft);
 }
 
-/* O rodape do painel: o atalho para a vitrine inteira. */
+/* O rodapé do painel: o atalho para a vitrine inteira. */
 .footer {
   display: flex;
   justify-content: flex-end;

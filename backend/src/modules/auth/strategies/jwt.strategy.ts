@@ -15,12 +15,12 @@ import { TOKEN_TYPES, toAuthenticatedUser } from '../auth.types.js';
  * Valida o access token de cada request.
  *
  * O token e aceito no cookie ou no `Authorization: Bearer` — nessa ordem,
- * porque o painel usa cookie e o cabecalho e a saida para o cliente que nao
+ * porque o painel usa cookie e o cabeçalho e a saída para o cliente que não
  * recebe cookie cross-site.
  *
- * O `validate` vai ao banco. Custa uma leitura por request e e o preco de
- * `credentialVersion` valer alguma coisa: sem ela, desativar um usuario ou
- * derrubar as sessoes dele so faria efeito quando o token expirasse, ate 15
+ * O `validate` vai ao banco. Custa uma leitura por request e e o preço de
+ * `credentialVersion` valer alguma coisa: sem ela, desativar um usuário ou
+ * derrubar as sessões dele só faria efeito quando o token expirasse, até 15
  * minutos depois.
  */
 @Injectable()
@@ -51,8 +51,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       !user.isActive ||
       user.credentialVersion !== payload.credentialVersion
     ) {
-      // Usuario removido, desativado ou com as credenciais versionadas depois
-      // da emissao: o token e valido na assinatura e invalido no conteudo.
+      // Usuário removido, desativado ou com as credenciais versionadas depois
+      // da emissão: o token e válido na assinatura e inválido no conteúdo.
       throw new UnauthorizedException('Sessão inválida.');
     }
 

@@ -10,17 +10,17 @@ import { ORDER_IP_RATE_LIMIT } from './orders.constants.js';
 import { OrdersService } from './orders.service.js';
 
 /**
- * Validacao propria do corpo do pedido, sem `forbidNonWhitelisted`.
+ * Validação própria do corpo do pedido, sem `forbidNonWhitelisted`.
  *
- * Mesma razao da cotacao, e precisa ser a mesma: o checkout manda a sacola do
- * `localStorage`, que carrega nome, foto e preco de cada item. Se a cotacao
+ * Mesma razão da cotação, e precisa ser a mesma: o checkout manda a sacola do
+ * `localStorage`, que carrega nome, foto e preço de cada item. Se a cotação
  * ignora esses campos e o pedido os recusasse com 400, o cliente atravessaria
- * a loja inteira para esbarrar num erro de integracao no ultimo clique —
+ * a loja inteira para esbarrar num erro de integração no último clique —
  * justamente onde ele desiste.
  *
- * O que nao esta no DTO e descartado aqui, antes de qualquer conta. O preco
- * que vale e o que o servidor busca no banco; o unico numero do cliente que e
- * lido e `expectedTotalCents`, e ele nao entra em conta nenhuma: serve para
+ * O que não esta no DTO e descartado aqui, antes de qualquer conta. O preço
+ * que vale e o que o servidor busca no banco; o único número do cliente que e
+ * lido e `expectedTotalCents`, e ele não entra em conta nenhuma: serve para
  * ser comparado.
  */
 const ORDER_BODY = new ValidationPipe({
@@ -30,18 +30,18 @@ const ORDER_BODY = new ValidationPipe({
 });
 
 /**
- * A criacao do pedido pelo checkout.
+ * A criação do pedido pelo checkout.
  *
- * Publica, como a cotacao: exigir cadastro para comprar seria perder a venda
- * na ultima tela, e a conta de cliente e opcional por desenho. Quem identifica
+ * Publica, como a cotação: exigir cadastro para comprar seria perder a venda
+ * na última tela, e a conta de cliente e opcional por desenho. Quem identifica
  * o pedido e o telefone.
  *
  * O limite de cinco por dez minutos por IP fica no guard; o mesmo limite por
- * telefone fica no servico, porque so la o numero ja esta normalizado. Sao os
- * dois lados do mesmo flood: a mesma maquina insistindo e o mesmo cliente
+ * telefone fica no serviço, porque só lá o número já esta normalizado. São os
+ * dois lados do mesmo flood: a mesma máquina insistindo e o mesmo cliente
  * chegando de outra.
  *
- * `201` aqui, diferente do `200` da cotacao: este e o unico lugar do checkout
+ * `201` aqui, diferente do `200` da cotação: este e o único lugar do checkout
  * onde alguma coisa passa a existir.
  */
 @Public()
@@ -52,8 +52,8 @@ export class OrdersController {
   constructor(private readonly orders: OrdersService) {}
 
   /**
-   * `@OptionalCustomer()` e a unica coisa que a conta de cliente acrescenta
-   * aqui: com sessao, o pedido nasce ligado a ela; sem sessao, `null` e o
+   * `@OptionalCustomer()` e a única coisa que a conta de cliente acrescenta
+   * aqui: com sessão, o pedido nasce ligado a ela; sem sessão, `null` e o
    * checkout segue exatamente como antes. Nenhum campo do corpo mudou, e
    * nenhuma resposta depende de estar logado — a conta e uma comodidade,
    * nunca um requisito para comprar.
@@ -64,8 +64,8 @@ export class OrdersController {
     @OptionalCustomer() customer: AuthenticatedCustomer | null,
   ): Promise<CreatedOrderView> {
     // O pipe acima devolve um `CreateOrderDto` validado e sem os campos que
-    // nao pertencem a ele; o tipo do parametro e `object` so para o pipe
-    // global nao tentar valida-lo antes (ver `cart.controller.ts`).
+    // não pertencem a ele; o tipo do parâmetro e `object` só para o pipe
+    // global não tentar valida-lo antes (ver `cart.controller.ts`).
     return this.orders.create(body as CreateOrderDto, customer);
   }
 }

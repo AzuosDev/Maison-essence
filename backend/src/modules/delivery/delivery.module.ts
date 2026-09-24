@@ -9,13 +9,13 @@ import { PublicDeliveryController } from './public-delivery.controller.js';
 /**
  * Entrega: as cidades atendidas, a taxa de cada uma e a retirada na loja.
  *
- * Importa `SettingsModule` porque metade da regra mora la — a flag de
- * retirada, o endereco da loja e o minimo global de frete gratis sao
- * configuracao da loja, nao da cidade. Sao coisas que a dona edita na mesma
+ * Importa `SettingsModule` porque metade da regra mora lá — a flag de
+ * retirada, o endereço da loja e o mínimo global de frete grátis são
+ * configuração da loja, não da cidade. São coisas que a dona edita na mesma
  * tela e que valem para todas as cidades de uma vez.
  *
- * Exporta `DeliveryService` porque o modulo de pedidos vai chamar
- * `resolveFee` — e essa e a unica maneira prevista de um pedido chegar a uma
+ * Exporta `DeliveryService` porque o módulo de pedidos vai chamar
+ * `resolveFee` — e essa e a única maneira prevista de um pedido chegar a uma
  * taxa de entrega.
  */
 @Module({

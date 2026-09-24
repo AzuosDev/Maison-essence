@@ -1,9 +1,9 @@
 /*
  * As abas do produto.
  *
- * O texto e para ser lido de ponta a ponta, e nao varrido: a medida fica
+ * O texto e para ser lido de ponta a ponta, e não varrido: a medida fica
  * presa em 68 caracteres mesmo quando o bloco tem 1280px de largura. Linha
- * de cem caracteres faz o olho perder o comeco da proxima, e uma politica de
+ * de cem caracteres faz o olho perder o começo da próxima, e uma política de
  * trocas mal lida vira uma conversa no WhatsApp.
  */
 
@@ -36,8 +36,8 @@
 }
 
 /*
- * Mais espaco acima de um titulo do que abaixo: e o que faz o titulo
- * pertencer ao texto que vem depois dele, e nao ao que ficou para tras.
+ * Mais espaço acima de um título do que abaixo: e o que faz o título
+ * pertencer ao texto que vem depois dele, e não ao que ficou para trás.
  */
 .prose h3,
 .prose h4,
@@ -91,8 +91,8 @@
 /*
  * O link com sublinhado afastado da letra.
  *
- * O padrao do navegador corta o descendente do "g" e do "p"; dois pixels de
- * folga e a diferenca entre um link que parece desenhado e um que parece
+ * O padrão do navegador corta o descendente do "g" e do "p"; dois pixels de
+ * folga e a diferença entre um link que parece desenhado e um que parece
  * herdado.
  */
 .prose a {

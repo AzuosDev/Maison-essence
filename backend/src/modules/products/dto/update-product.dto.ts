@@ -15,13 +15,13 @@ import { MAX_IMAGES, MAX_VARIANTS } from '../products.constants.js';
 import { ProductVariantDto } from './product-variant.dto.js';
 
 /**
- * Edicao do produto. Campo omitido fica como esta.
+ * Edição do produto. Campo omitido fica como esta.
  *
  * `variants`, quando vem, vem inteiro: a lista recebida passa a ser a lista
  * do produto, e o que sumiu dela e removido ou aposentado. Enviar um array
  * parcial apagaria o resto sem querer — o painel manda o que a tela mostra.
  *
- * O endereco (`slug`) nao esta aqui: ele ja foi para o WhatsApp de alguem, e
+ * O endereço (`slug`) não esta aqui: ele já foi para o WhatsApp de alguém, e
  * troca-lo exige guardar o anterior para redirecionar, como a categoria faz.
  */
 export class UpdateProductDto {
@@ -46,7 +46,7 @@ export class UpdateProductDto {
   @IsMongoId({ each: true, message: 'categoria inválida' })
   categoryIds?: string[];
 
-  /** `publicId`s do Cloudinary, so das pastas da loja. Ver o DTO de criacao. */
+  /** `publicId`s do Cloudinary, só das pastas da loja. Ver o DTO de criação. */
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(MAX_IMAGES)

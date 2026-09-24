@@ -25,12 +25,12 @@ import type {
  * As chamadas do painel.
  *
  * Todas no escopo `ADMIN`: o token do painel e outro, o refresh e outro, e um
- * `401` aqui renova a sessao da dona — nunca a do cliente que talvez esteja
+ * `401` aqui renova a sessão da dona — nunca a do cliente que talvez esteja
  * logado na mesma aba.
  *
- * Os caminhos sao os do backend (`/admin/...`, em ingles), e nao os das rotas
- * da tela (`/admin/pedidos`). Sao vocabularios diferentes de proposito: um e
- * contrato, o outro e endereco que a dona le.
+ * Os caminhos são os do backend (`/admin/...`, em inglês), e não os das rotas
+ * da tela (`/admin/pedidos`). São vocabulários diferentes de propósito: um e
+ * contrato, o outro e endereço que a dona lê.
  */
 
 /* ---- Pedidos ------------------------------------------------------------ */
@@ -56,10 +56,10 @@ export function fetchOrder(id: string, signal?: AbortSignal): Promise<AdminOrder
 /**
  * Move o pedido de status.
  *
- * E a unica acao do painel que o cliente sente do outro lado: o mesmo pedido
- * aparece atualizado na conta dele e na confirmacao que ele guardou. Por isso
- * quem chama invalida a familia inteira de pedidos — a lista, a contagem do
- * Inicio e o detalhe falam do mesmo dado.
+ * E a única ação do painel que o cliente sente do outro lado: o mesmo pedido
+ * aparece atualizado na conta dele e na confirmação que ele guardou. Por isso
+ * quem chama inválida a família inteira de pedidos — a lista, a contagem do
+ * Início e o detalhe falam do mesmo dado.
  */
 export function updateOrderStatus(
   id: string,
@@ -73,7 +73,7 @@ export function updateOrderStatus(
   );
 }
 
-/** A anotacao interna do pedido. */
+/** A anotação interna do pedido. */
 export function updateOrderNotes(
   id: string,
   notes: string,
@@ -109,8 +109,8 @@ export function fetchAdminProduct(id: string, signal?: AbortSignal): Promise<Adm
 /**
  * Publica ou despublica um produto.
  *
- * Rota propria (`PATCH /admin/products/:id/status`), e nao o `PATCH` inteiro:
- * e o que permite ao interruptor da tabela mandar um campo so, sem carregar
+ * Rota própria (`PATCH /admin/products/:id/status`), e não o `PATCH` inteiro:
+ * e o que permite ao interruptor da tabela mandar um campo só, sem carregar
  * o produto inteiro para devolve-lo com uma flag diferente.
  */
 export function updateProductStatus(
@@ -125,7 +125,7 @@ export function updateProductStatus(
   );
 }
 
-/** Cria o produto. O endereco (`slug`) so pode ser escolhido aqui. */
+/** Cria o produto. O endereço (`slug`) só pode ser escolhido aqui. */
 export function createProduct(
   input: CreateProductInput,
   signal?: AbortSignal,
@@ -137,11 +137,11 @@ export function createProduct(
 }
 
 /**
- * Salva a edicao.
+ * Salva a edição.
  *
  * O array de variantes vai **inteiro**: a lista enviada passa a ser a lista
- * do produto, e o que sumiu dela e removido ou aposentado do lado de la. E
- * por isso que a tela manda o que ela mostra, e nunca um pedaco.
+ * do produto, e o que sumiu dela e removido ou aposentado do lado de lá. E
+ * por isso que a tela manda o que ela mostra, e nunca um pedaço.
  */
 export function updateProduct(
   id: string,
@@ -157,9 +157,9 @@ export function updateProduct(
 /**
  * Apaga o produto.
  *
- * Diferente do pedido, que so e cancelado: um produto cadastrado por engano
- * nao tem historico a preservar. O servidor recusa quando ha pedido
- * apontando para ele, e a tela mostra a frase de la.
+ * Diferente do pedido, que só e cancelado: um produto cadastrado por engano
+ * não tem histórico a preservar. O servidor recusa quando há pedido
+ * apontando para ele, e a tela mostra a frase de lá.
  */
 export function deleteProduct(id: string, signal?: AbortSignal): Promise<void> {
   return api.delete<void>(`/admin/products/${encodeURIComponent(id)}`, {
@@ -171,10 +171,10 @@ export function deleteProduct(id: string, signal?: AbortSignal): Promise<void> {
 /* ---- Categorias ---------------------------------------------------------- */
 
 /**
- * A arvore inteira, em uma chamada.
+ * A árvore inteira, em uma chamada.
  *
- * Sem paginacao e sem filtro: uma loja de perfumes tem dezenas de
- * categorias, nao milhares, e tanto o seletor do formulario quanto o filtro
+ * Sem paginação e sem filtro: uma loja de perfumes tem dezenas de
+ * categorias, não milhares, e tanto o seletor do formulário quanto o filtro
  * da listagem precisam dela completa para desenhar pai e filho juntos.
  */
 export function listAdminCategories(signal?: AbortSignal): Promise<AdminCategoryNode[]> {
@@ -198,8 +198,8 @@ export function createCategory(
  * Edita a categoria. Campo omitido fica como esta.
  *
  * `parentId: null` promove a subcategoria a categoria principal — e por isso
- * o tipo aceita `null` de verdade, e nao so a ausencia: sao duas intencoes
- * diferentes, e confundi-las faria "tirar de dentro de Masculino" virar "nao
+ * o tipo aceita `null` de verdade, e não só a ausência: são duas intenções
+ * diferentes, e confundi-las faria "tirar de dentro de Masculino" virar "não
  * mexer no pai".
  */
 export function updateCategory(
@@ -217,10 +217,10 @@ export function updateCategory(
  * Regrava a ordem do menu.
  *
  * A lista vai inteira e em ordem de menu — cada pai seguido dos filhos dele —,
- * e nao so o item que se moveu: o servidor grava `order = indice` para cada
- * id citado, e a posicao de um so faz sentido em relacao a dos outros.
+ * e não só o item que se moveu: o servidor grava `order = indice` para cada
+ * id citado, e a posição de um só faz sentido em relação a dos outros.
  *
- * A resposta e a arvore ja reordenada, que a tela adota no lugar do retrato
+ * A resposta e a árvore já reordenada, que a tela adota no lugar do retrato
  * otimista.
  */
 export function reorderCategories(
@@ -237,7 +237,7 @@ export function reorderCategories(
 /**
  * Exclui a categoria, se ela estiver vazia.
  *
- * O servidor recusa com 409 quando ha subcategoria ou produto ativo, e manda
+ * O servidor recusa com 409 quando há subcategoria ou produto ativo, e manda
  * as contagens em `details` — e com elas que a tela oferece desativar, que
  * costuma ser o que a dona queria: some do menu da loja sem que nenhum
  * produto saia do lugar.
@@ -254,8 +254,8 @@ export function deleteCategory(id: string, signal?: AbortSignal): Promise<void> 
 /**
  * As cidades atendidas, todas de uma vez.
  *
- * Sem paginacao: uma loja atende dez ou vinte cidades, e a tela precisa da
- * lista inteira para que a dona compare as taxas entre elas — que e a razao
+ * Sem paginação: uma loja atende dez ou vinte cidades, e a tela precisa da
+ * lista inteira para que a dona compare as taxas entre elas — que e a razão
  * de a tela existir.
  */
 export function listDeliveryCities(signal?: AbortSignal): Promise<AdminDeliveryCity[]> {
@@ -301,8 +301,8 @@ export function reorderDeliveryCities(
 /**
  * Exclui a cidade.
  *
- * Sem checagem, ao contrario da exclusao de categoria: o pedido guarda nome,
- * estado, prazo e taxa em copia propria, e continua legivel depois que a
+ * Sem checagem, ao contrário da exclusão de categoria: o pedido guarda nome,
+ * estado, prazo e taxa em copia própria, e continua legível depois que a
  * cidade some. O que se perde e poder voltar a atender ali sem recadastrar —
  * e por isso a tela oferece desativar.
  */
@@ -316,10 +316,10 @@ export function deleteDeliveryCity(id: string, signal?: AbortSignal): Promise<vo
 /* ---- Pagamento ----------------------------------------------------------- */
 
 /**
- * Poe ou tira o produto da prateleira de pronta entrega.
+ * Põe ou tira o produto da prateleira de pronta entrega.
  *
- * Usa o `PATCH` do produto com um campo so — o DTO aceita parcial —, e nao
- * uma rota propria como a de status: o interruptor de publicar existe em duas
+ * Usa o `PATCH` do produto com um campo só — o DTO aceita parcial —, e não
+ * uma rota própria como a de status: o interruptor de publicar existe em duas
  * telas e mereceu o atalho; este existe em uma, e uma rota a mais para ele
  * seria superficie de API sem quem a use.
  */
@@ -339,8 +339,8 @@ export function setProductReadyToShip(
  * As regras de pagamento, com a chave PIX inteira.
  *
  * `MANAGES_STORE` inclusive na leitura: o backend recusa o STAFF antes de
- * responder, e a tela nao chega a pedir. O nome carrega o `admin` porque a
- * loja tem a sua propria `fetchPaymentSettings`, que devolve outra coisa —
+ * responder, e a tela não chega a pedir. O nome carrega o `admin` porque a
+ * loja tem a sua própria `fetchPaymentSettings`, que devolve outra coisa —
  * as formas aceitas, sem a chave.
  */
 export function fetchAdminPaymentSettings(signal?: AbortSignal): Promise<AdminPaymentSettings> {
@@ -353,9 +353,9 @@ export function fetchAdminPaymentSettings(signal?: AbortSignal): Promise<AdminPa
 /**
  * Grava as regras.
  *
- * Documento unico: nao ha `:id`. A resposta vem com tudo ja normalizado pelo
+ * Documento único: não há `:id`. A resposta vem com tudo já normalizado pelo
  * servidor — a chave de telefone volta como `+5588...` — e e ela que entra no
- * cache, e nao o que foi enviado.
+ * cache, e não o que foi enviado.
  */
 export function updatePaymentSettings(
   input: UpdatePaymentSettingsInput,
@@ -367,14 +367,14 @@ export function updatePaymentSettings(
   });
 }
 
-/* ---- Configuracoes da loja ------------------------------------------------ */
+/* ---- Configurações da loja ------------------------------------------------ */
 
 /**
- * As configuracoes inteiras, inclusive o que nao esta no ar.
+ * As configurações inteiras, inclusive o que não esta no ar.
  *
  * `MANAGES_STORE` inclusive na leitura. O nome carrega o `admin` porque a
- * loja tem a sua propria `fetchSettings`, que devolve o subconjunto publico —
- * sem banner agendado, sem pagina despublicada.
+ * loja tem a sua própria `fetchSettings`, que devolve o subconjunto público —
+ * sem banner agendado, sem página despublicada.
  */
 export function fetchAdminSettings(signal?: AbortSignal): Promise<AdminStoreSettings> {
   return api.get<AdminStoreSettings>('/admin/settings', {
@@ -384,11 +384,11 @@ export function fetchAdminSettings(signal?: AbortSignal): Promise<AdminStoreSett
 }
 
 /**
- * Grava as configuracoes.
+ * Grava as configurações.
  *
- * Documento unico, sem `:id`. A resposta vem normalizada pelo servidor — o
- * WhatsApp so com digitos, a sigla do estado em maiuscula, o e-mail em
- * minuscula — e e ela que entra no cache, e nao o que foi enviado.
+ * Documento único, sem `:id`. A resposta vem normalizada pelo servidor — o
+ * WhatsApp só com digitos, a sigla do estado em maiúscula, o e-mail em
+ * minúscula — e e ela que entra no cache, e não o que foi enviado.
  */
 export function updateSettings(
   input: UpdateStoreSettingsInput,

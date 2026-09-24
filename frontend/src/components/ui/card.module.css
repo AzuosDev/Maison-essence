@@ -1,7 +1,7 @@
 /*
- * O cartao: superficie branca, raio de 12px, borda de 1px e a sombra unica.
+ * O cartão: superficie branca, raio de 12px, borda de 1px e a sombra única.
  *
- * E a caixa de tudo o que e conteudo agrupado — produto na vitrine, passo do
+ * E a caixa de tudo o que e conteúdo agrupado — produto na vitrine, passo do
  * checkout, bloco do painel.
  */
 
@@ -20,10 +20,10 @@
 }
 
 /*
- * Clicavel: sobe 2px e ganha a sombra no hover, como a especificacao pede.
+ * Clicável: sobe 2px e ganha a sombra no hover, como a especificação pede.
  *
- * `will-change` de proposito fora: a promocao para camada propria custa
- * memoria em cada card de um grid de vinte, e o ganho em 2px de translacao e
+ * `will-change` de propósito fora: a promoção para camada própria custa
+ * memória em cada card de um grid de vinte, e o ganho em 2px de translação e
  * nenhum.
  */
 .interactive {
@@ -60,7 +60,7 @@
   padding: var(--space-24) var(--space-24) 0;
 }
 
-/* O titulo do passo do checkout: 18px, como a especificacao define. */
+/* O título do passo do checkout: 18px, como a especificação define. */
 .title {
   font-family: var(--font-display);
   font-size: var(--text-18);
@@ -82,10 +82,10 @@
 }
 
 /*
- * O rodape do cartao: o botao largo do passo do checkout.
+ * O rodapé do cartão: o botão largo do passo do checkout.
  *
- * Separado por uma linha porque e ali que a acao mora, e a linha e o que
- * diz "acabou o formulario" sem precisar de um titulo.
+ * Separado por uma linha porque e ali que a ação mora, e a linha e o que
+ * diz "acabou o formulário" sem precisar de um título.
  */
 .footer {
   display: flex;

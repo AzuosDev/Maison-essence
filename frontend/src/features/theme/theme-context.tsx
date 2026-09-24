@@ -21,10 +21,10 @@ import {
 /**
  * O tema, vivo.
  *
- * Contexto e nao um hook solto por um motivo: os tres segmentos no rodape da
- * loja e o botao no pe da coluna do painel precisam mostrar a mesma escolha.
- * Com um hook por componente, cada um teria o proprio estado e os dois
- * sairiam do ar assim que alguem trocasse o tema por um deles.
+ * Contexto e não um hook solto por um motivo: os três segmentos no rodapé da
+ * loja e o botão no pé da coluna do painel precisam mostrar a mesma escolha.
+ * Com um hook por componente, cada um teria o próprio estado e os dois
+ * sairiam do ar assim que alguém trocasse o tema por um deles.
  */
 
 interface ThemeContextValue {
@@ -38,13 +38,13 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 /**
- * A preferencia do sistema, acompanhada ao vivo.
+ * A preferência do sistema, acompanhada ao vivo.
  *
- * Lida no inicializador do `useState`, e nao num efeito, para que o primeiro
- * render ja saia certo — mesmo arranjo do `usePrefersReducedMotion` do
+ * Lida no inicializador do `useState`, e não num efeito, para que o primeiro
+ * render já saia certo — mesmo arranjo do `usePrefersReducedMotion` do
  * carrossel, e pelo mesmo motivo.
  *
- * A guarda de `matchMedia` e para o jsdom dos testes, que nao o implementa.
+ * A guarda de `matchMedia` e para o jsdom dos testes, que não o implementa.
  */
 function useSystemPrefersDark(): boolean {
   const [prefersDark, setPrefersDark] = useState(
@@ -74,11 +74,11 @@ function useSystemPrefersDark(): boolean {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   /*
-   * O estado nasce lendo o armazenamento, e nao do padrao.
+   * O estado nasce lendo o armazenamento, e não do padrão.
    *
-   * O atributo no `<html>` ja foi escrito pelo script do `index.html` antes
+   * O atributo no `<html>` já foi escrito pelo script do `index.html` antes
    * da primeira pintura. Se este estado comecasse em `system`, o primeiro
-   * render do controle marcaria a opcao errada e so se corrigiria depois —
+   * render do controle marcaria a opção errada e só se corrigiria depois —
    * o segmento marcado pularia debaixo do olho de quem esta olhando para
    * ele.
    */
@@ -90,13 +90,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   /*
    * O documento acompanha o estado.
    *
-   * Roda tambem na montagem, e nao so na troca: o script do `index.html` faz
+   * Roda também na montagem, e não só na troca: o script do `index.html` faz
    * o mesmo trabalho antes, e este efeito o refaz com o mesmo resultado. A
-   * repeticao e barata e paga por si — se o script for removido do HTML por
-   * engano, o tema continua funcionando, so com um piscar na abertura.
+   * repetição e barata e paga por si — se o script for removido do HTML por
+   * engano, o tema continua funcionando, só com um piscar na abertura.
    *
-   * `resolved` esta nas dependencias porque a `<meta theme-color>` muda
-   * quando o **sistema** vira, mesmo sem ninguem tocar no controle.
+   * `resolved` esta nas dependências porque a `<meta theme-color>` muda
+   * quando o **sistema** vira, mesmo sem ninguém tocar no controle.
    */
   useEffect(() => {
     applyTheme(document.documentElement, mode, resolved);
@@ -115,9 +115,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 /**
  * O tema e quem o troca.
  *
- * Fora do provedor devolve um valor inerte em vez de lancar: o controle e
- * decoracao util, nao infraestrutura, e uma tela montada isoladamente num
- * teste — ou um Storybook futuro — nao deve quebrar por nao ter provedor de
+ * Fora do provedor devolve um valor inerte em vez de lançar: o controle e
+ * decoração útil, não infraestrutura, e uma tela montada isoladamente num
+ * teste — ou um Storybook futuro — não deve quebrar por não ter provedor de
  * tema em volta.
  */
 export function useTheme(): ThemeContextValue {
@@ -130,7 +130,7 @@ const FALLBACK: ThemeContextValue = {
   setMode: () => {},
 };
 
-/** `localStorage` lanca em aba anonima com dados de site bloqueados. */
+/** `localStorage` lança em aba anonima com dados de site bloqueados. */
 function safeStorage(): Storage | undefined {
   try {
     return window.localStorage;

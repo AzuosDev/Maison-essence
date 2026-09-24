@@ -24,30 +24,30 @@ import styles from './account-addresses-page.module.css';
 /**
  * `/conta/enderecos`.
  *
- * ## Toda acao manda a lista inteira
+ * ## Toda ação manda a lista inteira
  *
- * A API nao tem rota por endereco: `PATCH /customer/me` recebe `addresses` e
- * substitui o que esta gravado. Adicionar, editar, marcar como padrao e
- * excluir sao a mesma chamada com listas diferentes, e as quatro listas sao
+ * A API não tem rota por endereço: `PATCH /customer/me` recebe `addresses` e
+ * substitui o que esta gravado. Adicionar, editar, marcar como padrão e
+ * excluir são a mesma chamada com listas diferentes, e as quatro listas são
  * montadas em `address-list.ts`, fora daqui, porque a regra do "exatamente
- * um padrao" e a parte que nao perdoa distracao.
+ * um padrão" e a parte que não perdoa distração.
  *
  * ## A lista base e sempre a do servidor
  *
  * `toInputs(profile.addresses)`, e nunca um rascunho guardado nesta tela.
- * A diferenca aparece no caso real: a pessoa edita um endereco no celular e
- * marca outro como padrao no computador, na mesma tarde. Se o computador
- * mandasse a lista que tinha em maos quando a pagina abriu, a edicao do
- * celular seria apagada — e ninguem saberia por que.
+ * A diferença aparece no caso real: a pessoa edita um endereço no celular e
+ * marca outro como padrão no computador, na mesma tarde. Se o computador
+ * mandasse a lista que tinha em mãos quando a página abriu, a edição do
+ * celular seria apagada — e ninguém saberia por que.
  *
- * Com a lista do cache (que a resposta do proprio `PATCH` atualiza a cada
- * gravacao), a janela em que isso pode acontecer encolhe para o intervalo
- * entre duas revalidacoes.
+ * Com a lista do cache (que a resposta do próprio `PATCH` atualiza a cada
+ * gravação), a janela em que isso pode acontecer encolhe para o intervalo
+ * entre duas revalidações.
  *
  * ## O teto de dez e do servidor, e a tela o respeita antes
  *
- * `ArrayMaxSize(10)` recusaria o decimo primeiro com um erro de validacao.
- * Esconder o botao ao chegar no teto, com a frase explicando, e melhor do
+ * `ArrayMaxSize(10)` recusaria o decimo primeiro com um erro de validação.
+ * Esconder o botão ao chegar no teto, com a frase explicando, e melhor do
  * que deixar preencher oito campos para receber uma recusa no fim.
  */
 export default function AccountAddressesPage() {
@@ -187,11 +187,11 @@ export default function AccountAddressesPage() {
 }
 
 /**
- * O nome da cidade a partir do id guardado no endereco.
+ * O nome da cidade a partir do id guardado no endereço.
  *
- * Vazio quando a cidade nao esta mais na lista — a loja pode ter deixado de
- * atende-la. O endereco continua valendo e continua aparecendo; o que some e
- * a linha da cidade, que seria uma informacao falsa sobre a area de entrega.
+ * Vazio quando a cidade não esta mais na lista — a loja pode ter deixado de
+ * atende-lá. O endereço continua valendo e continua aparecendo; o que some e
+ * a linha da cidade, que seria uma informação falsa sobre a área de entrega.
  */
 function cityNameOf(
   cities: readonly { id: string; name: string; state: string }[] | undefined,

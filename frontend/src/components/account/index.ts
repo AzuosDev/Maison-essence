@@ -1,9 +1,9 @@
 /**
- * Os componentes da area do cliente.
+ * Os componentes da área do cliente.
  *
- * Conhecem pedido, endereco e sessao de quem compra — e nao aparecem no
+ * Conhecem pedido, endereço e sessão de quem compra — e não aparecem no
  * painel. O que serve aos dois lados desce para `components/ui`; o que e da
- * loja publica e nao da conta fica em `components/store`.
+ * loja publica e não da conta fica em `components/store`.
  */
 
 export { AccountInvite, type AccountInviteProps } from './account-invite';

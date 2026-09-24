@@ -2,20 +2,20 @@ import { KeyIcon, PencilIcon, PowerIcon } from './admin-icons';
 import { RowMenu, type RowMenuItem } from './row-menu';
 
 /**
- * As acoes de uma linha da tabela de usuarios.
+ * As ações de uma linha da tabela de usuários.
  *
- * A mecanica do menu — abrir, fechar por clique fora, por Escape ou por
+ * A mecânica do menu — abrir, fechar por clique fora, por Escape ou por
  * escolha, devolver o foco — mora em `RowMenu`, que a tabela de produtos usa
- * tambem. O que fica aqui e o que so vale para usuarios: **quais** sao as
- * acoes, em que ordem, e qual delas some.
+ * também. O que fica aqui e o que só vale para usuários: **quais** são as
+ * ações, em que ordem, e qual delas some.
  *
- * "Desativar" e a unica cuja consequencia atinge outra pessoa — quem estiver
- * logado cai na proxima acao dele —, e por isso vem por ultimo, em vermelho,
+ * "Desativar" e a única cuja consequência atinge outra pessoa — quem estiver
+ * logado cai na próxima ação dele —, e por isso vem por último, em vermelho,
  * separada do resto por um filete.
  */
 
 export interface UserActionsProps {
-  /** Vai no rotulo do botao: "Acoes de Rayane Souza". */
+  /** Vai no rótulo do botão: "Ações de Rayane Souza". */
   userName: string;
   onEdit: () => void;
   onResetPassword: () => void;
@@ -26,7 +26,7 @@ export interface UserActionsProps {
    * A conta de quem esta usando o painel.
    *
    * Desativar a si mesmo e recusado pelo servidor com um 409, e mostrar a
-   * opcao para depois explicar que ela nao vale seria um caminho que so
+   * opção para depois explicar que ela não vale seria um caminho que só
    * existe para terminar em erro.
    */
   isSelf?: boolean;
@@ -52,7 +52,7 @@ export function UserActions({
       label: isActive ? 'Desativar' : 'Ativar',
       icon: PowerIcon,
       onSelect: onToggleStatus,
-      // Reativar nao atinge ninguem: so a retirada do acesso e vermelha.
+      // Reativar não atinge ninguém: só a retirada do acesso e vermelha.
       tone: isActive ? 'danger' : 'default',
       separated: true,
     });

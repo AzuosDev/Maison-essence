@@ -23,7 +23,7 @@ export const BOOTSTRAP_ORIGINS = {
 
 export type BootstrapOrigin = (typeof BOOTSTRAP_ORIGINS)[keyof typeof BOOTSTRAP_ORIGINS];
 
-/** Resposta da rota quando o banco ja tem gente. Nao diz quem. */
+/** Resposta da rota quando o banco já tem gente. Não diz quem. */
 export const BOOTSTRAP_ALREADY_DONE_MESSAGE =
   'O banco já tem usuário: crie os próximos pelo painel.';
 
@@ -41,13 +41,13 @@ export type BootstrapResult =
 export interface BootstrapOptions {
   origin: BootstrapOrigin;
   /**
-   * `true` exige o banco sem usuario nenhum; `false` so exige que nao exista
-   * SUPER_ADMIN. E a unica diferenca entre a rota e o comando — ver `run`.
+   * `true` exige o banco sem usuário nenhum; `false` só exige que não exista
+   * SUPER_ADMIN. E a única diferença entre a rota e o comando — ver `run`.
    */
   requireEmptyDatabase: boolean;
 }
 
-/** Faltam as variaveis do primeiro usuario. Nao e erro de uso, e de ambiente. */
+/** Faltam as variáveis do primeiro usuário. Não e erro de uso, e de ambiente. */
 export class BootstrapNotConfiguredError extends Error {
   constructor(readonly missing: readonly string[]) {
     super(`Defina ${missing.join(' e ')} antes de criar o primeiro usuário.`);
@@ -56,22 +56,22 @@ export class BootstrapNotConfiguredError extends Error {
 }
 
 /**
- * Criacao do primeiro SUPER_ADMIN.
+ * Criação do primeiro SUPER_ADMIN.
  *
- * O painel nao tem cadastro aberto: alguem precisa existir antes que o CRUD de
- * usuarios sirva para alguma coisa. Este servico e esse alguem, e vale para as
+ * O painel não tem cadastro aberto: alguém precisa existir antes que o CRUD de
+ * usuários sirva para alguma coisa. Este serviço e esse alguém, e vale para as
  * duas portas — `npm run seed:superadmin`, que e o caminho normal, e
- * `POST /auth/bootstrap`, que existe porque a Vercel nao da shell.
+ * `POST /auth/bootstrap`, que existe porque a Vercel não da shell.
  *
- * As duas portas param de funcionar assim que ha administrador, mas com
- * criterios diferentes de proposito:
+ * As duas portas param de funcionar assim que há administrador, mas com
+ * critérios diferentes de propósito:
  *
- * - o comando roda na maquina de quem ja tem a URI do banco na mao e so
- *   precisa ser idempotente: rodar duas vezes nao cria dois super-admins;
- * - a rota fica exposta na internet, e ali "ja existe SUPER_ADMIN" seria
- *   frouxo demais. Ela exige o banco **sem usuario nenhum**, o que a fecha
+ * - o comando roda na máquina de quem já tem a URI do banco na mão e só
+ *   precisa ser idempotente: rodar duas vezes não cria dois super-admins;
+ * - a rota fica exposta na internet, e ali "já existe SUPER_ADMIN" seria
+ *   frouxo demais. Ela exige o banco **sem usuário nenhum**, o que a fecha
  *   para sempre no instante em que a loja tem o primeiro STAFF — mesmo que
- *   alguem esqueca o `BOOTSTRAP_SECRET` no ambiente.
+ *   alguém esqueca o `BOOTSTRAP_SECRET` no ambiente.
  */
 @Injectable()
 export class BootstrapService {
@@ -100,8 +100,8 @@ export class BootstrapService {
     const created = await this.create(input);
 
     if (!created) {
-      // Perdeu a corrida com outra chamada simultanea: o indice unico de
-      // e-mail derrubou este insert e o vencedor ja esta no banco.
+      // Perdeu a corrida com outra chamada simultanea: o índice único de
+      // e-mail derrubou este insert e o vencedor já esta no banco.
       const existing = await this.users.findOne({ email: input.email }).exec();
 
       if (!existing) {
@@ -115,7 +115,7 @@ export class BootstrapService {
 
     await this.audit.record({
       action: AUDIT_ACTIONS.USER_CREATED,
-      // O ator e o proprio processo: nao havia usuario para agir.
+      // O ator e o próprio processo: não havia usuário para agir.
       actor: { id: SYSTEM_ACTOR_ID, email: options.origin, role: USER_ROLES.SUPER_ADMIN },
       target: party,
       details: { role: created.role, origin: options.origin },
@@ -126,7 +126,7 @@ export class BootstrapService {
     return { outcome: BOOTSTRAP_OUTCOMES.CREATED, user: toUserView(created) };
   }
 
-  /** Le as variaveis do primeiro usuario, dizendo quais faltam. */
+  /** Lê as variáveis do primeiro usuário, dizendo quais faltam. */
   private readInput(): { name: string; email: string; password: string } {
     const email = this.config.get('BOOTSTRAP_SUPERADMIN_EMAIL', { infer: true });
     const password = this.config.get('BOOTSTRAP_SUPERADMIN_PASSWORD', { infer: true });
@@ -153,7 +153,7 @@ export class BootstrapService {
       .exec();
   }
 
-  /** Cria o usuario, ou `null` quando o e-mail ja foi tomado na corrida. */
+  /** Cria o usuário, ou `null` quando o e-mail já foi tomado na corrida. */
   private async create(input: {
     name: string;
     email: string;
@@ -166,8 +166,8 @@ export class BootstrapService {
         passwordHash: await this.passwords.hash(input.password),
         role: USER_ROLES.SUPER_ADMIN,
         isActive: true,
-        // A senha esta em texto numa variavel de ambiente, que fica visivel
-        // no painel da Vercel e no historico do shell. Ela serve para entrar
+        // A senha esta em texto numa variável de ambiente, que fica visível
+        // no painel da Vercel e no histórico do shell. Ela serve para entrar
         // uma vez e ser trocada.
         mustChangePassword: true,
       }).save();

@@ -5,43 +5,43 @@ export const CDN_CACHE_KEY = 'cdnCache';
 export interface CdnCacheOptions {
   /** Segundos que a CDN serve a resposta sem perguntar de novo. */
   sMaxAge: number;
-  /** Janela em que a CDN serve o conteudo vencido enquanto revalida atras. */
+  /** Janela em que a CDN serve o conteúdo vencido enquanto revalida atrás. */
   staleWhileRevalidate: number;
 }
 
-/** Catalogo publico: muda quando a dona mexe no painel, nao a cada minuto. */
+/** Catálogo público: muda quando a dona mexe no painel, não a cada minuto. */
 export const CATALOG_CACHE: CdnCacheOptions = { sMaxAge: 60, staleWhileRevalidate: 300 };
 
 /**
- * Configuracoes da loja e paginas institucionais: cinco minutos.
+ * Configurações da loja e páginas institucionais: cinco minutos.
  *
- * Aguentam mais cache que o catalogo porque mudam menos — o nome da loja, o
- * endereco de retirada e o texto de "Quem somos" ficam meses parados — e
- * porque sao lidos em *toda* pagina: o cabecalho, o rodape e o botao do
- * WhatsApp saem daqui. Quem encurta a janela real depois de uma alteracao e
+ * Aguentam mais cache que o catálogo porque mudam menos — o nome da loja, o
+ * endereço de retirada e o texto de "Quem somos" ficam meses parados — e
+ * porque são lidos em *toda* página: o cabeçalho, o rodapé e o botão do
+ * WhatsApp saem daqui. Quem encurta a janela real depois de uma alteração e
  * o ETag, que muda junto com o `updatedAt` do documento.
  */
 export const SETTINGS_CACHE: CdnCacheOptions = { sMaxAge: 300, staleWhileRevalidate: 600 };
 
 /**
- * Monta o `Cache-Control` das rotas publicas.
+ * Monta o `Cache-Control` das rotas públicas.
  *
- * `max-age=0` junto do `s-maxage` de proposito: quem absorve o trafego e a
+ * `max-age=0` junto do `s-maxage` de propósito: quem absorve o tráfego e a
  * CDN, e o navegador do cliente revalida sempre. Sem ele, o navegador aplica
- * heuristica propria e pode guardar um preco antigo por horas — e preco
- * errado na tela de quem ja esta comprando custa mais caro que a requisicao
+ * heurística própria e pode guardar um preço antigo por horas — e preço
+ * errado na tela de quem já esta comprando custa mais caro que a requisição
  * economizada.
  *
- * `stale-while-revalidate` e o que faz a troca de preco nao derrubar ninguem
- * em fila: passado o s-maxage, a CDN entrega o conteudo vencido na hora e
- * busca o novo por tras.
+ * `stale-while-revalidate` e o que faz a troca de preço não derrubar ninguém
+ * em fila: passado o s-maxage, a CDN entrega o conteúdo vencido na hora e
+ * busca o novo por trás.
  */
 export function cacheControlOf({ sMaxAge, staleWhileRevalidate }: CdnCacheOptions): string {
   return `public, max-age=0, s-maxage=${sMaxAge}, stale-while-revalidate=${staleWhileRevalidate}`;
 }
 
 /**
- * Marca a rota como cacheavel pela CDN. Sem o decorator, nenhum cabecalho e
+ * Marca a rota como cacheável pela CDN. Sem o decorator, nenhum cabeçalho e
  * escrito — rota autenticada nunca deve encostar em cache compartilhado.
  */
 export const CdnCache = (options: CdnCacheOptions = CATALOG_CACHE) =>

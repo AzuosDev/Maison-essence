@@ -6,16 +6,16 @@ import { CartQuoteService } from './cart-quote.service.js';
 import { CartController } from './cart.controller.js';
 
 /**
- * A cotacao do carrinho.
+ * A cotação do carrinho.
  *
- * Nao registra model proprio: o carrinho nao e documento nenhum. Ele importa
- * os modulos que ja sao donos de cada numero — `ProductsModule` pelos precos
+ * Não registra model próprio: o carrinho não e documento nenhum. Ele importa
+ * os módulos que já são donos de cada número — `ProductsModule` pelos preços
  * e pelas regras de desconto, `DeliveryModule` pela taxa, `PaymentsModule`
  * pelo desconto do PIX e pelas parcelas — e se limita a juntar as respostas.
  *
- * Modulo proprio, separado dos pedidos, porque a mesma conta serve a duas
- * rotas com contratos diferentes: aqui ela responde uma simulacao publica,
- * na criacao do pedido ela e refeita antes de gravar. Uma so implementacao
+ * Módulo próprio, separado dos pedidos, porque a mesma conta serve a duas
+ * rotas com contratos diferentes: aqui ela responde uma simulação publica,
+ * na criação do pedido ela e refeita antes de gravar. Uma só implementação
  * garante que a segunda nunca discorde da primeira sem motivo.
  */
 @Module({

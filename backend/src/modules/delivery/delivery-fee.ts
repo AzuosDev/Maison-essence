@@ -7,14 +7,14 @@ import {
 } from './delivery.constants.js';
 
 /**
- * A regra da taxa de entrega, em funcao pura.
+ * A regra da taxa de entrega, em função pura.
  *
  * Vive longe do Mongoose e longe do HTTP porque e a conta que decide quanto o
- * cliente paga, e uma conta dessas precisa ser testavel sem banco: "pedido de
- * R$ 149,99 em cidade com frete gratis a partir de R$ 150" e um caso de
- * centavo, nao de integracao.
+ * cliente paga, e uma conta dessas precisa ser testável sem banco: "pedido de
+ * R$ 149,99 em cidade com frete grátis a partir de R$ 150" e um caso de
+ * centavo, não de integração.
  *
- * Quem chama e o `DeliveryService`, e so ele — o pedido pergunta a taxa, nunca
+ * Quem chama e o `DeliveryService`, e só ele — o pedido pergunta a taxa, nunca
  * a calcula.
  */
 
@@ -22,17 +22,17 @@ import {
 export interface FeeCity {
   name: string;
   feeCents: number;
-  /** Regra propria da cidade. `null` significa "use a da loja". */
+  /** Regra própria da cidade. `null` significa "use a da loja". */
   minOrderForFreeCents: number | null;
 }
 
 /**
- * O pedido do calculo.
+ * O pedido do cálculo.
  *
- * Uniao discriminada pelo modo, e nao um objeto com tudo opcional: retirada
- * nao tem cidade nem subtotal que importe, e deixar esses campos disponiveis
+ * União discriminada pelo modo, e não um objeto com tudo opcional: retirada
+ * não tem cidade nem subtotal que importe, e deixar esses campos disponíveis
  * no ramo de retirada seria convidar a usa-los. E a forma do tipo que diz que
- * retirada dispensa endereco.
+ * retirada dispensa endereço.
  */
 export type FeeRequest =
   | { mode: typeof FULFILLMENT_MODES.PICKUP }
@@ -47,12 +47,12 @@ export type FeeRequest =
 export interface ResolvedFee {
   feeCents: number;
   isFree: boolean;
-  /** Por que nao ha taxa. Vazio quando ha. */
+  /** Por que não há taxa. Vazio quando há. */
   freeReason: string;
   /**
-   * Quanto falta para a entrega sair de graca, em centavos. `null` quando nao
-   * ha regra aplicavel ou quando ja nao ha taxa. E o que a sacola exibe como
-   * "faltam R$ 30,00 para o frete gratis" — o empurrao que faz o carrinho
+   * Quanto falta para a entrega sair de graça, em centavos. `null` quando não
+   * há regra aplicável ou quando já não há taxa. E o que a sacola exibe como
+   * "faltam R$ 30,00 para o frete grátis" — o empurrão que faz o carrinho
    * crescer.
    */
   missingForFreeCents: number | null;
@@ -70,17 +70,17 @@ export function resolveDeliveryFee(request: FeeRequest): ResolvedFee {
 
   const { city, subtotalCents, freeShippingMinCents } = request;
 
-  // Taxa zero no cadastro e isencao tambem, e com motivo proprio: a cidade
-  // nao ficou de graca por causa do valor do pedido, ela e de graca sempre.
+  // Taxa zero no cadastro e isenção também, e com motivo próprio: a cidade
+  // não ficou de graça por causa do valor do pedido, ela e de graça sempre.
   if (city.feeCents === 0) {
     return free(freeCityReason(city.name));
   }
 
   /**
-   * A regra da cidade tem precedencia sobre a global — e precedencia, nao
-   * combinacao. Quando a cidade declara um minimo proprio, ele substitui o da
+   * A regra da cidade tem precedência sobre a global — e precedência, não
+   * combinação. Quando a cidade declara um mínimo próprio, ele substitui o da
    * loja inteiro, inclusive se o da loja for mais generoso: cidade distante
-   * costuma ter minimo mais alto justamente para nao cair na regra geral, e
+   * costuma ter mínimo mais alto justamente para não cair na regra geral, e
    * pegar o menor dos dois anularia essa escolha.
    */
   const minimum = city.minOrderForFreeCents ?? freeShippingMinCents;
@@ -105,10 +105,10 @@ function charged(feeCents: number, missingForFreeCents: number | null): Resolved
 }
 
 /**
- * O minimo que vale para a cidade, ja com a precedencia resolvida.
+ * O mínimo que vale para a cidade, já com a precedência resolvida.
  *
  * A rota publica usa isto para dizer, na lista de cidades, a partir de quanto
- * o frete sai de graca ali — a mesma regra que o calculo aplica, e nao uma
+ * o frete sai de graça ali — a mesma regra que o cálculo aplica, e não uma
  * segunda copia dela.
  */
 export function freeFromCents(

@@ -28,7 +28,7 @@ describe('branchesOf', () => {
     expect(branches[1].children).toEqual([]);
   });
 
-  it('desempata pelo nome, para a lista não dancar entre duas chamadas', () => {
+  it('desempata pelo nome, para a lista não dançar entre duas chamadas', () => {
     const branches = branchesOf([
       category('Velas', 0),
       category('Casa', 0),
@@ -43,7 +43,7 @@ describe('branchesOf', () => {
   });
 
   it('deixa de fora o filho cujo pai não veio na lista', () => {
-    // E o que faz desativar so o pai sumir com o galho inteiro do menu, em
+    // E o que faz desativar só o pai sumir com o galho inteiro do menu, em
     // vez de promover a subcategoria a categoria principal.
     const ausente = category('Perfumes', 0);
     const arabes = category('Árabes', 0, ausente);

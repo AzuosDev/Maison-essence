@@ -10,17 +10,17 @@ import { USER_ROLES } from '../enums/user-role.js';
 export const FORBIDDEN_ROLE_MESSAGE = 'Seu papel não permite esta operação.';
 
 /**
- * Autorizacao por papel, global.
+ * Autorização por papel, global.
  *
- * Roda depois do `JwtAuthGuard`, entao o usuario ja esta no request. Duas
+ * Roda depois do `JwtAuthGuard`, então o usuário já esta no request. Duas
  * regras:
  *
- * - rota sem `@Roles(...)` exige so estar autenticado;
+ * - rota sem `@Roles(...)` exige só estar autenticado;
  * - `SUPER_ADMIN` passa em qualquer rota, sem precisar ser listado.
  *
- * O acesso total do `SUPER_ADMIN` fica aqui, e nao repetido em cada lista de
- * papeis, porque a lista onde alguem esquecesse de inclui-lo trancaria o
- * desenvolvedor para fora do sistema — sem ninguem para reabrir.
+ * O acesso total do `SUPER_ADMIN` fica aqui, e não repetido em cada lista de
+ * papéis, porque a lista onde alguém esquecesse de inclui-lo trancaria o
+ * desenvolvedor para fora do sistema — sem ninguém para reabrir.
  */
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -41,8 +41,8 @@ export class RolesGuard implements CanActivate {
       .getRequest<Request & { user?: AuthenticatedUser }>();
     const role = request.user?.role;
 
-    // Sem usuario em rota com `@Roles`: so acontece se a rota tambem estiver
-    // marcada `@Public()`, o que e configuracao errada. Nega.
+    // Sem usuário em rota com `@Roles`: só acontece se a rota também estiver
+    // marcada `@Public()`, o que e configuração errada. Nega.
     if (!role) {
       throw new ForbiddenException(FORBIDDEN_ROLE_MESSAGE);
     }

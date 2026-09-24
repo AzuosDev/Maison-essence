@@ -1,8 +1,8 @@
 /*
  * A trilha do pedido.
  *
- * Um trilho vertical de 1px atras das marcas, desenhado por `::before` no
- * item — e nao por uma borda na lista, que desceria alem do ultimo passo e
+ * Um trilho vertical de 1px atrás das marcas, desenhado por `::before` no
+ * item — e não por uma borda na lista, que desceria além do último passo e
  * ficaria com um rabo solto embaixo.
  */
 
@@ -19,7 +19,7 @@
   padding-bottom: var(--space-24);
 }
 
-/* O trilho, entre uma marca e a seguinte. O ultimo passo nao o desenha. */
+/* O trilho, entre uma marca e a seguinte. O último passo não o desenha. */
 .step:not(:last-child)::before {
   position: absolute;
   top: 1.5rem;
@@ -74,12 +74,12 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ---- Os tres estados ------------------------------------------------------
+/* ---- Os três estados ------------------------------------------------------
  *
  * Cumprido: marca preenchida com a tinta da marca.
- * Atual: anel dourado e o unico texto em tinta cheia — e para ele que o olho
+ * Atual: anel dourado e o único texto em tinta cheia — e para ele que o olho
  *   vai ao abrir a tela.
- * Pendente: tudo apagado, mas legivel. Saber o que ainda falta e parte de
+ * Pendente: tudo apagado, mas legível. Saber o que ainda falta e parte de
  *   saber onde se esta.
  */
 
@@ -108,7 +108,7 @@
   background: var(--cream);
 }
 
-/* "agora": o unico selo da trilha, no passo em que o pedido esta. */
+/* "agora": o único selo da trilha, no passo em que o pedido esta. */
 .now {
   padding: 0.125rem var(--space-8);
   font-size: var(--text-12);

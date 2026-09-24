@@ -19,24 +19,24 @@ import { MAX_BANNER_ORDER } from '../settings.constants.js';
 /**
  * Um banner dentro do array que o PATCH recebe.
  *
- * `id` presente identifica banner que ja existe; ausente, o servidor cria. O
- * painel manda o carrossel inteiro a cada gravacao — e o array que a tela
- * edita — e campo omitido volta ao padrao, porque aqui o item e o formulario
- * completo de um banner, e nao um retoque nele.
+ * `id` presente identifica banner que já existe; ausente, o servidor cria. O
+ * painel manda o carrossel inteiro a cada gravação — e o array que a tela
+ * edita — e campo omitido volta ao padrão, porque aqui o item e o formulário
+ * completo de um banner, e não um retoque nele.
  */
 export class BannerDto {
   @IsOptional()
   @IsMongoId({ message: 'banner inválido' })
   id?: string;
 
-  /** `publicId` do Cloudinary. Banner sem arte nao existe: e obrigatorio. */
+  /** `publicId` do Cloudinary. Banner sem arte não existe: e obrigatório. */
   @IsString()
   @IsImagePublicId()
   imageDesktop: string;
 
   /**
-   * Arte propria do celular. Vazio faz a home cair na imagem de desktop —
-   * que costuma cortar mal no retrato, mas e melhor que espaco em branco.
+   * Arte própria do celular. Vazio faz a home cair na imagem de desktop —
+   * que costuma cortar mal no retrato, mas e melhor que espaço em branco.
    */
   @IsOptional()
   @IsString()
@@ -64,7 +64,7 @@ export class BannerDto {
   @MaxLength(300)
   link?: string;
 
-  /** Posicao no carrossel. Omitido, vale a posicao no array recebido. */
+  /** Posição no carrossel. Omitido, vale a posição no array recebido. */
   @IsOptional()
   @IsInt()
   @Min(0)
@@ -72,8 +72,8 @@ export class BannerDto {
   order?: number;
 
   /**
-   * Periodo de exibicao. As duas datas sao opcionais e independentes: so
-   * inicio agenda uma estreia, so fim agenda uma retirada, nenhuma das duas
+   * Período de exibição. As duas datas são opcionais e independentes: só
+   * início agenda uma estreia, só fim agenda uma retirada, nenhuma das duas
    * significa "sempre no ar".
    */
   @IsOptional()
@@ -86,7 +86,7 @@ export class BannerDto {
   @IsDate({ message: 'data de fim inválida: use o formato ISO 8601' })
   endsAt?: Date | null;
 
-  /** Desligamento manual, sem perder as datas ja agendadas. */
+  /** Desligamento manual, sem perder as datas já agendadas. */
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;

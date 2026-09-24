@@ -1,9 +1,9 @@
 /*
  * A gaveta da sacola.
  *
- * O miolo rola e o rodape fica preso — o total e o botao de fechar pedido
+ * O miolo rola e o rodapé fica preso — o total e o botão de fechar pedido
  * nunca saem da tela, por mais itens que a lista tenha. Quem colocou oito
- * perfumes precisa ver o total sem rolar ate o fim.
+ * perfumes precisa ver o total sem rolar até o fim.
  */
 
 .lines {
@@ -14,7 +14,7 @@
   list-style: none;
 }
 
-/* ---- O rodape ----------------------------------------------------------- */
+/* ---- O rodapé ----------------------------------------------------------- */
 
 .summary {
   display: grid;
@@ -24,11 +24,11 @@
 }
 
 /*
- * Durante o recalculo, o numero antigo esmaece em vez de sumir.
+ * Durante o recálculo, o número antigo esmaece em vez de sumir.
  *
- * E a diferenca entre "estamos conferindo" e "perdemos a conta". A sacola
+ * E a diferença entre "estamos conferindo" e "perdemos a conta". A sacola
  * recota a cada mudanca de quantidade, e um total que pisca vazio a cada
- * clique faria a tela parecer instavel justamente no momento em que o
+ * clique faria a tela parecer instável justamente no momento em que o
  * cliente esta somando de cabeca.
  */
 .recalculating {
@@ -74,11 +74,11 @@
 }
 
 /*
- * "Ver a sacola inteira" e um link de texto sob os dois botoes.
+ * "Ver a sacola inteira" e um link de texto sob os dois botões.
  *
- * Tres botoes empilhados nao tem hierarquia nenhuma — viram uma lista de
- * opcoes de mesmo peso, e o cliente precisa ler as tres para escolher. Aqui
- * ha um primario (fechar o pedido), um secundario (voltar a comprar) e um
+ * Três botões empilhados não tem hierarquia nenhuma — viram uma lista de
+ * opções de mesmo peso, e o cliente precisa ler as três para escolher. Aqui
+ * há um primário (fechar o pedido), um secundário (voltar a comprar) e um
  * destino, que e outra categoria de coisa e recebe outro desenho.
  */
 .cartLink {
@@ -111,7 +111,7 @@
   border-radius: var(--radius-chip);
 }
 
-/* ---- Quando a cotacao falha --------------------------------------------- */
+/* ---- Quando a cotação falha --------------------------------------------- */
 
 .failed {
   display: grid;

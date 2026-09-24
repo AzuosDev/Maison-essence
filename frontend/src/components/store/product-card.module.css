@@ -2,13 +2,13 @@
  * O card de produto.
  *
  * Sem moldura: nem borda, nem fundo, nem canto arredondado em volta do
- * conjunto. Numa vitrine de dez produtos, dez retangulos desenhados criam
+ * conjunto. Numa vitrine de dez produtos, dez retângulos desenhados criam
  * dez molduras competindo com dez fotos — e a foto e o produto. O que separa
- * um card do vizinho e o espaco entre eles e o canto arredondado da propria
+ * um card do vizinho e o espaço entre eles e o canto arredondado da própria
  * imagem.
  *
- * Tudo centralizado. E a leitura que a foto ja pede: ela e quadrada e o
- * produto esta no meio dela, entao o nome alinhado a esquerda ficaria
+ * Tudo centralizado. E a leitura que a foto já pede: ela e quadrada e o
+ * produto esta no meio dela, então o nome alinhado a esquerda ficaria
  * pendurado fora do eixo do frasco.
  */
 
@@ -25,7 +25,7 @@
   display: block;
 
   /* Quadrada. Frasco de perfume e retrato, vela e quase cubo, kit e
-     paisagem: o quadrado e a unica proporcao em que os tres convivem numa
+     paisagem: o quadrado e a única proporção em que os três convivem numa
      mesma linha sem que um deles saia cortado. */
   aspect-ratio: 1 / 1;
   overflow: hidden;
@@ -44,9 +44,9 @@
 /*
  * O avanco lento da foto.
  *
- * Tres vezes a duracao base. Os 180ms do sistema servem a um botao que muda
- * de cor; numa foto de 300px o mesmo tempo le-se como solavanco. O numero
- * continua saindo do token — nao ha duracao nova no sistema.
+ * Três vezes a duração base. Os 180ms do sistema servem a um botão que muda
+ * de cor; numa foto de 300px o mesmo tempo lê-se como solavanco. O número
+ * continua saindo do token — não há duração nova no sistema.
  */
 .image {
   transition: transform calc(var(--duration) * 3) var(--ease);
@@ -60,9 +60,9 @@
 /*
  * A segunda foto, por cima da primeira.
  *
- * Empilhada com `position: absolute` e revelada por opacidade: as duas ja
- * estao no lugar, entao a troca nao remede nada e nao pisca. Sem a segunda
- * foto o elemento nao existe, e o card fica so com o avanco de cima.
+ * Empilhada com `position: absolute` e revelada por opacidade: as duas já
+ * estão no lugar, então a troca não remede nada e não pisca. Sem a segunda
+ * foto o elemento não existe, e o card fica só com o avanco de cima.
  */
 .imageHover {
   position: absolute;
@@ -77,7 +77,7 @@
   opacity: 1;
 }
 
-/* Esgotado sai da cor: a foto continua visivel, mas para de disputar atencao
+/* Esgotado sai da cor: a foto continua visível, mas para de disputar atenção
    com o que ainda da para comprar. */
 .soldOut {
   filter: grayscale(0.55);
@@ -112,10 +112,10 @@
 }
 
 /*
- * As alturas minimas espalhadas por este bloco nao sao enfeite.
+ * As alturas minimas espalhadas por este bloco não são enfeite.
  *
- * Sem elas, um card sem marca cadastrada, sem parcelamento ou sem promocao
- * fica mais curto que o vizinho, e a linha de botoes da grade vira uma
+ * Sem elas, um card sem marca cadastrada, sem parcelamento ou sem promoção
+ * fica mais curto que o vizinho, e a linha de botões da grade vira uma
  * escada. Com elas, a linha fecha reta, tenha o produto todos os dados ou
  * nenhum.
  */
@@ -142,7 +142,7 @@
 /*
  * O nome em caixa alta, na serifada.
  *
- * A caixa alta e o que a vitrine de perfume usa — ela achata a diferenca
+ * A caixa alta e o que a vitrine de perfume usa — ela achata a diferença
  * entre "Oud Royale Intense" e "Vela Fig de Provence" e faz a grade inteira
  * bater na mesma linha. A serifada e o que mantem a voz da casa dentro dessa
  * forma: em caixa alta, com peso 600, a Cormorant fica firme o bastante para
@@ -165,10 +165,10 @@
 }
 
 /*
- * O nome e link, e o hover se anuncia pelo risco — nao pela cor.
+ * O nome e link, e o hover se anuncia pelo risco — não pela cor.
  *
  * O dourado escuro tem 3.66:1 sobre o creme: passa como filete, reprova como
- * texto de 16px. Entao ele vai para o risco, que e grafico, e o nome fica no
+ * texto de 16px. Então ele vai para o risco, que e grafico, e o nome fica no
  * preto da marca nos dois estados.
  */
 .nameLink {
@@ -195,8 +195,8 @@
   margin-top: var(--space-4);
 }
 
-/* O preco antigo e informacao, e nao enfeite: quem compara os dois numeros
-   precisa ler os dois. O que o apaga e o risco e o corpo menor, nao a cor. */
+/* O preço antigo e informação, e não enfeite: quem compara os dois números
+   precisa ler os dois. O que o apaga e o risco e o corpo menor, não a cor. */
 .compareAt {
   font-size: var(--text-14);
   color: var(--ink-soft);
@@ -229,14 +229,14 @@
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
 
-  /* Preto, e nao dourado: o dourado escuro reprova em 12px sobre o creme. O
-     que destaca esta linha e a caixa alta e o peso — e ela e a unica do card
+  /* Preto, e não dourado: o dourado escuro reprova em 12px sobre o creme. O
+     que destaca esta linha e a caixa alta e o peso — e ela e a única do card
      que tem os dois. */
   color: var(--ink);
 }
 
-/* `margin-top: auto` empurra a acao para o fim do card: e o que alinha os
-   botoes da grade, por mais que os nomes tenham alturas diferentes. */
+/* `margin-top: auto` empurra a ação para o fim do card: e o que alinha os
+   botões da grade, por mais que os nomes tenham alturas diferentes. */
 .action {
   width: 100%;
   margin-top: auto;

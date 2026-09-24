@@ -4,23 +4,23 @@ import { MAX_CART_LINES, MAX_LINE_QUANTITY, lineKey, type CartLine } from './car
  * Duas sacolas viram uma.
  *
  * Acontece no login. O cliente monta a sacola sem se identificar — que e
- * como quase toda compra comeca aqui —, e so na hora de fechar descobre que
- * ja tinha conta. Nesse instante existem duas sacolas no mesmo navegador: a
- * que ele acabou de montar e a que ele deixou da ultima vez, guardada quando
- * saiu. Escolher uma delas perde a outra, e as duas perdas sao ruins: jogar
+ * como quase toda compra começa aqui —, e só na hora de fechar descobre que
+ * já tinha conta. Nesse instante existem duas sacolas no mesmo navegador: a
+ * que ele acabou de montar e a que ele deixou da última vez, guardada quando
+ * saiu. Escolher uma delas perde a outra, e as duas perdas são ruins: jogar
  * fora o que ele acabou de escolher e pior, mas esquecer o que ele tinha
- * separado semana passada tambem custa a venda.
+ * separado semana passada também custa a venda.
  *
- * ## Por que nao ha sacola no servidor
+ * ## Por que não há sacola no servidor
  *
- * A API tem uma rota de carrinho, `POST /cart/quote`, e ela nao grava nada.
- * Nao existe colecao de carrinho, nao existe `GET /cart`. A sacola e do
+ * A API tem uma rota de carrinho, `POST /cart/quote`, e ela não grava nada.
+ * Não existe coleção de carrinho, não existe `GET /cart`. A sacola e do
  * navegador, e a mescla acontece aqui, entre duas chaves do `localStorage`.
  *
  * ## Como as duas se juntam
  *
  * Somando quantidades por linha, e linha e produto **mais variante**: dois
- * frascos de 50ml e um de 100ml do mesmo perfume sao duas linhas, nao uma.
+ * frascos de 50ml e um de 100ml do mesmo perfume são duas linhas, não uma.
  *
  * `base` e a sacola mais antiga — a que estava guardada — e `incoming` e a
  * desta visita. A ordem da lista continua sendo a de chegada, como em toda
@@ -28,8 +28,8 @@ import { MAX_CART_LINES, MAX_LINE_QUANTITY, lineKey, type CartLine } from './car
  * acabou de escolher aparece embaixo. Nada se reorganiza debaixo do olho de
  * quem esta lendo.
  *
- * A mescla nunca estoura os tetos: nem o da linha, nem o do numero de
- * linhas. Deixar passar so adiaria a recusa para a cotacao.
+ * A mescla nunca estoura os tetos: nem o da linha, nem o do número de
+ * linhas. Deixar passar só adiaria a recusa para a cotação.
  */
 export function mergeCartLines(
   base: readonly CartLine[],
@@ -63,11 +63,11 @@ function capQuantity(quantity: number): number {
  * A sacola que um cliente deixou neste navegador.
  *
  * Uma chave por cliente, separada da sacola ativa. Ela e escrita quando ele
- * sai e lida quando ele volta — e so existe por isso: sem ela, o login nunca
- * teria com o que mesclar, e o requisito seria uma funcao que nunca roda.
+ * sai e lida quando ele volta — e só existe por isso: sem ela, o login nunca
+ * teria com o que mesclar, e o requisito seria uma função que nunca roda.
  *
- * Guarda os mesmos tres campos de sempre. Uma sacola parada por semanas e
- * justamente a que mais teria preco velho, se houvesse preco.
+ * Guarda os mesmos três campos de sempre. Uma sacola parada por semanas e
+ * justamente a que mais teria preço velho, se houvesse preço.
  */
 const STASH_PREFIX = 'maison-essence.cart.customer.';
 
@@ -79,8 +79,8 @@ function stashKey(customerId: string): string {
  * O que estava guardado, ou nada.
  *
  * Qualquer problema — armazenamento bloqueado, JSON corrompido, formato de
- * outra versao — devolve lista vazia. A sacola do cliente e conveniencia; um
- * erro aqui nao pode derrubar o login dele.
+ * outra versão — devolve lista vazia. A sacola do cliente e conveniência; um
+ * erro aqui não pode derrubar o login dele.
  */
 export function readStashedCart(customerId: string): CartLine[] {
   try {
@@ -116,10 +116,10 @@ export function clearStashedCart(customerId: string): void {
 }
 
 /**
- * So os tres campos, e so os que fazem sentido.
+ * Só os três campos, e só os que fazem sentido.
  *
  * O que vem do `localStorage` e texto que qualquer coisa pode ter escrito —
- * uma versao anterior desta loja, uma extensao, o console de alguem. Isto
+ * uma versão anterior desta loja, uma extensão, o console de alguém. Isto
  * aqui e a fronteira: o que passa e `{productId, variantId, quantity}` com
  * os dois ids preenchidos e a quantidade inteira e positiva. Um `price`
  * colado no meio do JSON e descartado antes de chegar a qualquer tela.

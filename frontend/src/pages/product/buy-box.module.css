@@ -1,8 +1,8 @@
 /*
  * A coluna de compra.
  *
- * Um empilhamento simples com respiro generoso entre os blocos: cada decisao
- * — o preco, a opcao, a quantidade — precisa ser lida sozinha. Preco colado
+ * Um empilhamento simples com respiro generoso entre os blocos: cada decisão
+ * — o preço, a opção, a quantidade — precisa ser lida sozinha. Preço colado
  * no seletor e o que faz o cliente escolher o tamanho errado.
  */
 
@@ -32,7 +32,7 @@
 /*
  * O nome, na serifada grande.
  *
- * E o `h1` da pagina, e tambem o maior texto dela: o produto e o assunto, e
+ * E o `h1` da página, e também o maior texto dela: o produto e o assunto, e
  * a tipografia precisa dizer isso antes de qualquer leitura.
  */
 .name {
@@ -51,7 +51,7 @@
   gap: var(--space-8);
 }
 
-/* ---- Preco -------------------------------------------------------------- */
+/* ---- Preço -------------------------------------------------------------- */
 
 .prices {
   display: grid;
@@ -94,9 +94,9 @@
 }
 
 /*
- * O preco no PIX.
+ * O preço no PIX.
  *
- * Destacado no verde do sistema, e nao no dourado da marca: o dourado escuro
+ * Destacado no verde do sistema, e não no dourado da marca: o dourado escuro
  * tem 3.66:1 sobre o creme e reprova em 16px. O verde passa com 4.68:1 e ainda
  * diz a coisa certa — esta linha e quanto o cliente economiza.
  */
@@ -123,7 +123,7 @@
 }
 
 .stock {
-  /* `<output>` nasce inline, e a nota e um paragrafo. */
+  /* `<output>` nasce inline, e a nota e um parágrafo. */
   display: block;
   margin: 0 0 var(--space-8);
 
@@ -135,13 +135,13 @@
   color: var(--danger);
 }
 
-/* ---- Os botoes ---------------------------------------------------------- */
+/* ---- Os botões ---------------------------------------------------------- */
 
 /*
  * Empilhados no celular, lado a lado no desktop.
  *
- * O primario vem primeiro nos dois casos: "adicionar" e o que a maioria faz,
- * e "comprar agora" e o atalho de quem ja decidiu.
+ * O primário vem primeiro nos dois casos: "adicionar" e o que a maioria faz,
+ * e "comprar agora" e o atalho de quem já decidiu.
  */
 .actions {
   display: grid;

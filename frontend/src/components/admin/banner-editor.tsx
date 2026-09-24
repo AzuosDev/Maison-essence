@@ -29,22 +29,22 @@ import styles from './banner-editor.module.css';
  *
  * ## A arte vem primeiro
  *
- * Adicionar um banner comeca pelo envio da imagem, e nao por um formulario
- * vazio: banner sem arte nao existe — o servidor o recusa —, e uma linha em
- * branco esperando upload e um estado que so serve para ser abandonado.
+ * Adicionar um banner começa pelo envio da imagem, e não por um formulário
+ * vazio: banner sem arte não existe — o servidor o recusa —, e uma linha em
+ * branco esperando upload e um estado que só serve para ser abandonado.
  *
- * ## Quatro estados, e nao dois
+ * ## Quatro estados, e não dois
  *
- * "No ar", "Agendado", "Encerrado" e "Desligado" parecem dois na tela e sao
- * quatro na pratica: o desligado volta com um clique, o encerrado precisa de
- * datas novas, e o agendado e o caso que mais assusta — "salvei e nao
+ * "No ar", "Agendado", "Encerrado" e "Desligado" parecem dois na tela e são
+ * quatro na prática: o desligado volta com um clique, o encerrado precisa de
+ * datas novas, e o agendado e o caso que mais assusta — "salvei e não
  * apareceu". Cada linha diz o seu em palavras.
  *
- * ## O ultimo dia conta inteiro
+ * ## O último dia conta inteiro
  *
- * A dona pensa "ate dia 25", e e isso que o campo pergunta. A conversao para
- * o instante em que o banner sai do ar acontece na saida, em
- * `bannerToInput` — aqui so se escolhe o dia.
+ * A dona pensa "até dia 25", e e isso que o campo pergunta. A conversão para
+ * o instante em que o banner sai do ar acontece na saída, em
+ * `bannerToInput` — aqui só se escolhe o dia.
  */
 export interface BannerEditorProps {
   banners: readonly BannerDraft[];
@@ -59,7 +59,7 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
 
-  // O relogio e lido uma vez por render, e nao uma vez por linha: duas
+  // O relógio e lido uma vez por render, e não uma vez por linha: duas
   // leituras podem cair em lados diferentes da meia-noite, e duas linhas
   // agendadas para o mesmo dia apareceriam em estados diferentes.
   const now = new Date();
@@ -99,11 +99,11 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
         <ol className={styles.list}>
           {banners.map((banner, index) => (
             /*
-              O detector avisa que um `<li>` nao deveria ouvir eventos de
-              ponteiro, e a preocupacao e legitima: um alvo que so responde ao
-              arraste nao existe para quem usa teclado. Aqui ela esta
+              O detector avisa que um `<li>` não deveria ouvir eventos de
+              ponteiro, e a preocupação e legitima: um alvo que só responde ao
+              arraste não existe para quem usa teclado. Aqui ela esta
               atendida — "Subir" e "Descer" no menu da linha fazem o mesmo, e
-              sao o caminho principal. O arraste e o atalho de quem tem mouse.
+              são o caminho principal. O arraste e o atalho de quem tem mouse.
             */
             // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
             <li
@@ -122,8 +122,8 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
                 setOver(null);
               }}
               onDragOver={(event: DragEvent) => {
-                // Sem isto o navegador recusa o solte: `dragover` so libera o
-                // alvo quando o padrao e cancelado.
+                // Sem isto o navegador recusa o solte: `dragover` só libera o
+                // alvo quando o padrão e cancelado.
                 event.preventDefault();
                 setOver(index);
               }}

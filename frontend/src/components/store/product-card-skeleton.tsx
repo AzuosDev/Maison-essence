@@ -5,16 +5,16 @@ import styles from './product-card.module.css';
 /**
  * O card antes de o produto chegar.
  *
- * Mora em arquivo proprio mas importa **a mesma folha de estilo do card**, e
- * essa e a unica razao de ele funcionar: `.card`, `.media`, `.brand`,
- * `.nameRow`, `.prices`, `.installment`, `.promo` e `.action` sao as classes
+ * Mora em arquivo próprio mas importa **a mesma folha de estilo do card**, e
+ * essa e a única razão de ele funcionar: `.card`, `.media`, `.brand`,
+ * `.nameRow`, `.prices`, `.installment`, `.promo` e `.action` são as classes
  * do original, com as mesmas alturas reservadas. Um esqueleto com medidas
- * proprias e um esqueleto que comeca igual e vai divergindo a cada ajuste no
- * card — e a divergencia so aparece como um solavanco na grade, que ninguem
+ * próprias e um esqueleto que começa igual e vai divergindo a cada ajuste no
+ * card — e a divergência só aparece como um solavanco na grade, que ninguém
  * associa ao commit que a causou.
  *
- * Sem `aria-hidden` aqui: o `Skeleton` ja o traz, e quem anuncia o
- * carregamento e a propria prateleira, pelo `aria-busy`.
+ * Sem `aria-hidden` aqui: o `Skeleton` já o traz, e quem anuncia o
+ * carregamento e a própria prateleira, pelo `aria-busy`.
  */
 export function ProductCardSkeleton() {
   return (

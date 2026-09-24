@@ -31,41 +31,41 @@ import { usePageMeta } from '@/lib/use-page-meta';
 import styles from './admin-product-form-page.module.css';
 
 /**
- * O cadastro do produto, em pagina cheia.
+ * O cadastro do produto, em página cheia.
  *
- * ## Por que nao e um modal
+ * ## Por que não e um modal
  *
- * Porque nao e uma tarefa curta. Sao nove campos, uma galeria e uma tabela de
+ * Porque não e uma tarefa curta. São nove campos, uma galeria e uma tabela de
  * variantes, e a dona faz isso no celular com a caixa do fornecedor aberta ao
- * lado. Um modal rouba a rolagem da pagina, nao tem endereco proprio para ela
- * voltar depois de uma ligacao, e no celular vira uma pagina cheia com uma
+ * lado. Um modal rouba a rolagem da página, não tem endereço próprio para ela
+ * voltar depois de uma ligação, e no celular vira uma página cheia com uma
  * borda inutil em volta.
  *
- * Em pagina cheia, `/admin/produtos/novo` e `/admin/produtos/:id` sao
- * enderecos: ela pode sair, voltar e continuar.
+ * Em página cheia, `/admin/produtos/novo` e `/admin/produtos/:id` são
+ * endereços: ela pode sair, voltar e continuar.
  *
- * ## A ordem das secoes e a ordem da caixa
+ * ## A ordem das seções e a ordem da caixa
  *
  * Nome e marca primeiro, porque e o que esta escrito no frasco. Fotos em
  * seguida, porque e o que ela acabou de tirar. Variantes depois, porque e
  * preciso ver as fotos para dizer qual e a do frasco de 50 ml. Categorias e
- * vitrine por ultimo, que sao decisoes sobre onde o produto aparece — e nao
+ * vitrine por último, que são decisões sobre onde o produto aparece — e não
  * sobre o que ele e.
  *
- * ## Os erros so aparecem depois da primeira tentativa
+ * ## Os erros só aparecem depois da primeira tentativa
  *
- * Validar a cada tecla marcaria o campo de preco como invalido enquanto a
- * pessoa digita `1`, `19`, `199,`. O formulario so mostra erro depois que
- * alguem tentou salvar — e a partir dai ele corrige ao vivo, porque nesse
- * ponto a pessoa ja sabe o que esta errado e quer ver quando consertou.
+ * Validar a cada tecla marcaria o campo de preço como inválido enquanto a
+ * pessoa digita `1`, `19`, `199,`. O formulário só mostra erro depois que
+ * alguém tentou salvar — e a partir dai ele corrige ao vivo, porque nesse
+ * ponto a pessoa já sabe o que esta errado e quer ver quando consertou.
  */
 export default function AdminProductFormPage() {
   const { id } = useParams();
   const role = useAdminRole();
 
   // `/admin/produtos/novo` casa com `:id` — e a mesma rota. O literal e o que
-  // separa o cadastro novo da edicao, e ele nao pode ser um id valido porque
-  // `novo` nao e hexadecimal de 24 caracteres.
+  // separa o cadastro novo da edição, e ele não pode ser um id válido porque
+  // `novo` não e hexadecimal de 24 caracteres.
   const isNew = id === undefined || id === 'novo';
   const productId = isNew ? '' : id;
 
@@ -101,7 +101,7 @@ export default function AdminProductFormPage() {
         actions={
           <Link to={ROUTES.admin.products} className={styles.backLink}>
             <ArrowLeftIcon />
-            Voltar para o catalogo
+            Voltar para o catálogo
           </Link>
         }
       />
@@ -123,7 +123,7 @@ export default function AdminProductFormPage() {
   );
 }
 
-/* ---- O formulario --------------------------------------------------------- */
+/* ---- O formulário --------------------------------------------------------- */
 
 function ProductForm({
   initial,
@@ -150,7 +150,7 @@ function ProductForm({
 
   const isNew = productId === undefined;
   const errors = validateDraft(draft);
-  // Enquanto ninguem tentou salvar, a tela nao marca nada de vermelho. Ver a
+  // Enquanto ninguém tentou salvar, a tela não marca nada de vermelho. Ver a
   // nota no topo do arquivo.
   const shown = tried ? errors : { variant: {} };
 
@@ -162,15 +162,15 @@ function ProductForm({
     setTried(true);
 
     if (hasErrors(errors)) {
-      // O primeiro campo invalido recebe o foco: num formulario desta altura,
-      // um erro la embaixo passaria despercebido no celular.
+      // O primeiro campo inválido recebe o foco: num formulário desta altura,
+      // um erro lá embaixo passaria despercebido no celular.
       document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
 
       return;
     }
 
-    // Corpos diferentes, e nao o mesmo com um campo a mais: a criacao pode
-    // escolher o endereco do produto, a edicao nao mexe nele.
+    // Corpos diferentes, e não o mesmo com um campo a mais: a criação pode
+    // escolher o endereço do produto, a edição não mexe nele.
     save.mutate(
       productId === undefined
         ? { input: draftToCreate(draft) }
@@ -294,8 +294,8 @@ function ProductForm({
             onChange={(images) => {
               // A variante que apontava para uma foto removida volta a usar a
               // capa. Sem isto, o cadastro sairia com um `publicId` que o
-              // produto nao tem mais, e o servidor recusaria o salvamento
-              // inteiro por causa de uma foto que a dona ja tirou da tela.
+              // produto não tem mais, e o servidor recusaria o salvamento
+              // inteiro por causa de uma foto que a dona já tirou da tela.
               const kept = new Set(images);
 
               setDraft((current) => ({
@@ -468,7 +468,7 @@ function ProductForm({
   );
 }
 
-/* ---- Pedacos --------------------------------------------------------------- */
+/* ---- Pedaços --------------------------------------------------------------- */
 
 function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (

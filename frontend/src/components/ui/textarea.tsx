@@ -4,10 +4,10 @@ import { Field, controlClass, useFieldWiring, type FieldOwnProps } from './field
 import styles from './textarea.module.css';
 
 /**
- * A area de texto: descricao do produto, observacao do pedido, pagina
+ * A área de texto: descrição do produto, observação do pedido, página
  * institucional.
  *
- * O contador de caracteres e opcional e aparece quando ha `maxLength`. Ele e
+ * O contador de caracteres e opcional e aparece quando há `maxLength`. Ele e
  * `aria-live="polite"`: quem usa leitor de tela ouve que esta chegando ao
  * limite ao parar de digitar, em vez de descobrir no envio recusado.
  */

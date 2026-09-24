@@ -17,10 +17,10 @@ import {
 /**
  * As contas da abertura do painel.
  *
- * Elas existem porque a API nao tem rota de metricas, e sao o tipo de codigo
- * que erra em silencio: um status somado a mais infla o faturamento, um fuso
- * trocado conta o pedido das 23h como de amanha, e ninguem descobre — o
- * numero continua parecendo um numero.
+ * Elas existem porque a API não tem rota de metricas, e são o tipo de código
+ * que erra em silêncio: um status somado a mais infla o faturamento, um fuso
+ * trocado conta o pedido das 23h como de amanha, e ninguém descobre — o
+ * número continua parecendo um número.
  */
 
 function order(patch: Partial<AdminOrderSummary> = {}): AdminOrderSummary {
@@ -91,7 +91,7 @@ test('o faturamento conta só a venda fechada', () => {
     order({ status: ORDER_STATUSES.PREPARING, totalCents: 20_000 }),
     order({ status: ORDER_STATUSES.SHIPPED, totalCents: 5_000 }),
     order({ status: ORDER_STATUSES.DELIVERED, totalCents: 5_000 }),
-    // Estes dois ficam de fora: um ainda nao virou conversa, o outro morreu.
+    // Estes dois ficam de fora: um ainda não virou conversa, o outro morreu.
     order({ status: ORDER_STATUSES.PENDING_CONTACT, totalCents: 90_000 }),
     order({ status: ORDER_STATUSES.CANCELLED, totalCents: 90_000 }),
   ]).cents;
@@ -129,7 +129,7 @@ test('os pedidos de hoje são os que vieram depois da meia-noite', () => {
 
 test('a meia-noite e a do fuso local, e não a de UTC', () => {
   // As 23h de 22/09 no fuso de quem esta olhando: a meia-noite daquele dia
-  // precisa ficar antes disso, qualquer que seja o fuso da maquina.
+  // precisa ficar antes disso, qualquer que seja o fuso da máquina.
   const now = new Date(2026, 8, 22, 23, 0, 0);
 
   expect(startOfToday(now) <= now.toISOString()).toBe(true);
@@ -143,7 +143,7 @@ test('sem estoque conta só o que esta publicado', () => {
   const esgotados = outOfStock([
     product({ id: 'a', inStock: false }),
     product({ id: 'b', inStock: true }),
-    // Despublicado nao conta: nao esta na vitrine para faltar.
+    // Despublicado não conta: não esta na vitrine para faltar.
     product({ id: 'c', inStock: false, isActive: false }),
   ]);
 
@@ -166,11 +166,11 @@ test('sob encomenda, desativada e zerada ficam fora do aviso', () => {
   const lines = lowStock([
     product({
       variants: [
-        // Sob encomenda nao tem estoque a repor.
+        // Sob encomenda não tem estoque a repor.
         variant({ id: 'sob', stock: 1, allowBackorder: true }),
-        // Desativada nao esta a venda.
+        // Desativada não esta a venda.
         variant({ id: 'off', stock: 1, isActive: false }),
-        // Zerada nao esta "acabando": ja acabou, e e outro aviso.
+        // Zerada não esta "acabando": já acabou, e e outro aviso.
         variant({ id: 'zero', stock: 0 }),
       ],
     }),

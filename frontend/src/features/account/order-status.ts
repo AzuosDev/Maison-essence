@@ -8,16 +8,16 @@ import {
 /**
  * O pedido escrito para quem comprou.
  *
- * ## Por que nao sao os mesmos rotulos do painel
+ * ## Por que não são os mesmos rótulos do painel
  *
  * `features/admin/order-labels.ts` traduz os mesmos seis status, e traduz
- * diferente de proposito. O painel responde "o que **eu**, loja, preciso
+ * diferente de propósito. O painel responde "o que **eu**, loja, preciso
  * fazer com este pedido" — por isso "Aguardando contato", que e uma tarefa
  * da dona. A conta responde "o que esta acontecendo com o **meu** pedido", e
  * "aguardando contato" faria o cliente achar que *ele* precisa ligar.
  *
- * Importar o modulo do painel aqui tambem arrastaria o painel para o pedaco
- * inicial da loja, que e um preco alto por uma tabela de seis linhas.
+ * Importar o módulo do painel aqui também arrastaria o painel para o pedaço
+ * inicial da loja, que e um preço alto por uma tabela de seis linhas.
  *
  * ## Retirada e entrega leem o mesmo status de jeitos diferentes
  *
@@ -61,7 +61,7 @@ export function statusLabel(status: OrderStatus, mode: FulfillmentMode): string 
  * Quatro tons para seis status, porque o que a cor precisa dizer e mais
  * simples que o estado: **a loja ainda vai responder** (dourado), **esta
  * andando** (tinta), **terminou bem** (verde), **terminou mal** (vermelho).
- * A palavra continua escrita no selo — a cor nunca e o unico portador.
+ * A palavra continua escrita no selo — a cor nunca e o único portador.
  */
 export function statusTone(status: OrderStatus): 'gold' | 'ink' | 'success' | 'danger' {
   if (status === ORDER_STATUSES.PENDING_CONTACT) {
@@ -84,15 +84,15 @@ export interface TimelineStep {
   description: string;
   state: 'done' | 'current' | 'pending';
   /**
-   * Quando aconteceu, em ISO. `null` quando o pedido nao guarda essa data.
+   * Quando aconteceu, em ISO. `null` quando o pedido não guarda essa data.
    *
    * Ver a nota de `orderTimeline`: o passo cumprido sem data aparece
-   * cumprido e sem data, e nao com uma data inventada a partir da vizinha.
+   * cumprido e sem data, e não com uma data inventada a partir da vizinha.
    */
   at: string | null;
 }
 
-/* As chaves saem de `FULFILLMENT_MODES`, e nao escritas a mao: sao valores
+/* As chaves saem de `FULFILLMENT_MODES`, e não escritas a mão: são valores
    de fio, e escreve-los aqui foi como a tela e o servidor se desencontraram
    uma vez — ver o bloco em `checkout.types.ts`. */
 const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = {
@@ -133,31 +133,31 @@ interface TimelineSource {
 /**
  * A trilha de status, com as datas que o pedido de fato guarda.
  *
- * ## A parte honesta desta funcao
+ * ## A parte honesta desta função
  *
  * O pedido grava **duas** datas: `createdAt`, de quando ele nasceu, e
- * `updatedAt`, da ultima vez que mudou. Nao ha, no que a API publica, um
- * registro por transicao — a mudanca de status e gravada na trilha de
- * auditoria, que e do painel e nao tem rota.
+ * `updatedAt`, da última vez que mudou. Não há, no que a API publica, um
+ * registro por transição — a mudanca de status e gravada na trilha de
+ * auditoria, que e do painel e não tem rota.
  *
- * Entao a trilha diz o que sabe e cala o que nao sabe:
+ * Então a trilha diz o que sabe e cala o que não sabe:
  *
  * - O primeiro passo leva `createdAt`. E a data em que o pedido foi feito, e
  *   ele nasce sempre neste status.
- * - O passo **atual** leva `updatedAt`, que e quando ele chegou ai.
+ * - O passo **atual** leva `updatedAt`, que e quando ele chegou aí.
  * - Os passos do meio aparecem cumpridos e **sem data**. Um pedido entregue
  *   passou por confirmado e por em preparo; dizer *quando* exigiria inventar
- *   um numero, e uma data errada num historico e pior do que nenhuma.
+ *   um número, e uma data errada num histórico e pior do que nenhuma.
  * - Os passos seguintes ficam pendentes, apagados, sem data.
  *
- * No dia em que a API publicar as transicoes, e esta funcao que muda — e so
- * ela. A tela ja desenha `at: null`.
+ * No dia em que a API publicar as transições, e esta função que muda — e só
+ * ela. A tela já desenha `at: null`.
  *
- * ## O cancelamento nao e um passo do meio
+ * ## O cancelamento não e um passo do meio
  *
- * Pedido cancelado nao mostra a fila inteira com um X no fim: mostra que foi
- * feito e que foi cancelado. Os passos que ele nao chegou a cumprir nao
- * pertencem a historia dele.
+ * Pedido cancelado não mostra a fila inteira com um X no fim: mostra que foi
+ * feito e que foi cancelado. Os passos que ele não chegou a cumprir não
+ * pertencem a história dele.
  */
 export function orderTimeline(order: TimelineSource): TimelineStep[] {
   const { status, createdAt, updatedAt, mode } = order;
@@ -185,7 +185,7 @@ export function orderTimeline(order: TimelineSource): TimelineStep[] {
 
   return ORDER_FLOW.map((flowStatus, index) => {
     if (index === 0) {
-      // O pedido nasce aqui: esta data e a unica do meio que existe de fato.
+      // O pedido nasce aqui: esta data e a única do meio que existe de fato.
       return step(flowStatus, current === 0 ? 'current' : 'done', createdAt);
     }
 

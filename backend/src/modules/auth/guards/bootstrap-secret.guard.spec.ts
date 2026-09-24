@@ -28,8 +28,8 @@ describe('BootstrapSecretGuard', () => {
   });
 
   it('sem BOOTSTRAP_SECRET a rota deixa de existir', () => {
-    // 404 e nao 403: depois do primeiro acesso a variavel sai do ambiente, e
-    // quem varrer a API nao deve achar sinal de que a rota existiu.
+    // 404 e não 403: depois do primeiro acesso a variável sai do ambiente, e
+    // quem varrer a API não deve achar sinal de que a rota existiu.
     expect(() => buildGuard(undefined).canActivate(buildContext(SECRET))).toThrow(
       NotFoundException,
     );
@@ -47,7 +47,7 @@ describe('BootstrapSecretGuard', () => {
     expect(() => guard.canActivate(buildContext('outro-segredo'))).toThrow(
       UnauthorizedException,
     );
-    // Tamanhos diferentes: o digest iguala o tamanho antes da comparacao, sem
+    // Tamanhos diferentes: o digest iguala o tamanho antes da comparação, sem
     // o `timingSafeEqual` estourar por buffers desiguais.
     expect(() => guard.canActivate(buildContext(SECRET.slice(0, 20)))).toThrow(
       UnauthorizedException,

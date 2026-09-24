@@ -18,21 +18,21 @@ import styles from './admin-layout.module.css';
 /**
  * A moldura do painel.
  *
- * Sidebar escura a esquerda, conteudo claro a direita, e nada da loja: o
- * painel e outra aplicacao dentro do mesmo build. Compartilham os tokens e os
- * primitivos, e nada alem disso — a dona precisa saber pelo canto do olho que
- * um clique aqui muda o que o cliente ve.
+ * Sidebar escura a esquerda, conteúdo claro a direita, e nada da loja: o
+ * painel e outra aplicação dentro do mesmo build. Compartilham os tokens e os
+ * primitivos, e nada além disso — a dona precisa saber pelo canto do olho que
+ * um clique aqui muda o que o cliente vê.
  *
  * ## O guarda
  *
- * Tres estados, nesta ordem, e a ordem importa:
+ * Três estados, nesta ordem, e a ordem importa:
  *
- * 1. **Sem sessao** — vai para a entrada, guardando de onde veio para
+ * 1. **Sem sessão** — vai para a entrada, guardando de onde veio para
  *    voltar ao mesmo lugar depois do login.
- * 2. **Senha temporaria** — vai para a troca de senha, e nao adianta insistir
- *    em outro endereco: o backend recusa toda rota administrativa enquanto a
+ * 2. **Senha temporária** — vai para a troca de senha, e não adianta insistir
+ *    em outro endereço: o backend recusa toda rota administrativa enquanto a
  *    marca existir.
- * 3. **Sessao boa** — o painel.
+ * 3. **Sessão boa** — o painel.
  *
  * O guarda esconde; quem impede e o servidor. Um token adulterado no
  * `localStorage` abriria o menu e receberia 401 na primeira consulta.
@@ -40,12 +40,12 @@ import styles from './admin-layout.module.css';
  * ## O celular
  *
  * A dona usa o painel no celular na maior parte do tempo. Abaixo de 1024px a
- * coluna vira gaveta, e a barra de cima ganha o botao que a abre. Os dois
+ * coluna vira gaveta, e a barra de cima ganha o botão que a abre. Os dois
  * nunca coexistem no documento: montar o menu duas vezes faria o leitor de
- * tela anunciar oito itens que aparecem uma vez so.
+ * tela anunciar oito itens que aparecem uma vez só.
  */
 
-/** A largura em que a coluna fixa cabe ao lado do conteudo. */
+/** A largura em que a coluna fixa cabe ao lado do conteúdo. */
 const DESKTOP = '(min-width: 64rem)';
 
 export function AdminLayout() {
@@ -141,27 +141,27 @@ function Brand() {
 }
 
 /**
- * O pe da coluna: sair, e o tema.
+ * O pé da coluna: sair, e o tema.
  *
  * ## Sair
  *
- * Longe dos itens do menu: e a unica acao da moldura que nao leva a lugar
+ * Longe dos itens do menu: e a única ação da moldura que não leva a lugar
  * nenhum, e um clique errado nela custa um login inteiro no meio do
  * atendimento.
  *
  * ## O tema
  *
- * Tambem se troca daqui. O controle da loja mora no rodape, e o painel nao
- * tem rodape: sem este, quem opera teria de sair do painel, achar o rodape da
- * loja e voltar. Sao o mesmo estado — trocar aqui muda a marcacao la.
+ * Também se troca daqui. O controle da loja mora no rodapé, e o painel não
+ * tem rodapé: sem este, quem opera teria de sair do painel, achar o rodapé da
+ * loja e voltar. São o mesmo estado — trocar aqui muda a marcação lá.
  *
- * Aqui e um icone, e no rodape da loja sao tres segmentos, porque a coluna
- * tem 15rem: a pilula de "Sistema Claro Escuro" nao cabia nela, e o que
- * sobrava era uma barra de rolagem horizontal debaixo do menu. O icone tambem
- * diz melhor o que este lugar e — no pe da coluna moram as duas coisas que
- * nao sao a loja, e nenhuma delas merece o peso de um bloco com titulo.
+ * Aqui e um ícone, e no rodapé da loja são três segmentos, porque a coluna
+ * tem 15rem: a pílula de "Sistema Claro Escuro" não cabia nela, e o que
+ * sobrava era uma barra de rolagem horizontal debaixo do menu. O ícone também
+ * diz melhor o que este lugar e — no pé da coluna moram as duas coisas que
+ * não são a loja, e nenhuma delas merece o peso de um bloco com título.
  *
- * O par divide a linha: o rotulo a esquerda, onde comeca todo item do menu, e
+ * O par divide a linha: o rótulo a esquerda, onde começa todo item do menu, e
  * o alvo de 44px encostado na direita.
  */
 function Footer({ onSignOut }: { onSignOut: () => void }) {

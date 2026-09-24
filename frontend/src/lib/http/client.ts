@@ -3,33 +3,33 @@ import { ApiError, NetworkError, type ApiErrorBody } from './api-error';
 import { SESSION_SCOPES, sessionFor, type SessionPort, type SessionScope } from './session';
 
 /**
- * O unico jeito de falar com a API.
+ * O único jeito de falar com a API.
  *
- * Nenhum `fetch` solto no resto da aplicacao: tudo passa por aqui, e por isso
- * tres regras valem sem excecao e sem ninguem precisar lembrar delas.
+ * Nenhum `fetch` solto no resto da aplicação: tudo passa por aqui, e por isso
+ * três regras valem sem exceção e sem ninguém precisar lembrar delas.
  *
- * 1. A URL sai de `VITE_API_URL`. Trocar de ambiente e trocar a variavel.
- * 2. O access token e anexado na saida, lido na hora — e nao capturado
- *    quando a funcao foi escrita. Uma renovacao no meio do caminho vale ja
- *    para a proxima tentativa.
- * 3. Um `401` dispara uma renovacao, e uma so. Deu certo, a requisicao e
- *    refeita; deu errado, a sessao e encerrada e o `401` sobe para a tela.
+ * 1. A URL sai de `VITE_API_URL`. Trocar de ambiente e trocar a variável.
+ * 2. O access token e anexado na saída, lido na hora — e não capturado
+ *    quando a função foi escrita. Uma renovação no meio do caminho vale já
+ *    para a próxima tentativa.
+ * 3. Um `401` dispara uma renovação, e uma só. Deu certo, a requisição e
+ *    refeita; deu errado, a sessão e encerrada e o `401` sobe para a tela.
  *
- * O ponto delicado e a terceira. A loja abre varias chamadas em paralelo, e o
+ * O ponto delicado e a terceira. A loja abre várias chamadas em paralelo, e o
  * access token expira para todas ao mesmo tempo. Se cada `401` pedisse a sua
- * propria renovacao, o backend receberia varias chamadas com o *mesmo* refresh
+ * própria renovação, o backend receberia várias chamadas com o *mesmo* refresh
  * token — e, como ele rotaciona o token a cada uso e trata reuso como sinal de
- * roubo, a segunda derrubaria a sessao inteira. Por isso as renovacoes
- * concorrentes compartilham uma promessa so (`refreshing`), e quem chega
- * depois de a renovacao ja ter acontecido nem chega a pedir outra: percebe
- * pelo token que o seu ja era o antigo e apenas repete a requisicao.
+ * roubo, a segunda derrubaria a sessão inteira. Por isso as renovações
+ * concorrentes compartilham uma promessa só (`refreshing`), e quem chega
+ * depois de a renovação já ter acontecido nem chega a pedir outra: percebe
+ * pelo token que o seu já era o antigo e apenas repete a requisição.
  */
 
 /**
  * Teto de espera por resposta.
  *
- * Generoso de proposito: a API e uma funcao serverless, e o primeiro acesso
- * depois de um periodo parado paga 2–4 s de cold start. Um limite apertado
+ * Generoso de propósito: a API e uma função serverless, e o primeiro acesso
+ * depois de um período parado paga 2–4 s de cold start. Um limite apertado
  * transformaria isso num erro na cara do cliente.
  */
 const DEFAULT_TIMEOUT_MS = 20_000;
@@ -43,21 +43,21 @@ export type QueryParams = Readonly<Record<string, QueryValue>>;
 
 export interface RequestOptions {
   method?: HttpMethod;
-  /** Serializado como JSON. `undefined` nao manda corpo nenhum. */
+  /** Serializado como JSON. `undefined` não manda corpo nenhum. */
   body?: unknown;
   query?: QueryParams;
   headers?: Readonly<Record<string, string>>;
   /** Cancelamento do chamador — e o que o TanStack Query passa. */
   signal?: AbortSignal;
   /**
-   * Qual sessao autentica. `null` para rota publica: sem `Authorization` e,
+   * Qual sessão autentica. `null` para rota publica: sem `Authorization` e,
    * principalmente, sem tentar renovar nada se vier `401`.
    */
   scope?: SessionScope | null;
   timeoutMs?: number;
 }
 
-/** Uma renovacao em andamento por escopo. E ela que evita o refresh duplicado. */
+/** Uma renovação em andamento por escopo. E ela que evita o refresh duplicado. */
 const refreshing = new Map<SessionScope, Promise<boolean>>();
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<T> {
@@ -68,7 +68,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   let attempt = await send(url, init, scope, options);
 
   if (attempt.response.status === 401 && scope !== null) {
-    // A unica retentativa. Se a renovacao falhar, o `401` original sobe.
+    // A única retentativa. Se a renovação falhar, o `401` original sobe.
     const renewed = await renewSession(scope, attempt.accessToken);
 
     if (renewed) {
@@ -109,7 +109,7 @@ export const api = {
 /** O que uma tentativa produziu, e com qual token ela saiu. */
 interface Attempt {
   response: Response;
-  /** O access token usado. E a chave para nao renovar duas vezes. */
+  /** O access token usado. E a chave para não renovar duas vezes. */
   accessToken: string | null;
 }
 
@@ -119,7 +119,7 @@ async function send(
   scope: SessionScope | null,
   options: RequestOptions,
 ): Promise<Attempt> {
-  // Lido agora, e nao no `buildInit`: entre a primeira tentativa e a segunda
+  // Lido agora, e não no `buildInit`: entre a primeira tentativa e a segunda
   // o token mudou, e e justamente o novo que precisa ir.
   const accessToken = scope === null ? null : (sessionFor(scope)?.read()?.accessToken ?? null);
 
@@ -129,7 +129,7 @@ async function send(
     headers.set('Authorization', `Bearer ${accessToken}`);
   }
 
-  // Um tempo limite por tentativa: o da primeira nao pode cancelar a segunda.
+  // Um tempo limite por tentativa: o da primeira não pode cancelar a segunda.
   const timeout = AbortSignal.timeout(options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
   const signal = options.signal ? AbortSignal.any([options.signal, timeout]) : timeout;
 
@@ -139,7 +139,7 @@ async function send(
     return { response, accessToken };
   } catch (cause) {
     // Cancelamento do chamador sobe como esta: o TanStack Query o reconhece
-    // e nao o trata como falha da tela.
+    // e não o trata como falha da tela.
     if (options.signal?.aborted) {
       throw cause;
     }
@@ -149,10 +149,10 @@ async function send(
 }
 
 /**
- * Garante uma sessao valida para o escopo, renovando no maximo uma vez.
+ * Garante uma sessão valida para o escopo, renovando no máximo uma vez.
  *
- * Devolve `false` quando nao ha o que renovar ou quando a renovacao foi
- * recusada — e nesse caso a sessao ja foi encerrada por quem implementa o
+ * Devolve `false` quando não há o que renovar ou quando a renovação foi
+ * recusada — e nesse caso a sessão já foi encerrada por quem implementa o
  * `SessionPort`.
  */
 async function renewSession(scope: SessionScope, usedToken: string | null): Promise<boolean> {
@@ -165,13 +165,13 @@ async function renewSession(scope: SessionScope, usedToken: string | null): Prom
   const current = port.read();
 
   if (!current) {
-    // Nao ha sessao: o `401` e a resposta certa para uma rota protegida
-    // aberta por quem nao entrou.
+    // Não há sessão: o `401` e a resposta certa para uma rota protegida
+    // aberta por quem não entrou.
     return false;
   }
 
-  // Outra requisicao ja renovou enquanto esta estava no ar. Pedir de novo
-  // usaria um refresh token ja gasto, e o backend leria isso como reuso.
+  // Outra requisição já renovou enquanto esta estava no ar. Pedir de novo
+  // usaria um refresh token já gasto, e o backend leria isso como reuso.
   if (usedToken !== null && current.accessToken !== usedToken) {
     return true;
   }
@@ -194,8 +194,8 @@ async function renewSession(scope: SessionScope, usedToken: string | null): Prom
 async function refresh(port: SessionPort): Promise<boolean> {
   const current = port.read();
 
-  // O cookie `httpOnly` e o caminho preferido; o corpo atende quem nao
-  // recebe cookie de terceiro. Mandar os dois nao custa nada: o backend le o
+  // O cookie `httpOnly` e o caminho preferido; o corpo atende quem não
+  // recebe cookie de terceiro. Mandar os dois não custa nada: o backend lê o
   // cookie primeiro e ignora o resto.
   const body = current?.refreshToken ? { refreshToken: current.refreshToken } : {};
 
@@ -210,9 +210,9 @@ async function refresh(port: SessionPort): Promise<boolean> {
       signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
     });
   } catch {
-    // A rede caiu no meio da renovacao. A sessao continua de pe: derrubar
+    // A rede caiu no meio da renovação. A sessão continua de pé: derrubar
     // quem esta no checkout por causa de um tunel de metro seria pior que
-    // deixar a proxima chamada tentar de novo.
+    // deixar a próxima chamada tentar de novo.
     return false;
   }
 
@@ -282,17 +282,17 @@ function buildInit(options: RequestOptions): RequestInit {
   return {
     method: options.method ?? 'GET',
     headers,
-    // Os cookies de sessao sao `httpOnly` e cross-site: sem isto, o navegador
-    // nao os envia e so o caminho do `Bearer` funcionaria.
+    // Os cookies de sessão são `httpOnly` e cross-site: sem isto, o navegador
+    // não os envia e só o caminho do `Bearer` funcionaria.
     credentials: 'include',
-    // Serializado uma vez so: o corpo precisa sobreviver a retentativa, e um
-    // stream so pode ser lido uma vez.
+    // Serializado uma vez só: o corpo precisa sobreviver a retentativa, e um
+    // stream só pode ser lido uma vez.
     ...(hasBody ? { body: JSON.stringify(options.body) } : {}),
   };
 }
 
 async function parseResponse<T>(response: Response, path: string): Promise<T> {
-  // `204` e o que as rotas de logout e de exclusao devolvem.
+  // `204` e o que as rotas de logout e de exclusão devolvem.
   if (response.ok && (response.status === 204 || response.headers.get('content-length') === '0')) {
     return undefined as T;
   }
@@ -313,8 +313,8 @@ function safeJson(text: string): unknown {
   try {
     return JSON.parse(text) as unknown;
   } catch {
-    // Resposta que nao e JSON: pagina de erro de proxy, HTML de manutencao.
-    // O texto cru continua util na mensagem de erro.
+    // Resposta que não e JSON: página de erro de proxy, HTML de manutenção.
+    // O texto cru continua útil na mensagem de erro.
     return text;
   }
 }

@@ -12,22 +12,22 @@ import styles from './account-orders-page.module.css';
 /**
  * `/conta/pedidos`: o motivo pelo qual a conta existe.
  *
- * ## Sem sessao, o convite — e no mesmo endereco
+ * ## Sem sessão, o convite — e no mesmo endereço
  *
- * Nao ha redirecionamento. Quem digitou este endereco continua nele, lendo o
- * que ha atras da porta e com duas maneiras de abri-la. Ver `AccountInvite`:
- * a diferenca entre um convite e uma parede e que o convite tambem mostra a
- * saida.
+ * Não há redirecionamento. Quem digitou este endereço continua nele, lendo o
+ * que há atrás da porta e com duas maneiras de abri-lá. Ver `AccountInvite`:
+ * a diferença entre um convite e uma parede e que o convite também mostra a
+ * saída.
  *
  * ## O vazio tem duas leituras, e a tela cobre as duas
  *
- * "Nenhum pedido" pode significar que a pessoa nunca comprou — e ai o que
- * falta e a vitrine — ou que ela comprou **com outro numero**, como
+ * "Nenhum pedido" pode significar que a pessoa nunca comprou — e aí o que
+ * falta e a vitrine — ou que ela comprou **com outro número**, como
  * convidada, e os pedidos ficaram naquele telefone. O segundo caso e
- * invisivel e frustrante: ela sabe que comprou, e a tela diz que nao.
+ * invisível e frustrante: ela sabe que comprou, e a tela diz que não.
  *
- * Por isso o estado vazio traz as duas saidas: o caminho para a loja e a
- * explicacao de que o vinculo e pelo telefone.
+ * Por isso o estado vazio traz as duas saídas: o caminho para a loja e a
+ * explicação de que o vínculo e pelo telefone.
  */
 export default function AccountOrdersPage() {
   const signedIn = useIsSignedIn();

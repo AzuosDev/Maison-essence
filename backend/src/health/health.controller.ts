@@ -13,7 +13,7 @@ export class HealthController {
   check(@Res({ passthrough: true }) response: Response): HealthStatus {
     const status = this.health.check();
 
-    // `passthrough` para trocar so o status: o corpo continua saindo pelo
+    // `passthrough` para trocar só o status: o corpo continua saindo pelo
     // retorno, passando pelo interceptor global como qualquer outra rota.
     response.status(
       status.status === 'ok' ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE,

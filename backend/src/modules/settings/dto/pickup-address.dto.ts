@@ -2,11 +2,11 @@ import { IsOptional, IsString, Length, Matches, MaxLength } from 'class-validato
 import { Transform } from 'class-transformer';
 
 /**
- * Endereco da retirada na loja.
+ * Endereço da retirada na loja.
  *
- * Todo campo e opcional e o PATCH funde o que chega com o que ja esta
- * gravado: a tela de configuracoes manda so o que a dona mexeu, e corrigir o
- * numero da casa nao pode apagar o ponto de referencia.
+ * Todo campo e opcional e o PATCH funde o que chega com o que já esta
+ * gravado: a tela de configurações manda só o que a dona mexeu, e corrigir o
+ * número da casa não pode apagar o ponto de referência.
  */
 export class PickupAddressDto {
   @IsOptional()
@@ -34,7 +34,7 @@ export class PickupAddressDto {
   @MaxLength(120)
   city?: string;
 
-  /** Sigla de duas letras. Aceita minuscula: o schema grava em maiuscula. */
+  /** Sigla de duas letras. Aceita minúscula: o schema grava em maiúscula. */
   @IsOptional()
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim().toUpperCase() : value,
@@ -51,7 +51,7 @@ export class PickupAddressDto {
   @Matches(/^(?:\d{5}-?\d{3})?$/, { message: 'o CEP deve ter o formato 62000-000' })
   zipCode?: string;
 
-  /** Ponto de referencia. Em cidade pequena vale mais que o CEP. */
+  /** Ponto de referência. Em cidade pequena vale mais que o CEP. */
   @IsOptional()
   @IsString()
   @MaxLength(200)

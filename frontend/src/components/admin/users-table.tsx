@@ -6,21 +6,21 @@ import { UserActions } from './user-actions';
 import styles from './users-table.module.css';
 
 /**
- * A lista de usuarios do painel: tabela no desktop, cards no celular.
+ * A lista de usuários do painel: tabela no desktop, cards no celular.
  *
- * Duas arvores e uma so montada, pelo mesmo motivo escrito em
+ * Duas árvores e uma só montada, pelo mesmo motivo escrito em
  * `orders-table.tsx`: a tabela que vira card por CSS continua sendo anunciada
- * como tabela, com celulas sem linha nem coluna, e os rotulos em `::before`
- * nao sao lidos.
+ * como tabela, com células sem linha nem coluna, e os rótulos em `::before`
+ * não são lidos.
  *
- * ## O ultimo acesso responde a pergunta real
+ * ## O último acesso responde a pergunta real
  *
- * A coluna nao existe por completude. Ela responde "esta conta ainda e usada
- * por alguem?", que e a pergunta que leva a desativar uma conta esquecida —
+ * A coluna não existe por completude. Ela responde "esta conta ainda e usada
+ * por alguém?", que e a pergunta que leva a desativar uma conta esquecida —
  * e conta esquecida com senha valida e como um painel e invadido.
  *
- * Quem nunca entrou aparece como **"nunca entrou"** e nao como um traco: e
- * um estado com significado proprio. Junto com o aviso de senha temporaria,
+ * Quem nunca entrou aparece como **"nunca entrou"** e não como um traço: e
+ * um estado com significado próprio. Junto com o aviso de senha temporária,
  * ele diz que o cadastro foi criado e nunca usado, e que a senha entregue
  * talvez ainda esteja num bilhete.
  */
@@ -31,7 +31,7 @@ const WIDE = '(min-width: 48rem)';
 export interface UsersTableProps {
   users: readonly SystemUser[];
   isLoading?: boolean;
-  /** O id de quem esta logado: a propria linha nao oferece "desativar". */
+  /** O id de quem esta logado: a própria linha não oferece "desativar". */
   currentUserId?: string | undefined;
   onEdit: (user: SystemUser) => void;
   onResetPassword: (user: SystemUser) => void;
@@ -59,15 +59,15 @@ export function UsersTable(props: UsersTableProps) {
   return isWide ? <UserRows {...props} /> : <UserCards {...props} />;
 }
 
-/* ---- Pedacos compartilhados --------------------------------------------- */
+/* ---- Pedaços compartilhados --------------------------------------------- */
 
 function StatusBadge({ user }: { user: SystemUser }) {
   if (!user.isActive) {
     return <Badge variant="danger">Desativado</Badge>;
   }
 
-  // Senha temporaria pendente e um terceiro estado, e nao um detalhe do
-  // "ativo": a conta existe, mas ninguem entrou nela ainda.
+  // Senha temporária pendente e um terceiro estado, e não um detalhe do
+  // "ativo": a conta existe, mas ninguém entrou nela ainda.
   if (user.mustChangePassword) {
     return <Badge variant="gold">Senha temporária</Badge>;
   }

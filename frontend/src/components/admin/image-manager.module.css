@@ -2,9 +2,9 @@
  * As fotos do produto.
  *
  * Uma grade que se adensa com a largura, com as fotos em quadrado. A capa —
- * a primeira — recebe contorno dourado e um selo escrito: a posicao sozinha
- * nao diz que aquela e a foto que a vitrine mostra, e a cor sozinha nao diz
- * a quem nao a distingue.
+ * a primeira — recebe contorno dourado e um selo escrito: a posição sozinha
+ * não diz que aquela e a foto que a vitrine mostra, e a cor sozinha não diz
+ * a quem não a distingue.
  */
 
 .manager {
@@ -41,7 +41,7 @@
   cursor: grabbing;
 }
 
-/* A capa: contorno dourado de 2px. E a unica foto com moldura propria. */
+/* A capa: contorno dourado de 2px. E a única foto com moldura própria. */
 .cover {
   border: 2px solid var(--gold);
 }
@@ -49,8 +49,8 @@
 /*
  * Onde a foto arrastada vai cair.
  *
- * O contorno tracejado aparece **antes** do solte e some depois, e e o unico
- * jeito de saber onde o gesto vai terminar numa grade que nao abre espaco
+ * O contorno tracejado aparece **antes** do solte e some depois, e e o único
+ * jeito de saber onde o gesto vai terminar numa grade que não abre espaço
  * enquanto se arrasta.
  */
 .dropTarget {
@@ -63,7 +63,7 @@
   height: 100%;
   object-fit: cover;
 
-  /* A foto nao e arrastavel por si: quem carrega o arraste e o item inteiro,
+  /* A foto não e arrastável por si: quem carrega o arraste e o item inteiro,
      e a imagem solta dentro dele iniciaria um segundo gesto, do navegador. */
   pointer-events: none;
 }
@@ -84,10 +84,10 @@
 }
 
 /*
- * A barra de ferramentas, no pe da foto.
+ * A barra de ferramentas, no pé da foto.
  *
- * Sempre visivel, e nao so no `:hover`. Um controle que aparece ao passar o
- * mouse nao existe no celular, e e no celular que a dona cadastra.
+ * Sempre visível, e não só no `:hover`. Um controle que aparece ao passar o
+ * mouse não existe no celular, e e no celular que a dona cadastra.
  */
 .tools {
   position: absolute;
@@ -101,7 +101,7 @@
   padding: var(--space-4);
 
   /* A faixa escura garante contraste sobre qualquer foto — clara, escura ou
-     de frasco espelhado. Sem ela, o icone some em metade do catalogo. */
+     de frasco espelhado. Sem ela, o ícone some em metade do catálogo. */
   background-color: rgb(14 14 14 / 0.62);
 }
 
@@ -183,9 +183,9 @@
 }
 
 /*
- * Quem pediu menos movimento nao perde nada aqui: o que se mexe e o contorno
- * do alvo, que ja e instantaneo. Fica registrado para que ninguem acrescente
- * uma animacao de reordenacao sem lembrar deste caso.
+ * Quem pediu menos movimento não perde nada aqui: o que se mexe e o contorno
+ * do alvo, que já e instantaneo. Fica registrado para que ninguém acrescente
+ * uma animação de reordenação sem lembrar deste caso.
  */
 @media (prefers-reduced-motion: reduce) {
   .item,

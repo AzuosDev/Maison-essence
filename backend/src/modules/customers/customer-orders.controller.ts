@@ -8,15 +8,15 @@ import { CurrentCustomer } from './decorators/current-customer.decorator.js';
 import { ListCustomerOrdersDto } from './dto/list-customer-orders.dto.js';
 
 /**
- * Os pedidos da propria conta.
+ * Os pedidos da própria conta.
  *
- * Pelo codigo, e nao pelo id, na rota de um pedido so: `ME-250921-4KP1` e o
- * que o cliente tem a mao — esta na mensagem que ele mandou para a loja e no
+ * Pelo código, e não pelo id, na rota de um pedido só: `ME-250921-4KP1` e o
+ * que o cliente tem a mão — esta na mensagem que ele mandou para a loja e no
  * comprovante que guardou. Pedir um ObjectId obrigaria a tela a listar antes
- * de poder abrir, e o link que o cliente colou do WhatsApp nao funcionaria.
+ * de poder abrir, e o link que o cliente colou do WhatsApp não funcionaria.
  *
- * Quem so pode ver o proprio pedido e o filtro por `customerId` no servico, e
- * nao a rota: aqui o codigo entra como veio.
+ * Quem só pode ver o próprio pedido e o filtro por `customerId` no serviço, e
+ * não a rota: aqui o código entra como veio.
  */
 @CustomerAuth()
 @Controller('customer/orders')

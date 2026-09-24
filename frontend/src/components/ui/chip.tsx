@@ -4,15 +4,15 @@ import { cx } from '@/lib/cx';
 import styles from './chip.module.css';
 
 /**
- * A pilula de categoria.
+ * A pílula de categoria.
  *
- * Duas formas, pelo mesmo motivo do botao: `Chip` e um `<button>`, para
+ * Duas formas, pelo mesmo motivo do botão: `Chip` e um `<button>`, para
  * filtro que muda o estado da tela; `ChipLink` e um `<a>`, para categoria
- * que e um endereco proprio — e a categoria da loja e um endereco proprio,
+ * que e um endereço próprio — e a categoria da loja e um endereço próprio,
  * porque precisa poder ser compartilhada e indexada.
  *
- * O estado escolhido vai em `aria-pressed` (botao) ou `aria-current` (link),
- * e nao so na cor: para quem usa leitor de tela, "Masculino, pressionado" e
+ * O estado escolhido vai em `aria-pressed` (botão) ou `aria-current` (link),
+ * e não só na cor: para quem usa leitor de tela, "Masculino, pressionado" e
  * o que diz que o filtro esta valendo.
  */
 

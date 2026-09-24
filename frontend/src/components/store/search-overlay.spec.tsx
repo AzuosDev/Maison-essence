@@ -9,9 +9,9 @@ import { SearchOverlay } from './search-overlay';
 /**
  * A busca.
  *
- * Tres regras que so se veem contando requisicoes: o minimo de tres letras,
- * o atraso de 300ms e o historico local. Conferir isso a olho significaria
- * abrir o inspetor de rede e digitar devagar — e nao perceber quando uma
+ * Três regras que só se veem contando requisições: o mínimo de três letras,
+ * o atraso de 300ms e o histórico local. Conferir isso a olho significaria
+ * abrir o inspetor de rede e digitar devagar — e não perceber quando uma
  * delas parar de valer.
  */
 
@@ -86,7 +86,7 @@ test('abaixo de três letras não consulta o servidor', async () => {
 
   await user.type(screen.getByRole('searchbox'), 'pe');
 
-  // Bem mais que o atraso de 300ms: se fosse consultar, ja teria consultado.
+  // Bem mais que o atraso de 300ms: se fosse consultar, já teria consultado.
   await new Promise((resolve) => setTimeout(resolve, 600));
 
   expect(chamadasDeBusca()).toHaveLength(0);

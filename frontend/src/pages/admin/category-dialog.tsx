@@ -11,37 +11,37 @@ import {
 import styles from './category-dialog.module.css';
 
 /**
- * Criar uma categoria, ou mexer no endereco e na posicao de uma que existe.
+ * Criar uma categoria, ou mexer no endereço e na posição de uma que existe.
  *
- * ## Por que um dialogo, e nao uma pagina
+ * ## Por que um diálogo, e não uma página
  *
- * Sao tres campos e o contexto importa: a dona esta olhando a arvore e
- * decidindo onde encaixar a categoria nova. Levar para outra pagina tiraria
+ * São três campos e o contexto importa: a dona esta olhando a árvore e
+ * decidindo onde encaixar a categoria nova. Levar para outra página tiraria
  * da vista justamente a lista que ela esta consultando para decidir.
  *
- * E a diferenca para o cadastro de produto: aquele tem cinco secoes, fotos e
- * uma tabela, e precisa de endereco proprio para ser retomado depois de uma
- * ligacao. Este se resolve em vinte segundos.
+ * E a diferença para o cadastro de produto: aquele tem cinco seções, fotos e
+ * uma tabela, e precisa de endereço próprio para ser retomado depois de uma
+ * ligação. Este se resolve em vinte segundos.
  *
- * ## O endereco muda sem quebrar link
+ * ## O endereço muda sem quebrar link
  *
- * Diferente do produto, a categoria guarda os enderecos antigos e o servidor
- * redireciona — e por isso o campo esta aqui tambem na edicao. O aviso ao
- * lado do campo diz isso, para que a decisao nao seja tomada no escuro.
+ * Diferente do produto, a categoria guarda os endereços antigos e o servidor
+ * redireciona — e por isso o campo esta aqui também na edição. O aviso ao
+ * lado do campo diz isso, para que a decisão não seja tomada no escuro.
  *
  * ## Quando "dentro de" some
  *
- * Uma subcategoria nao pode ter filhos: se esta categoria ja tem
- * subcategorias, ela nao pode virar subcategoria de ninguem, e o servidor
- * recusa com uma frase propria. Em vez de mostrar um campo que so leva a um
- * erro, a tela o substitui pela explicacao.
+ * Uma subcategoria não pode ter filhos: se esta categoria já tem
+ * subcategorias, ela não pode virar subcategoria de ninguém, e o servidor
+ * recusa com uma frase própria. Em vez de mostrar um campo que só leva a um
+ * erro, a tela o substitui pela explicação.
  */
 
 export type CategoryDialogTarget =
   { mode: 'create'; parentId: string | null } | { mode: 'edit'; category: AdminCategory };
 
 export interface CategoryDialogProps {
-  /** `null` mantem o dialogo fechado. */
+  /** `null` mantem o diálogo fechado. */
   target: CategoryDialogTarget | null;
   tree: readonly AdminCategoryNode[];
   saving: boolean;
@@ -52,13 +52,13 @@ export interface CategoryDialogProps {
 /**
  * O invólucro existe pela `key`.
  *
- * Os campos comecam preenchidos com o que a categoria tem, e "comecam" e a
- * palavra exata: sao `useState` com valor inicial, e nao estado sincronizado
+ * Os campos começam preenchidos com o que a categoria tem, e "começam" e a
+ * palavra exata: são `useState` com valor inicial, e não estado sincronizado
  * por efeito. Trocar de alvo — abrir "Amadeirado" logo depois de "Masculino"
- * — remonta o formulario, e os iniciais rodam de novo.
+ * — remonta o formulário, e os iniciais rodam de novo.
  *
- * O efeito seria a outra saida, e ele traria um quadro intermediario com o
- * nome anterior no campo. A `key` nao traz.
+ * O efeito seria a outra saída, e ele traria um quadro intermediário com o
+ * nome anterior no campo. A `key` não traz.
  */
 export function CategoryDialog({ target, ...rest }: CategoryDialogProps) {
   if (target === null) {
@@ -105,9 +105,9 @@ function CategoryForm({
       name: name.trim(),
       // `null` promove a categoria principal; um id a coloca dentro de outra.
       parentId: parentId === '' ? null : parentId,
-      // Vazio na criacao faz o servidor gerar o endereco a partir do nome.
-      // Na edicao, vazio significaria apagar o endereco — entao ele so viaja
-      // quando ha texto.
+      // Vazio na criação faz o servidor gerar o endereço a partir do nome.
+      // Na edição, vazio significaria apagar o endereço — então ele só viaja
+      // quando há texto.
       ...(slug.trim() === '' ? {} : { slug: slug.trim() }),
     });
   };

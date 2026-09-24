@@ -5,14 +5,14 @@ import './styles/global.css';
 /**
  * O ponto de entrada.
  *
- * A aplicacao entra por `import()`, e nao por import estatico no topo, por um
- * motivo so: a validacao das variaveis de ambiente (`lib/env.ts`) falha na
- * avaliacao do modulo, antes de React existir. Com import estatico, essa
- * falha aconteceria antes desta linha rodar e o resultado seria uma pagina
- * branca com um erro no console — justamente no cenario em que a mensagem
+ * A aplicação entra por `import()`, e não por import estático no topo, por um
+ * motivo só: a validação das variáveis de ambiente (`lib/env.ts`) falha na
+ * avaliação do módulo, antes de React existir. Com import estático, essa
+ * falha aconteceria antes desta linha rodar e o resultado seria uma página
+ * branca com um erro no console — justamente no cenário em que a mensagem
  * ("falta VITE_API_URL") e tudo o que quem esta publicando precisa ler.
  *
- * Com o import dinamico dentro do `try`, o erro de configuracao vira um
+ * Com o import dinâmico dentro do `try`, o erro de configuração vira um
  * recado na tela.
  */
 async function bootstrap(): Promise<void> {
@@ -38,8 +38,8 @@ async function bootstrap(): Promise<void> {
 /**
  * A tela de falha de boot.
  *
- * Escrita em DOM puro de proposito: se o que falhou foi carregar a
- * aplicacao, nao da para contar com componente nenhum dela para contar isso.
+ * Escrita em DOM puro de propósito: se o que falhou foi carregar a
+ * aplicação, não da para contar com componente nenhum dela para contar isso.
  */
 function renderBootFailure(container: HTMLElement, error: unknown): void {
   const message = error instanceof Error ? error.message : String(error);
@@ -66,7 +66,7 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
   const detail = document.createElement('pre');
 
   // `textContent`, nunca `innerHTML`: a mensagem pode conter o que veio do
-  // ambiente, e um erro nao e lugar para executar markup.
+  // ambiente, e um erro não e lugar para executar markup.
   detail.textContent = message;
   detail.style.cssText = [
     'margin-top:1rem',

@@ -13,14 +13,14 @@ import { OrdersService } from './orders.service.js';
 /**
  * Pedidos pelo painel.
  *
- * `HANDLES_ORDERS` e nao `MANAGES_STORE`: atender pedido e o trabalho do
- * STAFF. Ele le, responde no WhatsApp, marca como confirmado e anota o que
- * combinou — e continua sem poder mexer em preco, em estoque ou em taxa, que
+ * `HANDLES_ORDERS` e não `MANAGES_STORE`: atender pedido e o trabalho do
+ * STAFF. Ele lê, responde no WhatsApp, marca como confirmado e anota o que
+ * combinou — e continua sem poder mexer em preço, em estoque ou em taxa, que
  * e o que separa este grupo do da dona.
  *
- * Nao ha rota de exclusao. Pedido errado e cancelado, nao apagado: e ele que
- * responde "o que aconteceu com o ME-250921-4KP1?" tres meses depois, e e
- * dele que sai a contabilidade do mes.
+ * Não há rota de exclusão. Pedido errado e cancelado, não apagado: e ele que
+ * responde "o que aconteceu com o ME-250921-4KP1?" três meses depois, e e
+ * dele que sai a contabilidade do mês.
  */
 @Roles(...HANDLES_ORDERS)
 @Controller('admin/orders')
@@ -37,7 +37,7 @@ export class AdminOrdersController {
     return this.orders.findOne(id);
   }
 
-  /** Mover para `CANCELLED` devolve o estoque das variantes, uma vez so. */
+  /** Mover para `CANCELLED` devolve o estoque das variantes, uma vez só. */
   @Patch(':id/status')
   setStatus(
     @CurrentUser() actor: AuthenticatedUser,

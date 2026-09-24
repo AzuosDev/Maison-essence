@@ -4,18 +4,18 @@ import { foldAccents } from '@/lib/text';
 /**
  * O termo buscado, realcado dentro de um texto.
  *
- * So a busca usa isto. Serve para o cliente entender **por que** aquele
+ * Só a busca usa isto. Serve para o cliente entender **por que** aquele
  * produto apareceu: quem procurou "amadeirado" e recebeu "Oud Wood" precisa
- * ver que o casamento foi na marca, e nao no nome.
+ * ver que o casamento foi na marca, e não no nome.
  *
- * A comparacao ignora caixa e acento. O catalogo e escrito por uma pessoa,
- * no painel, e ninguem digita "Agua" com trema na busca so porque o cadastro
- * tem: quem procura "acqua" tem que achar "Acqua" e "Àcqua". A normalizacao
+ * A comparação ignora caixa e acento. O catálogo e escrito por uma pessoa,
+ * no painel, e ninguém digita "Água" com trema na busca só porque o cadastro
+ * tem: quem procura "acqua" tem que achar "Acqua" e "Àcqua". A normalização
  * e feita sobre uma copia do texto, e o que vai para a tela continua sendo o
  * original, com os acentos que a dona cadastrou.
  *
- * O elemento e `<mark>`, e nao um `<span>` pintado: leitor de tela anuncia
- * trecho marcado, e o realce deixa de ser informacao exclusiva de quem
+ * O elemento e `<mark>`, e não um `<span>` pintado: leitor de tela anuncia
+ * trecho marcado, e o realce deixa de ser informação exclusiva de quem
  * enxerga.
  */
 
@@ -57,11 +57,11 @@ export function Highlight({ text, term }: HighlightProps): ReactElement {
 /**
  * Onde cada palavra do termo aparece no texto, sem sobrepor.
  *
- * O termo e quebrado em palavras porque a busca do backend tambem quebra:
+ * O termo e quebrado em palavras porque a busca do backend também quebra:
  * "perfume amadeirado" casa com um produto que tem as duas palavras em
- * lugares diferentes do nome, e realcar so a frase inteira nao marcaria
+ * lugares diferentes do nome, e realcar só a frase inteira não marcaria
  * nada. As faixas saem em ordem e sem encavalar — duas palavras do termo
- * podem cair no mesmo pedaco do texto.
+ * podem cair no mesmo pedaço do texto.
  */
 function matchRanges(text: string, term: string): [number, number][] {
   const words = foldAccents(term)
@@ -73,7 +73,7 @@ function matchRanges(text: string, term: string): [number, number][] {
   }
 
   // A busca acontece na copia sem acento, que tem o mesmo comprimento do
-  // original — e por isso os indices encontrados valem nos dois.
+  // original — e por isso os índices encontrados valem nos dois.
   const haystack = foldAccents(text);
   const found: [number, number][] = [];
 

@@ -5,12 +5,12 @@ import styles from './spinner.module.css';
 /**
  * O indicador de espera.
  *
- * O elemento e um `<output>`, que ja tem `role="status"` embutido: sem um
- * anuncio, quem nao ve o circulo girando nao recebe aviso nenhum de que a
- * pagina esta carregando — o conteudo simplesmente aparece, ou nao aparece.
+ * O elemento e um `<output>`, que já tem `role="status"` embutido: sem um
+ * anuncio, quem não vê o círculo girando não recebe aviso nenhum de que a
+ * página esta carregando — o conteúdo simplesmente aparece, ou não aparece.
  *
- * Nao ha versao "dentro do botao" aqui: botao carregando e estado do botao,
- * e mora no proprio `Button`.
+ * Não há versão "dentro do botão" aqui: botão carregando e estado do botão,
+ * e mora no próprio `Button`.
  */
 export type SpinnerProps = ComponentPropsWithoutRef<'output'> & {
   size?: 'small' | 'medium' | 'large';

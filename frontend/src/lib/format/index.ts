@@ -2,8 +2,8 @@
  * Os formatadores da loja.
  *
  * Importe daqui — `import { formatCents } from '@/lib/format'` — e nunca do
- * arquivo interno. E o que mantem a regra valendo: existe um jeito so de
- * escrever preco, telefone e data nesta aplicacao, e ele esta neste modulo.
+ * arquivo interno. E o que mantem a regra valendo: existe um jeito só de
+ * escrever preço, telefone e data nesta aplicação, e ele esta neste módulo.
  */
 
 export { addressLines, formatZipCode, type PostalAddress } from './address';

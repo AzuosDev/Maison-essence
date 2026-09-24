@@ -7,30 +7,30 @@ import { ChevronRightIcon } from './admin-icons';
 import styles from './pages-editor.module.css';
 
 /**
- * As cinco paginas institucionais.
+ * As cinco páginas institucionais.
  *
  * ## Por que as cinco aparecem sempre
  *
- * Mesmo as que ninguem escreveu. A lista e fechada — o endereco de cada uma
- * ja circula no rodape e em conversa de WhatsApp, e nao se cria nem se apaga
- * pagina por aqui — entao mostrar as cinco e o que responde "o que falta
+ * Mesmo as que ninguém escreveu. A lista e fechada — o endereço de cada uma
+ * já circula no rodapé e em conversa de WhatsApp, e não se cria nem se apaga
+ * página por aqui — então mostrar as cinco e o que responde "o que falta
  * escrever?", que e a pergunta que traz a dona a esta tela.
  *
  * ## Uma de cada vez
  *
- * Cinco caixas de texto abertas transformariam a tela de configuracoes numa
- * rolagem de tres metros. Abre-se a que se vai escrever; as outras mostram o
- * essencial numa linha — se estao publicadas e se tem texto.
+ * Cinco caixas de texto abertas transformariam a tela de configurações numa
+ * rolagem de três metros. Abre-se a que se vai escrever; as outras mostram o
+ * essencial numa linha — se estão publicadas e se tem texto.
  *
- * A pagina com erro abre sozinha e nao fecha: um erro dentro de um bloco
- * fechado e um erro que ninguem ve, e a barra de salvar diria "corrija" sem
+ * A página com erro abre sozinha e não fecha: um erro dentro de um bloco
+ * fechado e um erro que ninguém vê, e a barra de salvar diria "corrija" sem
  * dizer onde.
  *
- * ## Publicar e escrever sao decisoes separadas
+ * ## Publicar e escrever são decisões separadas
  *
- * O interruptor fica junto do texto, e nao no cabecalho, porque a ordem
- * importa: escreve-se e depois publica-se. Publicada sem texto, a pagina vira
- * um link no rodape que abre em branco — o aviso da tela diz isso com todas
+ * O interruptor fica junto do texto, e não no cabeçalho, porque a ordem
+ * importa: escreve-se e depois publica-se. Publicada sem texto, a página vira
+ * um link no rodapé que abre em branco — o aviso da tela diz isso com todas
  * as letras.
  */
 export interface PagesEditorProps {
@@ -122,7 +122,7 @@ export function PagesEditor({ pages, errors, onChange }: PagesEditorProps) {
   );
 }
 
-/** O essencial de uma pagina fechada: publicada, e se ha o que publicar. */
+/** O essencial de uma página fechada: publicada, e se há o que publicar. */
 function summaryOf(page: PageDraft): string {
   if (page.content.trim() === '') {
     return page.isActive ? 'Publicada, sem texto' : 'Sem texto';

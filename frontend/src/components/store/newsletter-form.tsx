@@ -11,13 +11,13 @@ import styles from './newsletter-form.module.css';
 /**
  * O cadastro na newsletter.
  *
- * **O backend ainda nao tem rota para isto.** O formulario valida e envia,
- * mas `subscribeToNewsletter` recusa de proposito, com uma mensagem que
+ * **O backend ainda não tem rota para isto.** O formulário valida e envia,
+ * mas `subscribeToNewsletter` recusa de propósito, com uma mensagem que
  * manda o cliente para o WhatsApp — o canal que a loja de fato tem. Ver a
- * explicacao inteira em `features/settings/newsletter.ts`.
+ * explicação inteira em `features/settings/newsletter.ts`.
  *
- * O componente esta escrito como se o endpoint existisse: validacao com Zod,
- * estado de envio no botao, erro no campo. Quando a rota aparecer, o unico
+ * O componente esta escrito como se o endpoint existisse: validação com Zod,
+ * estado de envio no botão, erro no campo. Quando a rota aparecer, o único
  * arquivo a mudar e aquele.
  */
 
@@ -31,7 +31,7 @@ const schema = z.object({
 type NewsletterForm = z.input<typeof schema>;
 
 /**
- * O tom, conforme o fundo em que o formulario cai: o rodape preto, onde ele
+ * O tom, conforme o fundo em que o formulário cai: o rodapé preto, onde ele
  * nasceu, ou a faixa clara da home.
  */
 interface NewsletterFormProps {
@@ -71,7 +71,7 @@ export function NewsletterForm({ tone = 'dark' }: NewsletterFormProps) {
       noValidate
     >
       <p className={styles.label}>Receba as novidades</p>
-      <p className={styles.note}>Lancamentos e promoções, sem excesso.</p>
+      <p className={styles.note}>Lançamentos e promoções, sem excesso.</p>
 
       <div className={styles.row}>
         <Input
@@ -95,8 +95,8 @@ export function NewsletterForm({ tone = 'dark' }: NewsletterFormProps) {
         </Button>
       </div>
 
-      {/* Um `<output>`, que ja carrega `role="status"`: a resposta do envio
-          e anunciada a quem nao a ve aparecer embaixo do campo. */}
+      {/* Um `<output>`, que já carrega `role="status"`: a resposta do envio
+          e anunciada a quem não a vê aparecer embaixo do campo. */}
       {status ? <output className={styles.status}>{status}</output> : null}
     </form>
   );

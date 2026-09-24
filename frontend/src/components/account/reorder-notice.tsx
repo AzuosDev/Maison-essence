@@ -10,32 +10,32 @@ export interface ReorderNoticeProps {
 /**
  * O que mudou desde aquele pedido.
  *
- * ## Por que isto nao e um aviso flutuante
+ * ## Por que isto não e um aviso flutuante
  *
- * Porque o aviso some, e esta informacao precisa ficar. Quem repete um
- * pedido de tres frascos e leva dois precisa poder reler qual foi o terceiro
- * — depois de abrir a sacola, depois de rolar a pagina, depois de atender o
+ * Porque o aviso some, e esta informação precisa ficar. Quem repete um
+ * pedido de três frascos e leva dois precisa poder reler qual foi o terceiro
+ * — depois de abrir a sacola, depois de rolar a página, depois de atender o
  * telefone. Um `toast` de cinco segundos entregaria essa frase exatamente
  * uma vez, e provavelmente enquanto a pessoa olhava para a gaveta da sacola
  * que acabou de abrir.
  *
- * O aviso curto tambem existe, e confirma o que entrou. Este bloco responde
- * outra pergunta: o que **nao** entrou, e por que.
+ * O aviso curto também existe, e confirma o que entrou. Este bloco responde
+ * outra pergunta: o que **não** entrou, e por que.
  *
- * ## Duas listas, e nao uma
+ * ## Duas listas, e não uma
  *
- * "Entrou com menos" e "nao entrou" pedem reacoes diferentes. No primeiro
- * caso nao ha nada a fazer — o item esta na sacola, so que em menor
- * quantidade. No segundo, o produto saiu do catalogo e o caminho e procurar
- * outro. Junta-las numa lista so de "problemas" obrigaria a ler o motivo de
+ * "Entrou com menos" e "não entrou" pedem reações diferentes. No primeiro
+ * caso não há nada a fazer — o item esta na sacola, só que em menor
+ * quantidade. No segundo, o produto saiu do catálogo e o caminho e procurar
+ * outro. Junta-las numa lista só de "problemas" obrigaria a ler o motivo de
  * cada linha para descobrir em qual dos dois casos ela esta.
  *
  * ## O motivo e a frase do servidor
  *
- * "Este produto saiu do catalogo." "Essa opcao nao esta mais a venda." Elas
+ * "Este produto saiu do catálogo." "Essa opção não esta mais a venda." Elas
  * chegam prontas de `POST /cart/quote`, escritas para quem esta comprando —
- * e sao as mesmas que a sacola mostra quando um item cai por la. Reescreve-
- * las aqui criaria duas versoes do mesmo recado para divergirem depois.
+ * e são as mesmas que a sacola mostra quando um item cai por lá. Reescreve-
+ * las aqui criaria duas versões do mesmo recado para divergirem depois.
  */
 export function ReorderNotice({ plan, onDismiss }: ReorderNoticeProps) {
   if (plan.adjusted.length === 0 && plan.dropped.length === 0) {
@@ -46,14 +46,14 @@ export function ReorderNotice({ plan, onDismiss }: ReorderNoticeProps) {
     <section className={styles.notice} aria-labelledby="reorder-notice-title">
       <div className={styles.head}>
         <h2 id="reorder-notice-title" className={styles.title}>
-          O catalogo mudou desde este pedido
+          O catálogo mudou desde este pedido
         </h2>
 
         <button
           type="button"
           className={styles.dismiss}
           onClick={onDismiss}
-          aria-label="Fechar o aviso do catalogo"
+          aria-label="Fechar o aviso do catálogo"
         >
           <CloseIcon />
         </button>

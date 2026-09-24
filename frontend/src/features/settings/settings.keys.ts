@@ -1,8 +1,8 @@
 /**
- * As chaves de cache das configuracoes.
+ * As chaves de cache das configurações.
  *
- * Duas, e so duas: as configuracoes e a lista de paginas institucionais. Sao
- * as respostas que a moldura da loja consome em toda pagina.
+ * Duas, e só duas: as configurações e a lista de páginas institucionais. São
+ * as respostas que a moldura da loja consome em toda página.
  */
 export const settingsKeys = {
   all: ['settings'] as const,

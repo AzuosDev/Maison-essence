@@ -13,29 +13,29 @@ import { useState } from 'react';
 import styles from './system-health-page.module.css';
 
 /**
- * A saude do servidor.
+ * A saúde do servidor.
  *
  * ## O que esta tela e para
  *
- * Responder, em cinco segundos, "a aplicacao esta de pe e falando com o
+ * Responder, em cinco segundos, "a aplicação esta de pé e falando com o
  * banco?". E a primeira pergunta de quem recebe uma mensagem dizendo que o
- * site nao abre — antes de olhar log, antes de abrir o painel da hospedagem.
+ * site não abre — antes de olhar log, antes de abrir o painel da hospedagem.
  *
  * Por isso o estado do banco tem o mesmo peso visual que o estado geral: com
  * `bufferCommands` desligado, um banco desconectado significa que **toda**
- * consulta desta requisicao falharia. Nao ha meio termo entre "conectado" e
- * "fora do ar", e a tela nao inventa um.
+ * consulta desta requisição falharia. Não há meio termo entre "conectado" e
+ * "fora do ar", e a tela não inventa um.
  *
- * ## O health check e publico
+ * ## O health check e público
  *
- * De proposito: um monitor externo precisa alcanca-lo sem credencial. E a
- * unica chamada desta tela que funciona hoje — a contagem por colecao e o
- * seed pedem rotas que ainda nao existem.
+ * De propósito: um monitor externo precisa alcança-lo sem credencial. E a
+ * única chamada desta tela que funciona hoje — a contagem por coleção e o
+ * seed pedem rotas que ainda não existem.
  *
- * ## O seed so aparece em desenvolvimento
+ * ## O seed só aparece em desenvolvimento
  *
- * `import.meta.env.DEV` vira `false` literal no build de producao, e o botao
- * some junto com o codigo dele. Isso e conveniencia, nao seguranca: a
+ * `import.meta.env.DEV` vira `false` literal no build de produção, e o botão
+ * some junto com o código dele. Isso e conveniência, não segurança: a
  * garantia que vale e a do servidor recusando a rota fora de
  * desenvolvimento, porque quem chama a API direto nunca passou por este
  * arquivo.
@@ -93,8 +93,8 @@ export default function SystemHealthPage() {
         {health.isLoading ? (
           <Skeleton height="10rem" />
         ) : health.isError ? (
-          // Um health check que nao responde ja e a resposta: a aplicacao
-          // nao esta atendendo. A tela diz isso, e nao "erro ao carregar".
+          // Um health check que não responde já e a resposta: a aplicação
+          // não esta atendendo. A tela diz isso, e não "erro ao carregar".
           <div className={styles.down} role="alert">
             <p className={styles.downTitle}>A aplicação não respondeu</p>
             <p className={styles.downBody}>{errorMessage(health.error)}</p>
@@ -227,11 +227,11 @@ function describeDatabase(status: DatabaseStatus | undefined): string {
 }
 
 /**
- * Quanto tempo o processo esta de pe.
+ * Quanto tempo o processo esta de pé.
  *
- * Em dias, horas e minutos — nao em segundos. O numero importa por uma razao
- * so: um uptime de dois minutos numa hora em que ninguem publicou nada
- * significa que a aplicacao caiu e voltou.
+ * Em dias, horas e minutos — não em segundos. O número importa por uma razão
+ * só: um uptime de dois minutos numa hora em que ninguém publicou nada
+ * significa que a aplicação caiu e voltou.
  */
 export function formatUptime(seconds: number): string {
   const total = Math.max(0, Math.floor(seconds));
@@ -252,11 +252,11 @@ export function formatUptime(seconds: number): string {
 }
 
 /**
- * O endereco da API, como alvo da confirmacao do seed.
+ * O endereço da API, como alvo da confirmação do seed.
  *
- * O alvo de uma acao destrutiva precisa ser o que sera atingido, e o que o
- * seed atinge e o banco daquele ambiente. O endereco da API e o nome mais
- * proximo disso que o navegador conhece.
+ * O alvo de uma ação destrutiva precisa ser o que será atingido, e o que o
+ * seed atinge e o banco daquele ambiente. O endereço da API e o nome mais
+ * próximo disso que o navegador conhece.
  */
 function apiOrigin(): string {
   return env.VITE_API_URL;

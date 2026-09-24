@@ -6,12 +6,12 @@ import { Accordion, AccordionItem } from './accordion';
 import { Tab, TabList, TabPanel, Tabs } from './tabs';
 
 /**
- * A navegacao por teclado das abas e da sanfona.
+ * A navegação por teclado das abas e da sanfona.
  *
- * Esta aqui pela mesma razao do teste dos dialogos: e comportamento que nao
+ * Esta aqui pela mesma razão do teste dos diálogos: e comportamento que não
  * aparece na tela. Uma fila de abas em que o Tab visita as seis, uma por uma,
- * parece identica a uma em que as setas trocam e o Tab pula para o conteudo —
- * e a segunda e a que a convencao de acessibilidade define.
+ * parece idêntica a uma em que as setas trocam e o Tab pula para o conteúdo —
+ * e a segunda e a que a convenção de acessibilidade define.
  */
 
 afterEach(cleanup);
@@ -64,16 +64,16 @@ test('a fila de abas circula nas duas pontas', async () => {
 
   screen.getByRole('tab', { name: 'Descrição' }).focus();
 
-  // Para tras na primeira leva a ultima.
+  // Para trás na primeira leva a última.
   await user.keyboard('{ArrowLeft}');
   expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Entrega' }));
 
-  // E para frente na ultima volta a primeira.
+  // E para frente na última volta a primeira.
   await user.keyboard('{ArrowRight}');
   expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Descrição' }));
 });
 
-test('Home e End vao para as pontas', async () => {
+test('Home e End vão para as pontas', async () => {
   const user = userEvent.setup();
 
   render(<Abas />);

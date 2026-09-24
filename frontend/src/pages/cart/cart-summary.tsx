@@ -10,24 +10,24 @@ import styles from './cart-summary.module.css';
  * Quatro linhas, na ordem em que a conta acontece — subtotal, desconto,
  * frete, total — e nenhuma delas calculada aqui. `subtotalCents`,
  * `discountTotalCents` e o total vem prontos de `POST /cart/quote`, contra o
- * catalogo de agora. O navegador nao multiplica preco por quantidade em
- * lugar nenhum desta tela, e essa ausencia e o motivo de o numero que o
- * cliente le ser o mesmo que ele vai pagar.
+ * catálogo de agora. O navegador não multiplica preço por quantidade em
+ * lugar nenhum desta tela, e essa ausência e o motivo de o número que o
+ * cliente lê ser o mesmo que ele vai pagar.
  *
- * ## "Frete a calcular" e o unico texto honesto aqui
+ * ## "Frete a calcular" e o único texto honesto aqui
  *
  * A loja entrega num punhado de cidades com taxa fixa por cidade, e a cidade
  * e escolhida no fechamento do pedido. Anunciar um valor antes disso exigiria
- * escolher uma cidade pelo cliente; anunciar "gratis" seria mentira em quase
+ * escolher uma cidade pelo cliente; anunciar "grátis" seria mentira em quase
  * todas. A linha diz o que e — falta um dado, e ele vem no passo seguinte —
  * e o total abaixo dela diz o que cobre: os produtos.
  *
- * ## Por que o total nao encolhe com o desconto na frente dos olhos
+ * ## Por que o total não encolhe com o desconto na frente dos olhos
  *
- * O `subtotalCents` **ja vem com o desconto por quantidade aplicado**; a
+ * O `subtotalCents` **já vem com o desconto por quantidade aplicado**; a
  * linha de desconto e informativa, e diz quanto ele retirou. Subtrair de
  * novo aqui tiraria o desconto duas vezes — que e exatamente o tipo de erro
- * que aparece no extrato do cliente, e nao na revisao da tela.
+ * que aparece no extrato do cliente, e não na revisão da tela.
  */
 
 export interface CartSummaryProps {
@@ -37,7 +37,7 @@ export interface CartSummaryProps {
   isError: boolean;
   onRetry: () => void;
   onCheckout: () => void;
-  /** Quantos itens nao entram no total. Zero some da tela. */
+  /** Quantos itens não entram no total. Zero some da tela. */
   unavailableCount: number;
 }
 
@@ -70,8 +70,8 @@ export function CartSummary({
         </div>
       ) : (
         <>
-          {/* `aria-busy` enquanto o servidor recalcula: quem ouve a pagina
-              fica sabendo que o numero em tela ainda vai mudar. */}
+          {/* `aria-busy` enquanto o servidor recalcula: quem ouve a página
+              fica sabendo que o número em tela ainda vai mudar. */}
           <dl className={cx(styles.lines, isFetching && styles.recalculating)} aria-busy={isFetching}>
             <Line label="Subtotal" isPending={isPending}>
               {subtotalCents === null ? null : formatCents(subtotalCents)}

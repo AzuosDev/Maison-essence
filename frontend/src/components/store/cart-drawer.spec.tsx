@@ -12,10 +12,10 @@ import { CartDrawer } from './cart-drawer';
 /**
  * A gaveta da sacola.
  *
- * Tres coisas que so se veem com ela montada: que ela **nao** monta nada
- * enquanto esta fechada — e portanto nao cota o carrinho em toda pagina da
- * loja —, que ela desenha a linha com o que a cotacao devolveu, e que as
- * duas saidas existem e fazem coisas diferentes.
+ * Três coisas que só se veem com ela montada: que ela **não** monta nada
+ * enquanto esta fechada — e portanto não cota o carrinho em toda página da
+ * loja —, que ela desenha a linha com o que a cotação devolveu, e que as
+ * duas saídas existem e fazem coisas diferentes.
  */
 
 vi.mock('@/lib/env', () => ({
@@ -148,7 +148,7 @@ test('fechada, a gaveta não desenha nada e não cota o carrinho', async () => {
 
   expect(screen.queryByRole('dialog')).toBeNull();
 
-  // Uma espera curta para garantir que nenhuma cotacao saiu atrasada.
+  // Uma espera curta para garantir que nenhuma cotação saiu atrasada.
   await waitFor(() => {
     expect(quoteCalls).toBe(0);
   });
@@ -160,10 +160,10 @@ test('aberta, mostra o item, o subtotal do servidor e as duas saídas', async ()
 
   montar();
 
-  // A gaveta entra por `lazy`: o dialogo aparece quando o pedaco chega.
+  // A gaveta entra por `lazy`: o diálogo aparece quando o pedaço chega.
   const gaveta = await screen.findByRole('dialog');
 
-  // O nome e um link para o produto, e nao so texto: da sacola se volta ao
+  // O nome e um link para o produto, e não só texto: da sacola se volta ao
   // que se escolheu.
   expect(within(gaveta).getByRole('link', { name: 'Asad' }).getAttribute('href')).toBe(
     '/produtos/asad-lattafa',
@@ -171,13 +171,13 @@ test('aberta, mostra o item, o subtotal do servidor e as duas saídas', async ()
 
   expect(within(gaveta).getByText('50ml')).toBeTruthy();
 
-  // O "Remover" carrega o nome do item para quem ouve a pagina: numa sacola
-  // de seis, seis botoes chamados so "Remover" nao dizem qual e qual.
+  // O "Remover" carrega o nome do item para quem ouve a página: numa sacola
+  // de seis, seis botões chamados só "Remover" não dizem qual e qual.
   expect(within(gaveta).getByRole('button', { name: /Remover\s+Asad/ })).toBeTruthy();
 
-  // 2 x R$ 189,90 = R$ 379,80, e o numero vem da cotacao — a tela nao
-  // multiplica nada. Conferido na linha do subtotal, e nao em qualquer
-  // "R$" da gaveta: o valor da linha mostra o mesmo numero, e um
+  // 2 x R$ 189,90 = R$ 379,80, e o número vem da cotação — a tela não
+  // multiplica nada. Conferido na linha do subtotal, e não em qualquer
+  // "R$" da gaveta: o valor da linha mostra o mesmo número, e um
   // `getByText` solto passaria encontrando o outro.
   await waitFor(() => {
     const subtotal = within(gaveta).getByText('Subtotal').parentElement as HTMLElement;
@@ -185,7 +185,7 @@ test('aberta, mostra o item, o subtotal do servidor e as duas saídas', async ()
     expect(within(subtotal).getByText('R$ 379,80')).toBeTruthy();
   });
 
-  // Dois botoes, e o link para a sacola inteira como destino.
+  // Dois botões, e o link para a sacola inteira como destino.
   expect(within(gaveta).getByRole('button', { name: 'Finalizar compra' })).toBeTruthy();
   expect(within(gaveta).getByRole('button', { name: 'Continuar comprando' })).toBeTruthy();
   expect(
@@ -209,7 +209,7 @@ test('"continuar comprando" fecha a gaveta e não esvazia a sacola', async () =>
   expect(useCart.getState().lines).toHaveLength(1);
 });
 
-test('a gaveta vazia oferece o catalogo em vez de um total', async () => {
+test('a gaveta vazia oferece o catálogo em vez de um total', async () => {
   useCart.setState({ drawerOpen: true });
 
   montar();

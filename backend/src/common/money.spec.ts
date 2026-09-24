@@ -17,9 +17,9 @@ describe('formatCents', () => {
     expect(formatCents(99_999_999)).toBe('R$ 999.999,99');
   });
 
-  // O espaco depois do "R$" e um espaco comum, e nao o estreito sem quebra do
+  // O espaço depois do "R$" e um espaço comum, e não o estreito sem quebra do
   // ICU: este texto vai para a mensagem do WhatsApp, onde um caractere
-  // invisivel so aparece quando o cliente reclama.
+  // invisível só aparece quando o cliente reclama.
   it('usa espaço comum entre o símbolo e o número', () => {
     expect(formatCents(1000).charCodeAt(2)).toBe(32);
   });

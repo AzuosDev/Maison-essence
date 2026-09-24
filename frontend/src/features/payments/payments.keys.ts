@@ -1,7 +1,7 @@
 /**
  * A chave de cache das formas de pagamento.
  *
- * Uma so, por enquanto — mas com a mesma raiz das que virao no checkout, para
+ * Uma só, por enquanto — mas com a mesma raiz das que virão no checkout, para
  * que invalidar pagamento continue sendo uma linha quando a dona mexer nas
  * regras pelo painel.
  */

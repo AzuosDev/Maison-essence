@@ -18,8 +18,8 @@ describe('serializeParams', () => {
 
 describe('signParams', () => {
   /**
-   * Valor fixo, e nao recalculado no teste: a assinatura so vale se for
-   * exatamente a que o Cloudinary produz do outro lado. Mudar a ordenacao ou
+   * Valor fixo, e não recalculado no teste: a assinatura só vale se for
+   * exatamente a que o Cloudinary produz do outro lado. Mudar a ordenação ou
    * o digest aqui quebra este teste, que e o ponto — o servidor responderia
    * "Invalid Signature" sem dizer o que mudou.
    */

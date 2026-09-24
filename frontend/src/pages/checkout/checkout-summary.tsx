@@ -6,22 +6,22 @@ import styles from './checkout-summary.module.css';
 /**
  * O resumo que acompanha as etapas.
  *
- * A moldura, e so ela: as linhas de dinheiro sao de `QuoteTotals`, que a
- * revisao final tambem usa. O que este bloco acrescenta e o contexto — o
- * titulo, quantos itens ha e o que fazer quando a cotacao falha.
+ * A moldura, e só ela: as linhas de dinheiro são de `QuoteTotals`, que a
+ * revisão final também usa. O que este bloco acrescenta e o contexto — o
+ * título, quantos itens há e o que fazer quando a cotação falha.
  *
- * Mesma superficie e mesma voz do resumo da sacola, de proposito: sao o
+ * Mesma superficie e mesma voz do resumo da sacola, de propósito: são o
  * mesmo bloco em duas telas da mesma travessia, e o cliente precisa
  * reconhece-lo ao chegar aqui.
  *
- * Some na ultima etapa. La a revisao **e** o resumo, e mante-lo ao lado
- * faria a pessoa conferir os mesmos cinco numeros em dois lugares da mesma
- * tela — quem decide isso e a pagina, que sabe em que passo esta.
+ * Some na última etapa. La a revisão **e** o resumo, e mante-lo ao lado
+ * faria a pessoa conferir os mesmos cinco números em dois lugares da mesma
+ * tela — quem decide isso e a página, que sabe em que passo esta.
  */
 
 export interface CheckoutSummaryProps {
   quote: CartQuote | undefined;
-  /** A taxa e o total desta cotacao pertencem a escolha do cliente. */
+  /** A taxa e o total desta cotação pertencem a escolha do cliente. */
   totalsResolved: boolean;
   isPending: boolean;
   isFetching: boolean;

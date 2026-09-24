@@ -72,18 +72,18 @@ export { brandsOf, ceilingOf, pagedSlice, saleSlice, type ListSlice } from './pr
 export { metaDescriptionOf, productJsonLd, productMeta } from './product-seo';
 
 /**
- * Os hooks estao em dois arquivos, e a divisao e de empacotamento.
+ * Os hooks estão em dois arquivos, e a divisão e de empacotamento.
  *
- * `use-catalog.ts` e alcancavel a partir da moldura da loja: a caixa de
- * busca do cabecalho importa `useSearchSuggestions` daqui, e o cabecalho
- * esta em toda pagina. Tudo o que aquele modulo importar entra no pedaco
- * inicial junto com ele — inclusive para quem so abriu a home.
+ * `use-catalog.ts` e alcancável a partir da moldura da loja: a caixa de
+ * busca do cabeçalho importa `useSearchSuggestions` daqui, e o cabeçalho
+ * esta em toda página. Tudo o que aquele módulo importar entra no pedaço
+ * inicial junto com ele — inclusive para quem só abriu a home.
  *
  * Por isso os hooks que dependem de `catalog.filters` moram em
- * `use-product-list.ts`: a tabela de ordenacao, a tradutora de parametros e
- * a montagem da lista nao tem por que pesar no primeiro carregamento de quem
- * ainda nao abriu a vitrine. A conta, medida no build: 2,4 kB comprimidos
- * fora do caminho critico.
+ * `use-product-list.ts`: a tabela de ordenação, a tradutora de parâmetros e
+ * a montagem da lista não tem por que pesar no primeiro carregamento de quem
+ * ainda não abriu a vitrine. A conta, medida no build: 2,4 kB comprimidos
+ * fora do caminho crítico.
  *
  * A regra para manter: hook que importa de `catalog.filters` vai para
  * `use-product-list.ts`; o que a moldura usa fica em `use-catalog.ts`.

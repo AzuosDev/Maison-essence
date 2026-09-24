@@ -18,25 +18,25 @@ import styles from './orders-table.module.css';
 /**
  * A lista de pedidos: tabela no desktop, cards no celular.
  *
- * ## Por que nao e uma tabela que vira card por CSS
+ * ## Por que não e uma tabela que vira card por CSS
  *
- * O truque conhecido — `display: block` nas celulas e o rotulo no
- * `::before` — mantem um DOM so, e e por isso que ele e tentador. O preco e
+ * O truque conhecido — `display: block` nas células e o rótulo no
+ * `::before` — mantem um DOM só, e e por isso que ele e tentador. O preço e
  * que a tabela continua anunciada como tabela para quem usa leitor de tela,
- * com celulas que nao tem mais linha nem coluna, e o rotulo de cada campo
- * vira conteudo de CSS, que nao e lido. A dona usa o painel no celular na
+ * com células que não tem mais linha nem coluna, e o rótulo de cada campo
+ * vira conteúdo de CSS, que não e lido. A dona usa o painel no celular na
  * maior parte do tempo: e o formato do celular que precisa estar certo.
  *
- * Aqui sao duas arvores, e uma so e montada — `useMediaQuery` decide qual.
- * No desktop, uma `<table>` de verdade, com cabecalho e escopo de coluna. No
- * celular, uma lista de cards, cada um com o rotulo escrito ao lado do
+ * Aqui são duas árvores, e uma só e montada — `useMediaQuery` decide qual.
+ * No desktop, uma `<table>` de verdade, com cabeçalho e escopo de coluna. No
+ * celular, uma lista de cards, cada um com o rótulo escrito ao lado do
  * valor.
  *
  * ## O telefone e um link
  *
- * E o atalho mais usado do painel: a dona ve o pedido e responde na
- * conversa. O link abre o WhatsApp com o numero ja preenchido — e fica fora
- * do link do pedido, porque sao dois destinos diferentes no mesmo card.
+ * E o atalho mais usado do painel: a dona vê o pedido e responde na
+ * conversa. O link abre o WhatsApp com o número já preenchido — e fica fora
+ * do link do pedido, porque são dois destinos diferentes no mesmo card.
  */
 
 /** Acima disto, tabela. Abaixo, cards — o corte que o painel usa inteiro. */
@@ -45,17 +45,17 @@ const WIDE = '(min-width: 48rem)';
 export interface OrdersTableProps {
   orders: readonly AdminOrderSummary[];
   isLoading?: boolean;
-  /** Esconde as colunas de dinheiro. O STAFF nao ve valor. */
+  /** Esconde as colunas de dinheiro. O STAFF não vê valor. */
   showTotals?: boolean;
   /**
    * Mostra como o pedido foi pago.
    *
    * Ligado na tela de pedidos, onde a dona esta decidindo o que responder, e
    * desligado na abertura do painel, que e uma olhada de relance: uma coluna
-   * a mais ali empurra o codigo e o cliente para fora da largura do celular
+   * a mais ali empurra o código e o cliente para fora da largura do celular
    * sem responder nenhuma pergunta que a abertura faca.
    *
-   * Nao segue `showTotals`: "Cartao 6x" diz como o cliente vai pagar, e nao
+   * Não segue `showTotals`: "Cartão 6x" diz como o cliente vai pagar, e não
    * quanto a loja ganha. O STAFF precisa disso para atender.
    */
   showPayment?: boolean;
@@ -257,8 +257,8 @@ function OrderCards({
 /**
  * O esqueleto tem a forma que vai chegar.
  *
- * Cinco linhas no desktop e tres cards no celular, nas alturas de verdade:
- * quando a resposta chega, a tela nao salta.
+ * Cinco linhas no desktop e três cards no celular, nas alturas de verdade:
+ * quando a resposta chega, a tela não salta.
  */
 function OrdersSkeleton({ wide }: { wide: boolean }) {
   const count = wide ? 5 : 3;

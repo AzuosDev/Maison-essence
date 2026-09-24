@@ -1,9 +1,9 @@
 /*
  * A caixa de marcar.
  *
- * O `<input>` nativo continua la, invisivel mas presente: e ele que recebe o
- * foco, responde ao Espaco, entra no formulario e e anunciado pelo leitor de
- * tela. O quadrado que aparece e um `<span>` irmao, pintado pelo estado do
+ * O `<input>` nativo continua lá, invisível mas presente: e ele que recebe o
+ * foco, responde ao Espaço, entra no formulário e e anunciado pelo leitor de
+ * tela. O quadrado que aparece e um `<span>` irmão, pintado pelo estado do
  * input. Esconder o input com `display: none` quebraria as quatro coisas.
  */
 
@@ -18,13 +18,13 @@
   align-items: flex-start;
   gap: var(--space-12);
   cursor: pointer;
-  /* O alvo de toque cobre o rotulo inteiro, e nao so o quadradinho. */
+  /* O alvo de toque cobre o rótulo inteiro, e não só o quadradinho. */
   padding: var(--space-4) 0;
 }
 
 .input {
-  /* Fora da tela, mas focavel: `appearance: none` some com o desenho do
-     sistema e o tamanho zero seria clicavel por engano. */
+  /* Fora da tela, mas focável: `appearance: none` some com o desenho do
+     sistema e o tamanho zero seria clicável por engano. */
   position: absolute;
   width: 1px;
   height: 1px;
@@ -37,7 +37,7 @@
   flex: none;
   width: 1.25rem;
   height: 1.25rem;
-  /* Alinha com a primeira linha do rotulo. */
+  /* Alinha com a primeira linha do rótulo. */
   margin-top: 0.125rem;
 
   background-color: var(--surface);
@@ -59,7 +59,7 @@
   border-color: var(--ink);
 }
 
-/* O anel de foco vai no quadrado, ja que o input esta fora da tela. */
+/* O anel de foco vai no quadrado, já que o input esta fora da tela. */
 .input:focus-visible + .box {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -78,7 +78,7 @@
   transform: rotate(45deg);
 }
 
-/* Parcialmente marcado — "selecionar todos" com alguns de fora: um traco. */
+/* Parcialmente marcado — "selecionar todos" com alguns de fora: um traço. */
 .input:indeterminate + .box::after {
   content: '';
   position: absolute;

@@ -1,9 +1,9 @@
 /*
  * A abertura do painel.
  *
- * Quatro numeros, a lista de pedidos, o aviso de estoque. A ordem e a das
- * perguntas de quem acabou de abrir a loja, e o espaco entre os blocos e
- * generoso de proposito: esta tela e lida de relance, entre um cliente e
+ * Quatro números, a lista de pedidos, o aviso de estoque. A ordem e a das
+ * perguntas de quem acabou de abrir a loja, e o espaço entre os blocos e
+ * generoso de propósito: esta tela e lida de relance, entre um cliente e
  * outro.
  */
 
@@ -35,11 +35,11 @@
 }
 
 /*
- * Os cards em duas colunas ja no celular.
+ * Os cards em duas colunas já no celular.
  *
  * Um por linha empurraria a lista de pedidos para baixo da dobra, e e ela
- * que a dona veio ver. Dois cabem em 360px porque o numero e curto e o
- * rotulo e de 12px.
+ * que a dona veio ver. Dois cabem em 360px porque o número e curto e o
+ * rótulo e de 12px.
  */
 .cards {
   display: grid;
@@ -134,7 +134,7 @@
  * A contagem em vermelho, e com a palavra junto.
  *
  * "2 unidades" em vermelho conta duas coisas ao mesmo tempo: quantas restam
- * e que isso e pouco. Quem nao distingue a cor le a mesma frase.
+ * e que isso e pouco. Quem não distingue a cor lê a mesma frase.
  */
 .stockCount {
   flex-shrink: 0;

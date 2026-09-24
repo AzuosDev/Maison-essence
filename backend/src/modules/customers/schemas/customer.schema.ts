@@ -15,10 +15,10 @@ import {
 import { DeliveryCity } from '../../delivery/schemas/delivery-city.schema.js';
 
 /**
- * Endereco salvo na conta do cliente.
+ * Endereço salvo na conta do cliente.
  *
- * Aqui o `ref` para a cidade e proposital, ao contrario do endereco do
- * pedido: este e o endereco vivo, que deve refletir a taxa de hoje na proxima
+ * Aqui o `ref` para a cidade e proposital, ao contrário do endereço do
+ * pedido: este e o endereço vivo, que deve refletir a taxa de hoje na próxima
  * compra. O pedido guarda a copia.
  */
 @Schema(embeddedSchemaOptions())
@@ -57,9 +57,9 @@ export const CustomerAddressSchema = createSchema(CustomerAddress);
 /**
  * Conta de cliente, sempre opcional.
  *
- * O checkout como convidado continua sendo o caminho padrao: esta colecao so
- * existe para quem quiser acompanhar os proprios pedidos. Nada aqui da acesso
- * ao painel — o token do cliente tem audience propria.
+ * O checkout como convidado continua sendo o caminho padrão: esta coleção só
+ * existe para quem quiser acompanhar os próprios pedidos. Nada aqui da acesso
+ * ao painel — o token do cliente tem audience própria.
  */
 @Schema(baseSchemaOptions({ collection: 'customers' }))
 export class Customer extends BaseSchema {
@@ -89,10 +89,10 @@ export class Customer extends BaseSchema {
   isActive: boolean;
 
   /**
-   * Contador de credencial, como no usuario do painel.
+   * Contador de credencial, como no usuário do painel.
    *
    * Viaja dentro do access token e e conferido a cada request: incrementar
-   * aqui invalida na hora todos os tokens ja emitidos para a conta, sem
+   * aqui inválida na hora todos os tokens já emitidos para a conta, sem
    * esperar os trinta minutos de validade. E o que faz "trocar a senha
    * derruba os outros aparelhos" significar alguma coisa.
    */
@@ -108,9 +108,9 @@ export type CustomerDocument = HydratedDocument<Customer>;
 export const CustomerSchema = createSchema(Customer);
 
 CustomerSchema.index({ phone: 1 }, { unique: true });
-// Indice parcial, e nao `sparse`: o e-mail e opcional e tem default `''`, e
-// `sparse` so ignora o campo ausente — todos os clientes sem e-mail entrariam
-// no indice com a mesma string vazia e colidiriam entre si.
+// Índice parcial, e não `sparse`: o e-mail e opcional e tem default `''`, e
+// `sparse` só ignora o campo ausente — todos os clientes sem e-mail entrariam
+// no índice com a mesma string vazia e colidiriam entre si.
 CustomerSchema.index(
   { email: 1 },
   { unique: true, partialFilterExpression: { email: { $gt: '' } } },

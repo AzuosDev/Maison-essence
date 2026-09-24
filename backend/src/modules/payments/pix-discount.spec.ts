@@ -8,7 +8,7 @@ describe('pixQuoteOf', () => {
   /**
    * A regra inteira deste arquivo em um teste: a entrega entra no total
    * depois do desconto e nunca dentro dele. R$ 100 de produto mais R$ 25 de
-   * frete com 5% de desconto sao R$ 120,00 — e nao R$ 118,75, que seria a
+   * frete com 5% de desconto são R$ 120,00 — e não R$ 118,75, que seria a
    * loja bancando parte do frete de quem paga no PIX.
    */
   it('nunca desconta a taxa de entrega', () => {
@@ -20,7 +20,7 @@ describe('pixQuoteOf', () => {
   });
 
   it('arredonda o centavo a favor de quem paga', () => {
-    // 5% de R$ 99,99 sao R$ 4,9995.
+    // 5% de R$ 99,99 são R$ 4,9995.
     expect(pixQuoteOf(9999, 0, 5).discountCents).toBe(500);
   });
 

@@ -5,45 +5,45 @@ import { MoreIcon } from './admin-icons';
 import styles from './row-menu.module.css';
 
 /**
- * O menu de acoes de uma linha de tabela.
+ * O menu de ações de uma linha de tabela.
  *
- * ## Por que nao sao tres botoes soltos
+ * ## Por que não são três botões soltos
  *
- * Tres botoes por linha somam sessenta alvos de toque numa tabela de vinte
- * produtos, e o celular nao tem largura para eles. Um `<select>` seria lido
- * como "escolha um valor", e o que esta aqui sao acoes — uma delas
+ * Três botões por linha somam sessenta alvos de toque numa tabela de vinte
+ * produtos, e o celular não tem largura para eles. Um `<select>` seria lido
+ * como "escolha um valor", e o que esta aqui são ações — uma delas
  * destrutiva.
  *
- * Entao e um botao que abre uma lista de botoes. O fechamento cobre os tres
- * caminhos de saida: clique fora, Escape, e a escolha de um item. O foco
- * volta para o botao que abriu, porque quem navega por teclado precisa
- * continuar de onde estava e nao no topo do documento.
+ * Então e um botão que abre uma lista de botões. O fechamento cobre os três
+ * caminhos de saída: clique fora, Escape, e a escolha de um item. O foco
+ * volta para o botão que abriu, porque quem navega por teclado precisa
+ * continuar de onde estava e não no topo do documento.
  *
- * ## A acao destrutiva vem por ultimo, e separada
+ * ## A ação destrutiva vem por último, e separada
  *
  * `tone: 'danger'` pinta em vermelho e `separated` a afasta do resto com um
- * filete. Nao e enfeite: o menu abre sempre no mesmo lugar, as linhas se
- * parecem, e a distancia e o que impede o dedo de excluir a linha errada.
+ * filete. Não e enfeite: o menu abre sempre no mesmo lugar, as linhas se
+ * parecem, e a distância e o que impede o dedo de excluir a linha errada.
  *
- * ## O que este componente nao decide
+ * ## O que este componente não decide
  *
- * Quais acoes existem. Ele recebe a lista pronta, e quem monta e a tela — que
+ * Quais ações existem. Ele recebe a lista pronta, e quem monta e a tela — que
  * e quem sabe quais delas o papel de quem esta olhando pode fazer.
  */
 
 /**
  * Um item do menu.
  *
- * Ou `to`, ou `onSelect`, nunca os dois. O item que leva a outro endereco e
- * um `<a>` e o item que executa uma acao e um `<button>` — a mesma distincao
+ * Ou `to`, ou `onSelect`, nunca os dois. O item que leva a outro endereço e
+ * um `<a>` e o item que executa uma ação e um `<button>` — a mesma distinção
  * que separa `Button` de `ButtonLink` no design system, e pelas mesmas
- * razoes: so o link abre em nova aba com o meio do mouse, e so o botao e
- * anunciado como botao.
+ * razões: só o link abre em nova aba com o meio do mouse, e só o botão e
+ * anunciado como botão.
  */
 export type RowMenuItem = {
   label: string;
   icon?: ComponentType<SVGProps<SVGSVGElement>>;
-  /** Vermelho, para o que nao se desfaz. */
+  /** Vermelho, para o que não se desfaz. */
   tone?: 'default' | 'danger';
   /** Um filete acima, para afastar do grupo anterior. */
   separated?: boolean;
@@ -51,7 +51,7 @@ export type RowMenuItem = {
 } & ({ to: string; onSelect?: never } | { to?: never; onSelect: () => void });
 
 export interface RowMenuProps {
-  /** Vai no rotulo do botao: "Acoes de Asad 100ml". */
+  /** Vai no rótulo do botão: "Ações de Asad 100ml". */
   label: string;
   items: readonly RowMenuItem[];
 }
@@ -126,8 +126,8 @@ export function RowMenu({ label, items }: RowMenuProps) {
                     disabled={item.disabled}
                     className={className}
                     onClick={() => {
-                      // Executa e fecha: nenhum item deixa a lista aberta atras
-                      // de si, nem quando abre um dialogo por cima.
+                      // Executa e fecha: nenhum item deixa a lista aberta atrás
+                      // de si, nem quando abre um diálogo por cima.
                       setOpen(false);
                       item.onSelect();
                     }}

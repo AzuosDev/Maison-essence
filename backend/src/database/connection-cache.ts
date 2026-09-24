@@ -1,6 +1,6 @@
 import type { Logger } from '@nestjs/common';
 import type { Connection } from 'mongoose';
-// `STATES`, e nao `ConnectionStates`: o mongoose e CommonJS e o Node so
+// `STATES`, e não `ConnectionStates`: o mongoose e CommonJS e o Node só
 // enxerga como named export o que o lexer consegue detectar no dist.
 import { STATES } from 'mongoose';
 
@@ -9,9 +9,9 @@ interface MongooseConnectionCache {
   promise?: Promise<Connection>;
 }
 
-// Symbol.for atravessa reavaliacoes deste modulo dentro do mesmo processo
+// Symbol.for atravessa reavaliações deste módulo dentro do mesmo processo
 // (hot reload, bundles duplicados), que e justamente quando o cache importa:
-// a instancia serverless ja tem um socket aberto e nao deve abrir outro.
+// a instância serverless já tem um socket aberto e não deve abrir outro.
 const CACHE_KEY: unique symbol = Symbol.for('maison-essence.mongoose-connection');
 
 type GlobalWithCache = typeof globalThis & {
@@ -32,9 +32,9 @@ function isReusable(connection: Connection | undefined): boolean {
     return false;
   }
 
-  // O driver reconecta sozinho quando o socket cai, entao "connecting" ainda
-  // serve. So um close() explicito (app.close(), shutdown da funcao) e
-  // definitivo: ali a conexao nunca mais volta e precisa ser recriada.
+  // O driver reconecta sozinho quando o socket cai, então "connecting" ainda
+  // serve. Só um close() explicito (app.close(), shutdown da função) e
+  // definitivo: ali a conexão nunca mais volta e precisa ser recriada.
   return (
     connection.readyState !== STATES.disconnected &&
     connection.readyState !== STATES.uninitialized
@@ -42,12 +42,12 @@ function isReusable(connection: Connection | undefined): boolean {
 }
 
 /**
- * Devolve a conexao da instancia serverless, abrindo o socket apenas na
- * primeira invocacao.
+ * Devolve a conexão da instância serverless, abrindo o socket apenas na
+ * primeira invocação.
  *
- * Recebe a `Connection` que o `MongooseModule` acabou de criar porque nao ha
- * como impedir que ele crie a sua (ver `database.module.ts`): se o cache ja
- * estiver quente, a recem-criada e descartada.
+ * Recebe a `Connection` que o `MongooseModule` acabou de criar porque não há
+ * como impedir que ele crie a sua (ver `database.module.ts`): se o cache já
+ * estiver quente, a recém-criada e descartada.
  */
 export function connectOnce(connection: Connection, logger: Logger): Promise<Connection> {
   const cache = getCache();
@@ -62,7 +62,7 @@ export function connectOnce(connection: Connection, logger: Logger): Promise<Con
 
   cache.connection = connection;
   cache.promise = connection.asPromise().catch((error: unknown) => {
-    // Libera o cache para a proxima invocacao tentar conectar de novo, em vez
+    // Libera o cache para a próxima invocação tentar conectar de novo, em vez
     // de servir uma promise rejeitada para sempre.
     cache.connection = undefined;
     cache.promise = undefined;

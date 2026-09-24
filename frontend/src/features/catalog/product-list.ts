@@ -4,18 +4,18 @@ import type { Paginated, PublicProduct } from './catalog.types';
 /**
  * O que a vitrine mostra, montado a partir do que a API devolveu.
  *
- * Duas montagens diferentes moram aqui, e ambas sao funcao pura — recebem
- * paginas e devolvem uma lista. Ficam fora do hook porque e o lugar onde a
- * regra de paginacao pode ser lida e testada sem React, sem rede e sem
- * relogio.
+ * Duas montagens diferentes moram aqui, e ambas são função pura — recebem
+ * páginas e devolvem uma lista. Ficam fora do hook porque e o lugar onde a
+ * regra de paginação pode ser lida e testada sem React, sem rede e sem
+ * relógio.
  */
 
 export interface ListSlice {
-  /** Os produtos visiveis agora. No celular, as paginas acumuladas. */
+  /** Os produtos visíveis agora. No celular, as páginas acumuladas. */
   products: PublicProduct[];
   totalItems: number;
   totalPages: number;
-  /** Ha pagina seguinte para o botao "carregar mais". */
+  /** Há página seguinte para o botão "carregar mais". */
   hasMore: boolean;
   /** A varredura do filtro de desconto bateu no teto — ver `saleSlice`. */
   truncated: boolean;
@@ -30,16 +30,16 @@ export const EMPTY_SLICE: ListSlice = {
 };
 
 /**
- * As paginas da API viram uma lista so.
+ * As páginas da API viram uma lista só.
  *
- * `accumulate` e o celular: la o cliente aperta "carregar mais" e a pagina
- * nova entra embaixo da anterior, entao as paginas 1 a N aparecem juntas. No
- * desktop, a paginacao e numerada e so a pagina pedida esta em tela — por
- * isso chega uma pagina so nesta lista.
+ * `accumulate` e o celular: lá o cliente aperta "carregar mais" e a página
+ * nova entra embaixo da anterior, então as páginas 1 a N aparecem juntas. No
+ * desktop, a paginação e numerada e só a página pedida esta em tela — por
+ * isso chega uma página só nesta lista.
  *
- * As totalizacoes saem da ultima pagina carregada, e nao da primeira: se a
- * dona publicar um produto entre um "carregar mais" e o seguinte, o numero
- * mais novo e o mais proximo da verdade.
+ * As totalizações saem da última página carregada, e não da primeira: se a
+ * dona publicar um produto entre um "carregar mais" e o seguinte, o número
+ * mais novo e o mais próximo da verdade.
  */
 export function pagedSlice(pages: readonly Paginated<PublicProduct>[]): ListSlice {
   const last = pages.at(-1);
@@ -60,14 +60,14 @@ export function pagedSlice(pages: readonly Paginated<PublicProduct>[]): ListSlic
 /**
  * O recorte do filtro "somente com desconto".
  *
- * Este filtro nao existe em `GET /products` (ver `apiParamsFrom`). O que
- * chega aqui e uma varredura unica: a pagina cheia do backend — 48 produtos
- * — ja ordenada por maior desconto. Como essa ordem poe toda a promocao na
+ * Este filtro não existe em `GET /products` (ver `apiParamsFrom`). O que
+ * chega aqui e uma varredura única: a página cheia do backend — 48 produtos
+ * — já ordenada por maior desconto. Como essa ordem põe toda a promoção na
  * frente, descartar quem tem desconto zero devolve exatamente o conjunto
- * pedido, e a partir dai a paginacao e feita aqui mesmo.
+ * pedido, e a partir dai a paginação e feita aqui mesmo.
  *
  * `truncated` avisa quando os 48 vieram todos com desconto: nesse caso pode
- * haver um quadragesimo nono que a varredura nao alcancou, e a tela diz isso
+ * haver um quadragesimo nono que a varredura não alcancou, e a tela diz isso
  * em vez de apresentar uma contagem que talvez esteja errada.
  */
 export function saleSlice(
@@ -91,8 +91,8 @@ export function saleSlice(
 /**
  * As marcas presentes numa varredura, sem repetir e em ordem.
  *
- * A comparacao ignora caixa porque a marca e texto livre no painel:
- * "Lattafa" e "lattafa" sao a mesma prateleira da loja, e apareceriam como
+ * A comparação ignora caixa porque a marca e texto livre no painel:
+ * "Lattafa" e "lattafa" são a mesma prateleira da loja, e apareceriam como
  * duas linhas na lista de filtro. Fica a primeira grafia encontrada.
  */
 export function brandsOf(products: readonly PublicProduct[]): string[] {
@@ -108,12 +108,12 @@ export function brandsOf(products: readonly PublicProduct[]): string[] {
 }
 
 /**
- * O teto do slider de preco: o maior preco da varredura.
+ * O teto do slider de preço: o maior preço da varredura.
  *
- * A varredura vem ordenada por maior preco, entao o primeiro item ja e o
- * mais caro — e o teto e exato, e nao uma estimativa. O valor sai do `max`
- * da faixa do produto, que e o que um cliente que arrasta o slider ate o fim
- * espera alcancar.
+ * A varredura vem ordenada por maior preço, então o primeiro item já e o
+ * mais caro — e o teto e exato, e não uma estimativa. O valor sai do `max`
+ * da faixa do produto, que e o que um cliente que arrasta o slider até o fim
+ * espera alcançar.
  */
 export function ceilingOf(products: readonly PublicProduct[]): number {
   return products.reduce((top, product) => Math.max(top, product.priceRangeCents.max), 0);

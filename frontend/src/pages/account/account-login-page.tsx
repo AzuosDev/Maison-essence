@@ -18,52 +18,52 @@ import { usePageMeta } from '@/lib/use-page-meta';
 import styles from './account-auth.module.css';
 
 /**
- * `/conta/entrar`: a unica porta de entrada da aplicacao.
+ * `/conta/entrar`: a única porta de entrada da aplicação.
  *
- * ## Um formulario para os dois publicos
+ * ## Um formulário para os dois públicos
  *
  * O cliente entra pelo celular dos pedidos; a dona e quem trabalha na loja
- * entram pelo e-mail do acesso. Sao dois logins diferentes no servidor —
- * sessoes, tokens e limites de tentativa separados —, mas uma tela so, e o
+ * entram pelo e-mail do acesso. São dois logins diferentes no servidor —
+ * sessões, tokens e limites de tentativa separados —, mas uma tela só, e o
  * que decide o destino e o formato do que foi digitado, aqui no navegador.
  *
  * Um seletor "sou cliente / sou da loja" resolveria o mesmo problema e
- * criaria outro maior: anunciaria a cada visita que existe um painel atras
- * desta tela. Um campo que aceita os dois nao conta nada a ninguem.
+ * criaria outro maior: anunciaria a cada visita que existe um painel atrás
+ * desta tela. Um campo que aceita os dois não conta nada a ninguém.
  *
  * ## Dois campos, e os dois grandes
  *
- * Identificacao e senha. Nao ha "lembrar de mim" — a sessao ja sobrevive ao
- * fechamento do navegador —, nao ha captcha e nao ha um terceiro campo. Esta
- * tela e aberta no celular, quase sempre com uma mao so, e cada campo a mais
- * e uma pessoa que desiste e compra como convidada. O que nao e ruim: a
- * compra continua funcionando. Mas o historico dela nunca se junta.
+ * Identificação e senha. Não há "lembrar de mim" — a sessão já sobrevive ao
+ * fechamento do navegador —, não há captcha e não há um terceiro campo. Esta
+ * tela e aberta no celular, quase sempre com uma mão só, e cada campo a mais
+ * e uma pessoa que desiste e compra como convidada. O que não e ruim: a
+ * compra continua funcionando. Mas o histórico dela nunca se junta.
  *
- * ## A recusa nao diz qual dos dois errou
+ * ## A recusa não diz qual dos dois errou
  *
  * Os dois logins respondem o mesmo `401` para conta inexistente, senha
- * errada e conta desativada — e demoram o mesmo tanto nos tres. A tela
- * mantem a discricao: nao ha "este telefone nao tem conta", que contaria a
- * quem estivesse testando numeros quais clientes esta loja tem.
+ * errada e conta desativada — e demoram o mesmo tanto nos três. A tela
+ * mantem a discrição: não há "este telefone não tem conta", que contaria a
+ * quem estivesse testando números quais clientes esta loja tem.
  *
- * O texto muda conforme **o que foi digitado**, e nao conforme a resposta:
- * quem tentou um e-mail nao precisa do conselho sobre o DDD. Essa leitura e
- * local, e nao revela nada que quem digitou ja nao soubesse.
+ * O texto muda conforme **o que foi digitado**, e não conforme a resposta:
+ * quem tentou um e-mail não precisa do conselho sobre o DDD. Essa leitura e
+ * local, e não revela nada que quem digitou já não soubesse.
  *
- * O `429` e a excecao, e por um motivo pratico: quem bateu no limite nao
+ * O `429` e a exceção, e por um motivo prático: quem bateu no limite não
  * resolve nada conferindo a senha. A frase precisa dizer para esperar.
  *
  * ## Depois de entrar, volta para onde se estava
  *
  * `state.from` vem do convite — ou do guarda do painel — que trouxe a pessoa
- * ate aqui. Quem clicou em "entrar" a partir de `/conta/pedidos/ME-260922`
+ * até aqui. Quem clicou em "entrar" a partir de `/conta/pedidos/ME-260922`
  * volta para aquele pedido; quem foi barrado em `/admin/pedidos` volta para
- * la depois de entrar com o e-mail.
+ * lá depois de entrar com o e-mail.
  *
- * `from` e **filtrado pelo publico**, e nao e zelo: sem isso, um cliente que
+ * `from` e **filtrado pelo público**, e não e zelo: sem isso, um cliente que
  * entrasse depois de esbarrar no painel seria mandado para `/admin`, o
- * guarda de la o devolveria para esta tela, e a sessao dele — valida — o
- * mandaria de novo para `/admin`. Um la e ca sem fim.
+ * guarda de lá o devolveria para esta tela, e a sessão dele — valida — o
+ * mandaria de novo para `/admin`. Um lá e ca sem fim.
  */
 
 /** O que o convite, ou o guarda do painel, guardou antes de mandar para ca. */
@@ -95,24 +95,24 @@ export default function AccountLoginPage() {
     defaultValues: { identifier: '', password: '' },
   });
 
-  // `useWatch` e nao `watch`: o segundo devolve uma funcao nova a cada
+  // `useWatch` e não `watch`: o segundo devolve uma função nova a cada
   // render, e o compilador do React recusa memoizar o componente inteiro por
-  // causa dela. O primeiro e uma assinatura, e custa so este valor.
+  // causa dela. O primeiro e uma assinatura, e custa só este valor.
   const typed = useWatch({ control, name: 'identifier' });
   const identity = resolveIdentifier(typed);
 
   const { from } = (location.state ?? {}) as LocationState;
 
-  // Ja logado como cliente: nao ha o que fazer nesta tela. Vai para onde
-  // queria ir, ou para os pedidos — que e o motivo pelo qual alguem abre a
+  // Já logado como cliente: não há o que fazer nesta tela. Vai para onde
+  // queria ir, ou para os pedidos — que e o motivo pelo qual alguém abre a
   // conta.
   if (signedIn) {
     return <Navigate to={customerDestination(from)} replace />;
   }
 
-  // O numero ja digitado atravessa para o cadastro: quem descobriu aqui que
-  // nao tem conta nao deveria redigitar o telefone na tela seguinte — e e
-  // justamente ele que liga os pedidos antigos a conta nova. Um e-mail nao
+  // O número já digitado atravessa para o cadastro: quem descobriu aqui que
+  // não tem conta não deveria redigitar o telefone na tela seguinte — e e
+  // justamente ele que liga os pedidos antigos a conta nova. Um e-mail não
   // atravessa, porque o cadastro do cliente e pelo telefone.
   const registerPath =
     identity?.kind === 'phone'
@@ -126,19 +126,19 @@ export default function AccountLoginPage() {
       return;
     }
 
-    // A recusa da tentativa anterior sai de cena antes desta comecar. Sem
+    // A recusa da tentativa anterior sai de cena antes desta começar. Sem
     // isso, quem errou o celular, corrigiu para o e-mail e errou de novo
-    // leria a mensagem do primeiro erro — e os dois nem sempre sao o mesmo
+    // leria a mensagem do primeiro erro — e os dois nem sempre são o mesmo
     // erro: um `429` no login do cliente continuaria na tela por cima de um
-    // `401` do painel, mandando esperar quem so precisava conferir a senha.
+    // `401` do painel, mandando esperar quem só precisava conferir a senha.
     customerLogin.reset();
     staffLogin.reset();
 
     if (who.kind === 'phone') {
-      // O destino sai do `<Navigate>` la em cima, assim que a sessao existe.
+      // O destino sai do `<Navigate>` lá em cima, assim que a sessão existe.
       await customerLogin.mutateAsync({ phone: who.phone, password: values.password }).catch(() => {
         // A mensagem sai de `failure`, logo abaixo. O `catch` existe para
-        // que a recusa nao suba como rejeicao nao tratada.
+        // que a recusa não suba como rejeição não tratada.
       });
 
       return;
@@ -152,8 +152,8 @@ export default function AccountLoginPage() {
       return;
     }
 
-    // Aqui o destino e imperativo, e nao declarativo como o do cliente: a
-    // sessao do painel nao pode tirar ninguem desta tela sozinha. Quem ja
+    // Aqui o destino e imperativo, e não declarativo como o do cliente: a
+    // sessão do painel não pode tirar ninguém desta tela sozinha. Quem já
     // esta logado no painel e abre `/conta/entrar` veio entrar como
     // cliente — manda-lo para `/admin` fecharia a porta que ele acabou de
     // abrir.
@@ -228,7 +228,7 @@ export default function AccountLoginPage() {
   );
 }
 
-/** O endereco pertence ao painel — as duas raizes, a atual e a antiga. */
+/** O endereço pertence ao painel — as duas raizes, a atual e a antiga. */
 function isAdminPath(path: string): boolean {
   return path.startsWith(ROUTE_GROUPS.admin) || path.startsWith(ROUTE_GROUPS.adminLegacy);
 }
@@ -237,7 +237,7 @@ function isAdminPath(path: string): boolean {
  * Para onde o cliente vai depois de entrar.
  *
  * Nunca para o painel, mesmo que tenha sido o painel a mandar a pessoa para
- * ca: a sessao de cliente nao abre nenhuma tela de la, e o guarda a
+ * ca: a sessão de cliente não abre nenhuma tela de lá, e o guarda a
  * devolveria para esta, que a mandaria de volta — sem fim.
  */
 function customerDestination(from: string | undefined): string {
@@ -247,13 +247,13 @@ function customerDestination(from: string | undefined): string {
 /**
  * Para onde quem trabalha na loja vai depois de entrar.
  *
- * A senha temporaria vence tudo: com ela, o backend recusa toda rota
- * administrativa menos a da troca, e mandar a pessoa para o painel so
+ * A senha temporária vence tudo: com ela, o backend recusa toda rota
+ * administrativa menos a da troca, e mandar a pessoa para o painel só
  * mostraria erro em cada tela.
  *
  * Fora isso, volta para a tela do painel que a barrou. Um `from` da loja —
- * de quem clicou "entrar" na sacola e digitou o e-mail de acesso — nao serve
- * de destino para uma sessao de painel: quem entrou por aqui queria o
+ * de quem clicou "entrar" na sacola e digitou o e-mail de acesso — não serve
+ * de destino para uma sessão de painel: quem entrou por aqui queria o
  * painel.
  */
 function staffDestination(from: string | undefined, mustChangePassword: boolean): string {
@@ -265,13 +265,13 @@ function staffDestination(from: string | undefined, mustChangePassword: boolean)
 }
 
 /**
- * A recusa, em portugues de gente.
+ * A recusa, em português de gente.
  *
- * O 401 e sempre generico quanto ao **motivo** — nao diz se foi a conta ou a
+ * O 401 e sempre genérico quanto ao **motivo** — não diz se foi a conta ou a
  * senha. O que ele adapta e o conselho, a partir do que a pessoa digitou: o
- * DDD so importa para quem escreveu um numero.
+ * DDD só importa para quem escreveu um número.
  *
- * O 429 tem texto proprio porque a acao de quem le muda: nao adianta
+ * O 429 tem texto próprio porque a ação de quem lê muda: não adianta
  * conferir a senha, adianta esperar.
  */
 function signInErrorMessage(error: unknown, identity: SignInIdentity | null): string {

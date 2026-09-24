@@ -11,28 +11,28 @@ import { RowMenu, type RowMenuItem } from './row-menu';
 import styles from './products-table.module.css';
 
 /**
- * O catalogo: tabela no desktop, cards no celular.
+ * O catálogo: tabela no desktop, cards no celular.
  *
- * Duas arvores, e uma so e montada — pelo mesmo motivo da tabela de pedidos:
- * o truque de virar celula em bloco por CSS mantem a tabela anunciada como
- * tabela para quem usa leitor de tela, com celulas sem linha nem coluna, e o
- * rotulo de cada campo virando conteudo de CSS, que nao e lido.
+ * Duas árvores, e uma só e montada — pelo mesmo motivo da tabela de pedidos:
+ * o truque de virar célula em bloco por CSS mantem a tabela anunciada como
+ * tabela para quem usa leitor de tela, com células sem linha nem coluna, e o
+ * rótulo de cada campo virando conteúdo de CSS, que não e lido.
  *
- * ## O interruptor esta na linha, e nao no menu
+ * ## O interruptor esta na linha, e não no menu
  *
- * Publicar e despublicar e a acao mais repetida desta tela, e a unica que a
- * dona faz em sequencia: ela desce a lista desativando o que acabou. Um
- * clique no interruptor resolve; tres cliques por linha — abrir o menu,
+ * Publicar e despublicar e a ação mais repetida desta tela, e a única que a
+ * dona faz em sequência: ela desce a lista desativando o que acabou. Um
+ * clique no interruptor resolve; três cliques por linha — abrir o menu,
  * achar o item, confirmar — transformariam isso em uma tarefa.
  *
  * O interruptor vira no dedo (`useSetProductStatus` guarda o retrato e o
- * devolve se o servidor recusar), e por isso ele **nao** pede confirmacao:
- * despublicar nao apaga nada e se desfaz com o mesmo clique.
+ * devolve se o servidor recusar), e por isso ele **não** pede confirmação:
+ * despublicar não apaga nada e se desfaz com o mesmo clique.
  *
  * ## O estoque em vermelho conta duas coisas
  *
  * Quantas unidades restam e que isso e pouco. A palavra continua escrita ao
- * lado — "esgotado" — para quem nao distingue a cor.
+ * lado — "esgotado" — para quem não distingue a cor.
  */
 
 /** Acima disto, tabela. Abaixo, cards — o corte que o painel usa inteiro. */
@@ -46,27 +46,27 @@ export interface ProductsTableProps {
   isLoading?: boolean;
   /** Nome da categoria por id, para a coluna. Ausente vira o id escondido. */
   categoryNames: ReadonlyMap<string, string>;
-  /** Esconde a coluna de preco. O STAFF nao ve valor. */
+  /** Esconde a coluna de preço. O STAFF não vê valor. */
   showPrices?: boolean;
-  /** Desligado para o STAFF: ele le o catalogo, nao o edita. */
+  /** Desligado para o STAFF: ele lê o catálogo, não o edita. */
   canEdit?: boolean;
   onToggleStatus: (product: AdminProduct) => void;
   /**
    * Tira o produto da prateleira de pronta entrega.
    *
-   * So a tela de pronta entrega o passa, e por isso ele e opcional: no
-   * catalogo inteiro, "tirar da pronta entrega" seria uma acao para um
+   * Só a tela de pronta entrega o passa, e por isso ele e opcional: no
+   * catálogo inteiro, "tirar da pronta entrega" seria uma ação para um
    * atributo que a linha nem sempre tem — e o lugar de liga-lo e o cadastro.
    */
   onToggleReadyToShip?: ((product: AdminProduct) => void) | undefined;
   /**
    * Exclui o cadastro.
    *
-   * Opcional pela mesma razao que o de cima existe: na tela de pronta
+   * Opcional pela mesma razão que o de cima existe: na tela de pronta
    * entrega se confere prateleira, e apagar um cadastro inteiro por engano no
-   * meio de uma conferencia e um estrago que nao se desfaz. Sem a funcao, o
-   * item nem aparece no menu — um item que nao faz nada e pior do que a
-   * ausencia dele.
+   * meio de uma conferência e um estrago que não se desfaz. Sem a função, o
+   * item nem aparece no menu — um item que não faz nada e pior do que a
+   * ausência dele.
    */
   onDelete?: ((product: AdminProduct) => void) | undefined;
 }
@@ -257,14 +257,14 @@ function ProductCards({
   );
 }
 
-/* ---- Pedacos compartilhados ----------------------------------------------- */
+/* ---- Pedaços compartilhados ----------------------------------------------- */
 
 /**
  * A capa do produto.
  *
- * `alt=""` de proposito: o nome do produto esta na linha ao lado, e uma
+ * `alt=""` de propósito: o nome do produto esta na linha ao lado, e uma
  * miniatura que repete "Asad" faria o leitor de tela anunciar o mesmo nome
- * duas vezes por linha, vinte vezes por pagina.
+ * duas vezes por linha, vinte vezes por página.
  */
 function Thumb({ product }: { product: AdminProduct }) {
   return (
@@ -316,10 +316,10 @@ function Stock({ product }: { product: AdminProduct }) {
 /**
  * As categorias do produto, escritas.
  *
- * Um produto costuma estar em uma ou duas; tres ja e incomum. A lista inteira
- * cabe na celula e evita o "2 categorias" que obriga a abrir o cadastro para
- * saber quais. Sem nenhuma, a celula diz isso — e um cadastro incompleto, e a
- * vitrine nao mostra o produto em lugar nenhum a nao ser na busca.
+ * Um produto costuma estar em uma ou duas; três já e incomum. A lista inteira
+ * cabe na célula e evita o "2 categorias" que obriga a abrir o cadastro para
+ * saber quais. Sem nenhuma, a célula diz isso — e um cadastro incompleto, e a
+ * vitrine não mostra o produto em lugar nenhum a não ser na busca.
  */
 function categoryLabel(product: AdminProduct, categoryNames: ReadonlyMap<string, string>): string {
   const names = product.categoryIds

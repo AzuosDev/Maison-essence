@@ -1,10 +1,10 @@
 /*
  * As linhas de dinheiro.
  *
- * Servem ao resumo da lateral e a revisao final. Nao ha superficie nem
+ * Servem ao resumo da lateral e a revisão final. Não há superficie nem
  * padding aqui: quem desenha a caixa e o bloco que as contem, e por isso as
- * mesmas linhas cabem tanto no cartao branco da direita quanto dentro do
- * ultimo passo.
+ * mesmas linhas cabem tanto no cartão branco da direita quanto dentro do
+ * último passo.
  */
 
 .lines {
@@ -17,11 +17,11 @@
 }
 
 /*
- * Durante o recalculo, os numeros antigos esmaecem em vez de sumir.
+ * Durante o recálculo, os números antigos esmaecem em vez de sumir.
  *
- * E a diferenca entre "estamos conferindo" e "perdemos a conta". O resumo e
+ * E a diferença entre "estamos conferindo" e "perdemos a conta". O resumo e
  * refeito a cada troca de cidade e de forma de pagamento, e uma coluna que
- * pisca vazia a cada clique faz a tela parecer instavel justamente quando o
+ * pisca vazia a cada clique faz a tela parecer instável justamente quando o
  * cliente esta somando de cabeca.
  */
 .recalculating {
@@ -48,7 +48,7 @@
   white-space: nowrap;
 }
 
-/* A cidade embaixo do rotulo, e nao ao lado: "Entrega" e o que a linha e, e
+/* A cidade embaixo do rótulo, e não ao lado: "Entrega" e o que a linha e, e
    "Juazeiro do Norte" e de onde o valor saiu. */
 .city {
   display: block;
@@ -62,7 +62,7 @@
   color: var(--gold-deep);
 }
 
-/* "a calcular" e o valor desta linha, e nao uma nota de rodape. */
+/* "a calcular" e o valor desta linha, e não uma nota de rodapé. */
 .pending {
   color: var(--ink-soft);
 }
@@ -91,10 +91,10 @@
 }
 
 /*
- * O que falta para o frete gratis.
+ * O que falta para o frete grátis.
  *
- * Sobre a areia, e nao sobre o branco do bloco: e a unica linha que pede uma
- * acao, e a troca de fundo e o que a separa das notas que so explicam.
+ * Sobre a areia, e não sobre o branco do bloco: e a única linha que pede uma
+ * ação, e a troca de fundo e o que a separa das notas que só explicam.
  */
 .freeHint {
   margin: var(--space-16) 0 0;

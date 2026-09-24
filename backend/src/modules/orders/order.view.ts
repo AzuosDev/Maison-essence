@@ -4,7 +4,7 @@ import type { PaymentMethod } from '../../common/enums/payment-method.js';
 import { formatBrazilianPhone } from './phone.js';
 import type { OrderAddress, OrderDocument, OrderItem } from './schemas/order.schema.js';
 
-/** Item do pedido como as telas o leem. Precos congelados, nunca recalculados. */
+/** Item do pedido como as telas o leem. Preços congelados, nunca recalculados. */
 export interface OrderItemView {
   productId: string;
   variantId: string;
@@ -51,18 +51,18 @@ export interface OrderTotalsView {
 
 export interface OrderCustomerView {
   name: string;
-  /** So digitos, como esta gravado: e a chave que liga pedido e cliente. */
+  /** Só digitos, como esta gravado: e a chave que liga pedido e cliente. */
   phone: string;
-  /** `(88) 99999-9999`. Acrescimo para a tela, nunca substituicao. */
+  /** `(88) 99999-9999`. Acrescimo para a tela, nunca substituição. */
   phoneLabel: string;
   email: string;
 }
 
 /**
- * O pedido como quem comprou o ve.
+ * O pedido como quem comprou o vê.
  *
- * Sem `notes`: a anotacao e conversa interna da loja — "cliente pediu para
- * entregar depois das 18h, ja atrasou duas vezes" — e sai so pelo painel.
+ * Sem `notes`: a anotação e conversa interna da loja — "cliente pediu para
+ * entregar depois das 18h, já atrasou duas vezes" — e sai só pelo painel.
  */
 export interface CustomerOrderView {
   id: string;
@@ -79,10 +79,10 @@ export interface CustomerOrderView {
   updatedAt: Date;
 }
 
-/** O mesmo pedido pelo painel, com o que so a loja pode ver. */
+/** O mesmo pedido pelo painel, com o que só a loja pode ver. */
 export interface OrderView extends CustomerOrderView {
   notes: string;
-  /** Quando o cancelamento devolveu o estoque. `null` enquanto nao houve. */
+  /** Quando o cancelamento devolveu o estoque. `null` enquanto não houve. */
   stockRestoredAt: Date | null;
 }
 
@@ -99,12 +99,12 @@ export interface OrderSummaryView {
    * Como o pagamento foi combinado.
    *
    * Entra no resumo porque e o que a dona confere antes de responder no
-   * WhatsApp: um PIX pendente e uma conversa, um cartao em 6x e outra. Sem
+   * WhatsApp: um PIX pendente e uma conversa, um cartão em 6x e outra. Sem
    * ele, a tabela do painel obrigaria a abrir cada pedido para descobrir
    * qual dos dois esta na frente dela.
    */
   payment: OrderPaymentView;
-  /** Quantas unidades, somando as linhas. Nao e o numero de linhas. */
+  /** Quantas unidades, somando as linhas. Não e o número de linhas. */
   itemCount: number;
   totalCents: number;
   createdAt: Date;
@@ -113,14 +113,14 @@ export interface OrderSummaryView {
 /**
  * A resposta de `POST /orders`.
  *
- * `whatsappUrl` e o unico campo que o checkout realmente usa: e para ela que
- * o botao aponta. O pedido vai junto para a tela de confirmacao poder mostrar
+ * `whatsappUrl` e o único campo que o checkout realmente usa: e para ela que
+ * o botão aponta. O pedido vai junto para a tela de confirmação poder mostrar
  * o que foi fechado sem pedir de novo.
  */
 export interface CreatedOrderView {
   orderId: string;
   code: string;
-  /** Vazia quando a loja ainda nao cadastrou o numero do WhatsApp. */
+  /** Vazia quando a loja ainda não cadastrou o número do WhatsApp. */
   whatsappUrl: string;
   order: CustomerOrderView;
 }

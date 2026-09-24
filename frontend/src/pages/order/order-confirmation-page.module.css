@@ -1,9 +1,9 @@
 /*
- * A confirmacao do pedido.
+ * A confirmação do pedido.
  *
  * Uma coluna estreita e centrada, do tamanho de um comprovante. Nada aqui
- * disputa com o codigo do pedido: ele e o unico elemento com fundo proprio, e
- * o unico numero que a pessoa vai precisar repetir.
+ * disputa com o código do pedido: ele e o único elemento com fundo próprio, e
+ * o único número que a pessoa vai precisar repetir.
  */
 
 .page {
@@ -31,9 +31,9 @@
 /*
  * O selo.
  *
- * Dourado, e nao verde: o verde de "sucesso" e do formulario generico, e esta
- * loja tem uma cor propria. O anel de 1px e o mesmo do resto do sistema, e o
- * fundo e o lavado do dourado — o selo pesa pela area, nao pelo contraste.
+ * Dourado, e não verde: o verde de "sucesso" e do formulário genérico, e esta
+ * loja tem uma cor própria. O anel de 1px e o mesmo do resto do sistema, e o
+ * fundo e o lavado do dourado — o selo pesa pela área, não pelo contraste.
  */
 .mark {
   display: grid;
@@ -54,13 +54,13 @@
 }
 
 /*
- * O unico movimento da pagina: o traco do certo se desenhando, uma vez.
+ * O único movimento da página: o traço do certo se desenhando, uma vez.
  *
- * Entra depois do circulo, que e a ordem em que a coisa acontece de verdade —
- * primeiro o selo, depois a marca dentro dele. Curva exponencial: comeca
- * rapido e assenta, em vez de acelerar no fim como um `ease-in` faria.
+ * Entra depois do círculo, que e a ordem em que a coisa acontece de verdade —
+ * primeiro o selo, depois a marca dentro dele. Curva exponencial: começa
+ * rápido e assenta, em vez de acelerar no fim como um `ease-in` faria.
  *
- * Fora de `prefers-reduced-motion: no-preference` nada se move — o traco ja
+ * Fora de `prefers-reduced-motion: no-preference` nada se move — o traço já
  * chega inteiro, porque o estado final do desenho e o estado normal do SVG.
  */
 @media (prefers-reduced-motion: no-preference) {
@@ -117,12 +117,12 @@
 }
 
 /*
- * O codigo, emoldurado.
+ * O código, emoldurado.
  *
- * Fundo proprio e espaco a volta porque ele e a unica coisa desta tela que a
+ * Fundo próprio e espaço a volta porque ele e a única coisa desta tela que a
  * pessoa vai precisar de novo — para achar no WhatsApp, para dizer no
  * telefone, para procurar na conta depois. `user-select: all` faz um toque
- * selecionar o codigo inteiro, sem arrastar o dedo entre os hifens.
+ * selecionar o código inteiro, sem arrastar o dedo entre os hifens.
  */
 .code {
   margin: 0;
@@ -163,11 +163,11 @@
 }
 
 /*
- * A saida de quem teve a aba bloqueada.
+ * A saída de quem teve a aba bloqueada.
  *
- * Menor que a instrucao principal, mas nao apagada: quem precisa desta frase
- * e justamente quem ficou sem a conversa abrir, e uma orientacao de
- * recuperacao nao pode ser o texto menos legivel da tela.
+ * Menor que a instrução principal, mas não apagada: quem precisa desta frase
+ * e justamente quem ficou sem a conversa abrir, e uma orientação de
+ * recuperação não pode ser o texto menos legível da tela.
  */
 .blocked {
   margin: 0;
@@ -179,7 +179,7 @@
   color: var(--ink-soft);
 }
 
-/* ---- A copia a mao --------------------------------------------------------- */
+/* ---- A copia a mão --------------------------------------------------------- */
 
 .manual {
   display: grid;
@@ -220,8 +220,8 @@
 /*
  * Quatro linhas entre dois fios.
  *
- * Sem cartao: um cartao branco sobre o fundo branco da loja seria uma borda a
- * toa, e o resumo nao e um objeto separado — e a continuacao da mesma folha.
+ * Sem cartão: um cartão branco sobre o fundo branco da loja seria uma borda a
+ * toa, e o resumo não e um objeto separado — e a continuação da mesma folha.
  */
 .recap {
   display: grid;
@@ -243,11 +243,11 @@
 }
 
 /*
- * Rotulo em `--ink-soft`, como nas linhas de valores do checkout.
+ * Rótulo em `--ink-soft`, como nas linhas de valores do checkout.
  *
- * `--muted` e o cinza dos rotulos maiusculos de dois centimetros; numa frase
- * de 14px sobre o creme da loja ele nao chega aos 4.5:1 de contraste, e esta
- * e a unica leitura do pedido que a pessoa tem depois de fechar.
+ * `--muted` e o cinza dos rótulos maiusculos de dois centimetros; numa frase
+ * de 14px sobre o creme da loja ele não chega aos 4.5:1 de contraste, e esta
+ * e a única leitura do pedido que a pessoa tem depois de fechar.
  */
 .row dt {
   color: var(--ink-soft);
@@ -275,12 +275,12 @@
 /* ---- O convite da conta ---------------------------------------------------- */
 
 /*
- * O bloco do convite, em area.
+ * O bloco do convite, em área.
  *
- * `--sand`, e nao `--cream`: o creme **e** o fundo da loja, e um bloco creme
- * sobre ele nao existe. A areia e o mesmo fundo que o quadro de valores da
- * revisao usa — e o tom que esta loja reserva para "isto esta separado do
- * resto" —, e ele fecha a pagina no mesmo par com a moldura do codigo la em
+ * `--sand`, e não `--cream`: o creme **e** o fundo da loja, e um bloco creme
+ * sobre ele não existe. A areia e o mesmo fundo que o quadro de valores da
+ * revisão usa — e o tom que esta loja reserva para "isto esta separado do
+ * resto" —, e ele fecha a página no mesmo par com a moldura do código lá em
  * cima.
  */
 .invite {
@@ -324,7 +324,7 @@
   justify-self: center;
 }
 
-/* ---- O pedido que nao esta aqui -------------------------------------------- */
+/* ---- O pedido que não esta aqui -------------------------------------------- */
 
 .notHere {
   justify-items: center;

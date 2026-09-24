@@ -15,16 +15,16 @@ import styles from './store-layout.module.css';
  * A moldura da loja publica.
  *
  * O `StoreSettingsProvider` fica no topo e busca `GET /settings` e
- * `GET /pages` uma vez. Barra de avisos, cabecalho, rodape e o botao do
- * WhatsApp leem do contexto — nenhum deles chama a API por conta propria.
+ * `GET /pages` uma vez. Barra de avisos, cabeçalho, rodapé e o botão do
+ * WhatsApp leem do contexto — nenhum deles chama a API por conta própria.
  *
- * O `Suspense` envolve o `Outlet`, e nao o router inteiro: a troca de pagina
- * mostra o carregamento no miolo, com o cabecalho e o rodape parados no
+ * O `Suspense` envolve o `Outlet`, e não o router inteiro: a troca de página
+ * mostra o carregamento no miolo, com o cabeçalho e o rodapé parados no
  * lugar. Sem ele, cada rota carregada sob demanda apagaria a tela toda por
  * um instante.
  *
- * O `ref` do rodape existe por causa do botao do WhatsApp: e por ele que o
- * botao sabe quando o rodape entrou na tela e sobe para nao cobrir os links.
+ * O `ref` do rodapé existe por causa do botão do WhatsApp: e por ele que o
+ * botão sabe quando o rodapé entrou na tela e sobe para não cobrir os links.
  */
 export function StoreLayout() {
   const footerRef = useRef<HTMLElement>(null);
@@ -46,8 +46,8 @@ export function StoreLayout() {
         <StoreFooter ref={footerRef} />
 
         {/* A gaveta da sacola vive aqui porque quem a abre esta em toda a
-            loja — card, seletor rapido, pagina do produto — e o estado dela
-            mora no store do carrinho. Fechada, nao monta nada. */}
+            loja — card, seletor rápido, página do produto — e o estado dela
+            mora no store do carrinho. Fechada, não monta nada. */}
         <CartDrawer />
         <WhatsappButton avoidRef={footerRef} />
       </div>
@@ -56,21 +56,21 @@ export function StoreLayout() {
 }
 
 /**
- * A chave sob a qual cada posicao de rolagem e guardada.
+ * A chave sob a qual cada posição de rolagem e guardada.
  *
- * O padrao do React Router e `location.key`, que e unico por navegacao —
- * inclusive por `replace`. Aqui a chave e so o caminho, e a diferenca importa
+ * O padrão do React Router e `location.key`, que e único por navegação —
+ * inclusive por `replace`. Aqui a chave e só o caminho, e a diferença importa
  * em dois momentos da vitrine:
  *
- * 1. **Marcar um filtro nao pula para o topo.** Os filtros vivem na query
- *    string e cada clique reescreve a URL. Com a chave padrao, cada reescrita
- *    seria um endereco novo, e o navegador iria para o inicio da pagina — o
+ * 1. **Marcar um filtro não pula para o topo.** Os filtros vivem na query
+ *    string e cada clique reescreve a URL. Com a chave padrão, cada reescrita
+ *    seria um endereço novo, e o navegador iria para o início da página — o
  *    cliente marcaria "em estoque" na barra lateral e perderia o lugar em que
  *    estava. Com o caminho como chave, `/produtos` e `/produtos?estoque=1`
- *    compartilham a posicao e a tela fica parada.
+ *    compartilham a posição e a tela fica parada.
  * 2. **Voltar do produto cai onde se estava.** A ida para `/produtos/asad`
  *    grava a altura de `/produtos`; a volta a encontra. E a metade desta casa
- *    do criterio de aceite — a outra metade e a lista ainda estar em cache,
+ *    do critério de aceite — a outra metade e a lista ainda estar em cache,
  *    para que exista altura onde pousar.
  */
 function scrollKey(location: Location): string {

@@ -4,14 +4,14 @@ import { ORDER_STATUS_VALUES } from '../../../common/enums/order-status.js';
 import type { OrderStatus } from '../../../common/enums/order-status.js';
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from '../orders.constants.js';
 
-/** A busca da tela de pedidos. Tudo opcional, tudo combinavel. */
+/** A busca da tela de pedidos. Tudo opcional, tudo combinável. */
 export class ListOrdersDto {
   @IsOptional()
   @IsIn(ORDER_STATUS_VALUES, { message: 'status inválido' })
   status?: OrderStatus;
 
   /**
-   * Periodo pela data de criacao. `@Type(() => Date)` converte o texto da
+   * Período pela data de criação. `@Type(() => Date)` converte o texto da
    * query string; sem isso, `from=2026-09-01` chegaria como string e
    * reprovaria no `@IsDate`.
    */
@@ -26,11 +26,11 @@ export class ListOrdersDto {
   to?: Date;
 
   /**
-   * Codigo do pedido ou telefone do cliente.
+   * Código do pedido ou telefone do cliente.
    *
-   * Um campo so, e nao dois, porque e assim que a dona procura: ela tem na
-   * mao o que o cliente mandou — `ME-250921-4KP1` colado da conversa, ou os
-   * ultimos digitos do numero que esta ligando — e nao quer decidir em qual
+   * Um campo só, e não dois, porque e assim que a dona procura: ela tem na
+   * mão o que o cliente mandou — `ME-250921-4KP1` colado da conversa, ou os
+   * últimos digitos do número que esta ligando — e não quer decidir em qual
    * caixa digitar.
    */
   @IsOptional()

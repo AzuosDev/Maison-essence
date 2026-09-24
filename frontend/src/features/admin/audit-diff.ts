@@ -8,28 +8,28 @@ import { AUDIT_ACTIONS, type AuditEntry, type FieldChange } from './system.types
  * O servidor grava o que aconteceu em duas formas diferentes, e as duas
  * chegam como `Mixed`:
  *
- * - **`changes`** — `{ campo: { from, to } }`. E o que as configuracoes, o
- *   preco e o status de pedido escrevem.
- * - **`details`** — um objeto livre. `user.created` poe `{ role: 'STAFF' }`;
- *   `user.updated` poe `{ name: 'Rayane' }` e, para o papel,
- *   `{ role: { de, para } }` — em portugues, porque quem escreveu aquela
+ * - **`changes`** — `{ campo: { from, to } }`. E o que as configurações, o
+ *   preço e o status de pedido escrevem.
+ * - **`details`** — um objeto livre. `user.created` põe `{ role: 'STAFF' }`;
+ *   `user.updated` põe `{ name: 'Rayane' }` e, para o papel,
+ *   `{ role: { de, para } }` — em português, porque quem escreveu aquela
  *   linha estava pensando na leitura.
  *
- * Este modulo transforma as duas em uma lista de `DiffLine`, que e o que a
- * tela desenha. E puro e nao importa React de proposito: a parte dificil da
+ * Este módulo transforma as duas em uma lista de `DiffLine`, que e o que a
+ * tela desenha. E puro e não importa React de propósito: a parte difícil da
  * auditoria e entender o que mudou, e isso da para testar sem montar tela.
  *
- * ## O que ele nao faz
+ * ## O que ele não faz
  *
- * Nao esconde nada. A redacao de senha, token e hash acontece no servidor,
- * antes de gravar (`REDACTED_AUDIT_KEY`), e o que chega aqui ja vem com
- * `[redigido]` no lugar do valor. Um segundo filtro aqui daria a impressao
- * de que a protecao e da tela — e a tela e o lugar errado para ela.
+ * Não esconde nada. A redação de senha, token e hash acontece no servidor,
+ * antes de gravar (`REDACTED_AUDIT_KEY`), e o que chega aqui já vem com
+ * `[redigido]` no lugar do valor. Um segundo filtro aqui daria a impressão
+ * de que a proteção e da tela — e a tela e o lugar errado para ela.
  */
 
-/* ---- A acao ------------------------------------------------------------- */
+/* ---- A ação ------------------------------------------------------------- */
 
-/** O que cada acao conhecida diz, na voz de quem le a trilha. */
+/** O que cada ação conhecida diz, na voz de quem lê a trilha. */
 const ACTION_LABELS: Record<string, string> = {
   [AUDIT_ACTIONS.LOGIN_SUCCEEDED]: 'Entrou no painel',
   [AUDIT_ACTIONS.LOGIN_FAILED]: 'Tentativa de entrada recusada',
@@ -46,22 +46,22 @@ const ACTION_LABELS: Record<string, string> = {
 };
 
 /**
- * A acao por extenso.
+ * A ação por extenso.
  *
- * Uma acao que este painel nao conhece volta como o identificador cru — a
+ * Uma ação que este painel não conhece volta como o identificador cru — a
  * trilha guarda dois anos, e e melhor mostrar `estoque.ajustado` do que
- * esconder a linha por nao ter traducao.
+ * esconder a linha por não ter tradução.
  */
 export function describeAction(action: string): string {
   return ACTION_LABELS[action] ?? action;
 }
 
-/** As acoes que o filtro oferece, na ordem em que interessam. */
+/** As ações que o filtro oferece, na ordem em que interessam. */
 export const AUDIT_ACTION_OPTIONS: readonly { value: string; label: string }[] = Object.entries(
   ACTION_LABELS,
 ).map(([value, label]) => ({ value, label }));
 
-/** Acao que merece destaque na lista: recusa de entrada e mexida em dinheiro. */
+/** Ação que merece destaque na lista: recusa de entrada e mexida em dinheiro. */
 export function isSensitive(action: string): boolean {
   return (
     action === AUDIT_ACTIONS.LOGIN_FAILED ||
@@ -77,19 +77,19 @@ export function isSensitive(action: string): boolean {
  * Uma linha do "o que mudou".
  *
  * `from` ausente e o caso do fato solto — `user.created` com o papel — onde
- * nao havia valor anterior. A tela desenha uma seta so quando ha os dois
+ * não havia valor anterior. A tela desenha uma seta só quando há os dois
  * lados.
  */
 export interface DiffLine {
   /** O caminho do campo, como o servidor o gravou: `pickupAddress.city`. */
   path: string;
-  /** O caminho por extenso: "Endereco de retirada · cidade". */
+  /** O caminho por extenso: "Endereço de retirada · cidade". */
   label: string;
   from?: string;
   to: string;
 }
 
-/** Os campos cujo nome tecnico ninguem reconhece. */
+/** Os campos cujo nome técnico ninguém reconhece. */
 const FIELD_LABELS: Record<string, string> = {
   name: 'Nome',
   email: 'E-mail',
@@ -111,9 +111,9 @@ const FIELD_LABELS: Record<string, string> = {
 /**
  * O caminho por extenso.
  *
- * `pickupAddress.city` vira "Endereco de retirada · city": traduz o que
+ * `pickupAddress.city` vira "Endereço de retirada · city": traduz o que
  * conhece, segmento a segmento, e deixa o resto como esta. Inventar uma
- * traducao para cada folha de cada objeto de configuracao seria um dicionario
+ * tradução para cada folha de cada objeto de configuração seria um dicionário
  * que envelhece sozinho; o segmento cru ainda responde a pergunta.
  */
 export function describeField(path: string): string {
@@ -126,18 +126,18 @@ export function describeField(path: string): string {
 /**
  * Um valor como ele aparece na tela.
  *
- * Os papeis e os status de pedido chegam como constante — `STAFF`,
- * `PENDING_CONTACT` — e sao justamente os que mais aparecem na trilha. Os
- * dois dicionarios que o resto do painel ja usa traduzem, e a trilha fica
- * lendo igual ao que a dona ve nas outras telas.
+ * Os papéis e os status de pedido chegam como constante — `STAFF`,
+ * `PENDING_CONTACT` — e são justamente os que mais aparecem na trilha. Os
+ * dois dicionários que o resto do painel já usa traduzem, e a trilha fica
+ * lendo igual ao que a dona vê nas outras telas.
  */
 /**
- * As constantes que aparecem na trilha, ja traduzidas.
+ * As constantes que aparecem na trilha, já traduzidas.
  *
- * Papel e status de pedido chegam como `STAFF` e `PENDING_CONTACT`, e sao os
- * dois valores que mais aparecem. Montado a partir dos mesmos dicionarios que
- * o resto do painel usa: a trilha le igual ao que a dona ve nas outras telas,
- * e um rotulo novo em pedidos chega aqui sem ninguem lembrar de copiar.
+ * Papel e status de pedido chegam como `STAFF` e `PENDING_CONTACT`, e são os
+ * dois valores que mais aparecem. Montado a partir dos mesmos dicionários que
+ * o resto do painel usa: a trilha lê igual ao que a dona vê nas outras telas,
+ * e um rótulo novo em pedidos chega aqui sem ninguém lembrar de copiar.
  */
 const VALUE_LABELS: Record<string, string> = { ...ROLE_LABELS, ...ORDER_STATUS_LABELS };
 
@@ -161,7 +161,7 @@ export function describeValue(value: unknown): string {
   return JSON.stringify(value);
 }
 
-/** `{ from, to }` do backend, ou `{ de, para }` do registro de usuario. */
+/** `{ from, to }` do backend, ou `{ de, para }` do registro de usuário. */
 function asChange(value: unknown): FieldChange | null {
   if (typeof value !== 'object' || value === null || Array.isArray(value)) {
     return null;
@@ -183,10 +183,10 @@ function asChange(value: unknown): FieldChange | null {
 /**
  * O que mudou, pronto para desenhar.
  *
- * Le `changes` primeiro e `details` depois, porque e essa a ordem de
- * importancia: `changes` e o diff de verdade, `details` e o contexto. Uma
+ * Lê `changes` primeiro e `details` depois, porque e essa a ordem de
+ * importância: `changes` e o diff de verdade, `details` e o contexto. Uma
  * entrada sem nenhum dos dois — o login, por exemplo — devolve lista vazia,
- * e a tela mostra so a acao. Nao ha o que explicar em "entrou no painel".
+ * e a tela mostra só a ação. Não há o que explicar em "entrou no painel".
  */
 export function diffOf(entry: Pick<AuditEntry, 'changes' | 'details'>): DiffLine[] {
   return [...linesFrom(entry.changes), ...linesFrom(entry.details)];

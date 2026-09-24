@@ -4,8 +4,8 @@ import { CatalogView } from './catalog-view';
 /**
  * A vitrine inteira: `/produtos`.
  *
- * Tres linhas porque e so isto que a distingue das outras listagens — o
- * titulo e o fio de pao. Filtros, ordenacao, paginacao, grade e vazio sao os
+ * Três linhas porque e só isto que a distingue das outras listagens — o
+ * título e o fio de pão. Filtros, ordenação, paginação, grade e vazio são os
  * mesmos de `/categorias/:slug` e de `/busca`, e moram em `CatalogView`.
  */
 export default function ProductsPage() {

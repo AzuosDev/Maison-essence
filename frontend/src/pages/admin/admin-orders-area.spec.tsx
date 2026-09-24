@@ -10,20 +10,20 @@ import AdminOrderPage from './admin-order-page';
 import AdminOrdersPage from './admin-orders-page';
 
 /**
- * A area de pedidos do painel.
+ * A área de pedidos do painel.
  *
- * O que estes casos cobram sao os criterios de aceite do prompt, e nao a
- * marcacao das telas:
+ * O que estes casos cobram são os critérios de aceite do prompt, e não a
+ * marcação das telas:
  *
- * - **o STAFF nao ve preco**, nem na lista nem no detalhe;
- * - **o recorte mora no endereco**, e o card da abertura do painel consegue
+ * - **o STAFF não vê preço**, nem na lista nem no detalhe;
+ * - **o recorte mora no endereço**, e o card da abertura do painel consegue
  *   apontar para um filtro;
  * - **mudar o status reflete** — a chamada sai com o valor escolhido;
- * - **cancelar pede confirmacao nomeando o pedido**, e nao acontece por
+ * - **cancelar pede confirmação nomeando o pedido**, e não acontece por
  *   engano.
  *
- * A sessao e escrita direto no store, como nos outros casos do painel: o que
- * esta em teste e a tela, e nao a entrada.
+ * A sessão e escrita direto no store, como nos outros casos do painel: o que
+ * esta em teste e a tela, e não a entrada.
  */
 
 const SUMMARY = {
@@ -95,7 +95,7 @@ const ORDER = {
   updatedAt: '2026-09-22T12:00:00.000Z',
 };
 
-/** As chamadas que sairam, para os casos que perguntam o que foi pedido. */
+/** As chamadas que saíram, para os casos que perguntam o que foi pedido. */
 let calls: { url: string; method: string; body: string }[] = [];
 
 function jsonResponse(body: unknown): Response {
@@ -108,9 +108,9 @@ function jsonResponse(body: unknown): Response {
 beforeEach(() => {
   calls = [];
 
-  // O jsdom nao tem `matchMedia`. Sem ele, a tabela se desenha como cards de
+  // O jsdom não tem `matchMedia`. Sem ele, a tabela se desenha como cards de
   // celular; a largura de desktop e a que tem colunas, e e nas colunas que a
-  // ausencia do total significa alguma coisa.
+  // ausência do total significa alguma coisa.
   vi.stubGlobal('matchMedia', (query: string) => ({
     matches: query.includes('min-width'),
     media: query,
@@ -168,8 +168,8 @@ function signInAs(role: UserRole): void {
 /**
  * Monta as duas telas sem a moldura do painel.
  *
- * O guarda de sessao e o menu ja tem os casos deles em `admin-home-page`.
- * Aqui interessa o conteudo, e a moldura so acrescentaria links com os
+ * O guarda de sessão e o menu já tem os casos deles em `admin-home-page`.
+ * Aqui interessa o conteúdo, e a moldura só acrescentaria links com os
  * mesmos nomes dos que estes casos procuram.
  */
 function abrir(path: string) {
@@ -192,7 +192,7 @@ function abrir(path: string) {
   );
 }
 
-/** O ultimo `GET` da listagem. */
+/** O último `GET` da listagem. */
 function lastListCall(): string {
   return calls.findLast((call) => call.method === 'GET')?.url ?? '';
 }
@@ -233,8 +233,8 @@ test('o endereço com filtro vira consulta filtrada', async () => {
 
   expect(lastListCall()).toContain('status=PENDING_CONTACT');
 
-  // E a pilula correspondente aparece escolhida, para que o recorte nao
-  // fique invisivel na tela.
+  // E a pílula correspondente aparece escolhida, para que o recorte não
+  // fique invisível na tela.
   expect(
     screen.getByRole('button', { name: 'Aguardando contato' }).getAttribute('aria-pressed'),
   ).toBe('true');
@@ -284,7 +284,7 @@ test('o detalhe mostra o pedido, o endereço e a mensagem enviada', async () => 
   expect(screen.getByText(/Rua das Flores, 120/)).toBeDefined();
   expect(screen.getByText(/Asad 100ml x2/)).toBeDefined();
 
-  // O total do pedido, e nao o subtotal: e o numero conferido contra o
+  // O total do pedido, e não o subtotal: e o número conferido contra o
   // comprovante.
   expect(screen.getByText('R$ 389,80')).toBeDefined();
 });
@@ -296,7 +296,7 @@ test('o STAFF abre o pedido sem nenhum valor', async () => {
 
   expect(await screen.findByRole('heading', { name: 'ME-260922-K4P1' })).toBeDefined();
 
-  // O item continua la, com a quantidade — e o que se confere ao separar.
+  // O item continua lá, com a quantidade — e o que se confere ao separar.
   expect(screen.getByText('Asad')).toBeDefined();
   expect(screen.getByText('2 unidades')).toBeDefined();
 
@@ -343,8 +343,8 @@ test('cancelar pede confirmação nomeando o pedido antes de qualquer chamada', 
 
   await user.click(await screen.findByRole('button', { name: /Cancelar pedido/ }));
 
-  // O codigo do pedido aparece no dialogo: e ele que se confere, e nao a
-  // frase "tem certeza?", que ninguem le.
+  // O código do pedido aparece no diálogo: e ele que se confere, e não a
+  // frase "tem certeza?", que ninguém lê.
   const dialog = await screen.findByRole('dialog');
 
   expect(dialog.textContent).toContain('ME-260922-K4P1');

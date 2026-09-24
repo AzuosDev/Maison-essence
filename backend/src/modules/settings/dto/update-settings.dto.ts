@@ -22,18 +22,18 @@ import { PickupAddressDto } from './pickup-address.dto.js';
 import { SocialLinksDto } from './social-links.dto.js';
 
 /**
- * Edicao das configuracoes da loja. Campo omitido fica como esta.
+ * Edição das configurações da loja. Campo omitido fica como esta.
  *
- * Tres comportamentos convivem neste corpo, e a diferenca entre eles e
+ * Três comportamentos convivem neste corpo, e a diferença entre eles e
  * deliberada:
  *
  * - campo simples: o valor recebido substitui o gravado;
- * - `pickupAddress` e `socialLinks`: fusao campo a campo, porque a tela manda
- *   so o que a dona mexeu;
- * - `banners`: substituicao do array inteiro, porque e uma lista ordenavel —
- *   o que sumiu dela foi removido de proposito;
- * - `institutionalPages`: atualizacao por `slug`, porque as cinco paginas
- *   existem sempre e cada uma e editada na sua propria tela.
+ * - `pickupAddress` e `socialLinks`: fusão campo a campo, porque a tela manda
+ *   só o que a dona mexeu;
+ * - `banners`: substituição do array inteiro, porque e uma lista ordenável —
+ *   o que sumiu dela foi removido de propósito;
+ * - `institutionalPages`: atualização por `slug`, porque as cinco páginas
+ *   existem sempre e cada uma e editada na sua própria tela.
  */
 export class UpdateSettingsDto {
   @IsOptional()
@@ -61,7 +61,7 @@ export class UpdateSettingsDto {
   @MaxLength(160)
   contactEmail?: string;
 
-  /** Texto livre: "Seg a Sex, 9h as 18h". Nao vale a pena modelar em campos. */
+  /** Texto livre: "Seg a Sex, 9h as 18h". Não vale a pena modelar em campos. */
   @IsOptional()
   @IsString()
   @MaxLength(200)
@@ -87,9 +87,9 @@ export class UpdateSettingsDto {
   socialLinks?: SocialLinksDto;
 
   /**
-   * Frete gratis acima deste valor, em qualquer cidade. `null` desliga a
-   * regra, e a cidade que tiver minimo proprio ignora este aqui — a regra da
-   * cidade tem precedencia (ver `delivery-fee.ts`).
+   * Frete grátis acima deste valor, em qualquer cidade. `null` desliga a
+   * regra, e a cidade que tiver mínimo próprio ignora este aqui — a regra da
+   * cidade tem precedência (ver `delivery-fee.ts`).
    */
   @IsOptional()
   @IsInt({ message: 'o mínimo para frete grátis deve ser um inteiro em centavos' })

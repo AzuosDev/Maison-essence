@@ -12,18 +12,18 @@ import CartPage from './cart-page';
 /**
  * A sacola contra a API.
  *
- * Os criterios de aceite escritos como codigo, e os tres sao do tipo que uma
- * revisao visual nao pega:
+ * Os critérios de aceite escritos como código, e os três são do tipo que uma
+ * revisão visual não pega:
  *
- * 1. **Quem soma e o servidor.** Uma tela que multiplica preco por
- *    quantidade no navegador parece correta em qualquer captura e so erra no
+ * 1. **Quem soma e o servidor.** Uma tela que multiplica preço por
+ *    quantidade no navegador parece correta em qualquer captura e só erra no
  *    carrinho que ganhou desconto por quantidade — ou seja, no maior deles.
  *    O caso confere o que foi **pedido** ao servidor e o que foi **exibido**,
- *    e o total exibido e um numero que nenhuma conta local produziria.
+ *    e o total exibido e um número que nenhuma conta local produziria.
  * 2. **A sacola sobrevive ao navegador fechado.** Testado no
  *    `localStorage`: o que foi gravado e o que volta.
- * 3. **O produto desativado aparece como indisponivel.** A segunda cotacao
- *    devolve a linha marcada, sem que ninguem tenha recarregado nada.
+ * 3. **O produto desativado aparece como indisponível.** A segunda cotação
+ *    devolve a linha marcada, sem que ninguém tenha recarregado nada.
  */
 
 vi.mock('@/lib/env', () => ({
@@ -41,7 +41,7 @@ const CONFIGURACOES = {
   contactEmail: '',
   businessHours: '',
   socialLinks: { instagram: '', tiktok: '' },
-  // Ligada: e o que permite a cotacao sair sem escolher cidade nenhuma.
+  // Ligada: e o que permite a cotação sair sem escolher cidade nenhuma.
   pickupEnabled: true,
   pickupAddress: null,
   pickupInstructions: '',
@@ -49,7 +49,7 @@ const CONFIGURACOES = {
   banners: [],
 };
 
-/** Uma linha cotada, com os campos que a tela le. */
+/** Uma linha cotada, com os campos que a tela lê. */
 function itemCotado(overrides: Record<string, unknown> = {}) {
   return {
     productId: 'p1',
@@ -110,7 +110,7 @@ function jsonResponse(body: unknown): Response {
   });
 }
 
-/** As cotacoes que o servidor vai devolver, em ordem. A ultima se repete. */
+/** As cotações que o servidor vai devolver, em ordem. A última se repete. */
 let quotesToServe: unknown[] = [];
 
 /** Os corpos que a tela mandou para `POST /cart/quote`. */
@@ -185,7 +185,7 @@ function comUmItem(quantity = 1) {
   });
 }
 
-/** O total, lido do bloco de resumo e nao de qualquer "R$" da tela. */
+/** O total, lido do bloco de resumo e não de qualquer "R$" da tela. */
 async function totalExibido(): Promise<string> {
   const resumo = screen.getByRole('complementary', { name: 'Resumo do pedido' });
 
@@ -197,10 +197,10 @@ test('editar a quantidade recalcula o total pelo servidor, e não pelo navegador
 
   comUmItem(1);
 
-  // A segunda cotacao devolve um total que **nenhuma** conta local
+  // A segunda cotação devolve um total que **nenhuma** conta local
   // produziria a partir da primeira: 3 x R$ 189,90 daria R$ 569,70, e o
   // servidor responde R$ 512,73 (10% de desconto por quantidade). Se a tela
-  // estivesse multiplicando por conta propria, ela mostraria o numero
+  // estivesse multiplicando por conta própria, ela mostraria o número
   // errado — e o teste falha.
   quotesToServe = [
     cotacao([itemCotado()]),
@@ -259,7 +259,7 @@ test('o debounce junta a rajada de cliques em uma cotação só', async () => {
     { timeout: 3000 },
   );
 
-  // Quatro cliques, duas cotacoes: a da abertura e a do valor final. Sem o
+  // Quatro cliques, duas cotações: a da abertura e a do valor final. Sem o
   // atraso, seriam quatro.
   expect(quoteRequests.length).toBeLessThanOrEqual(2);
 });
@@ -276,10 +276,10 @@ test('fechar e reabrir o navegador mantem os itens', () => {
 });
 
 /**
- * A regra que governa o modulo inteiro, conferida no armazenamento.
+ * A regra que governa o módulo inteiro, conferida no armazenamento.
  *
- * Nao basta a tela mostrar o preco certo: ela nao pode ter deixado um preco
- * para tras. `18990` nao aparece em nada do que foi gravado.
+ * Não basta a tela mostrar o preço certo: ela não pode ter deixado um preço
+ * para trás. `18990` não aparece em nada do que foi gravado.
  */
 test('nenhum preço atravessa o localStorage', async () => {
   comUmItem(1);
@@ -301,9 +301,9 @@ test('um produto desativado no painel aparece como indisponível na sacola abert
 
   comUmItem(1);
 
-  // A primeira cotacao traz o item normal; a segunda — depois de a dona
-  // desativar o produto — traz a mesma linha marcada. Ninguem recarregou a
-  // pagina: foi a propria sacola que recotou ao mexer na quantidade.
+  // A primeira cotação traz o item normal; a segunda — depois de a dona
+  // desativar o produto — traz a mesma linha marcada. Ninguém recarregou a
+  // página: foi a própria sacola que recotou ao mexer na quantidade.
   quotesToServe = [
     cotacao([itemCotado()]),
     cotacao([
@@ -311,7 +311,7 @@ test('um produto desativado no painel aparece como indisponível na sacola abert
         quantity: 2,
         lineTotalCents: 0,
         unavailable: true,
-        unavailableReason: 'Este produto saiu do catalogo.',
+        unavailableReason: 'Este produto saiu do catálogo.',
       }),
     ]),
   ];
@@ -328,20 +328,20 @@ test('um produto desativado no painel aparece como indisponível na sacola abert
   const aviso = await screen.findByText('Um item saiu da sacola', undefined, { timeout: 3000 });
   const bloco = aviso.parentElement as HTMLElement;
 
-  expect(within(bloco).getByText(/Este produto saiu do catalogo/)).toBeTruthy();
+  expect(within(bloco).getByText(/Este produto saiu do catálogo/)).toBeTruthy();
 
-  // O item continua visivel — quem o escolheu precisa reconhece-lo para
+  // O item continua visível — quem o escolheu precisa reconhece-lo para
   // decidir — e fora do total.
   expect(screen.getByText('Fora do total')).toBeTruthy();
   expect(await totalExibido()).toBe('R$ 0,00');
 
-  // E ha como tira-lo dali.
+  // E há como tira-lo dali.
   await usuario.click(within(bloco).getByRole('button', { name: 'Remover o item' }));
 
   expect(useCart.getState().lines).toHaveLength(0);
 });
 
-test('a sacola vazia oferece o caminho de volta ao catalogo', () => {
+test('a sacola vazia oferece o caminho de volta ao catálogo', () => {
   abrirSacola();
 
   expect(screen.getByText('Sua sacola esta vazia')).toBeTruthy();
@@ -349,7 +349,7 @@ test('a sacola vazia oferece o caminho de volta ao catalogo', () => {
     '/produtos',
   );
 
-  // Sem itens, nenhuma cotacao e pedida: a rota recusa sacola vazia.
+  // Sem itens, nenhuma cotação e pedida: a rota recusa sacola vazia.
   expect(quoteRequests).toHaveLength(0);
 });
 

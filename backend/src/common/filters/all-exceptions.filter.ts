@@ -19,7 +19,7 @@ type NormalizedError = Pick<
   'statusCode' | 'message' | 'error' | 'details'
 >;
 
-/** Corpo maior que o teto: a mensagem diz o teto, porque ele e corrigivel. */
+/** Corpo maior que o teto: a mensagem diz o teto, porque ele e corrigível. */
 export const BODY_TOO_LARGE_MESSAGE = `O corpo da requisição passa do limite de ${MAX_BODY_SIZE}.`;
 
 /** Corpo que nem chegou a ser um JSON. */
@@ -109,15 +109,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
  * O erro do parser de corpo, traduzido para o formato da API.
  *
  * O `body-parser` roda como middleware do Express, antes de o Nest existir na
- * requisicao: o que ele lanca e um `Error` comum com `status`, e nao uma
- * `HttpException`. Sem esta traducao, o corpo de 300 KB — que o teto de
- * `MAX_BODY_SIZE` acabou de recusar de proposito — voltava como 500 "Erro
- * interno do servidor", com a pilha inteira no log em nivel de erro: a defesa
+ * requisição: o que ele lança e um `Error` comum com `status`, e não uma
+ * `HttpException`. Sem esta tradução, o corpo de 300 KB — que o teto de
+ * `MAX_BODY_SIZE` acabou de recusar de propósito — voltava como 500 "Erro
+ * interno do servidor", com a pilha inteira no log em nível de erro: a defesa
  * funcionando, mas se anunciando como falha do servidor e escondendo de quem
- * chamou a unica informacao util, que e o tamanho.
+ * chamou a única informação útil, que e o tamanho.
  *
- * Nao vira 500 nenhum erro de fora dessa faixa: so o que ja carrega um status
- * de cliente (4xx) e reaproveitado, e o resto segue para o tratamento padrao.
+ * Não vira 500 nenhum erro de fora dessa faixa: só o que já carrega um status
+ * de cliente (4xx) e reaproveitado, e o resto segue para o tratamento padrão.
  */
 function parsingError(exception: unknown): NormalizedError | null {
   if (typeof exception !== 'object' || exception === null) {
@@ -144,7 +144,7 @@ function parsingError(exception: unknown): NormalizedError | null {
   }
 
   // `entity.parse.failed`, `encoding.unsupported` e os outros do body-parser:
-  // todos sao corpo malformado, e nenhum melhora com a mensagem interna do
+  // todos são corpo malformado, e nenhum melhora com a mensagem interna do
   // pacote, que fala de stream e de charset.
   return typeof type === 'string'
     ? {
@@ -156,12 +156,12 @@ function parsingError(exception: unknown): NormalizedError | null {
 }
 
 /**
- * Regra de dominio recusada pelo schema vira 422, e nao 500.
+ * Regra de domínio recusada pelo schema vira 422, e não 500.
  *
  * Nem toda regra cabe no DTO: "o produto precisa de ao menos uma variante" e
- * "o preco de comparacao precisa ser maior que o de venda" valem tambem para
- * o seed e para um script de manutencao, e por isso moram no schema. As
- * mensagens ja estao em portugues la — aqui elas so ganham o status certo e
+ * "o preço de comparação precisa ser maior que o de venda" valem também para
+ * o seed e para um script de manutenção, e por isso moram no schema. As
+ * mensagens já estão em português lá — aqui elas só ganham o status certo e
  * o caminho do campo, que diz qual variante da lista reprovou.
  */
 function validationMessages(exception: MongooseError.ValidationError): string[] {

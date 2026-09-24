@@ -1,9 +1,9 @@
 /*
- * A moldura de um campo: rotulo em cima, controle, ajuda ou erro embaixo.
+ * A moldura de um campo: rótulo em cima, controle, ajuda ou erro embaixo.
  *
- * Nao e um primitivo — e o que Input, Select e Textarea tem igual. Mora
- * separado para que os tres nao escrevam tres vezes a mesma regra de
- * espacamento e de cor de erro, e para que mudar o rotulo mude os tres.
+ * Não e um primitivo — e o que Input, Select e Textarea tem igual. Mora
+ * separado para que os três não escrevam três vezes a mesma regra de
+ * espacamento e de cor de erro, e para que mudar o rótulo mude os três.
  */
 
 .field {
@@ -27,10 +27,10 @@
 }
 
 /*
- * O asterisco de obrigatorio.
+ * O asterisco de obrigatório.
  *
- * `aria-hidden` no markup: o leitor de tela ja anuncia "obrigatorio" pelo
- * `required` do proprio campo, e repetir viraria "asterisco obrigatorio".
+ * `aria-hidden` no markup: o leitor de tela já anuncia "obrigatório" pelo
+ * `required` do próprio campo, e repetir viraria "asterisco obrigatório".
  */
 .required {
   margin-left: var(--space-4);
@@ -53,11 +53,11 @@
 }
 
 /*
- * A base visual dos tres controles.
+ * A base visual dos três controles.
  *
- * Fica aqui, e nao em cada modulo, porque um campo de texto com borda
- * diferente da do seletor ao lado e o tipo de desalinhamento que ninguem
- * consegue nomear mas todo mundo ve.
+ * Fica aqui, e não em cada módulo, porque um campo de texto com borda
+ * diferente da do seletor ao lado e o tipo de desalinhamento que ninguém
+ * consegue nomear mas todo mundo vê.
  */
 .control {
   width: 100%;
@@ -96,11 +96,11 @@
 }
 
 /*
- * Invalido: borda vermelha e um fundo levemente tingido.
+ * Inválido: borda vermelha e um fundo levemente tingido.
  *
- * Os dois juntos porque so a cor nao basta — quem nao distingue vermelho de
+ * Os dois juntos porque só a cor não basta — quem não distingue vermelho de
  * cinza precisa de outro sinal, e por isso a mensagem de erro embaixo e
- * texto, e nao so um contorno.
+ * texto, e não só um contorno.
  */
 .control[aria-invalid='true'] {
   border-color: var(--danger);

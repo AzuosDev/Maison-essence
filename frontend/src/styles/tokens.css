@@ -1,16 +1,16 @@
 /*
  * Os tokens da Maison Essence.
  *
- * Esta e a unica definicao de cor, fonte, espaco, raio, sombra e duracao da
+ * Esta e a única definição de cor, fonte, espaço, raio, sombra e duração da
  * loja. Componente nenhum escreve `#0E0E0E` ou `24px` direto: escreve
- * `var(--ink)` e `var(--space-24)`. A regra nao e estetica — e o que permite
- * ajustar o creme do fundo em um lugar so, em vez de cacar o hexadecimal em
+ * `var(--ink)` e `var(--space-24)`. A regra não e estética — e o que permite
+ * ajustar o creme do fundo em um lugar só, em vez de cacar o hexadecimal em
  * quarenta arquivos de CSS Module.
  *
- * Os valores vem do design system extraido do mockup e nao devem ser
- * reinventados por tela nenhuma. Os poucos tokens que nao estao na
- * especificacao — o veu do modal, a base do skeleton — sao derivados dos que
- * estao, e a derivacao esta escrita ao lado de cada um: nenhuma cor nova
+ * Os valores vem do design system extraido do mockup e não devem ser
+ * reinventados por tela nenhuma. Os poucos tokens que não estão na
+ * especificação — o véu do modal, a base do skeleton — são derivados dos que
+ * estão, e a derivação esta escrita ao lado de cada um: nenhuma cor nova
  * entrou no sistema.
  */
 
@@ -18,9 +18,9 @@
   /* ---- Cor ------------------------------------------------------------ */
 
   /*
-   * Diz ao navegador em que tema ele esta, e nao e decorativo: e o que pinta
-   * a barra de rolagem, o cursor de texto, o calendario do `<input type=date>`
-   * e o menu do `<select>` — superficies que nenhum CSS nosso alcanca. Sem
+   * Diz ao navegador em que tema ele esta, e não e decorativo: e o que pinta
+   * a barra de rolagem, o cursor de texto, o calendário do `<input type=date>`
+   * e o menu do `<select>` — superficies que nenhum CSS nosso alcança. Sem
    * ele, o tema escuro sai com uma barra de rolagem branca do lado.
    */
   color-scheme: light;
@@ -40,16 +40,16 @@
   /*
    * Os nomes antigos das duas cores de fundo, agora apelidos.
    *
-   * `--cream` e `--sand` estao escritos em umas quarenta folhas e continuam
+   * `--cream` e `--sand` estão escritos em umas quarenta folhas e continuam
    * valendo; o que mudou e que o valor deles mora em `--bg` e `--bg-alt`, que
-   * sao os nomes que o tema escuro usa. Trocar quarenta arquivos para
-   * renomear uma variavel seria muito risco por nenhum ganho.
+   * são os nomes que o tema escuro usa. Trocar quarenta arquivos para
+   * renomear uma variável seria muito risco por nenhum ganho.
    *
-   * `var()` resolve na hora do uso, e nao aqui: quando o bloco escuro redefine
+   * `var()` resolve na hora do uso, e não aqui: quando o bloco escuro redefine
    * `--bg`, `--cream` acompanha sozinho. E o que faz o tema inteiro virar sem
    * que nenhum componente saiba que existe tema.
    *
-   * Em codigo novo, prefira `--bg` e `--bg-alt`: "creme" e o nome de uma cor,
+   * Em código novo, prefira `--bg` e `--bg-alt`: "creme" e o nome de uma cor,
    * e no escuro o valor e quase preto.
    */
   --cream: var(--bg);
@@ -58,54 +58,54 @@
   /*
    * ---- Onde cada cor pode ser texto -----------------------------------
    *
-   * Os numeros sao o contraste sobre o creme, que e o fundo da loja. A regra
+   * Os números são o contraste sobre o creme, que e o fundo da loja. A regra
    * da WCAG e 4.5:1 para texto normal e 3:1 para texto grande (>=18px) e para
-   * elemento grafico — icone, filete, borda.
+   * elemento grafico — ícone, filete, borda.
    *
    *   --ink        18.06:1  qualquer texto
    *   --ink-soft   10.64:1  qualquer texto
    *   --success     4.68:1  qualquer texto
    *   --danger      6.12:1  qualquer texto
-   *   --muted       3.44:1  SO texto >=18px, ou grafico
-   *   --gold-deep   3.66:1  SO texto >=18px, ou grafico
-   *   --gold        2.33:1  NUNCA texto. So preenchimento, filete e borda.
+   *   --muted       3.44:1  SÓ texto >=18px, ou grafico
+   *   --gold-deep   3.66:1  SÓ texto >=18px, ou grafico
+   *   --gold        2.33:1  NUNCA texto. Só preenchimento, filete e borda.
    *
    * Sobre o preto a conta e outra e se inverte: ali `--muted` da 5.25:1 e e o
-   * cinza legitimo do rodape. O que nao pode e o de 12px sobre o creme.
+   * cinza legitimo do rodapé. O que não pode e o de 12px sobre o creme.
    *
-   * Na pratica: rotulo de 12px pede `--ink-soft`, nao `--muted`. A hierarquia
-   * entre um rotulo e um titulo se faz com corpo, peso e caixa — nao apagando
-   * a cor ate o texto sair do alcance de quem le.
+   * Na prática: rótulo de 12px pede `--ink-soft`, não `--muted`. A hierarquia
+   * entre um rótulo e um título se faz com corpo, peso e caixa — não apagando
+   * a cor até o texto sair do alcance de quem lê.
    */
 
-  /* O verde oficial do WhatsApp, no botao flutuante. Nao e token de marca:
+  /* O verde oficial do WhatsApp, no botão flutuante. Não e token de marca:
      e a cor do canal, e muda se o canal mudar. */
   --whatsapp: #25d366;
 
   /*
    * ---- A laje ----------------------------------------------------------
    *
-   * O bloco escuro que corta a pagina: o rodape, a barra de avisos, a
+   * O bloco escuro que corta a página: o rodapé, a barra de avisos, a
    * assinatura da marca, a sidebar do painel e a tela de entrada dele.
    *
-   * Par proprio, e nao `--ink` com `--cream` em cima, por causa do tema
+   * Par próprio, e não `--ink` com `--cream` em cima, por causa do tema
    * escuro. `--ink` e primeiro plano e inverte: no escuro ele fica claro, e
-   * quem pintasse o rodape com ele teria uma laje **clara** de ponta a ponta
-   * no pe de uma pagina escura — que e exatamente o brilho que quem escolhe
+   * quem pintasse o rodapé com ele teria uma laje **clara** de ponta a ponta
+   * no pé de uma página escura — que e exatamente o brilho que quem escolhe
    * tema escuro esta tentando evitar. A laje escurece nos dois temas; o que
-   * muda e a relacao com a pagina: no claro ela e o preto contra o creme, no
-   * escuro e um degrau acima do fundo, para continuar sendo um bloco e nao
+   * muda e a relação com a página: no claro ela e o preto contra o creme, no
+   * escuro e um degrau acima do fundo, para continuar sendo um bloco e não
    * sumir dentro dele.
    *
-   * Nao confunda com o botao primario, o selo e o chip selecionado: aqueles
-   * sao pequenos, continuam em `--ink`/`--cream` e invertem de proposito —
-   * botao claro sobre pagina escura e o que se espera ali.
+   * Não confunda com o botão primário, o selo e o chip selecionado: aqueles
+   * são pequenos, continuam em `--ink`/`--cream` e invertem de propósito —
+   * botão claro sobre página escura e o que se espera ali.
    */
   --slab: #0e0e0e;
   --slab-ink: #faf7f2;
 
-  /* Painel administrativo. Fundo proprio, frio, para que o operador saiba
-     pelo canto do olho que nao esta na loja. */
+  /* Painel administrativo. Fundo próprio, frio, para que o operador saiba
+     pelo canto do olho que não esta na loja. */
   --admin-bg: #f6f5fb;
   --admin-sidebar: var(--slab);
   --admin-active: rgb(192 160 98 / 0.14);
@@ -113,22 +113,22 @@
   --admin-item-border: 3px;
 
   /* ---- Cores derivadas -------------------------------------------------
-     Nao sao cores novas: sao as da paleta com transparencia, para os usos
+     Não são cores novas: são as da paleta com transparência, para os usos
      que precisam deixar o fundo aparecer.
 
-     Escritas com `color-mix` sobre o token, e nao com o hexadecimal dele
-     repetido dentro de um `rgb()`. A diferenca so aparece no tema escuro:
+     Escritas com `color-mix` sobre o token, e não com o hexadecimal dele
+     repetido dentro de um `rgb()`. A diferença só aparece no tema escuro:
      `--success` muda de #2e7d5b para #4caf82, e o `rgb(46 125 91 / 0.1)`
-     escrito a mao continuaria sendo o verde do tema claro — um fundo de
-     aviso da cor errada, que ninguem nota porque e quase transparente. */
+     escrito a mão continuaria sendo o verde do tema claro — um fundo de
+     aviso da cor errada, que ninguém nota porque e quase transparente. */
 
   /*
-   * O veu atras do modal e da gaveta.
+   * O véu atrás do modal e da gaveta.
    *
-   * Valor literal, e nao `var(--ink)`: `--ink` e o primeiro plano e inverte
-   * com o tema, e um veu claro sobre uma pagina escura ilumina em vez de
-   * apagar. O veu e sempre escuro, nos dois temas — o que muda e a forca,
-   * porque meio preto sobre uma pagina que ja e quase preta nao separa plano
+   * Valor literal, e não `var(--ink)`: `--ink` e o primeiro plano e inverte
+   * com o tema, e um véu claro sobre uma página escura ilumina em vez de
+   * apagar. O véu e sempre escuro, nos dois temas — o que muda e a força,
+   * porque meio preto sobre uma página que já e quase preta não separa plano
    * nenhum (ver o bloco escuro).
    */
   --overlay: rgb(14 14 14 / 0.5);
@@ -136,7 +136,7 @@
   /* Realce de linha, item de lista sob o cursor: o dourado quase apagado. */
   --gold-wash: color-mix(in srgb, var(--gold) 12%, transparent);
 
-  /* Fundo de aviso e de erro, para o toast e a mensagem de formulario. */
+  /* Fundo de aviso e de erro, para o toast e a mensagem de formulário. */
   --success-wash: color-mix(in srgb, var(--success) 10%, transparent);
   --danger-wash: color-mix(in srgb, var(--danger) 8%, transparent);
 
@@ -145,15 +145,15 @@
   --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'Jost', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-  /* Identificador que se le caractere a caractere: e-mail em confirmacao de
-     acao destrutiva, senha temporaria, id de requisicao na auditoria. A pilha
-     do sistema, sem webfont: sao trechos curtos e raros, e baixar uma quarta
+  /* Identificador que se lê caractere a caractere: e-mail em confirmação de
+     ação destrutiva, senha temporária, id de requisição na auditoria. A pilha
+     do sistema, sem webfont: são trechos curtos e raros, e baixar uma quarta
      fonte para eles custaria mais do que rende. */
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
   /* Escala 64/48/36/28/22/18/16/14/12.
-     O 64 entrou com a vitrine nova: titulo de secao e do banner em caixa
-     alta precisam de um degrau acima do 48, senao a pagina inteira fala no
+     O 64 entrou com a vitrine nova: título de seção e do banner em caixa
+     alta precisam de um degrau acima do 48, senão a página inteira fala no
      mesmo tom e nada e destaque de nada. */
   --text-64: 4rem;
   --text-48: 3rem;
@@ -172,18 +172,18 @@
   --weight-medium: 500;
   --weight-semibold: 600;
 
-  /* O logotipo e os botoes em caixa alta. Dois valores, nao um: o logo
-     respira muito mais que o botao. */
+  /* O logotipo e os botões em caixa alta. Dois valores, não um: o logo
+     respira muito mais que o botão. */
   --tracking-logo: 0.28em;
   --tracking-button: 0.08em;
 
-  /* Titulo de secao em caixa alta na serifada. A caixa alta fecha o espaco
-     entre as letras por conta propria; sem abrir de volta, "DESTAQUES" vira
-     um bloco macico. Fica entre o botao e o logotipo porque o titulo e
+  /* Título de seção em caixa alta na serifada. A caixa alta fecha o espaço
+     entre as letras por conta própria; sem abrir de volta, "DESTAQUES" vira
+     um bloco macico. Fica entre o botão e o logotipo porque o título e
      grande — quanto maior o corpo, menos espacamento ele pede. */
   --tracking-title: 0.12em;
 
-  /* ---- Espaco --------------------------------------------------------- */
+  /* ---- Espaço --------------------------------------------------------- */
 
   --space-4: 0.25rem;
   --space-8: 0.5rem;
@@ -203,28 +203,28 @@
   --radius-pill: 999px;
 
   /*
-   * A forma de toda acao clicavel: a pilula.
+   * A forma de toda ação clicável: a pílula.
    *
-   * E o que separa, a um relance, o que se clica do que so se le. O cartao de
-   * produto e a foto sao retos, com o canto do `--radius-card`; botao, chip de
-   * filtro e campo de busca sao redondos. Com os dois no mesmo raio, a vitrine
-   * vira uma sequencia de retangulos iguais e o cliente precisa ler cada um
+   * E o que separa, a um relance, o que se clica do que só se lê. O cartão de
+   * produto e a foto são retos, com o canto do `--radius-card`; botão, chip de
+   * filtro e campo de busca são redondos. Com os dois no mesmo raio, a vitrine
+   * vira uma sequência de retângulos iguais e o cliente precisa ler cada um
    * para descobrir onde clicar.
    *
-   * Token proprio, e nao `--radius-pill` escrito direto no botao, porque e uma
-   * decisao de linguagem: se um dia a loja voltar ao canto reto, muda aqui.
+   * Token próprio, e não `--radius-pill` escrito direto no botão, porque e uma
+   * decisão de linguagem: se um dia a loja voltar ao canto reto, muda aqui.
    */
   --radius-button: var(--radius-pill);
 
   --border: 1px solid var(--line);
 
-  /* Uma sombra so, e discreta. Sombra colorida nao existe neste projeto, e
-     modal e gaveta usam a mesma: o que separa os planos ali e o veu. */
+  /* Uma sombra só, e discreta. Sombra colorida não existe neste projeto, e
+     modal e gaveta usam a mesma: o que separa os planos ali e o véu. */
   --shadow: 0 1px 2px rgb(14 14 14 / 0.04), 0 8px 24px rgb(14 14 14 / 0.06);
 
   /* ---- Foco -----------------------------------------------------------
-     O anel dourado de 2px, em um lugar so. Sobre fundo escuro, o contexto
-     troca a cor por `--gold` (ver abaixo): o mesmo anel, legivel nos dois. */
+     O anel dourado de 2px, em um lugar só. Sobre fundo escuro, o contexto
+     troca a cor por `--gold` (ver abaixo): o mesmo anel, legível nos dois. */
 
   --focus-color: var(--gold-deep);
   --focus-width: 2px;
@@ -233,37 +233,37 @@
 
   /* ---- Layout --------------------------------------------------------- */
 
-  /* Largura util. Subiu de 1280 para caber a grade de cinco colunas da
+  /* Largura útil. Subiu de 1280 para caber a grade de cinco colunas da
      vitrine sem espremer o card: abaixo disso a quinta coluna fica estreita
      demais para o nome do produto em duas linhas. */
   --container-max: 1360px;
   --gutter: var(--space-16);
 
   /*
-   * O cabecalho tem duas alturas: a de repouso e a encolhida, depois que a
-   * pagina rola. Sao tokens porque o layout da conta e o `scroll-padding` das
+   * O cabeçalho tem duas alturas: a de repouso e a encolhida, depois que a
+   * página rola. São tokens porque o layout da conta e o `scroll-padding` das
    * ancoras precisam da mesma medida — e precisam dela na altura em que o
-   * cabecalho esta de fato quando a ancora chega.
+   * cabeçalho esta de fato quando a ancora chega.
    *
    * A medida e da banda da marca — busca, assinatura e sacola. A faixa do
-   * menu, embaixo dela, nao entra na conta: ela so existe no desktop, e o
+   * menu, embaixo dela, não entra na conta: ela só existe no desktop, e o
    * `scroll-padding` das ancoras precisa da altura do que de fato cobre o
-   * conteudo depois que a pagina rola.
+   * conteúdo depois que a página rola.
    */
   --header-height: 5.5rem;
   --header-height-compact: 4rem;
 
-  /** A barra de avisos, que rola junto com a pagina e nao gruda. */
+  /** A barra de avisos, que rola junto com a página e não gruda. */
   --announcement-height: 2.25rem;
 
-  /* Altura dos controles de formulario e do botao. O botao primario tem 48px
-     por especificacao, e campo e botao alinhados na mesma linha precisam da
+  /* Altura dos controles de formulário e do botão. O botão primário tem 48px
+     por especificação, e campo e botão alinhados na mesma linha precisam da
      mesma medida. */
   --control-height: 3rem;
   --control-height-small: 2.25rem;
 
   /* ---- Movimento ------------------------------------------------------
-     180ms `ease-out` para tudo. Os dois pedacos existem separados para quem
+     180ms `ease-out` para tudo. Os dois pedaços existem separados para quem
      precisa compor (`transform 180ms ease-out, opacity 180ms ease-out`); o
      atalho `--transition` serve o caso comum. */
 
@@ -272,7 +272,7 @@
   --transition: var(--duration) var(--ease);
 
   /* ---- Camadas --------------------------------------------------------
-     Em um lugar so porque z-index disputado entre arquivos sempre termina
+     Em um lugar só porque z-index disputado entre arquivos sempre termina
      em `9999`. */
 
   --z-header: 100;
@@ -285,26 +285,26 @@
 /*
  * ---- O tema escuro -------------------------------------------------------
  *
- * Tres estados, e nao dois:
+ * Três estados, e não dois:
  *
  *   sem atributo        segue o sistema operacional
  *   data-theme="light"  claro, mesmo com o sistema no escuro
  *   data-theme="dark"   escuro, mesmo com o sistema no claro
  *
  * O `:not([data-theme='light'])` dentro do `@media` e o que faz o segundo
- * estado existir: sem ele, quem esta no escuro pelo sistema nao conseguiria
+ * estado existir: sem ele, quem esta no escuro pelo sistema não conseguiria
  * escolher claro.
  *
- * ATENCAO: os dois blocos abaixo sao identicos e precisam continuar
- * identicos. Um esta dentro de um `@media` e o outro nao, e CSS nao permite
- * juntar os dois numa regra so. Editar um e esquecer o outro faz o tema
- * mudar so para metade das pessoas — o pior tipo de defeito, porque quem
- * edita esta sempre num dos dois casos e ve a mudanca funcionar.
+ * ATENÇÃO: os dois blocos abaixo são idênticos e precisam continuar
+ * idênticos. Um esta dentro de um `@media` e o outro não, e CSS não permite
+ * juntar os dois numa regra só. Editar um e esquecer o outro faz o tema
+ * mudar só para metade das pessoas — o pior tipo de defeito, porque quem
+ * edita esta sempre num dos dois casos e vê a mudanca funcionar.
  *
- * O teste `tokens.spec.ts` compara os dois e quebra na divergencia. Ele
+ * O teste `tokens.spec.ts` compara os dois e quebra na divergência. Ele
  * existe por isso.
  *
- * Nenhum componente sabe que ha tema. Tudo aqui redefine o mesmo punhado de
+ * Nenhum componente sabe que há tema. Tudo aqui redefine o mesmo punhado de
  * tokens primitivos, e os apelidos (`--cream`, `--sand`) e as cores
  * derivadas (`--gold-wash`, os washes) acompanham sozinhos porque foram
  * escritos com `var()` e `color-mix`, que resolvem na hora do uso.
@@ -372,13 +372,13 @@
  * Contexto escuro: a laje da marca, a sidebar do painel, o painel sobre a
  * foto do banner.
  *
- * Sobre a laje, `--gold-deep` some. A classe troca so a cor do anel de
+ * Sobre a laje, `--gold-deep` some. A classe troca só a cor do anel de
  * foco — o token continua sendo um — e quem a aplica e o componente que
- * pinta o proprio fundo de escuro.
+ * pinta o próprio fundo de escuro.
  *
  * Continua valendo no tema escuro sem nenhuma troca, e e por isso que a laje
- * tinha de ser um token proprio: as superficies que levam esta classe sao
- * escuras nos dois temas. Se o rodape invertesse, esta regra passaria a por
+ * tinha de ser um token próprio: as superficies que levam esta classe são
+ * escuras nos dois temas. Se o rodapé invertesse, esta regra passaria a por
  * um anel dourado claro sobre um fundo claro.
  */
 .on-dark {
@@ -388,15 +388,15 @@
 /*
  * Os quatro respiros da loja: 640, 768, 1024 e 1280px.
  *
- * Nao sao variaveis porque `@media` nao le `var()` — ficam escritos como rem
- * em cada arquivo. A conversao esta aqui para que ninguem precise refaze-la:
+ * Não são variáveis porque `@media` não lê `var()` — ficam escritos como rem
+ * em cada arquivo. A conversão esta aqui para que ninguém precise refaze-lá:
  *
  *   640px  = 40rem   celular grande / duas colunas
  *   768px  = 48rem   tablet, onde o gutter passa a 24px
  *   1024px = 64rem   desktop, onde a sidebar do painel aparece
- *   1280px = 80rem   largura maxima do container
+ *   1280px = 80rem   largura máxima do container
  *
- * Tudo e `min-width`: o estilo base e o do celular, e cada respiro so
+ * Tudo e `min-width`: o estilo base e o do celular, e cada respiro só
  * acrescenta.
  */
 @media (min-width: 48rem) {

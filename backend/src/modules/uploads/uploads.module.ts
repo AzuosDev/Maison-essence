@@ -15,9 +15,9 @@ import { UploadsService } from './uploads.service.js';
 /**
  * Imagens do painel.
  *
- * Registra os tres models que guardam `publicId` — produtos, categorias e os
- * banners dentro das configuracoes — nao para edita-los, mas para saber se
- * alguem ainda usa a foto antes de apaga-la da conta.
+ * Registra os três models que guardam `publicId` — produtos, categorias e os
+ * banners dentro das configurações — não para edita-los, mas para saber se
+ * alguém ainda usa a foto antes de apaga-lá da conta.
  */
 @Module({
   imports: [

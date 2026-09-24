@@ -10,27 +10,27 @@ import styles from './product-view.module.css';
 /**
  * `/produtos/:slug`.
  *
- * Este modulo faz tres coisas e nenhuma delas e desenhar a pagina: busca o
- * produto, decide entre esqueleto, recusa e conteudo, e passa o resto para
- * `ProductView`. A separacao e o que mantem a vista livre de `undefined` —
- * ela recebe um produto que existe, e nao uma consulta que talvez tenha
+ * Este módulo faz três coisas e nenhuma delas e desenhar a página: busca o
+ * produto, decide entre esqueleto, recusa e conteúdo, e passa o resto para
+ * `ProductView`. A separação e o que mantem a vista livre de `undefined` —
+ * ela recebe um produto que existe, e não uma consulta que talvez tenha
  * respondido.
  *
  * ## O `key`
  *
  * A vista e remontada a cada produto. Sem isso, ir de um relacionado a outro
  * — mesma rota, slug diferente — reaproveitaria o componente e levaria junto
- * o indice da foto que estava aberta no produto anterior: o cliente clicaria
+ * o índice da foto que estava aberta no produto anterior: o cliente clicaria
  * no terceiro relacionado e abriria a terceira foto dele, que e uma escolha
- * que ninguem fez.
+ * que ninguém fez.
  *
- * ## Quatro estados, tres telas
+ * ## Quatro estados, três telas
  *
- * O produto que nao existe (404) e o produto que nao carregou (rede, 500)
- * sao recusas diferentes e recebem textos diferentes: no primeiro nao
- * adianta tentar de novo, e a saida e a vitrine; no segundo adianta, e o
- * botao tenta. Tratar os dois com a mesma mensagem generica mandaria o
- * cliente recarregar uma pagina que nunca vai existir.
+ * O produto que não existe (404) e o produto que não carregou (rede, 500)
+ * são recusas diferentes e recebem textos diferentes: no primeiro não
+ * adianta tentar de novo, e a saída e a vitrine; no segundo adianta, e o
+ * botão tenta. Tratar os dois com a mesma mensagem genérica mandaria o
+ * cliente recarregar uma página que nunca vai existir.
  */
 export default function ProductPage() {
   const { slug = '' } = useParams();
@@ -58,7 +58,7 @@ function NotFound() {
     <MessageScreen
       code="404"
       title="Este produto não esta mais aqui"
-      description="Ele pode ter saido do catalogo ou o endereço veio com um erro de digitação. A vitrine continua cheia."
+      description="Ele pode ter saido do catálogo ou o endereço veio com um erro de digitação. A vitrine continua cheia."
       actions={
         <>
           <ButtonLink to={ROUTES.products}>Ver todos os produtos</ButtonLink>
@@ -75,7 +75,7 @@ function LoadFailed({ onRetry }: { onRetry: () => void }) {
   return (
     <MessageScreen
       title="Não foi possível carregar este produto"
-      description="A conexão falhou no meio do caminho. O produto continua no catalogo."
+      description="A conexão falhou no meio do caminho. O produto continua no catálogo."
       actions={
         <Button
           onClick={() => {
@@ -92,15 +92,15 @@ function LoadFailed({ onRetry }: { onRetry: () => void }) {
 /* ---- O esqueleto -------------------------------------------------------- */
 
 /**
- * A pagina antes do produto.
+ * A página antes do produto.
  *
- * Desenha a mesma grade da vista, com a moldura da foto na proporcao final:
- * quando a resposta chega, o conteudo entra no lugar que ja estava reservado
+ * Desenha a mesma grade da vista, com a moldura da foto na proporção final:
+ * quando a resposta chega, o conteúdo entra no lugar que já estava reservado
  * e nada abaixo dele salta. Um `Spinner` centralizado custaria o mesmo tempo
- * e entregaria a pagina inteira de uma vez, depois de um buraco branco.
+ * e entregaria a página inteira de uma vez, depois de um buraco branco.
  *
- * Quem passou o mouse pelo card antes de clicar nao ve isto: o produto ja
- * esta no cache, prebuscado, e a pagina abre pronta.
+ * Quem passou o mouse pelo card antes de clicar não vê isto: o produto já
+ * esta no cache, prebuscado, e a página abre pronta.
  */
 function ProductSkeleton() {
   return (

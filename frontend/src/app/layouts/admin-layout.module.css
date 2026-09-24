@@ -1,12 +1,12 @@
 /*
  * O painel administrativo.
  *
- * Fundo frio e coluna preta, separados da loja de proposito: quem opera
- * precisa saber pelo canto do olho que um clique ali muda o que o cliente ve.
+ * Fundo frio e coluna preta, separados da loja de propósito: quem opera
+ * precisa saber pelo canto do olho que um clique ali muda o que o cliente vê.
  *
- * No celular a coluna vira gaveta e a barra de cima e a unica moldura fixa.
- * Ela nao gruda: a dona rola listas longas o dia inteiro, e uma barra presa
- * come 56px de uma tela que ja e pequena.
+ * No celular a coluna vira gaveta e a barra de cima e a única moldura fixa.
+ * Ela não gruda: a dona rola listas longas o dia inteiro, e uma barra presa
+ * come 56px de uma tela que já e pequena.
  */
 
 .layout {
@@ -30,18 +30,18 @@
   background-color: var(--admin-sidebar);
   color: var(--slab-ink);
 
-  /* Mesmo filete do rodape da loja, pelo mesmo motivo: no tema claro a
-     coluna preta contra o conteudo quase branco se separa sozinha, e no
-     escuro a coluna (#16130e) e o conteudo (#0f0f14) sao vizinhos de
-     luminosidade. Sem a linha, as duas viram uma mancha so. */
+  /* Mesmo filete do rodapé da loja, pelo mesmo motivo: no tema claro a
+     coluna preta contra o conteúdo quase branco se separa sozinha, e no
+     escuro a coluna (#16130e) e o conteúdo (#0f0f14) são vizinhos de
+     luminosidade. Sem a linha, as duas viram uma mancha só. */
   border-right: 1px solid var(--line);
 }
 
 /*
- * A coluna acompanha a rolagem da pagina inteira.
+ * A coluna acompanha a rolagem da página inteira.
  *
  * Presa no topo e com a altura da tela: uma lista de duzentos produtos rola
- * no conteudo, e o menu continua onde estava. Sem isso, chegar a "Pedidos"
+ * no conteúdo, e o menu continua onde estava. Sem isso, chegar a "Pedidos"
  * no fim de uma tabela longa exigiria voltar ao topo primeiro.
  */
 @media (min-width: 64rem) {
@@ -83,14 +83,14 @@
   color: var(--gold);
 }
 
-/* ---- O pe: sair e o tema ------------------------------------------------- */
+/* ---- O pé: sair e o tema ------------------------------------------------- */
 
 /*
- * Os dois na mesma linha, empurrados para o pe da coluna pelo
- * `margin-top: auto`, e nao por um bloco vazio de altura fixa: a coluna
- * cresce com o numero de itens do menu, que muda com o papel de quem entrou.
+ * Os dois na mesma linha, empurrados para o pé da coluna pelo
+ * `margin-top: auto`, e não por um bloco vazio de altura fixa: a coluna
+ * cresce com o número de itens do menu, que muda com o papel de quem entrou.
  *
- * O `auto` mora aqui, e nao nos dois filhos: com um em cada, o vao livre se
+ * O `auto` mora aqui, e não nos dois filhos: com um em cada, o vão livre se
  * dividiria entre eles e os dois parariam no meio da coluna.
  */
 .footer {
@@ -102,17 +102,17 @@
 }
 
 /*
- * O botao de tema, encostado na direita.
+ * O botão de tema, encostado na direita.
  *
- * O componente vem pintado para o cabecalho da loja, que e claro: `--ink` ali
- * e quase preto e sumiria contra esta coluna. Aqui ele recebe a aparencia do
+ * O componente vem pintado para o cabeçalho da loja, que e claro: `--ink` ali
+ * e quase preto e sumiria contra esta coluna. Aqui ele recebe a aparência do
  * "Sair" ao lado — mesmo cinza parado, mesmo realce, mesmo chanfro de 4px —
- * para que os dois leiam como um par, e nao como um botao e um enfeite.
+ * para que os dois leiam como um par, e não como um botão e um enfeite.
  *
- * Sao variaveis do proprio componente (ver `theme-icon-button.module.css`), e
- * nao regras daqui por cima das de la: duas classes com a mesma
+ * São variáveis do próprio componente (ver `theme-icon-button.module.css`), e
+ * não regras daqui por cima das de lá: duas classes com a mesma
  * especificidade decidiriam no empate pela ordem em que o bundler junta os
- * arquivos, que ninguem controla.
+ * arquivos, que ninguém controla.
  */
 .theme {
   margin-left: auto;
@@ -167,7 +167,7 @@
  * A gaveta e a mesma coluna, portatil.
  *
  * O primitivo desenha o painel em branco — e o que a loja pede. Aqui ele
- * recebe o preto do painel, e o titulo e o botao de fechar herdam a cor
+ * recebe o preto do painel, e o título e o botão de fechar herdam a cor
  * clara junto, porque os dois usam `currentColor`.
  */
 .menuPanel {
@@ -182,7 +182,7 @@
   color: var(--slab-ink);
 }
 
-/* ---- O conteudo --------------------------------------------------------- */
+/* ---- O conteúdo --------------------------------------------------------- */
 
 .content {
   display: flex;

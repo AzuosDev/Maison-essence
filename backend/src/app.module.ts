@@ -26,8 +26,8 @@ import { UsersModule } from './modules/users/users.module.js';
     AppConfigModule,
     DatabaseModule,
     // Antes de tudo o que responde: guards globais rodam na ordem em que os
-    // modulos sao registrados, e o limite de chamadas precisa contar a
-    // tentativa de login antes de o guard de autenticacao recusa-la.
+    // módulos são registrados, e o limite de chamadas precisa contar a
+    // tentativa de login antes de o guard de autenticação recusa-lá.
     RateLimitModule,
     AuditModule,
     HealthModule,

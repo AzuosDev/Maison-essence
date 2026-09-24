@@ -17,9 +17,9 @@ import { MAX_CATEGORY_ORDER } from '../categories.constants.js';
 /**
  * Normaliza o slug digitado no painel antes de validar.
  *
- * A dona digita "Perfumes Arabes" no campo de endereco e o que vale e
- * `perfumes-arabes`. Passar pelo mesmo `slugify` da geracao automatica
- * garante que o slug escrito a mao e o gerado obedecam a mesma regra.
+ * A dona digita "Perfumes Árabes" no campo de endereço e o que vale e
+ * `perfumes-arabes`. Passar pelo mesmo `slugify` da geração automática
+ * garante que o slug escrito a mão e o gerado obedecam a mesma regra.
  */
 export const NormalizeSlug = (): PropertyDecorator =>
   Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? slugify(value) : value));
@@ -43,7 +43,7 @@ export class CreateCategoryDto {
   @IsMongoId({ message: 'categoria pai inválida' })
   parentId?: string | null;
 
-  /** `publicId` do Cloudinary, so das pastas da loja. Vazio tira a foto. */
+  /** `publicId` do Cloudinary, só das pastas da loja. Vazio tira a foto. */
   @IsOptional()
   @IsString()
   @IsOptionalImagePublicId()

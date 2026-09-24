@@ -26,9 +26,9 @@ describe('catalogFilter', () => {
   });
 
   /**
-   * O criterio de aceite do catalogo publico: categoria, faixa de preco e
-   * estoque em uma consulta so. Preco e estoque ficam no mesmo `$elemMatch`
-   * porque tem de ser a mesma variante — senao o produto entraria na lista
+   * O critério de aceite do catálogo público: categoria, faixa de preço e
+   * estoque em uma consulta só. Preço e estoque ficam no mesmo `$elemMatch`
+   * porque tem de ser a mesma variante — senão o produto entraria na lista
    * pela variante barata que acabou.
    */
   it('combina categoria, faixa de preço e estoque numa consulta só', () => {
@@ -108,7 +108,7 @@ describe('effectiveSort', () => {
     expect(effectiveSort(undefined, false)).toBe('newest');
   });
 
-  /** Relevancia sem termo nao ordena nada: todo produto teria a mesma nota. */
+  /** Relevância sem termo não ordena nada: todo produto teria a mesma nota. */
   it('troca relevância por novidade quando não há o que pontuar', () => {
     expect(effectiveSort('relevance', false)).toBe('newest');
   });

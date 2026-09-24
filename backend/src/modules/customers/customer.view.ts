@@ -1,7 +1,7 @@
 import { formatBrazilianPhone } from '../orders/phone.js';
 import type { CustomerAddress, CustomerDocument } from './schemas/customer.schema.js';
 
-/** Endereco salvo, como a loja o exibe. */
+/** Endereço salvo, como a loja o exibe. */
 export interface CustomerAddressView {
   id: string;
   label: string;
@@ -16,29 +16,29 @@ export interface CustomerAddressView {
 }
 
 /**
- * A conta como quem comprou a ve.
+ * A conta como quem comprou a vê.
  *
- * Montada campo a campo, e nao devolvendo o documento: e o que garante que
+ * Montada campo a campo, e não devolvendo o documento: e o que garante que
  * `passwordHash` e `credentialVersion` nunca cheguem perto da resposta por
  * descuido, do mesmo jeito que `toAuthenticatedUser` faz no painel.
  */
 export interface CustomerView {
   id: string;
   name: string;
-  /** So digitos, como esta gravado: e a chave que liga a conta aos pedidos. */
+  /** Só digitos, como esta gravado: e a chave que liga a conta aos pedidos. */
   phone: string;
-  /** `(88) 99999-9999`. Acrescimo para a tela, nunca substituicao. */
+  /** `(88) 99999-9999`. Acrescimo para a tela, nunca substituição. */
   phoneLabel: string;
   email: string;
   addresses: CustomerAddressView[];
   createdAt: Date;
 }
 
-/** Sessao da loja. Mesmo formato do painel, sem nada que lembre papel. */
+/** Sessão da loja. Mesmo formato do painel, sem nada que lembre papel. */
 export interface CustomerSession {
   accessToken: string;
   refreshToken: string;
-  /** Validade do access token em segundos, para o front agendar a renovacao. */
+  /** Validade do access token em segundos, para o front agendar a renovação. */
   expiresIn: number;
   tokenType: 'Bearer';
   customer: CustomerView;

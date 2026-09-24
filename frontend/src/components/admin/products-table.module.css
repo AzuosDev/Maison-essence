@@ -1,11 +1,11 @@
 /*
- * O catalogo, nas duas formas.
+ * O catálogo, nas duas formas.
  *
  * A tabela e a forma do desktop: a coluna de fotos a esquerda dando ritmo, os
- * numeros alinhados a direita, o interruptor sempre na mesma posicao — e ele
+ * números alinhados a direita, o interruptor sempre na mesma posição — e ele
  * que a dona procura descendo a lista. O card e a forma do celular, com a
- * foto ao lado do nome e o interruptor com rotulo escrito, porque ali nao ha
- * cabecalho de coluna dizendo o que ele liga.
+ * foto ao lado do nome e o interruptor com rótulo escrito, porque ali não há
+ * cabeçalho de coluna dizendo o que ele liga.
  */
 
 .tableWrap {
@@ -60,8 +60,8 @@
 
 /* ---- A foto -------------------------------------------------------------- */
 
-/* `width: 1px` com o conteudo de largura fixa: a coluna encolhe ate a foto e
-   devolve o resto para o nome, que e quem precisa de espaco. */
+/* `width: 1px` com o conteúdo de largura fixa: a coluna encolhe até a foto e
+   devolve o resto para o nome, que e quem precisa de espaço. */
 .thumbCell {
   width: 1px;
   padding-right: 0;
@@ -107,9 +107,9 @@
 /*
  * A linha de contexto: marca, contagem de variantes, selos de vitrine.
  *
- * Tudo com o mesmo peso visual e separado por espaco, e nao por pontos: sao
- * fatos independentes sobre o mesmo produto, e uma pontuacao entre eles
- * sugeriria uma frase que nao existe.
+ * Tudo com o mesmo peso visual e separado por espaço, e não por pontos: são
+ * fatos independentes sobre o mesmo produto, e uma pontuação entre eles
+ * sugeriria uma frase que não existe.
  */
 .meta {
   display: flex;
@@ -141,12 +141,12 @@
   height: 0.75rem;
 }
 
-/* ---- Categorias, preco, estoque -------------------------------------------- */
+/* ---- Categorias, preço, estoque -------------------------------------------- */
 
 /*
  * A lista de categorias corta em vez de quebrar.
  *
- * Um produto em quatro categorias esticaria a linha para tres alturas e
+ * Um produto em quatro categorias esticaria a linha para três alturas e
  * desalinharia a tabela inteira. O `title` devolve o texto completo ao
  * passar o mouse, e o cadastro o mostra por extenso.
  */
@@ -164,8 +164,8 @@
   white-space: nowrap;
 }
 
-/* Vermelho e o numero: a cor diz "pouco", o numero diz quanto. A palavra
-   "esgotado" mora no selo, para quem nao distingue a cor. */
+/* Vermelho e o número: a cor diz "pouco", o número diz quanto. A palavra
+   "esgotado" mora no selo, para quem não distingue a cor. */
 .lowStock {
   font-weight: var(--weight-medium);
   color: var(--danger);
@@ -233,8 +233,8 @@
   color: var(--ink);
 }
 
-/* Respiro antes do interruptor: ele e uma acao, e o resto do card e leitura.
-   Sem a pausa, o polegar o alcanca junto com o nome. */
+/* Respiro antes do interruptor: ele e uma ação, e o resto do card e leitura.
+   Sem a pausa, o polegar o alcança junto com o nome. */
 .cardSwitch {
   margin-top: var(--space-8);
 }

@@ -9,18 +9,18 @@ import { useAdminSession, USER_ROLES, type AdminUser, type UserRole } from '@/fe
 import AdminSettingsPage from './admin-settings-page';
 
 /**
- * A tela de configuracoes.
+ * A tela de configurações.
  *
  * O que estes casos cobram:
  *
- * - **abrir a tela nao a deixa suja**, que e o risco proprio desta tela: os
- *   banners viajam como instante e sao editados como dia, e um arredondamento
+ * - **abrir a tela não a deixa suja**, que e o risco próprio desta tela: os
+ *   banners viajam como instante e são editados como dia, e um arredondamento
  *   a mais faria a barra de salvar aparecer sozinha a cada abertura;
- * - **so o que mudou viaja**, e o endereco campo a campo — corrigir o numero
- *   da casa nao pode apagar o ponto de referencia;
+ * - **só o que mudou viaja**, e o endereço campo a campo — corrigir o número
+ *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
- * - **so o administrador do sistema entra**: nem o gerente da loja abre esta
- *   area, porque o que se muda aqui e a moldura inteira e nao o dia de
+ * - **só o administrador do sistema entra**: nem o gerente da loja abre esta
+ *   área, porque o que se muda aqui e a moldura inteira e não o dia de
  *   vender.
  */
 
@@ -67,7 +67,7 @@ const SETTINGS = {
       buttonLabel: '',
       link: '',
       order: 1,
-      // Agendado para o passado: o banner ja saiu do ar sozinho.
+      // Agendado para o passado: o banner já saiu do ar sozinho.
       startsAt: '2026-01-01T00:00:00.000Z',
       endsAt: '2026-01-31T23:59:59.999Z',
       isActive: true,
@@ -96,11 +96,11 @@ type Patch = Partial<Settings>;
 /**
  * O documento como o servidor o devolve depois do `PATCH`.
  *
- * Os tres comportamentos do backend estao aqui de proposito, e nao um
- * `{ ...SETTINGS, ...patch }`: o endereco e as redes **fundem** campo a
- * campo, as paginas sao casadas por `slug`, e so os banners substituem o
+ * Os três comportamentos do backend estão aqui de propósito, e não um
+ * `{ ...SETTINGS, ...patch }`: o endereço e as redes **fundem** campo a
+ * campo, as páginas são casadas por `slug`, e só os banners substituem o
  * array inteiro. Uma resposta parcial seria uma resposta que o servidor nunca
- * manda — e o teste passaria a cobrar da tela uma defesa que nao precisa
+ * manda — e o teste passaria a cobrar da tela uma defesa que não precisa
  * existir.
  */
 function saved(patch: Patch): Settings {
@@ -224,8 +224,8 @@ test('abrir a tela não a deixa suja, nem com banner agendado', async () => {
 
   await screen.findByRole('textbox', { name: 'WhatsApp' });
 
-  // O banner viaja como instante e e editado como dia. Se a volta nao fosse
-  // exata, a barra apareceria sozinha e a dona aprenderia a ignora-la.
+  // O banner viaja como instante e e editado como dia. Se a volta não fosse
+  // exata, a barra apareceria sozinha e a dona aprenderia a ignora-lá.
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
@@ -288,7 +288,7 @@ test('mudar o número da casa não manda o endereço inteiro', async () => {
 
   await waitFor(() => {
     // O servidor funde campo a campo: mandar o bloco inteiro apagaria o que a
-    // tela nao mexeu.
+    // tela não mexeu.
     expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ pickupAddress: { number: '130' } });
   });
 });
@@ -394,7 +394,7 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
   });
 });
 
-/* ---- As paginas --------------------------------------------------------------------- */
+/* ---- As páginas --------------------------------------------------------------------- */
 
 test('escrever numa página manda só aquela página', async () => {
   const user = userEvent.setup();
@@ -417,7 +417,7 @@ test('escrever numa página manda só aquela página', async () => {
       institutionalPages?: { slug: string }[];
     };
 
-    // O servidor atualiza por slug, e a pagina que nao vier fica como esta.
+    // O servidor atualiza por slug, e a página que não vier fica como esta.
     expect(body.institutionalPages).toHaveLength(1);
     expect(body.institutionalPages?.[0]?.slug).toBe('como-comprar');
   });

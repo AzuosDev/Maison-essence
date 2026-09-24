@@ -7,11 +7,11 @@ import { SettingsController } from './settings.controller.js';
 import { SettingsService } from './settings.service.js';
 
 /**
- * Configuracoes da loja: o painel, a vitrine e as paginas institucionais.
+ * Configurações da loja: o painel, a vitrine e as páginas institucionais.
  *
- * Exporta `SettingsService` porque outros modulos precisam ler a loja — o de
- * pedidos monta a mensagem do WhatsApp com o numero e o nome que estao aqui,
- * e o de entrega le a retirada na loja.
+ * Exporta `SettingsService` porque outros módulos precisam ler a loja — o de
+ * pedidos monta a mensagem do WhatsApp com o número e o nome que estão aqui,
+ * e o de entrega lê a retirada na loja.
  */
 @Module({
   imports: [

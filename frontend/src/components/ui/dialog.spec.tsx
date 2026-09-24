@@ -9,19 +9,19 @@ import { Input } from './input';
 import { Modal } from './modal';
 
 /**
- * As tres obrigacoes de um dialogo.
+ * As três obrigações de um diálogo.
  *
- * Estao aqui, e nao na lista de coisas a conferir a olho, porque sao
- * invisiveis: um modal com o foco solto parece exatamente igual a um modal
- * com o foco preso. Quem descobre a diferenca e quem navega por teclado — e
- * so depois de ficar preso do lado de fora.
+ * Estão aqui, e não na lista de coisas a conferir a olho, porque são
+ * invisíveis: um modal com o foco solto parece exatamente igual a um modal
+ * com o foco preso. Quem descobre a diferença e quem navega por teclado — e
+ * só depois de ficar preso do lado de fora.
  *
- * Modal e Drawer compartilham o `useDialog`, entao o que vale para um vale
- * para o outro; o ultimo caso confirma isso.
+ * Modal e Drawer compartilham o `useDialog`, então o que vale para um vale
+ * para o outro; o último caso confirma isso.
  */
 
-// A limpeza nao e automatica: ela so se registra sozinha quando o Vitest
-// roda com `globals`, e aqui os utilitarios sao importados um a um.
+// A limpeza não e automática: ela só se registra sozinha quando o Vitest
+// roda com `globals`, e aqui os utilitários são importados um a um.
 afterEach(cleanup);
 
 function Exemplo({ render: renderDialog }: { render: (props: DialogProps) => ReactNode }) {
@@ -82,7 +82,7 @@ test('o foco entra no diálogo quando ele abre', async () => {
   const dialog = screen.getByRole('dialog');
 
   expect(dialog).toBeDefined();
-  // O primeiro focavel do modal e o X do cabecalho.
+  // O primeiro focável do modal e o X do cabeçalho.
   expect(dialog.contains(document.activeElement)).toBe(true);
 });
 
@@ -97,7 +97,7 @@ test('o Tab circula dentro do diálogo e não escapa para a página', async () =
   const fora = screen.getByRole('button', { name: 'Fora do diálogo' });
 
   // Uma volta inteira e mais um pouco: em nenhum momento o foco sai.
-  // Um Tab de cada vez, de proposito: a posicao seguinte depende de onde o
+  // Um Tab de cada vez, de propósito: a posição seguinte depende de onde o
   // anterior parou, e e justamente isso que esta sendo verificado.
   // oxlint-disable no-await-in-loop
   for (let step = 0; step < 6; step += 1) {
@@ -107,7 +107,7 @@ test('o Tab circula dentro do diálogo e não escapa para a página', async () =
     expect(document.activeElement).not.toBe(fora);
   }
 
-  // E para tras tambem.
+  // E para trás também.
   for (let step = 0; step < 4; step += 1) {
     await user.tab({ shift: true });
 

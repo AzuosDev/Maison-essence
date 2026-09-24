@@ -2,18 +2,18 @@ import { INSTITUTIONAL_PAGE_SLUGS } from '../../common/enums/institutional-page.
 import type { InstitutionalPageSlug } from '../../common/enums/institutional-page.js';
 
 /**
- * As paginas institucionais que a loja tem.
+ * As páginas institucionais que a loja tem.
  *
- * A lista e fechada e o slug nunca muda: o link do rodape e o da Politica de
- * Privacidade ja estao no ar e vao parar em conversa de WhatsApp. O que a
- * dona edita e titulo, conteudo e se a pagina esta publicada.
+ * A lista e fechada e o slug nunca muda: o link do rodapé e o da Política de
+ * Privacidade já estão no ar e vão parar em conversa de WhatsApp. O que a
+ * dona edita e título, conteúdo e se a página esta publicada.
  *
- * As cinco existem no painel desde o primeiro acesso, mesmo antes de alguem
- * escrever qualquer coisa: a tela precisa mostrar os cinco formularios para
- * que a dona saiba o que falta. No banco, so vao parar as que ela gravar.
+ * As cinco existem no painel desde o primeiro acesso, mesmo antes de alguém
+ * escrever qualquer coisa: a tela precisa mostrar os cinco formulários para
+ * que a dona saiba o que falta. No banco, só vão parar as que ela gravar.
  */
 
-/** Uma pagina como o painel a edita. */
+/** Uma página como o painel a edita. */
 export interface EditablePage {
   slug: InstitutionalPageSlug;
   title: string;
@@ -23,11 +23,11 @@ export interface EditablePage {
 }
 
 /**
- * Titulo inicial de cada pagina e a ordem em que o painel as lista.
+ * Título inicial de cada página e a ordem em que o painel as lista.
  *
- * Todas nascem despublicadas (`isActive: false`) de proposito: pagina ativa
- * sem conteudo vira link do rodape que abre em branco, e um rodape com "Trocas
- * e devolucoes" vazio e pior do que um rodape sem o link. A dona escreve e
+ * Todas nascem despublicadas (`isActive: false`) de propósito: página ativa
+ * sem conteúdo vira link do rodapé que abre em branco, e um rodapé com "Trocas
+ * e devoluções" vazio e pior do que um rodapé sem o link. A dona escreve e
  * publica.
  */
 export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
@@ -58,17 +58,17 @@ export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
   },
 ];
 
-/** Titulo padrao de uma pagina que a dona ainda nao nomeou. */
+/** Título padrão de uma página que a dona ainda não nomeou. */
 export function defaultTitleOf(slug: InstitutionalPageSlug): string {
   return DEFAULT_INSTITUTIONAL_PAGES.find((page) => page.slug === slug)?.title ?? slug;
 }
 
 /**
- * As cinco paginas, com o que estiver gravado por cima dos padroes.
+ * As cinco páginas, com o que estiver gravado por cima dos padrões.
  *
  * Sempre na mesma ordem — a do painel, que vai do institucional ao legal — e
  * nunca na ordem em que os documentos foram criados, que e acidente de qual
- * pagina a dona escreveu primeiro.
+ * página a dona escreveu primeiro.
  */
 export function mergeInstitutionalPages(stored: readonly EditablePage[]): EditablePage[] {
   const bySlug = new Map(stored.map((page) => [page.slug, page]));
@@ -80,7 +80,7 @@ export function mergeInstitutionalPages(stored: readonly EditablePage[]): Editab
   });
 }
 
-/** O que o PATCH manda para uma pagina. So o slug e obrigatorio. */
+/** O que o PATCH manda para uma página. Só o slug e obrigatório. */
 export interface PageUpdate {
   slug: InstitutionalPageSlug;
   title?: string;
@@ -89,12 +89,12 @@ export interface PageUpdate {
 }
 
 /**
- * Aplica as edicoes recebidas sobre o que esta gravado.
+ * Aplica as edições recebidas sobre o que esta gravado.
  *
- * Pagina citada e atualizada campo a campo; pagina ainda nao gravada nasce
- * aqui, com o titulo padrao quando a dona nao escolheu um. Pagina que nao veio
- * no PATCH nao e tocada — o painel edita uma pagina por vez, e mandar o array
- * inteiro so para mexer no "Quem somos" seria pedir para sobrescrever o que
+ * Página citada e atualizada campo a campo; página ainda não gravada nasce
+ * aqui, com o título padrão quando a dona não escolheu um. Página que não veio
+ * no PATCH não e tocada — o painel edita uma página por vez, e mandar o array
+ * inteiro só para mexer no "Quem somos" seria pedir para sobrescrever o que
  * outra aba abriu.
  */
 export function upsertPages(
@@ -111,7 +111,7 @@ export function upsertPages(
         slug: update.slug,
         title: update.title ?? defaultTitleOf(update.slug),
         content: update.content ?? '',
-        // Nasce despublicada quando o PATCH nao disse nada: ver o comentario
+        // Nasce despublicada quando o PATCH não disse nada: ver o comentário
         // de DEFAULT_INSTITUTIONAL_PAGES.
         isActive: update.isActive ?? false,
       });

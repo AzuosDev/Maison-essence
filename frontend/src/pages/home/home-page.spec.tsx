@@ -13,11 +13,11 @@ import HomePage from './home-page';
 /**
  * A home contra a API.
  *
- * O `fetch` e trocado por um duble que responde as seis rotas da pagina. E o
- * que permite verificar o que so se ve com dado de verdade: que o hero mostra
- * o banner cadastrado — o criterio de "trocar um banner muda a home sem
+ * O `fetch` e trocado por um duble que responde as seis rotas da página. E o
+ * que permite verificar o que só se vê com dado de verdade: que o hero mostra
+ * o banner cadastrado — o critério de "trocar um banner muda a home sem
  * redeploy" —, que cada prateleira consome a rota dela, e que uma prateleira
- * vazia desaparece em vez de anunciar que a loja nao tem produto.
+ * vazia desaparece em vez de anunciar que a loja não tem produto.
  */
 
 const BANNERS = [
@@ -100,10 +100,10 @@ let prateleiras: Record<string, unknown[]>;
 /**
  * O que `GET /products?brand=...` devolve, por marca.
  *
- * Por marca, e nao uma resposta so para `/products`: o que separa as tres
- * fileiras de marca e justamente o filtro, e com uma resposta unica um erro
- * que fizesse a home pedir a marca errada — ou nao pedir marca nenhuma —
- * passaria batido, porque as tres apareceriam cheias do mesmo jeito.
+ * Por marca, e não uma resposta só para `/products`: o que separa as três
+ * fileiras de marca e justamente o filtro, e com uma resposta única um erro
+ * que fizesse a home pedir a marca errada — ou não pedir marca nenhuma —
+ * passaria batido, porque as três apareceriam cheias do mesmo jeito.
  */
 let marcas: Record<string, unknown[]>;
 
@@ -111,7 +111,7 @@ let marcas: Record<string, unknown[]>;
 let marcasQuebradas: Set<string>;
 let chamadas: string[];
 
-/** A marca pedida numa URL de listagem, ou `null` quando nao ha filtro. */
+/** A marca pedida numa URL de listagem, ou `null` quando não há filtro. */
 function marcaDe(url: string): string | null {
   return new URL(url, 'http://local.test').searchParams.get('brand');
 }
@@ -141,7 +141,7 @@ beforeEach(() => {
 
   marcasQuebradas = new Set();
 
-  // O jsdom nao implementa `matchMedia`, e o carrossel o consulta para saber
+  // O jsdom não implementa `matchMedia`, e o carrossel o consulta para saber
   // se pode girar sozinho. Sem o duble, o hero quebra no primeiro render.
   vi.stubGlobal(
     'matchMedia',
@@ -190,10 +190,10 @@ beforeEach(() => {
       /*
        * A listagem sem filtro, que nenhuma prateleira da home consome hoje.
        *
-       * Fica respondendo vazio, e nao removida: e a rota que sustentava
+       * Fica respondendo vazio, e não removida: e a rota que sustentava
        * "Novidades" antes de ela sair da home, e uma prateleira nova que
        * volte a usar `GET /products` sem filtro precisa ver uma resposta
-       * valida aqui em vez de cair no `[]` generico do fim.
+       * valida aqui em vez de cair no `[]` genérico do fim.
        */
       if (url.includes('/products')) {
         return Promise.resolve(jsonResponse({ items: [], page: 1, totalPages: 1, totalItems: 0 }));
@@ -255,7 +255,7 @@ test('a primeira imagem do hero carrega sem lazy e com prioridade', async () => 
   expect(imagens[0]?.getAttribute('loading')).toBe('eager');
   expect(imagens[0]?.getAttribute('fetchpriority')).toBe('high');
 
-  // A segunda nao disputa banda com a primeira numa conexao lenta.
+  // A segunda não disputa banda com a primeira numa conexão lenta.
   expect(imagens[1]?.getAttribute('loading')).toBe('lazy');
 });
 
@@ -315,8 +315,8 @@ test('cada prateleira consome a rota dela', async () => {
   const prontaEntrega = screen.getByRole('region', { name: 'Pronta entrega' });
   const maisVendidos = screen.getByRole('region', { name: 'Mais vendidos' });
 
-  // `findBy`: a prateleira aparece com os esqueletos e so depois troca pelos
-  // produtos — que e exatamente o que o criterio de "nenhum salto de layout"
+  // `findBy`: a prateleira aparece com os esqueletos e só depois troca pelos
+  // produtos — que e exatamente o que o critério de "nenhum salto de layout"
   // pede. Um `getBy` aqui olharia para o esqueleto.
   expect(await within(destaques).findByRole('heading', { name: 'Asad' })).toBeDefined();
   expect(await within(prontaEntrega).findByRole('heading', { name: 'Yara' })).toBeDefined();
@@ -365,7 +365,7 @@ test('cada prateleira de marca pede a marca dela, e só ela', async () => {
 /**
  * A fileira de duas marcas mostra as duas.
  *
- * E o motivo de as listas serem intercaladas e nao emendadas: com a emenda,
+ * E o motivo de as listas serem intercaladas e não emendadas: com a emenda,
  * as cinco vagas sairiam todas da primeira marca assim que ela tivesse cinco
  * produtos, e Lattafa nunca apareceria na prateleira que leva o nome dela.
  */
@@ -381,10 +381,10 @@ test('a prateleira combinada traz produto das duas marcas', async () => {
 });
 
 /**
- * Uma marca fora do ar nao leva a prateleira junto.
+ * Uma marca fora do ar não leva a prateleira junto.
  *
  * A fileira combinada e duas consultas; se bastasse uma falhar para ela
- * sumir, a loja perderia a secao inteira — e a marca que respondeu bem — sem
+ * sumir, a loja perderia a seção inteira — e a marca que respondeu bem — sem
  * nenhum aviso.
  */
 test('com uma das duas marcas em erro, a prateleira combinada continua', async () => {
@@ -411,23 +411,23 @@ test('marca sem produto nenhum some da home, como as outras prateleiras', async 
   });
 });
 
-/* ---- A ordem das secoes -------------------------------------------------- */
+/* ---- A ordem das seções -------------------------------------------------- */
 
 /**
- * Os titulos de secao da pagina, na ordem em que estao no documento.
+ * Os títulos de seção da página, na ordem em que estão no documento.
  *
- * Le o DOM de uma vez, e nao secao por secao com `getByRole`: a lista de
+ * Lê o DOM de uma vez, e não seção por seção com `getByRole`: a lista de
  * prateleiras se refaz quando as consultas respondem — uma que volta vazia
- * some, e o que vem depois dela e remontado —, e uma referencia guardada
- * antes disso aponta para um no que ja saiu da arvore. Comparar posicoes
- * entre um no solto e um no vivo nao da erro: da uma resposta que o navegador
+ * some, e o que vem depois dela e remontado —, e uma referência guardada
+ * antes disso aponta para um no que já saiu da árvore. Comparar posições
+ * entre um no solto e um no vivo não da erro: da uma resposta que o navegador
  * escolhe, e o teste passaria ou falharia por motivo nenhum.
  *
- * Pelos `<h2>`, e nao pelas regioes: o hero e uma regiao tambem — um
- * carrossel com rotulo —, e uma lista de regioes mistura a moldura da pagina
- * com o conteudo dela. O que este teste guarda e a ordem em que o cliente le
- * os nomes das secoes, e essa ordem sao os titulos. A assinatura da marca nao
- * tem titulo e por isso nao aparece aqui; a posicao dela esta garantida por
+ * Pelos `<h2>`, e não pelas regiões: o hero e uma região também — um
+ * carrossel com rótulo —, e uma lista de regiões mistura a moldura da página
+ * com o conteúdo dela. O que este teste guarda e a ordem em que o cliente lê
+ * os nomes das seções, e essa ordem são os títulos. A assinatura da marca não
+ * tem título e por isso não aparece aqui; a posição dela esta garantida por
  * andar dentro de `Collections`.
  */
 function ordemDasSecoes(): string[] {
@@ -455,16 +455,16 @@ test('as coleções entram depois do bloco de marcas, e não no meio dele', asyn
 });
 
 /**
- * A rede de seguranca da vitrine.
+ * A rede de segurança da vitrine.
  *
- * Destaque e pronta entrega saem de marcacao no painel, e mais vendidos sai
- * do historico de pedidos: as tres respondem vazio numa loja que acabou de
- * subir o catalogo, que foi o estado em que esta home chegou a producao. As
- * de marca saem do catalogo filtrado — se ha produto da marca cadastrado,
+ * Destaque e pronta entrega saem de marcação no painel, e mais vendidos sai
+ * do histórico de pedidos: as três respondem vazio numa loja que acabou de
+ * subir o catálogo, que foi o estado em que esta home chegou a produção. As
+ * de marca saem do catálogo filtrado — se há produto da marca cadastrado,
  * elas tem o que mostrar, e a home nunca abre sem um perfume na tela.
  *
  * Era o papel de "Novidades", que saiu da home. A troca tem um custo: aquela
- * dependia so de existir produto, e estas dependem de a marca estar escrita
+ * dependia só de existir produto, e estas dependem de a marca estar escrita
  * no cadastro como esta em `BRANDS`.
  */
 test('com as três prateleiras curadas vazias, as marcas sustentam a vitrine', async () => {
@@ -489,13 +489,13 @@ test('com as três prateleiras curadas vazias, as marcas sustentam a vitrine', a
 });
 
 /**
- * A fileira encostada na faixa de colecoes sai em areia.
+ * A fileira encostada na faixa de coleções sai em areia.
  *
- * A faixa nao tem fundo proprio: ela e o creme da pagina. Uma prateleira em
+ * A faixa não tem fundo próprio: ela e o creme da página. Uma prateleira em
  * creme logo acima dela encosta sem mudanca de tom, e a vitrine passa a
  * parecer parte da faixa. Foi o que aconteceu quando o bloco de marcas virou
  * a abertura da home e a contagem de tons continuou saindo da primeira
- * prateleira: tres antes da faixa em vez de duas, e a terceira caiu em creme.
+ * prateleira: três antes da faixa em vez de duas, e a terceira caiu em creme.
  */
 test('a prateleira que encosta nas coleções sai tingida', async () => {
   abrirHome();
@@ -509,7 +509,7 @@ test('a prateleira que encosta nas coleções sai tingida', async () => {
   });
 });
 
-/** E a de cima dela, nao: duas de areia seguidas leem como uma fileira so. */
+/** E a de cima dela, não: duas de areia seguidas leem como uma fileira só. */
 test('a prateleira anterior a essa não sai tingida', async () => {
   abrirHome();
 
@@ -542,15 +542,15 @@ test('sem destaques, o bloco de marcas continua abrindo a página', async () => 
 });
 
 /**
- * A regressao que motivou o arranjo dinamico.
+ * A regressão que motivou o arranjo dinâmico.
  *
- * Com as posicoes escritas a mao, uma prateleira que sai vazia empurra a
- * faixa de colecoes para cima e ela aparece antes do que deveria — foi assim
+ * Com as posições escritas a mão, uma prateleira que sai vazia empurra a
+ * faixa de coleções para cima e ela aparece antes do que deveria — foi assim
  * que uma loja sem destaque marcado chegou a abrir no banner e ir direto para
- * uma tela de navegacao, sem um perfume no meio.
+ * uma tela de navegação, sem um perfume no meio.
  *
- * Agora quem abre a pagina sao as tres de marca, entao o caso a guardar e uma
- * delas vazia: a faixa nao pode subir para o meio do bloco, tem de continuar
+ * Agora quem abre a página são as três de marca, então o caso a guardar e uma
+ * delas vazia: a faixa não pode subir para o meio do bloco, tem de continuar
  * entrando depois da terceira fileira que de fato aparecer.
  */
 test('com uma marca vazia, as coleções ainda esperam três prateleiras', async () => {
@@ -587,12 +587,12 @@ test('com uma prateleira só, as coleções vem logo depois dela', async () => {
 });
 
 /**
- * Sem prateleira nenhuma, quem encosta no banner sao as colecoes.
+ * Sem prateleira nenhuma, quem encosta no banner são as coleções.
  *
- * O respiro de cima existe para separar duas secoes de mesmo tom; contra a
- * foto escura do banner ele so empurra o conteudo para fora da primeira tela.
- * Quem recebe esse tratamento e a primeira secao que sobrou, seja ela qual
- * for — por isso o teste olha a faixa, e nao a prateleira.
+ * O respiro de cima existe para separar duas seções de mesmo tom; contra a
+ * foto escura do banner ele só empurra o conteúdo para fora da primeira tela.
+ * Quem recebe esse tratamento e a primeira seção que sobrou, seja ela qual
+ * for — por isso o teste olha a faixa, e não a prateleira.
  */
 test('sem prateleira nenhuma, as coleções encostam no banner', async () => {
   prateleiras['featured'] = [];

@@ -1,8 +1,8 @@
 /*
  * A trilha de auditoria.
  *
- * Uma lista de blocos, e nao uma tabela: o que cada entrada carrega varia
- * demais — uma tem tres campos que mudaram, outra nao tem nenhum — e colunas
+ * Uma lista de blocos, e não uma tabela: o que cada entrada carrega varia
+ * demais — uma tem três campos que mudaram, outra não tem nenhum — e colunas
  * fixas ficariam vazias na maioria das linhas.
  */
 
@@ -16,7 +16,7 @@
  *
  * Grade que acomoda o que couber: quatro campos no desktop, dois no tablet,
  * um no celular. `minmax(12rem, 1fr)` e a largura em que um nome com e-mail
- * ao lado ainda e legivel dentro do `<select>`.
+ * ao lado ainda e legível dentro do `<select>`.
  */
 .filters {
   display: grid;
@@ -32,7 +32,7 @@
 }
 
 .refresh {
-  /* Alinha com a base dos campos, que tem rotulo em cima. */
+  /* Alinha com a base dos campos, que tem rótulo em cima. */
   justify-self: start;
 }
 
@@ -118,7 +118,7 @@
 /*
  * A hora.
  *
- * Nao quebra e nao encolhe: e o dado pelo qual se percorre a lista, e uma
+ * Não quebra e não encolhe: e o dado pelo qual se percorre a lista, e uma
  * data partida em duas linhas quebraria a coluna que o olho segue.
  */
 .when {
@@ -152,7 +152,7 @@
 /*
  * O que mudou.
  *
- * Fundo proprio e um recuo: e uma citacao do que o servidor gravou, e nao
+ * Fundo próprio e um recuo: e uma citação do que o servidor gravou, e não
  * texto da tela. Cada linha e "campo: antes -> depois".
  */
 .diff {
@@ -199,9 +199,9 @@
 /*
  * O valor anterior, riscado.
  *
- * O risco nao e o unico sinal: a cor apagada e a seta dizem a mesma coisa de
+ * O risco não e o único sinal: a cor apagada e a seta dizem a mesma coisa de
  * outras duas formas, porque `line-through` sozinho some para quem enxerga
- * pouco e nao e anunciado por leitor de tela — e para esse caso ha o "virou"
+ * pouco e não e anunciado por leitor de tela — e para esse caso há o "virou"
  * escondido entre os dois valores.
  */
 .before {

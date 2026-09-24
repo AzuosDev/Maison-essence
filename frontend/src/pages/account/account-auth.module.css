@@ -1,9 +1,9 @@
 /*
  * Entrar e criar conta.
  *
- * As duas telas compartilham este arquivo porque sao a mesma tela com um
+ * As duas telas compartilham este arquivo porque são a mesma tela com um
  * campo a mais: mesma largura, mesma caixa, mesmo caminho de fuga embaixo.
- * Dois modulos quase iguais divergiriam no primeiro ajuste de espaco.
+ * Dois módulos quase iguais divergiriam no primeiro ajuste de espaço.
  */
 
 .screen {
@@ -14,9 +14,9 @@
 }
 
 /*
- * 26rem: a largura em que um campo de formulario ainda parece um campo de
- * formulario. Mais largo que isso, no desktop, o input vira uma faixa e a
- * distancia entre o rotulo e a borda direita fica estranha.
+ * 26rem: a largura em que um campo de formulário ainda parece um campo de
+ * formulário. Mais largo que isso, no desktop, o input vira uma faixa e a
+ * distância entre o rótulo e a borda direita fica estranha.
  */
 .card {
   width: 100%;
@@ -27,12 +27,12 @@
   border-radius: var(--radius-card);
 
   /*
-   * Campos maiores que os do resto da loja, e so aqui.
+   * Campos maiores que os do resto da loja, e só aqui.
    *
-   * Nao e capricho: este formulario e preenchido quase sempre no celular,
-   * com uma mao, e e a unica tela da area da conta em que errar o alvo
-   * significa nao entrar. O token continua sendo o mesmo — e o valor dele
-   * que muda neste contexto —, entao campo e botao continuam alinhados.
+   * Não e capricho: este formulário e preenchido quase sempre no celular,
+   * com uma mão, e e a única tela da área da conta em que errar o alvo
+   * significa não entrar. O token continua sendo o mesmo — e o valor dele
+   * que muda neste contexto —, então campo e botão continuam alinhados.
    */
   --control-height: 3.25rem;
 }
@@ -104,11 +104,11 @@
 }
 
 /*
- * A saida, fora da caixa.
+ * A saída, fora da caixa.
  *
- * Fora e nao dentro de proposito: nao e uma terceira opcao do formulario, e
- * o lembrete de que o formulario inteiro e opcional. A loja nao cobra conta
- * de ninguem para vender.
+ * Fora e não dentro de propósito: não e uma terceira opção do formulário, e
+ * o lembrete de que o formulário inteiro e opcional. A loja não cobra conta
+ * de ninguém para vender.
  */
 .escape {
   margin-top: var(--space-24);

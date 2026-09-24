@@ -1,12 +1,12 @@
 /*
  * O banner institucional: a assinatura da marca e a proposta da loja.
  *
- * Largura total, fundo preto, texto centrado numa medida curta. E a unica
- * secao da home que nao vende nada — existe para responder "quem e essa loja
+ * Largura total, fundo preto, texto centrado numa medida curta. E a única
+ * seção da home que não vende nada — existe para responder "quem e essa loja
  * de quem eu nunca ouvi falar?", que e a pergunta que trava a primeira compra
  * numa vitrine pequena.
  *
- * Nao ha foto aqui de proposito: uma imagem de fundo atras de texto e mais um
+ * Não há foto aqui de propósito: uma imagem de fundo atrás de texto e mais um
  * arquivo grande na primeira dobra e uma aposta de contraste que nenhuma
  * media query resolve. O preto da marca com o filete dourado faz o mesmo
  * trabalho, sem byte nenhum.
@@ -14,8 +14,8 @@
 
 .statement {
   /* Os dois tokens capturados onde ainda valem os valores globais, para que
-     `.action` possa inverte-los no botao contornado sem escrever cor nova.
-     Mesmo arranjo do hero — a explicacao inteira esta la. */
+     `.action` possa inverte-los no botão contornado sem escrever cor nova.
+     Mesmo arranjo do hero — a explicação inteira esta lá. */
   --dark: var(--slab);
   --light: var(--slab-ink);
 
@@ -33,7 +33,7 @@
   text-align: center;
 }
 
-/* A assinatura: o logotipo em versao empilhada, sem link. */
+/* A assinatura: o logotipo em versão empilhada, sem link. */
 .signature {
   margin-bottom: var(--space-8);
 }
@@ -45,7 +45,7 @@
 }
 
 .text {
-  /* Medida de leitura curta: sao tres frases e elas precisam ser lidas. */
+  /* Medida de leitura curta: são três frases e elas precisam ser lidas. */
   max-width: 54ch;
 
   font-family: var(--font-display);
@@ -63,7 +63,7 @@
   color: color-mix(in srgb, var(--light) 70%, transparent);
 }
 
-/* Os tokens invertidos para o botao contornado, como no hero. */
+/* Os tokens invertidos para o botão contornado, como no hero. */
 .action {
   --ink: var(--light);
   --cream: var(--dark);

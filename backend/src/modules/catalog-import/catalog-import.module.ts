@@ -5,17 +5,17 @@ import { CatalogImportController } from './catalog-import.controller.js';
 import { CatalogImportService } from './catalog-import.service.js';
 
 /**
- * A importacao de catalogo, pelo comando e pela rota.
+ * A importação de catálogo, pelo comando e pela rota.
  *
- * O modulo nao depende de `ProductsModule` nem de `CategoriesModule` de
- * proposito: aqueles servicos existem para editar **um** produto pelo painel,
- * com auditoria de preco por chamada e 409 no slug ocupado. A importacao faz
- * outra coisa — funde uma lista inteira preservando o que ja esta gravado — e
- * chamar `ProductsService.create` em laco daria 269 entradas de trilha e
- * nenhuma das regras de preservacao.
+ * O módulo não depende de `ProductsModule` nem de `CategoriesModule` de
+ * propósito: aqueles serviços existem para editar **um** produto pelo painel,
+ * com auditoria de preço por chamada e 409 no slug ocupado. A importação faz
+ * outra coisa — funde uma lista inteira preservando o que já esta gravado — e
+ * chamar `ProductsService.create` em laço daria 269 entradas de trilha e
+ * nenhuma das regras de preservação.
  *
- * O que ele compartilha com eles sao os **schemas** e os **DTOs**, que e onde
- * a divergencia doeria: um campo novo no produto passa a valer aqui no mesmo
+ * O que ele compartilha com eles são os **schemas** e os **DTOs**, que e onde
+ * a divergência doeria: um campo novo no produto passa a valer aqui no mesmo
  * dia.
  */
 @Module({

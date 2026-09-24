@@ -16,11 +16,11 @@ import type { DeliveryCityDocument } from './schemas/delivery-city.schema.js';
 /**
  * `resolveFee` sem banco e sem HTTP.
  *
- * A conta em si ja e testada em `delivery-fee.spec.ts`, que e funcao pura. O
- * que se confere aqui e o que o servico acrescenta a ela e que nenhuma funcao
- * pura pode cobrir: a leitura das configuracoes da loja, a recusa da cidade
- * que nao e mais atendida e o congelamento de nome, estado e prazo que o
- * pedido vai guardar. Sao justamente as decisoes que, se saissem erradas,
+ * A conta em si já e testada em `delivery-fee.spec.ts`, que e função pura. O
+ * que se confere aqui e o que o serviço acrescenta a ela e que nenhuma função
+ * pura pode cobrir: a leitura das configurações da loja, a recusa da cidade
+ * que não e mais atendida e o congelamento de nome, estado e prazo que o
+ * pedido vai guardar. São justamente as decisões que, se saissem erradas,
  * apareceriam na conta do cliente.
  */
 const CITY_ID = new Types.ObjectId();
@@ -46,7 +46,7 @@ function storeWith(overrides: Partial<StoreSettingsDocument> = {}): StoreSetting
   } as StoreSettingsDocument;
 }
 
-/** O que o servico recebeu no `findOne`, para conferir o filtro. */
+/** O que o serviço recebeu no `findOne`, para conferir o filtro. */
 interface Lookup {
   filter?: Record<string, unknown>;
 }
@@ -88,7 +88,7 @@ describe('DeliveryService.resolveFee', () => {
     it('recusa quando a loja não recebe para retirada', async () => {
       const service = serviceWith(storeWith({ pickupEnabled: false }), null);
 
-      // Taxa zero e facil; o que nao existe e o lugar de buscar.
+      // Taxa zero e fácil; o que não existe e o lugar de buscar.
       await expect(
         service.resolveFee({ mode: FULFILLMENT_MODES.PICKUP, subtotalCents: 12_000 }),
       ).rejects.toThrow(new UnprocessableEntityException(PICKUP_DISABLED_MESSAGE));
@@ -113,7 +113,7 @@ describe('DeliveryService.resolveFee', () => {
       expect(quote.state).toBe('CE');
       expect(quote.estimatedDays).toBe(2);
       expect(quote.requiresAddress).toBe(true);
-      // Cidade desativada nao pode ser encontrada, e a garantia e do filtro.
+      // Cidade desativada não pode ser encontrada, e a garantia e do filtro.
       expect(lookup.filter).toEqual({ _id: CITY_ID, isActive: true });
     });
 
@@ -149,8 +149,8 @@ describe('DeliveryService.resolveFee', () => {
         subtotalCents: 20_000,
       });
 
-      // Passou do minimo da loja e mesmo assim paga: cidade distante costuma
-      // ter minimo proprio justamente para nao cair na regra geral.
+      // Passou do mínimo da loja e mesmo assim paga: cidade distante costuma
+      // ter mínimo próprio justamente para não cair na regra geral.
       expect(quote.isFree).toBe(false);
       expect(quote.missingForFreeCents).toBe(10_000);
     });
@@ -167,8 +167,8 @@ describe('DeliveryService.resolveFee', () => {
       const ausente = serviceWith(storeWith(), null);
       const malformado = serviceWith(storeWith(), cityWith());
 
-      // Para quem esta comprando, "nao atendemos ai" e "paramos de atender
-      // ai" dao no mesmo: a escolha nao vale mais.
+      // Para quem esta comprando, "não atendemos aí" e "paramos de atender
+      // aí" dao no mesmo: a escolha não vale mais.
       await expect(
         ausente.resolveFee({
           mode: FULFILLMENT_MODES.DELIVERY,

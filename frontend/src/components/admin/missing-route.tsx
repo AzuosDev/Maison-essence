@@ -3,30 +3,30 @@ import { AlertIcon } from './admin-icons';
 import styles from './missing-route.module.css';
 
 /**
- * A tela funciona; a rota que ela chama ainda nao existe.
+ * A tela funciona; a rota que ela chama ainda não existe.
  *
- * ## Por que isto e um componente, e nao um erro generico
+ * ## Por que isto e um componente, e não um erro genérico
  *
- * Tres telas da area de sistema chamam rotas que o backend nao publica: a
- * trilha de auditoria (`GET /audit`), a contagem por colecao e o seed de
- * demonstracao. O modulo de auditoria, por exemplo, tem servico, colecao e
- * dois anos de retencao — so nao tem controlador.
+ * Três telas da área de sistema chamam rotas que o backend não publica: a
+ * trilha de auditoria (`GET /audit`), a contagem por coleção e o seed de
+ * demonstração. O módulo de auditoria, por exemplo, tem serviço, coleção e
+ * dois anos de retenção — só não tem controlador.
  *
- * "Algo deu errado. Tente novamente em instantes." seria mentira nos tres
- * casos: nao ha nada de errado e tentar de novo nao muda nada. Quem abre
- * esta area e quem mantem a aplicacao, e para essa pessoa a informacao util
- * e exatamente qual rota falta — ela e quem vai escreve-la.
+ * "Algo deu errado. Tente novamente em instantes." seria mentira nos três
+ * casos: não há nada de errado e tentar de novo não muda nada. Quem abre
+ * esta área e quem mantem a aplicação, e para essa pessoa a informação útil
+ * e exatamente qual rota falta — ela e quem vai escreve-lá.
  *
- * O aviso some sozinho no dia em que a rota responder: a tela ja esta
- * inteira do lado de ca, e este componente so aparece no `404`.
+ * O aviso some sozinho no dia em que a rota responder: a tela já esta
+ * inteira do lado de ca, e este componente só aparece no `404`.
  */
 
 export interface MissingRouteProps {
-  /** `GET /audit` — o metodo e o caminho, como se escreveria no controller. */
+  /** `GET /audit` — o método e o caminho, como se escreveria no controller. */
   route: string;
   /** O que essa rota precisa devolver, em uma ou duas frases. */
   children: ReactNode;
-  /** O que fazer enquanto isso, quando ha um caminho alternativo. */
+  /** O que fazer enquanto isso, quando há um caminho alternativo. */
   workaround?: ReactNode;
 }
 

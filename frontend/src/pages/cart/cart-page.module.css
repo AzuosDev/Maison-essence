@@ -1,9 +1,9 @@
 /*
  * A sacola: lista a esquerda, resumo a direita.
  *
- * No celular vira uma coluna so, com a lista em cima. A ordem importa: o
+ * No celular vira uma coluna só, com a lista em cima. A ordem importa: o
  * cliente confere o que esta levando antes de olhar o total, que e a ordem
- * em que ele faria isso com a sacola na mao.
+ * em que ele faria isso com a sacola na mão.
  */
 
 .page {
@@ -41,7 +41,7 @@
   padding: 0;
   list-style: none;
 
-  /* A lista tem superficie propria: sobre o creme da pagina, as linhas
+  /* A lista tem superficie própria: sobre o creme da página, as linhas
      brancas separam os itens do resto sem precisar de moldura. */
   background: var(--surface);
   border: var(--border);
@@ -59,11 +59,11 @@
   }
 
   /*
-   * A lista leva o espaco que sobra; o resumo tem largura propria e fixa.
+   * A lista leva o espaço que sobra; o resumo tem largura própria e fixa.
    *
    * Um resumo em `fr` cresceria junto com a janela e espalharia quatro
-   * linhas de texto por meia tela. Ele tem pouco conteudo e ganha nada com
-   * largura — quem ganha e a lista, onde estao as fotos e os nomes.
+   * linhas de texto por meia tela. Ele tem pouco conteúdo e ganha nada com
+   * largura — quem ganha e a lista, onde estão as fotos e os nomes.
    */
   .body {
     grid-template-columns: minmax(0, 1fr) 22rem;

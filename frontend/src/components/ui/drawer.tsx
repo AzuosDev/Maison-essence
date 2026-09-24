@@ -6,12 +6,12 @@ import styles from './drawer.module.css';
 
 /**
  * A gaveta: a sacola, o menu de categorias no celular, os filtros do
- * catalogo.
+ * catálogo.
  *
- * E um dialogo como o modal — mesmo `useDialog`, mesmas tres obrigacoes:
+ * E um diálogo como o modal — mesmo `useDialog`, mesmas três obrigações:
  * prende o foco, fecha no Escape, devolve o foco ao gatilho. O que muda e a
- * forma: entra pela lateral e ocupa a altura inteira, porque o conteudo dela
- * e uma lista que rola, e nao uma pergunta curta.
+ * forma: entra pela lateral e ocupa a altura inteira, porque o conteúdo dela
+ * e uma lista que rola, e não uma pergunta curta.
  */
 
 export interface DrawerProps {
@@ -20,7 +20,7 @@ export interface DrawerProps {
   title: string;
   /** De onde entra. A direita para a sacola, a esquerda para o menu. */
   side?: 'right' | 'left';
-  /** O rodape preso embaixo: o total e o botao de fechar pedido. */
+  /** O rodapé preso embaixo: o total e o botão de fechar pedido. */
   footer?: ReactNode;
   /** 32rem em vez de 26rem. */
   wide?: boolean;
@@ -55,7 +55,7 @@ export function Drawer({
   }
 
   return createPortal(
-    // O veu fecha no clique, e o equivalente de teclado e o Escape, tratado
+    // O véu fecha no clique, e o equivalente de teclado e o Escape, tratado
     // pelo `useDialog`. Ver a nota em `modal.tsx`.
     // oxlint-disable-next-line click-events-have-key-events, no-static-element-interactions
     <div className={cx(styles.overlay, styles[side])} onClick={onOverlayClick}>

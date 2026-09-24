@@ -5,11 +5,11 @@ import type { Paginated, PublicProduct } from './catalog.types';
 /**
  * A montagem da lista.
  *
- * Dois comportamentos merecem caso proprio. O acumulo do celular — que e o
- * que sustenta "voltar do produto preserva a pagina carregada", porque a
- * volta remonta as mesmas paginas do cache — e o recorte do filtro de
- * desconto, que existe so porque a API nao tem esse filtro e portanto e o
- * pedaco mais facil de errar em silencio.
+ * Dois comportamentos merecem caso próprio. O acumulo do celular — que e o
+ * que sustenta "voltar do produto preserva a página carregada", porque a
+ * volta remonta as mesmas páginas do cache — e o recorte do filtro de
+ * desconto, que existe só porque a API não tem esse filtro e portanto e o
+ * pedaço mais fácil de errar em silêncio.
  */
 
 function produto(id: string, patch: Partial<PublicProduct> = {}): PublicProduct {
@@ -44,7 +44,7 @@ function pagina(items: PublicProduct[], patch: Partial<Paginated<PublicProduct>>
   };
 }
 
-/* ---- Paginacao normal --------------------------------------------------- */
+/* ---- Paginação normal --------------------------------------------------- */
 
 test('as páginas do celular viram uma lista só, na ordem', () => {
   const lista = pagedSlice([
@@ -57,7 +57,7 @@ test('as páginas do celular viram uma lista só, na ordem', () => {
 
 test('as totalizações saem da última página carregada', () => {
   // Se a dona publicar um produto entre um "carregar mais" e o seguinte, o
-  // numero mais novo e o mais proximo da verdade.
+  // número mais novo e o mais próximo da verdade.
   const lista = pagedSlice([
     pagina([produto('1')], { totalItems: 60, hasMore: true }),
     pagina([produto('2')], { totalItems: 61, hasMore: false }),
@@ -123,8 +123,8 @@ test('a segunda página do recorte acumula no celular', () => {
 });
 
 test('a varredura cheia de descontos avisa que pode ter ficado gente de fora', () => {
-  // Quarenta e oito e o teto da pagina do backend. Vindo todos com desconto,
-  // pode haver um quadragesimo nono que a varredura nao alcancou — e a tela
+  // Quarenta e oito e o teto da página do backend. Vindo todos com desconto,
+  // pode haver um quadragesimo nono que a varredura não alcancou — e a tela
   // diz isso em vez de apresentar uma contagem que talvez esteja errada.
   const cheia = Array.from({ length: 48 }, (_, i) => produto(String(i), { discountPercent: 15 }));
 
@@ -132,7 +132,7 @@ test('a varredura cheia de descontos avisa que pode ter ficado gente de fora', (
   expect(saleSlice(cheia.slice(0, 47), 1, false).truncated).toBe(false);
 });
 
-/* ---- As opcoes da barra de filtros -------------------------------------- */
+/* ---- As opções da barra de filtros -------------------------------------- */
 
 test('as marcas saem sem repetir, ignorando a caixa, e em ordem', () => {
   const marcas = brandsOf([
@@ -155,6 +155,6 @@ test('o teto do slider e o maior preço da varredura', () => {
   expect(teto).toBe(45_000);
 });
 
-test('catalogo vazio não produz teto negativo', () => {
+test('catálogo vazio não produz teto negativo', () => {
   expect(ceilingOf([])).toBe(0);
 });

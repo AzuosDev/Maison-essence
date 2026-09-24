@@ -18,7 +18,7 @@ import { FULFILLMENT_MODES } from '../../../common/enums/fulfillment-mode.js';
 import { QuoteCartDto } from '../../cart/dto/quote-cart.dto.js';
 import { IsBrazilianPhone } from '../phone.js';
 
-/** Tira o que nao e digito e devolve `00000-000`. CEP vazio continua vazio. */
+/** Tira o que não e digito e devolve `00000-000`. CEP vazio continua vazio. */
 const toZipCode = ({ value }: { value: unknown }): unknown => {
   if (typeof value !== 'string') {
     return value;
@@ -40,7 +40,7 @@ export class OrderCustomerDto {
   @IsBrazilianPhone()
   phone: string;
 
-  /** Opcional de verdade: a loja atende pelo WhatsApp, nao por e-mail. */
+  /** Opcional de verdade: a loja atende pelo WhatsApp, não por e-mail. */
   @IsOptional()
   @IsEmail({}, { message: 'e-mail inválido' })
   @MaxLength(160)
@@ -50,10 +50,10 @@ export class OrderCustomerDto {
 /**
  * Para onde entregar.
  *
- * Rua e bairro sao obrigatorios; numero nao, porque endereco sem numero
+ * Rua e bairro são obrigatórios; número não, porque endereço sem número
  * existe e "s/n" e resposta legitima em cidade do interior. O ponto de
- * referencia vale mais que o CEP na hora de achar a casa, e por isso tem
- * espaco proprio em vez de ser espremido no complemento.
+ * referência vale mais que o CEP na hora de achar a casa, e por isso tem
+ * espaço próprio em vez de ser espremido no complemento.
  */
 export class OrderAddressDto {
   @IsString({ message: 'informe a rua' })
@@ -88,11 +88,11 @@ export class OrderAddressDto {
 }
 
 /**
- * O corpo de `POST /orders`: a mesma sacola da cotacao, mais quem compra.
+ * O corpo de `POST /orders`: a mesma sacola da cotação, mais quem compra.
  *
- * Herda de `QuoteCartDto` de proposito, e nao repete os campos: sao os mesmos
+ * Herda de `QuoteCartDto` de propósito, e não repete os campos: são os mesmos
  * itens, a mesma entrega e o mesmo pagamento, validados pelas mesmas regras.
- * Duas declaracoes da mesma sacola divergiriam no dia em que uma delas
+ * Duas declarações da mesma sacola divergiriam no dia em que uma delas
  * ganhasse um campo.
  */
 export class CreateOrderDto extends QuoteCartDto {
@@ -102,10 +102,10 @@ export class CreateOrderDto extends QuoteCartDto {
   customer: OrderCustomerDto;
 
   /**
-   * Obrigatorio na entrega, ignorado na retirada.
+   * Obrigatório na entrega, ignorado na retirada.
    *
-   * `@ValidateIf` em vez de checagem no servico porque isto e forma do corpo,
-   * nao regra de negocio: quem pede entrega sem endereco errou o formulario, e
+   * `@ValidateIf` em vez de checagem no serviço porque isto e forma do corpo,
+   * não regra de negócio: quem pede entrega sem endereço errou o formulário, e
    * a resposta certa e 400 com o campo que faltou.
    */
   @ValidateIf((dto: CreateOrderDto) => dto.fulfillment?.mode === FULFILLMENT_MODES.DELIVERY)
@@ -117,13 +117,13 @@ export class CreateOrderDto extends QuoteCartDto {
   /**
    * O total que o cliente viu na tela, em centavos.
    *
-   * Nao entra em conta nenhuma: e conferencia. O servidor refaz a cotacao
-   * inteira e compara — se o preco subiu, o desconto venceu ou o estoque
-   * acabou entre montar a sacola e fechar o pedido, a diferenca aparece aqui e
-   * o pedido volta em 409 com a cotacao nova, em vez de ser gravado por um
-   * valor que ninguem combinou.
+   * Não entra em conta nenhuma: e conferência. O servidor refaz a cotação
+   * inteira e compara — se o preço subiu, o desconto venceu ou o estoque
+   * acabou entre montar a sacola e fechar o pedido, a diferença aparece aqui e
+   * o pedido volta em 409 com a cotação nova, em vez de ser gravado por um
+   * valor que ninguém combinou.
    *
-   * Obrigatorio para que essa conferencia nunca seja pulada por omissao.
+   * Obrigatório para que essa conferência nunca seja pulada por omissão.
    */
   @IsDefined({ message: 'informe o total que aparece na sacola' })
   @IsInt({ message: 'total inválido' })

@@ -1,32 +1,32 @@
 import type { PublicProductDetail, PublicVariant, QuantityDiscountTier } from './catalog.types';
 
 /**
- * As contas da pagina do produto, fora do React.
+ * As contas da página do produto, fora do React.
  *
- * Sao as regras que decidem o que a tela mostra — qual variante abre
- * selecionada, quais fotos entram na galeria, ate quanto o cliente pode
+ * São as regras que decidem o que a tela mostra — qual variante abre
+ * selecionada, quais fotos entram na galeria, até quanto o cliente pode
  * levar e quanto ele economiza levando mais. Nenhuma delas precisa de DOM
- * nem de rede, e todas sao do tipo que se erra em silencio: um teto de
- * quantidade errado so aparece na recusa do pedido, e um desconto calculado
- * de um jeito aqui e de outro no servidor vira discussao na hora de cobrar.
+ * nem de rede, e todas são do tipo que se erra em silêncio: um teto de
+ * quantidade errado só aparece na recusa do pedido, e um desconto calculado
+ * de um jeito aqui e de outro no servidor vira discussão na hora de cobrar.
  *
- * Por isso ficam aqui, testadas uma a uma, e o componente so as chama.
+ * Por isso ficam aqui, testadas uma a uma, e o componente só as chama.
  */
 
 /* ---- A variante --------------------------------------------------------- */
 
 /**
- * A variante que a pagina abre selecionada: a mais barata **entre as
- * disponiveis**.
+ * A variante que a página abre selecionada: a mais barata **entre as
+ * disponíveis**.
  *
- * Nao e a `displayVariant` do card, que e a mais barata de todas: o card
- * anuncia preco, e "a partir de R$ 180" precisa falar do menor preco exista
- * ele ou nao em estoque. Aqui o cliente vai comprar — abrir a pagina com uma
- * opcao esgotada em foco deixaria o botao desabilitado sem ele ter feito
+ * Não e a `displayVariant` do card, que e a mais barata de todas: o card
+ * anuncia preço, e "a partir de R$ 180" precisa falar do menor preço exista
+ * ele ou não em estoque. Aqui o cliente vai comprar — abrir a página com uma
+ * opção esgotada em foco deixaria o botão desabilitado sem ele ter feito
  * nada.
  *
- * Quando nenhuma esta disponivel, volta a mais barata mesmo assim: a pagina
- * continua precificando o produto e mostrando o botao esgotado, que e o que
+ * Quando nenhuma esta disponível, volta a mais barata mesmo assim: a página
+ * continua precificando o produto e mostrando o botão esgotado, que e o que
  * conta ao cliente que ele existe e voltara.
  */
 export function defaultVariant(product: PublicProductDetail): PublicVariant | null {
@@ -36,9 +36,9 @@ export function defaultVariant(product: PublicProductDetail): PublicVariant | nu
 /**
  * A variante pedida pela URL, se ela existir neste produto.
  *
- * `null` quando o id nao casa com nada — link antigo de uma variante que a
- * dona removeu. A pagina cai na variante padrao em vez de mostrar um produto
- * sem preco.
+ * `null` quando o id não casa com nada — link antigo de uma variante que a
+ * dona removeu. A página cai na variante padrão em vez de mostrar um produto
+ * sem preço.
  */
 export function variantById(
   product: PublicProductDetail,
@@ -61,14 +61,14 @@ function cheapest(variants: readonly PublicVariant[]): PublicVariant | null {
 /* ---- A galeria ---------------------------------------------------------- */
 
 /**
- * As fotos da galeria: as do produto, mais as das variantes que nao estao
+ * As fotos da galeria: as do produto, mais as das variantes que não estão
  * entre elas.
  *
  * A ordem importa — a capa e a primeira foto do produto, que e a que a dona
- * escolheu para ser a capa. As fotos de variante entram depois, e so as que
- * ainda nao apareceram: e comum a dona usar a mesma foto no produto e na
+ * escolheu para ser a capa. As fotos de variante entram depois, e só as que
+ * ainda não apareceram: e comum a dona usar a mesma foto no produto e na
  * variante de 100ml, e duplicar isso na faixa de miniaturas faria o cliente
- * achar que ha duas fotos iguais por engano.
+ * achar que há duas fotos iguais por engano.
  *
  * A lista pode voltar vazia, e o componente desenha o marcador de "sem foto".
  */
@@ -85,10 +85,10 @@ export function galleryOf(product: PublicProductDetail): string[] {
 }
 
 /**
- * A foto que a variante escolhida manda mostrar, pelo indice na galeria.
+ * A foto que a variante escolhida manda mostrar, pelo índice na galeria.
  *
- * `null` quando a variante nao tem foto propria — e ai a galeria fica onde
- * estava. Trocar de 50ml para 100ml num produto fotografado uma vez so nao
+ * `null` quando a variante não tem foto própria — e aí a galeria fica onde
+ * estava. Trocar de 50ml para 100ml num produto fotografado uma vez só não
  * deve jogar o cliente de volta para a primeira foto enquanto ele olhava a
  * terceira.
  */
@@ -110,14 +110,14 @@ export const LOW_STOCK_THRESHOLD = 3;
 /**
  * Teto de quantidade de um produto sob encomenda.
  *
- * Nao ha estoque contra o que limitar — a dona vende o que ainda vai buscar
+ * Não há estoque contra o que limitar — a dona vende o que ainda vai buscar
  * — e um campo sem teto nenhum convida ao "999" digitado sem querer. Dez e o
  * ponto em que uma compra de loja de bairro vira uma conversa por WhatsApp,
  * que e como ela deve ser tratada mesmo.
  */
 export const ON_DEMAND_MAX_QUANTITY = 10;
 
-/** Ate quanto o seletor deixa subir. Zero quando nao ha o que vender. */
+/** Até quanto o seletor deixa subir. Zero quando não há o que vender. */
 export function maxQuantityOf(variant: PublicVariant | null): number {
   if (variant === null || !variant.isAvailable) {
     return 0;
@@ -126,7 +126,7 @@ export function maxQuantityOf(variant: PublicVariant | null): number {
   return variant.onDemand ? ON_DEMAND_MAX_QUANTITY : Math.min(variant.stock, ON_DEMAND_MAX_QUANTITY);
 }
 
-/** "Restam apenas 2": verdade so quando ha estoque contado e ele esta baixo. */
+/** "Restam apenas 2": verdade só quando há estoque contado e ele esta baixo. */
 export function isLowStock(variant: PublicVariant | null): boolean {
   return (
     variant !== null && !variant.onDemand && variant.stock > 0 && variant.stock <= LOW_STOCK_THRESHOLD
@@ -136,10 +136,10 @@ export function isLowStock(variant: PublicVariant | null): boolean {
 /* ---- O desconto progressivo --------------------------------------------- */
 
 /**
- * O degrau que vale para uma quantidade: o ultimo cujo minimo ela alcanca.
+ * O degrau que vale para uma quantidade: o último cujo mínimo ela alcança.
  *
  * Copia fiel de `products/quantity-discount.ts` no backend, e a fidelidade e
- * o ponto — o "leve 3 e ganhe 10%" que a pagina promete e o desconto que
+ * o ponto — o "leve 3 e ganhe 10%" que a página promete e o desconto que
  * `POST /cart/quote` vai aplicar. Nenhum degrau se soma a outro.
  */
 export function tierFor(
@@ -159,7 +159,7 @@ export function tierFor(
   return best;
 }
 
-/** O proximo degrau, para a chamada "leve mais 1 e ganhe 10%". */
+/** O próximo degrau, para a chamada "leve mais 1 e ganhe 10%". */
 export function nextTierFor(
   ladder: readonly QuantityDiscountTier[],
   quantity: number,
@@ -170,7 +170,7 @@ export function nextTierFor(
 export interface LinePricing {
   /** O desconto que vale agora, em pontos percentuais. */
   percentOff: number;
-  /** Quantidade vezes preco, antes do desconto. */
+  /** Quantidade vezes preço, antes do desconto. */
   grossCents: number;
   /** Quanto o desconto tira do total. */
   savingsCents: number;
@@ -179,13 +179,13 @@ export interface LinePricing {
 }
 
 /**
- * O que a quantidade escolhida custa, com o degrau que ela alcanca.
+ * O que a quantidade escolhida custa, com o degrau que ela alcança.
  *
- * `Math.round` sobre o total bruto da linha, e nao sobre o preco unitario: e
+ * `Math.round` sobre o total bruto da linha, e não sobre o preço unitário: e
  * assim que `cart-lines.ts` faz no servidor, e arredondar por unidade daria
- * um centavo de diferenca em quantidades impares. A cotacao e quem manda —
- * esta conta existe para que o numero da tela seja o mesmo que ela vai
- * devolver, e nao para substitui-la.
+ * um centavo de diferença em quantidades impares. A cotação e quem manda —
+ * esta conta existe para que o número da tela seja o mesmo que ela vai
+ * devolver, e não para substitui-lá.
  */
 export function linePricing(
   unitPriceCents: number,

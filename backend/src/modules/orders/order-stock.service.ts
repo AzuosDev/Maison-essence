@@ -12,23 +12,23 @@ export interface StockLine {
   quantity: number;
 }
 
-/** A linha na hora de baixar: a encomenda nao exige estoque para sair. */
+/** A linha na hora de baixar: a encomenda não exige estoque para sair. */
 export interface StockTake extends StockLine {
   allowBackorder: boolean;
 }
 
 /**
- * O estoque de um pedido: baixa na criacao, devolucao no cancelamento.
+ * O estoque de um pedido: baixa na criação, devolução no cancelamento.
  *
- * Aqui mora a unica coisa que separa esta loja de vender duas vezes a mesma
- * unidade. A conferencia da cotacao — "tem 1 em estoque, o pedido e de 1" —
- * acontece segundos antes da gravacao, e nesses segundos cabe outro cliente
+ * Aqui mora a única coisa que separa esta loja de vender duas vezes a mesma
+ * unidade. A conferência da cotação — "tem 1 em estoque, o pedido e de 1" —
+ * acontece segundos antes da gravação, e nesses segundos cabe outro cliente
  * inteiro: dois navegadores no mesmo perfume, os dois lendo estoque 1, os dois
  * fechando. Ler e depois gravar perde essa corrida sempre.
  *
- * Por isso a baixa nao le nada: a condicao de estoque suficiente viaja dentro
- * da propria atualizacao, e quem perde a corrida recebe zero documentos
- * alterados e vira 409. E o banco que decide, uma vez so, sem espaco entre a
+ * Por isso a baixa não lê nada: a condição de estoque suficiente viaja dentro
+ * da própria atualização, e quem perde a corrida recebe zero documentos
+ * alterados e vira 409. E o banco que decide, uma vez só, sem espaço entre a
  * pergunta e a resposta.
  */
 @Injectable()
@@ -40,15 +40,15 @@ export class OrderStockService {
   /**
    * Baixa o estoque item por item, desfazendo tudo se um deles falhar.
    *
-   * Uma linha de cada vez, e nao em paralelo, porque o que importa quando algo
-   * falha e saber exatamente o que ja saiu — a lista do que devolver precisa
+   * Uma linha de cada vez, e não em paralelo, porque o que importa quando algo
+   * falha e saber exatamente o que já saiu — a lista do que devolver precisa
    * estar certa, e e ela que impede um pedido recusado de levar estoque junto.
    *
-   * Sem transacao de proposito: ela exigiria replica set em todos os ambientes
-   * e resolveria um problema que a compensacao ja resolve, com a diferenca de
-   * que a compensacao funciona igual no Atlas gratuito e no banco em memoria
+   * Sem transação de propósito: ela exigiria replica set em todos os ambientes
+   * e resolveria um problema que a compensação já resolve, com a diferença de
+   * que a compensação funciona igual no Atlas gratuito e no banco em memória
    * dos testes. O intervalo em que o estoque fica baixado por um pedido que
-   * nao vai existir e o de uma gravacao que falhou.
+   * não vai existir e o de uma gravação que falhou.
    */
   async take(takes: readonly StockTake[]): Promise<void> {
     const applied: StockLine[] = [];
@@ -76,11 +76,11 @@ export class OrderStockService {
   /**
    * Devolve o que foi baixado.
    *
-   * Nunca lanca. Quem chama esta aqui por dois caminhos — desfazendo um pedido
-   * que nao vai existir, ou cancelando um que existiu — e nos dois o erro que
-   * importa ja aconteceu ou ja foi respondido. Uma excecao daqui trocaria uma
-   * mensagem util por um 500 e ainda assim nao devolveria o estoque; o registro
-   * no log e o que permite acertar a mao depois.
+   * Nunca lança. Quem chama esta aqui por dois caminhos — desfazendo um pedido
+   * que não vai existir, ou cancelando um que existiu — e nos dois o erro que
+   * importa já aconteceu ou já foi respondido. Uma exceção daqui trocaria uma
+   * mensagem útil por um 500 e ainda assim não devolveria o estoque; o registro
+   * no log e o que permite acertar a mão depois.
    */
   async giveBack(lines: readonly StockLine[]): Promise<void> {
     for (const line of lines) {
@@ -98,13 +98,13 @@ export class OrderStockService {
   /**
    * Tira as unidades desta variante, exigindo que elas existam.
    *
-   * `$elemMatch` com a condicao de estoque no mesmo filtro e o coracao disto:
+   * `$elemMatch` com a condição de estoque no mesmo filtro e o coração disto:
    * o `variants.$.stock` do `$inc` aponta para a variante que casou com o
-   * filtro, entao ou a condicao valia e a baixa aconteceu, ou nada aconteceu.
+   * filtro, então ou a condição valia e a baixa aconteceu, ou nada aconteceu.
    *
-   * Na venda sob encomenda a condicao sai: a dona vende o que ainda vai
-   * buscar, e o estoque negativo que sobra e a informacao certa — e quanto ela
-   * deve ao cliente, nao um defeito.
+   * Na venda sob encomenda a condição sai: a dona vende o que ainda vai
+   * buscar, e o estoque negativo que sobra e a informação certa — e quanto ela
+   * deve ao cliente, não um defeito.
    */
   private async decrement(take: StockTake): Promise<boolean> {
     const result = await this.products

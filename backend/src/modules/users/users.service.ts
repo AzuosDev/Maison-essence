@@ -37,7 +37,7 @@ export const SELF_DEACTIVATION_MESSAGE = 'Você não pode desativar a si mesmo.'
 export const LAST_SUPER_ADMIN_MESSAGE =
   'Este e o último SUPER_ADMIN ativo: promova outro antes de mexer neste.';
 
-/** Senha temporaria devolvida uma unica vez, na resposta do reset. */
+/** Senha temporária devolvida uma única vez, na resposta do reset. */
 export interface PasswordResetResult {
   user: UserView;
   temporaryPassword: string;
@@ -52,7 +52,7 @@ export class UsersService {
     private readonly audit: AuditService,
   ) {}
 
-  /** Lista o que o ator enxerga. Para o OWNER, SUPER_ADMIN nao existe. */
+  /** Lista o que o ator enxerga. Para o OWNER, SUPER_ADMIN não existe. */
   async list(actor: AuthenticatedUser): Promise<UserView[]> {
     const found = await this.users
       .find(visibilityFilter(actor))
@@ -111,8 +111,8 @@ export class UsersService {
     }
 
     if (dto.role !== undefined && dto.role !== target.role) {
-      // Mudar papel e gerenciar, nao editar perfil: exige alcance sobre o
-      // alvo mesmo quando o alvo e o proprio ator.
+      // Mudar papel e gerenciar, não editar perfil: exige alcance sobre o
+      // alvo mesmo quando o alvo e o próprio ator.
       assertCanManage(actor, viewTarget(target));
       assertNotOwnRole(actor, viewTarget(target));
       assertCanAssignRole(actor, dto.role);
@@ -132,8 +132,8 @@ export class UsersService {
     const saved = await this.save(target);
 
     // Papel novo precisa valer agora: o antigo esta dentro do access token
-    // que o usuario tem na mao. A sessao continua de pe e a proxima renovacao
-    // ja sai com o papel correto.
+    // que o usuário tem na mão. A sessão continua de pé e a próxima renovação
+    // já sai com o papel correto.
     if (changed.role) {
       await this.sessions.bumpCredentialVersion(adminOwner(saved._id));
     }
@@ -149,8 +149,8 @@ export class UsersService {
   }
 
   /**
-   * Ativa ou desativa. Desativar revoga as sessoes na hora — e o que faz o
-   * usuario cair na proxima chamada, e nao quando o token dele expirar.
+   * Ativa ou desativa. Desativar revoga as sessões na hora — e o que faz o
+   * usuário cair na próxima chamada, e não quando o token dele expirar.
    */
   async setStatus(
     actor: AuthenticatedUser,
@@ -195,12 +195,12 @@ export class UsersService {
   }
 
   /**
-   * Gera uma senha temporaria nova, marca a troca como obrigatoria e derruba
-   * todas as sessoes do alvo: quem quer que estivesse usando a senha antiga
-   * — inclusive quem a roubou — perde o acesso na mesma operacao.
+   * Gera uma senha temporária nova, marca a troca como obrigatória e derruba
+   * todas as sessões do alvo: quem quer que estivesse usando a senha antiga
+   * — inclusive quem a roubou — perde o acesso na mesma operação.
    *
-   * A senha volta em texto uma unica vez, nesta resposta. Nao ha como
-   * recupera-la depois, e e por isso que ela nao vai para o log.
+   * A senha volta em texto uma única vez, nesta resposta. Não há como
+   * recupera-lá depois, e e por isso que ela não vai para o log.
    */
   async resetPassword(actor: AuthenticatedUser, id: string): Promise<PasswordResetResult> {
     const target = await this.findForActor(id);
@@ -225,7 +225,7 @@ export class UsersService {
     return { user: toUserView(saved), temporaryPassword };
   }
 
-  /** Busca pelo id, tratando id malformado como "nao encontrado". */
+  /** Busca pelo id, tratando id malformado como "não encontrado". */
   private async findForActor(id: string): Promise<UserDocument> {
     const found = Types.ObjectId.isValid(id)
       ? await this.users.findById(new Types.ObjectId(id)).exec()
@@ -249,10 +249,10 @@ export class UsersService {
   /**
    * O sistema nunca pode ficar sem administrador.
    *
-   * Conferir e depois gravar tem uma janela teorica de corrida — dois
-   * SUPER_ADMIN se desativando no mesmo instante. Com duas ou tres contas no
-   * painel isso nao acontece, e a alternativa (transacao) exige replica set,
-   * que o Atlas M0 nao garante.
+   * Conferir e depois gravar tem uma janela teórica de corrida — dois
+   * SUPER_ADMIN se desativando no mesmo instante. Com duas ou três contas no
+   * painel isso não acontece, e a alternativa (transação) exige replica set,
+   * que o Atlas M0 não garante.
    */
   private async assertNotLastSuperAdmin(exceptId: Types.ObjectId): Promise<void> {
     const remaining = await this.users
@@ -268,7 +268,7 @@ export class UsersService {
     }
   }
 
-  /** Salva traduzindo a colisao do indice unico de e-mail em 409. */
+  /** Salva traduzindo a colisão do índice único de e-mail em 409. */
   private async save(user: UserDocument): Promise<UserDocument> {
     try {
       return await user.save();
@@ -290,7 +290,7 @@ function toParty(actor: AuthenticatedUser): AuditActor {
   return { id: actor.id, email: actor.email, role: actor.role };
 }
 
-/** O usuario como alvo da acao: o e-mail e o rotulo que se reconhece. */
+/** O usuário como alvo da ação: o e-mail e o rótulo que se reconhece. */
 function partyOf(user: UserDocument): AuditTarget {
   return { kind: AUDIT_TARGETS.USER, id: user._id.toHexString(), label: user.email };
 }

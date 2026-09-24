@@ -31,7 +31,7 @@ import { PasswordService } from './password.service.js';
 import { RefreshTokenService, adminOwner } from './refresh-token.service.js';
 import { TokenService } from './token.service.js';
 
-/** De onde veio a chamada. Alimenta o rate limit e o registro da sessao. */
+/** De onde veio a chamada. Alimenta o rate limit e o registro da sessão. */
 export interface RequestContext {
   ip: string;
   userAgent: string;
@@ -53,10 +53,10 @@ export class AuthService {
   /**
    * Login por e-mail e senha.
    *
-   * Todo caminho de recusa — e-mail inexistente, senha errada, usuario
+   * Todo caminho de recusa — e-mail inexistente, senha errada, usuário
    * desativado — devolve exatamente o mesmo 401 e demora o mesmo tanto. Quem
-   * tenta descobrir se um e-mail tem conta no painel nao consegue distinguir
-   * os tres nem pelo corpo, nem pelo relogio.
+   * tenta descobrir se um e-mail tem conta no painel não consegue distinguir
+   * os três nem pelo corpo, nem pelo relógio.
    */
   login(dto: LoginDto, context: RequestContext): Promise<AuthSession> {
     return withMinimumDuration(LOGIN_MIN_DURATION_MS, async () => {
@@ -64,17 +64,17 @@ export class AuthService {
 
       await this.rateLimit.assertWithinLimit(context.ip, email);
 
-      // `+passwordHash`: o campo e `select: false` no schema e so o login o pede.
+      // `+passwordHash`: o campo e `select: false` no schema e só o login o pede.
       const user = await this.users.findOne({ email }).select('+passwordHash').exec();
       const passwordMatches = await this.passwords.verify(user?.passwordHash, dto.password);
 
       if (!user || !passwordMatches || !user.isActive) {
         await this.rateLimit.registerFailure(context.ip, email);
         // A trilha guarda o motivo, que a resposta nunca conta: e a
-        // diferenca entre "alguem esta chutando e-mails" e "alguem esta
-        // tentando a conta da dona". Escrever aqui nao abre caminho para
-        // encher a colecao: o limite da rota recusa a sexta tentativa
-        // antes de chegar neste metodo.
+        // diferença entre "alguém esta chutando e-mails" e "alguém esta
+        // tentando a conta da dona". Escrever aqui não abre caminho para
+        // encher a coleção: o limite da rota recusa a sexta tentativa
+        // antes de chegar neste método.
         await this.audit.record({
           action: AUDIT_ACTIONS.LOGIN_FAILED,
           actor: { id: UNKNOWN_ACTOR_ID, email },
@@ -89,7 +89,7 @@ export class AuthService {
       const lastLoginAt = new Date();
 
       // `updateOne` em vez de `user.save()`: o documento esta carregado com o
-      // hash da senha e nao ha por que reescrever esse campo para anotar uma data.
+      // hash da senha e não há por que reescrever esse campo para anotar uma data.
       await this.users.updateOne({ _id: user._id }, { $set: { lastLoginAt } }).exec();
       user.lastLoginAt = lastLoginAt;
 
@@ -97,7 +97,7 @@ export class AuthService {
 
       await this.audit.record({
         action: AUDIT_ACTIONS.LOGIN_SUCCEEDED,
-        // Sem alvo: no login, quem age e sobre quem se age sao o mesmo.
+        // Sem alvo: no login, quem age e sobre quem se age são o mesmo.
         actor: { id: user._id.toHexString(), email: user.email, role: user.role },
       });
 
@@ -108,9 +108,9 @@ export class AuthService {
   /**
    * Troca um refresh token por um par novo.
    *
-   * A rotacao acontece em `RefreshTokenService.claim`, que revoga o token
-   * apresentado e detecta reuso. Aqui fica o que depende do usuario: quem foi
-   * desativado entre uma renovacao e outra perde todas as sessoes em vez de
+   * A rotação acontece em `RefreshTokenService.claim`, que revoga o token
+   * apresentado e detecta reuso. Aqui fica o que depende do usuário: quem foi
+   * desativado entre uma renovação e outra perde todas as sessões em vez de
    * ganhar um token novo.
    */
   async refresh(rawToken: string, context: RequestContext): Promise<AuthSession> {
@@ -127,8 +127,8 @@ export class AuthService {
   }
 
   /**
-   * Encerra a sessao apresentada. Idempotente de proposito: token ausente,
-   * expirado ou ja revogado tambem resulta em logout feito — o cliente nao
+   * Encerra a sessão apresentada. Idempotente de propósito: token ausente,
+   * expirado ou já revogado também resulta em logout feito — o cliente não
    * tem o que fazer com um erro aqui.
    */
   async logout(rawToken: string | undefined): Promise<void> {
@@ -145,16 +145,16 @@ export class AuthService {
   }
 
   /**
-   * Troca a senha do proprio usuario.
+   * Troca a senha do próprio usuário.
    *
-   * Derruba as outras sessoes — trocar senha e o que se faz quando se
+   * Derruba as outras sessões — trocar senha e o que se faz quando se
    * desconfia de acesso indevido, e manter as demais abertas esvaziaria o
-   * gesto — e ja devolve uma sessao nova para quem trocou. Sem isso, o
-   * usuario com senha temporaria teria de fazer login de novo logo depois de
+   * gesto — e já devolve uma sessão nova para quem trocou. Sem isso, o
+   * usuário com senha temporária teria de fazer login de novo logo depois de
    * ter sido obrigado a trocar a senha.
    *
-   * O hash, a flag e a versao da credencial vao em uma unica escrita: nao
-   * existe instante em que a senha nova ja vale e o token velho ainda passa.
+   * O hash, a flag e a versão da credencial vão em uma única escrita: não
+   * existe instante em que a senha nova já vale e o token velho ainda passa.
    */
   async changePassword(
     actor: AuthenticatedUser,
@@ -175,7 +175,7 @@ export class AuthService {
     const matches = await this.passwords.verify(stored.passwordHash, dto.currentPassword);
 
     if (!matches) {
-      // 401 e nao 403: a credencial apresentada e que esta errada.
+      // 401 e não 403: a credencial apresentada e que esta errada.
       throw new UnauthorizedException('Senha atual incorreta.');
     }
 
@@ -208,7 +208,7 @@ export class AuthService {
     return this.issueSession(updated, context.userAgent);
   }
 
-  /** Derruba o usuario em todos os dispositivos. */
+  /** Derruba o usuário em todos os dispositivos. */
   async logoutAll(userId: string): Promise<void> {
     const owner = adminOwner(new Types.ObjectId(userId));
     const revoked = await this.sessions.revokeAllSessions(owner);
@@ -240,8 +240,8 @@ export class AuthService {
  * Por que o login foi recusado — para a trilha, nunca para a resposta.
  *
  * Quem tenta entrar recebe sempre a mesma frase e sempre no mesmo tempo (ver
- * `login`). Quem investiga precisa da diferenca: e-mail que nao existe conta
- * uma historia, senha errada no e-mail da dona conta outra, e conta
+ * `login`). Quem investiga precisa da diferença: e-mail que não existe conta
+ * uma história, senha errada no e-mail da dona conta outra, e conta
  * desativada tentando entrar conta a terceira.
  */
 function failureReason(user: UserDocument | null, passwordMatches: boolean): string {

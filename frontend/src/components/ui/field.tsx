@@ -5,34 +5,34 @@ import styles from './field.module.css';
 /**
  * O que Input, Select e Textarea tem em comum.
  *
- * A moldura — rotulo, ajuda, erro — e a ligacao entre eles. A ligacao e o
- * ponto: o `htmlFor` que faz clicar no rotulo focar o campo, o
+ * A moldura — rótulo, ajuda, erro — e a ligação entre eles. A ligação e o
+ * ponto: o `htmlFor` que faz clicar no rótulo focar o campo, o
  * `aria-describedby` que faz o leitor de tela ler a ajuda junto do campo, e
- * o `aria-invalid` que anuncia o erro. Feito a mao em cada tela, um desses
- * tres se perde sempre.
+ * o `aria-invalid` que anuncia o erro. Feito a mão em cada tela, um desses
+ * três se perde sempre.
  *
  * Por isso os controles recebem `label`, `hint` e `error` como props e
  * montam a moldura por dentro, em vez de a tela montar a moldura em volta:
- * nao ha como usar o campo e esquecer a ligacao.
+ * não há como usar o campo e esquecer a ligação.
  */
 
 /**
- * O `| undefined` explicito em cada campo nao e ruido.
+ * O `| undefined` explicito em cada campo não e ruído.
  *
  * Com `exactOptionalPropertyTypes` ligado, `label?: string` recusa receber
- * uma variavel do tipo `string | undefined` — e e exatamente isso que cada
- * controle tem em maos para repassar. Sem os `| undefined`, todo repasse
+ * uma variável do tipo `string | undefined` — e e exatamente isso que cada
+ * controle tem em mãos para repassar. Sem os `| undefined`, todo repasse
  * viraria um `{...(label === undefined ? {} : { label })}`.
  */
 export interface FieldOwnProps {
   label?: string | undefined;
-  /** Texto de apoio. Some quando ha erro — dois recados competem. */
+  /** Texto de apoio. Some quando há erro — dois recados competem. */
   hint?: string | undefined;
-  /** A mensagem de validacao. Sua presenca e o que marca o campo invalido. */
+  /** A mensagem de validação. Sua presença e o que marca o campo inválido. */
   error?: string | undefined;
-  /** Mantem o rotulo so para o leitor de tela: busca, filtro de uma coluna. */
+  /** Mantem o rótulo só para o leitor de tela: busca, filtro de uma coluna. */
   hideLabel?: boolean | undefined;
-  /** Ocupa a largura toda. E o que um campo de formulario quase sempre quer. */
+  /** Ocupa a largura toda. E o que um campo de formulário quase sempre quer. */
   block?: boolean | undefined;
   className?: string | undefined;
 }
@@ -58,7 +58,7 @@ export function useFieldWiring(
     id,
     hintId,
     errorId,
-    // O erro tem precedencia: enquanto ele existe, e ele que o campo anuncia.
+    // O erro tem precedência: enquanto ele existe, e ele que o campo anuncia.
     describedBy: error ? errorId : hint ? hintId : undefined,
   };
 }
@@ -103,7 +103,7 @@ export function Field({
 
       {error ? (
         // `role="alert"` para que a mensagem seja lida no momento em que
-        // aparece — depois do envio recusado, quem usa leitor de tela nao
+        // aparece — depois do envio recusado, quem usa leitor de tela não
         // fica procurando o que deu errado.
         <p id={wiring.errorId} className={styles.error} role="alert">
           {error}
@@ -113,5 +113,5 @@ export function Field({
   );
 }
 
-/** A classe da base visual dos tres controles. */
+/** A classe da base visual dos três controles. */
 export const controlClass = styles.control;

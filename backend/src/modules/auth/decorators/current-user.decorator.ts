@@ -4,7 +4,7 @@ import type { Request } from 'express';
 import type { AuthenticatedUser } from '../auth.types.js';
 
 /**
- * Usuario ja resolvido pelo guard. Nao vai ao banco: o `JwtStrategy` carregou
+ * Usuário já resolvido pelo guard. Não vai ao banco: o `JwtStrategy` carregou
  * e validou o registro no mesmo request.
  */
 export const CurrentUser = createParamDecorator(
@@ -14,7 +14,7 @@ export const CurrentUser = createParamDecorator(
       .getRequest<Request & { user?: AuthenticatedUser }>();
 
     if (!request.user) {
-      // So acontece se alguem usar o decorator numa rota marcada @Public().
+      // Só acontece se alguém usar o decorator numa rota marcada @Public().
       throw new UnauthorizedException('Autenticação necessária.');
     }
 

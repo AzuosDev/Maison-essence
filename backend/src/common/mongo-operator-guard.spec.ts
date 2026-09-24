@@ -16,7 +16,7 @@ describe('findForbiddenKey', () => {
   });
 
   it('recusa operador escondido dentro de um campo', () => {
-    // O classico: `{"email": {"$ne": null}}` casa com o primeiro usuario que
+    // O clássico: `{"email": {"$ne": null}}` casa com o primeiro usuário que
     // existir, se o filtro for montado com o que veio do corpo.
     expect(findForbiddenKey({ email: { $ne: null } })).toBe('$ne');
   });
@@ -25,7 +25,7 @@ describe('findForbiddenKey', () => {
     expect(findForbiddenKey({ items: [{ ok: 1 }, { $inc: { stock: -1 } }] })).toBe('$inc');
   });
 
-  it('recusa chave com ponto, que alcanca dentro de um documento', () => {
+  it('recusa chave com ponto, que alcança dentro de um documento', () => {
     expect(findForbiddenKey({ 'role.0': 'SUPER_ADMIN' })).toBe('role.0');
   });
 

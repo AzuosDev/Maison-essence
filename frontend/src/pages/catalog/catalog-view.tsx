@@ -27,34 +27,34 @@ import styles from './catalog-view.module.css';
 /**
  * A listagem de produtos.
  *
- * Uma tela so para os quatro enderecos que mostram uma lista filtravel:
+ * Uma tela só para os quatro endereços que mostram uma lista filtrável:
  * `/produtos`, `/pronta-entrega`, `/categorias/:slug` e `/busca`. O que muda
- * entre eles e o cabecalho e o contexto — a categoria fixa, a bandeira fixa,
+ * entre eles e o cabeçalho e o contexto — a categoria fixa, a bandeira fixa,
  * o termo buscado —, e nada disso justifica quatro telas para manter em dia.
- * Cada rota tem um modulo de tres linhas que monta esta com as propriedades
+ * Cada rota tem um módulo de três linhas que monta esta com as propriedades
  * dela.
  *
- * ## A diferenca entre celular e desktop nao e so visual
+ * ## A diferença entre celular e desktop não e só visual
  *
- * No desktop a paginacao e numerada: a pagina pedida e a unica em tela. No
- * celular o cliente aperta "carregar mais" e as paginas se empilham. Como
- * isso muda **quantas** consultas a tela faz, e nao so como as desenha, a
- * decisao precisa chegar ao JavaScript — por isso o `useMediaQuery` aqui, em
+ * No desktop a paginação e numerada: a página pedida e a única em tela. No
+ * celular o cliente aperta "carregar mais" e as páginas se empilham. Como
+ * isso muda **quantas** consultas a tela faz, e não só como as desenha, a
+ * decisão precisa chegar ao JavaScript — por isso o `useMediaQuery` aqui, em
  * vez de um `@media` na folha de estilo.
  *
  * O mesmo vale para a barra de filtros: no desktop ela e uma coluna fixa, no
  * celular uma gaveta. Montar as duas e esconder uma com CSS colocaria dois
- * formularios iguais no documento ao mesmo tempo, e o leitor de tela
+ * formulários iguais no documento ao mesmo tempo, e o leitor de tela
  * anunciaria cada filtro duas vezes.
  *
- * ## A posicao de rolagem
+ * ## A posição de rolagem
  *
  * Quem a devolve e o `ScrollRestoration` do layout da loja. O que esta tela
- * faz e mais importante: garantir que haja **onde** pousar. As paginas ficam
- * no cache do TanStack Query por um minuto, entao voltar do produto encontra
- * a lista inteira — as tres paginas que o cliente tinha carregado — desenhada
+ * faz e mais importante: garantir que haja **onde** pousar. As páginas ficam
+ * no cache do TanStack Query por um minuto, então voltar do produto encontra
+ * a lista inteira — as três páginas que o cliente tinha carregado — desenhada
  * de imediato, na mesma altura de antes. Uma tela que remontasse do zero
- * teria altura de esqueleto no instante da restauracao, e o navegador
+ * teria altura de esqueleto no instante da restauração, e o navegador
  * pousaria no lugar errado.
  */
 
@@ -64,21 +64,21 @@ export interface CatalogViewProps {
   breadcrumb: readonly BreadcrumbItem[];
   /** O que a rota fixou: a categoria, a bandeira de pronta entrega. */
   context?: CatalogContext;
-  /** O titulo vem de outra consulta e ainda nao chegou. */
+  /** O título vem de outra consulta e ainda não chegou. */
   isTitleLoading?: boolean;
-  /** As pilulas de subcategoria, quando a rota tem uma categoria. */
+  /** As pílulas de subcategoria, quando a rota tem uma categoria. */
   chips?: ReactNode;
-  /** O termo buscado, realcado nos nomes. So `/busca` passa. */
+  /** O termo buscado, realcado nos nomes. Só `/busca` passa. */
   highlight?: string;
   /** O texto do vazio, que muda conforme a rota. */
   emptyTitle?: string;
   emptyDescription?: string;
 }
 
-/** A partir de onde a barra de filtros vira coluna e a paginacao vira numero. */
+/** A partir de onde a barra de filtros vira coluna e a paginação vira número. */
 const DESKTOP = '(min-width: 64rem)';
 
-/** Sem contexto: a rota nao fixou categoria nem bandeira nenhuma. */
+/** Sem contexto: a rota não fixou categoria nem bandeira nenhuma. */
 const NO_CONTEXT: CatalogContext = {};
 
 export function CatalogView({
@@ -130,10 +130,10 @@ export function CatalogView({
 
       <div className={styles.toolbar}>
         {isDesktop ? null : (
-          // Tamanho normal, e nao `small`: e um botao que so existe no
+          // Tamanho normal, e não `small`: e um botão que só existe no
           // celular, onde 36px de altura ficam abaixo do alvo de toque — e
           // ele divide a linha com o seletor de ordem, que tem 48. Os dois
-          // com a mesma altura fecham a barra numa faixa so.
+          // com a mesma altura fecham a barra numa faixa só.
           <Button
             variant="secondary"
             onClick={() => {
@@ -152,7 +152,7 @@ export function CatalogView({
           // Com o filtro de desconto ligado, a ordem e imposta pela varredura
           // que o substitui (ver `apiParamsFrom`). O seletor mostra a ordem
           // que esta valendo de verdade, em vez de anunciar uma que a lista
-          // nao esta seguindo.
+          // não esta seguindo.
           value={filters.onSale ? 'desconto' : (filters.sort ?? defaultSort(filters.q))}
           disabled={filters.onSale}
           options={SORT_KEYS.map((key) => ({ value: key, label: SORT_LABELS[key] }))}
@@ -248,11 +248,11 @@ export function CatalogView({
 }
 
 /**
- * A ordem que o backend aplica quando ninguem pediu nenhuma.
+ * A ordem que o backend aplica quando ninguém pediu nenhuma.
  *
- * Repetida aqui so para o seletor mostrar a opcao certa antes de o cliente
- * escolher — a decisao continua sendo do servidor (`effectiveSort`), e a URL
- * continua sem o parametro ate alguem mexer no campo.
+ * Repetida aqui só para o seletor mostrar a opção certa antes de o cliente
+ * escolher — a decisão continua sendo do servidor (`effectiveSort`), e a URL
+ * continua sem o parâmetro até alguém mexer no campo.
  */
 function defaultSort(q: string): SortKey {
   return q === '' ? 'novidades' : 'relevancia';

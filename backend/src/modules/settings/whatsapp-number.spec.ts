@@ -54,9 +54,9 @@ describe('whatsappLinkOf', () => {
 
 
 /**
- * O padrao vale sobre o valor ja normalizado, e e ele que o DTO aplica. Ja
+ * O padrão vale sobre o valor já normalizado, e e ele que o DTO aplica. Já
  * nasceu recusando tudo uma vez: escrito em template literal, o `\d` virou
- * um `d` e nenhum numero passava pelo painel.
+ * um `d` e nenhum número passava pelo painel.
  */
 describe('WHATSAPP_NUMBER_PATTERN', () => {
   it('aceita o que a normalização devolve', () => {

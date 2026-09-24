@@ -11,12 +11,12 @@ import type { PasswordResetResult } from './users.service.js';
 import type { UserView } from './user.view.js';
 
 /**
- * CRUD dos usuarios do painel.
+ * CRUD dos usuários do painel.
  *
  * O `@Roles` no controller barra o STAFF inteiro de uma vez; o
  * `SUPER_ADMIN` entra pelo guard, sem precisar ser listado. O que o OWNER
- * pode fazer com cada alvo — so STAFF — e decisao por registro, e por isso
- * mora na policy e nao aqui.
+ * pode fazer com cada alvo — só STAFF — e decisão por registro, e por isso
+ * mora na policy e não aqui.
  */
 @Roles(...MANAGES_USERS)
 @Controller('users')
@@ -54,7 +54,7 @@ export class UsersController {
     return this.users.setStatus(actor, id, dto);
   }
 
-  /** Devolve a senha temporaria uma unica vez; nao ha como consulta-la depois. */
+  /** Devolve a senha temporária uma única vez; não há como consulta-lá depois. */
   @Post(':id/reset-password')
   resetPassword(
     @CurrentUser() actor: AuthenticatedUser,

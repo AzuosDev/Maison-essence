@@ -1,8 +1,8 @@
 /*
  * Os selos do card de produto: `Esgotado`, `-33%`, `Pronta entrega`.
  *
- * Todos 12px em caixa alta, como a especificacao pede. O que muda e a cor de
- * fundo, e ela carrega o significado: preto e informacao, verde e promessa,
+ * Todos 12px em caixa alta, como a especificação pede. O que muda e a cor de
+ * fundo, e ela carrega o significado: preto e informação, verde e promessa,
  * vermelho e impedimento.
  */
 
@@ -42,19 +42,19 @@
   color: var(--cream);
 }
 
-/* Destaque, novidade, selecao da casa. */
+/* Destaque, novidade, seleção da casa. */
 .gold {
   background-color: var(--gold);
   color: var(--ink);
 }
 
-/* Contagem e rotulo de apoio no painel, onde o selo cheio pesaria demais. */
+/* Contagem e rótulo de apoio no painel, onde o selo cheio pesaria demais. */
 .muted {
   background-color: var(--sand);
   color: var(--ink-soft);
 }
 
-/* Numero em largura fixa: a contagem de pedidos numa tabela. */
+/* Número em largura fixa: a contagem de pedidos numa tabela. */
 .numeric {
   font-variant-numeric: tabular-nums;
 }

@@ -30,26 +30,26 @@ import { DemoSeedService } from './demo-seed.service.js';
 /**
  * Contexto dos comandos de seed.
  *
- * Nao e o `AppModule`: um seed nao precisa de HTTP, de guard nem de pipe de
- * validacao. Precisa da mesma validacao de ambiente, da mesma conexao e dos
- * mesmos servicos — e por isso o `AuthModule` entra inteiro, para que o
+ * Não e o `AppModule`: um seed não precisa de HTTP, de guard nem de pipe de
+ * validação. Precisa da mesma validação de ambiente, da mesma conexão e dos
+ * mesmos serviços — e por isso o `AuthModule` entra inteiro, para que o
  * primeiro SUPER_ADMIN nasca pelo mesmo `BootstrapService` que a rota usa,
- * com o mesmo argon2id. Seed com caminho proprio de criacao e onde aparece o
- * usuario que o login nao reconhece.
+ * com o mesmo argon2id. Seed com caminho próprio de criação e onde aparece o
+ * usuário que o login não reconhece.
  *
- * A lista de schemas vai alem do que os seeds gravam de proposito: o runner
- * cria os indices de tudo que estiver registrado aqui, e um banco novo no
- * Atlas sobe sem indice nenhum (`autoIndex` so vale em desenvolvimento). Como
+ * A lista de schemas vai além do que os seeds gravam de propósito: o runner
+ * cria os índices de tudo que estiver registrado aqui, e um banco novo no
+ * Atlas sobe sem índice nenhum (`autoIndex` só vale em desenvolvimento). Como
  * o seed e a primeira coisa que roda contra esse banco, e o momento certo de
- * criar todos — inclusive os de colecoes que ainda nao tem modulo.
+ * criar todos — inclusive os de coleções que ainda não tem módulo.
  */
 @Module({
   imports: [
     AppConfigModule,
     DatabaseModule,
-    // O @Global() do modulo de auditoria so vale dentro do contexto que o
-    // importa, e este contexto nao e o AppModule: sem esta linha o
-    // BootstrapService nao resolve o AuditService e o seed morre no boot.
+    // O @Global() do módulo de auditoria só vale dentro do contexto que o
+    // importa, e este contexto não e o AppModule: sem esta linha o
+    // BootstrapService não resolve o AuditService e o seed morre no boot.
     AuditModule,
     AuthModule,
     // Traz o CatalogImportService para o npm run seed:catalog.

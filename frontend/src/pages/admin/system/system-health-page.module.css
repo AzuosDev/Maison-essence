@@ -1,8 +1,8 @@
 /*
- * A saude do servidor.
+ * A saúde do servidor.
  *
- * Tres blocos empilhados, na ordem da urgencia: o estado agora, o tamanho do
- * banco, e a ferramenta de desenvolvimento por ultimo.
+ * Três blocos empilhados, na ordem da urgência: o estado agora, o tamanho do
+ * banco, e a ferramenta de desenvolvimento por último.
  */
 
 .page {
@@ -38,8 +38,8 @@
 /*
  * Quatro fatos em grade.
  *
- * `auto-fit` com minimo de 10rem: quatro colunas no desktop, duas no tablet,
- * uma no celular — sem nenhum ponto de corte escrito a mao.
+ * `auto-fit` com mínimo de 10rem: quatro colunas no desktop, duas no tablet,
+ * uma no celular — sem nenhum ponto de corte escrito a mão.
  */
 .facts {
   display: grid;
@@ -78,9 +78,9 @@
 }
 
 /*
- * A aplicacao fora do ar.
+ * A aplicação fora do ar.
  *
- * O unico lugar desta area que usa o vermelho cheio: aqui ele nao significa
+ * O único lugar desta área que usa o vermelho cheio: aqui ele não significa
  * "algo falhou na tela", significa que a loja esta fora do ar.
  */
 .down {
@@ -109,7 +109,7 @@
   color: var(--ink-soft);
 }
 
-/* ---- As colecoes ---------------------------------------------------------- */
+/* ---- As coleções ---------------------------------------------------------- */
 
 .counts {
   display: grid;
@@ -141,7 +141,7 @@
   overflow-wrap: anywhere;
 }
 
-/* Numero em largura fixa: a coluna de contagens se le de cima para baixo. */
+/* Número em largura fixa: a coluna de contagens se lê de cima para baixo. */
 .countValue {
   font-size: var(--text-16);
   font-variant-numeric: tabular-nums;

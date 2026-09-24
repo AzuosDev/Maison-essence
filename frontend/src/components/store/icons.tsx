@@ -1,16 +1,16 @@
 import type { SVGProps } from 'react';
 
 /**
- * Os icones da loja, desenhados a mao.
+ * Os ícones da loja, desenhados a mão.
  *
- * Nenhuma biblioteca: sao nove tracos simples, e uma dependencia de icones
+ * Nenhuma biblioteca: são nove traços simples, e uma dependência de ícones
  * custaria mais em bytes do que estes arquivos inteiros. Todos seguem o mesmo
- * desenho — traco de 1.5, sem preenchimento, `currentColor` — para que
- * herdem a cor de quem os contem e nao precisem de variante por contexto.
+ * desenho — traço de 1.5, sem preenchimento, `currentColor` — para que
+ * herdem a cor de quem os contem e não precisem de variante por contexto.
  *
- * `aria-hidden` por padrao: um icone dentro de um botao nao e informacao, e o
- * nome acessivel do botao vem do `aria-label` dele. Quando o icone for o
- * conteudo — um selo, por exemplo —, quem usa passa `aria-hidden={false}` e
+ * `aria-hidden` por padrão: um ícone dentro de um botão não e informação, e o
+ * nome acessível do botão vem do `aria-label` dele. Quando o ícone for o
+ * conteúdo — um selo, por exemplo —, quem usa passa `aria-hidden={false}` e
  * um `<title>`.
  */
 
@@ -87,7 +87,7 @@ export function UserIcon(props: IconProps) {
   );
 }
 
-/** O unico com preenchimento: e a marca do canal, e o desenho e o dela. */
+/** O único com preenchimento: e a marca do canal, e o desenho e o dela. */
 export function WhatsappIcon(props: IconProps) {
   return (
     <svg
@@ -122,7 +122,7 @@ export function TiktokIcon(props: IconProps) {
   );
 }
 
-/* ---- Selos de confianca ----------------------------------------------- */
+/* ---- Selos de confiança ----------------------------------------------- */
 
 export function TruckIcon(props: IconProps) {
   return (
@@ -161,7 +161,7 @@ export function CardIcon(props: IconProps) {
   );
 }
 
-/** O pedido fechado, na lista da conta. Caixa amarrada, e nao sacola. */
+/** O pedido fechado, na lista da conta. Caixa amarrada, e não sacola. */
 export function BoxIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -171,7 +171,7 @@ export function BoxIcon(props: IconProps) {
   );
 }
 
-/** O endereco salvo. */
+/** O endereço salvo. */
 export function PinIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -181,7 +181,7 @@ export function PinIcon(props: IconProps) {
   );
 }
 
-/** Pedir novamente: a seta que volta ao comeco. */
+/** Pedir novamente: a seta que volta ao começo. */
 export function RepeatIcon(props: IconProps) {
   return (
     <Icon {...props}>
@@ -221,7 +221,7 @@ export function TrashIcon(props: IconProps) {
   );
 }
 
-/** O endereco padrao. Preenchida quando marcado — ver `filled`. */
+/** O endereço padrão. Preenchida quando marcado — ver `filled`. */
 export function StarIcon({ filled = false, ...props }: IconProps & { filled?: boolean }) {
   return (
     <Icon fill={filled ? 'currentColor' : 'none'} {...props}>

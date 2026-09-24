@@ -7,29 +7,29 @@ import styles from './product-grid.module.css';
 /**
  * A grade de produtos da listagem, da categoria e da busca.
  *
- * E a irma da prateleira da home, com uma diferenca de proposito: a
+ * E a irma da prateleira da home, com uma diferença de propósito: a
  * prateleira e uma vitrine curta e some quando esta vazia; a grade e o
- * conteudo principal da pagina e nunca decide sozinha desaparecer — quem
+ * conteúdo principal da página e nunca decide sozinha desaparecer — quem
  * cuida do vazio e a tela, que sabe se o caso e "nenhum resultado para este
- * filtro" ou "esta categoria ainda nao tem produto".
+ * filtro" ou "esta categoria ainda não tem produto".
  *
  * ## Os esqueletos
  *
- * Sao os mesmos do card, com as mesmas classes, e por isso tem exatamente a
- * altura dele. A grade tambem nao muda de contagem entre o esqueleto e o
- * resultado: `skeletonCount` e a pagina cheia, entao a barra de rolagem nao
+ * São os mesmos do card, com as mesmas classes, e por isso tem exatamente a
+ * altura dele. A grade também não muda de contagem entre o esqueleto e o
+ * resultado: `skeletonCount` e a página cheia, então a barra de rolagem não
  * encolhe quando os produtos chegam.
  *
- * `appending` e o "carregar mais" do celular: os produtos ja carregados
+ * `appending` e o "carregar mais" do celular: os produtos já carregados
  * continuam em tela e os esqueletos entram embaixo, no lugar exato onde a
- * proxima pagina vai cair.
+ * próxima página vai cair.
  */
 
 /**
  * O `sizes` desta grade.
  *
- * Diferente do padrao do card porque aqui a grade divide a largura com a
- * barra de filtros: no desktop a coluna de conteudo nao e a tela inteira, e
+ * Diferente do padrão do card porque aqui a grade divide a largura com a
+ * barra de filtros: no desktop a coluna de conteúdo não e a tela inteira, e
  * pedir `25vw` faria o navegador baixar uma foto maior do que a que cabe.
  */
 const GRID_SIZES =
@@ -38,11 +38,11 @@ const GRID_SIZES =
 export interface ProductGridProps {
   products: readonly PublicProduct[];
   isLoading: boolean;
-  /** Uma pagina a mais chegando, embaixo da que ja esta em tela. */
+  /** Uma página a mais chegando, embaixo da que já esta em tela. */
   appending?: boolean;
-  /** O termo buscado, realcado nos nomes. So a busca passa. */
+  /** O termo buscado, realcado nos nomes. Só a busca passa. */
   highlight?: string;
-  /** Quantos esqueletos desenhar. O padrao e a pagina cheia. */
+  /** Quantos esqueletos desenhar. O padrão e a página cheia. */
   skeletonCount?: number;
   className?: string | undefined;
 }

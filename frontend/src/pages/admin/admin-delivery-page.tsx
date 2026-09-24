@@ -26,19 +26,19 @@ import styles from './admin-delivery-page.module.css';
 /**
  * As cidades atendidas e o que se cobra em cada uma.
  *
- * ## Esta tela e uma planilha, e nao um cadastro
+ * ## Esta tela e uma planilha, e não um cadastro
  *
- * A dona nao vem aqui cadastrar: ela vem **reajustar**. O combustivel subiu e
- * cinco cidades mudam de taxa na mesma sessao, com os valores sendo comparados
+ * A dona não vem aqui cadastrar: ela vem **reajustar**. O combustível subiu e
+ * cinco cidades mudam de taxa na mesma sessão, com os valores sendo comparados
  * uns com os outros enquanto ela digita. Por isso os campos ficam abertos, por
- * isso nao ha botao de salvar, e por isso a tela nao tem busca nem paginacao —
+ * isso não há botão de salvar, e por isso a tela não tem busca nem paginação —
  * uma loja atende dez ou vinte cidades, e todas precisam caber na mesma vista.
  *
  * ## A ordem daqui e a ordem do checkout
  *
- * O seletor de cidade que a cliente ve segue esta lista, e e por isso que
+ * O seletor de cidade que a cliente vê segue esta lista, e e por isso que
  * arrastar importa: a cidade da loja fica em primeiro porque e a de quase todo
- * pedido, e deixa-la no meio de uma lista alfabetica custa um rolar a cada
+ * pedido, e deixa-lá no meio de uma lista alfabética custa um rolar a cada
  * compra.
  *
  * ## Desativar e o caminho normal de parar de atender
@@ -47,9 +47,9 @@ import styles from './admin-delivery-page.module.css';
  * atender ali. Desativar tira a cidade do checkout na hora e guarda a taxa. O
  * servidor aceita os dois; a tela deixa claro qual e qual.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * Nada. A tabela de taxas e preco, e preco e da dona — o backend recusa
+ * Nada. A tabela de taxas e preço, e preço e da dona — o backend recusa
  * inclusive a leitura.
  */
 export default function AdminDeliveryPage() {
@@ -220,7 +220,7 @@ export default function AdminDeliveryPage() {
                 description: 'Ela já aparece no checkout. Arraste para mudar a posição.',
               });
             },
-            // A recusa mais comum e "essa cidade ja esta cadastrada", e a
+            // A recusa mais comum e "essa cidade já esta cadastrada", e a
             // frase do servidor diz o que fazer no lugar.
             onError: fail('A cidade não foi cadastrada'),
           });
@@ -263,13 +263,13 @@ export default function AdminDeliveryPage() {
 /**
  * O cadastro de uma cidade.
  *
- * Um dialogo, e nao uma linha vazia no fim da tabela: a linha em branco
+ * Um diálogo, e não uma linha vazia no fim da tabela: a linha em branco
  * entraria na lista antes de existir do outro lado, e um arraste ou um
- * recarregamento no meio do preenchimento a faria sumir sem explicacao.
+ * recarregamento no meio do preenchimento a faria sumir sem explicação.
  *
- * Os quatro campos sao os mesmos da tabela, e de proposito — o que se aprende
- * aqui vale la. O que muda e que aqui eles sao validados juntos, no envio, e
- * nao um a um ao sair.
+ * Os quatro campos são os mesmos da tabela, e de propósito — o que se aprende
+ * aqui vale lá. O que muda e que aqui eles são validados juntos, no envio, e
+ * não um a um ao sair.
  */
 function NewCityDialog({
   open,

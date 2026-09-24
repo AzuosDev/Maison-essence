@@ -6,27 +6,27 @@ import { cx } from '@/lib/cx';
 import styles from './account-nav.module.css';
 
 /**
- * O menu da conta: tres telas e a saida.
+ * O menu da conta: três telas e a saída.
  *
- * ## A ordem nao e alfabetica
+ * ## A ordem não e alfabética
  *
- * Pedidos vem primeiro porque e o unico motivo pelo qual alguem abre esta
- * area — as outras duas telas existem para servir a compra seguinte.
- * Enderecos vem depois, dados de contato por ultimo: e a ordem da frequencia
+ * Pedidos vem primeiro porque e o único motivo pelo qual alguém abre esta
+ * área — as outras duas telas existem para servir a compra seguinte.
+ * Endereços vem depois, dados de contato por último: e a ordem da frequência
  * com que cada uma e aberta, que e a ordem em que se procura.
  *
  * ## O mesmo menu em duas formas
  *
- * No celular e uma fila horizontal que rola, logo abaixo do cabecalho: tres
- * itens empilhados verticalmente antes do conteudo empurrariam a lista de
+ * No celular e uma fila horizontal que rola, logo abaixo do cabeçalho: três
+ * itens empilhados verticalmente antes do conteúdo empurrariam a lista de
  * pedidos para fora da primeira tela, e o pedido e o que a pessoa veio ver.
- * A partir de 1024px vira a coluna lateral, que e o formato que o layout ja
+ * A partir de 1024px vira a coluna lateral, que e o formato que o layout já
  * reserva.
  *
- * `end` no item de pedidos e o detalhe que evita o erro classico: sem ele,
- * `/conta/pedidos` ficaria marcado como ativo tambem em
- * `/conta/pedidos/ME-260922-4KP1`. Aqui isso e desejavel — o detalhe **e**
- * parte de pedidos —, entao `end` fica so no perfil, cuja rota e o prefixo
+ * `end` no item de pedidos e o detalhe que evita o erro clássico: sem ele,
+ * `/conta/pedidos` ficaria marcado como ativo também em
+ * `/conta/pedidos/ME-260922-4KP1`. Aqui isso e desejável — o detalhe **e**
+ * parte de pedidos —, então `end` fica só no perfil, cuja rota e o prefixo
  * de todas as outras.
  */
 export function AccountNav() {

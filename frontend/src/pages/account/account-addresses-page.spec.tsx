@@ -9,16 +9,16 @@ import { useCustomerSession } from '@/features/auth';
 import AccountAddressesPage from './account-addresses-page';
 
 /**
- * Os enderecos salvos, contra a API.
+ * Os endereços salvos, contra a API.
  *
- * O que so este arquivo prova — e que nenhum teste de unidade prova — e que
- * a tela **manda a lista inteira**. A API nao tem rota por endereco:
+ * O que só este arquivo prova — e que nenhum teste de unidade prova — e que
+ * a tela **manda a lista inteira**. A API não tem rota por endereço:
  * `PATCH /customer/me` recebe `addresses` e substitui o que esta gravado.
- * Uma tela que mandasse so o endereco alterado apagaria todos os outros, e o
- * sintoma apareceria em producao, uma vez, sem volta.
+ * Uma tela que mandasse só o endereço alterado apagaria todos os outros, e o
+ * sintoma apareceria em produção, uma vez, sem volta.
  *
- * As regras do padrao — exatamente um marcado, promocao ao excluir — moram
- * em `address-list.spec.ts`, onde sao baratas de cobrir. Aqui basta ver que
+ * As regras do padrão — exatamente um marcado, promoção ao excluir — moram
+ * em `address-list.spec.ts`, onde são baratas de cobrir. Aqui basta ver que
  * a lista certa sobe.
  */
 
@@ -62,7 +62,7 @@ function jsonResponse(body: unknown): Response {
   });
 }
 
-/** O corpo do ultimo `PATCH /customer/me`. */
+/** O corpo do último `PATCH /customer/me`. */
 let gravado: { addresses?: { id?: string; label: string; isDefault: boolean }[] } | null = null;
 
 beforeEach(() => {
@@ -145,8 +145,8 @@ test('o apelido e o título, e o padrão aparece marcado', async () => {
   expect(screen.getByRole('heading', { name: 'Trabalho' })).toBeTruthy();
   expect(screen.getByText('Padrão')).toBeTruthy();
 
-  // O endereco que ja e padrao nao oferece o botao de vira-lo padrao: um
-  // botao que nao muda nada e uma promessa quebrada.
+  // O endereço que já e padrão não oferece o botão de vira-lo padrão: um
+  // botão que não muda nada e uma promessa quebrada.
   expect(screen.queryByRole('button', { name: 'Usar Casa como endereço padrão' })).toBeNull();
   expect(screen.getByRole('button', { name: 'Usar Trabalho como endereço padrão' })).toBeTruthy();
 });
@@ -165,7 +165,7 @@ test('marcar outro como padrão manda a lista inteira, com um marcado só', asyn
     expect(gravado).not.toBeNull();
   });
 
-  // Os **dois** enderecos sobem. Mandar so o alterado apagaria o outro.
+  // Os **dois** endereços sobem. Mandar só o alterado apagaria o outro.
   expect(gravado?.addresses?.map((address) => address.id)).toEqual(['a1', 'a2']);
   expect(gravado?.addresses?.filter((address) => address.isDefault)).toHaveLength(1);
   expect(gravado?.addresses?.find((address) => address.isDefault)?.id).toBe('a2');
@@ -181,7 +181,7 @@ test('excluir confirma dentro do cartão, nomeando qual endereço vai sumir', as
 
   await usuario.click(screen.getByRole('button', { name: 'Excluir Trabalho' }));
 
-  // Numa lista de cartoes parecidos, "tem certeza?" sem o nome nao diria de
+  // Numa lista de cartões parecidos, "tem certeza?" sem o nome não diria de
   // qual deles se esta falando.
   expect(screen.getByText('Excluir Trabalho?')).toBeTruthy();
 
@@ -189,8 +189,8 @@ test('excluir confirma dentro do cartão, nomeando qual endereço vai sumir', as
   // apagar.
   expect(document.activeElement?.textContent).toContain('Manter');
 
-  // `^Excluir$` e nao "Excluir": o botao do cartao se chama "Excluir
-  // Trabalho", e so o da confirmacao leva a palavra sozinha.
+  // `^Excluir$` e não "Excluir": o botão do cartão se chama "Excluir
+  // Trabalho", e só o da confirmação leva a palavra sozinha.
   await usuario.click(screen.getByRole('button', { name: /^Excluir$/ }));
 
   await waitFor(() => {
@@ -225,6 +225,6 @@ test('o endereço novo entra na lista que já existe, sem apagar os outros', asy
     'Casa da minha mãe',
   ]);
 
-  // Sem marcar a caixa, o padrao continua sendo quem era.
+  // Sem marcar a caixa, o padrão continua sendo quem era.
   expect(gravado?.addresses?.find((address) => address.isDefault)?.label).toBe('Casa');
 });

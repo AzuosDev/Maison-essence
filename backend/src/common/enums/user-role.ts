@@ -1,9 +1,9 @@
 /**
- * Papeis do painel administrativo.
+ * Papéis do painel administrativo.
  *
  * Objeto const em vez de `enum` nativo: o `enum` do TypeScript gera um objeto
- * em runtime que nao existe no JavaScript emitido por transpiladores que so
- * apagam tipos, e o tipo derivado abaixo ja da a mesma seguranca com uniao de
+ * em runtime que não existe no JavaScript emitido por transpiladores que só
+ * apagam tipos, e o tipo derivado abaixo já da a mesma segurança com união de
  * literais, que o Mongoose aceita direto no `enum:` do schema.
  */
 export const USER_ROLES = {

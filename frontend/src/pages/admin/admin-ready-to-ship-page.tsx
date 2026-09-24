@@ -35,37 +35,37 @@ import styles from './admin-ready-to-ship-page.module.css';
 /**
  * A prateleira.
  *
- * ## Por que nao e um filtro da tela de produtos
+ * ## Por que não e um filtro da tela de produtos
  *
- * Porque nao e um recorte do catalogo: e um lugar fisico. A pronta entrega e
- * a estante da loja, o que a cliente leva na hora, e a secao que mais vende
- * no local — e a pergunta que se faz sobre ela nao e "quais produtos tem essa
+ * Porque não e um recorte do catálogo: e um lugar físico. A pronta entrega e
+ * a estante da loja, o que a cliente leva na hora, e a seção que mais vende
+ * no local — e a pergunta que se faz sobre ela não e "quais produtos tem essa
  * marca?", e sim "o que esta aqui hoje bate com o que o site diz que esta?".
  *
- * Essa pergunta se responde com uma lista curta na mao, conferindo caixa por
- * caixa. Um filtro a mais numa listagem de duzentos produtos nao e isso.
+ * Essa pergunta se responde com uma lista curta na mão, conferindo caixa por
+ * caixa. Um filtro a mais numa listagem de duzentos produtos não e isso.
  *
  * ## Tirar acontece aqui; por, no cadastro
  *
- * Tirar e o gesto da conferencia: acabou a caixa, sai da prateleira, e sai
- * dali mesmo, sem abrir o cadastro. Por e uma decisao sobre o produto — junto
- * de destaque, de categoria e de preco —, e mora no cadastro, onde ela e
+ * Tirar e o gesto da conferência: acabou a caixa, sai da prateleira, e sai
+ * dali mesmo, sem abrir o cadastro. Por e uma decisão sobre o produto — junto
+ * de destaque, de categoria e de preço —, e mora no cadastro, onde ela e
  * tomada com o resto.
  *
  * ## O que a linha some quer dizer
  *
- * Que ela saiu da prateleira. A lista mostra so o que esta na pronta entrega,
- * entao manter a linha com o interruptor desligado seria a tela discordando
- * do proprio recorte. O caminho de volta e o "Desfazer" do aviso.
+ * Que ela saiu da prateleira. A lista mostra só o que esta na pronta entrega,
+ * então manter a linha com o interruptor desligado seria a tela discordando
+ * do próprio recorte. O caminho de volta e o "Desfazer" do aviso.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * A lista, sem preco e sem editar — e sem tirar nada dela. Ele consulta a
+ * A lista, sem preço e sem editar — e sem tirar nada dela. Ele consulta a
  * prateleira para responder "tem para levar hoje?" no WhatsApp, que e
  * exatamente a pergunta que esta tela responde.
  */
 
-/** O tempo que a digitacao precisa parar antes de virar consulta. */
+/** O tempo que a digitação precisa parar antes de virar consulta. */
 const SEARCH_DELAY_MS = 300;
 
 export default function AdminReadyToShipPage() {
@@ -74,8 +74,8 @@ export default function AdminReadyToShipPage() {
   const [search, setSearch] = useSearchParams();
 
   const filters = readProductFilters(search);
-  // `readyToShip` nao vem do endereco: ele **e** a tela. Um recorte que se
-  // pode desligar faria desta pagina uma copia da de produtos.
+  // `readyToShip` não vem do endereço: ele **e** a tela. Um recorte que se
+  // pode desligar faria desta página uma copia da de produtos.
   const params = { ...productListParams(filters), readyToShip: true };
 
   usePageMeta({ title: 'Pronta entrega — Painel', description: 'Acesso restrito.' });
@@ -97,8 +97,8 @@ export default function AdminReadyToShipPage() {
   const products = data?.items ?? [];
   const filtered = filters.q !== '' || filters.categoryId !== '';
 
-  // Produto na prateleira e fora do ar e o estado que so esta tela enxerga:
-  // a caixa esta ali, e a cliente nao consegue comprar.
+  // Produto na prateleira e fora do ar e o estado que só esta tela enxerga:
+  // a caixa esta ali, e a cliente não consegue comprar.
   const hidden = products.filter((product) => !product.isActive);
 
   const fail = (product: AdminProduct) => (cause: unknown) => {
@@ -146,7 +146,7 @@ export default function AdminReadyToShipPage() {
 
       <p className={styles.hint}>
         O que a cliente leva na hora. Estes produtos ganham o selo verde no card e aparecem na seção
-        da home — poe-se um produto aqui pelo interruptor "Pronta entrega" do cadastro.
+        da home — põe-se um produto aqui pelo interruptor "Pronta entrega" do cadastro.
       </p>
 
       <div className={styles.filters}>
@@ -206,7 +206,7 @@ export default function AdminReadyToShipPage() {
                 description={
                   filtered
                     ? 'Mude a categoria ou o que esta na busca.'
-                    : 'Nenhum produto esta marcado como pronta entrega. A marca fica no cadastro do produto, e e ela que poe o selo verde no card e enche a seção da home.'
+                    : 'Nenhum produto esta marcado como pronta entrega. A marca fica no cadastro do produto, e e ela que põe o selo verde no card e enche a seção da home.'
                 }
                 actions={
                   filtered ? (
@@ -222,7 +222,7 @@ export default function AdminReadyToShipPage() {
                   ) : canEdit ? (
                     <ButtonLink to={ROUTES.admin.products}>
                       <TruckIcon />
-                      Ir para o catalogo
+                      Ir para o catálogo
                     </ButtonLink>
                   ) : undefined
                 }
@@ -320,7 +320,7 @@ function namesOf(tree: readonly AdminCategoryNode[]): Map<string, string> {
   return names;
 }
 
-/** As opcoes do filtro, com a subcategoria recuada pelo travessao. */
+/** As opções do filtro, com a subcategoria recuada pelo travessão. */
 function optionsOf(tree: readonly AdminCategoryNode[]): { value: string; label: string }[] {
   return tree.flatMap((parent) => [
     { value: parent.id, label: parent.name },

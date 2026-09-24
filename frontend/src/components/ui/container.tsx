@@ -2,11 +2,11 @@ import type { ElementType, ReactNode } from 'react';
 import styles from './container.module.css';
 
 /**
- * A caixa que segura o conteudo na largura da marca.
+ * A caixa que segura o conteúdo na largura da marca.
  *
- * Existe como componente, e nao como classe utilitaria copiada em cada
- * secao, porque a largura maxima e o gutter sao decisao de layout e mudam
- * juntos. E `as` permite que a semantica acompanhe: a mesma medida serve a um
+ * Existe como componente, e não como classe utilitária copiada em cada
+ * seção, porque a largura máxima e o gutter são decisão de layout e mudam
+ * juntos. E `as` permite que a semântica acompanhe: a mesma medida serve a um
  * `<header>`, a um `<main>` e a uma `<section>`.
  */
 interface ContainerProps {
@@ -15,8 +15,8 @@ interface ContainerProps {
   flush?: boolean;
   /**
    * O `| undefined` e explicito porque `exactOptionalPropertyTypes` esta
-   * ligado: sem ele, passar uma classe de CSS Module — que o TypeScript ve
-   * como `string | undefined` — nao compilaria.
+   * ligado: sem ele, passar uma classe de CSS Module — que o TypeScript vê
+   * como `string | undefined` — não compilaria.
    */
   className?: string | undefined;
   children: ReactNode;

@@ -1,8 +1,8 @@
 /*
- * As abas: descricao e avaliacoes na pagina do produto, os recortes de
+ * As abas: descrição e avaliações na página do produto, os recortes de
  * pedidos no painel.
  *
- * A aba ativa e marcada por um filete de 2px embaixo, e nao por uma caixa:
+ * A aba ativa e marcada por um filete de 2px embaixo, e não por uma caixa:
  * a lista inteira rola na horizontal no celular, e caixa cheia com scroll
  * fica pesada.
  */
@@ -57,7 +57,7 @@
   font-weight: var(--weight-semibold);
 }
 
-/* O filete. Fica no pseudo-elemento para nao empurrar o texto ao aparecer. */
+/* O filete. Fica no pseudo-elemento para não empurrar o texto ao aparecer. */
 .tab::after {
   content: '';
   position: absolute;

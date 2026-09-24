@@ -1,9 +1,9 @@
 /*
  * A galeria: miniaturas em coluna e a foto grande.
  *
- * A moldura tem proporcao fixa (3:4, a mesma do card) e esconde o que
+ * A moldura tem proporção fixa (3:4, a mesma do card) e esconde o que
  * transborda. E o que permite a foto crescer por dentro sem empurrar a
- * coluna de compra ao lado — a moldura nao muda de tamanho, so o conteudo
+ * coluna de compra ao lado — a moldura não muda de tamanho, só o conteúdo
  * dela.
  */
 
@@ -72,7 +72,7 @@
   border-radius: var(--radius-card);
   overflow: hidden;
 
-  /* A rolagem da pagina continua com um dedo enquanto a foto esta no
+  /* A rolagem da página continua com um dedo enquanto a foto esta no
      tamanho normal; `usePinchZoom` troca para `none` ao ampliar. */
   touch-action: pan-y;
 }
@@ -88,10 +88,10 @@
 }
 
 /*
- * Durante o gesto, nenhuma transicao.
+ * Durante o gesto, nenhuma transição.
  *
- * Meio segundo de suavizacao e bonito num clique e horrivel num arrasto: a
- * foto ficaria sempre um passo atras do cursor e do dedo.
+ * Meio segundo de suavização e bonito num clique e horrível num arrasto: a
+ * foto ficaria sempre um passo atrás do cursor e do dedo.
  */
 .zooming .image {
   transition: none;
@@ -105,7 +105,7 @@
   cursor: zoom-in;
 }
 
-/* A dica some assim que a ampliacao comeca: ela ja fez o trabalho dela. */
+/* A dica some assim que a ampliação começa: ela já fez o trabalho dela. */
 .hint {
   position: absolute;
   right: var(--space-12);
@@ -130,13 +130,13 @@
 /* ---- Os pontos do celular ----------------------------------------------- */
 
 /*
- * O ponto e de 8px; o botao em volta dele tem 44.
+ * O ponto e de 8px; o botão em volta dele tem 44.
  *
- * Sem `gap`: a distancia entre um ponto e o seguinte ja e a soma das duas
- * metades vazias dos botoes vizinhos. Um `gap` por cima disso afastaria os
+ * Sem `gap`: a distância entre um ponto e o seguinte já e a soma das duas
+ * metades vazias dos botões vizinhos. Um `gap` por cima disso afastaria os
  * pontos sem aumentar alvo nenhum.
  *
- * O respiro acima vem do proprio botao, entao `.stage` nao precisa mais do
+ * O respiro acima vem do próprio botão, então `.stage` não precisa mais do
  * seu: com os dois, sobrava uma faixa morta de 30px entre a foto e a fila.
  */
 .dots {
@@ -182,10 +182,10 @@
 
 @media (min-width: 64rem) {
   /*
-   * A faixa estreita da esquerda so entra na grade quando ha miniaturas para
-   * por nela. Produto de foto unica nao monta a lista — e com as duas
+   * A faixa estreita da esquerda só entra na grade quando há miniaturas para
+   * por nela. Produto de foto única não monta a lista — e com as duas
    * colunas sempre declaradas, a foto grande caia na primeira faixa e a
-   * pagina inteira encolhia para os 5rem de uma miniatura.
+   * página inteira encolhia para os 5rem de uma miniatura.
    */
   .galleryWithThumbs {
     grid-template-columns: 5rem minmax(0, 1fr);
@@ -197,7 +197,7 @@
     display: grid;
     gap: var(--space-8);
 
-    /* Muitas fotos rolam na propria coluna, e nao esticam a pagina. */
+    /* Muitas fotos rolam na própria coluna, e não esticam a página. */
     max-height: 40rem;
     overflow-y: auto;
   }

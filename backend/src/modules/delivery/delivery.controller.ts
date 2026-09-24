@@ -20,9 +20,9 @@ import { UpdateDeliveryCityDto } from './dto/update-delivery-city.dto.js';
 /**
  * Cidades de entrega pelo painel.
  *
- * `MANAGES_STORE` sem excecao, inclusive na leitura: a tabela de taxas e
- * preco, e preco e da dona. O STAFF nao precisa dela — o pedido que ele
- * atende ja carrega a taxa combinada em copia propria.
+ * `MANAGES_STORE` sem exceção, inclusive na leitura: a tabela de taxas e
+ * preço, e preço e da dona. O STAFF não precisa dela — o pedido que ele
+ * atende já carrega a taxa combinada em copia própria.
  */
 @Roles(...MANAGES_STORE)
 @Controller('admin/delivery-cities')
@@ -40,8 +40,8 @@ export class DeliveryController {
   }
 
   /**
-   * Antes do `PATCH :id` de proposito: o Nest casa as rotas na ordem em que
-   * sao declaradas, e `reorder` cairia em `:id` como se fosse um id.
+   * Antes do `PATCH :id` de propósito: o Nest casa as rotas na ordem em que
+   * são declaradas, e `reorder` cairia em `:id` como se fosse um id.
    */
   @Patch('reorder')
   reorder(@Body() dto: ReorderDeliveryCitiesDto): Promise<DeliveryCityView[]> {

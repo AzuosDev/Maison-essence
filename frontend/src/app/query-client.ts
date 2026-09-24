@@ -4,16 +4,16 @@ import { ApiError, NetworkError } from '@/lib/http';
 /**
  * O cache de dados do servidor.
  *
- * As escolhas aqui valem para a aplicacao inteira; uma tela so muda o que
- * tiver motivo proprio para mudar.
+ * As escolhas aqui valem para a aplicação inteira; uma tela só muda o que
+ * tiver motivo próprio para mudar.
  */
 
 /**
  * Quanto tempo um dado e considerado fresco.
  *
- * Um minuto para tudo, porque quase tudo nesta loja e catalogo: nome, foto e
- * preco de perfume nao mudam enquanto alguem navega. O que precisa de outro
- * numero pede explicitamente — a cotacao do carrinho, por exemplo, que nao
+ * Um minuto para tudo, porque quase tudo nesta loja e catálogo: nome, foto e
+ * preço de perfume não mudam enquanto alguém navega. O que precisa de outro
+ * número pede explicitamente — a cotação do carrinho, por exemplo, que não
  * pode ser servida de cache nenhum.
  */
 const STALE_TIME_MS = 60_000;
@@ -27,22 +27,22 @@ export function createQueryClient(): QueryClient {
       queries: {
         staleTime: STALE_TIME_MS,
 
-        // Voltar para a aba nao precisa recarregar o catalogo. Quem quiser
+        // Voltar para a aba não precisa recarregar o catálogo. Quem quiser
         // esse comportamento — uma lista de pedidos no painel, que muda
-        // enquanto a dona atende — liga na propria consulta.
+        // enquanto a dona atende — liga na própria consulta.
         refetchOnWindowFocus: false,
 
         retry: shouldRetry,
 
-        // Espera crescente com teto: 1s, 2s — e nao a rajada que so piora um
-        // servidor que ja esta em dificuldade.
+        // Espera crescente com teto: 1s, 2s — e não a rajada que só piora um
+        // servidor que já esta em dificuldade.
         retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 5000),
       },
 
       mutations: {
-        // Mutacao nao se repete sozinha: criar um pedido duas vezes por causa
+        // Mutação não se repete sozinha: criar um pedido duas vezes por causa
         // de uma resposta lenta e pior que mostrar o erro e deixar a pessoa
-        // decidir. Quem quiser retentativa pede por mutacao.
+        // decidir. Quem quiser retentativa pede por mutação.
         retry: false,
       },
     },
@@ -52,10 +52,10 @@ export function createQueryClient(): QueryClient {
 /**
  * O que vale a pena tentar de novo.
  *
- * Erro de rede e `5xx` sao transitorios — a funcao serverless pode ter
- * acordado devagar, o tunel pode ter engolido a requisicao. Ja um `404` ou um
- * `422` vao responder exatamente a mesma coisa na segunda tentativa, e um
- * `401` ja teve a sua renovacao no cliente HTTP: insistir so atrasa a tela
+ * Erro de rede e `5xx` são transitórios — a função serverless pode ter
+ * acordado devagar, o tunel pode ter engolido a requisição. Já um `404` ou um
+ * `422` vão responder exatamente a mesma coisa na segunda tentativa, e um
+ * `401` já teve a sua renovação no cliente HTTP: insistir só atrasa a tela
  * de erro.
  */
 function shouldRetry(failureCount: number, error: unknown): boolean {

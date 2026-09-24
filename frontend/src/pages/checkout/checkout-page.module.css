@@ -1,7 +1,7 @@
 /*
  * O checkout: trilha, passo e resumo.
  *
- * No celular vira uma coluna so, com o resumo abaixo do passo — primeiro o
+ * No celular vira uma coluna só, com o resumo abaixo do passo — primeiro o
  * que fazer, depois quanto da.
  */
 
@@ -45,13 +45,13 @@
   /*
    * Largura fixa nas duas colunas, e o conjunto centrado.
    *
-   * O passo **nao** ganha o `1fr` que sobra, e isso e proposital: um cartao
-   * de formulario com 880px espalha rotulo e campo por meia tela e obriga o
+   * O passo **não** ganha o `1fr` que sobra, e isso e proposital: um cartão
+   * de formulário com 880px espalha rótulo e campo por meia tela e obriga o
    * olho a atravessar de ponta a ponta a cada linha. Com 44rem ele fica na
    * medida de leitura, e o que sobra vira margem.
    *
-   * O ganho maior vem na ultima etapa, quando o resumo sai de cena: com
-   * largura fixa, o cartao continua exatamente do mesmo tamanho, em vez de
+   * O ganho maior vem na última etapa, quando o resumo sai de cena: com
+   * largura fixa, o cartão continua exatamente do mesmo tamanho, em vez de
    * esticar 22rem de uma etapa para a outra.
    */
   .body {
@@ -68,10 +68,10 @@
 /* ---- O pedido fechado ------------------------------------------------------ */
 
 /*
- * A rede de seguranca depois do envio.
+ * A rede de segurança depois do envio.
  *
- * Centrado e curto: o que importa e o codigo, e ele e o unico elemento com
- * peso de titulo aqui. A tela de confirmacao propria vem no passo seguinte
+ * Centrado e curto: o que importa e o código, e ele e o único elemento com
+ * peso de título aqui. A tela de confirmação própria vem no passo seguinte
  * do plano.
  */
 .placed {

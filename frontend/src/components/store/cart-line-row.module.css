@@ -1,8 +1,8 @@
 /*
  * A linha da sacola.
  *
- * Tres colunas: foto, corpo e valor. A do valor tem largura propria e o
- * numero alinhado a direita, que e onde o olho soma — uma coluna de precos
+ * Três colunas: foto, corpo e valor. A do valor tem largura própria e o
+ * número alinhado a direita, que e onde o olho soma — uma coluna de preços
  * com larguras diferentes obriga a reler cada linha para comparar.
  */
 
@@ -89,7 +89,7 @@
   color: var(--danger);
 }
 
-/* O motivo vindo do servidor: "Este produto saiu do catalogo." */
+/* O motivo vindo do servidor: "Este produto saiu do catálogo." */
 .reason {
   margin: 0;
 
@@ -108,11 +108,11 @@
 }
 
 /*
- * "Remover" e um link de texto, e nao um botao vermelho.
+ * "Remover" e um link de texto, e não um botão vermelho.
  *
- * A acao destrutiva da sacola nao disputa atencao com "finalizar": quem
- * chegou ate aqui esta comprando, e o botao de maior peso na tela precisa
- * ser o que fecha o pedido. Vermelho fica reservado para o que ja deu
+ * A ação destrutiva da sacola não disputa atenção com "finalizar": quem
+ * chegou até aqui esta comprando, e o botão de maior peso na tela precisa
+ * ser o que fecha o pedido. Vermelho fica reservado para o que já deu
  * errado.
  */
 .remove {
@@ -187,10 +187,10 @@
 /*
  * Fundo de aviso e um filete a esquerda, no vermelho da loja.
  *
- * O item continua inteiro e legivel — ele precisa ser reconhecido para ser
- * removido com consciencia. O que muda e o entorno, que diz "este aqui nao
+ * O item continua inteiro e legível — ele precisa ser reconhecido para ser
+ * removido com consciência. O que muda e o entorno, que diz "este aqui não
  * vai junto" antes de qualquer leitura de texto. A foto esmaece porque e o
- * elemento que mais puxa o olho para um item que agora e um problema, e nao
+ * elemento que mais puxa o olho para um item que agora e um problema, e não
  * uma compra.
  */
 .unavailable {
@@ -225,9 +225,9 @@
 /* ---- A gaveta ----------------------------------------------------------- */
 
 /*
- * Na gaveta ha 26rem de largura, e o valor nao cabe numa terceira coluna sem
+ * Na gaveta há 26rem de largura, e o valor não cabe numa terceira coluna sem
  * espremer o nome. Ele desce para baixo do corpo e alinha a esquerda, junto
- * com o resto — duas colunas em vez de tres.
+ * com o resto — duas colunas em vez de três.
  */
 .compact {
   grid-template-columns: 3.5rem minmax(0, 1fr);

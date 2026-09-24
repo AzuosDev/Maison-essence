@@ -7,14 +7,14 @@ import type { AuthenticatedUser } from '../auth.types.js';
 import { ALLOW_PENDING_PASSWORD_KEY } from '../decorators/allow-pending-password.decorator.js';
 
 /**
- * Senha temporaria nao da acesso ao painel.
+ * Senha temporária não da acesso ao painel.
  *
  * O login funciona e o access token sai com `mustChangePassword`, mas toda
- * rota administrativa responde 403 ate a troca. As excecoes sao marcadas com
+ * rota administrativa responde 403 até a troca. As exceções são marcadas com
  * `@AllowPendingPassword()`.
  *
- * Roda depois do `JwtAuthGuard` (ordem de registro no modulo), entao aqui o
- * usuario ja esta no request; rota publica passa direto por nao ter usuario.
+ * Roda depois do `JwtAuthGuard` (ordem de registro no módulo), então aqui o
+ * usuário já esta no request; rota publica passa direto por não ter usuário.
  */
 @Injectable()
 export class PendingPasswordGuard implements CanActivate {

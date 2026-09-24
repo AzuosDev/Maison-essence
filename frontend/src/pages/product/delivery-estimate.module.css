@@ -1,10 +1,10 @@
 /*
  * O bloco de entrega e retirada.
  *
- * Contornado e sobre branco, e nao com fundo areia: a escada de desconto,
- * logo acima na coluna, ja e o bloco de fundo cheio. Dois fundos preenchidos
+ * Contornado e sobre branco, e não com fundo areia: a escada de desconto,
+ * logo acima na coluna, já e o bloco de fundo cheio. Dois fundos preenchidos
  * empilhados fariam a coluna virar uma pilha de caixas, e nenhuma das duas
- * se destacaria. Aqui o contorno diz "informacao", e o preenchido de cima
+ * se destacaria. Aqui o contorno diz "informação", e o preenchido de cima
  * continua dizendo "oferta".
  */
 
@@ -50,8 +50,8 @@
 }
 
 /*
- * Rotulo a esquerda, valor a direita, com o filete pontilhado ligando os
- * dois — o desenho de nota fiscal, que e o que estas duas linhas sao.
+ * Rótulo a esquerda, valor a direita, com o filete pontilhado ligando os
+ * dois — o desenho de nota fiscal, que e o que estas duas linhas são.
  */
 .line {
   display: grid;
@@ -78,12 +78,12 @@
 }
 
 /*
- * O rotulo fica em `--ink-soft`, e nao no cinza `--muted` que a loja usa nos
- * rotulos decorativos.
+ * O rótulo fica em `--ink-soft`, e não no cinza `--muted` que a loja usa nos
+ * rótulos decorativos.
  *
- * "Taxa" e "Prazo" sao a resposta que o cliente veio buscar, e `--muted`
- * sobre branco da 3,7:1 — abaixo do minimo de leitura. A hierarquia entre
- * rotulo e valor continua existindo, e vem do peso: o valor e `<strong>`, em
+ * "Taxa" e "Prazo" são a resposta que o cliente veio buscar, e `--muted`
+ * sobre branco da 3,7:1 — abaixo do mínimo de leitura. A hierarquia entre
+ * rótulo e valor continua existindo, e vem do peso: o valor e `<strong>`, em
  * `--ink`.
  */
 .label {
@@ -91,7 +91,7 @@
   color: var(--ink-soft);
 }
 
-/* A unica boa noticia do bloco, no verde que a loja ja usa para ela. */
+/* A única boa noticia do bloco, no verde que a loja já usa para ela. */
 .free {
   margin: 0;
 
@@ -101,7 +101,7 @@
 
 /*
  * A nota carrega o convite ("escolha a cidade") e o recado de falha, e
- * chega a ser a unica coisa escrita no bloco. Texto de 12px e o que menos
+ * chega a ser a única coisa escrita no bloco. Texto de 12px e o que menos
  * pode se dar ao luxo de pouco contraste.
  */
 .note {
@@ -123,9 +123,9 @@
 }
 
 /*
- * O endereco em linhas, para caber no aplicativo de mapa de quem vai buscar.
- * `<address>` vem em italico por padrao no navegador, e endereco em italico
- * e mais dificil de copiar com o olho.
+ * O endereço em linhas, para caber no aplicativo de mapa de quem vai buscar.
+ * `<address>` vem em itálico por padrão no navegador, e endereço em itálico
+ * e mais difícil de copiar com o olho.
  */
 .address {
   display: grid;
@@ -138,8 +138,8 @@
 }
 
 /*
- * "Proximo a praca" e parte do endereco de quem vai dirigir ate la, entao
- * fica secundario pelo tamanho e nao por um cinza mais claro.
+ * "Próximo a praça" e parte do endereço de quem vai dirigir até lá, então
+ * fica secundário pelo tamanho e não por um cinza mais claro.
  */
 .reference {
   font-size: var(--text-12);

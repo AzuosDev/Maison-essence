@@ -20,34 +20,34 @@ import styles from './buy-box.module.css';
 /**
  * A coluna de compra: tudo o que decide o clique.
  *
- * Marca, nome, preco, opcoes, quantidade e os dois botoes, nesta ordem —
- * que e a ordem em que a duvida aparece. O cliente chega sabendo o que quer
+ * Marca, nome, preço, opções, quantidade e os dois botões, nesta ordem —
+ * que e a ordem em que a dúvida aparece. O cliente chega sabendo o que quer
  * ver (a foto), descobre quanto custa, escolhe o tamanho, decide quantos e
- * entao compra.
+ * então compra.
  *
- * ## A avaliacao
+ * ## A avaliação
  *
- * Nao ha. O backend nao tem resenha, nota nem contagem de avaliacoes — nao
- * existe colecao, rota nem campo. O espaco esta reservado no layout (o
- * cabecalho da coluna e um bloco proprio), e ligar a nota aqui sera uma
+ * Não há. O backend não tem resenha, nota nem contagem de avaliações — não
+ * existe coleção, rota nem campo. O espaço esta reservado no layout (o
+ * cabeçalho da coluna e um bloco próprio), e ligar a nota aqui será uma
  * linha no dia em que a API mandar uma. Inventar cinco estrelas no frontend
  * seria propaganda enganosa escrita em CSS.
  *
- * ## Os dois botoes
+ * ## Os dois botões
  *
- * "Adicionar a sacola" continua a visita; "Comprar agora" poe o item na
- * sacola **e** vai para o checkout. O segundo nao e um caminho paralelo: e o
+ * "Adicionar a sacola" continua a visita; "Comprar agora" põe o item na
+ * sacola **e** vai para o checkout. O segundo não e um caminho paralelo: e o
  * mesmo caminho sem a parada, e por isso os dois passam exatamente pelo
  * mesmo `useAddToCart` — nenhuma linha de sacola nasce de outro lugar nesta
  * loja.
  *
  * ## A quantidade e a variante
  *
- * Trocar de opcao volta a quantidade para um. O teto e o estoque da variante
- * escolhida, e manter "6" ao trocar para uma opcao que tem duas unidades
+ * Trocar de opção volta a quantidade para um. O teto e o estoque da variante
+ * escolhida, e manter "6" ao trocar para uma opção que tem duas unidades
  * deixaria a tela prometendo o que o checkout vai recusar. O ajuste acontece
- * no render, comparando com a variante ja aplicada — por efeito, a tela
- * desenharia um quadro com o numero errado antes de se corrigir.
+ * no render, comparando com a variante já aplicada — por efeito, a tela
+ * desenharia um quadro com o número errado antes de se corrigir.
  */
 
 export interface BuyBoxProps {
@@ -135,8 +135,8 @@ export function BuyBox({ product, variant, onSelectVariant }: BuyBoxProps) {
         quantity={quantity}
         unitPriceCents={unitPriceCents}
         onChoose={(wanted) => {
-          // O degrau pedido, ate onde o estoque deixa: um "leve 6" com tres
-          // unidades em maos vira tres, e nao uma promessa que a cotacao
+          // O degrau pedido, até onde o estoque deixa: um "leve 6" com três
+          // unidades em mãos vira três, e não uma promessa que a cotação
           // recusa.
           setQuantity(Math.min(wanted, Math.max(max, 1)));
         }}
@@ -155,7 +155,7 @@ export function BuyBox({ product, variant, onSelectVariant }: BuyBoxProps) {
   );
 }
 
-/* ---- O preco ------------------------------------------------------------ */
+/* ---- O preço ------------------------------------------------------------ */
 
 interface PriceBlockProps {
   product: PublicProductDetail;
@@ -167,12 +167,12 @@ interface PriceBlockProps {
 }
 
 /**
- * O preco, o riscado, o percentual, o parcelamento e o PIX.
+ * O preço, o riscado, o percentual, o parcelamento e o PIX.
  *
- * Com quantidade um — o caso de quase todo mundo — o numero grande e o preco
+ * Com quantidade um — o caso de quase todo mundo — o número grande e o preço
  * da variante. Passando de um, ele vira o total do conjunto e a linha diz
- * quantas unidades sao: um "R$ 189,90" sozinho ao lado de um seletor em 3
- * seria lido como o preco de tres.
+ * quantas unidades são: um "R$ 189,90" sozinho ao lado de um seletor em 3
+ * seria lido como o preço de três.
  */
 function PriceBlock({
   product,
@@ -189,8 +189,8 @@ function PriceBlock({
   const pix = payments?.pix;
   const card = payments?.card;
 
-  // `card` e nulo quando a loja nao aceita cartao e indefinido enquanto as
-  // regras nao chegaram: os dois casos sao "nao ha parcelamento a anunciar".
+  // `card` e nulo quando a loja não aceita cartão e indefinido enquanto as
+  // regras não chegaram: os dois casos são "não há parcelamento a anunciar".
   const installment = card ? bestInterestFreeInstallment(totalCents, card) : null;
   const pixDiscount =
     pix && pix.hasKey && pix.discountPercent > 0
@@ -253,15 +253,15 @@ function PriceBlock({
 /* ---- O estoque ---------------------------------------------------------- */
 
 /**
- * O aviso de estoque, quando ha o que avisar.
+ * O aviso de estoque, quando há o que avisar.
  *
- * "Restam apenas 2" so aparece com estoque contado e baixo — a urgencia
- * inventada e o truque mais gasto do comercio eletronico, e esta loja vende
+ * "Restam apenas 2" só aparece com estoque contado e baixo — a urgência
+ * inventada e o truque mais gasto do comércio eletronico, e esta loja vende
  * para quem volta. Produto sob encomenda diz o que e, porque o prazo dele e
- * outro e o cliente precisa saber disso antes de comprar, nao depois.
+ * outro e o cliente precisa saber disso antes de comprar, não depois.
  *
  * O aviso sai num `<output>`, que e o elemento do resultado que muda sem que
- * a pagina mude — e ja carrega o `role="status"` embutido. A troca de
+ * a página mude — e já carrega o `role="status"` embutido. A troca de
  * variante anuncia o novo estoque a quem usa leitor de tela sem que nada
  * aqui precise pedir.
  */

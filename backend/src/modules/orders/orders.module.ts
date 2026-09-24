@@ -11,17 +11,17 @@ import { OrdersController } from './orders.controller.js';
 import { OrdersService } from './orders.service.js';
 
 /**
- * Pedidos: o checkout publico e a gestao pelo painel.
+ * Pedidos: o checkout público e a gestão pelo painel.
  *
  * Importa `CartModule` em vez de reimplementar a conta. E a regra que sustenta
- * a fase inteira: o pedido e gravado pelos mesmos numeros que a cotacao
- * mostrou, calculados pelo mesmo codigo, e nao por uma segunda versao da
- * mesma logica que um dia divergiria da primeira.
+ * a fase inteira: o pedido e gravado pelos mesmos números que a cotação
+ * mostrou, calculados pelo mesmo código, e não por uma segunda versão da
+ * mesma lógica que um dia divergiria da primeira.
  *
- * `Product` entra porque o estoque e baixado aqui — e o unico lugar do sistema
+ * `Product` entra porque o estoque e baixado aqui — e o único lugar do sistema
  * que escreve em `variants.stock` sem passar pelo cadastro. `SettingsModule`
- * vem pelo numero do WhatsApp e pelas instrucoes de retirada, que sao o
- * destino e o rodape da mensagem.
+ * vem pelo número do WhatsApp e pelas instruções de retirada, que são o
+ * destino e o rodapé da mensagem.
  */
 @Module({
   imports: [

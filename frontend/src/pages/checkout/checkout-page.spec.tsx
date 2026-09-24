@@ -14,29 +14,29 @@ import CheckoutPage from './checkout-page';
 /**
  * O checkout contra a API.
  *
- * Os criterios de aceite escritos como codigo, mais os dois erros que a
- * revisao visual nunca pega:
+ * Os critérios de aceite escritos como código, mais os dois erros que a
+ * revisão visual nunca pega:
  *
- * 1. **Retirada some com o endereco e zera a taxa.** Os campos saem da tela
+ * 1. **Retirada some com o endereço e zera a taxa.** Os campos saem da tela
  *    e o corpo enviado ao servidor sai sem cidade nenhuma.
  * 2. **Trocar a cidade muda a taxa e o total na hora.** Conferido no que foi
  *    *pedido* ao servidor e no que foi *exibido* — e o total exibido e um
- *    numero que nenhuma conta local produziria.
- * 3. **Recarregar no meio nao perde nada.** Testado desmontando e montando a
- *    pagina de novo, com o `localStorage` no meio.
- * 4. **Duplo clique gera um pedido so.** O erro mais comum desta tela, e o
- *    unico que produz duas conversas no WhatsApp da dona.
- * 5. **O 409 abre o modal comparando os dois valores**, e nao reenvia nada
- *    por conta propria.
+ *    número que nenhuma conta local produziria.
+ * 3. **Recarregar no meio não perde nada.** Testado desmontando e montando a
+ *    página de novo, com o `localStorage` no meio.
+ * 4. **Duplo clique gera um pedido só.** O erro mais comum desta tela, e o
+ *    único que produz duas conversas no WhatsApp da dona.
+ * 5. **O 409 abre o modal comparando os dois valores**, e não reenvia nada
+ *    por conta própria.
  *
- * E o fecho, que e o momento em que o sistema todo entrega ou nao entrega:
+ * E o fecho, que e o momento em que o sistema todo entrega ou não entrega:
  *
  * 6. **A aba do WhatsApp e reservada no clique** e recebe exatamente a URL
  *    que o servidor mandou — com as quebras de linha e os acentos como
  *    ficaram gravados no pedido.
- * 7. **Erro na criacao nao esvazia a sacola.** O criterio de aceite mais
- *    caro de descobrir em producao.
- * 8. **O 429 pede para esperar** em vez de oferecer um botao que so pode
+ * 7. **Erro na criação não esvazia a sacola.** O critério de aceite mais
+ *    caro de descobrir em produção.
+ * 8. **O 429 pede para esperar** em vez de oferecer um botão que só pode
  *    falhar de novo.
  * 9. **O 409 de estoque tira da sacola o item que acabou**, sem obrigar o
  *    cliente a procurar qual foi.
@@ -130,11 +130,11 @@ function itemCotado(overrides: Record<string, unknown> = {}) {
 }
 
 /**
- * Uma cotacao como o servidor a devolveria.
+ * Uma cotação como o servidor a devolveria.
  *
- * O total **nao** e a soma das linhas com a taxa: e um numero proprio,
+ * O total **não** e a soma das linhas com a taxa: e um número próprio,
  * passado de fora. E o que permite os casos abaixo provarem que a tela
- * exibe o que o servidor mandou, e nao o que ela mesma somaria.
+ * exibe o que o servidor mandou, e não o que ela mesma somaria.
  */
 function cotacao(options: {
   items?: Record<string, unknown>[];
@@ -174,10 +174,10 @@ function cotacao(options: {
 }
 
 /**
- * A mensagem do pedido, com o que o criterio de aceite cobra: quebra de linha
- * de verdade e acentuacao de verdade.
+ * A mensagem do pedido, com o que o critério de aceite cobra: quebra de linha
+ * de verdade e acentuação de verdade.
  *
- * Escrita com acento **de proposito**, ao contrario dos comentarios deste
+ * Escrita com acento **de propósito**, ao contrário dos comentários deste
  * projeto: e exatamente o que se quer provar que atravessa o caminho inteiro
  * sem ser reescrito.
  */
@@ -247,15 +247,15 @@ function pedidoCriado() {
 /**
  * Uma aba de navegador de mentira.
  *
- * O jsdom nao abre abas: `window.open` devolve `null`, e com isso o codigo
- * cairia direto no caminho de emergencia — que nao e o que estes casos
+ * O jsdom não abre abas: `window.open` devolve `null`, e com isso o código
+ * cairia direto no caminho de emergência — que não e o que estes casos
  * querem observar. Com o dublê, da para conferir as duas coisas que importam:
  * que a aba foi pedida **vazia** durante o clique, e que a URL do servidor
  * chegou nela sem passar por nenhuma reescrita.
  */
 interface AbaFalsa {
   abertaCom: string;
-  /** A URL que a tela mandou para esta aba, ou `null` se nao mandou nenhuma. */
+  /** A URL que a tela mandou para esta aba, ou `null` se não mandou nenhuma. */
   enviadaPara: string | null;
   closed: boolean;
   opener: unknown;
@@ -312,10 +312,10 @@ let quoteRequests: {
 /** Os corpos que a tela mandou para `POST /orders`. */
 let orderRequests: Record<string, unknown>[] = [];
 
-/** Quem responde a cotacao. Trocado por caso, conforme o que se quer provar. */
+/** Quem responde a cotação. Trocado por caso, conforme o que se quer provar. */
 let quoteFor: (body: { fulfillment: { mode: string; cityId?: string } }) => unknown;
 
-/** A resposta de `POST /orders`: sucesso por padrao. */
+/** A resposta de `POST /orders`: sucesso por padrão. */
 let orderResponse: () => Response;
 
 beforeEach(() => {
@@ -385,9 +385,9 @@ afterEach(() => {
 function abrirCheckout() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: 0 } } });
 
-  // A confirmacao entra no roteador porque o fecho termina nela: depois do
-  // `201` a pagina navega para `/pedido/:code`, e sem a rota o teste nao
-  // veria o que o cliente ve. `/sacola` responde pelo caminho da sacola
+  // A confirmação entra no roteador porque o fecho termina nela: depois do
+  // `201` a página navega para `/pedido/:code`, e sem a rota o teste não
+  // veria o que o cliente vê. `/sacola` responde pelo caminho da sacola
   // esvaziada.
   const router = createMemoryRouter(
     [
@@ -425,7 +425,7 @@ function comUmItem() {
   });
 }
 
-/** O total, lido do bloco de resumo e nao de qualquer "R$" da tela. */
+/** O total, lido do bloco de resumo e não de qualquer "R$" da tela. */
 function totalDoResumo(): string {
   const resumo = screen.getByRole('complementary', { name: 'Resumo do pedido' });
 
@@ -436,7 +436,7 @@ async function avancar(usuario: ReturnType<typeof userEvent.setup>) {
   await usuario.click(screen.getByRole('button', { name: 'Continuar' }));
 }
 
-/* ---- Os criterios de aceite ----------------------------------------------- */
+/* ---- Os critérios de aceite ----------------------------------------------- */
 
 test('escolher retirada some com os campos de endereço e zera a taxa', async () => {
   const usuario = userEvent.setup();
@@ -464,10 +464,10 @@ test('escolher retirada some com os campos de endereço e zera a taxa', async ()
   expect(screen.queryByLabelText('Bairro')).toBeNull();
   expect(screen.queryByLabelText('Cidade da entrega')).toBeNull();
 
-  // O endereco da loja entra no lugar dos campos.
+  // O endereço da loja entra no lugar dos campos.
   expect(screen.getByText(/Rua São Pedro/)).toBeTruthy();
 
-  // E a taxa sai da conta: o corpo da cotacao vai sem cidade, e o resumo
+  // E a taxa sai da conta: o corpo da cotação vai sem cidade, e o resumo
   // mostra o total sem frete.
   await waitFor(() => {
     expect(quoteRequests.at(-1)?.fulfillment).toEqual({ mode: 'pickup' });
@@ -487,7 +487,7 @@ test('trocar a cidade muda a taxa e o total na hora', async () => {
    * Totais que nenhuma conta local produziria.
    *
    * Juazeiro devolve R$ 300,00 e Crato R$ 400,00, com subtotal de R$ 189,90
-   * e taxas de R$ 15,00 e R$ 25,00. Se a tela somasse por conta propria,
+   * e taxas de R$ 15,00 e R$ 25,00. Se a tela somasse por conta própria,
    * mostraria R$ 204,90 e R$ 214,90 — e o caso falharia.
    */
   quoteFor = (body) => {
@@ -562,11 +562,11 @@ test('recarregar no meio do checkout não perde nada', async () => {
   /**
    * A recarga.
    *
-   * O navegador fechou a pagina: a arvore e descartada, o estado em memoria
-   * some, e o unico elo com o que vem depois e o que ficou gravado no
-   * `localStorage`. E por isso que o conteudo gravado e lido **antes** de o
+   * O navegador fechou a página: a árvore e descartada, o estado em memória
+   * some, e o único elo com o que vem depois e o que ficou gravado no
+   * `localStorage`. E por isso que o conteúdo gravado e lido **antes** de o
    * store ser zerado e reposto logo em seguida — zerar o store dispara a
-   * persistencia e reescreveria o armazenamento com o estado vazio, o que
+   * persistência e reescreveria o armazenamento com o estado vazio, o que
    * nenhuma recarga de verdade faz.
    */
   const gravado = localStorage.getItem('maison-essence.checkout');
@@ -584,8 +584,8 @@ test('recarregar no meio do checkout não perde nada', async () => {
   // ...com as mesmas escolhas e o mesmo texto digitado.
   expect(screen.getByRole('radio', { name: /Receber em casa/ })).toHaveProperty('checked', true);
 
-  // A cidade espera a lista de `/delivery-cities` chegar: o id guardado so
-  // casa com uma opcao depois que as opcoes existem. E o que deve acontecer
+  // A cidade espera a lista de `/delivery-cities` chegar: o id guardado só
+  // casa com uma opção depois que as opções existem. E o que deve acontecer
   // — guardar o nome em vez do id faria a cidade renomeada no painel voltar
   // escrita errado na tela de quem estava no meio do checkout.
   await waitFor(() => {
@@ -597,7 +597,7 @@ test('recarregar no meio do checkout não perde nada', async () => {
   expect(screen.getByLabelText('Ponto de referência')).toHaveProperty('value', 'Perto da praça');
 });
 
-/* ---- Os dois erros que a revisao visual nao pega -------------------------- */
+/* ---- Os dois erros que a revisão visual não pega -------------------------- */
 
 test('duplo clique em finalizar gera um pedido só', async () => {
   const usuario = userEvent.setup();
@@ -647,10 +647,10 @@ test('o 409 abre o modal comparando os dois valores, sem reenviar sozinho', asyn
   expect(within(modal).getByText('R$ 189,90')).toBeTruthy();
   expect(within(modal).getByText('R$ 219,90')).toBeTruthy();
 
-  // Um pedido enviado, e nenhum reenvio por conta propria.
+  // Um pedido enviado, e nenhum reenvio por conta própria.
   expect(orderRequests.length).toBe(1);
 
-  // A confirmacao reenvia com o total novo — e so entao.
+  // A confirmação reenvia com o total novo — e só então.
   orderResponse = () => jsonResponse(pedidoCriado(), 201);
 
   await usuario.click(within(modal).getByRole('button', { name: 'Continuar com o novo valor' }));
@@ -683,8 +683,8 @@ test('a aba do WhatsApp e reservada no clique e recebe a URL do servidor', async
   /**
    * A URL foi entregue byte a byte.
    *
-   * O criterio de aceite fala em quebra de linha correta e acento integro, e
-   * e isto que garante os dois: a tela nao remonta nem recodifica nada — ela
+   * O critério de aceite fala em quebra de linha correta e acento integro, e
+   * e isto que garante os dois: a tela não remonta nem recodifica nada — ela
    * repassa a string que o servidor gravou no pedido. Conferir a igualdade
    * exata e mais forte do que procurar `%0A` no meio dela, porque qualquer
    * reescrita, inclusive uma que "arrumasse" o texto, quebra o caso.
@@ -693,12 +693,12 @@ test('a aba do WhatsApp e reservada no clique e recebe a URL do servidor', async
 
   expect(decodeURIComponent(enviada.split('?text=')[1] ?? '')).toBe(MENSAGEM);
 
-  // E a confirmacao entrou no lugar do checkout, com o codigo do pedido.
+  // E a confirmação entrou no lugar do checkout, com o código do pedido.
   expect(await screen.findByText('ME-260922-AB12')).toBeTruthy();
 
-  // E nao a sacola vazia. A guarda de "sacola vazia nao tem checkout" corre
-  // junto com esta navegacao — esvaziar a sacola e ir para a confirmacao
-  // acontecem no mesmo instante —, e ja mandou a pessoa para `/sacola` bem
+  // E não a sacola vazia. A guarda de "sacola vazia não tem checkout" corre
+  // junto com esta navegação — esvaziar a sacola e ir para a confirmação
+  // acontecem no mesmo instante —, e já mandou a pessoa para `/sacola` bem
   // na hora em que o pedido dera certo.
   expect(screen.queryByText('A sacola')).toBeNull();
 });
@@ -723,10 +723,10 @@ test('erro na criação do pedido não esvazia o carrinho', async () => {
 
   await screen.findByRole('alert');
 
-  // O criterio de aceite: a sacola esta como estava.
+  // O critério de aceite: a sacola esta como estava.
   expect(useCart.getState().lines.length).toBe(1);
 
-  // E a aba reservada foi fechada, em vez de ficar em branco atras da tela.
+  // E a aba reservada foi fechada, em vez de ficar em branco atrás da tela.
   await waitFor(() => {
     expect(abas[0]?.closed).toBe(true);
   });
@@ -766,8 +766,8 @@ test('o 429 pede para esperar em vez de oferecer o reenvio na hora', async () =>
 
   expect(within(aviso).getByText('Muitas tentativas seguidas')).toBeTruthy();
 
-  // O botao existe, e esta fora do ar: quem chega aqui costuma ter enviado o
-  // pedido varias vezes, e uma dessas pode ter passado.
+  // O botão existe, e esta fora do ar: quem chega aqui costuma ter enviado o
+  // pedido várias vezes, e uma dessas pode ter passado.
   const esperar = within(aviso).getByRole('button', { name: /Tentar de novo em \d+s/ });
 
   expect(esperar).toHaveProperty('disabled', true);
@@ -812,7 +812,7 @@ test('o 409 de estoque tira da sacola o item que acabou', async () => {
   // O modal nomeia o item, em vez de mandar o cliente procurar qual foi.
   expect(within(modal).getByText(/Sem estoque no momento/)).toBeTruthy();
 
-  // E nao oferece "continuar com o novo valor": nao ha valor a aceitar, ha
+  // E não oferece "continuar com o novo valor": não há valor a aceitar, há
   // item a tirar.
   expect(within(modal).queryByRole('button', { name: 'Continuar com o novo valor' })).toBeNull();
 
@@ -822,11 +822,11 @@ test('o 409 de estoque tira da sacola o item que acabou', async () => {
     expect(useCart.getState().lines.length).toBe(0);
   });
 
-  // Nenhum segundo pedido saiu por conta propria.
+  // Nenhum segundo pedido saiu por conta própria.
   expect(orderRequests.length).toBe(1);
 });
 
-/** Atravessa os tres primeiros passos com retirada e PIX. */
+/** Atravessa os três primeiros passos com retirada e PIX. */
 async function irAteARevisao(usuario: ReturnType<typeof userEvent.setup>) {
   comUmItem();
   abrirCheckout();

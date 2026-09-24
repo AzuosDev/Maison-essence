@@ -22,36 +22,36 @@ import type {
 } from './system.types';
 
 /**
- * Os dados da area de sistema.
+ * Os dados da área de sistema.
  *
  * ## O interruptor de status e otimista
  *
- * Ativar e desativar um usuario e a acao que mais se repete nesta tela, e o
+ * Ativar e desativar um usuário e a ação que mais se repete nesta tela, e o
  * `useSetUserStatus` a aplica no cache antes de o servidor responder: o
  * interruptor vira no dedo, como um interruptor. Se a chamada falhar — e ela
- * falha por motivos reais, como "voce nao pode desativar a si mesmo" ou
- * "este e o ultimo administrador ativo" —, o cache volta ao que era e quem
+ * falha por motivos reais, como "você não pode desativar a si mesmo" ou
+ * "este e o último administrador ativo" —, o cache volta ao que era e quem
  * chamou mostra o aviso com a mensagem do servidor.
  *
- * O rollback guarda a lista inteira, e nao so o registro alterado. E o
- * caminho mais curto para ficar correto quando duas linhas sao trocadas
- * quase ao mesmo tempo: cada mutacao restaura o retrato que ela mesma viu.
+ * O rollback guarda a lista inteira, e não só o registro alterado. E o
+ * caminho mais curto para ficar correto quando duas linhas são trocadas
+ * quase ao mesmo tempo: cada mutação restaura o retrato que ela mesma viu.
  *
  * ## Nada de senha no cache
  *
- * `useResetPassword` e `useCreateUser` devolvem a senha temporaria pelo
- * retorno da mutacao, e ela para na tela. Nenhuma das duas escreve a senha
- * em `queryClient`: o cache sobrevive a navegacao, e a senha nao deve.
+ * `useResetPassword` e `useCreateUser` devolvem a senha temporária pelo
+ * retorno da mutação, e ela para na tela. Nenhuma das duas escreve a senha
+ * em `queryClient`: o cache sobrevive a navegação, e a senha não deve.
  */
 
-/* ---- Usuarios ----------------------------------------------------------- */
+/* ---- Usuários ----------------------------------------------------------- */
 
 export function useUsers() {
   return useQuery({
     queryKey: adminKeys.users(),
     queryFn: ({ signal }) => listUsers(signal),
-    // Meio minuto: a lista muda quando alguem a edita, e quem edita esta
-    // nesta tela e ja recebe a invalidacao.
+    // Meio minuto: a lista muda quando alguém a edita, e quem edita esta
+    // nesta tela e já recebe a invalidação.
     staleTime: 30_000,
   });
 }
@@ -81,10 +81,10 @@ export function useUpdateUser() {
 /**
  * Ativa ou desativa, com o interruptor virando na hora.
  *
- * Note o `onSettled`: a invalidacao acontece no sucesso **e** na falha. No
+ * Note o `onSettled`: a invalidação acontece no sucesso **e** na falha. No
  * sucesso, porque o servidor pode ter mexido em mais do que a flag — o
  * `updatedAt` mudou. Na falha, porque o retrato restaurado veio do cache e
- * pode ja estar velho por outra razao.
+ * pode já estar velho por outra razão.
  */
 export function useSetUserStatus() {
   const client = useQueryClient();
@@ -136,7 +136,7 @@ export function useResetPassword() {
   });
 }
 
-/** Encerra as sessoes. A rota ainda nao existe — ver `system.api.ts`. */
+/** Encerra as sessões. A rota ainda não existe — ver `system.api.ts`. */
 export function useRevokeSessions() {
   return useMutation({
     mutationFn: (id: string) => revokeSessions(id),
@@ -149,20 +149,20 @@ export function useAudit(params: AuditListParams) {
   return useQuery({
     queryKey: adminKeys.auditList(params),
     queryFn: ({ signal }) => listAudit(params, signal),
-    // A trilha e imutavel: uma entrada gravada nao muda mais. O que pode
-    // aparecer e uma entrada nova, e para isso ha o botao de recarregar.
+    // A trilha e imutável: uma entrada gravada não muda mais. O que pode
+    // aparecer e uma entrada nova, e para isso há o botão de recarregar.
     staleTime: 60_000,
     retry: (count, error) => !isMissingRoute(error) && count < 2,
   });
 }
 
-/* ---- Saude -------------------------------------------------------------- */
+/* ---- Saúde -------------------------------------------------------------- */
 
 export function useHealth() {
   return useQuery({
     queryKey: adminKeys.health(),
     queryFn: ({ signal }) => fetchHealth(signal),
-    // Saude e uma leitura do agora: nao vale guardar.
+    // Saúde e uma leitura do agora: não vale guardar.
     staleTime: 0,
     refetchOnWindowFocus: true,
   });
@@ -183,22 +183,22 @@ export function useDemoSeed() {
   return useMutation({
     mutationFn: () => runDemoSeed(),
     onSuccess: () => {
-      // O seed escreve em quase toda colecao: o painel inteiro esta velho.
+      // O seed escreve em quase toda coleção: o painel inteiro esta velho.
       void client.invalidateQueries({ queryKey: adminKeys.all });
     },
   });
 }
 
-/* ---- O 404 que significa "a rota nao existe" ----------------------------- */
+/* ---- O 404 que significa "a rota não existe" ----------------------------- */
 
 /**
- * A chamada caiu porque o backend nao publica essa rota.
+ * A chamada caiu porque o backend não publica essa rota.
  *
- * Tres telas desta area apontam para rotas que ainda nao existem, e o `404`
- * delas nao e um erro do usuario nem uma falha passageira: e uma ausencia.
+ * Três telas desta área apontam para rotas que ainda não existem, e o `404`
+ * delas não e um erro do usuário nem uma falha passageira: e uma ausência.
  * Distinguir isso importa em dois lugares — a tela escreve a frase certa em
  * vez de "algo deu errado", e o React Query para de tentar de novo, porque
- * insistir num caminho que nao existe so gasta tempo.
+ * insistir num caminho que não existe só gasta tempo.
  */
 export function isMissingRoute(error: unknown): boolean {
   return isApiError(error) && error.status === 404;

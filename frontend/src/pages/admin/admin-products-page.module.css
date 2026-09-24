@@ -1,9 +1,9 @@
 /*
- * O catalogo.
+ * O catálogo.
  *
- * Mesma arquitetura da tela de pedidos — titulo, recorte, resposta —, com
- * uma diferenca: o botao de cadastrar fica na mesma linha do titulo, e nao
- * junto dos filtros. Ele nao e um filtro, e a distancia impede que a dona o
+ * Mesma arquitetura da tela de pedidos — título, recorte, resposta —, com
+ * uma diferença: o botão de cadastrar fica na mesma linha do título, e não
+ * junto dos filtros. Ele não e um filtro, e a distância impede que a dona o
  * aperte enquanto tenta limpar o recorte.
  */
 
@@ -35,7 +35,7 @@
   color: var(--ink);
 }
 
-/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+/* `--ink-soft` e não `--muted`: 14px no cinza de rótulo não alcança 4.5:1. */
 .count {
   margin: 0;
 
@@ -44,7 +44,7 @@
   color: var(--ink-soft);
 }
 
-/* No celular o botao ocupa a linha inteira: e o alvo principal da tela para
+/* No celular o botão ocupa a linha inteira: e o alvo principal da tela para
    quem esta cadastrando a remessa que acabou de chegar. */
 .add {
   flex: 1;
@@ -59,10 +59,10 @@
 }
 
 /*
- * As tres pilulas de situacao.
+ * As três pílulas de situação.
  *
- * `<fieldset>` com legenda escondida, e nao `<div role="group">`: as pilulas
- * sao um controle so, e o elemento nativo diz isso sem atributo. O bloco
+ * `<fieldset>` com legenda escondida, e não `<div role="group">`: as pílulas
+ * são um controle só, e o elemento nativo diz isso sem atributo. O bloco
  * abaixo desfaz a moldura que o navegador desenha em volta de todo fieldset.
  */
 .statuses {
@@ -86,7 +86,7 @@
  * A lista velha enquanto a nova vem.
  *
  * `pointer-events: none` evita o clique num interruptor que esta prestes a
- * sair da lista — o tipo de erro que so acontece com quem usa a tela rapido,
+ * sair da lista — o tipo de erro que só acontece com quem usa a tela rápido,
  * que e quem a usa de verdade.
  */
 .refreshing {
@@ -117,12 +117,12 @@
   }
 
   /*
-   * No desktop os controles cabem numa linha, com a busca levando o espaco
+   * No desktop os controles cabem numa linha, com a busca levando o espaço
    * que sobra: e nela que se digita.
    *
-   * Quatro colunas para tres ou quatro filhos — "Limpar filtros" so existe
-   * com recorte valendo. A coluna vazia nao ocupa largura, e declarar so tres
-   * jogaria o botao para uma segunda linha sozinho.
+   * Quatro colunas para três ou quatro filhos — "Limpar filtros" só existe
+   * com recorte valendo. A coluna vazia não ocupa largura, e declarar só três
+   * jogaria o botão para uma segunda linha sozinho.
    */
   .filters {
     grid-template-columns: minmax(0, 1fr) auto auto auto;

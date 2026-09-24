@@ -10,18 +10,18 @@ import { TOKEN_AUDIENCES, TOKEN_TYPES } from '../../auth/auth.types.js';
 import type { AuthenticatedCustomer } from '../customer-auth.types.js';
 import { CustomerSessionService } from '../customer-session.service.js';
 
-/** O nome pelo qual o guard da loja pede esta estrategia ao Passport. */
+/** O nome pelo qual o guard da loja pede esta estratégia ao Passport. */
 export const CUSTOMER_JWT_STRATEGY = 'jwt-customer';
 
 /**
  * Valida o access token do cliente.
  *
- * Estrategia separada da do painel, e nao um ramo dentro dela: sao segredo,
- * audiencia e colecao diferentes, e a unica forma de um token da loja virar
- * sessao de painel seria alguem juntar os dois caminhos num `if`. Aqui nao ha
- * esse `if` — o Passport escolhe a estrategia pelo nome que a rota declarou.
+ * Estratégia separada da do painel, e não um ramo dentro dela: são segredo,
+ * audiência e coleção diferentes, e a única forma de um token da loja virar
+ * sessão de painel seria alguém juntar os dois caminhos num `if`. Aqui não há
+ * esse `if` — o Passport escolhe a estratégia pelo nome que a rota declarou.
  *
- * `audience` entra nas opcoes da estrategia: um token sem a audiencia da loja
+ * `audience` entra nas opções da estratégia: um token sem a audiência da loja
  * e recusado antes de qualquer consulta ao banco.
  */
 @Injectable()

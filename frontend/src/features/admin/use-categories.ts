@@ -15,17 +15,17 @@ import { menuOrder } from './category-tree';
  *
  * ## Cinco minutos de frescor
  *
- * A arvore quase nao muda, e quem a muda esta nesta tela e recebe a
- * invalidacao na hora. Quem mais depende dela — o filtro do catalogo e o
- * seletor do cadastro de produto — a le muitas vezes por sessao e nao pode
- * pagar uma consulta a cada abertura de formulario.
+ * A árvore quase não muda, e quem a muda esta nesta tela e recebe a
+ * invalidação na hora. Quem mais depende dela — o filtro do catálogo e o
+ * seletor do cadastro de produto — a lê muitas vezes por sessão e não pode
+ * pagar uma consulta a cada abertura de formulário.
  *
- * ## Toda escrita invalida a arvore inteira
+ * ## Toda escrita inválida a árvore inteira
  *
- * Nao ha chave por categoria. A rota devolve a arvore completa e as
+ * Não há chave por categoria. A rota devolve a árvore completa e as
  * contagens de produto do pai somam as dos filhos: mexer numa subcategoria
- * muda o numero que aparece no pai, e uma invalidacao cirurgica deixaria esse
- * numero errado na linha de cima.
+ * muda o número que aparece no pai, e uma invalidação cirúrgica deixaria esse
+ * número errado na linha de cima.
  */
 const STALE_TIME_MS = 5 * 60_000;
 
@@ -49,10 +49,10 @@ export function useCreateCategory() {
 }
 
 /**
- * Salva a edicao: nome, endereco, pai, situacao.
+ * Salva a edição: nome, endereço, pai, situação.
  *
- * Tambem e por aqui que a categoria e desativada — inclusive pelo caminho que
- * o 409 de exclusao oferece. Invalida os produtos junto porque despublicar
+ * Também e por aqui que a categoria e desativada — inclusive pelo caminho que
+ * o 409 de exclusão oferece. Inválida os produtos junto porque despublicar
  * uma categoria muda o que a vitrine mostra, e o painel de produtos filtra
  * por ela.
  */
@@ -71,14 +71,14 @@ export function useUpdateCategory() {
 }
 
 /**
- * Regrava a ordem do menu, com a arvore ja reposicionada na tela.
+ * Regrava a ordem do menu, com a árvore já reposicionada na tela.
  *
- * O otimismo aqui e a razao de o gesto existir: arrastar uma categoria e
- * ve-la voltar ao lugar por meio segundo, ate o servidor responder, e pior do
- * que nao poder arrastar. O retrato anterior volta se a chamada falhar.
+ * O otimismo aqui e a razão de o gesto existir: arrastar uma categoria e
+ * vê-lá voltar ao lugar por meio segundo, até o servidor responder, e pior do
+ * que não poder arrastar. O retrato anterior volta se a chamada falhar.
  *
- * A resposta do servidor e a arvore reordenada, e ela entra direto no cache:
- * uma invalidacao pediria a mesma lista de novo, pelo mesmo resultado.
+ * A resposta do servidor e a árvore reordenada, e ela entra direto no cache:
+ * uma invalidação pediria a mesma lista de novo, pelo mesmo resultado.
  */
 export function useReorderCategories() {
   const client = useQueryClient();
@@ -112,7 +112,7 @@ export function useReorderCategories() {
  * Exclui a categoria.
  *
  * O servidor recusa com 409 quando ela ainda tem subcategoria ou produto
- * ativo. Quem chama le `blockedBy(error)` para saber quantos sao e oferecer
+ * ativo. Quem chama lê `blockedBy(error)` para saber quantos são e oferecer
  * desativar no lugar — `category-tree.ts` explica.
  */
 export function useDeleteCategory() {
@@ -123,7 +123,7 @@ export function useDeleteCategory() {
 
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: adminKeys.categories() });
-      // Excluir solta a referencia nos produtos inativos que apontavam para
+      // Excluir solta a referência nos produtos inativos que apontavam para
       // ela: a lista de produtos guarda `categoryIds` e ficou desatualizada.
       void client.invalidateQueries({ queryKey: adminKeys.products() });
     },

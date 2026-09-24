@@ -10,22 +10,22 @@ import {
 import type { QuoteLine } from './quote.types';
 
 /**
- * O aviso de reajuste, e os tres jeitos de erra-lo.
+ * O aviso de reajuste, e os três jeitos de erra-lo.
  *
- * Avisar quando nada mudou faz o cliente desconfiar do preco que esta
- * lendo. Avisar a cada recarga vira ruido e ensina a ignorar. E nao avisar
- * quando mudou e a razao de o requisito existir. Os casos abaixo prendem os
- * tres.
+ * Avisar quando nada mudou faz o cliente desconfiar do preço que esta
+ * lendo. Avisar a cada recarga vira ruído e ensina a ignorar. E não avisar
+ * quando mudou e a razão de o requisito existir. Os casos abaixo prendem os
+ * três.
  *
  * O que nenhum deles pode encontrar e um valor em reais no `localStorage` —
- * o ultimo caso confere isso diretamente.
+ * o último caso confere isso diretamente.
  */
 
 const UMA_HORA_E_MEIA = PRICE_NOTICE_MIN_AGE_MS * 1.5;
 
 /**
- * O que `useCartQuote` faz a cada cotacao, em uma linha: le o retrato de
- * antes, compara, e grava o de agora. Devolve se ha o que avisar.
+ * O que `useCartQuote` faz a cada cotação, em uma linha: lê o retrato de
+ * antes, compara, e grava o de agora. Devolve se há o que avisar.
  */
 function anotar(items: QuoteLine[], now = Date.now()): boolean {
   const before = readPriceSnapshot();
@@ -82,10 +82,10 @@ test('o mesmo preço depois de dias não avisa', () => {
 });
 
 /**
- * A carencia existe para este caso: recarregar a pagina, ou ter duas abas
- * abertas, nao pode virar um aviso a cada leitura.
+ * A carência existe para este caso: recarregar a página, ou ter duas abas
+ * abertas, não pode virar um aviso a cada leitura.
  */
-test('mudanca recente e anotada em silencio', () => {
+test('mudanca recente e anotada em silêncio', () => {
   const agora = Date.now();
 
   anotar([item({ unitPriceCents: 18990 })], agora);
@@ -94,9 +94,9 @@ test('mudanca recente e anotada em silencio', () => {
 });
 
 /**
- * O erro que um digest unico do carrinho inteiro cometeria: acrescentar um
- * perfume mudaria a impressao digital da sacola, e "voce adicionou um item"
- * viraria "os precos mudaram".
+ * O erro que um digest único do carrinho inteiro cometeria: acrescentar um
+ * perfume mudaria a impressão digital da sacola, e "você adicionou um item"
+ * viraria "os preços mudaram".
  */
 test('adicionar um item novo não e reajuste', () => {
   const agora = Date.now();
@@ -117,7 +117,7 @@ test('remover um item também não e reajuste', () => {
 });
 
 /**
- * A linha indisponivel volta da cotacao com preco zero. Anotar esse zero
+ * A linha indisponível volta da cotação com preço zero. Anotar esse zero
  * faria o produto reativado depois parecer um reajuste.
  */
 test('item indisponível fica fora da anotação', () => {
@@ -138,10 +138,10 @@ test('forgetPrices apaga a anotação', () => {
 });
 
 /**
- * A regra da casa, conferida no proprio armazenamento.
+ * A regra da casa, conferida no próprio armazenamento.
  *
- * Nao basta o aviso funcionar: ele tem que funcionar sem deixar um preco
- * guardado para tras. `18990` nao pode aparecer em lugar nenhum do que foi
+ * Não basta o aviso funcionar: ele tem que funcionar sem deixar um preço
+ * guardado para trás. `18990` não pode aparecer em lugar nenhum do que foi
  * escrito.
  */
 test('nenhum valor em reais e gravado', () => {

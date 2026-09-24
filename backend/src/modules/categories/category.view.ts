@@ -1,12 +1,12 @@
 import type { CategoryBranch } from './category.tree.js';
 import type { CategoryDocument } from './schemas/category.schema.js';
 
-/** Categoria como o painel a ve. */
+/** Categoria como o painel a vê. */
 export interface CategoryView {
   id: string;
   name: string;
   slug: string;
-  /** Enderecos antigos que ainda redirecionam para este. */
+  /** Endereços antigos que ainda redirecionam para este. */
   previousSlugs: string[];
   parentId: string | null;
   image: string;
@@ -18,21 +18,21 @@ export interface CategoryView {
 }
 
 /**
- * Categoria como a vitrine a ve: so o que o menu precisa desenhar.
+ * Categoria como a vitrine a vê: só o que o menu precisa desenhar.
  *
- * Nao e a mesma coisa que o admin recebe. `previousSlugs` e o historico de
- * renomeacoes da dona e nao tem por que trafegar em toda abertura da loja.
+ * Não e a mesma coisa que o admin recebe. `previousSlugs` e o histórico de
+ * renomeações da dona e não tem por que trafegar em toda abertura da loja.
  */
 export interface PublicCategoryView {
   id: string;
   name: string;
   slug: string;
   image: string;
-  /** Produtos ativos vinculados. No pai, ja somados os das subcategorias. */
+  /** Produtos ativos vinculados. No pai, já somados os das subcategorias. */
   productCount: number;
 }
 
-/** Um nivel de aninhamento, e so um: subcategoria nao tem filhos. */
+/** Um nível de aninhamento, e só um: subcategoria não tem filhos. */
 export type WithChildren<T> = T & { children: T[] };
 
 /** Quantos produtos ativos cada categoria tem, indexado pelo id em hexadecimal. */
@@ -94,11 +94,11 @@ export function directCount(category: CategoryDocument, counts: ProductCounts): 
 /**
  * Contagem do pai: a dele mais a dos filhos.
  *
- * O menu mostra "Perfumes (12)" e a dona costuma cadastrar o produto so na
+ * O menu mostra "Perfumes (12)" e a dona costuma cadastrar o produto só na
  * subcategoria; sem somar, o pai apareceria zerado com doze produtos embaixo.
  * Produto cadastrado ao mesmo tempo no pai e em um filho dele conta duas
- * vezes — e um cadastro redundante, raro, e o preco de fazer a conta em uma
- * agregacao so.
+ * vezes — e um cadastro redundante, raro, e o preço de fazer a conta em uma
+ * agregação só.
  */
 function rollUp(
   parent: CategoryDocument,

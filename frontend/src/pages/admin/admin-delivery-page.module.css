@@ -1,10 +1,10 @@
 /*
  * Entrega.
  *
- * Titulo, uma linha de instrucao e a planilha. A instrucao fica escrita, e
- * nao num tooltip: "grava ao sair do campo" e "arraste para ordenar" sao
- * duas regras que ninguem descobre olhando, e a tela e aberta poucas vezes
- * por mes — tempo suficiente para esquecer.
+ * Título, uma linha de instrução e a planilha. A instrução fica escrita, e
+ * não num tooltip: "grava ao sair do campo" e "arraste para ordenar" são
+ * duas regras que ninguém descobre olhando, e a tela e aberta poucas vezes
+ * por mês — tempo suficiente para esquecer.
  */
 
 .page {
@@ -37,7 +37,7 @@
   color: var(--ink);
 }
 
-/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+/* `--ink-soft` e não `--muted`: 14px no cinza de rótulo não alcança 4.5:1. */
 .count {
   margin: 0;
 
@@ -59,7 +59,7 @@
   text-wrap: pretty;
 }
 
-/* ---- O dialogo de cidade nova ------------------------------------------------ */
+/* ---- O diálogo de cidade nova ------------------------------------------------ */
 
 .fields {
   display: grid;
@@ -69,7 +69,7 @@
 /*
  * Dois campos por linha quando cabem.
  *
- * Cidade com UF e taxa com prazo: sao os pares que se preenchem juntos, e
+ * Cidade com UF e taxa com prazo: são os pares que se preenchem juntos, e
  * separa-los faria rolar entre um e outro. `auto-fit` com piso de 7rem deixa
  * eles empilhados em 360px.
  */

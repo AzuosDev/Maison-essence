@@ -84,12 +84,12 @@ describe('tierFor', () => {
     expect(tierFor(LADDER, 2)).toBeNull();
   });
 
-  it('pega o degrau alcancado', () => {
+  it('pega o degrau alcançado', () => {
     expect(tierFor(LADDER, 3)).toEqual({ minQty: 3, percentOff: 10 });
     expect(tierFor(LADDER, 5)).toEqual({ minQty: 3, percentOff: 10 });
   });
 
-  it('sobe para o degrau seguinte quando a quantidade o alcanca', () => {
+  it('sobe para o degrau seguinte quando a quantidade o alcança', () => {
     expect(tierFor(LADDER, 6)).toEqual({ minQty: 6, percentOff: 20 });
     expect(tierFor(LADDER, 99)).toEqual({ minQty: 6, percentOff: 20 });
   });

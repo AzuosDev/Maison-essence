@@ -1,9 +1,9 @@
 /*
- * A unica folha global da loja, importada uma vez em `main.tsx`.
+ * A única folha global da loja, importada uma vez em `main.tsx`.
  *
- * A ordem importa: os tokens primeiro (o reset ja usa `--gold-deep` no anel
- * de foco), o reset depois e a tipografia por ultimo, porque ela e a primeira
- * camada que decide aparencia e precisa vencer o reset.
+ * A ordem importa: os tokens primeiro (o reset já usa `--gold-deep` no anel
+ * de foco), o reset depois e a tipografia por último, porque ela e a primeira
+ * camada que decide aparência e precisa vencer o reset.
  *
  * Dali em diante, todo estilo e CSS Module, com escopo no componente.
  */

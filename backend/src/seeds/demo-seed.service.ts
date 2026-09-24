@@ -20,7 +20,7 @@ import {
 } from './demo-data.js';
 import type { DemoProduct } from './demo-data.js';
 
-/** Quantos registros de cada colecao nasceram e quantos foram reescritos. */
+/** Quantos registros de cada coleção nasceram e quantos foram reescritos. */
 export interface SeedCount {
   created: number;
   updated: number;
@@ -43,17 +43,17 @@ export class DemoSeedRefusedError extends Error {
 }
 
 /**
- * Popula a loja com um catalogo de exemplo.
+ * Popula a loja com um catálogo de exemplo.
  *
  * Idempotente por chave natural: categoria e produto pelo `slug`, cidade pelo
- * par nome+estado, configuracoes pelo documento unico. Rodar de novo reescreve
- * os mesmos registros em vez de criar copias, e nao toca no que foi cadastrado
- * a mao fora desta lista.
+ * par nome+estado, configurações pelo documento único. Rodar de novo reescreve
+ * os mesmos registros em vez de criar copias, e não toca no que foi cadastrado
+ * a mão fora desta lista.
  *
- * Reescrever, porem, e destrutivo para quem ja mexeu no painel: as
- * configuracoes da loja voltam para os valores de demonstracao. Por isso o
- * seed se recusa a rodar em producao sem `--force` — o unico caso em que ele
- * apaga trabalho de alguem e exatamente esse.
+ * Reescrever, porém, e destrutivo para quem já mexeu no painel: as
+ * configurações da loja voltam para os valores de demonstração. Por isso o
+ * seed se recusa a rodar em produção sem `--force` — o único caso em que ele
+ * apaga trabalho de alguém e exatamente esse.
  */
 @Injectable()
 export class DemoSeedService {
@@ -91,7 +91,7 @@ export class DemoSeedService {
       const document = existing ?? new this.categories();
 
       // O slug vai explicito: sem ele o hook do schema geraria um a partir do
-      // nome, e a chave que o proximo seed procura deixaria de ser previsivel.
+      // nome, e a chave que o próximo seed procura deixaria de ser previsível.
       document.set({
         name: data.name,
         slug: data.slug,
@@ -169,8 +169,8 @@ export class DemoSeedService {
       pickupAddress: { ...DEMO_STORE_SETTINGS.pickupAddress },
       socialLinks: { ...DEMO_STORE_SETTINGS.socialLinks },
       institutionalPages: DEMO_INSTITUTIONAL_PAGES.map((page) => ({ ...page, isActive: true })),
-      // Banner exige `imageDesktop`, que so faz sentido com um publicId real
-      // no Cloudinary. A home fica sem carrossel ate a dona subir a arte dela.
+      // Banner exige `imageDesktop`, que só faz sentido com um publicId real
+      // no Cloudinary. A home fica sem carrossel até a dona subir a arte dela.
       banners: [],
     });
 
@@ -195,7 +195,7 @@ export class DemoSeedService {
     return new Map(found.map((category) => [category.slug, category._id]));
   }
 
-  /** Uma linha por colecao, para quem esta olhando o terminal. */
+  /** Uma linha por coleção, para quem esta olhando o terminal. */
   report(summary: DemoSeedSummary): void {
     for (const [label, count] of Object.entries(summary)) {
       this.logger.log(`${label}: ${count.created} criados, ${count.updated} atualizados`);

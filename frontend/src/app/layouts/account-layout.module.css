@@ -1,8 +1,8 @@
 /*
- * A area da conta do cliente.
+ * A área da conta do cliente.
  *
- * Por dentro da loja, e nao fora dela: mesmo cabecalho, mesmo rodape, mesmo
- * creme de fundo. Para quem comprou, "meus pedidos" e uma pagina da loja.
+ * Por dentro da loja, e não fora dela: mesmo cabeçalho, mesmo rodapé, mesmo
+ * creme de fundo. Para quem comprou, "meus pedidos" e uma página da loja.
  */
 
 .layout {
@@ -24,8 +24,8 @@
 }
 
 /*
- * A saudacao. So aparece com sessao, e nao e um `<h1>`: o titulo da pagina
- * pertence a pagina — "Meus pedidos", "ME-260922-4KP1" —, e um h1 fixo na
+ * A saudação. Só aparece com sessão, e não e um `<h1>`: o título da página
+ * pertence a página — "Meus pedidos", "ME-260922-4KP1" —, e um h1 fixo na
  * moldura roubaria esse posto de todas elas.
  */
 .heading {
@@ -48,8 +48,8 @@
 
 /*
  * Menu lateral a partir do desktop; empilhado no celular, onde a coluna
- * unica e a unica leitura possivel — e onde o menu vira uma fila horizontal
- * que rola, logo acima do conteudo.
+ * única e a única leitura possível — e onde o menu vira uma fila horizontal
+ * que rola, logo acima do conteúdo.
  */
 .body {
   display: grid;
@@ -58,17 +58,17 @@
 }
 
 /*
- * As duas colunas so existem quando ha um menu para por na primeira.
+ * As duas colunas só existem quando há um menu para por na primeira.
  *
- * Sem sessao a moldura nao desenha o `<aside>` — nao ha o que listar —, e um
- * `grid-template-columns` incondicional espremia o resto do conteudo nos
+ * Sem sessão a moldura não desenha o `<aside>` — não há o que listar —, e um
+ * `grid-template-columns` incondicional espremia o resto do conteúdo nos
  * 15rem da coluna do menu: entrar, criar conta e o convite abriam com 240px
- * de largura, encostados a esquerda, com metade da pagina vazia ao lado.
+ * de largura, encostados a esquerda, com metade da página vazia ao lado.
  *
- * O `:has` evita repetir aqui a condicao que o React ja avalia — a verdade
- * continua sendo uma so, o menu estar em cena — e degrada para o lado certo:
- * onde ele nao funcionasse, restaria a coluna unica, que e a leitura larga e
- * nao a espremida.
+ * O `:has` evita repetir aqui a condição que o React já avalia — a verdade
+ * continua sendo uma só, o menu estar em cena — e degrada para o lado certo:
+ * onde ele não funcionasse, restaria a coluna única, que e a leitura larga e
+ * não a espremida.
  */
 @media (min-width: 64rem) {
   .body:has(> .aside) {

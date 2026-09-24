@@ -1,14 +1,14 @@
 /**
- * Dinheiro em texto, para os campos que o cliente le.
+ * Dinheiro em texto, para os campos que o cliente lê.
  *
- * O valor continua viajando em centavos: o rotulo e acrescimo, nunca
- * substituicao. Quem calcula usa `feeCents`, quem desenha usa `feeLabel`, e
- * nenhuma tela precisa reimplementar a virgula.
+ * O valor continua viajando em centavos: o rótulo e acrescimo, nunca
+ * substituição. Quem calcula usa `feeCents`, quem desenha usa `feeLabel`, e
+ * nenhuma tela precisa reimplementar a vírgula.
  *
- * Formatado a mao, e nao por `Intl.NumberFormat`. O ICU separa o "R$" do
- * numero com um espaco estreito sem quebra (U+00A0 ou U+202F, conforme a
- * versao do Node), e esse caractere invisivel viaja para a mensagem do
- * WhatsApp e para o teste, onde vira uma diferenca que ninguem consegue ver
+ * Formatado a mão, e não por `Intl.NumberFormat`. O ICU separa o "R$" do
+ * número com um espaço estreito sem quebra (U+00A0 ou U+202F, conforme a
+ * versão do Node), e esse caractere invisível viaja para a mensagem do
+ * WhatsApp e para o teste, onde vira uma diferença que ninguém consegue ver
  * na tela.
  */
 export function formatCents(cents: number): string {

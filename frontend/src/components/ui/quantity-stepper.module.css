@@ -1,7 +1,7 @@
 /*
  * O seletor de quantidade.
  *
- * Altura de controle do design system, para alinhar com o botao de adicionar
+ * Altura de controle do design system, para alinhar com o botão de adicionar
  * quando os dois dividem a mesma linha no desktop.
  */
 
@@ -29,9 +29,9 @@
 }
 
 /*
- * A versao curta, para a linha da sacola.
+ * A versão curta, para a linha da sacola.
  *
- * O alvo de toque encolhe de 48 para 36px, e isso e o minimo que ainda se
+ * O alvo de toque encolhe de 48 para 36px, e isso e o mínimo que ainda se
  * acerta com o polegar. Abaixo disso, trocar a quantidade no celular vira um
  * jogo de pontaria — e a sacola e justamente onde errar o clique custa caro.
  */
@@ -95,7 +95,7 @@
   color: var(--ink);
 
   /* As setinhas nativas ficam apertadas demais para o dedo, e o lugar delas
-     ja e ocupado pelos dois botoes ao lado. */
+     já e ocupado pelos dois botões ao lado. */
   appearance: textfield;
   -moz-appearance: textfield;
 }

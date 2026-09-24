@@ -1,22 +1,22 @@
 import type { AuditChanges } from '../audit/audit.types.js';
 import type { ProductDocument } from './schemas/product.schema.js';
 
-/** O preco de uma variante, no instante do retrato. */
+/** O preço de uma variante, no instante do retrato. */
 interface VariantPrice {
   sku: string;
   priceCents: number;
   compareAtPriceCents: number | null;
 }
 
-/** Retrato dos precos de um produto, indexado pelo id da variante. */
+/** Retrato dos preços de um produto, indexado pelo id da variante. */
 export type PriceSnapshot = Record<string, VariantPrice>;
 
 /**
- * Os precos do produto agora.
+ * Os preços do produto agora.
  *
- * Indexado pelo id da variante, e nao pelo SKU: o SKU tambem pode ser editado
- * no mesmo PATCH, e comparar por ele faria uma correcao de codigo parecer uma
- * variante nova e outra apagada. O SKU vai junto so como rotulo.
+ * Indexado pelo id da variante, e não pelo SKU: o SKU também pode ser editado
+ * no mesmo PATCH, e comparar por ele faria uma correção de código parecer uma
+ * variante nova e outra apagada. O SKU vai junto só como rótulo.
  */
 export function priceSnapshotOf(product: ProductDocument): PriceSnapshot {
   return Object.fromEntries(
@@ -32,16 +32,16 @@ export function priceSnapshotOf(product: ProductDocument): PriceSnapshot {
 }
 
 /**
- * O que mudou de preco entre dois retratos.
+ * O que mudou de preço entre dois retratos.
  *
- * So variantes que existem dos dois lados entram. Variante criada nao e
- * mudanca de preco — e produto novo ganhando uma opcao, e o preco dela ja
- * nasce registrado na criacao; variante removida tambem nao, e some junto com
- * o preco que tinha. O que esta trilha responde e "quanto custava antes?", e
- * essa pergunta so existe quando havia um antes.
+ * Só variantes que existem dos dois lados entram. Variante criada não e
+ * mudanca de preço — e produto novo ganhando uma opção, e o preço dela já
+ * nasce registrado na criação; variante removida também não, e some junto com
+ * o preço que tinha. O que esta trilha responde e "quanto custava antes?", e
+ * essa pergunta só existe quando havia um antes.
  *
- * A chave e `SKU.campo` porque e assim que quem le reconhece a variante: o id
- * nao diz nada para quem esta olhando a tela do produto.
+ * A chave e `SKU.campo` porque e assim que quem lê reconhece a variante: o id
+ * não diz nada para quem esta olhando a tela do produto.
  */
 export function priceChangesBetween(before: PriceSnapshot, after: PriceSnapshot): AuditChanges {
   const changes: AuditChanges = {};

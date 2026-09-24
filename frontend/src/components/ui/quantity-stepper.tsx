@@ -5,44 +5,44 @@ import styles from './quantity-stepper.module.css';
 /**
  * Quantas unidades o cliente quer levar.
  *
- * Tres controles com papeis diferentes: dois botoes para o caso comum — que
- * e "mais uma" — e um campo para quem vai levar seis e nao quer apertar seis
+ * Três controles com papéis diferentes: dois botões para o caso comum — que
+ * e "mais uma" — e um campo para quem vai levar seis e não quer apertar seis
  * vezes. O campo e um `<input type="number">` de verdade, com `min` e `max`,
- * porque e ele que traz o teclado numerico no celular.
+ * porque e ele que traz o teclado numérico no celular.
  *
- * Mora em `components/ui` porque nao sabe o que esta contando: a pagina do
+ * Mora em `components/ui` porque não sabe o que esta contando: a página do
  * produto o usa antes de adicionar, e a sacola o usa em cada linha depois de
  * adicionada. Um segundo seletor escrito para a sacola divergiria deste no
- * primeiro ajuste de borda — e as bordas aqui sao quase tudo.
+ * primeiro ajuste de borda — e as bordas aqui são quase tudo.
  *
  * ## O teto
  *
- * Quem decide e quem usa: na pagina do produto, o estoque da variante
- * escolhida; na sacola, o estoque que a **cotacao** acabou de informar. O
- * limite e obedecido nos tres controles: o botao de mais desabilita, o campo
- * recusa e o valor digitado a mao e cortado. Deixar passar sete de um
- * produto que tem tres apenas adiaria a recusa para o fim do checkout,
- * depois de o cliente ja ter preenchido tudo.
+ * Quem decide e quem usa: na página do produto, o estoque da variante
+ * escolhida; na sacola, o estoque que a **cotação** acabou de informar. O
+ * limite e obedecido nos três controles: o botão de mais desabilita, o campo
+ * recusa e o valor digitado a mão e cortado. Deixar passar sete de um
+ * produto que tem três apenas adiaria a recusa para o fim do checkout,
+ * depois de o cliente já ter preenchido tudo.
  *
- * Campo vazio no meio da digitacao nao vira zero nem 1 a forca: quem apaga
- * para digitar "12" precisa poder apagar. O valor so e corrigido quando o
+ * Campo vazio no meio da digitação não vira zero nem 1 a força: quem apaga
+ * para digitar "12" precisa poder apagar. O valor só e corrigido quando o
  * campo perde o foco.
  */
 
 export interface QuantityStepperProps {
   value: number;
-  /** Teto pelo estoque. Zero desabilita tudo — nao ha o que vender. */
+  /** Teto pelo estoque. Zero desabilita tudo — não há o que vender. */
   max: number;
   onChange: (quantity: number) => void;
   /**
-   * O rotulo sai da tela, mas nao da arvore de acessibilidade.
+   * O rótulo sai da tela, mas não da árvore de acessibilidade.
    *
    * Para a linha da sacola, onde o nome do produto esta a dois centimetros e
-   * escrever "Quantidade" acima de cada uma encheria a gaveta de repeticao.
-   * Quem ouve a pagina continua recebendo o rotulo.
+   * escrever "Quantidade" acima de cada uma encheria a gaveta de repetição.
+   * Quem ouve a página continua recebendo o rótulo.
    */
   hideLabel?: boolean;
-  /** Menor, para caber na linha da sacola ao lado do preco. */
+  /** Menor, para caber na linha da sacola ao lado do preço. */
   size?: 'default' | 'small';
   /** O que esta sendo contado, para quem ouve: `Quantidade de Asad 100ml`. */
   label?: string;
@@ -106,8 +106,8 @@ export function QuantityStepper({
           disabled={disabled}
           onChange={type}
           onBlur={(event) => {
-            // A correcao acontece aqui, e nao a cada tecla: o campo precisa
-            // poder ficar vazio enquanto alguem troca 1 por 12.
+            // A correção acontece aqui, e não a cada tecla: o campo precisa
+            // poder ficar vazio enquanto alguém troca 1 por 12.
             const parsed = Number.parseInt(event.target.value, 10);
 
             onChange(Number.isNaN(parsed) ? 1 : clamp(parsed, max));

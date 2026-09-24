@@ -3,24 +3,24 @@ import { Container } from '@/components/ui';
 import styles from './message-screen.module.css';
 
 /**
- * A tela que ocupa o lugar do conteudo quando nao ha conteudo.
+ * A tela que ocupa o lugar do conteúdo quando não há conteúdo.
  *
- * Uma so para os tres casos — endereco que nao existe, rota que quebrou,
- * listagem vazia — porque sao a mesma situacao do ponto de vista de quem
- * navega: a pagina abriu e nao ha o que ver. O que muda e o texto e o que se
- * oferece como saida.
+ * Uma só para os três casos — endereço que não existe, rota que quebrou,
+ * listagem vazia — porque são a mesma situação do ponto de vista de quem
+ * navega: a página abriu e não há o que ver. O que muda e o texto e o que se
+ * oferece como saída.
  *
- * E por isso que ela vive em `components/store` e nao em `components/ui`:
- * carrega o tom da loja, e o painel administrativo tera o seu.
+ * E por isso que ela vive em `components/store` e não em `components/ui`:
+ * carrega o tom da loja, e o painel administrativo terá o seu.
  */
 interface MessageScreenProps {
-  /** `404`, `Erro`. Fica acima do titulo, pequeno. */
+  /** `404`, `Erro`. Fica acima do título, pequeno. */
   code?: string;
   title: string;
   description?: string;
-  /** O caminho de volta: um ou dois botoes, nunca mais que isso. */
+  /** O caminho de volta: um ou dois botões, nunca mais que isso. */
   actions?: ReactNode;
-  /** Detalhe tecnico, so em desenvolvimento. */
+  /** Detalhe técnico, só em desenvolvimento. */
   details?: string;
 }
 

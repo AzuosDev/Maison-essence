@@ -1,9 +1,9 @@
 /*
  * A faixa de produtos relacionados.
  *
- * Fundo areia para fechar a pagina: o produto acabou de ser apresentado
- * sobre creme, e a mudanca de fundo e o que diz, sem filete nem titulo
- * gritado, que aqui comeca outro assunto.
+ * Fundo areia para fechar a página: o produto acabou de ser apresentado
+ * sobre creme, e a mudanca de fundo e o que diz, sem filete nem título
+ * gritado, que aqui começa outro assunto.
  */
 
 .shelf {
@@ -14,10 +14,10 @@
 }
 
 /*
- * O cabecalho centralizado da loja, com as setas ancoradas a direita.
+ * O cabeçalho centralizado da loja, com as setas ancoradas a direita.
  *
- * As setas ficam fora da faixa de cards de proposito. Sobrepostas ao
- * primeiro e ao ultimo card — que e o desenho comum — elas cobririam
+ * As setas ficam fora da faixa de cards de propósito. Sobrepostas ao
+ * primeiro e ao último card — que e o desenho comum — elas cobririam
  * justamente a foto do produto que deveriam ajudar a ver, e no celular
  * ficariam debaixo do dedo que desliza.
  */
@@ -62,7 +62,7 @@
   outline-offset: var(--focus-offset);
 }
 
-/* O chevron do sistema, girado. Um desenho so para os dois lados. */
+/* O chevron do sistema, girado. Um desenho só para os dois lados. */
 .previous svg {
   transform: rotate(90deg);
 }
@@ -86,11 +86,11 @@
   scroll-snap-type: x mandatory;
 
   /*
-   * A barra de rolagem tambem e parte do desenho.
+   * A barra de rolagem também e parte do desenho.
    *
    * Ela aparece de verdade aqui — e uma lista que rola na horizontal, e no
-   * celular e ela que conta que ha mais coisa a direita. Deixada no padrao,
-   * seria o unico elemento cinza-azulado de uma pagina inteira em creme e
+   * celular e ela que conta que há mais coisa a direita. Deixada no padrão,
+   * seria o único elemento cinza-azulado de uma página inteira em creme e
    * dourado.
    */
   scrollbar-width: thin;
@@ -115,10 +115,10 @@
 }
 
 /*
- * Cada card encaixa no comeco da faixa.
+ * Cada card encaixa no começo da faixa.
  *
  * `scroll-margin-left` zera a folga que o encaixe deixaria e mantem o
- * primeiro card alinhado com o resto do conteudo da pagina.
+ * primeiro card alinhado com o resto do conteúdo da página.
  */
 .slide {
   flex: 0 0 72%;

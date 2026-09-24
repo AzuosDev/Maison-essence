@@ -10,17 +10,17 @@ import { toAuthenticatedCustomer } from './customer-auth.types.js';
 import { readCustomerAccessToken } from './customer.cookies.js';
 
 /**
- * Quem esta por tras de um access token da loja.
+ * Quem esta por trás de um access token da loja.
  *
- * Uma implementacao para duas perguntas com respostas diferentes. A estrategia
- * do Passport pergunta "quem e?" e precisa de um erro quando nao ha ninguem; o
- * checkout pergunta "tem alguem?" e precisa seguir em frente quando nao ha.
- * Fossem duas implementacoes, a regra de conta desativada valeria em uma e
+ * Uma implementação para duas perguntas com respostas diferentes. A estratégia
+ * do Passport pergunta "quem e?" e precisa de um erro quando não há ninguém; o
+ * checkout pergunta "tem alguém?" e precisa seguir em frente quando não há.
+ * Fossem duas implementações, a regra de conta desativada valeria em uma e
  * seria esquecida na outra.
  *
- * A consulta ao banco em todo request e o preco de `credentialVersion` valer
- * alguma coisa: sem ela, desativar uma conta ou derrubar as sessoes so faria
- * efeito quando o token expirasse, ate trinta minutos depois.
+ * A consulta ao banco em todo request e o preço de `credentialVersion` valer
+ * alguma coisa: sem ela, desativar uma conta ou derrubar as sessões só faria
+ * efeito quando o token expirasse, até trinta minutos depois.
  */
 @Injectable()
 export class CustomerSessionService {
@@ -29,7 +29,7 @@ export class CustomerSessionService {
     private readonly tokens: TokenService,
   ) {}
 
-  /** O cliente das claims, ou `null` se a conta nao vale mais. */
+  /** O cliente das claims, ou `null` se a conta não vale mais. */
   async loadFromPayload(
     payload: CustomerAccessTokenPayload,
   ): Promise<AuthenticatedCustomer | null> {
@@ -41,7 +41,7 @@ export class CustomerSessionService {
       customer.credentialVersion !== payload.credentialVersion
     ) {
       // Conta removida, desativada ou com as credenciais versionadas depois da
-      // emissao: o token e valido na assinatura e invalido no conteudo.
+      // emissão: o token e válido na assinatura e inválido no conteúdo.
       return null;
     }
 
@@ -49,7 +49,7 @@ export class CustomerSessionService {
   }
 
   /**
-   * O cliente do request, quando ha um. Nunca lanca.
+   * O cliente do request, quando há um. Nunca lança.
    *
    * E o que permite o checkout reconhecer quem esta logado sem nunca exigir
    * login: token ausente, expirado ou de conta desativada resultam todos em

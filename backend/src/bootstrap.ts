@@ -20,44 +20,44 @@ import { parseCorsOrigins } from './config/env.schema.js';
 
 export const GLOBAL_PREFIX = 'api/v1';
 
-/** Onde mora a documentacao. Atras de senha em producao (ver `swagger.ts`). */
+/** Onde mora a documentação. Atrás de senha em produção (ver `swagger.ts`). */
 export const DOCS_PATH = `${GLOBAL_PREFIX}/docs`;
 
 /**
- * Teto do corpo da requisicao.
+ * Teto do corpo da requisição.
  *
- * O maior corpo legitimo desta API e um produto com variantes e descricao, ou
- * uma pagina institucional inteira — alguns poucos KB. Nenhuma imagem passa por
+ * O maior corpo legitimo desta API e um produto com variantes e descrição, ou
+ * uma página institucional inteira — alguns poucos KB. Nenhuma imagem passa por
  * aqui: o upload e assinado e vai do navegador direto para o Cloudinary. O
- * padrao do Express e 100 KB; 256 KB deixa folga para a pagina institucional
- * mais longa e continua sendo barato de recusar numa funcao serverless, onde
- * memoria e tempo sao cobrados.
+ * padrão do Express e 100 KB; 256 KB deixa folga para a página institucional
+ * mais longa e continua sendo barato de recusar numa função serverless, onde
+ * memória e tempo são cobrados.
  */
 export const MAX_BODY_SIZE = '256kb';
 
-/** O unico caminho que recebe corpo maior que `MAX_BODY_SIZE`. */
+/** O único caminho que recebe corpo maior que `MAX_BODY_SIZE`. */
 export const CATALOG_IMPORT_PATH = `${GLOBAL_PREFIX}/admin/catalog/import`;
 
 /**
- * O parser da importacao de catalogo: 1 MB, e sem o cifrao do arquivo.
+ * O parser da importação de catálogo: 1 MB, e sem o cifrão do arquivo.
  *
  * Duas coisas acontecem aqui, e as duas existem para que o arquivo que a
- * ferramenta gera possa ser colado inteiro no corpo, sem edicao a mao.
+ * ferramenta gera possa ser colado inteiro no corpo, sem edição a mão.
  *
- * **O tamanho.** O catalogo tem 175 KB e cresce a cada lista de fornecedor;
+ * **O tamanho.** O catálogo tem 175 KB e cresce a cada lista de fornecedor;
  * o teto geral da API e 256 KB, calibrado para um produto por vez. Subir o
- * teto geral para caber a importacao deixaria toda rota da API aceitando 1 MB
- * — e o custo de recusar um corpo grande numa funcao serverless e cobrado em
- * memoria e tempo. Entao o teto sobe em um caminho so.
+ * teto geral para caber a importação deixaria toda rota da API aceitando 1 MB
+ * — e o custo de recusar um corpo grande numa função serverless e cobrado em
+ * memória e tempo. Então o teto sobe em um caminho só.
  *
  * **O `$schema`.** O arquivo se identifica com `"$schema": "maison-essence/
  * catalog@1"` na primeira linha, e o guard de operadores do Mongo recusa
- * qualquer chave iniciada por cifrao — com razao: e assim que `{"$ne": null}`
- * entra numa consulta. Abrir excecao no guard seria trocar uma defesa geral
- * por uma conveniencia; entao a chave e **removida** aqui, no nivel de cima do
+ * qualquer chave iniciada por cifrão — com razão: e assim que `{"$ne": null}`
+ * entra numa consulta. Abrir exceção no guard seria trocar uma defesa geral
+ * por uma conveniência; então a chave e **removida** aqui, no nível de cima do
  * corpo, antes de o guard olhar. Nada passa a ser confiado: o que sobra
  * continua sendo inspecionado inteiro, e o `$schema` era metadado que a
- * importacao nunca leu.
+ * importação nunca leu.
  */
 function catalogImportParser(): RequestHandler {
   const parse = json({ limit: MAX_IMPORT_BODY_SIZE });
@@ -86,20 +86,20 @@ function catalogImportParser(): RequestHandler {
 }
 
 /**
- * Tudo o que a aplicacao precisa alem dos modulos.
+ * Tudo o que a aplicação precisa além dos módulos.
  *
- * Mora aqui, e nao no `main.ts`, porque sao tres entradas: o servidor local, a
- * funcao serverless da Vercel (`api/index.ts`) e os testes e2e. Configuracao de
- * seguranca que valesse so em uma delas seria uma seguranca que nao existe.
+ * Mora aqui, e não no `main.ts`, porque são três entradas: o servidor local, a
+ * função serverless da Vercel (`api/index.ts`) e os testes e2e. Configuração de
+ * segurança que valesse só em uma delas seria uma segurança que não existe.
  *
- * A ordem dos middlewares e a propria defesa e nao e alfabetica:
+ * A ordem dos middlewares e a própria defesa e não e alfabética:
  *
  * 1. os parsers, com o teto de tamanho, para que nada grande seja lido;
  * 2. o `requestId`, para que tudo o que vier depois — inclusive uma recusa —
  *    apareca no log com o mesmo identificador;
- * 3. os cabecalhos de seguranca, que precisam valer ate para a resposta de
+ * 3. os cabeçalhos de segurança, que precisam valer até para a resposta de
  *    erro dos middlewares seguintes;
- * 4. a recusa de operador do Mongo, que le o corpo ja convertido;
+ * 4. a recusa de operador do Mongo, que lê o corpo já convertido;
  * 5. o CORS e as rotas.
  */
 export function configureApp(app: INestApplication): INestApplication {
@@ -109,16 +109,16 @@ export function configureApp(app: INestApplication): INestApplication {
   const docsUser = config.get('DOCS_USER', { infer: true });
   const docsPassword = config.get('DOCS_PASSWORD', { infer: true });
 
-  // Antes de qualquer outra coisa: o que este metodo registrar ja sai no
-  // formato de log da aplicacao.
+  // Antes de qualquer outra coisa: o que este método registrar já sai no
+  // formato de log da aplicação.
   app.useLogger(new JsonLogger(logLevelsFor(nodeEnv)));
 
   // Os parsers precisam ser trocados antes do `init()`, que registra os
-  // padrao de 100 KB — o adaptador pula os dele ao ver que ja ha um parser
+  // padrão de 100 KB — o adaptador pula os dele ao ver que já há um parser
   // do mesmo tipo montado.
   const express = app as NestExpressApplication;
 
-  // Antes dos parsers gerais, e so no caminho da importacao: o primeiro a
+  // Antes dos parsers gerais, e só no caminho da importação: o primeiro a
   // interpretar o corpo vence, e os seguintes o deixam em paz.
   app.use(`/${CATALOG_IMPORT_PATH}`, catalogImportParser());
 
@@ -127,12 +127,12 @@ export function configureApp(app: INestApplication): INestApplication {
 
   app.use(attachRequestId());
   app.use(helmet(apiSecurityHeaders()));
-  // Montado depois, no caminho da documentacao: o ultimo a escrever o
-  // cabecalho vence, e so ali a politica precisa deixar carregar script.
+  // Montado depois, no caminho da documentação: o último a escrever o
+  // cabeçalho vence, e só ali a política precisa deixar carregar script.
   app.use(`/${DOCS_PATH}`, helmet(docsSecurityHeaders()));
   app.use(compression());
-  // Os tokens de sessao chegam em cookie httpOnly; sem o parser, req.cookies
-  // nao existe e so o caminho do Bearer funcionaria.
+  // Os tokens de sessão chegam em cookie httpOnly; sem o parser, req.cookies
+  // não existe e só o caminho do Bearer funcionaria.
   app.use(cookieParser());
   app.use(rejectMongoOperators());
   app.setGlobalPrefix(GLOBAL_PREFIX);
@@ -153,16 +153,16 @@ export function configureApp(app: INestApplication): INestApplication {
 /**
  * CORS pela lista, sem curinga.
  *
- * A funcao no lugar da lista existe por causa de `credentials: true`: com ele,
+ * A função no lugar da lista existe por causa de `credentials: true`: com ele,
  * o navegador exige que a resposta diga exatamente qual origem foi liberada, e
  * um `*` seria recusado por ele mesmo — ou, pior, aceito por um cliente que
- * nao e navegador. Origem desconhecida nao vira erro; ela apenas nao recebe os
- * cabecalhos, e quem barra a leitura e o navegador, que e quem sabe de quem e
- * a pagina que chamou.
+ * não e navegador. Origem desconhecida não vira erro; ela apenas não recebe os
+ * cabeçalhos, e quem barra a leitura e o navegador, que e quem sabe de quem e
+ * a página que chamou.
  *
- * Requisicao sem `Origin` passa: nao e navegador — e o `curl` da dona, o
- * monitor de saude, o teste e2e —, e nenhum deles carrega cookie de sessao de
- * ninguem.
+ * Requisição sem `Origin` passa: não e navegador — e o `curl` da dona, o
+ * monitor de saúde, o teste e2e —, e nenhum deles carrega cookie de sessão de
+ * ninguém.
  */
 function corsFor(origins: readonly string[]): CorsOptions {
   return {
@@ -170,7 +170,7 @@ function corsFor(origins: readonly string[]): CorsOptions {
       callback(null, origin === undefined || origins.includes(origin));
     },
     credentials: true,
-    // Guarda o preflight por dez minutos: o checkout faz varias chamadas
+    // Guarda o preflight por dez minutos: o checkout faz várias chamadas
     // seguidas, e repetir o OPTIONS a cada uma custa uma ida ao servidor.
     maxAge: 600,
   };

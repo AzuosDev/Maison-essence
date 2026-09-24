@@ -1,9 +1,9 @@
 /*
- * A paginacao.
+ * A paginação.
  *
- * No celular so as setas e o "3 de 12": doze numeros lado a lado nao cabem,
+ * No celular só as setas e o "3 de 12": doze números lado a lado não cabem,
  * e o alvo de toque de cada um ficaria menor que o dedo. A partir de 640px
- * os numeros aparecem.
+ * os números aparecem.
  */
 
 .nav {
@@ -121,7 +121,7 @@
   transform: translateX(-25%) rotate(-45deg);
 }
 
-/* As reticencias entre blocos de paginas. */
+/* As reticências entre blocos de páginas. */
 .gap {
   display: inline-flex;
   align-items: center;

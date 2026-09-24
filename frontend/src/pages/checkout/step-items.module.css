@@ -1,9 +1,9 @@
 /*
  * A lista de itens do checkout.
  *
- * Mais apertada que a da sacola: aqui ela e conferencia, e nao vitrine. As
- * linhas ficam separadas por um filete em vez de por espaco, e o cartao do
- * passo ja e a superficie — nao ha uma segunda caixa em volta.
+ * Mais apertada que a da sacola: aqui ela e conferência, e não vitrine. As
+ * linhas ficam separadas por um filete em vez de por espaço, e o cartão do
+ * passo já e a superficie — não há uma segunda caixa em volta.
  */
 
 .lines {
@@ -45,11 +45,11 @@
 }
 
 /*
- * "Continuar comprando" e um link, e nao um botao.
+ * "Continuar comprando" e um link, e não um botão.
  *
- * Ele leva a outro endereco, e e isso que um link faz. Como botao, perderia
+ * Ele leva a outro endereço, e e isso que um link faz. Como botão, perderia
  * o abrir em nova aba e o Enter do teclado — e ganharia um peso visual que
- * ele nao deve ter ao lado da acao que segue o fluxo.
+ * ele não deve ter ao lado da ação que segue o fluxo.
  */
 .keepShopping {
   font-size: var(--text-14);

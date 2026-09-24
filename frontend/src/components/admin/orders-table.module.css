@@ -1,13 +1,13 @@
 /*
  * A lista de pedidos, nas duas formas.
  *
- * A tabela e a forma do desktop: colunas alinhadas, numeros em largura fixa,
- * o olho descendo pela coluna de status. O card e a forma do celular, e nao
- * uma tabela espremida — cada pedido vira um bloco com os rotulos escritos.
+ * A tabela e a forma do desktop: colunas alinhadas, números em largura fixa,
+ * o olho descendo pela coluna de status. O card e a forma do celular, e não
+ * uma tabela espremida — cada pedido vira um bloco com os rótulos escritos.
  */
 
 .tableWrap {
-  /* Uma tabela com sete colunas nao encolhe abaixo de certo ponto. Rolar na
+  /* Uma tabela com sete colunas não encolhe abaixo de certo ponto. Rolar na
      horizontal e melhor do que quebrar o nome do cliente em cinco linhas. */
   overflow-x: auto;
 
@@ -46,7 +46,7 @@
   border-bottom: var(--border);
 }
 
-/* A ultima linha nao precisa de risco: a borda do bloco ja fecha a tabela. */
+/* A última linha não precisa de risco: a borda do bloco já fecha a tabela. */
 .table tbody tr:last-child {
   border-bottom: none;
 }
@@ -59,13 +59,13 @@
   text-align: right;
 }
 
-/* "Cartao 6x" nunca quebra em duas linhas: o "6x" sozinho embaixo do
-   "Cartao" e o tipo de quebra que faz a coluna parecer um erro. */
+/* "Cartão 6x" nunca quebra em duas linhas: o "6x" sozinho embaixo do
+   "Cartão" e o tipo de quebra que faz a coluna parecer um erro. */
 .payment {
   white-space: nowrap;
 }
 
-/* ---- A celula do codigo ------------------------------------------------- */
+/* ---- A célula do código ------------------------------------------------- */
 
 .code {
   font-weight: var(--weight-regular);
@@ -196,7 +196,7 @@
 }
 
 /*
- * Os campos do card: rotulo em cima, valor embaixo, dois por linha.
+ * Os campos do card: rótulo em cima, valor embaixo, dois por linha.
  *
  * E a forma que sobrevive a um nome de cidade longo ao lado de um total —
  * cada campo tem a largura que precisa, e a lista quebra sozinha.
@@ -224,8 +224,8 @@
 /*
  * O telefone, com alvo de toque cheio.
  *
- * E o botao mais apertado do painel no celular — a dona aperta com o polegar
- * enquanto segura o aparelho com a outra mao.
+ * E o botão mais apertado do painel no celular — a dona aperta com o polegar
+ * enquanto segura o aparelho com a outra mão.
  */
 .cardPhone {
   display: inline-flex;

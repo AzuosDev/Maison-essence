@@ -10,47 +10,47 @@ import styles from './address-dialog.module.css';
 export interface AddressDialogProps {
   open: boolean;
   onClose: () => void;
-  /** Ausente, e um endereco novo. */
+  /** Ausente, e um endereço novo. */
   address?: AccountAddress | undefined;
   onSubmit: (values: AddressForm, id: string | undefined) => void;
   isPending: boolean;
   error: unknown;
-  /** Este sera o primeiro endereco: ele vira padrao de qualquer jeito. */
+  /** Este será o primeiro endereço: ele vira padrão de qualquer jeito. */
   isFirst: boolean;
 }
 
 /**
- * O formulario de endereco: um dialogo para criar e para editar.
+ * O formulário de endereço: um diálogo para criar e para editar.
  *
  * ## Por que aqui um modal e justificado
  *
- * O cartao de endereco confirma a exclusao na propria linha, sem interromper
- * nada — e esta bem assim. Este formulario e outra coisa: sao oito campos
- * que nao cabem dentro de um cartao de lista, e preenche-los e uma tarefa
- * com comeco e fim. O foco preso e o Escape que desiste sao exatamente o que
+ * O cartão de endereço confirma a exclusão na própria linha, sem interromper
+ * nada — e esta bem assim. Este formulário e outra coisa: são oito campos
+ * que não cabem dentro de um cartão de lista, e preenche-los e uma tarefa
+ * com começo e fim. O foco preso e o Escape que desiste são exatamente o que
  * se quer aqui.
  *
- * ## A ordem dos campos e a ordem de quem escreve um endereco
+ * ## A ordem dos campos e a ordem de quem escreve um endereço
  *
- * Apelido, CEP, rua, numero, complemento, bairro, cidade, referencia. Nao e
- * a ordem do banco: e a ordem em que alguem dita o proprio endereco em voz
- * alta. O numero fica ao lado da rua na mesma linha, a partir de 640px,
+ * Apelido, CEP, rua, número, complemento, bairro, cidade, referência. Não e
+ * a ordem do banco: e a ordem em que alguém dita o próprio endereço em voz
+ * alta. O número fica ao lado da rua na mesma linha, a partir de 640px,
  * porque e assim que ele e escrito — e porque um campo de vinte caracteres
  * ocupando a largura toda parece pedir mais do que pede.
  *
- * ## "Usar como padrao" some no primeiro endereco
+ * ## "Usar como padrão" some no primeiro endereço
  *
- * Nao por economia de tela: o servidor **promove o primeiro da lista a
- * padrao** quando nenhum vem marcado. Oferecer uma caixa que ja esta
+ * Não por economia de tela: o servidor **promove o primeiro da lista a
+ * padrão** quando nenhum vem marcado. Oferecer uma caixa que já esta
  * decidida seria um controle que mente sobre ter efeito. No lugar dela, a
  * frase que explica o que vai acontecer.
  *
  * ## A cidade e uma escolha entre as que a loja atende
  *
- * O backend recusa endereco apontando para cidade nao atendida — e deve
- * recusar, porque seria uma entrega que so falha no fechamento do pedido.
- * Entao o campo e um seletor, e nao texto livre, e aceita ficar vazio: quem
- * mora fora da area de entrega ainda quer guardar o endereco para a retirada
+ * O backend recusa endereço apontando para cidade não atendida — e deve
+ * recusar, porque seria uma entrega que só falha no fechamento do pedido.
+ * Então o campo e um seletor, e não texto livre, e aceita ficar vazio: quem
+ * mora fora da área de entrega ainda quer guardar o endereço para a retirada
  * e para o que a loja passar a atender depois.
  */
 export function AddressDialog({
@@ -74,9 +74,9 @@ export function AddressDialog({
     defaultValues: emptyAddress(),
   });
 
-  // Reabrir o dialogo mostra o endereco que foi escolhido agora, e nao o que
-  // foi editado na vez anterior. O `open` na dependencia e o que importa: sem
-  // ele, clicar em "Editar" num segundo cartao reabriria o primeiro.
+  // Reabrir o diálogo mostra o endereço que foi escolhido agora, e não o que
+  // foi editado na vez anterior. O `open` na dependência e o que importa: sem
+  // ele, clicar em "Editar" num segundo cartão reabriria o primeiro.
   useEffect(() => {
     if (open) {
       reset(address === undefined ? emptyAddress() : formFrom(address));

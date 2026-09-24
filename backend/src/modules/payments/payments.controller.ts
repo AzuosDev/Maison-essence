@@ -10,9 +10,9 @@ import { PaymentsService } from './payments.service.js';
 /**
  * Regras de pagamento pelo painel.
  *
- * Documento unico: nao ha `POST` nem `:id`, so ler e alterar. `MANAGES_STORE`
- * sem excecao, inclusive na leitura — aqui esta a chave PIX para onde o
- * dinheiro da loja vai, e o STAFF nao tem o que fazer com ela.
+ * Documento único: não há `POST` nem `:id`, só ler e alterar. `MANAGES_STORE`
+ * sem exceção, inclusive na leitura — aqui esta a chave PIX para onde o
+ * dinheiro da loja vai, e o STAFF não tem o que fazer com ela.
  */
 @Roles(...MANAGES_STORE)
 @Controller('admin/payment-settings')

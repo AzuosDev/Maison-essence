@@ -3,7 +3,7 @@ import { PAYMENT_METHODS } from '../../common/enums/payment-method.js';
 import { buildWhatsappMessage, whatsappUrlOf } from './whatsapp-message.js';
 import type { WhatsappOrder } from './whatsapp-message.js';
 
-/** Um pedido completo: dois itens, desconto, entrega e cartao parcelado. */
+/** Um pedido completo: dois itens, desconto, entrega e cartão parcelado. */
 function order(overrides: Partial<WhatsappOrder> = {}): WhatsappOrder {
   return {
     code: 'ME-250921-4KP1',
@@ -68,7 +68,7 @@ describe('buildWhatsappMessage', () => {
   /**
    * O layout inteiro, comparado linha a linha.
    *
-   * Um teste de texto e o unico que diz a verdade sobre um mockup: o que esta
+   * Um teste de texto e o único que diz a verdade sobre um mockup: o que esta
    * escrito aqui e exatamente o que chega na tela do celular da dona, com as
    * mesmas quebras e os mesmos negritos.
    */
@@ -159,7 +159,7 @@ describe('buildWhatsappMessage', () => {
     const message = buildWhatsappMessage(retirada);
 
     expect(message).toContain('*ENTREGA*\nRetirada na loja\nRua da Loja, 10 - falar com Ana');
-    // Na retirada nao ha taxa a exibir: a linha nao aparece zerada.
+    // Na retirada não há taxa a exibir: a linha não aparece zerada.
     expect(message).not.toContain('Entrega: ');
   });
 
@@ -210,7 +210,7 @@ describe('buildWhatsappMessage', () => {
     );
   });
 
-  it('omite os pedacos do endereço que o cliente não preencheu', () => {
+  it('omite os pedaços do endereço que o cliente não preencheu', () => {
     const magro = order({
       fulfillment: {
         ...order().fulfillment,

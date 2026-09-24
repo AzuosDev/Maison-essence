@@ -4,30 +4,30 @@ import { expect, test } from 'vitest';
 import { FULFILLMENT_MODES, PAYMENT_METHODS } from './checkout.types';
 
 /**
- * Os valores que a loja manda sao os que o servidor aceita.
+ * Os valores que a loja manda são os que o servidor aceita.
  *
  * ## Por que este arquivo existe
  *
- * A loja e a API sao dois projetos, e os enums compartilhados sao copiados a
- * mao de um lado para o outro — decisao registrada em `quote.types.ts`. O
- * preco dessa copia apareceu inteiro uma vez: o frontend escrevia `'PICKUP'`
+ * A loja e a API são dois projetos, e os enums compartilhados são copiados a
+ * mão de um lado para o outro — decisão registrada em `quote.types.ts`. O
+ * preço dessa copia apareceu inteiro uma vez: o frontend escrevia `'PICKUP'`
  * e `'CARD'`, o backend esperava `'pickup'` e `'card'`, e o `@IsIn` do DTO
- * devolvia 400 em **toda** cotacao. A sacola mostrava "nao foi possivel
- * calcular o total agora" e o checkout nao fechava.
+ * devolvia 400 em **toda** cotação. A sacola mostrava "não foi possível
+ * calcular o total agora" e o checkout não fechava.
  *
- * Nada pegou isso antes do navegador: o TypeScript so conhece a copia deste
+ * Nada pegou isso antes do navegador: o TypeScript só conhece a copia deste
  * lado, e os testes de tela usavam a mesma copia errada nos mocks — dois
  * enganos que concordavam um com o outro.
  *
- * Entao aqui a comparacao e com o **arquivo do backend**, lido do disco como
- * texto. Nao importa o modulo de la (outro projeto, outro `tsconfig`, e um
- * `import` fora do `rootDir` quebraria o build da loja): le, extrai as
+ * Então aqui a comparação e com o **arquivo do backend**, lido do disco como
+ * texto. Não importa o módulo de lá (outro projeto, outro `tsconfig`, e um
+ * `import` fora do `rootDir` quebraria o build da loja): lê, extrai as
  * strings e compara. Se qualquer um dos dois lados mudar sozinho, este teste
  * cai com os dois conjuntos a vista.
  *
- * Vale so para os enums que viajam em **minusculas**. `ORDER_STATUSES` e
- * `USER_ROLES` sao iguais dos dois lados desde sempre e por acaso — se um dia
- * um deles divergir, o lugar de descobrir isso e aqui tambem.
+ * Vale só para os enums que viajam em **minúsculas**. `ORDER_STATUSES` e
+ * `USER_ROLES` são iguais dos dois lados desde sempre e por acaso — se um dia
+ * um deles divergir, o lugar de descobrir isso e aqui também.
  */
 
 /** Os valores de um objeto `as const` no fonte do backend. */
@@ -59,9 +59,9 @@ test('as formas de pagamento são as mesmas que o backend declara', () => {
 });
 
 /**
- * A ordem tambem importa, e por isso os casos acima usam `toEqual` numa lista
- * e nao um conjunto: `Object.values` segue a ordem de declaracao, e os dois
- * arquivos declaram entrega antes de retirada e PIX antes de cartao. Um
+ * A ordem também importa, e por isso os casos acima usam `toEqual` numa lista
+ * e não um conjunto: `Object.values` segue a ordem de declaração, e os dois
+ * arquivos declaram entrega antes de retirada e PIX antes de cartão. Um
  * `toEqual` que passasse com a ordem trocada esconderia uma troca de
  * significado entre as duas chaves.
  */

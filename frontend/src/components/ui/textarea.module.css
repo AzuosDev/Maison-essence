@@ -1,8 +1,8 @@
 /*
- * A area de texto.
+ * A área de texto.
  *
  * Herda a base de `field.module.css`; o que muda e que ela tem altura em
- * linhas e padding vertical, e nao uma altura fixa de controle.
+ * linhas e padding vertical, e não uma altura fixa de controle.
  */
 
 .textarea {
@@ -10,7 +10,7 @@
   padding: var(--space-12) var(--space-16);
   line-height: var(--leading-body);
 
-  /* So na vertical: redimensionar na horizontal quebra o formulario. */
+  /* Só na vertical: redimensionar na horizontal quebra o formulário. */
   resize: vertical;
 }
 

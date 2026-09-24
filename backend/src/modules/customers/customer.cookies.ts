@@ -13,11 +13,11 @@ import {
 } from '../../common/session-cookies.js';
 
 /**
- * Cookies da sessao da loja, com nomes proprios.
+ * Cookies da sessão da loja, com nomes próprios.
  *
- * Nomes diferentes dos do painel porque as duas sessoes podem coexistir no
- * mesmo navegador — a dona compra na propria loja — e um nome so faria o
- * ultimo login derrubar o outro. Em desenvolvimento, onde painel e loja
+ * Nomes diferentes dos do painel porque as duas sessões podem coexistir no
+ * mesmo navegador — a dona compra na própria loja — e um nome só faria o
+ * último login derrubar o outro. Em desenvolvimento, onde painel e loja
  * rodam no mesmo `localhost`, isso deixaria de ser hipotese.
  */
 export { CUSTOMER_ACCESS_TOKEN_COOKIE, CUSTOMER_REFRESH_TOKEN_COOKIE };
@@ -25,10 +25,10 @@ export { CUSTOMER_ACCESS_TOKEN_COOKIE, CUSTOMER_REFRESH_TOKEN_COOKIE };
 /** O access token da loja serve toda a API publica. */
 const ACCESS_PATH = `/${GLOBAL_PREFIX}`;
 
-/** O refresh so serve as rotas de conta, como no painel. */
+/** O refresh só serve as rotas de conta, como no painel. */
 const REFRESH_PATH = `/${GLOBAL_PREFIX}/customer`;
 
-/** Par de tokens recem-emitido, como o cookie precisa dele. */
+/** Par de tokens recém-emitido, como o cookie precisa dele. */
 interface CustomerTokens {
   accessToken: string;
   refreshToken: string;
@@ -51,7 +51,7 @@ export function setCustomerCookies(
   );
 }
 
-/** Refresh token do cookie ou, para quem nao recebe cookie, do corpo. */
+/** Refresh token do cookie ou, para quem não recebe cookie, do corpo. */
 export function readCustomerRefreshToken(
   request: Request,
   fromBody?: string,
@@ -60,10 +60,10 @@ export function readCustomerRefreshToken(
 }
 
 /**
- * Access token da loja: cookie proprio primeiro, depois `Authorization`.
+ * Access token da loja: cookie próprio primeiro, depois `Authorization`.
  *
- * O cabecalho e compartilhado com o painel — so existe um `Authorization` por
- * request — e tudo bem: o token que vier por ali so passa na verificacao de
+ * O cabeçalho e compartilhado com o painel — só existe um `Authorization` por
+ * request — e tudo bem: o token que vier por ali só passa na verificação de
  * quem tiver o segredo certo, e cada lado tem o seu.
  */
 export function readCustomerAccessToken(request: Request): string | null {

@@ -7,17 +7,17 @@ import type { AuditEntryInput } from './audit.types.js';
 import { AuditEntry } from './schemas/audit-entry.schema.js';
 
 /**
- * A trilha de auditoria das acoes sensiveis do painel.
+ * A trilha de auditoria das ações sensíveis do painel.
  *
- * Escreve nos dois lugares de proposito: a colecao, que sobrevive a retencao
- * de log do provedor e responde "quem mudou esse preco em marco?", e a linha
- * de log, que e onde a pessoa que esta investigando um incidente agora ja esta
- * olhando. As duas carregam o mesmo `requestId`, entao a entrada da trilha e
- * as linhas da mesma requisicao se encontram.
+ * Escreve nos dois lugares de propósito: a coleção, que sobrevive a retenção
+ * de log do provedor e responde "quem mudou esse preço em marco?", e a linha
+ * de log, que e onde a pessoa que esta investigando um incidente agora já esta
+ * olhando. As duas carregam o mesmo `requestId`, então a entrada da trilha e
+ * as linhas da mesma requisição se encontram.
  *
- * `record` nunca lanca. A acao auditada ja aconteceu quando a trilha e
- * escrita — a senha ja foi trocada, o preco ja mudou —, e derrubar a resposta
- * por causa do registro transformaria uma falha de escrita secundaria em erro
+ * `record` nunca lança. A ação auditada já aconteceu quando a trilha e
+ * escrita — a senha já foi trocada, o preço já mudou —, e derrubar a resposta
+ * por causa do registro transformaria uma falha de escrita secundária em erro
  * na cara de quem usa o painel, sem desfazer nada. A falha vai para o log como
  * erro, que e onde ela pode ser vista.
  */
@@ -58,9 +58,9 @@ export class AuditService {
  * Esconde o valor de qualquer campo cujo nome cheire a segredo, em qualquer
  * profundidade.
  *
- * E a segunda rede, nao a primeira: quem monta a entrada ja e responsavel por
- * nao colocar segredo nela (a chave PIX, por exemplo, chega aqui mascarada da
- * origem). Esta existe para o `details` que alguem acrescentar daqui a um ano
+ * E a segunda rede, não a primeira: quem monta a entrada já e responsável por
+ * não colocar segredo nela (a chave PIX, por exemplo, chega aqui mascarada da
+ * origem). Esta existe para o `details` que alguém acrescentar daqui a um ano
  * sem lembrar da regra.
  */
 function redactValues<T extends Record<string, unknown> | undefined>(

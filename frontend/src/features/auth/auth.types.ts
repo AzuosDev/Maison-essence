@@ -1,13 +1,13 @@
 /**
- * O que a API devolve nas duas sessoes.
+ * O que a API devolve nas duas sessões.
  *
- * Sao espelhos de `auth.types.ts` e `customer.view.ts` do backend, escritos a
- * mao porque as duas pastas sao projetos separados — nao ha import
- * atravessando o monorepo, e nao deve haver: o frontend consome a API
- * publicada, nao o codigo dela.
+ * São espelhos de `auth.types.ts` e `customer.view.ts` do backend, escritos a
+ * mão porque as duas pastas são projetos separados — não há import
+ * atravessando o monorepo, e não deve haver: o frontend consome a API
+ * publicada, não o código dela.
  *
- * Em troca, estes tipos precisam ser conferidos quando o contrato mudar. Sao
- * poucos campos, e sao os que quebram a tela na hora se divergirem.
+ * Em troca, estes tipos precisam ser conferidos quando o contrato mudar. São
+ * poucos campos, e são os que quebram a tela na hora se divergirem.
  */
 
 export const USER_ROLES = {
@@ -25,13 +25,13 @@ export interface AdminUser {
   email: string;
   role: UserRole;
   isActive: boolean;
-  /** Senha temporaria: o painel manda trocar antes de liberar o resto. */
+  /** Senha temporária: o painel manda trocar antes de liberar o resto. */
   mustChangePassword: boolean;
   credentialVersion: number;
   lastLoginAt: string | null;
 }
 
-/** Endereco salvo na conta do cliente. */
+/** Endereço salvo na conta do cliente. */
 export interface CustomerAddress {
   id: string;
   label: string;
@@ -46,15 +46,15 @@ export interface CustomerAddress {
 }
 
 /**
- * Quem compra. Nao tem papel nenhum, e a ausencia e proposital: nao existe
+ * Quem compra. Não tem papel nenhum, e a ausência e proposital: não existe
  * campo aqui que o controle de acesso do painel saiba ler.
  */
 export interface Customer {
   id: string;
   name: string;
-  /** So digitos, como esta gravado. E a chave que liga a conta aos pedidos. */
+  /** Só digitos, como esta gravado. E a chave que liga a conta aos pedidos. */
   phone: string;
-  /** `(88) 99999-9999`, ja pronto pela API. */
+  /** `(88) 99999-9999`, já pronto pela API. */
   phoneLabel: string;
   email: string;
   addresses: CustomerAddress[];

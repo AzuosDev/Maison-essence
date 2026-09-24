@@ -22,18 +22,18 @@ import { CustomerJwtStrategy } from './strategies/customer-jwt.strategy.js';
 /**
  * Contas de cliente da loja.
  *
- * Importa `AuthModule` para reaproveitar o que ja existe e nao pode ter duas
- * versoes: o hash de senha, a assinatura de token e a rotacao de refresh com
- * deteccao de reuso. O que e proprio da loja — segredo, audiencia, tempo de
- * vida, colecao — viaja nas chamadas, nao em uma copia do codigo.
+ * Importa `AuthModule` para reaproveitar o que já existe e não pode ter duas
+ * versões: o hash de senha, a assinatura de token e a rotação de refresh com
+ * detecção de reuso. O que e próprio da loja — segredo, audiência, tempo de
+ * vida, coleção — viaja nas chamadas, não em uma copia do código.
  *
- * Registra `Order` para duas coisas: adotar os pedidos que o telefone ja tinha
- * feito como convidado e responder o historico da conta. Nao importa
- * `OrdersModule` de proposito — quem depende de quem e o contrario, porque o
- * checkout precisa reconhecer o cliente logado, e duas importacoes cruzadas
+ * Registra `Order` para duas coisas: adotar os pedidos que o telefone já tinha
+ * feito como convidado e responder o histórico da conta. Não importa
+ * `OrdersModule` de propósito — quem depende de quem e o contrário, porque o
+ * checkout precisa reconhecer o cliente logado, e duas importações cruzadas
  * seriam um ciclo.
  *
- * `OptionalCustomerGuard` e exportado justamente para isso: e o que o modulo
+ * `OptionalCustomerGuard` e exportado justamente para isso: e o que o módulo
  * de pedidos usa para ligar o pedido a conta sem nunca exigir login.
  */
 @Module({
@@ -43,10 +43,10 @@ import { CustomerJwtStrategy } from './strategies/customer-jwt.strategy.js';
       { name: Order.name, schema: OrderSchema },
       { name: DeliveryCity.name, schema: DeliveryCitySchema },
     ]),
-    // Registrado com opcoes, e nao importado cru: e o `register` que fornece o
+    // Registrado com opções, e não importado cru: e o `register` que fornece o
     // `AuthModuleOptions` de que o guard da loja depende. Sem
-    // `defaultStrategy` de proposito — aqui a estrategia e sempre pedida pelo
-    // nome, e um padrao neste modulo so serviria para mascarar um esquecimento.
+    // `defaultStrategy` de propósito — aqui a estratégia e sempre pedida pelo
+    // nome, e um padrão neste módulo só serviria para mascarar um esquecimento.
     PassportModule.register({ session: false }),
     AuthModule,
   ],

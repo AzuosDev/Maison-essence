@@ -2,7 +2,7 @@
  * O modal.
  *
  * No celular ele encosta embaixo e ocupa a largura toda — e o formato que a
- * mao alcanca. A partir de 640px vira a caixa centralizada de sempre.
+ * mão alcança. A partir de 640px vira a caixa centralizada de sempre.
  */
 
 .overlay {
@@ -27,14 +27,14 @@
   max-height: 92dvh;
 
   background-color: var(--surface);
-  /* So os cantos de cima: embaixo ele encosta na borda da tela. */
+  /* Só os cantos de cima: embaixo ele encosta na borda da tela. */
   border-radius: var(--radius-modal) var(--radius-modal) 0 0;
   box-shadow: var(--shadow);
 
   animation: rise var(--duration) var(--ease);
 }
 
-/* O container recebe o foco quando nao ha nada focavel dentro. */
+/* O container recebe o foco quando não há nada focável dentro. */
 .dialog:focus {
   outline: none;
 }
@@ -100,7 +100,7 @@
   color: var(--ink);
 }
 
-/* O X, desenhado com dois tracos girados. */
+/* O X, desenhado com dois traços girados. */
 .closeIcon {
   position: relative;
   width: 0.875rem;

@@ -2,44 +2,44 @@ import { slugify } from '../../database/slug.js';
 import { CATALOG_ENVELOPE_MESSAGE, UNNAMED_ENTRY_SLUG } from './catalog-import.constants.js';
 
 /**
- * A leitura do arquivo de catalogo.
+ * A leitura do arquivo de catálogo.
  *
- * ## Por que este modulo nao valida nada
+ * ## Por que este módulo não valida nada
  *
- * Ele so **acha** as coisas: separa o envelope, descobre qual e o slug de
+ * Ele só **acha** as coisas: separa o envelope, descobre qual e o slug de
  * cada entrada e resolve os nulos que o formato permite. Quem diz se a
  * entrada presta e o `CreateProductDto`, o mesmo que a rota do painel usa —
  * ter aqui uma segunda copia das regras seria garantir que as duas
  * divergissem no primeiro campo novo.
  *
- * Por isso os valores vao para o candidato **crus**, como estavam no arquivo.
+ * Por isso os valores vão para o candidato **crus**, como estavam no arquivo.
  * Um `priceCents: "15500"` chega ao validador como string e volta com a frase
- * certa ("o preco deve ser um inteiro em centavos"), em vez de virar `NaN`
+ * certa ("o preço deve ser um inteiro em centavos"), em vez de virar `NaN`
  * silencioso aqui dentro.
  *
- * ## O que o modulo resolve, entao
+ * ## O que o módulo resolve, então
  *
- * Duas coisas que o validador nao teria como resolver sozinho:
+ * Duas coisas que o validador não teria como resolver sozinho:
  *
- * - **O slug**, que e a chave da idempotencia. Sem ele nao ha o que procurar
- *   no banco nem o que escrever no relatorio de falhas. Ausente, sai do nome,
+ * - **O slug**, que e a chave da idempotência. Sem ele não há o que procurar
+ *   no banco nem o que escrever no relatório de falhas. Ausente, sai do nome,
  *   pelo mesmo `slugify` do schema.
- * - **O `null`**, que o arquivo usa onde a API usa a ausencia do campo. Um
- *   `brand: null` nao e "apague a marca", e "esta lista nao informa marca";
+ * - **O `null`**, que o arquivo usa onde a API usa a ausência do campo. Um
+ *   `brand: null` não e "apague a marca", e "esta lista não informa marca";
  *   virasse `null` no candidato, o `@IsOptional` deixaria passar e a marca
- *   gravada seria apagada por omissao.
+ *   gravada seria apagada por omissão.
  */
 
-/** Uma entrada do arquivo, pronta para validacao. */
+/** Uma entrada do arquivo, pronta para validação. */
 export interface CatalogEntry {
-  /** Identidade e chave da idempotencia. Nunca vazio. */
+  /** Identidade e chave da idempotência. Nunca vazio. */
   slug: string;
   /** O corpo que o DTO da API valida. Valores crus, do jeito que vieram. */
   candidate: Record<string, unknown>;
 }
 
 export interface CategoryEntry extends CatalogEntry {
-  /** `null` e categoria principal. A resolucao para `parentId` e do servico. */
+  /** `null` e categoria principal. A resolução para `parentId` e do serviço. */
   parentSlug: string | null;
 }
 
@@ -58,8 +58,8 @@ export class CatalogFormatError extends Error {
 /**
  * Separa as duas listas do arquivo.
  *
- * Esta e a unica leitura que pode derrubar a importacao inteira, e por um
- * motivo simples: sem as listas nao ha o que importar nem o que relatar.
+ * Esta e a única leitura que pode derrubar a importação inteira, e por um
+ * motivo simples: sem as listas não há o que importar nem o que relatar.
  * Tudo o que estiver **dentro** delas falha sozinho, uma entrada por vez.
  */
 export function readCatalogEnvelope(raw: unknown): {
@@ -92,9 +92,9 @@ export function readCategoryEntry(raw: unknown): CategoryEntry {
     parentSlug: parentSlug.length > 0 ? parentSlug : null,
     candidate: withoutNulls({
       name: record.name,
-      // Explicito de proposito: sem ele o hook do schema geraria um endereco a
-      // partir do nome, e a chave que a proxima importacao procura deixaria de
-      // ser previsivel.
+      // Explicito de propósito: sem ele o hook do schema geraria um endereço a
+      // partir do nome, e a chave que a próxima importação procura deixaria de
+      // ser previsível.
       slug,
       order: record.order,
       isActive: record.isActive,
@@ -123,9 +123,9 @@ export function readProductEntry(raw: unknown): ProductEntry {
       isFeatured: record.isFeatured,
       isReadyToShip: record.isReadyToShip,
       variants: readVariants(record.variants),
-      // `sourceCatalog` fica de fora: o produto nao tem campo para guardar de
+      // `sourceCatalog` fica de fora: o produto não tem campo para guardar de
       // qual lista de fornecedor a linha veio, e inventar um mudaria o formato
-      // que o painel le. O arquivo pode trazer, a importacao ignora.
+      // que o painel le. O arquivo pode trazer, a importação ignora.
     }),
   };
 }
@@ -133,8 +133,8 @@ export function readProductEntry(raw: unknown): ProductEntry {
 /**
  * As variantes, uma a uma.
  *
- * Um valor que nao seja lista volta como veio: e o validador que responde
- * "o produto precisa de ao menos uma variante" em portugues.
+ * Um valor que não seja lista volta como veio: e o validador que responde
+ * "o produto precisa de ao menos uma variante" em português.
  */
 function readVariants(raw: unknown): unknown {
   if (!Array.isArray(raw)) {
@@ -148,9 +148,9 @@ function readVariants(raw: unknown): unknown {
       sku: record.sku,
       label: record.label,
       priceCents: record.priceCents,
-      // `null` aqui significa "esta lista nao tem preco de comparacao", e nao
-      // "apague o preco riscado que a dona cadastrou". Na API do painel o
-      // `null` apaga; aqui a ausencia preserva, que e a regra da importacao.
+      // `null` aqui significa "esta lista não tem preço de comparação", e não
+      // "apague o preço riscado que a dona cadastrou". Na API do painel o
+      // `null` apaga; aqui a ausência preserva, que e a regra da importação.
       compareAtPriceCents: record.compareAtPriceCents,
       stock: record.stock,
       image: record.image,
@@ -163,9 +163,9 @@ function readVariants(raw: unknown): unknown {
 /**
  * O slug da entrada: o declarado, o derivado do nome, ou o marcador.
  *
- * O marcador existe para a linha do relatorio. Uma entrada sem nome nem slug
- * vai falhar na validacao de qualquer jeito, e "produto sem nome" e uma
- * queixa mais util do que uma linha em branco.
+ * O marcador existe para a linha do relatório. Uma entrada sem nome nem slug
+ * vai falhar na validação de qualquer jeito, e "produto sem nome" e uma
+ * queixa mais útil do que uma linha em branco.
  */
 function identityOf(record: Record<string, unknown>): string {
   const declared = slugify(text(record.slug));

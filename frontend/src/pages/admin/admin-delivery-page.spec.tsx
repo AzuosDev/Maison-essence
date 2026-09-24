@@ -13,11 +13,11 @@ import AdminDeliveryPage from './admin-delivery-page';
  *
  * O que estes casos cobram:
  *
- * - **gravar ao sair do campo**, e so o que mudou;
- * - **sair sem mudar nada nao chama o servidor** — o gesto mais comum de quem
+ * - **gravar ao sair do campo**, e só o que mudou;
+ * - **sair sem mudar nada não chama o servidor** — o gesto mais comum de quem
  *   confere a tabela;
  * - **a ordem que vai para o servidor**, que e a do checkout;
- * - **o STAFF nao entra**: a tabela de taxas e preco.
+ * - **o STAFF não entra**: a tabela de taxas e preço.
  */
 
 const CITIES = [
@@ -149,8 +149,8 @@ test('mostra as cidades com taxa, prazo e a frase do checkout', async () => {
     '2',
   );
 
-  // A frase e a mesma que a cliente le: `0` seria "No mesmo dia", e sem isso
-  // escrito alguem o cadastra achando que e "sem prazo definido".
+  // A frase e a mesma que a cliente lê: `0` seria "No mesmo dia", e sem isso
+  // escrito alguém o cadastra achando que e "sem prazo definido".
   expect(screen.getByText('Até 2 dias úteis')).toBeDefined();
   expect(screen.getByText('Até 4 dias úteis')).toBeDefined();
 });
@@ -245,7 +245,7 @@ test('apagar o frete grátis manda null, e não zero', async () => {
   await user.tab();
 
   await waitFor(() => {
-    // `null` devolve a cidade a regra global; zero daria frete gratis em
+    // `null` devolve a cidade a regra global; zero daria frete grátis em
     // qualquer pedido.
     expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ minOrderForFreeCents: null });
   });

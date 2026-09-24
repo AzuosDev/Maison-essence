@@ -10,9 +10,9 @@ import { CDN_CACHE_KEY, cacheControlOf } from '../cache-control.js';
 /**
  * Escreve o `Cache-Control` das rotas marcadas com `@CdnCache()`.
  *
- * Global, mas inerte por padrao: so age onde o decorator existe. O cabecalho
- * e escrito depois do handler, e nao antes, para que uma resposta de erro nao
- * saia cacheavel — um 404 guardado por cinco minutos na CDN esconde o produto
+ * Global, mas inerte por padrão: só age onde o decorator existe. O cabeçalho
+ * e escrito depois do handler, e não antes, para que uma resposta de erro não
+ * saia cacheável — um 404 guardado por cinco minutos na CDN esconde o produto
  * que acabou de ser publicado.
  */
 @Injectable()

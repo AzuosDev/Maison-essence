@@ -3,21 +3,21 @@ import { useEffect, useState } from 'react';
 /**
  * Um `@media` respondido em JavaScript.
  *
- * Existe para o punhado de casos em que o CSS nao basta porque a diferenca
- * nao e de aparencia, e sim de comportamento: a vitrine pagina com "carregar
- * mais" no celular e com numeros no desktop, e isso muda quantas paginas o
- * componente busca — nao so como as desenha.
+ * Existe para o punhado de casos em que o CSS não basta porque a diferença
+ * não e de aparência, e sim de comportamento: a vitrine página com "carregar
+ * mais" no celular e com números no desktop, e isso muda quantas páginas o
+ * componente busca — não só como as desenha.
  *
  * Quando a resposta e puramente visual, o CSS continua sendo o lugar certo.
- * Um `@media` nao remonta componente, nao dispara render e nao pode divergir
+ * Um `@media` não remonta componente, não dispara render e não pode divergir
  * do que esta na folha de estilo.
  *
- * A consulta e lida ja no inicializador do estado, e nao num efeito. Ler
+ * A consulta e lida já no inicializador do estado, e não num efeito. Ler
  * depois significaria desenhar um quadro com a resposta errada — o celular
- * veria a paginacao numerada aparecer e sumir. O efeito so assina as
- * mudancas seguintes; a primeira resposta ja veio no render.
+ * veria a paginação numerada aparecer e sumir. O efeito só assina as
+ * mudancas seguintes; a primeira resposta já veio no render.
  *
- * O `matchMedia` pode nao existir: em teste sob jsdom, por exemplo. Nesse
+ * O `matchMedia` pode não existir: em teste sob jsdom, por exemplo. Nesse
  * caso a resposta e `false`, que e o estilo base do projeto — o celular.
  */
 export function useMediaQuery(query: string): boolean {

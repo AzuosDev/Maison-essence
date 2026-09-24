@@ -1,7 +1,7 @@
 /*
- * A voz da marca: serifada de alto contraste no titulo, sans no corpo.
+ * A voz da marca: serifada de alto contraste no título, sans no corpo.
  *
- * Aqui ficam so os padroes que valem para a pagina inteira. Variacao de
+ * Aqui ficam só os padrões que valem para a página inteira. Variação de
  * tamanho por componente e com os tokens, dentro do CSS Module dele.
  */
 
@@ -56,11 +56,11 @@ b {
 }
 
 /*
- * As partes que o navegador desenha por conta propria.
+ * As partes que o navegador desenha por conta própria.
  *
- * Selecao, cursor de texto e barra de rolagem saem de fabrica em azul de
- * sistema — a unica cor da loja que nao veio da paleta. Sao tres declaracoes
- * e e a diferenca entre uma pagina montada e uma pagina desenhada.
+ * Seleção, cursor de texto e barra de rolagem saem de fabrica em azul de
+ * sistema — a única cor da loja que não veio da paleta. São três declarações
+ * e e a diferença entre uma página montada e uma página desenhada.
  */
 ::selection {
   background-color: var(--gold-wash);
@@ -101,10 +101,10 @@ small {
 }
 
 /*
- * Numero de dinheiro em largura fixa.
+ * Número de dinheiro em largura fixa.
  *
- * Sem `tabular-nums`, o `1` e mais estreito que o `8` e os precos dancam
- * verticalmente no grid de produtos. E classe utilitaria global, e nao um
+ * Sem `tabular-nums`, o `1` e mais estreito que o `8` e os preços dancam
+ * verticalmente no grid de produtos. E classe utilitária global, e não um
  * CSS Module, porque vale em toda parte que mostra valor — card, carrinho,
  * resumo do pedido, tabela do painel.
  */
@@ -113,8 +113,8 @@ small {
 }
 
 /*
- * Conteudo so para leitor de tela: rotulo que a tela ja comunica pelo
- * desenho, mas que precisa existir na arvore de acessibilidade.
+ * Conteúdo só para leitor de tela: rótulo que a tela já comunica pelo
+ * desenho, mas que precisa existir na árvore de acessibilidade.
  */
 .visually-hidden {
   position: absolute;

@@ -1,14 +1,14 @@
 /*
  * Pagamento.
  *
- * O formulario de um lado e o checkout da cliente do outro. A leitura desta
- * tela e de ida e volta — mexe no numero, olha a lista, mexe de novo —, e
- * todo o layout existe para que esse movimento nao precise de rolagem.
+ * O formulário de um lado e o checkout da cliente do outro. A leitura desta
+ * tela e de ida e volta — mexe no número, olha a lista, mexe de novo —, e
+ * todo o layout existe para que esse movimento não precise de rolagem.
  *
- * `flex` e nao `grid` na pagina de proposito: a barra de salvar e um item que
- * gruda no rodape da viewport, e o bloco que contem um item grudento precisa
- * ser o conteudo inteiro. Numa grade, o bloco de um item e a faixa da linha
- * dele, e a barra so apareceria depois de rolar ate o fim.
+ * `flex` e não `grid` na página de propósito: a barra de salvar e um item que
+ * gruda no rodapé da viewport, e o bloco que contem um item grudento precisa
+ * ser o conteúdo inteiro. Numa grade, o bloco de um item e a faixa da linha
+ * dele, e a barra só apareceria depois de rolar até o fim.
  */
 
 .page {
@@ -32,7 +32,7 @@
   color: var(--ink);
 }
 
-/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+/* `--ink-soft` e não `--muted`: 14px no cinza de rótulo não alcança 4.5:1. */
 .subtitle {
   margin: 0;
 
@@ -55,7 +55,7 @@
 }
 
 /*
- * A previa entra depois do formulario no celular, e ao lado dele a partir de
+ * A prévia entra depois do formulário no celular, e ao lado dele a partir de
  * 64rem — a mesma largura em que a coluna do painel deixa de ser gaveta.
  * Abaixo disso, duas colunas dariam 18rem para cada uma, e nenhuma das duas
  * funciona nessa largura.
@@ -66,7 +66,7 @@
   }
 }
 
-/* ---- Os blocos do formulario ------------------------------------------------- */
+/* ---- Os blocos do formulário ------------------------------------------------- */
 
 .card {
   display: grid;
@@ -100,8 +100,8 @@
 /*
  * A linha que explica o bloco.
  *
- * Fica escrita e nao num tooltip: "a chave nunca aparece na vitrine" e uma
- * duvida que quem cadastra tem uma vez so, mas tem — e ela decide se a dona
+ * Fica escrita e não num tooltip: "a chave nunca aparece na vitrine" e uma
+ * dúvida que quem cadastra tem uma vez só, mas tem — e ela decide se a dona
  * se sente segura de colar a chave ali.
  */
 .cardHint {
@@ -121,8 +121,8 @@
   padding-top: var(--space-4);
 }
 
-/* Dois campos que se leem juntos: o maximo com o limite sem juros, os juros
-   com a parcela minima. Empilham sozinhos abaixo de 7rem por coluna. */
+/* Dois campos que se leem juntos: o máximo com o limite sem juros, os juros
+   com a parcela mínima. Empilham sozinhos abaixo de 7rem por coluna. */
 .pair {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
@@ -132,11 +132,11 @@
 /* ---- Os avisos ---------------------------------------------------------------- */
 
 /*
- * O que o servidor aceita e provavelmente nao era a intencao.
+ * O que o servidor aceita e provavelmente não era a intenção.
  *
- * Dourado e nao vermelho: nao ha erro nenhum, ha uma configuracao que some do
- * outro lado sem avisar. O icone entra como segundo portador do sinal, para
- * que a cor nao seja a unica coisa que o diferencia do resto do texto.
+ * Dourado e não vermelho: não há erro nenhum, há uma configuração que some do
+ * outro lado sem avisar. O ícone entra como segundo portador do sinal, para
+ * que a cor não seja a única coisa que o diferencia do resto do texto.
  */
 .warning {
   display: flex;
@@ -168,14 +168,14 @@
 /* ---- A barra de salvar --------------------------------------------------------- */
 
 /*
- * Aparece quando ha o que salvar, e gruda no rodape ate ser resolvida.
+ * Aparece quando há o que salvar, e gruda no rodapé até ser resolvida.
  *
- * A previa ao lado muda enquanto se digita, e e facil ler aquilo como "ja
- * esta valendo". Esta barra e a correcao dessa leitura: ela diz, com todas as
+ * A prévia ao lado muda enquanto se digita, e e fácil ler aquilo como "já
+ * esta valendo". Esta barra e a correção dessa leitura: ela diz, com todas as
  * letras, que quem esta comprando agora continua vendo as regras antigas.
  *
  * A sombra sobe — o deslocamento e negativo — porque a barra flutua sobre o
- * conteudo que esta **acima** dela.
+ * conteúdo que esta **acima** dela.
  */
 .bar {
   position: sticky;

@@ -17,39 +17,39 @@ import styles from './cart-line-row.module.css';
 /**
  * Uma linha da sacola.
  *
- * A mesma na gaveta e na pagina, com um `compact` decidindo o tamanho da
- * foto e o empilhamento. Sao dois desenhos do mesmo objeto, e escrever duas
+ * A mesma na gaveta e na página, com um `compact` decidindo o tamanho da
+ * foto e o empilhamento. São dois desenhos do mesmo objeto, e escrever duas
  * vezes significaria manter em dois lugares o teto de estoque, o "remover",
- * o estado indisponivel e o que acontece quando a cotacao ainda nao chegou —
+ * o estado indisponível e o que acontece quando a cotação ainda não chegou —
  * que e onde os erros moram.
  *
  * ## De onde vem cada coisa
  *
  * A **quantidade** sai da sacola: e o cliente quem a escolheu, e o campo tem
  * que obedece-lo no mesmo quadro do clique. Tudo o mais que esta escrito
- * aqui sai da **cotacao** — nome, foto, preco, estoque e o motivo de a linha
- * ter saido. A dica em memoria cobre o intervalo entre adicionar e a
- * primeira resposta do servidor, e cobre so nome, opcao e foto: nunca preco.
+ * aqui sai da **cotação** — nome, foto, preço, estoque e o motivo de a linha
+ * ter saido. A dica em memória cobre o intervalo entre adicionar e a
+ * primeira resposta do servidor, e cobre só nome, opção e foto: nunca preço.
  *
- * Enquanto nao ha nem cotacao nem dica — o caso de quem recarregou a pagina
- * — a linha desenha esqueletos com a altura final, e nao um espaco vazio que
+ * Enquanto não há nem cotação nem dica — o caso de quem recarregou a página
+ * — a linha desenha esqueletos com a altura final, e não um espaço vazio que
  * empurra o resto para baixo quando a resposta chega.
  *
  * ## A linha que saiu
  *
- * Fundo de aviso, preco riscado e o motivo escrito por extenso, vindo do
- * servidor: "Este produto saiu do catalogo", "Restam apenas 2 unidades". Ela
- * continua na lista, e a permanencia e o ponto — sumir com o item faria o
+ * Fundo de aviso, preço riscado e o motivo escrito por extenso, vindo do
+ * servidor: "Este produto saiu do catálogo", "Restam apenas 2 unidades". Ela
+ * continua na lista, e a permanência e o ponto — sumir com o item faria o
  * cliente procurar o que ele mesmo tinha escolhido. O que sai e o valor
- * dela, que vale zero no total, e o seletor de quantidade, que nao teria o
+ * dela, que vale zero no total, e o seletor de quantidade, que não teria o
  * que ajustar.
  */
 
 export interface CartLineRowProps {
   line: CartLine;
-  /** O que o servidor diz desta linha. `null` antes da primeira cotacao. */
+  /** O que o servidor diz desta linha. `null` antes da primeira cotação. */
   quote: QuoteLine | null;
-  /** O que se sabia ao adicionar. `null` depois de recarregar a pagina. */
+  /** O que se sabia ao adicionar. `null` depois de recarregar a página. */
   hint: CartLineHint | null;
   /** Na gaveta: foto menor, controles empilhados. */
   compact?: boolean;
@@ -96,7 +96,7 @@ export function CartLineRow({ line, quote, hint, compact = false }: CartLineRowP
             <Skeleton variant="text" width="60%" />
           ) : (
             <p className={styles.name}>
-              {/* Sem slug nao ha para onde ir: o produto saiu do catalogo, e
+              {/* Sem slug não há para onde ir: o produto saiu do catalogo, e
                   um link que responde 404 e pior que texto. */}
               {slug === '' ? (
                 name
@@ -155,12 +155,12 @@ export function CartLineRow({ line, quote, hint, compact = false }: CartLineRowP
 }
 
 /**
- * O valor da linha, sempre o da cotacao.
+ * O valor da linha, sempre o da cotação.
  *
- * Nao ha `unitPriceCents * quantity` em lugar nenhum desta tela. O
- * `lineTotalCents` ja vem do servidor com o desconto por quantidade
- * aplicado — refazer a multiplicacao aqui daria o numero errado justamente
- * nos carrinhos que ganharam desconto, que sao os maiores.
+ * Não há `unitPriceCents * quantity` em lugar nenhum desta tela. O
+ * `lineTotalCents` já vem do servidor com o desconto por quantidade
+ * aplicado — refazer a multiplicação aqui daria o número errado justamente
+ * nos carrinhos que ganharam desconto, que são os maiores.
  */
 function LineTotal({ quote, unavailable }: { quote: QuoteLine | null; unavailable: boolean }) {
   if (quote === null) {
@@ -188,7 +188,7 @@ function LineTotal({ quote, unavailable }: { quote: QuoteLine | null; unavailabl
   );
 }
 
-/** "Ultima unidade": so com estoque contado, baixo, e vindo da cotacao. */
+/** "Última unidade": só com estoque contado, baixo, e vindo da cotação. */
 function StockNote({ quote }: { quote: QuoteLine | null }) {
   if (quote === null || quote.allowBackorder || quote.availableStock > LOW_STOCK) {
     return null;
@@ -207,14 +207,14 @@ function StockNote({ quote }: { quote: QuoteLine | null }) {
 const LOW_STOCK = 3;
 
 /**
- * Ate quanto o seletor deixa subir.
+ * Até quanto o seletor deixa subir.
  *
- * O estoque que a cotacao acabou de informar, e nao o que o card mostrava
- * quando o item entrou na sacola. Sob encomenda nao tem teto de estoque —
+ * O estoque que a cotação acabou de informar, e não o que o card mostrava
+ * quando o item entrou na sacola. Sob encomenda não tem teto de estoque —
  * vale o teto da linha, que e o mesmo que o servidor aceita.
  *
- * Sem cotacao ainda, o teto e o maximo: prender o campo em 1 enquanto a
- * resposta nao chega impediria o cliente de digitar a quantidade que ele ja
+ * Sem cotação ainda, o teto e o máximo: prender o campo em 1 enquanto a
+ * resposta não chega impediria o cliente de digitar a quantidade que ele já
  * sabe que quer.
  */
 function maxFor(quote: QuoteLine | null): number {

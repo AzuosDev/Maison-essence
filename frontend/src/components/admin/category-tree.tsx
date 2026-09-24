@@ -24,47 +24,47 @@ import styles from './category-tree.module.css';
  *
  * ## Esta tela e o menu
  *
- * Nao e uma tabela de registros: e o proprio menu da vitrine, na mesma ordem
- * e com o mesmo aninhamento. Por isso nao ha colunas, nao ha paginacao e nao
- * ha busca — o que a dona faz aqui e olhar a lista inteira e mexer nela, como
+ * Não e uma tabela de registros: e o próprio menu da vitrine, na mesma ordem
+ * e com o mesmo aninhamento. Por isso não há colunas, não há paginação e não
+ * há busca — o que a dona faz aqui e olhar a lista inteira e mexer nela, como
  * se mexesse no cardapio.
  *
  * ## O nome se edita no lugar
  *
  * Um clique no nome o transforma em campo. Enter salva, Escape desiste, e
- * sair do campo salva tambem — renomear uma categoria e a coisa mais comum
- * desta tela, e abrir um dialogo para trocar uma palavra seria pedir tres
+ * sair do campo salva também — renomear uma categoria e a coisa mais comum
+ * desta tela, e abrir um diálogo para trocar uma palavra seria pedir três
  * cliques por um.
  *
- * O que **nao** se edita no lugar e o endereco e o pai: os dois mudam o que a
- * loja responde a um link, e merecem um passo deliberado. Estao no menu de
- * acoes da linha.
+ * O que **não** se edita no lugar e o endereço e o pai: os dois mudam o que a
+ * loja responde a um link, e merecem um passo deliberado. Estão no menu de
+ * ações da linha.
  *
  * ## Arrastar tem um caminho de teclado ao lado
  *
- * O arraste e o gesto rapido de quem tem mouse. Cada linha tambem tem "subir"
- * e "descer" no menu, e sao eles que funcionam no teclado e no celular, onde
- * arrastar briga com a rolagem da pagina. Uma arvore que so responde ao
- * arraste e uma arvore que metade das pessoas nao consegue ordenar.
+ * O arraste e o gesto rápido de quem tem mouse. Cada linha também tem "subir"
+ * e "descer" no menu, e são eles que funcionam no teclado e no celular, onde
+ * arrastar briga com a rolagem da página. Uma árvore que só responde ao
+ * arraste e uma árvore que metade das pessoas não consegue ordenar.
  *
- * ## O que a foto da categoria nao faz aqui
+ * ## O que a foto da categoria não faz aqui
  *
  * O campo `image` existe na API e nenhuma tela da loja o desenha hoje. Um
- * upload por categoria seria interface para um dado que ninguem ve — entra
+ * upload por categoria seria interface para um dado que ninguém vê — entra
  * quando a vitrine tiver onde mostra-lo.
  */
 
 export interface CategoryTreeProps {
   tree: readonly AdminCategoryNode[];
-  /** Arrastar ou mover soltou numa posicao nova: a arvore ja vem reordenada. */
+  /** Arrastar ou mover soltou numa posição nova: a árvore já vem reordenada. */
   onReorder: (tree: AdminCategoryNode[]) => void;
   onRename: (category: AdminCategory, name: string) => void;
   onToggleActive: (category: AdminCategory) => void;
   onAddChild: (parent: AdminCategoryNode) => void;
-  /** Abre o dialogo de endereco e categoria pai. */
+  /** Abre o diálogo de endereço e categoria pai. */
   onEdit: (category: AdminCategory) => void;
   onDelete: (category: AdminCategory) => void;
-  /** Uma reordenacao em voo: o arraste para ate a resposta chegar. */
+  /** Uma reordenação em voo: o arraste para até a resposta chegar. */
   isReordering?: boolean;
 }
 
@@ -78,7 +78,7 @@ export function CategoryTree({
   onDelete,
   isReordering = false,
 }: CategoryTreeProps) {
-  // Quem esta sendo arrastado, e de qual lista. Um filho so pode ser solto
+  // Quem esta sendo arrastado, e de qual lista. Um filho só pode ser solto
   // entre os irmaos dele: `parentId` guarda de onde o gesto saiu.
   const [dragging, setDragging] = useState<{ parentId: string | null; index: number } | null>(null);
   const [over, setOver] = useState<{ parentId: string | null; index: number } | null>(null);
@@ -271,8 +271,8 @@ function Row({
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
       onDragOver={(event: DragEvent) => {
-        // Sem isto o navegador recusa o solte: `dragover` so libera o alvo
-        // quando o comportamento padrao e cancelado.
+        // Sem isto o navegador recusa o solte: `dragover` só libera o alvo
+        // quando o comportamento padrão e cancelado.
         event.preventDefault();
         onDragOver();
       }}
@@ -282,7 +282,7 @@ function Row({
       }}
     >
       {/*
-        A alca e decorativa: a linha inteira ja e arrastavel, e o icone existe
+        A alca e decorativa: a linha inteira já e arrastável, e o icone existe
         para anunciar isso. Quem usa teclado tem "subir" e "descer" no menu,
         que e o caminho de verdade.
       */}
@@ -311,20 +311,20 @@ function Row({
   );
 }
 
-/* ---- O nome, editavel no lugar --------------------------------------------- */
+/* ---- O nome, editável no lugar --------------------------------------------- */
 
 /**
  * O nome vira campo ao clique e volta a texto ao sair.
  *
- * O botao e um `<button>` de verdade, e nao um `<span onClick>`: assim ele
- * entra na navegacao por teclado e e anunciado como algo que se aciona. O
- * `aria-label` diz o que o clique faz, porque "Masculino" sozinho nao explica
- * que ele abre a edicao.
+ * O botão e um `<button>` de verdade, e não um `<span onClick>`: assim ele
+ * entra na navegação por teclado e e anunciado como algo que se aciona. O
+ * `aria-label` diz o que o clique faz, porque "Masculino" sozinho não explica
+ * que ele abre a edição.
  *
- * Salvar num nome vazio nao acontece: o servidor exige duas letras, e um
+ * Salvar num nome vazio não acontece: o servidor exige duas letras, e um
  * campo apagado por engano voltaria como erro depois da chamada. Aqui ele
  * simplesmente volta ao nome anterior, que e o que a pessoa esperava do
- * Escape que ela nao apertou.
+ * Escape que ela não apertou.
  */
 function NameField({
   category,

@@ -36,8 +36,8 @@ describe('priceChangesBetween', () => {
   });
 
   it('usa o SKU novo como rótulo quando ele também mudou no mesmo PATCH', () => {
-    // A comparacao e pelo id da variante, entao trocar o SKU nao cria uma
-    // variante nova nem esconde a mudanca de preco.
+    // A comparação e pelo id da variante, então trocar o SKU não cria uma
+    // variante nova nem esconde a mudanca de preço.
     expect(
       priceChangesBetween(
         snapshot({ a: ['ASAD-100', 19_990, null] }),

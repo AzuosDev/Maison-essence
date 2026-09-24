@@ -1,11 +1,11 @@
 /*
  * Os cartazes das categorias.
  *
- * Nao sao miniaturas: sao quatro cartazes de vitrine, em retrato, com o nome
- * da familia em cima da foto e um botao embaixo. Antes eram seis fichas de
+ * Não são miniaturas: são quatro cartazes de vitrine, em retrato, com o nome
+ * da família em cima da foto e um botão embaixo. Antes eram seis fichas de
  * 10rem numa fileira que rolava, e o nome chapado sobre a foto mal se lia.
  * Quatro cartazes grandes valem mais que seis pequenos: cada um tem tamanho
- * para a foto contar o que ha dentro da categoria.
+ * para a foto contar o que há dentro da categoria.
  */
 
 .strip {
@@ -13,8 +13,8 @@
 }
 
 /* Mesma regra da prateleira encostada no banner, e pelo mesmo motivo: a
-   faixa so cai nesta posicao quando nenhuma prateleira tem produto para
-   mostrar, e ai e ela que nao pode nascer com 64px de creme sobre a foto. */
+   faixa só cai nesta posição quando nenhuma prateleira tem produto para
+   mostrar, e aí e ela que não pode nascer com 64px de creme sobre a foto. */
 .flush {
   padding-top: var(--space-24);
 }
@@ -22,8 +22,8 @@
 .list {
   display: grid;
 
-  /* Dois no celular, quatro a partir do tablet. Nunca tres: com tres, a
-     quarta categoria fica sozinha numa linha propria, ocupando um quarto da
+  /* Dois no celular, quatro a partir do tablet. Nunca três: com três, a
+     quarta categoria fica sozinha numa linha própria, ocupando um quarto da
      largura e parecendo sobra. */
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: var(--space-16);
@@ -45,7 +45,7 @@
     padding-block: var(--space-64);
   }
 
-  /* Depois de `.strip`: mesma especificidade, vale a ultima escrita. */
+  /* Depois de `.strip`: mesma especificidade, vale a última escrita. */
   .flush {
     padding-top: var(--space-24);
   }
@@ -85,9 +85,9 @@
 }
 
 /*
- * O veu.
+ * O véu.
  *
- * Fecha em cima e embaixo, onde o texto e o botao caem, e abre no meio, onde
+ * Fecha em cima e embaixo, onde o texto e o botão caem, e abre no meio, onde
  * esta o produto. Um escurecimento chapado apagaria a foto inteira para
  * resolver o contraste de duas linhas.
  */
@@ -131,12 +131,12 @@
 }
 
 /*
- * O botao do cartaz.
+ * O botão do cartaz.
  *
- * Desenhado aqui, e nao com o componente de botao, porque o cartaz inteiro ja
- * e o link: um `<a>` dentro de outro `<a>` e marcacao invalida, e dois alvos
+ * Desenhado aqui, e não com o componente de botão, porque o cartaz inteiro já
+ * e o link: um `<a>` dentro de outro `<a>` e marcação inválida, e dois alvos
  * empilhados para o mesmo destino confundem quem navega por teclado. Isto e um
- * `<span>` com cara de botao — o clique vem do cartaz.
+ * `<span>` com cara de botão — o clique vem do cartaz.
  */
 .action {
   position: relative;

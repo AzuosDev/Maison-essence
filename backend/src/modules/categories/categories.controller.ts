@@ -20,9 +20,9 @@ import { UpdateCategoryDto } from './dto/update-category.dto.js';
 /**
  * Categorias pelo painel.
  *
- * Mexer no catalogo e da dona (`MANAGES_STORE`); ler e do STAFF tambem, que
- * precisa da arvore para achar produto e conferir pedido — dai o `@Roles`
- * proprio no GET, que sobrepoe o do controller.
+ * Mexer no catálogo e da dona (`MANAGES_STORE`); ler e do STAFF também, que
+ * precisa da árvore para achar produto e conferir pedido — dai o `@Roles`
+ * próprio no GET, que sobrepoe o do controller.
  */
 @Roles(...MANAGES_STORE)
 @Controller('admin/categories')
@@ -41,8 +41,8 @@ export class CategoriesController {
   }
 
   /**
-   * Antes do `PATCH :id` de proposito: o Nest casa as rotas na ordem em que
-   * sao declaradas, e `reorder` cairia em `:id` como se fosse um id.
+   * Antes do `PATCH :id` de propósito: o Nest casa as rotas na ordem em que
+   * são declaradas, e `reorder` cairia em `:id` como se fosse um id.
    */
   @Patch('reorder')
   reorder(@Body() dto: ReorderCategoriesDto): Promise<WithChildren<CategoryView>[]> {

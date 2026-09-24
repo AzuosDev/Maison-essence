@@ -9,16 +9,16 @@ import type { RateLimitRule } from './rate-limit.decorator.js';
 /**
  * Qual regra vale para esta rota.
  *
- * Tres camadas, da mais especifica para a mais geral: o `@RateLimit()` da
- * rota, o teto das rotas abertas e o teto do painel. A ultima decisao e feita
- * pelo `@Public()` porque ele ja marca exatamente essa fronteira — rota aberta
+ * Três camadas, da mais específica para a mais geral: o `@RateLimit()` da
+ * rota, o teto das rotas abertas e o teto do painel. A última decisão e feita
+ * pelo `@Public()` porque ele já marca exatamente essa fronteira — rota aberta
  * na internet de um lado, rota que exige credencial do outro —, e inventar um
  * segundo decorador para dizer a mesma coisa criaria a chance de os dois
  * discordarem.
  *
- * Nenhuma rota fica sem teto. Antes disso o limite era opcional e valia so
- * onde alguem lembrou de liga-lo; agora esquecer o decorador significa herdar
- * o teto da categoria, nao ficar sem nenhum.
+ * Nenhuma rota fica sem teto. Antes disso o limite era opcional e valia só
+ * onde alguém lembrou de liga-lo; agora esquecer o decorador significa herdar
+ * o teto da categoria, não ficar sem nenhum.
  */
 export function resolveRateLimitRule(
   reflector: Reflector,
@@ -42,8 +42,8 @@ export function resolveRateLimitRule(
 /**
  * A chave do contador: SHA-256 de `escopo|identidade`.
  *
- * O hash nao protege segredo nenhum — o escopo e publico e o IP e conhecido de
- * quem chama. Ele existe para que a colecao de rate limit nao vire um registro
+ * O hash não protege segredo nenhum — o escopo e público e o IP e conhecido de
+ * quem chama. Ele existe para que a coleção de rate limit não vire um registro
  * de quem visitou a loja, e para caber no campo de 64 caracteres do schema
  * seja qual for a identidade (IP, telefone, IPv6 longo).
  */

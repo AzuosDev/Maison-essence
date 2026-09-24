@@ -8,18 +8,18 @@ import { usePlacedOrders, type PlacedOrder } from '@/features/checkout';
 import OrderConfirmationPage from './order-confirmation-page';
 
 /**
- * A tela de confirmacao.
+ * A tela de confirmação.
  *
- * Tres coisas sao testadas aqui, e as tres so aparecem depois que o pedido ja
- * existe — o que faz delas as mais faceis de quebrar sem ninguem perceber:
+ * Três coisas são testadas aqui, e as três só aparecem depois que o pedido já
+ * existe — o que faz delas as mais fáceis de quebrar sem ninguém perceber:
  *
  * 1. **O reenvio manda a URL do servidor, inteira.** E a segunda chance de
- *    quem teve a aba bloqueada, e ela so serve se a mensagem chegar do jeito
+ *    quem teve a aba bloqueada, e ela só serve se a mensagem chegar do jeito
  *    que foi gravada, com as quebras de linha e os acentos.
- * 2. **O copiar entrega o texto sem codificacao de URL.** Colar `%0A` numa
- *    conversa e pior do que nao ter o botao.
+ * 2. **O copiar entrega o texto sem codificação de URL.** Colar `%0A` numa
+ *    conversa e pior do que não ter o botão.
  * 3. **A conta e convite, nunca parede.** Logado, o caminho para os pedidos;
- *    convidado, a oferta com o telefone do pedido ja no link.
+ *    convidado, a oferta com o telefone do pedido já no link.
  */
 
 vi.mock('@/lib/env', () => ({
@@ -53,22 +53,22 @@ const PEDIDO: PlacedOrder = {
   placedAt: '2026-09-22T12:00:00.000Z',
 };
 
-/** A aba de mentira, como no checkout: o jsdom nao abre nenhuma. */
+/** A aba de mentira, como no checkout: o jsdom não abre nenhuma. */
 interface Abertura {
   abertaCom: string;
-  /** A URL que a tela mandou para a aba, ou `null` se nao mandou nenhuma. */
+  /** A URL que a tela mandou para a aba, ou `null` se não mandou nenhuma. */
   enviadaPara: string | null;
 }
 
 let aberturas: Abertura[] = [];
 
-/** O que foi parar na area de transferencia. */
+/** O que foi parar na área de transferência. */
 let copiado: string[] = [];
 
 /**
- * Troca a area de transferencia do jsdom pela nossa.
+ * Troca a área de transferência do jsdom pela nossa.
  *
- * **Chame depois de `userEvent.setup()`**, e nunca antes: a propria
+ * **Chame depois de `userEvent.setup()`**, e nunca antes: a própria
  * biblioteca de eventos instala um substituto de `navigator.clipboard` ao ser
  * montada, e ele sobrescreveria este aqui — deixando o teste medindo o
  * substituto dela em vez do que a tela mandou copiar.
@@ -80,7 +80,7 @@ function comAreaDeTransferencia(escrever: (texto: string) => Promise<void>): voi
   });
 }
 
-/** A area de transferencia que aceita tudo, e registra o que recebeu. */
+/** A área de transferência que aceita tudo, e registra o que recebeu. */
 function areaQueAceita(): void {
   comAreaDeTransferencia((texto) => {
     copiado.push(texto);
@@ -170,7 +170,7 @@ test('reenviar manda a URL do servidor, sem reescrever a mensagem', async () => 
 
   expect(enviada).toBe(URL_WHATSAPP);
 
-  // A prova do criterio de aceite: o que chega ao WhatsApp, decodificado, e
+  // A prova do critério de aceite: o que chega ao WhatsApp, decodificado, e
   // a mensagem exata do pedido — com as quebras de linha e os acentos.
   expect(decodeURIComponent(enviada.split('?text=')[1] ?? '')).toBe(MENSAGEM);
 });
@@ -188,7 +188,7 @@ test('copiar entrega o texto do pedido, e não a URL codificada', async () => {
     expect(copiado).toEqual([MENSAGEM]);
   });
 
-  // E o botao confirma o que fez, no proprio rotulo.
+  // E o botão confirma o que fez, no próprio rótulo.
   expect(await screen.findByRole('button', { name: /Mensagem copiada/ })).toBeTruthy();
 });
 
@@ -249,7 +249,7 @@ test('com sessão, mostra o caminho para os pedidos da conta', () => {
 test('código que não esta neste navegador não vira erro', () => {
   abrir('ME-260922-ZZZZ');
 
-  // O codigo continua em cena: e com ele que a loja acha a conversa.
+  // O código continua em cena: e com ele que a loja acha a conversa.
   expect(screen.getByRole('heading', { name: 'Pedido ME-260922-ZZZZ' })).toBeTruthy();
   expect(screen.getByText(/não esta guardado neste navegador/)).toBeTruthy();
   expect(screen.getByRole('link', { name: 'Voltar a loja' })).toBeTruthy();

@@ -5,41 +5,41 @@ import { formatCents } from '@/lib/format';
 import styles from './payment-preview.module.css';
 
 /**
- * O que a cliente ve, com as regras que ainda nao foram salvas.
+ * O que a cliente vê, com as regras que ainda não foram salvas.
  *
- * ## Por que esta tela precisa de uma previa
+ * ## Por que esta tela precisa de uma prévia
  *
- * "1,99% ao mes" e "parcela minima de R$ 20" nao dizem nada sozinhos. O que
- * eles significam e uma lista: quantas opcoes a cliente vai ver, qual e a
- * ultima que aparece, e quanto ela paga a mais na maior delas. A dona decide
- * olhando para essa lista, e nao para os quatro numeros que a produzem.
+ * "1,99% ao mês" e "parcela mínima de R$ 20" não dizem nada sozinhos. O que
+ * eles significam e uma lista: quantas opções a cliente vai ver, qual e a
+ * última que aparece, e quanto ela paga a mais na maior delas. A dona decide
+ * olhando para essa lista, e não para os quatro números que a produzem.
  *
- * Duas regras so se descobrem assim, e as duas apagam opcoes em silencio:
- * a parcela minima corta o fim da lista, e o limite sem juros decide onde o
- * total comeca a subir.
+ * Duas regras só se descobrem assim, e as duas apagam opções em silêncio:
+ * a parcela mínima corta o fim da lista, e o limite sem juros decide onde o
+ * total começa a subir.
  *
- * ## A previa le o rascunho
+ * ## A prévia lê o rascunho
  *
- * Os numeros aqui sao os que estao nos campos, e nao os que estao gravados.
- * E o unico jeito de a decisao acontecer antes de valer — depois de salvar,
- * a regra ja esta no ar para quem estiver comprando. Por isso a barra de
- * salvar diz, com todas as letras, que o que se ve aqui ainda nao vale.
+ * Os números aqui são os que estão nos campos, e não os que estão gravados.
+ * E o único jeito de a decisão acontecer antes de valer — depois de salvar,
+ * a regra já esta no ar para quem estiver comprando. Por isso a barra de
+ * salvar diz, com todas as letras, que o que se vê aqui ainda não vale.
  *
- * ## O valor de exemplo e editavel
+ * ## O valor de exemplo e editável
  *
- * Comeca em R$ 300, que e a faixa da maioria dos pedidos da loja. Mas a
+ * Começa em R$ 300, que e a faixa da maioria dos pedidos da loja. Mas a
  * pergunta que aparece depois e sempre "e num pedido de R$ 80?" — e e nela
- * que a parcela minima aparece cortando a lista pela metade.
+ * que a parcela mínima aparece cortando a lista pela metade.
  */
 export interface PaymentPreviewProps {
   /** O valor de exemplo, como texto: e um campo. */
   amount: string;
-  /** O mesmo valor em centavos, ou `null` enquanto ainda nao e um numero. */
+  /** O mesmo valor em centavos, ou `null` enquanto ainda não e um número. */
   amountCents: number | null;
   onAmountChange: (value: string) => void;
   /** `null` com o PIX desligado. */
   pix: PixPreview | null;
-  /** `null` com o cartao desligado, ou enquanto um campo esta pela metade. */
+  /** `null` com o cartão desligado, ou enquanto um campo esta pela metade. */
   card: PublicCard | null;
 }
 
@@ -55,7 +55,7 @@ export function PaymentPreview({
   const interestFree = options.filter((option) => !option.hasInterest);
   const financed = options.filter((option) => option.hasInterest);
 
-  // Quantas opcoes a parcela minima tirou do fim da lista. E a regra que
+  // Quantas opções a parcela mínima tirou do fim da lista. E a regra que
   // menos se enxerga olhando para o campo que a define.
   const cut = card === null ? 0 : card.maxInstallments - options.length;
 

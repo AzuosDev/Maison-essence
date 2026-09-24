@@ -13,18 +13,18 @@ import { cx } from '@/lib/cx';
 import styles from './radio.module.css';
 
 /**
- * A escolha unica: forma de pagamento, entrega ou retirada.
+ * A escolha única: forma de pagamento, entrega ou retirada.
  *
  * `Radio` e um `<input type="radio">` de verdade, e isso e o que da a
- * navegacao por setas de graca — dentro de um mesmo `name`, o navegador ja
- * move a selecao com as setas e tira os nao selecionados da ordem do Tab,
- * como a convencao de acessibilidade manda. Uma lista desenhada a mao teria
- * que reimplementar as duas coisas, e quase sempre reimplementa so a
+ * navegação por setas de graça — dentro de um mesmo `name`, o navegador já
+ * move a seleção com as setas e tira os não selecionados da ordem do Tab,
+ * como a convenção de acessibilidade manda. Uma lista desenhada a mão teria
+ * que reimplementar as duas coisas, e quase sempre reimplementa só a
  * primeira.
  *
  * `RadioGroup` e o `<fieldset>` em volta. Ele existe porque um grupo de
- * radios sem `<legend>` e anunciado como opcoes soltas: quem usa leitor de
- * tela ouve "PIX" e "cartao" sem nunca ouvir "forma de pagamento".
+ * radios sem `<legend>` e anunciado como opções soltas: quem usa leitor de
+ * tela ouve "PIX" e "cartão" sem nunca ouvir "forma de pagamento".
  */
 
 interface RadioGroupContextValue {
@@ -37,27 +37,27 @@ interface RadioGroupContextValue {
  * O contexto carrega `name`, valor e callback do grupo para os filhos.
  *
  * Assim a tela escreve `<Radio value="PIX" label="PIX" />` sem repetir o
- * `name` e o `checked` em cada opcao — e sem chance de uma delas ficar com
- * o `name` errado e sair do grupo em silencio.
+ * `name` e o `checked` em cada opção — e sem chance de uma delas ficar com
+ * o `name` errado e sair do grupo em silêncio.
  */
 const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
 
 export type RadioProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'className'> & {
   label: string;
-  /** Uma linha de apoio embaixo do rotulo: "em ate 12x sem juros". */
+  /** Uma linha de apoio embaixo do rótulo: "em até 12x sem juros". */
   description?: ReactNode;
   /**
-   * A opcao vira um cartao: moldura, area de toque grande e fundo proprio
+   * A opção vira um cartão: moldura, área de toque grande e fundo próprio
    * quando marcada.
    *
    * Para a escolha que domina uma tela inteira — entrega ou retirada, PIX ou
-   * cartao — onde um alvo de 20px nao corresponde ao peso da decisao, e onde
-   * a opcao marcada precisa continuar obvia depois que o cliente rolou a
-   * pagina e voltou.
+   * cartão — onde um alvo de 20px não corresponde ao peso da decisão, e onde
+   * a opção marcada precisa continuar obvia depois que o cliente rolou a
+   * página e voltou.
    *
-   * A aparencia mora aqui, e nao na tela que usa, pelo motivo de sempre:
-   * dois cartoes desenhados em dois CSS Modules divergem no primeiro ajuste,
-   * e sao justamente as duas escolhas mais importantes do checkout.
+   * A aparência mora aqui, e não na tela que usa, pelo motivo de sempre:
+   * dois cartões desenhados em dois CSS Modules divergem no primeiro ajuste,
+   * e são justamente as duas escolhas mais importantes do checkout.
    */
   card?: boolean;
   className?: string | undefined;
@@ -122,14 +122,14 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
 export interface RadioGroupProps {
   /** Vai no `<legend>`: o que esta sendo escolhido. */
   legend: string;
-  /** O `name` compartilhado. E ele que faz os radios serem um grupo so. */
+  /** O `name` compartilhado. E ele que faz os radios serem um grupo só. */
   name: string;
   /** Controlado por quem usa, junto de `onChange`. */
   value?: string | undefined;
-  /** Nao controlado: a opcao que ja vem marcada. */
+  /** Não controlado: a opção que já vem marcada. */
   defaultValue?: string | undefined;
   onChange?: ((value: string) => void) | undefined;
-  /** Lado a lado, para opcoes curtas. */
+  /** Lado a lado, para opções curtas. */
   horizontal?: boolean;
   error?: string | undefined;
   className?: string | undefined;

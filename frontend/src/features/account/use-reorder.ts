@@ -8,34 +8,34 @@ import { isEmptyPlan, planReorder, reorderItems, type ReorderPlan } from './reor
 /**
  * "Pedir novamente", do clique a gaveta aberta.
  *
- * ## Uma cotacao antes de qualquer coisa
+ * ## Uma cotação antes de qualquer coisa
  *
- * O pedido guarda um retrato do catalogo de meses atras. Antes de por
+ * O pedido guarda um retrato do catálogo de meses atrás. Antes de por
  * qualquer linha na sacola, este hook pergunta ao servidor o que ainda vale
- * — e so entao decide, em `planReorder`, o que entra inteiro, o que entra
- * com menos e o que nao entra.
+ * — e só então decide, em `planReorder`, o que entra inteiro, o que entra
+ * com menos e o que não entra.
  *
  * A alternativa seria copiar as linhas direto e deixar a sacola descobrir
- * sozinha na proxima cotacao. Funcionaria, e seria pior de duas maneiras: a
+ * sozinha na próxima cotação. Funcionaria, e seria pior de duas maneiras: a
  * gaveta abriria com itens que somem um segundo depois, e o aviso de "saiu
  * de linha" apareceria no carrinho, longe do pedido, sem dizer que veio
  * dali.
  *
- * ## Por que a cotacao vai como retirada e PIX
+ * ## Por que a cotação vai como retirada e PIX
  *
- * Porque o que se pergunta aqui e sobre **item**, nao sobre entrega nem
+ * Porque o que se pergunta aqui e sobre **item**, não sobre entrega nem
  * sobre pagamento: quais linhas ainda existem e quanto resta de cada uma.
- * Retirada e a unica combinacao que nao exige cidade — pedir `DELIVERY`
- * obrigaria a escolher uma cidade que ninguem escolheu ainda, so para
- * receber de volta a mesma lista de linhas. Os totais desta resposta sao
- * descartados; quem recalcula o preco de verdade e a sacola, depois, com a
+ * Retirada e a única combinação que não exige cidade — pedir `DELIVERY`
+ * obrigaria a escolher uma cidade que ninguém escolheu ainda, só para
+ * receber de volta a mesma lista de linhas. Os totais desta resposta são
+ * descartados; quem recalcula o preço de verdade e a sacola, depois, com a
  * entrega que a pessoa escolher.
  *
- * ## O plano fica na tela, o aviso nao passa voando
+ * ## O plano fica na tela, o aviso não passa voando
  *
- * O `toast` confirma o que entrou, e some. O que **nao** entrou volta em
- * `plan` e a tela desenha na pagina, onde continua legivel depois que o
- * aviso sumir: quem repete um pedido de tres frascos e leva dois precisa
+ * O `toast` confirma o que entrou, e some. O que **não** entrou volta em
+ * `plan` e a tela desenha na página, onde continua legível depois que o
+ * aviso sumir: quem repete um pedido de três frascos e leva dois precisa
  * poder reler qual foi o terceiro.
  */
 export function useReorder() {
@@ -65,11 +65,11 @@ export function useReorder() {
 
       if (isEmptyPlan(result)) {
         // Nenhuma linha sobreviveu. Abrir a gaveta mostraria a sacola como
-        // ela ja estava, o que leria como "nao aconteceu nada" — e alguma
-        // coisa aconteceu: o pedido inteiro saiu do catalogo.
+        // ela já estava, o que leria como "não aconteceu nada" — e alguma
+        // coisa aconteceu: o pedido inteiro saiu do catálogo.
         toast({
           title: 'Nada deste pedido esta a venda agora',
-          description: 'Os itens sairam do catalogo. Veja o que há de parecido na loja.',
+          description: 'Os itens saíram do catálogo. Veja o que há de parecido na loja.',
           variant: 'danger',
           duration: 8000,
         });

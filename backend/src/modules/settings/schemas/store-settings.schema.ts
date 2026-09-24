@@ -20,7 +20,7 @@ import {
   getOrCreateSingleton,
 } from '../../../database/singleton.schema.js';
 
-/** Endereco da loja, usado na retirada. */
+/** Endereço da loja, usado na retirada. */
 @Schema(embeddedSchemaOptions({ _id: false }))
 export class PickupAddress {
   @Prop(textProp({ max: 160, default: '' }))
@@ -44,7 +44,7 @@ export class PickupAddress {
   @Prop(textProp({ max: 9, default: '' }))
   zipCode: string;
 
-  /** Ponto de referencia. Em cidade pequena vale mais que o CEP. */
+  /** Ponto de referência. Em cidade pequena vale mais que o CEP. */
   @Prop(textProp({ max: 200, default: '' }))
   reference: string;
 }
@@ -62,11 +62,11 @@ export class SocialLinks {
 
 export const SocialLinksSchema = createSchema(SocialLinks);
 
-/** Banner da home. Aparece so dentro do periodo de exibicao, quando definido. */
+/** Banner da home. Aparece só dentro do período de exibição, quando definido. */
 @Schema(embeddedSchemaOptions())
 export class Banner extends EmbeddedSchema {
-  /** `publicId` do Cloudinary. Duas imagens porque o recorte do desktop nao
-   * funciona no mobile: a arte precisa ser outra, nao a mesma redimensionada. */
+  /** `publicId` do Cloudinary. Duas imagens porque o recorte do desktop não
+   * funciona no mobile: a arte precisa ser outra, não a mesma redimensionada. */
   @Prop(textProp({ required: true, max: 200 }))
   imageDesktop: string;
 
@@ -88,7 +88,7 @@ export class Banner extends EmbeddedSchema {
   @Prop(integerProp({ default: 0, max: 9999 }))
   order: number;
 
-  /** Periodo de exibicao. `null` nos dois lados significa "sempre". */
+  /** Período de exibição. `null` nos dois lados significa "sempre". */
   @Prop({ type: Date, default: null })
   startsAt: Date | null;
 
@@ -102,8 +102,8 @@ export class Banner extends EmbeddedSchema {
 export const BannerSchema = createSchema(Banner);
 
 /**
- * Pagina institucional. O slug vem de uma lista fixa porque o endereco e
- * publico e ja circula; o que a dona edita e titulo e conteudo.
+ * Página institucional. O slug vem de uma lista fixa porque o endereço e
+ * público e já circula; o que a dona edita e título e conteúdo.
  */
 @Schema(embeddedSchemaOptions())
 export class InstitutionalPage extends EmbeddedSchema {
@@ -124,9 +124,9 @@ export class InstitutionalPage extends EmbeddedSchema {
 export const InstitutionalPageSchema = createSchema(InstitutionalPage);
 
 /**
- * Configuracoes gerais da loja. Documento unico.
+ * Configurações gerais da loja. Documento único.
  *
- * E o que torna o sistema operavel sem programador: trocar o numero do
+ * E o que torna o sistema operável sem programador: trocar o número do
  * WhatsApp aqui muda o destino de todo pedido, sem redeploy.
  */
 @Schema(baseSchemaOptions({ collection: 'store_settings' }))
@@ -135,8 +135,8 @@ export class StoreSettings extends SingletonSchema {
   storeName: string;
 
   /**
-   * Formato internacional, so digitos: `5588999999999`. O link `wa.me` nao
-   * aceita parenteses, traco nem espaco, e um numero mal formatado so falha na
+   * Formato internacional, só digitos: `5588999999999`. O link `wa.me` não
+   * aceita parênteses, traço nem espaço, e um número mal formatado só falha na
    * hora em que o cliente clica para enviar o pedido.
    */
   @Prop(
@@ -158,7 +158,7 @@ export class StoreSettings extends SingletonSchema {
   @Prop(textProp({ max: 160, default: '', lowercase: true }))
   contactEmail: string;
 
-  /** Texto livre: "Seg a Sex, 9h as 18h". Nao vale a pena modelar em campos. */
+  /** Texto livre: "Seg a Sex, 9h as 18h". Não vale a pena modelar em campos. */
   @Prop(textProp({ max: 200, default: '' }))
   businessHours: string;
 
@@ -177,8 +177,8 @@ export class StoreSettings extends SingletonSchema {
   socialLinks: SocialLinks;
 
   /**
-   * Frete gratis acima deste valor, valendo para qualquer cidade. `null`
-   * desliga a regra. A regra da cidade, quando existe, tem precedencia.
+   * Frete grátis acima deste valor, valendo para qualquer cidade. `null`
+   * desliga a regra. A regra da cidade, quando existe, tem precedência.
    */
   @Prop(centsProp({ default: null }))
   freeShippingMinCents: number | null;
@@ -193,7 +193,7 @@ export class StoreSettings extends SingletonSchema {
 export type StoreSettingsDocument = HydratedDocument<StoreSettings>;
 
 export interface StoreSettingsModel extends Model<StoreSettings> {
-  /** Devolve as configuracoes, criando-as com os padroes na primeira chamada. */
+  /** Devolve as configurações, criando-as com os padrões na primeira chamada. */
   getOrCreate(): Promise<StoreSettingsDocument>;
 }
 

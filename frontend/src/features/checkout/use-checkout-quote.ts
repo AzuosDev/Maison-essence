@@ -19,44 +19,44 @@ import { FULFILLMENT_MODES, PAYMENT_METHODS } from './checkout.types';
 /**
  * Quanto custa este pedido — perguntado ao servidor a cada escolha.
  *
- * E o requisito numero um do checkout, e esta inteiro na forma da chave:
- * `checkoutKeys.quote(input)` carrega o corpo da cotacao, entao trocar a
+ * E o requisito número um do checkout, e esta inteiro na forma da chave:
+ * `checkoutKeys.quote(input)` carrega o corpo da cotação, então trocar a
  * cidade, alternar entre entrega e retirada, mudar para PIX ou escolher 6x
- * produz uma chave nova — e uma chave nova e uma consulta nova. Nao ha
- * `useEffect` observando campo para disparar recalculo, nao ha botao de
- * "atualizar total", e nao ha uma unica multiplicacao de preco por
- * quantidade nesta tela. O valor que o cliente le e o que o servidor
+ * produz uma chave nova — e uma chave nova e uma consulta nova. Não há
+ * `useEffect` observando campo para disparar recálculo, não há botão de
+ * "atualizar total", e não há uma única multiplicação de preço por
+ * quantidade nesta tela. O valor que o cliente lê e o que o servidor
  * respondeu para exatamente estas escolhas.
  *
- * ## O atraso de 400ms, e onde ele nao se aplica
+ * ## O atraso de 400ms, e onde ele não se aplica
  *
- * So os **itens** passam pelo atraso, e pela razao de sempre: quem aperta o
- * "+" quatro vezes quer seis unidades, e nao quatro cotacoes.
+ * Só os **itens** passam pelo atraso, e pela razão de sempre: quem aperta o
+ * "+" quatro vezes quer seis unidades, e não quatro cotações.
  *
- * Entrega, cidade e pagamento entram na chave sem atraso nenhum. Sao cliques
- * unicos e deliberados — ninguem troca de cidade tres vezes por segundo —, e
- * o criterio de aceite e explicito: trocar a cidade muda a taxa e o total na
- * hora. Meio segundo de espera ali seria lido como a tela nao ter entendido
+ * Entrega, cidade e pagamento entram na chave sem atraso nenhum. São cliques
+ * únicos e deliberados — ninguém troca de cidade três vezes por segundo —, e
+ * o critério de aceite e explicito: trocar a cidade muda a taxa e o total na
+ * hora. Meio segundo de espera ali seria lido como a tela não ter entendido
  * o clique.
  *
- * ## A cotacao antes de o cliente ter escolhido
+ * ## A cotação antes de o cliente ter escolhido
  *
- * A etapa 1 mostra o subtotal, e o subtotal nao depende de entrega nenhuma.
- * Mas `POST /cart/quote` exige um modo — a rota serve tambem ao pedido, onde
- * a taxa e parte da conta —, entao ate a etapa 2 a cotacao sai com o modo
+ * A etapa 1 mostra o subtotal, e o subtotal não depende de entrega nenhuma.
+ * Mas `POST /cart/quote` exige um modo — a rota serve também ao pedido, onde
+ * a taxa e parte da conta —, então até a etapa 2 a cotação sai com o modo
  * que a loja aceita hoje: retirada, se estiver ligada, ou a primeira cidade
- * atendida. E o mesmo arranjo da sacola, e com a mesma consequencia — a taxa
- * que volta nao pertence a escolha de ninguem.
+ * atendida. E o mesmo arranjo da sacola, e com a mesma consequência — a taxa
+ * que volta não pertence a escolha de ninguém.
  *
  * Por isso existe `totalsResolved`. Enquanto ele e `false`, o resumo mostra
  * o subtotal e escreve "a calcular" na linha do frete, em vez de anunciar um
- * total que inclui a taxa de uma cidade que o cliente nao escolheu. Quando
+ * total que inclui a taxa de uma cidade que o cliente não escolheu. Quando
  * ele vira `true`, o `totalCents` da resposta passa a ser o total da tela.
  *
- * O pagamento tem o mesmo tratamento por outro caminho: enquanto nao ha
- * escolha, a cotacao vai como cartao a vista, que e a forma que **nao mexe
- * no valor**. O PIX so desconta, e o parcelamento com juros so acrescenta;
- * comecar pelo cartao a vista e comecar pelo numero que nao vai encolher
+ * O pagamento tem o mesmo tratamento por outro caminho: enquanto não há
+ * escolha, a cotação vai como cartão a vista, que e a forma que **não mexe
+ * no valor**. O PIX só desconta, e o parcelamento com juros só acrescenta;
+ * começar pelo cartão a vista e começar pelo número que não vai encolher
  * sozinho depois.
  */
 
@@ -64,35 +64,35 @@ export interface CheckoutQuoteView {
   quote: CartQuote | undefined;
   /** As linhas que entram no total. */
   available: QuoteLine[];
-  /** As que sairam: produto desativado, opcao encerrada, estoque insuficiente. */
+  /** As que saíram: produto desativado, opção encerrada, estoque insuficiente. */
   unavailable: QuoteLine[];
-  /** A primeira cotacao ainda nao respondeu: nao ha numero nenhum em tela. */
+  /** A primeira cotação ainda não respondeu: não há número nenhum em tela. */
   isPending: boolean;
-  /** Ha uma cotacao no ar. Os numeros em tela sao os anteriores. */
+  /** Há uma cotação no ar. Os números em tela são os anteriores. */
   isFetching: boolean;
   isError: boolean;
   refetch: () => void;
   /**
    * A taxa e o total desta resposta pertencem a escolha do cliente.
    *
-   * `false` enquanto ele nao escolheu entrega ou retirada — e, na entrega,
-   * enquanto nao escolheu a cidade.
+   * `false` enquanto ele não escolheu entrega ou retirada — e, na entrega,
+   * enquanto não escolheu a cidade.
    */
   totalsResolved: boolean;
   /**
-   * O corpo que produziu esta cotacao.
+   * O corpo que produziu esta cotação.
    *
    * E o mesmo que vai dentro de `POST /orders`: o pedido e feito das
-   * escolhas que geraram o total que o cliente viu, e nao de uma segunda
+   * escolhas que geraram o total que o cliente viu, e não de uma segunda
    * montagem que poderia divergir dela em um campo.
    */
   input: QuoteInput | null;
   /**
-   * Algum preco mudou desde a ultima visita.
+   * Algum preço mudou desde a última visita.
    *
-   * O mesmo aviso da sacola, pelo mesmo motivo e com a mesma comparacao por
-   * impressao digital: quem chega aqui pelo "Comprar agora" nao passou pela
-   * sacola, e lembra do numero antigo.
+   * O mesmo aviso da sacola, pelo mesmo motivo e com a mesma comparação por
+   * impressão digital: quem chega aqui pelo "Comprar agora" não passou pela
+   * sacola, e lembra do número antigo.
    */
   pricesChanged: boolean;
   dismissPriceNotice: () => void;
@@ -117,7 +117,7 @@ export function useCheckoutQuote(): CheckoutQuoteView {
     queryFn: ({ signal }) => fetchCartQuote(input ?? EMPTY_INPUT, signal),
     enabled: input !== null,
 
-    // Cotacao nao se serve de cache. Zero nao significa pedir a cada render —
+    // Cotação não se serve de cache. Zero não significa pedir a cada render —
     // significa que toda montagem e toda mudanca de escolha refazem a conta.
     staleTime: 0,
 
@@ -145,7 +145,7 @@ export function useCheckoutQuote(): CheckoutQuoteView {
   };
 }
 
-/* ---- A entrega que entra na cotacao -------------------------------------- */
+/* ---- A entrega que entra na cotação -------------------------------------- */
 
 interface ResolvedFulfillment {
   fulfillment: QuoteInput['fulfillment'] | null;
@@ -155,18 +155,18 @@ interface ResolvedFulfillment {
 /**
  * O modo que vai no corpo, e se ele e mesmo o do cliente.
  *
- * Tres casos, e o terceiro e o que exige cuidado:
+ * Três casos, e o terceiro e o que exige cuidado:
  *
  * 1. **Retirada escolhida.** Vai retirada, taxa zero, e o total e o dele.
  * 2. **Entrega com cidade.** Vai a cidade, e o total e o dele.
  * 3. **Nada escolhido ainda** — ou entrega sem cidade. Vai o que a loja
- *    aceita hoje, so para a rota poder responder o subtotal, e
- *    `totalsResolved` fica `false`: a taxa que voltar nao e de ninguem.
+ *    aceita hoje, só para a rota poder responder o subtotal, e
+ *    `totalsResolved` fica `false`: a taxa que voltar não e de ninguém.
  *
- * `null` quando a loja nao tem nem retirada ligada nem cidade cadastrada. A
- * consulta fica desligada e a tela mostra os itens sem total — o unico
- * desenho honesto, porque nao ha como essa loja fechar um pedido, e inventar
- * um numero no navegador seria o comeco do problema que este modulo existe
+ * `null` quando a loja não tem nem retirada ligada nem cidade cadastrada. A
+ * consulta fica desligada e a tela mostra os itens sem total — o único
+ * desenho honesto, porque não há como essa loja fechar um pedido, e inventar
+ * um número no navegador seria o começo do problema que este módulo existe
  * para evitar.
  */
 function useQuoteFulfillment(): ResolvedFulfillment {
@@ -205,8 +205,8 @@ function useQuoteFulfillment(): ResolvedFulfillment {
 /**
  * A forma de pagamento que entra no corpo.
  *
- * Sem escolha, cartao a vista: a forma que nao mexe no valor. O
- * parcelamento so acompanha o cartao — no PIX ele nao significa nada, e
+ * Sem escolha, cartão a vista: a forma que não mexe no valor. O
+ * parcelamento só acompanha o cartão — no PIX ele não significa nada, e
  * manda-lo faria a tela e o servidor discordarem sobre o que foi pedido.
  */
 function useQuotePayment(): QuoteInput['payment'] {
@@ -224,7 +224,7 @@ function useQuotePayment(): QuoteInput['payment'] {
 
 /* ---- Auxiliares ----------------------------------------------------------- */
 
-/** A sacola vazia nunca e cotada; este corpo so existe para o tipo fechar. */
+/** A sacola vazia nunca e cotada; este corpo só existe para o tipo fechar. */
 const EMPTY_INPUT: QuoteInput = {
   items: [],
   fulfillment: { mode: FULFILLMENT_MODES.PICKUP },

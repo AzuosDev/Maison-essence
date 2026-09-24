@@ -1,18 +1,18 @@
 /*
  * A barra de avisos.
  *
- * O texto atravessa a tela em loop. A animacao move um bloco que contem o
- * texto duas vezes, deslocando-o em exatamente metade da propria largura:
- * quando a primeira copia sai pela esquerda, a segunda esta na posicao em
- * que a primeira comecou, e o ciclo reinicia sem emenda visivel.
+ * O texto atravessa a tela em loop. A animação move um bloco que contem o
+ * texto duas vezes, deslocando-o em exatamente metade da própria largura:
+ * quando a primeira copia sai pela esquerda, a segunda esta na posição em
+ * que a primeira começou, e o ciclo reinicia sem emenda visível.
  *
- * `translate3d` e nao `left`: a animacao roda na GPU, sem recalcular layout
- * a cada quadro. Numa barra que nunca para, essa diferenca e bateria.
+ * `translate3d` e não `left`: a animação roda na GPU, sem recalcular layout
+ * a cada quadro. Numa barra que nunca para, essa diferença e bateria.
  */
 
 .bar {
-  /* Nao gruda no topo: quem rola quer o catalogo, nao o aviso. O que fica
-     fixo e o cabecalho, logo abaixo. */
+  /* Não gruda no topo: quem rola quer o catálogo, não o aviso. O que fica
+     fixo e o cabeçalho, logo abaixo. */
   position: relative;
   z-index: var(--z-header);
 
@@ -37,8 +37,8 @@
 }
 
 /*
- * Pausa no hover — e tambem quando algo dentro dela recebe foco, para quem
- * chega de teclado conseguir ler o aviso sem correr atras dele.
+ * Pausa no hover — e também quando algo dentro dela recebe foco, para quem
+ * chega de teclado conseguir ler o aviso sem correr atrás dele.
  */
 .bar:hover .track,
 .bar:focus-within .track {
@@ -59,7 +59,7 @@
   white-space: nowrap;
 }
 
-/* O losango entre as repeticoes do aviso. */
+/* O losango entre as repetições do aviso. */
 .separator {
   margin-left: var(--space-24);
   color: var(--gold);
@@ -77,8 +77,8 @@
 
 /*
  * Quem pediu menos movimento no sistema recebe o aviso parado e centralizado,
- * e nao um texto cortado no meio: o reset ja zera a duracao da animacao, o
- * que congelaria a faixa em qualquer posicao.
+ * e não um texto cortado no meio: o reset já zera a duração da animação, o
+ * que congelaria a faixa em qualquer posição.
  */
 @media (prefers-reduced-motion: reduce) {
   .track {
@@ -87,7 +87,7 @@
     justify-content: center;
   }
 
-  /* Com a faixa parada, a segunda copia so repetiria o texto na tela. */
+  /* Com a faixa parada, a segunda copia só repetiria o texto na tela. */
   .copy:nth-child(2) {
     display: none;
   }

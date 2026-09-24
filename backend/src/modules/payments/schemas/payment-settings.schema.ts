@@ -17,14 +17,14 @@ import {
   getOrCreateSingleton,
 } from '../../../database/singleton.schema.js';
 
-/** Parcela minima padrao: R$ 20,00. */
+/** Parcela mínima padrão: R$ 20,00. */
 const DEFAULT_MIN_INSTALLMENT_CENTS = 2000;
 
 /**
- * Regras de pagamento. Documento unico.
+ * Regras de pagamento. Documento único.
  *
- * Nenhum pagamento e processado aqui: estes campos so descrevem o que a loja
- * aceita e alimentam o calculo de parcelas que aparece no card e no checkout.
+ * Nenhum pagamento e processado aqui: estes campos só descrevem o que a loja
+ * aceita e alimentam o cálculo de parcelas que aparece no card e no checkout.
  */
 @Schema(baseSchemaOptions({ collection: 'payment_settings' }))
 export class PaymentSettings extends SingletonSchema {
@@ -38,7 +38,7 @@ export class PaymentSettings extends SingletonSchema {
   @Prop(enumProp(PIX_KEY_TYPE_VALUES, { default: PIX_KEY_TYPES.RANDOM }))
   pixKeyType: PixKeyType;
 
-  /** Desconto do PIX, aplicado so sobre o subtotal de produtos, nunca sobre o frete. */
+  /** Desconto do PIX, aplicado só sobre o subtotal de produtos, nunca sobre o frete. */
   @Prop(percentProp({ default: 0, max: 50 }))
   pixDiscountPercent: number;
 
@@ -48,18 +48,18 @@ export class PaymentSettings extends SingletonSchema {
   @Prop(integerProp({ required: true, default: 12, min: 1, max: 24 }))
   maxInstallments: number;
 
-  /** Ate esta quantidade de parcelas nao ha juros; acima dela, tabela price. */
+  /** Até esta quantidade de parcelas não há juros; acima dela, tabela price. */
   @Prop(integerProp({ required: true, default: 3, min: 1, max: 24 }))
   interestFreeUpTo: number;
 
   /**
-   * Juros ao mes. E o unico percentual fracionario do projeto: 1,99% ao mes e
-   * um valor corrente e arredondar para 2% muda o total da ultima parcela.
+   * Juros ao mês. E o único percentual fracionário do projeto: 1,99% ao mês e
+   * um valor corrente e arredondar para 2% muda o total da última parcela.
    */
   @Prop(percentProp({ default: 0, max: 20, fractional: true }))
   monthlyInterestPercent: number;
 
-  /** Opcoes de parcelamento que caem abaixo disto sao omitidas. */
+  /** Opções de parcelamento que caem abaixo disto são omitidas. */
   @Prop(centsProp({ required: true, default: DEFAULT_MIN_INSTALLMENT_CENTS }))
   minInstallmentCents: number;
 }
@@ -67,7 +67,7 @@ export class PaymentSettings extends SingletonSchema {
 export type PaymentSettingsDocument = HydratedDocument<PaymentSettings>;
 
 export interface PaymentSettingsModel extends Model<PaymentSettings> {
-  /** Devolve as regras de pagamento, criando-as com os padroes na primeira chamada. */
+  /** Devolve as regras de pagamento, criando-as com os padrões na primeira chamada. */
   getOrCreate(): Promise<PaymentSettingsDocument>;
 }
 
@@ -76,7 +76,7 @@ export const PaymentSettingsSchema = createSchema(PaymentSettings);
 applySingletonIndex(PaymentSettingsSchema);
 
 PaymentSettingsSchema.pre('validate', function () {
-  // Parcela sem juros alem do maximo de parcelas nao significa nada.
+  // Parcela sem juros além do máximo de parcelas não significa nada.
   if (this.interestFreeUpTo > this.maxInstallments) {
     this.invalidate(
       'interestFreeUpTo',

@@ -3,34 +3,34 @@ import { useCallback, useRef, useState, type CSSProperties, type PointerEvent } 
 /**
  * A pinca na foto do produto, no celular.
  *
- * Quem compra perfume quer ver o rotulo, a tampa, o liquido. No desktop isso
- * e a lupa do cursor; no celular e o gesto que todo mundo ja conhece — dois
+ * Quem compra perfume quer ver o rótulo, a tampa, o líquido. No desktop isso
+ * e a lupa do cursor; no celular e o gesto que todo mundo já conhece — dois
  * dedos afastando.
  *
- * ## Por que nao deixar o navegador fazer
+ * ## Por que não deixar o navegador fazer
  *
- * O pinch nativo amplia a **pagina** inteira: o cliente termina com o
- * cabecalho gigante, a coluna de compra fora da tela e sem saber como
- * voltar. O gesto tratado aqui amplia so a foto, dentro da moldura dela.
+ * O pinch nativo amplia a **página** inteira: o cliente termina com o
+ * cabeçalho gigante, a coluna de compra fora da tela e sem saber como
+ * voltar. O gesto tratado aqui amplia só a foto, dentro da moldura dela.
  *
  * ## `touch-action`, que e a parte que se erra
  *
  * Com a foto no tamanho normal, o elemento declara `pan-y`: a rolagem
- * vertical da pagina continua funcionando com um dedo — passar o dedo sobre
- * a foto para descer a pagina e o gesto mais comum de todos — e o pinch do
+ * vertical da página continua funcionando com um dedo — passar o dedo sobre
+ * a foto para descer a página e o gesto mais comum de todos — e o pinch do
  * navegador fica desligado, que e justamente o que faz os eventos de dois
- * ponteiros chegarem ate aqui.
+ * ponteiros chegarem até aqui.
  *
- * Com a foto ampliada, passa a `none`: ai um dedo arrasta a foto por dentro
- * da moldura, e nao a pagina.
+ * Com a foto ampliada, passa a `none`: aí um dedo arrasta a foto por dentro
+ * da moldura, e não a página.
  *
  * ## O toque duplo
  *
- * Volta ao tamanho normal. E a saida que nao exige acertar o gesto inverso
- * com precisao, e e o que o cliente tenta primeiro.
+ * Volta ao tamanho normal. E a saída que não exige acertar o gesto inverso
+ * com precisão, e e o que o cliente tenta primeiro.
  */
 
-/** Ate onde a foto amplia. Tres vezes ja mostra a serigrafia do vidro. */
+/** Até onde a foto amplia. Três vezes já mostra a serigrafia do vidro. */
 const MAX_SCALE = 3;
 
 /** Abaixo disto, o gesto terminou perto do normal e encaixa no normal. */
@@ -42,10 +42,10 @@ interface Point {
 }
 
 export interface PinchZoom {
-  /** A ampliacao atual. `1` e a foto no tamanho da moldura. */
+  /** A ampliação atual. `1` e a foto no tamanho da moldura. */
   scale: number;
   zoomed: boolean;
-  /** Vai no elemento da foto: a transformacao e o `touch-action` do momento. */
+  /** Vai no elemento da foto: a transformação e o `touch-action` do momento. */
   style: CSSProperties;
   handlers: {
     onPointerDown: (event: PointerEvent<HTMLElement>) => void;
@@ -62,12 +62,12 @@ export function usePinchZoom(): PinchZoom {
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState<Point>({ x: 0, y: 0 });
 
-  // Os dedos em tela, por id. Um `Map` num `ref`, e nao estado: muda a cada
-  // milimetro do gesto e nao desenha nada por si.
+  // Os dedos em tela, por id. Um `Map` num `ref`, e não estado: muda a cada
+  // milímetro do gesto e não desenha nada por si.
   const pointers = useRef(new Map<number, Point>());
 
-  // A ampliacao tambem espelhada num `ref`. Os tratadores sao estaveis —
-  // dependencias vazias — e precisam do valor de agora, nao do valor que
+  // A ampliação também espelhada num `ref`. Os tratadores são estáveis —
+  // dependências vazias — e precisam do valor de agora, não do valor que
   // existia quando foram criados.
   const scaleNow = useRef(1);
   const pinch = useRef<{ distance: number; scale: number } | null>(null);
@@ -94,7 +94,7 @@ export function usePinchZoom(): PinchZoom {
       // sair da foto no meio do caminho.
       event.currentTarget.setPointerCapture(event.pointerId);
 
-      // A ampliacao de agora e a base do gesto: dois pinches seguidos somam,
+      // A ampliação de agora e a base do gesto: dois pinches seguidos somam,
       // em vez de o segundo recomecar do tamanho normal.
       pinch.current = { distance: spread(pointers.current), scale: scaleNow.current };
     }
@@ -116,8 +116,8 @@ export function usePinchZoom(): PinchZoom {
         return;
       }
 
-      // Um dedo so arrasta a foto, e apenas quando ha ampliacao para
-      // arrastar. Sem essa condicao, o gesto roubaria a rolagem da pagina.
+      // Um dedo só arrasta a foto, e apenas quando há ampliação para
+      // arrastar. Sem essa condição, o gesto roubaria a rolagem da página.
       const from = dragFrom.current;
 
       if (scaleNow.current > 1 && from !== null) {
@@ -168,7 +168,7 @@ export function usePinchZoom(): PinchZoom {
   };
 }
 
-/** A distancia entre os dois primeiros dedos. */
+/** A distância entre os dois primeiros dedos. */
 function spread(pointers: ReadonlyMap<number, Point>): number {
   const [first, second] = [...pointers.values()];
 
@@ -180,10 +180,10 @@ function spread(pointers: ReadonlyMap<number, Point>): number {
 }
 
 /**
- * O deslocamento dentro do que a ampliacao permite.
+ * O deslocamento dentro do que a ampliação permite.
  *
- * Sem isto, arrastar leva a foto para fora da moldura e deixa um retangulo
- * vazio no lugar dela — o cliente perde a foto e nao sabe como traze-la de
+ * Sem isto, arrastar leva a foto para fora da moldura e deixa um retângulo
+ * vazio no lugar dela — o cliente perde a foto e não sabe como traze-lá de
  * volta.
  */
 function limit(offset: Point, bounds: DOMRect, scale: number): Point {

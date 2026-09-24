@@ -11,16 +11,16 @@ import SystemLayout from './system-layout';
 import SystemUsersPage from './system-users-page';
 
 /**
- * A area de sistema, com papel de verdade.
+ * A área de sistema, com papel de verdade.
  *
- * Os casos aqui cobram os tres criterios de aceite:
+ * Os casos aqui cobram os três critérios de aceite:
  *
- * 1. A senha temporaria aparece uma vez e nao e recuperavel depois.
- * 2. Desativar passa por uma confirmacao que nomeia o alvo.
- * 3. O OWNER nao ve o item Sistema nem entra na rota.
+ * 1. A senha temporária aparece uma vez e não e recuperável depois.
+ * 2. Desativar passa por uma confirmação que nomeia o alvo.
+ * 3. O OWNER não vê o item Sistema nem entra na rota.
  *
- * A sessao e escrita direto no store, e nao por um login simulado: o que
- * esta em teste e o recorte por papel e o comportamento da tela, nao a tela
+ * A sessão e escrita direto no store, e não por um login simulado: o que
+ * esta em teste e o recorte por papel e o comportamento da tela, não a tela
  * de entrada.
  */
 
@@ -56,7 +56,7 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
-/** O que a chamada de criacao recebeu. E por ele que a senha e conferida. */
+/** O que a chamada de criação recebeu. E por ele que a senha e conferida. */
 let created: { temporaryPassword?: string } | null = null;
 
 beforeEach(() => {
@@ -154,10 +154,10 @@ test('o OWNER que digita a URL recebe a tela de acesso negado, e não um erro', 
 
   expect(await screen.findByText(/Esta área e do administrador do sistema/)).toBeDefined();
 
-  // A tabela de usuarios nao chega a existir.
+  // A tabela de usuários não chega a existir.
   expect(screen.queryByRole('table')).toBeNull();
 
-  // E o caminho de volta esta na tela: ela nao e um beco sem saida.
+  // E o caminho de volta esta na tela: ela não e um beco sem saída.
   expect(screen.getByRole('link', { name: /Voltar para o início/ })).toBeDefined();
 });
 
@@ -171,7 +171,7 @@ test('o OWNER não vê Sistema nem Configurações na sidebar', () => {
   expect(within(menu).queryByRole('link', { name: 'Sistema' })).toBeNull();
   expect(within(menu).queryByRole('link', { name: 'Configurações' })).toBeNull();
 
-  // O que ele opera continua ali: o menu nao encolheu por acidente.
+  // O que ele opera continua ali: o menu não encolheu por acidente.
   expect(within(menu).getByRole('link', { name: 'Pedidos' })).toBeDefined();
   expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
 });
@@ -197,7 +197,7 @@ test('o administrador do sistema vê o item e a lista', async () => {
 
 /* ---- A lista -------------------------------------------------------------- */
 
-test('quem nunca entrou aparece assim, e não com um traco', async () => {
+test('quem nunca entrou aparece assim, e não com um traço', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrirSistema();
@@ -223,7 +223,7 @@ test('a busca filtra por nome e por e-mail, sem ir ao servidor', async () => {
   expect(screen.getByText('bianca@maisonessence.test')).toBeDefined();
 });
 
-/* ---- A confirmacao -------------------------------------------------------- */
+/* ---- A confirmação -------------------------------------------------------- */
 
 test('desativar pede confirmação e mostra o e-mail do alvo', async () => {
   const user = userEvent.setup();
@@ -261,7 +261,7 @@ test('a própria conta não oferece a opção de se desativar', async () => {
   expect(screen.getByRole('button', { name: /Resetar senha/ })).toBeDefined();
 });
 
-/* ---- A senha temporaria --------------------------------------------------- */
+/* ---- A senha temporária --------------------------------------------------- */
 
 test('criar um acesso mostra a senha uma vez, e e a mesma que foi enviada', async () => {
   const user = userEvent.setup();
@@ -283,7 +283,7 @@ test('criar um acesso mostra a senha uma vez, e e a mesma que foi enviada', asyn
   const shown = screen.getByLabelText(/Senha temporária de nova@maisonessence.test/);
 
   // A senha que a tela mostra e exatamente a que o servidor recebeu: se
-  // fossem duas, a pessoa receberia uma senha que nao entra.
+  // fossem duas, a pessoa receberia uma senha que não entra.
   await waitFor(() => {
     expect(created?.temporaryPassword).toBeDefined();
   });
@@ -291,7 +291,7 @@ test('criar um acesso mostra a senha uma vez, e e a mesma que foi enviada', asyn
   expect(shown.textContent).toBe(created?.temporaryPassword);
   expect(shown.textContent).toHaveLength(16);
 
-  // E o aviso de que ela nao volta.
+  // E o aviso de que ela não volta.
   expect(screen.getByText(/não aparece de novo/)).toBeDefined();
 });
 
@@ -313,8 +313,8 @@ test('fechar o diálogo apaga a senha da tela para sempre', async () => {
 
   await user.click(screen.getByRole('button', { name: 'Fechar' }));
 
-  // Nao ha "ver de novo": o servidor guarda so o hash, e a tela nao guarda
-  // nada. O unico caminho para outra senha e resetar.
+  // Não há "ver de novo": o servidor guarda só o hash, e a tela não guarda
+  // nada. O único caminho para outra senha e resetar.
   expect(screen.queryByText('Acesso criado')).toBeNull();
   expect(screen.queryByText(String(created?.temporaryPassword))).toBeNull();
 });

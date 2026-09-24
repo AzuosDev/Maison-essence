@@ -13,38 +13,38 @@ import styles from './order-card.module.css';
 
 export interface OrderCardProps {
   order: CustomerOrderSummary;
-  /** O numero da loja, das configuracoes. Vazio esconde o botao da conversa. */
+  /** O número da loja, das configurações. Vazio esconde o botão da conversa. */
   storeNumber: string;
 }
 
 /**
  * Um pedido na lista.
  *
- * ## O codigo e o titulo
+ * ## O código e o título
  *
- * Nao a data, nao o valor. `ME-260922-4KP1` e o que a pessoa tem a mao — na
+ * Não a data, não o valor. `ME-260922-4KP1` e o que a pessoa tem a mão — na
  * conversa com a loja, no comprovante que guardou — e e por ele que ela
- * reconhece qual dos tres pedidos da tela e aquele sobre o qual esta
+ * reconhece qual dos três pedidos da tela e aquele sobre o qual esta
  * perguntando. Em `--font-mono`, que e o que permite ler caractere a
  * caractere e ditar por telefone sem confundir o zero.
  *
- * ## Um cartao, um link, e uma excecao
+ * ## Um cartão, um link, e uma exceção
  *
- * O cartao inteiro leva ao detalhe: no celular, um alvo de toque do tamanho
- * do cartao e a diferenca entre abrir o pedido e errar o dedo. Isso e feito
- * esticando o link do codigo por cima de tudo (`::after`), e nao envolvendo
- * o cartao num `<a>` — um link dentro de outro link e HTML invalido, e o
- * botao do WhatsApp precisa ser alcancavel por teclado como um destino
- * proprio.
+ * O cartão inteiro leva ao detalhe: no celular, um alvo de toque do tamanho
+ * do cartão e a diferença entre abrir o pedido e errar o dedo. Isso e feito
+ * esticando o link do código por cima de tudo (`::after`), e não envolvendo
+ * o cartão num `<a>` — um link dentro de outro link e HTML inválido, e o
+ * botão do WhatsApp precisa ser alcancável por teclado como um destino
+ * próprio.
  *
- * O botao do WhatsApp sobe acima dessa camada e continua clicavel. E a unica
- * excecao, e por isso ela funciona: duas escapatorias numa area esticada
+ * O botão do WhatsApp sobe acima dessa camada e continua clicável. E a única
+ * exceção, e por isso ela funciona: duas escapatorias numa área esticada
  * viram uma roleta.
  *
- * ## O selo diz a palavra, nao so a cor
+ * ## O selo diz a palavra, não só a cor
  *
  * "A caminho" em tinta, "Entregue" em verde, "Cancelado" em vermelho. Quem
- * nao distingue as cores le a mesma coisa — e quem escolheu retirada le
+ * não distingue as cores lê a mesma coisa — e quem escolheu retirada lê
  * "Pronto para retirada" no lugar de "A caminho", porque e o mesmo status
  * significando outra coisa.
  */
@@ -87,11 +87,11 @@ export function OrderCard({ order, storeNumber }: OrderCardProps) {
             <WhatsappIcon className={styles.whatsappIcon} />
 
             {/*
-              O rotulo visivel some no celular estreito, onde o icone verde ja
-              diz para onde vai. O nome acessivel nao some com ele — e escrito
-              por extenso ao lado, com o codigo do pedido: numa lista de
-              cartoes parecidos, "Falar sobre este pedido" repetido quatro
-              vezes nao diz a quem ouve qual deles esta sob o cursor.
+              O rótulo visível some no celular estreito, onde o icone verde já
+              diz para onde vai. O nome acessível não some com ele — e escrito
+              por extenso ao lado, com o código do pedido: numa lista de
+              cartões parecidos, "Falar sobre este pedido" repetido quatro
+              vezes não diz a quem ouve qual deles esta sob o cursor.
             */}
             <span className={styles.whatsappLabel} aria-hidden="true">
               Falar sobre este pedido

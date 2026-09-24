@@ -1,33 +1,33 @@
 /**
- * O encontro entre o arquivo e o que ja esta no banco.
+ * O encontro entre o arquivo e o que já esta no banco.
  *
- * ## A regra unica
+ * ## A regra única
  *
  * **O vazio do arquivo nunca apaga o que existe.** A lista de fornecedor traz
- * descricao vazia, foto nenhuma e estoque zero em todas as linhas — e o banco,
- * depois de umas semanas de painel, tem descricao escrita a mao, fotos subidas
- * uma a uma e o estoque que a dona contou na prateleira. Uma importacao que
- * gravasse o arquivo por cima apagaria tudo isso de uma vez, em silencio, e
+ * descrição vazia, foto nenhuma e estoque zero em todas as linhas — e o banco,
+ * depois de umas semanas de painel, tem descrição escrita a mão, fotos subidas
+ * uma a uma e o estoque que a dona contou na prateleira. Uma importação que
+ * gravasse o arquivo por cima apagaria tudo isso de uma vez, em silêncio, e
  * sem volta.
  *
- * Entao: campo preenchido no arquivo vence; campo vazio no arquivo cede. O
- * preco e a razao de existir da importacao e por isso e o que mais vence — mas
- * `0` nao e preco de nada, e cai na mesma regra. Uma lista exportada errada,
- * cheia de zeros, nao zera o catalogo da loja.
+ * Então: campo preenchido no arquivo vence; campo vazio no arquivo cede. O
+ * preço e a razão de existir da importação e por isso e o que mais vence — mas
+ * `0` não e preço de nada, e cai na mesma regra. Uma lista exportada errada,
+ * cheia de zeros, não zera o catálogo da loja.
  *
- * ## As chaves sao do painel
+ * ## As chaves são do painel
  *
  * `isActive`, `isFeatured` e `isReadyToShip` entram quando o produto nasce e
- * nunca mais. Sao decisoes de vitrine, tomadas no painel: o produto que a dona
- * destacou na home continua destacado, e o que ela tirou de linha nao volta a
- * vender so porque a lista do fornecedor ainda o cita. O mesmo vale para
+ * nunca mais. São decisões de vitrine, tomadas no painel: o produto que a dona
+ * destacou na home continua destacado, e o que ela tirou de linha não volta a
+ * vender só porque a lista do fornecedor ainda o cita. O mesmo vale para
  * `order` e `image` da categoria, que o menu do painel edita.
  *
  * ## O `_id` da variante e sagrado
  *
  * O pedido guarda `items.variantId`. Trocar o `_id` de uma variante que
- * continua existindo seria o mesmo que apaga-la e criar outra igual: o
- * cancelamento pararia de devolver estoque e o historico apontaria para o
+ * continua existindo seria o mesmo que apaga-lá e criar outra igual: o
+ * cancelamento pararia de devolver estoque e o histórico apontaria para o
  * nada. Por isso o casamento e pelo SKU e o `_id` atravessa intacto.
  */
 
@@ -57,7 +57,7 @@ export interface IncomingVariant {
   allowBackorder?: boolean;
 }
 
-/** O produto como esta gravado, reduzido ao que a fusao precisa enxergar. */
+/** O produto como esta gravado, reduzido ao que a fusão precisa enxergar. */
 export interface StoredProduct {
   name: string;
   brand: string;
@@ -102,7 +102,7 @@ export interface ProductData {
   images: string[];
   tags: string[];
   variants: VariantData[];
-  /** So quando o produto nasce; depois disso as chaves sao do painel. */
+  /** Só quando o produto nasce; depois disso as chaves são do painel. */
   flags?: { isActive: boolean; isFeatured: boolean; isReadyToShip: boolean };
 }
 
@@ -153,14 +153,14 @@ export function mergeProduct(
 /**
  * Casa as variantes pelo SKU.
  *
- * Tres destinos: a que o arquivo traz e o banco tem e atualizada no lugar; a
- * que so o arquivo traz nasce; a que so o banco tem e desativada, nunca
+ * Três destinos: a que o arquivo traz e o banco tem e atualizada no lugar; a
+ * que só o arquivo traz nasce; a que só o banco tem e desativada, nunca
  * apagada — pode estar num pedido, e o `_id` dela e o que devolve o estoque
  * no cancelamento.
  *
- * A contagem de desativadas conta so quem estava ativa. Sem isso, toda
- * importacao repetiria para sempre o mesmo numero de "desativadas" e o
- * relatorio deixaria de descrever o que aconteceu naquela execucao.
+ * A contagem de desativadas conta só quem estava ativa. Sem isso, toda
+ * importação repetiria para sempre o mesmo número de "desativadas" e o
+ * relatório deixaria de descrever o que aconteceu naquela execução.
  */
 function mergeVariants(
   incoming: readonly IncomingVariant[],
@@ -203,7 +203,7 @@ function mergeVariants(
   return { data, created, deactivated };
 }
 
-/** Variante nova: o arquivo manda, com o padrao de cada campo omitido. */
+/** Variante nova: o arquivo manda, com o padrão de cada campo omitido. */
 function newVariant(incoming: IncomingVariant, sku: string): VariantData {
   return {
     sku,
@@ -218,12 +218,12 @@ function newVariant(incoming: IncomingVariant, sku: string): VariantData {
 }
 
 /**
- * Variante que continua: o preco do arquivo, o resto do banco quando o
+ * Variante que continua: o preço do arquivo, o resto do banco quando o
  * arquivo vem vazio.
  *
- * `isActive` e `allowBackorder` nem sao consultados no arquivo. Quem desativou
- * uma variante no painel nao quer que a lista do fornecedor a reative na
- * proxima importacao de preco.
+ * `isActive` e `allowBackorder` nem são consultados no arquivo. Quem desativou
+ * uma variante no painel não quer que a lista do fornecedor a reative na
+ * próxima importação de preço.
  */
 function updatedVariant(incoming: IncomingVariant, current: StoredVariant): VariantData {
   const stock = incoming.stock ?? 0;
@@ -282,9 +282,9 @@ export interface CategoryData {
 /**
  * Funde a categoria do arquivo com a gravada.
  *
- * O arquivo manda no nome e no lugar dela na arvore. A posicao no menu
+ * O arquivo manda no nome e no lugar dela na árvore. A posição no menu
  * (`order`), a foto e o interruptor ficam com o painel: reordenar o menu e
- * trabalho, e uma importacao de preco nao desfaz trabalho.
+ * trabalho, e uma importação de preço não desfaz trabalho.
  */
 export function mergeCategory(
   incoming: IncomingCategory,
@@ -301,12 +301,12 @@ export function mergeCategory(
   };
 }
 
-/** O SKU e comparado sem espaco e sem caixa: e etiqueta, nao identificador. */
+/** O SKU e comparado sem espaço e sem caixa: e etiqueta, não identificador. */
 export function normalizeSku(sku: string): string {
   return sku.trim().toUpperCase();
 }
 
-/** O texto do arquivo quando ha texto; o do banco quando nao ha. */
+/** O texto do arquivo quando há texto; o do banco quando não há. */
 function keepFilled(incoming: string | undefined, stored: string): string {
   return incoming !== undefined && incoming.trim().length > 0 ? incoming : stored;
 }

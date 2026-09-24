@@ -2,8 +2,8 @@
  * A porta de entrada da API.
  *
  * Importe daqui — `import { api } from '@/lib/http'` — e nunca dos arquivos
- * internos. E o que mantem a regra de pe: existe um cliente HTTP nesta
- * aplicacao, e ele e este.
+ * internos. E o que mantem a regra de pé: existe um cliente HTTP nesta
+ * aplicação, e ele e este.
  */
 
 export {

@@ -26,25 +26,25 @@ import { ImportCatalogDto, ImportCatalogQueryDto } from './dto/import-catalog.dt
  *
  * ## Por que a rota existe
  *
- * A Vercel nao da shell. Sem esta rota, atualizar preco em massa exigiria um
- * desenvolvedor com o banco na mao toda vez que o fornecedor mandasse lista
- * nova — e a dona ficaria esperando por alguem para mudar o preco da propria
+ * A Vercel não da shell. Sem esta rota, atualizar preço em massa exigiria um
+ * desenvolvedor com o banco na mão toda vez que o fornecedor mandasse lista
+ * nova — e a dona ficaria esperando por alguém para mudar o preço da própria
  * loja.
  *
- * ## Por que so o SUPER_ADMIN
+ * ## Por que só o SUPER_ADMIN
  *
- * Uma importacao reescreve o preco do catalogo inteiro em uma chamada. E a
- * operacao mais destrutiva da API, mesmo fazendo tudo certo — e por isso ela
+ * Uma importação reescreve o preço do catálogo inteiro em uma chamada. E a
+ * operação mais destrutiva da API, mesmo fazendo tudo certo — e por isso ela
  * fica um degrau acima de `MANAGES_STORE`, que e quem edita produto a
- * produto. O `--dry-run` existe para que o degrau nao vire um salto no escuro:
- * `?dryRun=true` devolve o relatorio inteiro sem gravar nada.
+ * produto. O `--dry-run` existe para que o degrau não vire um salto no escuro:
+ * `?dryRun=true` devolve o relatório inteiro sem gravar nada.
  *
- * ## O relogio
+ * ## O relógio
  *
- * A funcao serverless morre no tempo dela, sem responder. Entao a importacao
- * roda com orcamento: chegando no teto, ela para entre dois lotes e devolve
+ * A função serverless morre no tempo dela, sem responder. Então a importação
+ * roda com orçamento: chegando no teto, ela para entre dois lotes e devolve
  * `remaining`. Como tudo aqui e idempotente pelo slug, mandar o mesmo arquivo
- * de novo termina o servico sem duplicar nada.
+ * de novo termina o serviço sem duplicar nada.
  */
 @Roles(USER_ROLES.SUPER_ADMIN)
 @RateLimit(CATALOG_IMPORT_RATE_LIMIT)
@@ -53,8 +53,8 @@ export class CatalogImportController {
   constructor(private readonly imports: CatalogImportService) {}
 
   /**
-   * `200`, e nao `201`: nada foi criado no sentido da rota — o que ela devolve
-   * e um relatorio, nao um recurso com endereco proprio.
+   * `200`, e não `201`: nada foi criado no sentido da rota — o que ela devolve
+   * e um relatório, não um recurso com endereço próprio.
    */
   @Post('import')
   @HttpCode(HttpStatus.OK)
@@ -71,8 +71,8 @@ export class CatalogImportController {
         actor: { id: actor.id, email: actor.email, role: actor.role },
       });
     } catch (error: unknown) {
-      // O DTO ja garante as duas listas, entao so sobra o arquivo que nem
-      // objeto e. 422 e nao 500: o corpo chegou inteiro, ele e que esta errado.
+      // O DTO já garante as duas listas, então só sobra o arquivo que nem
+      // objeto e. 422 e não 500: o corpo chegou inteiro, ele e que esta errado.
       if (error instanceof CatalogFormatError) {
         throw new UnprocessableEntityException(error.message);
       }

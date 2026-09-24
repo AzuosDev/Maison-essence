@@ -4,7 +4,7 @@ import type { FeeCity } from './delivery-fee.js';
 
 const SOBRAL: FeeCity = { name: 'Sobral', feeCents: 1000, minOrderForFreeCents: 15_000 };
 
-/** Sem regra propria: cai na regra global da loja, quando houver. */
+/** Sem regra própria: cai na regra global da loja, quando houver. */
 const FORTALEZA: FeeCity = { name: 'Fortaleza', feeCents: 2500, minOrderForFreeCents: null };
 
 function delivery(
@@ -52,8 +52,8 @@ describe('resolveDeliveryFee', () => {
       expect(fee.freeReason).toBe('Frete grátis para Sobral em pedidos a partir de R$ 150,00.');
     });
 
-    // O minimo e alcancado, nao ultrapassado: pedido de exatamente R$ 150 em
-    // cidade com minimo de R$ 150 tem frete gratis. Quem escreve "a partir de"
+    // O mínimo e alcançado, não ultrapassado: pedido de exatamente R$ 150 em
+    // cidade com mínimo de R$ 150 tem frete grátis. Quem escreve "a partir de"
     // na tela esta prometendo isso.
     it('isenta no valor exato do mínimo', () => {
       expect(delivery(SOBRAL, 15_000).isFree).toBe(true);
@@ -86,8 +86,8 @@ describe('resolveDeliveryFee', () => {
     /**
      * O caso que da nome a regra: a cidade pede R$ 150 e a loja perdoa a
      * partir de R$ 100. Um pedido de R$ 120 em Sobral paga frete, porque o
-     * minimo da cidade substitui o da loja inteiro em vez de disputar com ele.
-     * Sem precedencia, toda cidade distante cairia na regra geral e a taxa
+     * mínimo da cidade substitui o da loja inteiro em vez de disputar com ele.
+     * Sem precedência, toda cidade distante cairia na regra geral e a taxa
      * mais alta que a dona cadastrou para ela nunca seria cobrada.
      */
     it('a regra da cidade tem precedência sobre a global, inclusive quando e pior', () => {

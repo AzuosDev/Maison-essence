@@ -1,8 +1,8 @@
 /*
- * A moldura da area de sistema.
+ * A moldura da área de sistema.
  *
- * Mesmo ritmo vertical da abertura do painel: o cabecalho, um bloco de
- * navegacao e o conteudo. Nao inventa um segundo layout dentro do painel.
+ * Mesmo ritmo vertical da abertura do painel: o cabeçalho, um bloco de
+ * navegação e o conteúdo. Não inventa um segundo layout dentro do painel.
  */
 
 .page {
@@ -35,10 +35,10 @@
 /*
  * As abas.
  *
- * Rolam na horizontal no celular em vez de quebrar em duas linhas: tres abas
- * com icone nao cabem em 360px, e uma segunda linha as faria parecer dois
- * grupos. `scrollbar-width: none` porque a barra sobre tres itens polui mais
- * do que orienta — o corte da terceira aba ja diz que ha mais para o lado.
+ * Rolam na horizontal no celular em vez de quebrar em duas linhas: três abas
+ * com ícone não cabem em 360px, e uma segunda linha as faria parecer dois
+ * grupos. `scrollbar-width: none` porque a barra sobre três itens polui mais
+ * do que orienta — o corte da terceira aba já diz que há mais para o lado.
  */
 .tabs {
   display: flex;
@@ -61,7 +61,7 @@
   min-height: 2.75rem;
   padding: var(--space-8) var(--space-16);
 
-  /* O filete de baixo ja existe transparente: sem ele, a aba ativa empurraria
+  /* O filete de baixo já existe transparente: sem ele, a aba ativa empurraria
      as outras dois pixels para cima. */
   border-bottom: 2px solid transparent;
   margin-bottom: calc(var(--space-4) * -1 - 1px);

@@ -12,15 +12,15 @@ import {
 /**
  * A ponte entre a URL, o estado e a API.
  *
- * O criterio de aceite "aplicar tres filtros e recarregar a pagina mantem
- * tudo aplicado" e, no fundo, uma afirmacao sobre estas funcoes: recarregar
- * nao restaura nada, apenas le a URL de novo. Se a ida e a volta forem fieis,
- * o criterio vale — e nao ha tela que possa quebra-lo, porque nao existe um
+ * O critério de aceite "aplicar três filtros e recarregar a página mantem
+ * tudo aplicado" e, no fundo, uma afirmação sobre estas funções: recarregar
+ * não restaura nada, apenas lê a URL de novo. Se a ida e a volta forem fieis,
+ * o critério vale — e não há tela que possa quebra-lo, porque não existe um
  * segundo lugar onde o filtro pudesse estar guardado.
  *
  * O outro grupo de casos protege a tradutora para a API: o backend valida a
- * query com `forbidNonWhitelisted`, entao um parametro em portugues que
- * vazasse daqui nao seria ignorado — seria um 400 e uma vitrine vazia.
+ * query com `forbidNonWhitelisted`, então um parâmetro em português que
+ * vazasse daqui não seria ignorado — seria um 400 e uma vitrine vazia.
  */
 
 function filtros(patch: Partial<CatalogFilters> = {}): CatalogFilters {
@@ -39,12 +39,12 @@ test('três filtros sobrevivem a ida e volta pela URL', () => {
 
   const url = searchFromFilters(aplicados);
 
-  // E isto que o navegador guarda e que uma recarga le de volta.
+  // E isto que o navegador guarda e que uma recarga lê de volta.
   expect(url.toString()).toBe('marca=Lattafa&min=100&max=500&estoque=1');
   expect(filtersFromSearch(url)).toEqual(aplicados);
 });
 
-test('a URL de um catalogo sem filtro fica limpa', () => {
+test('a URL de um catálogo sem filtro fica limpa', () => {
   expect(searchFromFilters(EMPTY_FILTERS).toString()).toBe('');
 });
 
@@ -68,14 +68,14 @@ test('valor inválido vira ausência, e não erro', () => {
 });
 
 test('faixa invertida e descartada em vez de virar lista vazia', () => {
-  // `min` acima de `max` nao e um filtro estreito: e um filtro impossivel.
+  // `min` acima de `max` não e um filtro estreito: e um filtro impossível.
   const invertida = filtersFromSearch(new URLSearchParams('min=500&max=100'));
 
   expect(invertida.minCents).toBeNull();
   expect(invertida.maxCents).toBeNull();
 });
 
-/* ---- Traducao para a API ----------------------------------------------- */
+/* ---- Tradução para a API ----------------------------------------------- */
 
 test('a API recebe os nomes dela, e nenhum em português', () => {
   const params = apiParamsFrom(
@@ -94,7 +94,7 @@ test('a API recebe os nomes dela, e nenhum em português', () => {
 
 test('bandeira desligada não viaja', () => {
   // Para o backend, `readyToShip=false` quer dizer "tanto faz" — mandar o
-  // campo a toa so engorda a chave de cache.
+  // campo a toa só engorda a chave de cache.
   expect(apiParamsFrom(EMPTY_FILTERS)).toEqual({ limit: 24 });
 });
 
@@ -106,8 +106,8 @@ test('a rota impoe a categoria e a bandeira', () => {
 });
 
 test('o filtro de desconto vira uma varredura ordenada por desconto', () => {
-  // Nao existe "so com desconto" em `GET /products`. A vitrine pede a pagina
-  // cheia ja ordenada por desconto e recorta no cliente.
+  // Não existe "só com desconto" em `GET /products`. A vitrine pede a página
+  // cheia já ordenada por desconto e recorta no cliente.
   const params = apiParamsFrom(filtros({ onSale: true, sort: 'nome', page: 3 }));
 
   expect(params).toEqual({ sort: 'discount', page: 1, limit: 48 });
@@ -121,8 +121,8 @@ test('a faixa de preço conta como um filtro, com uma ou com duas pontas', () =>
 });
 
 test('o que a rota impos não conta como filtro aplicado', () => {
-  // Em `/pronta-entrega`, a bandeira e o endereco da pagina: nao ha o que
-  // desmarcar, e o botao "limpar filtros (1)" seria uma promessa falsa.
+  // Em `/pronta-entrega`, a bandeira e o endereço da página: não há o que
+  // desmarcar, e o botão "limpar filtros (1)" seria uma promessa falsa.
   const emRota = filtros({ readyToShip: true });
 
   expect(countActiveFilters(emRota, { readyToShip: true })).toBe(0);

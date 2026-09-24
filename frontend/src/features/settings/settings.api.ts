@@ -4,12 +4,12 @@ import type { PublicPage, PublicPageSummary, PublicSettings } from './settings.t
 /**
  * As duas chamadas que a moldura da loja faz.
  *
- * Publicas — `scope: null` — porque a barra de avisos e o rodape aparecem
+ * Públicas — `scope: null` — porque a barra de avisos e o rodapé aparecem
  * para quem nunca entrou em conta nenhuma. Sem isso, um `401` aqui tentaria
- * renovar uma sessao que nao existe.
+ * renovar uma sessão que não existe.
  *
  * As duas respostas vem com `Cache-Control` de cinco minutos e `ETag` do
- * backend, entao a revalidacao entre visitas custa um `304` sem corpo.
+ * backend, então a revalidação entre visitas custa um `304` sem corpo.
  */
 
 export function fetchSettings(signal?: AbortSignal): Promise<PublicSettings> {
@@ -21,12 +21,12 @@ export function fetchInstitutionalPages(signal?: AbortSignal): Promise<PublicPag
 }
 
 /**
- * Uma pagina institucional pelo endereco, com o texto.
+ * Uma página institucional pelo endereço, com o texto.
  *
- * Quem chama hoje sao as abas da pagina do produto — "Trocas e devolucoes"
- * nao e um texto do produto, e sim a politica da loja, escrita uma vez e
- * mostrada em todo lugar onde faz falta. A pagina institucional inteira usa
- * a mesma funcao e a mesma chave quando chegar.
+ * Quem chama hoje são as abas da página do produto — "Trocas e devoluções"
+ * não e um texto do produto, e sim a política da loja, escrita uma vez e
+ * mostrada em todo lugar onde faz falta. A página institucional inteira usa
+ * a mesma função e a mesma chave quando chegar.
  */
 export function fetchInstitutionalPage(slug: string, signal?: AbortSignal): Promise<PublicPage> {
   return api.get<PublicPage>(`/pages/${encodeURIComponent(slug)}`, {

@@ -26,12 +26,12 @@ import { JwtStrategy } from './strategies/jwt.strategy.js';
 import { TokenService } from './token.service.js';
 
 /**
- * Autenticacao do painel.
+ * Autenticação do painel.
  *
  * O `JwtModule` e registrado sem segredo: cada token e assinado com o seu, em
- * `TokenService`. Os tres guards entram como `APP_GUARD` e nessa ordem: o
- * primeiro resolve o usuario, o segundo barra quem ainda esta com senha
- * temporaria e o terceiro confere o papel.
+ * `TokenService`. Os três guards entram como `APP_GUARD` e nessa ordem: o
+ * primeiro resolve o usuário, o segundo barra quem ainda esta com senha
+ * temporária e o terceiro confere o papel.
  */
 @Module({
   imports: [
@@ -39,7 +39,7 @@ import { TokenService } from './token.service.js';
       { name: User.name, schema: UserSchema },
       { name: RefreshToken.name, schema: RefreshTokenSchema },
       { name: LoginAttempt.name, schema: LoginAttemptSchema },
-      // O contador de credencial do cliente e incrementado pela revogacao em
+      // O contador de credencial do cliente e incrementado pela revogação em
       // massa, que vive em `RefreshTokenService`.
       { name: Customer.name, schema: CustomerSchema },
     ]),
@@ -59,9 +59,9 @@ import { TokenService } from './token.service.js';
     { provide: APP_GUARD, useClass: PendingPasswordGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
   ],
-  // Exportados para o modulo de usuarios (criar usuario precisa do hash,
-  // resetar senha e desativar precisam revogar as sessoes) e para os seeds,
-  // que criam o primeiro SUPER_ADMIN pelo mesmo servico da rota.
+  // Exportados para o módulo de usuários (criar usuário precisa do hash,
+  // resetar senha e desativar precisam revogar as sessões) e para os seeds,
+  // que criam o primeiro SUPER_ADMIN pelo mesmo serviço da rota.
   exports: [
     AuthService,
     BootstrapService,

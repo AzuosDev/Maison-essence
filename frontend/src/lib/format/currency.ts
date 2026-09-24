@@ -1,14 +1,14 @@
 /**
- * Dinheiro, em um lugar so.
+ * Dinheiro, em um lugar só.
  *
  * Todo valor viaja da API em centavos, como inteiro — e continua assim aqui
  * dentro. Nenhum componente divide por cem, nenhum componente escreve
- * "R$ " na mao: quem calcula usa o numero, quem desenha chama `formatCents`.
+ * "R$ " na mão: quem calcula usa o número, quem desenha chama `formatCents`.
  *
- * Formatado a mao, e nao por `Intl.NumberFormat`, pelo mesmo motivo que o
- * backend: o ICU separa o "R$" do numero com um espaco estreito sem quebra
- * (U+00A0 ou U+202F, conforme o navegador), e esse caractere invisivel faria
- * o preco da tela divergir do `priceLabel` que a API ja manda pronto e do
+ * Formatado a mão, e não por `Intl.NumberFormat`, pelo mesmo motivo que o
+ * backend: o ICU separa o "R$" do número com um espaço estreito sem quebra
+ * (U+00A0 ou U+202F, conforme o navegador), e esse caractere invisível faria
+ * o preço da tela divergir do `priceLabel` que a API já manda pronto e do
  * texto que vai para o WhatsApp. As duas pontas precisam escrever igual.
  */
 
@@ -24,10 +24,10 @@ export function formatCents(cents: number): string {
 }
 
 /**
- * A faixa de preco de um produto com variantes.
+ * A faixa de preço de um produto com variantes.
  *
  * Quando as variantes custam o mesmo — ou o produto e simples — devolve um
- * preco so, em vez de repetir o mesmo valor dos dois lados do travessao.
+ * preço só, em vez de repetir o mesmo valor dos dois lados do travessão.
  */
 export function formatCentsRange(range: { min: number; max: number }): string {
   return range.min === range.max
@@ -37,17 +37,17 @@ export function formatCentsRange(range: { min: number; max: number }): string {
 
 /**
  * `12x de R$ 41,67`. A conta de quanto e cada parcela e do servidor: aqui
- * entra o valor que ele ja devolveu, so para nao espalhar o "x de".
+ * entra o valor que ele já devolveu, só para não espalhar o "x de".
  */
 export function formatInstallment(count: number, installmentCents: number): string {
   return `${count}x de ${formatCents(installmentCents)}`;
 }
 
 /**
- * O caminho inverso, para os campos de preco do painel.
+ * O caminho inverso, para os campos de preço do painel.
  *
  * Aceita o que o teclado produz — `12,50`, `12.50`, `R$ 1.299,90` — e devolve
- * centavos, ou `null` quando o que veio nao e um numero. Nunca usa
+ * centavos, ou `null` quando o que veio não e um número. Nunca usa
  * `parseFloat` em cima do valor em reais: `19.99 * 100` da `1998.9999...`, e
  * o produto entra no banco um centavo mais barato.
  */
@@ -58,7 +58,7 @@ export function centsFromInput(value: string): number | null {
     return null;
   }
 
-  // O ultimo separador e o decimal; o resto e milhar e sai fora.
+  // O último separador e o decimal; o resto e milhar e sai fora.
   const normalized = cleaned.replace(/\.(?=\d{3}\b)/g, '').replace(',', '.');
 
   if (!/^-?\d+(?:\.\d{1,2})?$/.test(normalized)) {
@@ -73,11 +73,11 @@ export function centsFromInput(value: string): number | null {
 }
 
 /**
- * O valor de um campo de preco do painel: `19990` vira `199,90`.
+ * O valor de um campo de preço do painel: `19990` vira `199,90`.
  *
  * Companheiro de `centsFromInput`, e a volta exata dele — o que sai daqui,
- * relido por ele, devolve os mesmos centavos. Sem o simbolo da moeda e sem
- * separador de milhar: os dois atrapalham quem esta editando o numero, e
+ * relido por ele, devolve os mesmos centavos. Sem o símbolo da moeda e sem
+ * separador de milhar: os dois atrapalham quem esta editando o número, e
  * `centsFromInput` os aceita de volta se a pessoa quiser digita-los.
  *
  * Centavos sempre com duas casas, inclusive `,00`. Um campo que mostra

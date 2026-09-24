@@ -3,23 +3,23 @@ import { useCallback, useEffect, useRef, type RefObject } from 'react';
 /**
  * O comportamento que o modal e a gaveta tem em comum.
  *
- * Sao tres obrigacoes, e nenhuma e detalhe: quem abre um dialogo com o
+ * São três obrigações, e nenhuma e detalhe: quem abre um diálogo com o
  * teclado precisa conseguir sair dele com o teclado, e quem usa leitor de
- * tela precisa que o foco esteja *dentro* do dialogo — senao a leitura
- * continua na pagina atras do veu, que visualmente nao existe mais.
+ * tela precisa que o foco esteja *dentro* do diálogo — senão a leitura
+ * continua na página atrás do véu, que visualmente não existe mais.
  *
- * 1. **Prender o foco.** O Tab circula entre os elementos focaveis do
- *    dialogo e nao escapa para a pagina.
- * 2. **Fechar no Escape.** Em qualquer lugar do dialogo.
+ * 1. **Prender o foco.** O Tab circula entre os elementos focáveis do
+ *    diálogo e não escapa para a página.
+ * 2. **Fechar no Escape.** Em qualquer lugar do diálogo.
  * 3. **Devolver o foco.** Ao fechar, o foco volta para o elemento que abriu.
- *    Sem isso, o Tab seguinte recomeca do inicio do documento e quem estava
- *    no meio de um formulario se perde.
+ *    Sem isso, o Tab seguinte recomeca do início do documento e quem estava
+ *    no meio de um formulário se perde.
  *
  * O hook esta separado dos dois componentes porque duplicar isto seria
- * duplicar a chance de esquecer um dos tres.
+ * duplicar a chance de esquecer um dos três.
  */
 
-/** O que o navegador considera alcancavel pelo Tab, na ordem do documento. */
+/** O que o navegador considera alcancável pelo Tab, na ordem do documento. */
 const FOCUSABLE = [
   'a[href]',
   'button:not([disabled])',
@@ -33,16 +33,16 @@ interface DialogOptions {
   open: boolean;
   onClose: () => void;
   /**
-   * Fecha ao clicar no veu. Ligado por padrao; o passo de checkout que nao
+   * Fecha ao clicar no véu. Ligado por padrão; o passo de checkout que não
    * pode ser abandonado no meio desliga.
    */
   closeOnOverlayClick?: boolean;
 }
 
 interface Dialog<T extends HTMLElement> {
-  /** Vai no elemento que contem o dialogo — e dentro dele que o foco fica. */
+  /** Vai no elemento que contem o diálogo — e dentro dele que o foco fica. */
   ref: RefObject<T>;
-  /** Vai no veu: cuida do clique fora. */
+  /** Vai no véu: cuida do clique fora. */
   onOverlayClick: (event: React.MouseEvent) => void;
 }
 
@@ -53,10 +53,10 @@ export function useDialog<T extends HTMLElement>({
 }: DialogOptions): Dialog<T> {
   const ref = useRef<T>(null);
 
-  // O callback vive num ref para que o efeito dependa so de `open`. Se
-  // dependesse de `onClose`, um pai que recria a funcao a cada render faria
+  // O callback vive num ref para que o efeito dependa só de `open`. Se
+  // dependesse de `onClose`, um pai que recria a função a cada render faria
   // o efeito rodar de novo — e o foco saltaria para o primeiro campo no meio
-  // da digitacao.
+  // da digitação.
   const onCloseRef = useRef(onClose);
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export function useDialog<T extends HTMLElement>({
     }
 
     // Quem abriu. `document.activeElement` ainda e o gatilho neste ponto,
-    // porque o foco so se move na linha seguinte.
+    // porque o foco só se move na linha seguinte.
     const trigger = document.activeElement;
 
     focusFirst(node);
@@ -95,8 +95,8 @@ export function useDialog<T extends HTMLElement>({
       const items = [...node.querySelectorAll<HTMLElement>(FOCUSABLE)].filter(isVisible);
 
       if (items.length === 0) {
-        // Dialogo sem nada focavel: o foco fica no proprio container, que
-        // tem `tabIndex={-1}`, em vez de vazar para a pagina.
+        // Diálogo sem nada focável: o foco fica no próprio container, que
+        // tem `tabIndex={-1}`, em vez de vazar para a página.
         event.preventDefault();
         node.focus();
 
@@ -112,8 +112,8 @@ export function useDialog<T extends HTMLElement>({
 
       const active = document.activeElement;
 
-      // O Tab que sairia pela frente volta para o comeco, e o Shift+Tab que
-      // sairia por tras vai para o fim. O `!node.contains` cobre o caso de o
+      // O Tab que sairia pela frente volta para o começo, e o Shift+Tab que
+      // sairia por trás vai para o fim. O `!node.contains` cobre o caso de o
       // foco estar no container.
       if (event.shiftKey && (active === first || !node.contains(active))) {
         event.preventDefault();
@@ -125,11 +125,11 @@ export function useDialog<T extends HTMLElement>({
     };
 
     // Na fase de captura: o Escape precisa chegar aqui antes de qualquer
-    // componente de dentro do dialogo tratar a tecla por conta propria.
+    // componente de dentro do diálogo tratar a tecla por conta própria.
     document.addEventListener('keydown', handleKeyDown, true);
 
-    // A pagina atras nao rola enquanto o dialogo esta aberto — rolar o que
-    // esta sob o veu e desorientador, e no celular e o que faz a pagina
+    // A página atrás não rola enquanto o diálogo esta aberto — rolar o que
+    // esta sob o véu e desorientador, e no celular e o que faz a página
     // "pular" ao fechar.
     const previousOverflow = document.body.style.overflow;
 
@@ -147,8 +147,8 @@ export function useDialog<T extends HTMLElement>({
 
   const onOverlayClick = useCallback(
     (event: React.MouseEvent) => {
-      // So o clique no proprio veu. Sem esta conferencia, arrastar uma
-      // selecao de texto de dentro do dialogo para fora o fecharia.
+      // Só o clique no próprio véu. Sem esta conferência, arrastar uma
+      // seleção de texto de dentro do diálogo para fora o fecharia.
       if (closeOnOverlayClick && event.target === event.currentTarget) {
         onCloseRef.current();
       }
@@ -159,7 +159,7 @@ export function useDialog<T extends HTMLElement>({
   return { ref, onOverlayClick };
 }
 
-/** Manda o foco para o primeiro campo, ou para o proprio dialogo. */
+/** Manda o foco para o primeiro campo, ou para o próprio diálogo. */
 function focusFirst(node: HTMLElement): void {
   const first = [...node.querySelectorAll<HTMLElement>(FOCUSABLE)].find(isVisible);
 
@@ -167,10 +167,10 @@ function focusFirst(node: HTMLElement): void {
 }
 
 /**
- * Elemento escondido nao recebe foco.
+ * Elemento escondido não recebe foco.
  *
  * `offsetParent` e `null` para quem esta com `display: none` — e o teste
- * barato que cobre o caso comum de um bloco escondido dentro do dialogo.
+ * barato que cobre o caso comum de um bloco escondido dentro do diálogo.
  */
 function isVisible(element: HTMLElement): boolean {
   return element.offsetParent !== null || element.getClientRects().length > 0;

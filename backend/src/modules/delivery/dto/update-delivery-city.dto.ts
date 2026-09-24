@@ -14,11 +14,11 @@ import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { MAX_DELIVERY_CITY_ORDER, MAX_ESTIMATED_DAYS } from '../delivery.constants.js';
 
 /**
- * Edicao de uma cidade. Todo campo e opcional: o painel manda so o que mudou.
+ * Edição de uma cidade. Todo campo e opcional: o painel manda só o que mudou.
  *
  * `isActive: false` e o caminho normal para parar de atender uma cidade —
- * ela some da lista publica na hora, e os pedidos antigos continuam legiveis
- * porque guardaram nome e taxa em copia propria.
+ * ela some da lista publica na hora, e os pedidos antigos continuam legíveis
+ * porque guardaram nome e taxa em copia própria.
  */
 export class UpdateDeliveryCityDto {
   @IsOptional()

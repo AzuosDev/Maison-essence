@@ -13,12 +13,12 @@ import {
 } from './category-tree';
 
 /**
- * A arvore de categorias.
+ * A árvore de categorias.
  *
- * O que erra em silencio aqui e a **ordem**: ninguem confere a sequencia de
- * oito categorias olhando, e o defeito so aparece na loja, para o cliente.
+ * O que erra em silêncio aqui e a **ordem**: ninguém confere a sequência de
+ * oito categorias olhando, e o defeito só aparece na loja, para o cliente.
  * Por isso a maioria destes casos e sobre a lista plana que vai para o
- * servidor — ela e quem determina o menu, e ela nao aparece em tela nenhuma.
+ * servidor — ela e quem determina o menu, e ela não aparece em tela nenhuma.
  */
 
 function category(patch: Partial<AdminCategory> = {}): AdminCategory {
@@ -42,7 +42,7 @@ function node(id: string, name: string, children: AdminCategory[] = []): AdminCa
   return { ...category({ id, name }), children };
 }
 
-/** Masculino (Amadeirado, Citrico), Feminino, Arabes. */
+/** Masculino (Amadeirado, Cítrico), Feminino, Árabes. */
 function tree(): AdminCategoryNode[] {
   return [
     node('m', 'Masculino', [
@@ -57,7 +57,7 @@ function tree(): AdminCategoryNode[] {
 /* ---- A ordem do menu ------------------------------------------------------- */
 
 test('a lista plana sai em ordem de menu: cada pai seguido dos filhos', () => {
-  // E esta ordem que faz o servidor gravar indices que ordenam os dois niveis
+  // E esta ordem que faz o servidor gravar índices que ordenam os dois níveis
   // de uma vez. Qualquer outra embaralha o menu sem que nada reclame.
   expect(menuOrder(tree())).toEqual(['m', 'm1', 'm2', 'f', 'a']);
 });
@@ -66,7 +66,7 @@ test('mover um pai leva os filhos junto', () => {
   const moved = moveParent(tree(), 0, 2);
 
   expect(moved.map((parent) => parent.id)).toEqual(['f', 'a', 'm']);
-  // Os filhos moram dentro do no: eles acompanham sem que ninguem os mova.
+  // Os filhos moram dentro do no: eles acompanham sem que ninguém os mova.
   expect(menuOrder(moved)).toEqual(['f', 'a', 'm', 'm1', 'm2']);
 });
 
@@ -82,7 +82,7 @@ test('mover um filho não mexe nos outros pais', () => {
   expect(moved.map((parent) => parent.id)).toEqual(['m', 'f', 'a']);
 });
 
-test('um movimento impossível devolve a arvore como esta', () => {
+test('um movimento impossível devolve a árvore como esta', () => {
   expect(menuOrder(moveParent(tree(), 0, 9))).toEqual(menuOrder(tree()));
   expect(menuOrder(moveParent(tree(), -1, 0))).toEqual(menuOrder(tree()));
   expect(menuOrder(moveChild(tree(), 'm', 0, 0))).toEqual(menuOrder(tree()));
@@ -106,8 +106,8 @@ test('achatar traz os dois níveis', () => {
 /* ---- Quem pode ser pai ------------------------------------------------------- */
 
 test('só categorias principais podem ser pai', () => {
-  // Uma subcategoria nao pode ter filhos: o servidor recusa com
-  // `NESTING_TOO_DEEP_MESSAGE`. `m1` e `m2` nao entram na lista.
+  // Uma subcategoria não pode ter filhos: o servidor recusa com
+  // `NESTING_TOO_DEEP_MESSAGE`. `m1` e `m2` não entram na lista.
   expect(parentOptions(tree(), '').map((option) => option.value)).toEqual(['m', 'f', 'a']);
 });
 
@@ -118,11 +118,11 @@ test('uma categoria nunca aparece como pai de si mesma', () => {
 test('quem tem filhos não pode virar subcategoria', () => {
   expect(hasChildren(tree(), 'm')).toBe(true);
   expect(hasChildren(tree(), 'f')).toBe(false);
-  // Um filho nao esta no primeiro nivel, entao a pergunta nao se aplica a ele.
+  // Um filho não esta no primeiro nível, então a pergunta não se aplica a ele.
   expect(hasChildren(tree(), 'm1')).toBe(false);
 });
 
-/* ---- O que impede a exclusao -------------------------------------------------- */
+/* ---- O que impede a exclusão -------------------------------------------------- */
 
 function conflict(details: Record<string, unknown>): ApiError {
   return new ApiError(409, ['Não da para excluir.'], '/admin/categories/m', {
@@ -144,7 +144,7 @@ test('o 409 de exclusão devolve as contagens', () => {
 });
 
 test('qualquer outro erro não vira oferta de desativar', () => {
-  // Sem rede, sessao expirada, id que nao existe: nenhum deles carrega
+  // Sem rede, sessão expirada, id que não existe: nenhum deles carrega
   // contagem, e oferecer "desative no lugar" ali seria responder outra coisa.
   expect(blockedBy(new Error('sem rede'))).toBeNull();
   expect(blockedBy(conflict({}))).toBeNull();

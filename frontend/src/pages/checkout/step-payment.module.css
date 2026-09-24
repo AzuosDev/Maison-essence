@@ -1,10 +1,10 @@
 /*
  * Pagamento.
  *
- * Duas escolhas em cartao no topo, o detalhe da escolha logo abaixo, e o
+ * Duas escolhas em cartão no topo, o detalhe da escolha logo abaixo, e o
  * aviso de que nada e cobrado aqui fechando o passo. A ordem e deliberada: o
- * aviso vem depois da escolha porque e ali que a duvida nasce — "escolhi
- * cartao, e agora?".
+ * aviso vem depois da escolha porque e ali que a dúvida nasce — "escolhi
+ * cartão, e agora?".
  */
 
 .choice {
@@ -53,12 +53,12 @@
 /* ---- As parcelas ---------------------------------------------------------- */
 
 /*
- * Lista, e nao cartoes.
+ * Lista, e não cartões.
  *
- * Doze parcelas em doze cartoes ocupariam a tela inteira e dariam a cada
- * opcao o peso de uma decisao estrutural — que nao e o caso: a escolha
- * importante ja foi feita ali em cima. Aqui o que o olho faz e comparar
- * numeros em coluna, e linha e a forma de comparar numeros.
+ * Doze parcelas em doze cartões ocupariam a tela inteira e dariam a cada
+ * opção o peso de uma decisão estrutural — que não e o caso: a escolha
+ * importante já foi feita ali em cima. Aqui o que o olho faz e comparar
+ * números em coluna, e linha e a forma de comparar números.
  */
 .installments {
   padding-top: var(--space-8);
@@ -91,8 +91,8 @@
   color: var(--gold-deep);
 }
 
-/* Juros nao e erro: e informacao que muda a escolha. Cor de texto secundario
-   com peso, e nao o vermelho de recusa. */
+/* Juros não e erro: e informação que muda a escolha. Cor de texto secundário
+   com peso, e não o vermelho de recusa. */
 .interest {
   font-weight: var(--weight-medium);
   color: var(--ink-soft);
@@ -107,8 +107,8 @@
 /*
  * O recado que evita o mal-entendido mais caro desta tela.
  *
- * Fundo de areia e o icone do canal a esquerda, sem borda colorida grossa e
- * sem cor de alerta: nao e um erro nem um perigo — e o funcionamento normal
+ * Fundo de areia e o ícone do canal a esquerda, sem borda colorida grossa e
+ * sem cor de alerta: não e um erro nem um perigo — e o funcionamento normal
  * da loja, e desenha-lo como aviso de erro faria o cliente desconfiar
  * justamente do que deveria tranquiliza-lo.
  */

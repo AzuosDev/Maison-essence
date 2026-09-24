@@ -1,28 +1,28 @@
 import { useEffect } from 'react';
 
 /**
- * O cabecalho do documento, escrito pela pagina que esta em tela.
+ * O cabeçalho do documento, escrito pela página que esta em tela.
  *
- * Titulo, descricao, Open Graph e JSON-LD saem todos daqui, e as tags que
- * este hook cria levam `data-page-meta` para que ele saiba quais sao suas:
- * ao sair da pagina, elas somem e o `<title>` volta ao que estava no
+ * Título, descrição, Open Graph e JSON-LD saem todos daqui, e as tags que
+ * este hook cria levam `data-page-meta` para que ele saiba quais são suas:
+ * ao sair da página, elas somem e o `<title>` volta ao que estava no
  * `index.html`. Sem isso, navegar de um produto para outro deixaria a foto
  * do primeiro no `og:image` do segundo.
  *
- * ## O que este hook nao resolve
+ * ## O que este hook não resolve
  *
  * A loja e uma SPA: o HTML servido e o mesmo `index.html` vazio para todo
- * endereco, e estas tags so existem depois que o JavaScript roda. O
- * rastreador do WhatsApp — e o do Facebook, e o do Twitter — le o HTML como
- * ele chega e **nao executa JavaScript**. Entao a previa com foto e preco,
- * que e o principal canal de divulgacao desta loja, depende de o HTML ja
- * nascer com as tags: prerender no build ou renderizacao no servidor, que e
+ * endereço, e estas tags só existem depois que o JavaScript roda. O
+ * rastreador do WhatsApp — e o do Facebook, e o do Twitter — lê o HTML como
+ * ele chega e **não executa JavaScript**. Então a prévia com foto e preço,
+ * que e o principal canal de divulgação desta loja, depende de o HTML já
+ * nascer com as tags: prerender no build ou renderização no servidor, que e
  * o assunto do prompt de SEO e performance.
  *
- * O que fica pronto aqui e a metade que nao muda com essa escolha: as tags
- * sao montadas por funcoes puras (`productMeta`, em `features/catalog`), e
- * quem prerenderizar vai chamar as mesmas funcoes para escrever o mesmo
- * conteudo no HTML. O Google, que executa JavaScript, ja le o que este hook
+ * O que fica pronto aqui e a metade que não muda com essa escolha: as tags
+ * são montadas por funções puras (`productMeta`, em `features/catalog`), e
+ * quem prerenderizar vai chamar as mesmas funções para escrever o mesmo
+ * conteúdo no HTML. O Google, que executa JavaScript, já lê o que este hook
  * escreve hoje.
  */
 
@@ -30,22 +30,22 @@ export interface PageMeta {
   /** O `<title>` inteiro, como aparece na aba e no resultado da busca. */
   title: string;
   description: string;
-  /** O endereco canonico, absoluto. Sem os parametros de estado da tela. */
+  /** O endereço canônico, absoluto. Sem os parâmetros de estado da tela. */
   canonical?: string;
-  /** URL absoluta da imagem da previa. */
+  /** URL absoluta da imagem da prévia. */
   image?: string;
-  /** `product` na pagina do produto, `website` no resto. */
+  /** `product` na página do produto, `website` no resto. */
   type?: 'website' | 'product';
   /**
-   * O que o rastreador pode fazer com esta pagina.
+   * O que o rastreador pode fazer com esta página.
    *
    * Ausente na loja inteira, que existe para ser encontrada. `noindex` vale
-   * para as telas que sao de uma pessoa so e nao dizem nada a quem chega de
-   * fora — a sacola, o checkout, a conta. Sem ele, o endereco da sacola
-   * entra no indice e aparece na busca como uma pagina vazia da loja.
+   * para as telas que são de uma pessoa só e não dizem nada a quem chega de
+   * fora — a sacola, o checkout, a conta. Sem ele, o endereço da sacola
+   * entra no índice e aparece na busca como uma página vazia da loja.
    */
   robots?: string;
-  /** O objeto de dados estruturados, ja pronto. */
+  /** O objeto de dados estruturados, já pronto. */
   jsonLd?: unknown;
 }
 
@@ -61,7 +61,7 @@ export function usePageMeta({
   robots,
   jsonLd,
 }: PageMeta): void {
-  // O JSON-LD entra como texto na lista de dependencias de proposito: o
+  // O JSON-LD entra como texto na lista de dependências de propósito: o
   // objeto e remontado a cada render, e comparar por identidade reescreveria
   // a tag em todo quadro.
   const structured = jsonLd === undefined ? '' : JSON.stringify(jsonLd);
@@ -81,8 +81,8 @@ export function usePageMeta({
     setMeta('property', 'og:url', canonical ?? '');
     setMeta('property', 'og:image', image ?? '');
 
-    // `summary_large_image` e o que faz a foto ocupar a largura do cartao.
-    // Sem a imagem, o cartao pequeno e o formato honesto.
+    // `summary_large_image` e o que faz a foto ocupar a largura do cartão.
+    // Sem a imagem, o cartão pequeno e o formato honesto.
     setMeta('name', 'twitter:card', image === undefined ? 'summary' : 'summary_large_image');
 
     setCanonical(canonical);
@@ -101,8 +101,8 @@ export function usePageMeta({
 /**
  * Uma tag `<meta>`, criada ou atualizada.
  *
- * Conteudo vazio remove a tag em vez de escrever `content=""`: uma pagina
- * sem foto nao deve anunciar uma imagem vazia ao rastreador, que e coisa que
+ * Conteúdo vazio remove a tag em vez de escrever `content=""`: uma página
+ * sem foto não deve anunciar uma imagem vazia ao rastreador, que e coisa que
  * alguns leem como imagem quebrada.
  */
 function setMeta(attribute: 'name' | 'property', key: string, content: string): void {
@@ -141,9 +141,9 @@ function setCanonical(href: string | undefined): void {
 /**
  * Os dados estruturados, como `<script type="application/ld+json">`.
  *
- * O conteudo entra por `textContent`, e nunca por `innerHTML`: o nome do
- * produto vem do painel, e um `</script>` digitado la dentro nao pode
- * fechar a tag e virar markup. `JSON.stringify` ja escapa o resto.
+ * O conteúdo entra por `textContent`, e nunca por `innerHTML`: o nome do
+ * produto vem do painel, e um `</script>` digitado lá dentro não pode
+ * fechar a tag e virar markup. `JSON.stringify` já escapa o resto.
  */
 function setJsonLd(json: string): void {
   const selector = `script[type="application/ld+json"][${OWNED}]`;

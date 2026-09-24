@@ -1,13 +1,13 @@
 /*
- * O formulario de newsletter.
+ * O formulário de newsletter.
  *
- * Empilhado no celular e em linha a partir de 640px — o campo e o botao lado
- * a lado so cabem quando ha largura para o botao nao espremer o e-mail.
+ * Empilhado no celular e em linha a partir de 640px — o campo e o botão lado
+ * a lado só cabem quando há largura para o botão não espremer o e-mail.
  *
- * As cores saem por variavel porque o formulario aparece em dois fundos: o
- * rodape preto e a faixa clara da home. Quem troca e a classe `.light`, e o
- * primitivo `Input` continua sendo o mesmo componente — ele le `--surface`,
- * `--line`, `--ink` e `--muted`, e e so isso que muda de um tom para o outro.
+ * As cores saem por variável porque o formulário aparece em dois fundos: o
+ * rodapé preto e a faixa clara da home. Quem troca e a classe `.light`, e o
+ * primitivo `Input` continua sendo o mesmo componente — ele lê `--surface`,
+ * `--line`, `--ink` e `--muted`, e e só isso que muda de um tom para o outro.
  */
 
 .form {
@@ -20,10 +20,10 @@
   --news-field-focus: var(--gold);
 
   /*
-   * O botao tambem inverte com o tom, e isso nao era opcional: o primario
-   * pinta o fundo com `--ink`, e sobre o preto do rodape ele ficava preto no
-   * preto — sobrava so o rotulo creme flutuando, sem nenhuma pilula em volta.
-   * Ninguem via que ali havia um botao.
+   * O botão também inverte com o tom, e isso não era opcional: o primário
+   * pinta o fundo com `--ink`, e sobre o preto do rodapé ele ficava preto no
+   * preto — sobrava só o rótulo creme flutuando, sem nenhuma pílula em volta.
+   * Ninguém via que ali havia um botão.
    */
   --news-btn-bg: var(--slab-ink);
   --news-btn-fg: var(--slab);
@@ -50,12 +50,12 @@
 }
 
 /*
- * Os tres tokens chegam ao botao pelos nomes que o primitivo ja le. Sao
- * trocados aqui, e nao no proprio componente, porque quem sabe em que fundo
- * o formulario caiu e o formulario.
+ * Os três tokens chegam ao botão pelos nomes que o primitivo já lê. São
+ * trocados aqui, e não no próprio componente, porque quem sabe em que fundo
+ * o formulário caiu e o formulário.
  *
- * No escuro o hover vai para `--gold` e nao para `--gold-deep`: o texto do
- * botao e preto, e preto sobre dourado escuro nao alcanca o contraste minimo.
+ * No escuro o hover vai para `--gold` e não para `--gold-deep`: o texto do
+ * botão e preto, e preto sobre dourado escuro não alcança o contraste mínimo.
  */
 .submit {
   --ink: var(--news-btn-bg);
@@ -91,10 +91,10 @@
 }
 
 /*
- * A linha de apoio embaixo do titulo.
+ * A linha de apoio embaixo do título.
  *
- * A cor vem do tom, e nao de um token fixo: este formulario aparece sobre o
- * preto do rodape e sobre a areia da home, e um cinza escolhido para um dos
+ * A cor vem do tom, e não de um token fixo: este formulário aparece sobre o
+ * preto do rodapé e sobre a areia da home, e um cinza escolhido para um dos
  * dois some no outro. `--news-note` e claro no escuro e escuro no claro.
  */
 .note {
@@ -103,7 +103,7 @@
   color: var(--news-note);
 }
 
-/* A resposta do envio: some sozinha do fluxo quando nao ha nada a dizer. */
+/* A resposta do envio: some sozinha do fluxo quando não há nada a dizer. */
 .status {
   font-size: var(--text-12);
   line-height: var(--leading-body);
@@ -114,14 +114,14 @@
 }
 
 /*
- * O espaco do formulario enquanto o pedaco dele nao chegou.
+ * O espaço do formulário enquanto o pedaço dele não chegou.
  *
- * A altura e a soma exata das tres linhas que o formulario ocupa, escrita
- * com os mesmos tokens que as desenham: titulo, nota e a fileira do campo.
- * Nao e um numero medido a olho — se algum desses tokens mudar, a reserva
- * muda junto, e o bloco continua sem saltar quando o formulario aparece.
+ * A altura e a soma exata das três linhas que o formulário ocupa, escrita
+ * com os mesmos tokens que as desenham: título, nota e a fileira do campo.
+ * Não e um número medido a olho — se algum desses tokens mudar, a reserva
+ * muda junto, e o bloco continua sem saltar quando o formulário aparece.
  *
- * A fileira tem duas alturas: no celular o campo e o botao ficam empilhados,
+ * A fileira tem duas alturas: no celular o campo e o botão ficam empilhados,
  * e a partir de 640px eles dividem a linha.
  */
 .placeholder {

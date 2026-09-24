@@ -10,29 +10,29 @@ export const OUT_OF_REACH_MESSAGE = 'Você só pode gerenciar usuários STAFF.';
 export const ROLE_NOT_ALLOWED_MESSAGE = 'Você só pode atribuir o papel STAFF.';
 export const OWN_ROLE_MESSAGE = 'Não e possível mudar o próprio papel.';
 
-/** Alvo minimo para as decisoes de acesso: papel e identidade. */
+/** Alvo mínimo para as decisões de acesso: papel e identidade. */
 export interface UserTarget {
   id: string;
   role: UserRole;
 }
 
 /**
- * Quem pode o que sobre um usuario administrativo.
+ * Quem pode o que sobre um usuário administrativo.
  *
- * Funcoes puras, de proposito: a regra e a parte do modulo que mais precisa
+ * Funções puras, de propósito: a regra e a parte do módulo que mais precisa
  * de teste e a que menos precisa de banco.
  *
- * - `SUPER_ADMIN` alcanca qualquer um.
- * - `OWNER` alcanca apenas `STAFF`, e para ele um `SUPER_ADMIN` nem existe.
- * - `STAFF` nao chega aqui: o `@Roles` do controller ja o barrou.
+ * - `SUPER_ADMIN` alcança qualquer um.
+ * - `OWNER` alcança apenas `STAFF`, e para ele um `SUPER_ADMIN` nem existe.
+ * - `STAFF` não chega aqui: o `@Roles` do controller já o barrou.
  *
- * A diferenca entre 404 e 403 e intencional. Alvo invisivel responde "nao
- * encontrado", porque confirmar a existencia de um `SUPER_ADMIN` para quem
- * nao deveria enxerga-lo ja e informacao. Alvo visivel fora do alcance
+ * A diferença entre 404 e 403 e intencional. Alvo invisível responde "não
+ * encontrado", porque confirmar a existência de um `SUPER_ADMIN` para quem
+ * não deveria enxerga-lo já e informação. Alvo visível fora do alcance
  * responde 403, que e o que de fato aconteceu.
  */
 
-/** Filtro de listagem: o OWNER nunca ve um SUPER_ADMIN. */
+/** Filtro de listagem: o OWNER nunca vê um SUPER_ADMIN. */
 export function visibilityFilter(actor: AuthenticatedUser): QueryFilter<User> {
   return actor.role === USER_ROLES.SUPER_ADMIN
     ? {}
@@ -71,8 +71,8 @@ export function assertCanManage(actor: AuthenticatedUser, target: UserTarget): v
 }
 
 /**
- * Editar nome e e-mail. Vale tambem sobre si mesmo: a dona da loja poder
- * corrigir o proprio nome nao depende de ninguem.
+ * Editar nome e e-mail. Vale também sobre si mesmo: a dona da loja poder
+ * corrigir o próprio nome não depende de ninguém.
  */
 export function assertCanEditProfile(actor: AuthenticatedUser, target: UserTarget): void {
   assertVisible(actor, target);
@@ -82,7 +82,7 @@ export function assertCanEditProfile(actor: AuthenticatedUser, target: UserTarge
   }
 }
 
-/** Qual papel cada um pode atribuir, na criacao ou na edicao. */
+/** Qual papel cada um pode atribuir, na criação ou na edição. */
 export function assertCanAssignRole(actor: AuthenticatedUser, role: UserRole): void {
   if (actor.role === USER_ROLES.SUPER_ADMIN || role === USER_ROLES.STAFF) {
     return;
@@ -92,8 +92,8 @@ export function assertCanAssignRole(actor: AuthenticatedUser, role: UserRole): v
 }
 
 /**
- * Ninguem muda o proprio papel. Sem isso, o unico SUPER_ADMIN pode se
- * rebaixar por engano e nao sobra quem o promova de volta.
+ * Ninguém muda o próprio papel. Sem isso, o único SUPER_ADMIN pode se
+ * rebaixar por engano e não sobra quem o promova de volta.
  */
 export function assertNotOwnRole(actor: AuthenticatedUser, target: UserTarget): void {
   if (isSelf(actor, target)) {

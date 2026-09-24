@@ -2,7 +2,7 @@ import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Max, Min } from 'class-validator';
 import { DEFAULT_ORDERS_PAGE_SIZE, MAX_ORDERS_PAGE_SIZE } from '../customers.constants.js';
 
-/** Paginacao do historico. Sem filtros: o cliente tem poucos pedidos. */
+/** Paginação do histórico. Sem filtros: o cliente tem poucos pedidos. */
 export class ListCustomerOrdersDto {
   @IsOptional()
   @Type(() => Number)

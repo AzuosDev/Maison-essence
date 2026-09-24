@@ -21,10 +21,10 @@ import { MAX_LINE_QUANTITY, MAX_QUOTE_ITEMS } from '../cart.constants.js';
 /**
  * Uma linha da sacola, como o servidor a aceita: dois ids e uma quantidade.
  *
- * Nao ha campo de preco, e a ausencia e o ponto. O carrinho do navegador
+ * Não há campo de preço, e a ausência e o ponto. O carrinho do navegador
  * guarda nome, foto e valor para desenhar a tela, e o checkout manda o
- * carrinho inteiro — o que vier alem destes tres campos e descartado antes de
- * chegar ao servico, em `cart.controller.ts`. Preco do cliente nao tem onde
+ * carrinho inteiro — o que vier além destes três campos e descartado antes de
+ * chegar ao serviço, em `cart.controller.ts`. Preço do cliente não tem onde
  * pousar nesta API.
  */
 export class QuoteItemDto {
@@ -40,14 +40,14 @@ export class QuoteItemDto {
   quantity: number;
 }
 
-/** Como o pedido chega ao cliente. A cidade so existe na entrega. */
+/** Como o pedido chega ao cliente. A cidade só existe na entrega. */
 export class QuoteFulfillmentDto {
   @IsIn(FULFILLMENT_MODE_VALUES, { message: 'modo de entrega inválido' })
   mode: FulfillmentMode;
 
   /**
-   * Opcional aqui, obrigatorio la: quem exige a cidade na entrega e o
-   * `DeliveryService`, que e quem sabe se ela ainda e atendida. O DTO so
+   * Opcional aqui, obrigatório lá: quem exige a cidade na entrega e o
+   * `DeliveryService`, que e quem sabe se ela ainda e atendida. O DTO só
    * confere o formato.
    */
   @IsOptional()
@@ -55,12 +55,12 @@ export class QuoteFulfillmentDto {
   cityId?: string;
 }
 
-/** A forma de pagamento escolhida e, no cartao, em quantas vezes. */
+/** A forma de pagamento escolhida e, no cartão, em quantas vezes. */
 export class QuotePaymentDto {
   @IsIn(PAYMENT_METHOD_VALUES, { message: 'forma de pagamento inválida' })
   method: PaymentMethod;
 
-  /** Sem parcelamento informado, a cotacao sai a vista. */
+  /** Sem parcelamento informado, a cotação sai a vista. */
   @IsOptional()
   @IsInt()
   @Min(1)

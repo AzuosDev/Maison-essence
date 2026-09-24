@@ -12,9 +12,9 @@ import { ProductCard } from './product-card';
 /**
  * O card de produto contra dados de verdade.
  *
- * O que estes casos cobrem e o comportamento que o mockup nao consegue
- * mostrar: o que acontece no clique. Um card que desenha certo e poe a
- * variante errada na sacola parece perfeito na revisao visual.
+ * O que estes casos cobrem e o comportamento que o mockup não consegue
+ * mostrar: o que acontece no clique. Um card que desenha certo e põe a
+ * variante errada na sacola parece perfeito na revisão visual.
  */
 
 const REGRAS_DE_PAGAMENTO = {
@@ -131,16 +131,16 @@ test('produto de várias variantes abre o seletor antes de adicionar', async () 
 
   const dialogo = await screen.findByRole('dialog');
 
-  // Nada entrou na sacola so por abrir o seletor.
+  // Nada entrou na sacola só por abrir o seletor.
   expect(useCart.getState().lines).toHaveLength(0);
 
   await user.click(within(dialogo).getByRole('radio', { name: /100ml/ }));
   await user.click(within(dialogo).getByRole('button', { name: 'Adicionar a sacola' }));
 
-  // A linha guardada tem tres campos e nenhum deles e texto: o rotulo da
-  // opcao — como o nome e a foto — vive na dica em memoria, fora do
+  // A linha guardada tem três campos e nenhum deles e texto: o rótulo da
+  // opção — como o nome e a foto — vive na dica em memória, fora do
   // `localStorage`. Conferir os dois lados e o que garante que a variante
-  // certa foi escolhida *e* que a linha continua sem nada alem dos ids.
+  // certa foi escolhida *e* que a linha continua sem nada além dos ids.
   expect(useCart.getState().lines).toEqual([
     { productId: 'p1', variantId: 'v100', quantity: 1 },
   ]);
@@ -160,7 +160,7 @@ test('o card precifica pela variante mais barata', () => {
     }),
   );
 
-  // Faixa, e nao o preco da primeira variante da lista.
+  // Faixa, e não o preço da primeira variante da lista.
   expect(screen.getByText(/R\$ 180,00 – R\$ 260,00/)).toBeDefined();
 });
 
@@ -186,7 +186,7 @@ test('o preço riscado some quando o produto tem faixa de preço', () => {
     }),
   );
 
-  // "De R$ 240,00" ao lado de uma faixa nao diria a qual opcao se refere.
+  // "De R$ 240,00" ao lado de uma faixa não diria a qual opção se refere.
   expect(screen.queryByText(/R\$ 240,00/)).toBeNull();
 });
 

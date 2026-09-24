@@ -1,17 +1,17 @@
 /**
- * O relatorio da importacao.
+ * O relatório da importação.
  *
- * Quem roda o comando precisa responder uma pergunta so: **deu certo, e o que
- * mudou?** Tres linhas de contagem respondem a primeira parte; a lista de
- * falhas, com slug e motivo, responde a segunda — e e a unica parte do
- * relatorio que alguem vai reler amanha.
+ * Quem roda o comando precisa responder uma pergunta só: **deu certo, e o que
+ * mudou?** Três linhas de contagem respondem a primeira parte; a lista de
+ * falhas, com slug e motivo, responde a segunda — e e a única parte do
+ * relatório que alguém vai reler amanha.
  *
- * As falhas vem com o slug na frente de proposito. "Produto invalido: o preco
+ * As falhas vem com o slug na frente de propósito. "Produto inválido: o preço
  * deve ser um inteiro em centavos" manda procurar em 269 linhas; "asad-elixir:
- * o preco deve ser um inteiro em centavos" manda abrir uma.
+ * o preço deve ser um inteiro em centavos" manda abrir uma.
  */
 
-/** Uma entrada que nao entrou, e por que. */
+/** Uma entrada que não entrou, e por que. */
 export interface ImportFailure {
   slug: string;
   reason: string;
@@ -35,12 +35,12 @@ export interface VariantTally {
 }
 
 /**
- * Os ids que esta execucao criou.
+ * Os ids que esta execução criou.
  *
- * So existe quando o cluster nao suporta transacao. Com transacao a lista nao
- * teria serventia: ou tudo entrou, ou nada entrou. Sem transacao, ela e a
- * unica maneira de desfazer uma importacao que parou no meio — e por isso vai
- * para um arquivo no comando e para o corpo da resposta na rota, onde nao ha
+ * Só existe quando o cluster não suporta transação. Com transação a lista não
+ * teria serventia: ou tudo entrou, ou nada entrou. Sem transação, ela e a
+ * única maneira de desfazer uma importação que parou no meio — e por isso vai
+ * para um arquivo no comando e para o corpo da resposta na rota, onde não há
  * disco para escrever.
  */
 export interface RollbackLog {
@@ -53,18 +53,18 @@ export interface CatalogImportReport {
   products: ProductTally;
   variants: VariantTally;
   failures: ImportFailure[];
-  /** Nada foi gravado: a execucao so simulou. */
+  /** Nada foi gravado: a execução só simulou. */
   dryRun: boolean;
-  /** A importacao inteira rodou dentro de uma transacao. */
+  /** A importação inteira rodou dentro de uma transação. */
   transactional: boolean;
-  /** Presente so na execucao sem transacao que gravou alguma coisa. */
+  /** Presente só na execução sem transação que gravou alguma coisa. */
   rollback?: RollbackLog;
   /**
    * Produtos que ficaram de fora porque o tempo acabou.
    *
-   * So aparece na rota, que roda com relogio: a importacao para entre dois
+   * Só aparece na rota, que roda com relógio: a importação para entre dois
    * lotes e diz quantos faltam. Como ela e idempotente, mandar o mesmo
-   * arquivo de novo termina o servico.
+   * arquivo de novo termina o serviço.
    */
   remaining?: number;
   durationMs: number;
@@ -83,11 +83,11 @@ export function emptyReport(): CatalogImportReport {
 }
 
 /**
- * O relatorio em linhas, para o terminal.
+ * O relatório em linhas, para o terminal.
  *
- * Uma linha por assunto, numeros alinhados. O cabecalho avisa quando foi
- * simulacao — a informacao que muda o que a pessoa faz em seguida, e que por
- * isso vem antes dos numeros e nao depois deles.
+ * Uma linha por assunto, números alinhados. O cabeçalho avisa quando foi
+ * simulação — a informação que muda o que a pessoa faz em seguida, e que por
+ * isso vem antes dos números e não depois deles.
  */
 export function formatReport(report: CatalogImportReport): string[] {
   const { categories, products, variants } = report;

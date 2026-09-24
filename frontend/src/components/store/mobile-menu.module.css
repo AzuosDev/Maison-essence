@@ -1,8 +1,8 @@
 /*
- * O conteudo da gaveta do celular.
+ * O conteúdo da gaveta do celular.
  *
- * A moldura — veu, painel, foco preso, Escape — e do primitivo `Drawer`.
- * Aqui fica so o que vai dentro: busca no topo, arvore de categorias no
+ * A moldura — véu, painel, foco preso, Escape — e do primitivo `Drawer`.
+ * Aqui fica só o que vai dentro: busca no topo, árvore de categorias no
  * meio, institucional no fim.
  */
 
@@ -13,9 +13,9 @@
 }
 
 /*
- * A busca parece um campo mas e um botao: abrir o teclado do celular dentro
- * de uma gaveta que ja e estreita seria pior que fechar a gaveta e abrir a
- * busca inteira, que e o que este botao faz.
+ * A busca parece um campo mas e um botão: abrir o teclado do celular dentro
+ * de uma gaveta que já e estreita seria pior que fechar a gaveta e abrir a
+ * busca inteira, que e o que este botão faz.
  */
 .search {
   display: flex;
@@ -75,10 +75,10 @@
   color: var(--gold-deep);
 }
 
-/* ---- Arvore de categorias ---------------------------------------------- */
+/* ---- Árvore de categorias ---------------------------------------------- */
 
 /*
- * A categoria pai e um link dentro do gatilho do acordeao? Nao: seriam dois
+ * A categoria pai e um link dentro do gatilho do acordeão? Não: seriam dois
  * alvos empilhados no mesmo toque. O pai abre a sanfona, e o primeiro item
  * de dentro e "Ver tudo em <categoria>" — dois toques, nenhum ambiguo.
  */

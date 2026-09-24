@@ -21,30 +21,30 @@ import styles from './step-payment.module.css';
  * Etapa 3: como o pagamento vai ser combinado.
  *
  * O verbo importa e esta na frase acima: **combinado**. Nenhum pagamento e
- * processado neste site, nao ha campo de cartao em lugar nenhum e nada e
+ * processado neste site, não há campo de cartão em lugar nenhum e nada e
  * cobrado aqui. O que esta sendo escolhido e o assunto da conversa que vai
- * acontecer no WhatsApp da loja — e e por isso que o aviso desta tela nao e
- * letra miuda de rodape, e um bloco no meio do caminho.
+ * acontecer no WhatsApp da loja — e e por isso que o aviso desta tela não e
+ * letra miuda de rodapé, e um bloco no meio do caminho.
  *
- * Sem ele, o cliente que escolhe "Cartao" espera a proxima tela pedir o
- * numero, nao a encontra, e conclui que o site quebrou. O recado precisa
+ * Sem ele, o cliente que escolhe "Cartão" espera a próxima tela pedir o
+ * número, não a encontra, e conclui que o site quebrou. O recado precisa
  * chegar antes da expectativa.
  *
- * ## So o que a loja aceita
+ * ## Só o que a loja aceita
  *
- * PIX aparece quando ha chave cadastrada; cartao, quando a dona ligou o
- * parcelamento. Uma opcao desligada nao e desenhada desabilitada — ela
- * simplesmente nao existe, porque um radio apagado e uma pergunta sem
- * resposta. Quando sobra uma so, ela ja vem marcada: nao e escolha se nao ha
+ * PIX aparece quando há chave cadastrada; cartão, quando a dona ligou o
+ * parcelamento. Uma opção desligada não e desenhada desabilitada — ela
+ * simplesmente não existe, porque um radio apagado e uma pergunta sem
+ * resposta. Quando sobra uma só, ela já vem marcada: não e escolha se não há
  * alternativa.
  *
- * ## As parcelas sao do servidor
+ * ## As parcelas são do servidor
  *
- * A lista inteira vem de `installmentOptions`, na cotacao. O navegador nao
+ * A lista inteira vem de `installmentOptions`, na cotação. O navegador não
  * divide o total por seis: ele recebe "6x de R$ 80,12" pronto, com a marca
  * de juros e o total financiado ao lado. Isso importa porque esse valor vai
  * ser repetido na mensagem do WhatsApp, gravado no pedido e cobrado na
- * maquininha — e as tres pontas precisam escrever o mesmo numero.
+ * maquininha — e as três pontas precisam escrever o mesmo número.
  */
 
 export interface StepPaymentProps {
@@ -76,11 +76,11 @@ export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepP
   const errors = tried && !result.success ? fieldErrors(result.error) : NO_ERRORS;
 
   /**
-   * Uma forma de pagamento so nao e uma escolha.
+   * Uma forma de pagamento só não e uma escolha.
    *
-   * A loja que aceita apenas PIX nao deve exigir um clique para confirmar o
+   * A loja que aceita apenas PIX não deve exigir um clique para confirmar o
    * obvio — e, se exigisse, o cliente leria "escolha a forma de pagamento"
-   * diante de uma unica opcao.
+   * diante de uma única opção.
    */
   const onlyMethod = soleMethod(pixAvailable, cardAvailable);
 
@@ -183,10 +183,10 @@ export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepP
 /**
  * Quanto o PIX tira do total.
  *
- * O percentual vem das configuracoes, mas o valor em reais vem da cotacao —
- * `pixDiscountCents`, ja calculado sobre este subtotal. A tela nao multiplica
- * o total por 5%: o desconto do PIX tem regra de arredondamento propria no
- * servidor, e um centavo de diferenca entre o que a tela promete e o que a
+ * O percentual vem das configurações, mas o valor em reais vem da cotação —
+ * `pixDiscountCents`, já calculado sobre este subtotal. A tela não multiplica
+ * o total por 5%: o desconto do PIX tem regra de arredondamento própria no
+ * servidor, e um centavo de diferença entre o que a tela promete e o que a
  * mensagem do WhatsApp registra e uma conversa desnecessaria na hora de
  * cobrar.
  */
@@ -210,19 +210,19 @@ function PixPanel({ quote }: { quote: CheckoutQuoteView['quote'] }) {
   );
 }
 
-/* ---- Cartao --------------------------------------------------------------- */
+/* ---- Cartão --------------------------------------------------------------- */
 
 /**
- * As parcelas, como a cotacao as devolveu.
+ * As parcelas, como a cotação as devolveu.
  *
- * Cada opcao diz tres coisas: quantas vezes, quanto e cada uma, e se ha
+ * Cada opção diz três coisas: quantas vezes, quanto e cada uma, e se há
  * juros. A terceira e a que costuma faltar nas lojas e a que decide a
- * escolha — e quando ha juros, o total financiado aparece junto, porque "6x
+ * escolha — e quando há juros, o total financiado aparece junto, porque "6x
  * de R$ 80,12" sem o total esconde exatamente o que o cliente precisa
  * comparar.
  *
- * A sobra de arredondamento cai na primeira parcela, e isso tambem e dito
- * quando acontece: ninguem deve descobrir na maquininha que a primeira veio
+ * A sobra de arredondamento cai na primeira parcela, e isso também e dito
+ * quando acontece: ninguém deve descobrir na maquininha que a primeira veio
  * dois centavos maior.
  */
 function Installments({
@@ -321,7 +321,7 @@ function WhatsappNotice() {
 
 /* ---- Auxiliares ----------------------------------------------------------- */
 
-/** A unica forma aceita, quando ha so uma. `null` quando ha duas ou nenhuma. */
+/** A única forma aceita, quando há só uma. `null` quando há duas ou nenhuma. */
 function soleMethod(pixAvailable: boolean, cardAvailable: boolean): PaymentMethod | null {
   if (pixAvailable && !cardAvailable) {
     return PAYMENT_METHODS.PIX;

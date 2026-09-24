@@ -12,39 +12,39 @@ import {
 } from './admin.types';
 
 /**
- * As configuracoes da loja, enquanto estao sendo editadas.
+ * As configurações da loja, enquanto estão sendo editadas.
  *
- * ## Uma tela, cinco assuntos, um rascunho so
+ * ## Uma tela, cinco assuntos, um rascunho só
  *
- * Nome da loja, retirada, redes, carrossel e paginas sao coisas diferentes,
- * mas moram no mesmo documento e sao gravadas pelo mesmo `PATCH`. Um rascunho
- * unico e o que permite uma barra de salvar so — e a dona que entrou para
- * trocar o texto da barra de avisos e acabou corrigindo o CEP nao precisa
- * descobrir que sao dois botoes diferentes.
+ * Nome da loja, retirada, redes, carrossel e páginas são coisas diferentes,
+ * mas moram no mesmo documento e são gravadas pelo mesmo `PATCH`. Um rascunho
+ * único e o que permite uma barra de salvar só — e a dona que entrou para
+ * trocar o texto da barra de avisos e acabou corrigindo o CEP não precisa
+ * descobrir que são dois botões diferentes.
  *
- * ## Por que a comparacao acontece no espaco do rascunho
+ * ## Por que a comparação acontece no espaço do rascunho
  *
  * `changesOf` compara o rascunho com **outro rascunho** — o que sairia de
- * `draftFromSettings` agora —, e nao com o documento do servidor. A razao e a
+ * `draftFromSettings` agora —, e não com o documento do servidor. A razão e a
  * data do banner: o servidor guarda um instante, a tela mostra um dia, e a
- * volta do dia para o instante nao devolve exatamente o que estava la. Se a
- * comparacao acontecesse no espaco do servidor, toda abertura da tela acharia
+ * volta do dia para o instante não devolve exatamente o que estava lá. Se a
+ * comparação acontecesse no espaço do servidor, toda abertura da tela acharia
  * que os banners mudaram, e a barra de salvar apareceria sozinha.
  *
- * ## Tres significados de vazio, de novo
+ * ## Três significados de vazio, de novo
  *
- * - **barra de avisos vazia** tira a barra do ar. E o jeito de desliga-la;
- * - **frete gratis vazio** e `null`: a loja nao tem minimo geral, e cada
+ * - **barra de avisos vazia** tira a barra do ar. E o jeito de desliga-lá;
+ * - **frete grátis vazio** e `null`: a loja não tem mínimo geral, e cada
  *   cidade responde pela sua regra;
- * - **e-mail de contato vazio** nao pode ser enviado. O servidor valida o
- *   campo como e-mail e recusa o texto vazio, entao apagar um e-mail ja
- *   gravado e uma coisa que o painel nao consegue fazer — e dizer isso e
- *   melhor do que devolver um 400 sem explicacao.
+ * - **e-mail de contato vazio** não pode ser enviado. O servidor valida o
+ *   campo como e-mail e recusa o texto vazio, então apagar um e-mail já
+ *   gravado e uma coisa que o painel não consegue fazer — e dizer isso e
+ *   melhor do que devolver um 400 sem explicação.
  */
 
 /* ---- O rascunho ------------------------------------------------------------- */
 
-/** O endereco da retirada, campo a campo, como texto. */
+/** O endereço da retirada, campo a campo, como texto. */
 export interface AddressDraft {
   street: string;
   number: string;
@@ -56,19 +56,19 @@ export interface AddressDraft {
   reference: string;
 }
 
-/** Um banner do carrossel em edicao. */
+/** Um banner do carrossel em edição. */
 export interface BannerDraft {
   /**
-   * Chave estavel da linha na tela.
+   * Chave estável da linha na tela.
    *
-   * Nao e o `id` do servidor: banner recem-adicionado ainda nao tem um, e sem
-   * uma chave propria o React reaproveitaria o estado da linha errada quando
+   * Não e o `id` do servidor: banner recém-adicionado ainda não tem um, e sem
+   * uma chave própria o React reaproveitaria o estado da linha errada quando
    * a lista fosse reordenada.
    */
   key: string;
-  /** Ausente em banner novo — e a ausencia que faz o servidor criar. */
+  /** Ausente em banner novo — e a ausência que faz o servidor criar. */
   id?: string;
-  /** `publicId` do Cloudinary. Sem arte o banner nao existe. */
+  /** `publicId` do Cloudinary. Sem arte o banner não existe. */
   imageDesktop: string;
   imageMobile: string;
   title: string;
@@ -77,12 +77,12 @@ export interface BannerDraft {
   link: string;
   /** Dia local, `YYYY-MM-DD`. Vazio e "desde sempre". */
   startsOn: string;
-  /** Dia local. Vazio e "ate segunda ordem"; preenchido, e o ultimo dia no ar. */
+  /** Dia local. Vazio e "até segunda ordem"; preenchido, e o último dia no ar. */
   endsOn: string;
   isActive: boolean;
 }
 
-/** Uma pagina institucional em edicao. O slug nao se edita. */
+/** Uma página institucional em edição. O slug não se edita. */
 export interface PageDraft {
   slug: InstitutionalPageSlug;
   title: string;
@@ -92,7 +92,7 @@ export interface PageDraft {
 
 export interface SettingsDraft {
   storeName: string;
-  /** Como a dona o le: `(88) 99999-9999`. */
+  /** Como a dona o lê: `(88) 99999-9999`. */
   whatsapp: string;
   announcementText: string;
   contactEmail: string;
@@ -102,7 +102,7 @@ export interface SettingsDraft {
   pickupInstructions: string;
   instagram: string;
   tiktok: string;
-  /** `150,00`. Vazio desliga o minimo geral da loja. */
+  /** `150,00`. Vazio desliga o mínimo geral da loja. */
   freeShippingMin: string;
   banners: BannerDraft[];
   pages: PageDraft[];
@@ -129,17 +129,17 @@ export interface SettingsErrors {
   tiktok?: string;
   freeShippingMin?: string;
   address?: AddressErrors;
-  /** Por `key` do rascunho, e nao por `id`: banner novo ainda nao tem `id`. */
+  /** Por `key` do rascunho, e não por `id`: banner novo ainda não tem `id`. */
   banners?: Record<string, BannerErrors>;
   /** Por `slug`. */
   pages?: Partial<Record<InstitutionalPageSlug, PageErrors>>;
 }
 
 /**
- * O que o servidor aceita e provavelmente nao era a intencao.
+ * O que o servidor aceita e provavelmente não era a intenção.
  *
  * O `scope` diz em que bloco o aviso mora. Nenhum deles bloqueia o
- * salvamento: sao configuracoes legitimas que simplesmente somem do outro
+ * salvamento: são configurações legitimas que simplesmente somem do outro
  * lado sem dizer nada.
  */
 export interface SettingsWarning {
@@ -149,7 +149,7 @@ export interface SettingsWarning {
 
 /* ---- Abrir o rascunho --------------------------------------------------------- */
 
-/** Como cada pagina institucional se chama na tela do painel. */
+/** Como cada página institucional se chama na tela do painel. */
 export const PAGE_LABELS: Record<InstitutionalPageSlug, string> = {
   [INSTITUTIONAL_PAGE_SLUGS.ABOUT]: 'Quem somos',
   [INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY]: 'Como comprar',
@@ -170,8 +170,8 @@ export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
     pickupInstructions: settings.pickupInstructions,
     instagram: settings.socialLinks.instagram,
     tiktok: settings.socialLinks.tiktok,
-    // `null` e "sem minimo geral", e vira campo vazio — e nao `0,00`, que
-    // seria frete gratis em qualquer pedido.
+    // `null` e "sem mínimo geral", e vira campo vazio — e não `0,00`, que
+    // seria frete grátis em qualquer pedido.
     freeShippingMin:
       settings.freeShippingMinCents === null ? '' : centsToInput(settings.freeShippingMinCents),
     banners: settings.banners.map(draftFromBanner),
@@ -200,13 +200,13 @@ function draftFromPage(page: AdminInstitutionalPage): PageDraft {
 }
 
 /**
- * Um banner novo, ja no ar e sem agendamento.
+ * Um banner novo, já no ar e sem agendamento.
  *
- * Nasce ligado porque quem acabou de enviar a arte quer ve-la na home — o
- * agendamento e a excecao, e a excecao se configura. O `id` fica **ausente**,
- * e nao `undefined`: com `exactOptionalPropertyTypes`, um campo opcional
- * presente valendo `undefined` nao e a mesma coisa que um campo ausente, e e
- * a ausencia que faz o servidor criar um banner novo.
+ * Nasce ligado porque quem acabou de enviar a arte quer vê-lá na home — o
+ * agendamento e a exceção, e a exceção se configura. O `id` fica **ausente**,
+ * e não `undefined`: com `exactOptionalPropertyTypes`, um campo opcional
+ * presente valendo `undefined` não e a mesma coisa que um campo ausente, e e
+ * a ausência que faz o servidor criar um banner novo.
  */
 export function newBanner(imageDesktop: string): BannerDraft {
   return {
@@ -223,7 +223,7 @@ export function newBanner(imageDesktop: string): BannerDraft {
   };
 }
 
-/** Move um banner uma posicao. Fora da lista, devolve a lista como estava. */
+/** Move um banner uma posição. Fora da lista, devolve a lista como estava. */
 export function moveBanner(
   banners: readonly BannerDraft[],
   from: number,
@@ -250,10 +250,10 @@ export function moveBanner(
 /**
  * Onde o banner esta, agora.
  *
- * Quatro estados e nao dois, porque um banner desligado e um banner que
- * terminou ontem parecem a mesma coisa na tela e nao sao: o primeiro volta
+ * Quatro estados e não dois, porque um banner desligado e um banner que
+ * terminou ontem parecem a mesma coisa na tela e não são: o primeiro volta
  * com um clique, o segundo precisa de datas novas. E um banner agendado que
- * nao esta no ar e o caso que mais assusta — "salvei e nao apareceu".
+ * não esta no ar e o caso que mais assusta — "salvei e não apareceu".
  */
 export type BannerStatus = 'live' | 'scheduled' | 'expired' | 'off';
 
@@ -284,13 +284,13 @@ export const BANNER_STATUS_LABELS: Record<BannerStatus, string> = {
 
 /* ---- O WhatsApp ----------------------------------------------------------------- */
 
-/** Codigo do pais assumido quando o numero vem sem ele. */
+/** Código do pais assumido quando o número vem sem ele. */
 const DEFAULT_COUNTRY_CODE = '55';
 
-/** Numero brasileiro sem o pais: DDD de dois digitos mais 8 ou 9 digitos. */
+/** Número brasileiro sem o pais: DDD de dois digitos mais 8 ou 9 digitos. */
 const BRAZILIAN_WITHOUT_COUNTRY = /^[1-9][0-9]\d{8,9}$/;
 
-/** Pontuacao que a dona cola junto e que o `wa.me` nao aceita. */
+/** Pontuação que a dona cola junto e que o `wa.me` não aceita. */
 const PUNCTUATION = /[\s().+-]/g;
 
 const MIN_WHATSAPP_DIGITS = 12;
@@ -300,16 +300,16 @@ export const WHATSAPP_MESSAGE =
   'Escreva o número com DDD, como (88) 99999-9999. Ele e o destino de todo pedido da loja.';
 
 /**
- * O numero em formato internacional, ou `null` quando nao e um telefone.
+ * O número em formato internacional, ou `null` quando não e um telefone.
  *
  * Copia de `normalizeWhatsappNumber` do backend. A fidelidade importa por
- * dois motivos: o `wa.me` so aceita digitos — um numero gravado como
- * "(88) 99999-9999" nao da erro no painel, da erro na mao do cliente, na hora
+ * dois motivos: o `wa.me` só aceita digitos — um número gravado como
+ * "(88) 99999-9999" não da erro no painel, da erro na mão do cliente, na hora
  * de enviar o pedido — e `changesOf` compara o resultado disto com o que o
- * servidor devolveu, entao uma divergencia faria o campo se achar sujo a cada
+ * servidor devolveu, então uma divergência faria o campo se achar sujo a cada
  * abertura da tela.
  *
- * Vazio e resposta valida: e a loja que ainda nao configurou o numero.
+ * Vazio e resposta valida: e a loja que ainda não configurou o número.
  */
 export function normalizeWhatsapp(value: string): string | null {
   const digits = value.trim().replace(PUNCTUATION, '');
@@ -322,8 +322,8 @@ export function normalizeWhatsapp(value: string): string | null {
     return null;
   }
 
-  // O `55` so entra quando o numero tem cara de brasileiro sem o pais: a loja
-  // e de Sobral, mas o fornecedor da dona pode nao ser.
+  // O `55` só entra quando o número tem cara de brasileiro sem o pais: a loja
+  // e de Sobral, mas o fornecedor da dona pode não ser.
   const international = BRAZILIAN_WITHOUT_COUNTRY.test(digits)
     ? `${DEFAULT_COUNTRY_CODE}${digits}`
     : digits;
@@ -334,12 +334,12 @@ export function normalizeWhatsapp(value: string): string | null {
 }
 
 /**
- * O numero gravado, escrito do jeito que a dona o reconhece.
+ * O número gravado, escrito do jeito que a dona o reconhece.
  *
- * `5588999999999` e o que o `wa.me` precisa e o que ninguem confere olhando.
- * A formatacao acontece ao abrir a tela; `normalizeWhatsapp` a desfaz na
- * saida. Nao e mascara enquanto se digita — reposicionar o cursor a cada
- * tecla e o jeito mais rapido de fazer alguem errar o numero.
+ * `5588999999999` e o que o `wa.me` precisa e o que ninguém confere olhando.
+ * A formatação acontece ao abrir a tela; `normalizeWhatsapp` a desfaz na
+ * saída. Não e máscara enquanto se digita — reposicionar o cursor a cada
+ * tecla e o jeito mais rápido de fazer alguém errar o número.
  */
 export function prettyWhatsapp(number: string): string {
   if (!number.startsWith(DEFAULT_COUNTRY_CODE) || number.length < 12) {
@@ -353,21 +353,21 @@ export function prettyWhatsapp(number: string): string {
   return `(${ddd}) ${rest.slice(0, half)}-${rest.slice(half)}`;
 }
 
-/* ---- A validacao ---------------------------------------------------------------- */
+/* ---- A validação ---------------------------------------------------------------- */
 
-/** Suficiente para pegar erro de digitacao; o servidor valida o resto. */
+/** Suficiente para pegar erro de digitação; o servidor valida o resto. */
 const EMAIL = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
 
-/** CEP com ou sem o traco, ou vazio. Mesma expressao do DTO. */
+/** CEP com ou sem o traço, ou vazio. Mesma expressão do DTO. */
 const ZIP_CODE = /^(?:\d{5}-?\d{3})?$/;
 
 /**
- * O que impede as configuracoes de serem salvas.
+ * O que impede as configurações de serem salvas.
  *
- * Confere o que o servidor conferiria, e nada alem. Recebe o que esta gravado
- * junto com o rascunho por causa de um caso so: o e-mail de contato, que nao
+ * Confere o que o servidor conferiria, e nada além. Recebe o que esta gravado
+ * junto com o rascunho por causa de um caso só: o e-mail de contato, que não
  * pode ser apagado depois de escrito porque o servidor o valida como e-mail e
- * texto vazio nao passa.
+ * texto vazio não passa.
  */
 export function validateSettings(
   draft: SettingsDraft,
@@ -392,8 +392,8 @@ export function validateSettings(
   if (email !== '' && !EMAIL.test(email)) {
     errors.contactEmail = 'Escreva um e-mail válido.';
   } else if (email === '' && settings.contactEmail !== '') {
-    // O servidor valida o campo como e-mail, e texto vazio nao passa por ali.
-    // Melhor dizer isso do que devolver um 400 sem explicacao.
+    // O servidor valida o campo como e-mail, e texto vazio não passa por ali.
+    // Melhor dizer isso do que devolver um 400 sem explicação.
     errors.contactEmail = 'O e-mail não pode ser apagado por aqui — escreva outro no lugar.';
   }
 
@@ -447,12 +447,12 @@ export function validateSettings(
 }
 
 /**
- * O endereco da retirada.
+ * O endereço da retirada.
  *
- * Nenhum campo e obrigatorio, nem com a retirada ligada: o servidor nao os
- * exige, e uma tela que exigisse recusaria o preenchimento em duas sessoes —
+ * Nenhum campo e obrigatório, nem com a retirada ligada: o servidor não os
+ * exige, e uma tela que exigisse recusaria o preenchimento em duas sessões —
  * a dona escreve a rua hoje e o CEP quando encontrar. O que falta vira aviso,
- * e nao erro.
+ * e não erro.
  */
 export function validateAddress(address: AddressDraft): AddressErrors {
   const errors: AddressErrors = {};
@@ -511,8 +511,8 @@ function validateBanners(banners: readonly BannerDraft[]): Record<string, Banner
       errors.link = 'Esse endereço e longo demais.';
     }
 
-    // Um banner que termina antes de comecar nunca apareceria, e a tela
-    // mostraria uma campanha salva que ninguem veria.
+    // Um banner que termina antes de começar nunca apareceria, e a tela
+    // mostraria uma campanha salva que ninguém veria.
     if (
       banner.startsOn !== '' &&
       banner.endsOn !== '' &&
@@ -564,9 +564,9 @@ export function hasSettingsErrors(errors: SettingsErrors): boolean {
 /**
  * O que o servidor aceita e que some do site sem avisar.
  *
- * O primeiro deles e o mais caro de todos: sem numero de WhatsApp, o pedido
- * fechado no checkout nao tem para onde ir, e a loja descobre isso pela venda
- * que nao chegou.
+ * O primeiro deles e o mais caro de todos: sem número de WhatsApp, o pedido
+ * fechado no checkout não tem para onde ir, e a loja descobre isso pela venda
+ * que não chegou.
  */
 export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
   const warnings: SettingsWarning[] = [];
@@ -593,7 +593,7 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
       text:
         semArte === 1
           ? 'Um banner não tem arte de celular e vai usar a de computador, que costuma cortar mal no retrato.'
-          : `${String(semArte)} banners não tem arte de celular e vao usar a de computador, que costuma cortar mal no retrato.`,
+          : `${String(semArte)} banners não tem arte de celular e vão usar a de computador, que costuma cortar mal no retrato.`,
     });
   }
 
@@ -612,10 +612,10 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
 /* ---- O diff --------------------------------------------------------------------- */
 
 /**
- * So o que mudou em relacao ao que veio do servidor.
+ * Só o que mudou em relação ao que veio do servidor.
  *
- * Devolve `null` quando nada mudou. A comparacao acontece contra o rascunho
- * que sairia do documento agora, e nao contra o documento — ver a nota sobre
+ * Devolve `null` quando nada mudou. A comparação acontece contra o rascunho
+ * que sairia do documento agora, e não contra o documento — ver a nota sobre
  * a data do banner no topo do arquivo.
  */
 export function changesOf(
@@ -641,7 +641,7 @@ export function changesOf(
 
   const email = draft.contactEmail.trim();
 
-  // Vazio nunca viaja: o servidor recusaria, e a validacao ja explicou.
+  // Vazio nunca viaja: o servidor recusaria, e a validação já explicou.
   if (email !== '' && email !== settings.contactEmail) {
     changes.contactEmail = email;
   }
@@ -684,8 +684,8 @@ export function changesOf(
     changes.freeShippingMinCents = free;
   }
 
-  // O carrossel vai inteiro ou nao vai: o array substitui o gravado, e o que
-  // sumiu dele foi removido de proposito.
+  // O carrossel vai inteiro ou não vai: o array substitui o gravado, e o que
+  // sumiu dele foi removido de propósito.
   if (!sameBanners(draft.banners, base.banners)) {
     changes.banners = draft.banners.map(bannerToInput);
   }
@@ -702,11 +702,11 @@ export function changesOf(
 }
 
 /**
- * Ha algo pendente na tela.
+ * Há algo pendente na tela.
  *
- * Nao e o mesmo que ter mudancas: um numero de WhatsApp escrito errado nao
- * vira mudanca nenhuma — nao ha o que mandar —, e sem isto a dona digitaria
- * um numero invalido e a tela nao reagiria de jeito nenhum.
+ * Não e o mesmo que ter mudancas: um número de WhatsApp escrito errado não
+ * vira mudanca nenhuma — não há o que mandar —, e sem isto a dona digitaria
+ * um número inválido e a tela não reagiria de jeito nenhum.
  */
 export function isDirty(draft: SettingsDraft, settings: AdminStoreSettings): boolean {
   return (
@@ -722,7 +722,7 @@ function addressChanges(
   const fields = Object.keys(draft) as (keyof AddressDraft)[];
 
   for (const field of fields) {
-    // A sigla do estado e comparada em maiuscula porque e assim que o
+    // A sigla do estado e comparada em maiúscula porque e assim que o
     // servidor a grava: sem isso, escrever "ce" reenviaria o campo para
     // sempre.
     const value = field === 'state' ? draft[field].trim().toUpperCase() : draft[field].trim();
@@ -735,7 +735,7 @@ function addressChanges(
   return Object.keys(changes).length === 0 ? null : changes;
 }
 
-/** `null` desliga o minimo geral: cada cidade responde pela sua regra. */
+/** `null` desliga o mínimo geral: cada cidade responde pela sua regra. */
 function freeShippingOf(draft: SettingsDraft): number | null {
   return draft.freeShippingMin.trim() === '' ? null : centsFromInput(draft.freeShippingMin);
 }
@@ -778,9 +778,9 @@ function samePage(page: PageDraft, other: PageDraft | undefined): boolean {
 /**
  * Um banner do rascunho, no formato do `PATCH`.
  *
- * `order` sai da posicao no array, que e a ordem que a dona arrastou. As
- * datas viram instantes: o primeiro dia comeca a zero hora, e o ultimo dia
- * termina no fim dele — "ate 25/12" precisa incluir o dia 25 inteiro.
+ * `order` sai da posição no array, que e a ordem que a dona arrastou. As
+ * datas viram instantes: o primeiro dia começa a zero hora, e o último dia
+ * termina no fim dele — "até 25/12" precisa incluir o dia 25 inteiro.
  */
 export function bannerToInput(banner: BannerDraft, index: number): BannerInput {
   return {

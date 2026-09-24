@@ -63,9 +63,9 @@ describe('normalizePixKey', () => {
   });
 
   /**
-   * O erro que esta validacao existe para pegar: a chave certa com o tipo
-   * errado. A rota publica anuncia so o tipo, entao o cliente leria "chave:
-   * CPF" e digitaria onze digitos — e a transferencia nao aconteceria.
+   * O erro que esta validação existe para pegar: a chave certa com o tipo
+   * errado. A rota publica anuncia só o tipo, então o cliente leria "chave:
+   * CPF" e digitaria onze digitos — e a transferência não aconteceria.
    */
   it('recusa a chave que não corresponde ao tipo escolhido', () => {
     expect(normalizePixKey('contato@maisonessence.com.br', PIX_KEY_TYPES.CPF)).toBeNull();

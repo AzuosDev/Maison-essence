@@ -2,16 +2,16 @@ import type { QueryFilter } from 'mongoose';
 import type { Product } from './schemas/product.schema.js';
 
 /**
- * A partir de quantos caracteres vale usar o indice de texto.
+ * A partir de quantos caracteres vale usar o índice de texto.
  *
- * O indice casa palavras inteiras com stemming em portugues — "velas" acha
- * "vela" —, mas nao casa prefixo: quem digitou "asa" nao acharia "Asad". Ate
- * dois caracteres a busca cai no regex, que varre a colecao e so faz sentido
- * porque termo tao curto e coisa de quem ainda esta digitando.
+ * O índice casa palavras inteiras com stemming em português — "velas" acha
+ * "vela" —, mas não casa prefixo: quem digitou "asa" não acharia "Asad". Até
+ * dois caracteres a busca cai no regex, que varre a coleção e só faz sentido
+ * porque termo tão curto e coisa de quem ainda esta digitando.
  */
 export const MIN_TEXT_SEARCH_LENGTH = 3;
 
-/** Uma busca que usa o indice de texto responde ordenada por relevancia. */
+/** Uma busca que usa o índice de texto responde ordenada por relevância. */
 export function usesTextIndex(term: string): boolean {
   return term.length >= MIN_TEXT_SEARCH_LENGTH;
 }
@@ -32,7 +32,7 @@ export function searchFilter(term: string): QueryFilter<Product> {
   return { $or: [{ name: pattern }, { brand: pattern }] };
 }
 
-/** Termo de busca e texto do usuario: `R$ 1,00 (novo)` nao pode virar regex. */
+/** Termo de busca e texto do usuário: `R$ 1,00 (novo)` não pode virar regex. */
 export function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

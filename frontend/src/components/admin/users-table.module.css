@@ -1,9 +1,9 @@
 /*
- * A lista de usuarios, nas duas formas.
+ * A lista de usuários, nas duas formas.
  *
  * Mesma gramatica de `orders-table.module.css`: tabela no desktop, cards no
- * celular. Nao e um arquivo compartilhado porque as colunas sao outras e os
- * cards tem uma acao embutida — juntar os dois criaria um componente com
+ * celular. Não e um arquivo compartilhado porque as colunas são outras e os
+ * cards tem uma ação embutida — juntar os dois criaria um componente com
  * dois conjuntos de props que nunca aparecem ao mesmo tempo.
  */
 
@@ -12,7 +12,7 @@
   border: var(--border);
   border-radius: var(--radius-card);
 
-  /* Seis colunas nao encolhem indefinidamente; rolar e melhor do que quebrar
+  /* Seis colunas não encolhem indefinidamente; rolar e melhor do que quebrar
      um e-mail em quatro linhas. */
   overflow-x: auto;
 }
@@ -55,7 +55,7 @@
   background-color: var(--cream);
 }
 
-/* A celula de acoes nao cresce: ela tem a largura do botao. */
+/* A célula de ações não cresce: ela tem a largura do botão. */
 .table td:last-child {
   width: 1px;
   padding-left: 0;
@@ -71,10 +71,10 @@
 }
 
 /*
- * "voce", ao lado do proprio nome.
+ * "você", ao lado do próprio nome.
  *
  * A tabela tem quatro linhas parecidas e uma delas e a de quem esta olhando.
- * Saber qual muda o que se faz com o menu de acoes.
+ * Saber qual muda o que se faz com o menu de ações.
  */
 .you {
   padding: 0.1rem var(--space-8);
@@ -181,7 +181,7 @@
   color: var(--ink);
 }
 
-/* O ultimo acesso e uma data por extenso: ocupa a linha inteira. */
+/* O último acesso e uma data por extenso: ocupa a linha inteira. */
 .cardWide {
   grid-column: 1 / -1;
 }

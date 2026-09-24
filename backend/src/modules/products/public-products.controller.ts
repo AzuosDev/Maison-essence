@@ -8,11 +8,11 @@ import { PublicCatalogService } from './public-catalog.service.js';
 import type { PublicProductDetailView, PublicProductView } from './public-product.view.js';
 
 /**
- * O catalogo da loja aberta.
+ * O catálogo da loja aberta.
  *
- * `@Public()` porque e a vitrine, e `@CdnCache()` porque e o trafego que a
- * CDN da Vercel precisa absorver: a funcao serverless so e acionada quando a
- * borda nao tem resposta fresca.
+ * `@Public()` porque e a vitrine, e `@CdnCache()` porque e o tráfego que a
+ * CDN da Vercel precisa absorver: a função serverless só e acionada quando a
+ * borda não tem resposta fresca.
  */
 @Public()
 @CdnCache()
@@ -25,8 +25,8 @@ export class PublicProductsController {
     return this.catalog.list(query);
   }
 
-  // As rotas de nome fixo vem antes de `:slug` de proposito: o Nest casa na
-  // ordem de declaracao, e depois do parametro `featured` seria o slug de um
+  // As rotas de nome fixo vem antes de `:slug` de propósito: o Nest casa na
+  // ordem de declaração, e depois do parâmetro `featured` seria o slug de um
   // produto chamado "featured".
   @Get('featured')
   featured(@Query() query: ShelfDto): Promise<PublicProductView[]> {

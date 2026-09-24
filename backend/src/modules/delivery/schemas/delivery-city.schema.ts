@@ -9,7 +9,7 @@ import {
 } from '../../../database/schema-helpers.js';
 
 /**
- * Cidade atendida, com taxa fixa. Nao ha calculo por CEP nem integracao com
+ * Cidade atendida, com taxa fixa. Não há cálculo por CEP nem integração com
  * os Correios: a dona cadastra as cidades para onde entrega e o valor de cada
  * uma.
  */
@@ -37,8 +37,8 @@ export class DeliveryCity extends BaseSchema {
   estimatedDays: number;
 
   /**
-   * Valor de pedido a partir do qual a entrega nesta cidade sai de graca.
-   * `null` significa "sem regra propria" — cai na regra global da loja, que
+   * Valor de pedido a partir do qual a entrega nesta cidade sai de graça.
+   * `null` significa "sem regra própria" — cai na regra global da loja, que
    * esta em `StoreSettings`.
    */
   @Prop(centsProp({ default: null }))
@@ -55,8 +55,8 @@ export type DeliveryCityDocument = HydratedDocument<DeliveryCity>;
 
 export const DeliveryCitySchema = createSchema(DeliveryCity);
 
-// Lista publica: so as ativas, na ordem escolhida pela dona.
+// Lista publica: só as ativas, na ordem escolhida pela dona.
 DeliveryCitySchema.index({ isActive: 1, order: 1 });
 // A mesma cidade cadastrada duas vezes viraria duas taxas diferentes para o
-// mesmo endereco.
+// mesmo endereço.
 DeliveryCitySchema.index({ name: 1, state: 1 }, { unique: true });

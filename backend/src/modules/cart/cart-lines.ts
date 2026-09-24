@@ -11,27 +11,27 @@ import {
 } from './cart.constants.js';
 
 /**
- * A conta do carrinho, em funcoes puras.
+ * A conta do carrinho, em funções puras.
  *
- * Aqui nao entra Mongoose nem HTTP: o que decide quanto o cliente paga
- * precisa ser testavel sem banco, porque os casos que importam sao de centavo
- * e de borda — tres unidades que cruzam o degrau do desconto, a variante que
+ * Aqui não entra Mongoose nem HTTP: o que decide quanto o cliente paga
+ * precisa ser testável sem banco, porque os casos que importam são de centavo
+ * e de borda — três unidades que cruzam o degrau do desconto, a variante que
  * ficou com duas em estoque, a linha repetida que sozinha passaria na
- * conferencia de estoque e somada nao passa.
+ * conferência de estoque e somada não passa.
  *
- * Preco nenhum chega por parametro de fora do catalogo: as funcoes recebem o
+ * Preço nenhum chega por parâmetro de fora do catálogo: as funções recebem o
  * produto como ele esta no banco e a quantidade pedida, e mais nada. E essa
- * assinatura que torna impossivel um preco do cliente entrar na conta.
+ * assinatura que torna impossível um preço do cliente entrar na conta.
  */
 
-/** O que o cliente pede: ids e quantidade. Preco nao faz parte. */
+/** O que o cliente pede: ids e quantidade. Preço não faz parte. */
 export interface RequestedLine {
   productId: string;
   variantId: string;
   quantity: number;
 }
 
-/** A variante como o calculo precisa dela. */
+/** A variante como o cálculo precisa dela. */
 export interface CatalogVariant {
   id: string;
   label: string;
@@ -42,12 +42,12 @@ export interface CatalogVariant {
   allowBackorder: boolean;
 }
 
-/** O produto como o calculo precisa dele. */
+/** O produto como o cálculo precisa dele. */
 export interface CatalogProduct {
   id: string;
   name: string;
   slug: string;
-  /** Capa do produto, usada quando a variante nao tem foto propria. */
+  /** Capa do produto, usada quando a variante não tem foto própria. */
   coverImage: string;
   isActive: boolean;
   categoryIds: readonly string[];
@@ -57,9 +57,9 @@ export interface CatalogProduct {
 /**
  * Uma linha cotada.
  *
- * A linha indisponivel volta na resposta, e nao some: quem esta com o item na
+ * A linha indisponível volta na resposta, e não some: quem esta com o item na
  * sacola precisa ver qual deles saiu e por que. Ela vale zero em
- * `lineTotalCents`, e e so isso que a mantem fora das somas.
+ * `lineTotalCents`, e e só isso que a mantem fora das somas.
  */
 export interface QuoteItem {
   productId: string;
@@ -69,32 +69,32 @@ export interface QuoteItem {
   variantLabel: string;
   image: string;
   quantity: number;
-  /** O preco de hoje, lido do banco. */
+  /** O preço de hoje, lido do banco. */
   unitPriceCents: number;
-  /** Quanto ainda ha em estoque, para a sacola ajustar a quantidade. */
+  /** Quanto ainda há em estoque, para a sacola ajustar a quantidade. */
   availableStock: number;
   /**
    * Venda sob encomenda: esta linha vale mesmo com o estoque no zero.
    *
-   * A sacola usa para avisar do prazo maior; a criacao do pedido usa para
-   * saber que esta baixa nao pode exigir estoque suficiente, ou recusaria o
-   * proprio item que acabou de cotar como disponivel.
+   * A sacola usa para avisar do prazo maior; a criação do pedido usa para
+   * saber que esta baixa não pode exigir estoque suficiente, ou recusaria o
+   * próprio item que acabou de cotar como disponível.
    */
   allowBackorder: boolean;
   /** Desconto por quantidade aplicado a esta linha. */
   discountPercent: number;
   /** Quanto o desconto retirou desta linha, em centavos. */
   discountCents: number;
-  /** `unitPriceCents * quantity` menos o desconto. Zero quando indisponivel. */
+  /** `unitPriceCents * quantity` menos o desconto. Zero quando indisponível. */
   lineTotalCents: number;
   unavailable: boolean;
   /** Por que a linha saiu. Vazio quando ela esta valendo. */
   unavailableReason: string;
 }
 
-/** O que as linhas disponiveis somam. */
+/** O que as linhas disponíveis somam. */
 export interface ItemTotals {
-  /** Soma das linhas, ja com o desconto por quantidade aplicado. */
+  /** Soma das linhas, já com o desconto por quantidade aplicado. */
   subtotalCents: number;
   /** Quanto o desconto por quantidade retirou no total. */
   discountTotalCents: number;
@@ -103,11 +103,11 @@ export interface ItemTotals {
 /**
  * Junta as linhas que apontam para a mesma variante.
  *
- * Nao e arrumacao de vitrine: e conferencia de estoque. Duas linhas de tres
+ * Não e arrumação de vitrine: e conferência de estoque. Duas linhas de três
  * unidades de uma variante que tem cinco passariam uma a uma, e o pedido
- * sairia com seis. Somadas, a linha unica de seis encontra o estoque de cinco
+ * sairia com seis. Somadas, a linha única de seis encontra o estoque de cinco
  * e e recusada, que e a resposta certa. Pelo mesmo motivo o desconto por
- * quantidade so enxerga a quantidade real quando ela esta em um lugar so.
+ * quantidade só enxerga a quantidade real quando ela esta em um lugar só.
  */
 export function mergeLines(items: readonly RequestedLine[]): {
   lines: RequestedLine[];
@@ -147,13 +147,13 @@ export function mergeLines(items: readonly RequestedLine[]): {
 }
 
 /**
- * Cota cada linha contra o catalogo.
+ * Cota cada linha contra o catálogo.
  *
- * Sao duas passagens, e nao uma: a primeira decide quem esta a venda, a
+ * São duas passagens, e não uma: a primeira decide quem esta a venda, a
  * segunda aplica o desconto. A ordem importa porque o desconto por quantidade
  * olha para o total de unidades do produto, e uma linha que caiu por falta de
- * estoque nao pode empurrar as outras para o degrau seguinte — seria a sacola
- * anunciar 10% por causa de itens que ninguem vai levar.
+ * estoque não pode empurrar as outras para o degrau seguinte — seria a sacola
+ * anunciar 10% por causa de itens que ninguém vai levar.
  */
 export function quoteItems(
   lines: readonly RequestedLine[],
@@ -170,9 +170,9 @@ export function quoteItems(
   /**
    * Unidades por produto, somando as variantes dele.
    *
-   * "Leve 3 e ganhe 10%" conta o produto, nao a variante: quem leva um frasco
-   * de 100 ml e dois de 50 ml do mesmo perfume levou tres, e recusar o
-   * desconto ai seria uma sutileza que ninguem entende olhando a tela.
+   * "Leve 3 e ganhe 10%" conta o produto, não a variante: quem leva um frasco
+   * de 100 ml e dois de 50 ml do mesmo perfume levou três, e recusar o
+   * desconto aí seria uma sutileza que ninguém entende olhando a tela.
    */
   const units = new Map<string, number>();
 
@@ -219,7 +219,7 @@ export function quoteItems(
  * O valor de uma linha: o bruto menos o desconto por quantidade.
  *
  * `Math.round` na virada do centavo, como no desconto do PIX: 10% de R$ 19,99
- * sao R$ 1,999, e o centavo fica com quem paga.
+ * são R$ 1,999, e o centavo fica com quem paga.
  */
 export function lineTotalsOf(
   unitPriceCents: number,
@@ -232,7 +232,7 @@ export function lineTotalsOf(
   return { discountCents, lineTotalCents: grossCents - discountCents };
 }
 
-/** O que a sacola soma. A linha indisponivel vale zero e nao pesa aqui. */
+/** O que a sacola soma. A linha indisponível vale zero e não pesa aqui. */
 export function sumItems(items: readonly QuoteItem[]): ItemTotals {
   return items.reduce<ItemTotals>(
     (totals, item) => ({
@@ -254,8 +254,8 @@ export function itemWarnings(items: readonly QuoteItem[]): string[] {
  * Se a linha esta a venda, e a variante que responde por ela.
  *
  * A variante volta mesmo quando a linha e recusada, desde que exista: e dela
- * que saem o nome da opcao e o estoque restante, e e isso que transforma
- * "indisponivel" em "restam apenas 2" na tela.
+ * que saem o nome da opção e o estoque restante, e e isso que transforma
+ * "indisponível" em "restam apenas 2" na tela.
  */
 function availabilityOf(
   product: CatalogProduct | null,
@@ -272,7 +272,7 @@ function availabilityOf(
   }
 
   // `allowBackorder` e a venda sob encomenda: a dona vende o que ainda vai
-  // buscar, e nesses produtos o estoque zerado nao impede nada.
+  // buscar, e nesses produtos o estoque zerado não impede nada.
   if (!variant.allowBackorder && variant.stock < line.quantity) {
     return { variant, reason: outOfStockReason(variant.stock) };
   }

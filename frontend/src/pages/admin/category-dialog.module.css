@@ -1,8 +1,8 @@
 /*
- * O dialogo de categoria.
+ * O diálogo de categoria.
  *
- * Tres campos empilhados, sem colunas: sao curtos, e um formulario de tres
- * linhas nao ganha nada sendo espalhado.
+ * Três campos empilhados, sem colunas: são curtos, e um formulário de três
+ * linhas não ganha nada sendo espalhado.
  */
 
 .fields {
@@ -17,10 +17,10 @@
 }
 
 /*
- * A explicacao que ocupa o lugar do campo de "dentro de".
+ * A explicação que ocupa o lugar do campo de "dentro de".
  *
- * Fundo de areia e nao de aviso: nao houve erro nenhum — e uma regra do
- * dominio, e ela esta sendo contada antes de a pessoa esbarrar nela.
+ * Fundo de areia e não de aviso: não houve erro nenhum — e uma regra do
+ * domínio, e ela esta sendo contada antes de a pessoa esbarrar nela.
  */
 .locked {
   margin: 0;

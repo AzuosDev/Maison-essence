@@ -1,8 +1,8 @@
 /*
- * A gaveta: a sacola, o menu de categorias no celular, o filtro do catalogo.
+ * A gaveta: a sacola, o menu de categorias no celular, o filtro do catálogo.
  *
  * Entra pela lateral e ocupa a altura inteira. No celular deixa uma faixa do
- * fundo a mostra de proposito — e o que diz que a pagina continua ali atras,
+ * fundo a mostra de propósito — e o que diz que a página continua ali atrás,
  * e o que da onde tocar para fechar.
  */
 
@@ -126,7 +126,7 @@
   color: var(--ink-soft);
 }
 
-/* O resumo e o botao de fechar pedido, presos embaixo da sacola. */
+/* O resumo e o botão de fechar pedido, presos embaixo da sacola. */
 .footer {
   display: flex;
   flex-direction: column;

@@ -43,8 +43,8 @@ export const UNKNOWN_IDS_MESSAGE =
 /**
  * O que a busca publica por slug encontrou.
  *
- * `moved` e o endereco antigo: existe, mas nao e mais o atual. Quem responde a
- * rota transforma isso em um 301 — o link ja compartilhado continua abrindo a
+ * `moved` e o endereço antigo: existe, mas não e mais o atual. Quem responde a
+ * rota transforma isso em um 301 — o link já compartilhado continua abrindo a
  * categoria certa em vez de morrer em 404.
  */
 export type SlugLookup =
@@ -65,14 +65,14 @@ export class CategoriesService {
     @InjectModel(Product.name) private readonly products: Model<Product>,
   ) {}
 
-  /** Arvore do painel: ativas e inativas, para a dona poder reativar. */
+  /** Árvore do painel: ativas e inativas, para a dona poder reativar. */
   async list(): Promise<WithChildren<CategoryView>[]> {
     const all = await this.categories.find().exec();
 
     return toCategoryTree(branchesOf(all), await this.productCounts(all));
   }
 
-  /** Arvore do menu da loja: so o que esta ativo. */
+  /** Árvore do menu da loja: só o que esta ativo. */
   async publicTree(): Promise<WithChildren<PublicCategoryView>[]> {
     const active = await this.categories.find({ isActive: true }).exec();
 
@@ -88,9 +88,9 @@ export class CategoriesService {
 
     const created = new this.categories({
       name: dto.name,
-      // Vazio de proposito quando nao veio: o hook do schema gera o slug a
-      // partir do nome, desviando para `nome-2` se o endereco ja estiver
-      // ocupado. Slug digitado a mao nao desvia — ali a colisao e um 409.
+      // Vazio de propósito quando não veio: o hook do schema gera o slug a
+      // partir do nome, desviando para `nome-2` se o endereço já estiver
+      // ocupado. Slug digitado a mão não desvia — ali a colisão e um 409.
       slug: dto.slug ?? '',
       parentId,
       image: dto.image ?? '',
@@ -98,7 +98,7 @@ export class CategoriesService {
       isActive: dto.isActive ?? true,
     });
 
-    // Categoria recem-criada nao tem produto: nao ha o que contar.
+    // Categoria recém-criada não tem produto: não há o que contar.
     return toCategoryView(await this.save(created), 0);
   }
 
@@ -137,12 +137,12 @@ export class CategoriesService {
   }
 
   /**
-   * Regrava a posicao de todas as categorias citadas em uma operacao so.
+   * Regrava a posição de todas as categorias citadas em uma operação só.
    *
    * `bulkWrite` em vez de um `save` por categoria: arrastar um item no painel
-   * remexe a lista inteira, e cada ida ao Atlas custa caro na funcao
-   * serverless. A posicao e o indice na lista, entao o painel manda a ordem
-   * que o usuario ve na tela e nao precisa calcular numero nenhum.
+   * remexe a lista inteira, e cada ida ao Atlas custa caro na função
+   * serverless. A posição e o índice na lista, então o painel manda a ordem
+   * que o usuário vê na tela e não precisa calcular número nenhum.
    */
   async reorder(dto: ReorderCategoriesDto): Promise<WithChildren<CategoryView>[]> {
     if (new Set(dto.ids).size !== dto.ids.length) {
@@ -194,7 +194,7 @@ export class CategoriesService {
       });
     }
 
-    // Produto inativo pode continuar apontando para ela. Soltar a referencia
+    // Produto inativo pode continuar apontando para ela. Soltar a referência
     // aqui evita um id morto no `categoryIds` de quem for reativado depois.
     await this.products
       .updateMany({ categoryIds: category._id }, { $pull: { categoryIds: category._id } })
@@ -204,11 +204,11 @@ export class CategoriesService {
   }
 
   /**
-   * Resolve o endereco publico de uma categoria.
+   * Resolve o endereço público de uma categoria.
    *
-   * Procura primeiro no endereco atual e so depois no historico: se um slug
+   * Procura primeiro no endereço atual e só depois no histórico: se um slug
    * aposentado por uma categoria virou o slug atual de outra, quem responde e
-   * a que esta usando o endereco agora.
+   * a que esta usando o endereço agora.
    */
   async findPublicBySlug(slug: string): Promise<SlugLookup> {
     const wanted = slugify(slug);
@@ -233,7 +233,7 @@ export class CategoriesService {
   private async toPublicNode(
     category: CategoryDocument,
   ): Promise<WithChildren<PublicCategoryView>> {
-    // Subcategoria nao tem filhos: nem consulta.
+    // Subcategoria não tem filhos: nem consulta.
     const children = category.parentId
       ? []
       : await this.categories
@@ -253,10 +253,10 @@ export class CategoriesService {
   }
 
   /**
-   * Quantos produtos ativos cada categoria tem, em uma agregacao so.
+   * Quantos produtos ativos cada categoria tem, em uma agregação só.
    *
    * O `$unwind` abre o `categoryIds` do produto em uma linha por categoria, e
-   * o segundo `$match` descarta as que nao estao sendo exibidas — um produto
+   * o segundo `$match` descarta as que não estão sendo exibidas — um produto
    * costuma pertencer a mais de uma.
    */
   private async productCounts(categories: readonly CategoryDocument[]): Promise<ProductCounts> {
@@ -285,9 +285,9 @@ export class CategoriesService {
    * Valida o pai escolhido e devolve o `_id` dele, ou `null` para categoria
    * principal.
    *
-   * Sao tres regras, e as tres existem para manter a arvore com um nivel so: o
-   * pai precisa existir, precisa ser uma categoria principal e quem ja tem
-   * filhos nao pode descer de nivel.
+   * São três regras, e as três existem para manter a árvore com um nível só: o
+   * pai precisa existir, precisa ser uma categoria principal e quem já tem
+   * filhos não pode descer de nível.
    */
   private async resolveParent(
     parentId: string | null,
@@ -321,7 +321,7 @@ export class CategoriesService {
   }
 
   /**
-   * O endereco precisa estar livre inclusive no historico das outras
+   * O endereço precisa estar livre inclusive no histórico das outras
    * categorias: reaproveitar um slug aposentado faria o redirecionamento
    * antigo e a categoria nova disputarem o mesmo link.
    */
@@ -336,7 +336,7 @@ export class CategoriesService {
     }
   }
 
-  /** Busca pelo id, tratando id malformado como "nao encontrado". */
+  /** Busca pelo id, tratando id malformado como "não encontrado". */
   private async findById(id: string): Promise<CategoryDocument> {
     const found = Types.ObjectId.isValid(id)
       ? await this.categories.findById(new Types.ObjectId(id)).exec()
@@ -349,7 +349,7 @@ export class CategoriesService {
     return found;
   }
 
-  /** Salva traduzindo a colisao do indice unico de slug em 409. */
+  /** Salva traduzindo a colisão do índice único de slug em 409. */
   private async save(category: CategoryDocument): Promise<CategoryDocument> {
     try {
       return await category.save();
@@ -364,9 +364,9 @@ export class CategoriesService {
 }
 
 /**
- * Empurra o endereco atual para o historico, sem repetir e sem crescer para
+ * Empurra o endereço atual para o histórico, sem repetir e sem crescer para
  * sempre. O slug que esta sendo adotado sai da lista: ele e o atual agora, e
- * endereco nenhum redireciona para si mesmo.
+ * endereço nenhum redireciona para si mesmo.
  */
 function rememberSlug(category: CategoryDocument, nextSlug: string): string[] {
   const kept = category.previousSlugs.filter(

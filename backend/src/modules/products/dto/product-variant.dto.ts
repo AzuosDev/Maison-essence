@@ -17,8 +17,8 @@ import { MAX_STOCK } from '../products.constants.js';
 /**
  * Uma variante dentro do array que o POST e o PATCH recebem.
  *
- * `id` presente identifica variante que ja existe; ausente, o servidor cria.
- * O painel manda o array inteiro nas duas rotas e nao precisa saber o que
+ * `id` presente identifica variante que já existe; ausente, o servidor cria.
+ * O painel manda o array inteiro nas duas rotas e não precisa saber o que
  * mudou — quem descobre e o diff, em `variants.diff.ts`.
  */
 export class ProductVariantDto {
@@ -46,7 +46,7 @@ export class ProductVariantDto {
   @Max(MAX_CENTS)
   priceCents: number;
 
-  /** Preco "de", riscado no card. `null` tira o desconto da variante. */
+  /** Preço "de", riscado no card. `null` tira o desconto da variante. */
   @IsOptional()
   @IsInt({ message: 'o preço de comparação deve ser um inteiro em centavos' })
   @Min(0)
@@ -61,7 +61,7 @@ export class ProductVariantDto {
 
   /**
    * `publicId` do Cloudinary. Quando existe, substitui a capa do produto.
-   * Vazio tira a foto propria da variante e devolve a capa.
+   * Vazio tira a foto própria da variante e devolve a capa.
    */
   @IsOptional()
   @IsString()

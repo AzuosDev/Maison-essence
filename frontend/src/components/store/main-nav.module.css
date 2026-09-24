@@ -1,7 +1,7 @@
 /*
  * O menu principal, na mesma linha do logotipo.
  *
- * Some no celular — la quem navega e o menu lateral, que cabe o catalogo
+ * Some no celular — lá quem navega e o menu lateral, que cabe o catálogo
  * inteiro sem espremer nada.
  */
 
@@ -13,7 +13,7 @@
   .nav {
     display: flex;
 
-    /* Toma a sobra entre o logotipo e as acoes, e centra os itens nela: o
+    /* Toma a sobra entre o logotipo e as ações, e centra os itens nela: o
        menu fica no meio da barra sem depender da largura dos dois lados. */
     flex: 1;
     justify-content: center;
@@ -38,8 +38,8 @@
 /*
  * O item do menu.
  *
- * Alto o bastante para ser um alvo de mouse confortavel — o `padding-block`
- * ocupa a altura inteira da barra, entao o clique pega a faixa toda e nao so
+ * Alto o bastante para ser um alvo de mouse confortável — o `padding-block`
+ * ocupa a altura inteira da barra, então o clique pega a faixa toda e não só
  * as doze letras.
  */
 .link {
@@ -71,9 +71,9 @@
 /*
  * O risco dourado embaixo do item.
  *
- * Cresce do centro para as pontas em vez de aparecer inteiro: e o unico
- * movimento do cabecalho, e um risco que surge de um golpe parece falha de
- * renderizacao. `scaleX` e nao `width` porque so a transformacao roda fora da
+ * Cresce do centro para as pontas em vez de aparecer inteiro: e o único
+ * movimento do cabeçalho, e um risco que surge de um golpe parece falha de
+ * renderização. `scaleX` e não `width` porque só a transformação roda fora da
  * thread de layout — com `width`, o menu inteiro e remedido a cada quadro.
  */
 .link::after {

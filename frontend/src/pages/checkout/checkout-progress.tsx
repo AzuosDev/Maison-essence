@@ -11,37 +11,37 @@ import styles from './checkout-progress.module.css';
 /**
  * Onde o cliente esta, das quatro etapas.
  *
- * A trilha existe por uma razao so, e ela e sobre desistencia: um formulario
- * longo sem fim visivel faz a pessoa calcular se vale a pena continuar, e no
- * celular essa conta quase sempre termina em nao. Quatro passos numerados
+ * A trilha existe por uma razão só, e ela e sobre desistência: um formulário
+ * longo sem fim visível faz a pessoa calcular se vale a pena continuar, e no
+ * celular essa conta quase sempre termina em não. Quatro passos numerados
  * respondem a pergunta antes de ela ser feita — falta pouco.
  *
- * Os numeros sao a excecao que justifica numerar: aqui a sequencia **e** a
- * informacao. Nao sao um enfeite de secao.
+ * Os números são a exceção que justifica numerar: aqui a sequência **e** a
+ * informação. Não são um enfeite de seção.
  *
- * ## Dois desenhos, um so de cada vez
+ * ## Dois desenhos, um só de cada vez
  *
  * No desktop, os quatro passos com nome, ligados por um filete. No celular
- * nao ha largura para quatro rotulos legiveis, e espremer os quatro produz
- * aquele texto de 9px que ninguem le: a trilha vira "Passo 2 de 4" com o
+ * não há largura para quatro rótulos legíveis, e espremer os quatro produz
+ * aquele texto de 9px que ninguém lê: a trilha vira "Passo 2 de 4" com o
  * nome do passo atual e uma barra que enche.
  *
  * Os dois vivem no mesmo `<nav>` e se alternam por `display: none`, que e o
- * que os tira tambem da arvore de acessibilidade — quem ouve a pagina recebe
+ * que os tira também da árvore de acessibilidade — quem ouve a página recebe
  * um dos dois, nunca os dois.
  *
- * ## O que e clicavel
+ * ## O que e clicável
  *
- * So o que ja ficou para tras. Voltar para conferir o endereco e legitimo e
+ * Só o que já ficou para trás. Voltar para conferir o endereço e legitimo e
  * acontece o tempo todo; pular para o pagamento sem ter escolhido a entrega
- * levaria a um passo que nao tem como fechar, e o botao seria uma promessa
- * falsa. Os passos que ainda nao chegaram nao sao botoes — sao texto, e nao
+ * levaria a um passo que não tem como fechar, e o botão seria uma promessa
+ * falsa. Os passos que ainda não chegaram não são botões — são texto, e não
  * recebem foco.
  */
 
 export interface CheckoutProgressProps {
   current: CheckoutStep;
-  /** Levar o cliente a um passo ja cumprido. */
+  /** Levar o cliente a um passo já cumprido. */
   onGoTo: (step: CheckoutStep) => void;
   /** Durante o envio do pedido, nada leva a lugar nenhum. */
   locked: boolean;
@@ -86,9 +86,9 @@ export function CheckoutProgress({ current, onGoTo, locked }: CheckoutProgressPr
           <span className={styles.compactLabel}>{CHECKOUT_STEP_LABELS[current]}</span>
         </p>
 
-        {/* A barra e decoracao do que a linha acima ja diz por extenso: fora
+        {/* A barra e decoração do que a linha acima já diz por extenso: fora
             da arvore de acessibilidade, sem `role="progressbar"` e sem um
-            segundo anuncio do mesmo numero. */}
+            segundo anuncio do mesmo número. */}
         <div className={styles.track} aria-hidden="true">
           <div
             className={styles.fill}
@@ -101,10 +101,10 @@ export function CheckoutProgress({ current, onGoTo, locked }: CheckoutProgressPr
 }
 
 /**
- * O circulo com o numero do passo — ou o visto, quando ele ja passou.
+ * O círculo com o número do passo — ou o visto, quando ele já passou.
  *
- * O visto substitui o numero em vez de acompanha-lo: um circulo com "1" e um
- * tique dentro nao cabe, e o numero de um passo cumprido nao interessa mais.
+ * O visto substitui o número em vez de acompanha-lo: um círculo com "1" e um
+ * tique dentro não cabe, e o número de um passo cumprido não interessa mais.
  */
 function Marker({ done, index }: { done: boolean; index: number }) {
   return (

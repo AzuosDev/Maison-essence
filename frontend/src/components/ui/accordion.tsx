@@ -16,18 +16,18 @@ import styles from './accordion.module.css';
 /**
  * A sanfona: perguntas frequentes, detalhes do produto, blocos do pedido.
  *
- * Os gatilhos sao `<button>` dentro de um titulo, e nao `<div onClick>`:
- * assim entram na ordem do Tab, respondem a Enter e a Espaco e sao
+ * Os gatilhos são `<button>` dentro de um título, e não `<div onClick>`:
+ * assim entram na ordem do Tab, respondem a Enter e a Espaço e são
  * anunciados com o estado ("Entrega, recolhido"). O `aria-expanded` e o que
  * carrega esse estado.
  *
- * Alem do Tab, as setas movem entre os gatilhos — e o que a convencao define
- * para o padrao `accordion` — e `Home`/`End` vao para o primeiro e o ultimo.
- * O tratador fica em cada gatilho, e nao no container: dentro de um painel
- * aberto, as setas precisam continuar rolando a pagina.
+ * Além do Tab, as setas movem entre os gatilhos — e o que a convenção define
+ * para o padrão `accordion` — e `Home`/`End` vão para o primeiro e o último.
+ * O tratador fica em cada gatilho, e não no container: dentro de um painel
+ * aberto, as setas precisam continuar rolando a página.
  */
 
-/** Referencia estavel: um literal no valor padrao remonta a cada render. */
+/** Referência estável: um literal no valor padrão remonta a cada render. */
 const NONE: readonly string[] = [];
 
 interface AccordionContextValue {
@@ -52,11 +52,11 @@ export interface AccordionProps {
   /**
    * Mais de um item aberto ao mesmo tempo.
    *
-   * Desligado por padrao: numa lista de perguntas, abrir uma e fechar a
+   * Desligado por padrão: numa lista de perguntas, abrir uma e fechar a
    * anterior mantem a resposta na tela sem obrigar a rolar.
    */
   multiple?: boolean;
-  /** Os itens que ja comecam abertos. */
+  /** Os itens que já começam abertos. */
   defaultOpen?: readonly string[];
   className?: string | undefined;
   children: ReactNode;
@@ -101,7 +101,7 @@ export type AccordionItemProps = Omit<ComponentPropsWithoutRef<'div'>, 'title'> 
   value: string;
   title: ReactNode;
   disabled?: boolean;
-  /** O nivel do titulo no documento. */
+  /** O nível do título no documento. */
   as?: 'h2' | 'h3' | 'h4';
 };
 
@@ -155,7 +155,7 @@ export const AccordionItem = forwardRef<HTMLDivElement, AccordionItemProps>(func
   );
 });
 
-/** O gatilho que a tecla pede, ou `null` quando a tecla nao e de navegacao. */
+/** O gatilho que a tecla pede, ou `null` quando a tecla não e de navegação. */
 function siblingFor(event: KeyboardEvent<HTMLButtonElement>): HTMLButtonElement | null {
   const keys = ['ArrowDown', 'ArrowUp', 'Home', 'End'];
 

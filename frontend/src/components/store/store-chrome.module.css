@@ -1,9 +1,9 @@
 /*
- * O cabecalho e o rodape da loja.
+ * O cabeçalho e o rodapé da loja.
  *
- * Por enquanto sao a moldura minima: a marca no topo, o filete dourado e a
- * linha de rodape. A barra de avisos rolando, o menu de categorias, a busca e
- * o carrinho com contador entram aqui quando as telas chegarem — o layout ja
+ * Por enquanto são a moldura mínima: a marca no topo, o filete dourado e a
+ * linha de rodapé. A barra de avisos rolando, o menu de categorias, a busca e
+ * o carrinho com contador entram aqui quando as telas chegarem — o layout já
  * reserva o lugar deles.
  */
 
@@ -38,7 +38,7 @@
   letter-spacing: var(--tracking-logo);
   color: var(--ink);
 
-  /* O `letter-spacing` sobra depois da ultima letra e desloca o centro. */
+  /* O `letter-spacing` sobra depois da última letra e desloca o centro. */
   text-indent: var(--tracking-logo);
 }
 

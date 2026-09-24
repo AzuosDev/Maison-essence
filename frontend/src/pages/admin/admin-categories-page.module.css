@@ -1,7 +1,7 @@
 /*
  * As categorias.
  *
- * Titulo, uma linha de instrucao e o menu. Sem filtros: a lista inteira cabe
+ * Título, uma linha de instrução e o menu. Sem filtros: a lista inteira cabe
  * na tela, e e vendo todas juntas que se decide a ordem entre elas.
  */
 
@@ -9,8 +9,8 @@
   display: grid;
   gap: var(--space-16);
 
-  /* O menu da loja nao melhora com 1360px: uma linha com nome, contagem e
-     interruptor esticada de ponta a ponta so afasta o nome do que o controla. */
+  /* O menu da loja não melhora com 1360px: uma linha com nome, contagem e
+     interruptor esticada de ponta a ponta só afasta o nome do que o controla. */
   max-width: 48rem;
 }
 
@@ -39,7 +39,7 @@
   color: var(--ink);
 }
 
-/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+/* `--ink-soft` e não `--muted`: 14px no cinza de rótulo não alcança 4.5:1. */
 .count {
   margin: 0;
 
@@ -47,7 +47,7 @@
   color: var(--ink-soft);
 }
 
-/* No celular o botao ocupa a linha: e o alvo principal de quem chega aqui
+/* No celular o botão ocupa a linha: e o alvo principal de quem chega aqui
    para cadastrar. */
 .add {
   flex: 1;
@@ -55,11 +55,11 @@
 }
 
 /*
- * A instrucao de uso.
+ * A instrução de uso.
  *
- * Fica escrita, e nao escondida num tooltip: arrastar para ordenar e clicar
- * no nome para renomear sao dois gestos que ninguem descobre olhando, e a
- * tela e usada poucas vezes por mes — tempo suficiente para esquecer.
+ * Fica escrita, e não escondida num tooltip: arrastar para ordenar e clicar
+ * no nome para renomear são dois gestos que ninguém descobre olhando, e a
+ * tela e usada poucas vezes por mês — tempo suficiente para esquecer.
  */
 .hint {
   margin: 0;
@@ -71,11 +71,11 @@
 }
 
 /*
- * "Desative" dentro da frase do dialogo.
+ * "Desative" dentro da frase do diálogo.
  *
  * Sublinhado como um link porque e o que ele parece e o que ele faz: leva a
- * outro desfecho. Botao, e nao link, porque nao ha endereco nenhum do outro
- * lado — e uma acao.
+ * outro desfecho. Botão, e não link, porque não há endereço nenhum do outro
+ * lado — e uma ação.
  */
 .inlineAction {
   padding: 0;

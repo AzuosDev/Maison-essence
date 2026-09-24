@@ -2,80 +2,80 @@ import { lineKey, type CartLineKey } from './cart.types';
 import type { QuoteLine } from './quote.types';
 
 /**
- * "Os valores foram atualizados": como a sacola sabe disso sem guardar preco.
+ * "Os valores foram atualizados": como a sacola sabe disso sem guardar preço.
  *
  * Quem monta a sacola numa terca e volta no domingo merece saber que os
- * numeros nao sao os mesmos que ele viu. Saber isso exige comparar o preco
- * de hoje com o de antes — e o preco de antes nao pode estar guardado, pela
- * regra que governa este modulo inteiro.
+ * números não são os mesmos que ele viu. Saber isso exige comparar o preço
+ * de hoje com o de antes — e o preço de antes não pode estar guardado, pela
+ * regra que governa este módulo inteiro.
  *
- * ## A saida: guardar a impressao digital, nao o valor
+ * ## A saída: guardar a impressão digital, não o valor
  *
- * O que vai para o `localStorage` e um `hash` curto de cada preco unitario,
- * por linha. Serve para uma coisa so — dizer "mudou" ou "nao mudou" — e nao
- * serve para nenhuma outra: `1f3k2a` nao soma, nao multiplica e nao cabe num
- * `formatCents`. Um preco guardado acaba, cedo ou tarde, aparecendo numa
- * tela; um digest nao tem como.
+ * O que vai para o `localStorage` e um `hash` curto de cada preço unitário,
+ * por linha. Serve para uma coisa só — dizer "mudou" ou "não mudou" — e não
+ * serve para nenhuma outra: `1f3k2a` não soma, não multiplica e não cabe num
+ * `formatCents`. Um preço guardado acaba, cedo ou tarde, aparecendo numa
+ * tela; um digest não tem como.
  *
- * ## Por linha, e nao do carrinho inteiro
+ * ## Por linha, e não do carrinho inteiro
  *
- * Um digest unico da sacola mudaria ao acrescentar um item — e "voce
- * adicionou um perfume" viraria "os precos mudaram". Comparando linha a
- * linha, so as chaves que existem nos dois lados sao confrontadas: item novo
- * nao tem com o que divergir, item removido some sem alarde, e o aviso sobra
- * apenas para o que mudou de preco de verdade.
+ * Um digest único da sacola mudaria ao acrescentar um item — e "você
+ * adicionou um perfume" viraria "os preços mudaram". Comparando linha a
+ * linha, só as chaves que existem nos dois lados são confrontadas: item novo
+ * não tem com o que divergir, item removido some sem alarde, e o aviso sobra
+ * apenas para o que mudou de preço de verdade.
  *
- * ## Uma hora de carencia
+ * ## Uma hora de carência
  *
- * O aviso e sobre o tempo que passou, e nao sobre o instante. Quem recarrega
- * a pagina no meio da compra — ou tem duas abas abertas — nao pode receber
+ * O aviso e sobre o tempo que passou, e não sobre o instante. Quem recarrega
+ * a página no meio da compra — ou tem duas abas abertas — não pode receber
  * "os valores foram atualizados" a cada leitura. Abaixo de uma hora, a
- * diferenca e registrada em silencio; a partir dai, ela vira o aviso
+ * diferença e registrada em silêncio; a partir dai, ela vira o aviso
  * discreto que a sacola mostra uma vez.
  */
 
-/** Antes disto, a mudanca e anotada sem avisar ninguem. */
+/** Antes disto, a mudanca e anotada sem avisar ninguém. */
 export const PRICE_NOTICE_MIN_AGE_MS = 60 * 60 * 1000;
 
 const STORAGE_KEY = 'maison-essence.cart.prices';
 
 export interface PriceSnapshot {
-  /** Uma impressao digital por linha. Nenhum valor em reais. */
+  /** Uma impressão digital por linha. Nenhum valor em reais. */
   digests: Record<string, string>;
   /** Quando foi anotado, em milissegundos. */
   at: number;
 }
 
 /**
- * A leitura e a escrita sao funcoes separadas, e a separacao e o ponto.
+ * A leitura e a escrita são funções separadas, e a separação e o ponto.
  *
- * Quem consome isto precisa **comparar durante o render** — a decisao de
- * mostrar o aviso e derivada, nao um estado que um efeito liga depois — e
+ * Quem consome isto precisa **comparar durante o render** — a decisão de
+ * mostrar o aviso e derivada, não um estado que um efeito liga depois — e
  * **escrever num efeito**, porque escrever e sincronizar com um sistema
- * externo. Uma funcao unica que fizesse as duas coisas forcaria a escrita
- * para dentro do render ou a comparacao para dentro de um efeito, e as duas
- * saidas sao piores: a primeira e um efeito colateral no render, a segunda e
- * um `setState` em efeito, que dispara uma segunda renderizacao por um aviso
- * que ja poderia ter nascido pronto.
+ * externo. Uma função única que fizesse as duas coisas forçaria a escrita
+ * para dentro do render ou a comparação para dentro de um efeito, e as duas
+ * saídas são piores: a primeira e um efeito colateral no render, a segunda e
+ * um `setState` em efeito, que dispara uma segunda renderização por um aviso
+ * que já poderia ter nascido pronto.
  */
 
-/** O retrato guardado, ou `null` quando nao ha nenhum que sirva. */
+/** O retrato guardado, ou `null` quando não há nenhum que sirva. */
 export function readPriceSnapshot(): PriceSnapshot | null {
   return readRecord();
 }
 
-/** Anota os precos de agora. Escreve sempre; nao decide nada. */
+/** Anota os preços de agora. Escreve sempre; não decide nada. */
 export function writePriceSnapshot(items: readonly QuoteLine[], now = Date.now()): void {
   writeRecord({ digests: digestsOf(items), at: now });
 }
 
 /**
- * Algum preco mudou entre o retrato anterior e estas linhas?
+ * Algum preço mudou entre o retrato anterior e estas linhas?
  *
- * Funcao pura: nao le nem escreve armazenamento. O `false` vale para a
+ * Função pura: não lê nem escreve armazenamento. O `false` vale para a
  * primeira sacola deste navegador, para a mudanca recente demais e para tudo
- * o que nao pode ser comparado — na duvida, a sacola fica calada, que e o
- * comportamento certo para um aviso que so tem valor quando e verdadeiro.
+ * o que não pode ser comparado — na dúvida, a sacola fica calada, que e o
+ * comportamento certo para um aviso que só tem valor quando e verdadeiro.
  */
 export function pricesChangedSince(
   before: PriceSnapshot | null,
@@ -99,10 +99,10 @@ function hasChange(before: Record<string, string>, after: Record<string, string>
 }
 
 /**
- * Um digest por linha disponivel.
+ * Um digest por linha disponível.
  *
- * A linha indisponivel fica de fora: ela volta da cotacao com
- * `unitPriceCents` zero quando o produto sumiu do catalogo, e anotar esse
+ * A linha indisponível fica de fora: ela volta da cotação com
+ * `unitPriceCents` zero quando o produto sumiu do catálogo, e anotar esse
  * zero faria o produto reativado depois parecer um reajuste.
  */
 function digestsOf(items: readonly QuoteLine[]): Record<string, string> {
@@ -143,12 +143,12 @@ function writeRecord(record: PriceSnapshot): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(record));
   } catch {
-    // Armazenamento bloqueado: a sacola funciona igual, so deixa de avisar
-    // sobre reajuste na proxima visita.
+    // Armazenamento bloqueado: a sacola funciona igual, só deixa de avisar
+    // sobre reajuste na próxima visita.
   }
 }
 
-/** Esqueceu a sacola: a anotacao de precos vai junto. */
+/** Esqueceu a sacola: a anotação de preços vai junto. */
 export function forgetPrices(): void {
   try {
     localStorage.removeItem(STORAGE_KEY);
@@ -169,10 +169,10 @@ function isPlainRecord(value: unknown): value is Record<string, string> {
 /**
  * FNV-1a de 32 bits, em base 36.
  *
- * Escolhido por ser curto de escrever e de ler — nao ha dependencia nova, e
- * a funcao inteira cabe em cinco linhas. Nao e criptografia e nao precisa
- * ser: o que se pede dela e que dois precos diferentes deem strings
- * diferentes, e que a string nao se pareca com dinheiro.
+ * Escolhido por ser curto de escrever e de ler — não há dependência nova, e
+ * a função inteira cabe em cinco linhas. Não e criptografia e não precisa
+ * ser: o que se pede dela e que dois preços diferentes deem strings
+ * diferentes, e que a string não se pareca com dinheiro.
  */
 function hash(text: string): string {
   let value = 0x81_1c_9d_c5;

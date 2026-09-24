@@ -22,33 +22,33 @@ import styles from './system-audit-page.module.css';
  *
  * ## A pergunta que esta tela responde
  *
- * Nao e "o que aconteceu hoje" — para isso existe a abertura do painel. E
- * "**quem** mudou isso, e **quando**": o preco que ninguem lembra de ter
+ * Não e "o que aconteceu hoje" — para isso existe a abertura do painel. E
+ * "**quem** mudou isso, e **quando**": o preço que ninguém lembra de ter
  * alterado, a chave PIX que mudou de conta, o pedido que voltou de status,
- * o login recusado as tres da manha.
+ * o login recusado as três da manha.
  *
- * Por isso os tres filtros sao pessoa, acao e periodo, e nao uma busca por
- * texto. E por isso cada linha mostra o diff aberto, e nao atras de um
- * clique: quem abre a auditoria esta comparando varias linhas entre si, e
- * um acordeao obrigaria a abrir todas para depois ler.
+ * Por isso os três filtros são pessoa, ação e período, e não uma busca por
+ * texto. E por isso cada linha mostra o diff aberto, e não atrás de um
+ * clique: quem abre a auditoria esta comparando várias linhas entre si, e
+ * um acordeão obrigaria a abrir todas para depois ler.
  *
- * ## A trilha nao esconde nada aqui
+ * ## A trilha não esconde nada aqui
  *
- * Senha, token e hash sao apagados no servidor, antes de gravar — chegam
+ * Senha, token e hash são apagados no servidor, antes de gravar — chegam
  * como `[redigido]`. A chave PIX chega mascarada da origem, com os quatro
- * ultimos caracteres visiveis de proposito: o valor apagado diria apenas que
+ * últimos caracteres visíveis de propósito: o valor apagado diria apenas que
  * algo mudou, e os quatro digitos dizem para qual conta a loja passou a
  * receber, que e a pergunta que a trilha existe para responder.
  *
- * ## A rota ainda nao existe
+ * ## A rota ainda não existe
  *
- * `GET /audit` nao esta publicado. O modulo de auditoria tem servico,
- * colecao e dois anos de retencao — so nao tem controlador. Esta tela esta
+ * `GET /audit` não esta publicado. O módulo de auditoria tem serviço,
+ * coleção e dois anos de retenção — só não tem controlador. Esta tela esta
  * inteira do lado de ca e mostra um aviso que nomeia a rota que falta
- * enquanto ela nao responder.
+ * enquanto ela não responder.
  */
 
-/** Trinta por pagina: cabe numa rolagem e nao pesa a consulta. */
+/** Trinta por página: cabe numa rolagem e não pesa a consulta. */
 const PAGE_SIZE = 30;
 
 export default function SystemAuditPage() {
@@ -66,7 +66,7 @@ export default function SystemAuditPage() {
       ...(action === '' ? {} : { action }),
       ...(from === '' ? {} : { from: dayStartISO(from) }),
       // `to` inclusivo para quem preenche: escolher 30/09 nos dois campos
-      // precisa trazer o dia 30 inteiro, e nao zero resultados.
+      // precisa trazer o dia 30 inteiro, e não zero resultados.
       ...(to === '' ? {} : { to: dayEndISO(to) }),
     }),
     [page, actorId, action, from, to],
@@ -74,8 +74,8 @@ export default function SystemAuditPage() {
 
   const { data, isLoading, isError, error, refetch, isFetching } = useAudit(params);
 
-  // A lista de pessoas sai da propria tela de usuarios: o filtro por ator
-  // precisa de nomes, e a trilha guarda so id e e-mail.
+  // A lista de pessoas sai da própria tela de usuários: o filtro por ator
+  // precisa de nomes, e a trilha guarda só id e e-mail.
   const { data: users } = useUsers();
 
   const actorOptions = useMemo(
@@ -83,7 +83,7 @@ export default function SystemAuditPage() {
     [users],
   );
 
-  /** Mexer em qualquer filtro volta para a primeira pagina. */
+  /** Mexer em qualquer filtro volta para a primeira página. */
   const onFilter = (apply: () => void) => () => {
     apply();
     setPage(1);

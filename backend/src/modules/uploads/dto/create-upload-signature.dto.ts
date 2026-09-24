@@ -5,8 +5,8 @@ import { UPLOAD_FOLDER_KEYS } from '../../../common/image-public-id.js';
 /** O painel pede a assinatura antes de escolher o arquivo. */
 export class CreateUploadSignatureDto {
   /**
-   * Onde a foto vai. Chave curta e nao o caminho completo: quem decide a
-   * pasta real e o servidor, e assim o navegador nao tem como propor uma.
+   * Onde a foto vai. Chave curta e não o caminho completo: quem decide a
+   * pasta real e o servidor, e assim o navegador não tem como propor uma.
    */
   @IsIn(UPLOAD_FOLDER_KEYS, {
     message: `pasta inválida: use ${UPLOAD_FOLDER_KEYS.join(', ')}`,
@@ -14,10 +14,10 @@ export class CreateUploadSignatureDto {
   folder: UploadFolder;
 
   /**
-   * Nome do arquivo escolhido, so para o `publicId` sair legivel.
+   * Nome do arquivo escolhido, só para o `publicId` sair legível.
    * `asad-lattafa.jpg` vira `maison-essence/products/asad-lattafa-9f3a1c2b`,
    * que a dona reconhece na biblioteca do Cloudinary. Sem ele, o identificador
-   * e so o sorteio.
+   * e só o sorteio.
    */
   @IsOptional()
   @IsString()

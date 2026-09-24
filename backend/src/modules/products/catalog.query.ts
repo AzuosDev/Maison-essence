@@ -14,7 +14,7 @@ export const PUBLIC_SORTS = [
 export type PublicSort = (typeof PUBLIC_SORTS)[number];
 
 export interface CatalogFilterInput {
-  /** A categoria pedida e as subcategorias dela, ja resolvidas do slug. */
+  /** A categoria pedida e as subcategorias dela, já resolvidas do slug. */
   categoryIds?: readonly Types.ObjectId[];
   q?: string;
   brand?: string;
@@ -25,19 +25,19 @@ export interface CatalogFilterInput {
   featured?: boolean;
 }
 
-/** Campos que o documento nao guarda e a ordenacao precisa. Somem no fim. */
+/** Campos que o documento não guarda e a ordenação precisa. Somem no fim. */
 const LIVE = '_liveVariants';
 const PRICE = '_price';
 const DISCOUNT = '_discount';
 const SCORE = '_score';
 
 /**
- * O filtro da vitrine inteiro, em um documento so.
+ * O filtro da vitrine inteiro, em um documento só.
  *
- * Preco, estoque e "esta a venda" sao perguntas sobre a mesma variante, e por
- * isso vao juntas em um unico `$elemMatch`: sem ele, o Mongo aceitaria um
+ * Preço, estoque e "esta a venda" são perguntas sobre a mesma variante, e por
+ * isso vão juntas em um único `$elemMatch`: sem ele, o Mongo aceitaria um
  * produto cuja variante barata esta esgotada e cuja variante em estoque custa
- * o dobro do teto pedido — cada condicao casaria com uma variante diferente.
+ * o dobro do teto pedido — cada condição casaria com uma variante diferente.
  *
  * `isActive: true` no `$elemMatch` faz dobradinha: filtra pela variante certa
  * e, de quebra, descarta o produto que ficou sem nenhuma variante a venda.
@@ -50,13 +50,13 @@ export function catalogFilter(input: CatalogFilterInput): QueryFilter<Product> {
   }
 
   if (input.brand !== undefined && input.brand.length > 0) {
-    // Ancorado e sem diferenciar maiuscula: o filtro vem de um clique na
+    // Ancorado e sem diferenciar maiúscula: o filtro vem de um clique na
     // lista de marcas, e `lattafa` tem que achar `Lattafa`.
     filter.brand = new RegExp(`^${escapeRegex(input.brand)}$`, 'i');
   }
 
-  // Bandeira so filtra quando ligada. `featured=false` quer dizer "tanto
-  // faz", e nao "me mostre o que nao e destaque" — nao existe essa vitrine.
+  // Bandeira só filtra quando ligada. `featured=false` quer dizer "tanto
+  // faz", e não "me mostre o que não e destaque" — não existe essa vitrine.
   if (input.readyToShip === true) {
     filter.isReadyToShip = true;
   }
@@ -91,13 +91,13 @@ function variantMatch(input: CatalogFilterInput): Record<string, unknown> {
 }
 
 /**
- * A pagina de cards, em uma agregacao.
+ * A página de cards, em uma agregação.
  *
- * Agregacao e nao `find` porque preco e desconto do produto nao estao
- * gravados: sao o menor preco e o maior desconto *entre as variantes a
+ * Agregação e não `find` porque preço e desconto do produto não estão
+ * gravados: são o menor preço e o maior desconto *entre as variantes a
  * venda*. Ordenar por `variants.priceCents` direto colocaria o produto no
- * lugar da variante aposentada, e "menor preco" mostraria primeiro um preco
- * que ninguem pode pagar.
+ * lugar da variante aposentada, e "menor preço" mostraria primeiro um preço
+ * que ninguém pode pagar.
  */
 export function catalogPipeline(
   filter: QueryFilter<Product>,
@@ -123,7 +123,7 @@ export function catalogPipeline(
   }
 
   stages.push({ $sort: sortStage(sort, hasText) }, { $skip: skip }, { $limit: limit });
-  // `description` nao cabe no card e e o maior campo do produto: buscar cinco
+  // `description` não cabe no card e e o maior campo do produto: buscar cinco
   // mil caracteres por linha para jogar fora no mapeamento pesaria a resposta
   // inteira da vitrine.
   stages.push({ $unset: [...computed, 'description'] });
@@ -131,22 +131,22 @@ export function catalogPipeline(
   return stages;
 }
 
-/** Ordenacao por nome precisa de collation: sem ela, `Agua` cai depois de `Zebra`. */
+/** Ordenação por nome precisa de collation: sem ela, `Agua` cai depois de `Zebra`. */
 export function catalogCollation(sort: PublicSort): mongo.CollationOptions | undefined {
   return sort === 'name' ? { locale: 'pt', strength: 1 } : undefined;
 }
 
-/** A ordenacao pedida vale? `relevance` sem busca nao ordena nada. */
+/** A ordenação pedida vale? `relevance` sem busca não ordena nada. */
 export function effectiveSort(sort: PublicSort | undefined, hasText: boolean): PublicSort {
   if (sort === undefined) {
-    // Com busca, relevancia; sem busca, a novidade primeiro.
+    // Com busca, relevância; sem busca, a novidade primeiro.
     return hasText ? 'relevance' : 'newest';
   }
 
   return sort === 'relevance' && !hasText ? 'newest' : sort;
 }
 
-/** A busca digitada usa o indice de texto, ou caiu no regex de termo curto? */
+/** A busca digitada usa o índice de texto, ou caiu no regex de termo curto? */
 export function hasTextScore(term: string): boolean {
   return term.length > 0 && usesTextIndex(term);
 }
@@ -154,8 +154,8 @@ export function hasTextScore(term: string): boolean {
 type SortDirection = 1 | -1;
 
 function sortStage(sort: PublicSort, hasText: boolean): Record<string, SortDirection> {
-  // `_id` fecha toda ordenacao: sem criterio de desempate, dois produtos com
-  // o mesmo preco podem trocar de lugar entre a pagina 1 e a 2 e um deles
+  // `_id` fecha toda ordenação: sem critério de desempate, dois produtos com
+  // o mesmo preço podem trocar de lugar entre a página 1 e a 2 e um deles
   // some da listagem.
   const tiebreak: Record<string, SortDirection> = { _id: -1 };
 
@@ -167,8 +167,8 @@ function sortStage(sort: PublicSort, hasText: boolean): Record<string, SortDirec
     case 'price_asc':
       return { [PRICE]: 1, ...tiebreak };
     case 'price_desc':
-      // Pelo menor preco tambem na ordem inversa: e o numero que o card
-      // exibe — "a partir de R$ 100" — e ordenar por um preco que a tela nao
+      // Pelo menor preço também na ordem inversa: e o número que o card
+      // exibe — "a partir de R$ 100" — e ordenar por um preço que a tela não
       // mostra faz a lista parecer embaralhada.
       return { [PRICE]: -1, ...tiebreak };
     case 'discount':
@@ -189,15 +189,15 @@ function liveVariants(): Record<string, unknown> {
 }
 
 /**
- * O maior desconto do produto, como fracao.
+ * O maior desconto do produto, como fração.
  *
- * Fracao e nao o percentual inteiro de proposito: aqui isso e so chave de
- * ordenacao, e repetir no dialeto do Mongo o arredondamento para baixo de
- * `discountOf` criaria duas versoes da mesma regra para divergirem depois. A
- * ordem e a mesma; o numero que a tela exibe continua saindo da view.
+ * Fração e não o percentual inteiro de propósito: aqui isso e só chave de
+ * ordenação, e repetir no dialeto do Mongo o arredondamento para baixo de
+ * `discountOf` criaria duas versões da mesma regra para divergirem depois. A
+ * ordem e a mesma; o número que a tela exibe continua saindo da view.
  *
  * `compareAtPriceCents` nulo cai no zero sozinho: na ordem do BSON, null vem
- * antes de qualquer numero, entao o `$gt` e falso.
+ * antes de qualquer número, então o `$gt` e falso.
  */
 function discountRatio(): Record<string, unknown> {
   return {

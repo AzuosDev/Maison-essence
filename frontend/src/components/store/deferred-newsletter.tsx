@@ -2,23 +2,23 @@ import { Suspense, lazy } from 'react';
 import styles from './newsletter-form.module.css';
 
 /**
- * A newsletter, fora do caminho critico.
+ * A newsletter, fora do caminho crítico.
  *
- * O formulario carrega `react-hook-form`, `zod` e o resolvedor que liga os
+ * O formulário carrega `react-hook-form`, `zod` e o resolvedor que liga os
  * dois — cerca de trinta kilobytes comprimidos que, importados direto, iam
- * parar no pedaco que o navegador precisa baixar e interpretar **antes** de
+ * parar no pedaço que o navegador precisa baixar e interpretar **antes** de
  * desenhar qualquer coisa. Eles pagam por um campo de e-mail que fica no
- * rodape, muito abaixo da dobra, e que ninguem toca antes de rolar a pagina
- * inteira. Numa conexao 3G isso e meio segundo cobrado da foto do hero, que
+ * rodapé, muito abaixo da dobra, e que ninguém toca antes de rolar a página
+ * inteira. Numa conexão 3G isso e meio segundo cobrado da foto do hero, que
  * e o LCP da home.
  *
- * Com o `lazy`, esses trinta kilobytes viram um pedido separado, que nao
- * bloqueia o primeiro desenho. O que fica no lugar enquanto ele nao chega e
- * um bloco da altura exata do formulario — ver `.placeholder` na folha de
- * estilo —, entao a troca nao mexe em nada do que ja esta na tela.
+ * Com o `lazy`, esses trinta kilobytes viram um pedido separado, que não
+ * bloqueia o primeiro desenho. O que fica no lugar enquanto ele não chega e
+ * um bloco da altura exata do formulário — ver `.placeholder` na folha de
+ * estilo —, então a troca não mexe em nada do que já esta na tela.
  *
- * Quem precisa do formulario de imediato — uma pagina que fosse so a
- * inscricao — importa `NewsletterForm` direto.
+ * Quem precisa do formulário de imediato — uma página que fosse só a
+ * inscrição — importa `NewsletterForm` direto.
  */
 const NewsletterForm = lazy(async () => ({
   default: (await import('./newsletter-form')).NewsletterForm,

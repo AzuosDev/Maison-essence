@@ -13,29 +13,29 @@ import type { IssuedTokens } from './auth.types.js';
 
 // Os nomes vivem em `common/session-cookies.ts`, com os da loja: o guard do
 // painel precisa conhecer os dois conjuntos. Reexportados aqui porque este e
-// o arquivo que o resto do modulo ja importa.
+// o arquivo que o resto do módulo já importa.
 export { ACCESS_TOKEN_COOKIE, REFRESH_TOKEN_COOKIE };
 
 /** O access token serve toda a API. */
 export const ACCESS_COOKIE_PATH = `/${GLOBAL_PREFIX}`;
 
 /**
- * O refresh token so serve as rotas de autenticacao.
+ * O refresh token só serve as rotas de autenticação.
  *
  * Com o `path` restrito, o navegador nem envia o refresh nas chamadas de
- * catalogo ou de pedido: uma falha de log ou um proxy intrometido em qualquer
- * outra rota nao tem como registrar a credencial de sessao.
+ * catálogo ou de pedido: uma falha de log ou um proxy intrometido em qualquer
+ * outra rota não tem como registrar a credencial de sessão.
  */
 export const REFRESH_COOKIE_PATH = `/${GLOBAL_PREFIX}/auth`;
 
 /**
- * Grava os dois cookies da sessao.
+ * Grava os dois cookies da sessão.
  *
- * `sameSite: 'none'` porque o painel roda em outro dominio da Vercel — sem
- * isso o navegador descarta o cookie na chamada cross-site. O par obrigatorio
+ * `sameSite: 'none'` porque o painel roda em outro domínio da Vercel — sem
+ * isso o navegador descarta o cookie na chamada cross-site. O par obrigatório
  * disso e `secure: true`, que exige HTTPS; em desenvolvimento, onde o painel
- * fala com `http://localhost`, o navegador recusaria o par e a sessao ficaria
- * sem cookie nenhum, entao ali caimos para `lax` sem `secure`.
+ * fala com `http://localhost`, o navegador recusaria o par e a sessão ficaria
+ * sem cookie nenhum, então ali caimos para `lax` sem `secure`.
  */
 export function setSessionCookies(
   response: Response,
@@ -54,7 +54,7 @@ export function setSessionCookies(
   );
 }
 
-/** Apaga os cookies. Mesmo `path` e mesmos atributos, senao o navegador ignora. */
+/** Apaga os cookies. Mesmo `path` e mesmos atributos, senão o navegador ignora. */
 export function clearSessionCookies(response: Response, isDevelopment: boolean): void {
   response.clearCookie(
     ACCESS_TOKEN_COOKIE,
@@ -66,7 +66,7 @@ export function clearSessionCookies(response: Response, isDevelopment: boolean):
   );
 }
 
-/** Refresh token do cookie ou, para quem nao recebe cookie, do corpo. */
+/** Refresh token do cookie ou, para quem não recebe cookie, do corpo. */
 export function readRefreshToken(
   request: Request,
   fromBody?: string,
@@ -75,11 +75,11 @@ export function readRefreshToken(
 }
 
 /**
- * Opcoes de cookie de sessao, compartilhadas pelas duas audiencias.
+ * Opções de cookie de sessão, compartilhadas pelas duas audiências.
  *
- * Exportada para o modulo de clientes usar as mesmas regras: um cookie de
- * sessao da loja com politica diferente da do painel seria uma segunda
- * decisao de seguranca, tomada em outro arquivo, para o mesmo problema.
+ * Exportada para o módulo de clientes usar as mesmas regras: um cookie de
+ * sessão da loja com política diferente da do painel seria uma segunda
+ * decisão de segurança, tomada em outro arquivo, para o mesmo problema.
  */
 export function sessionCookieOptions(
   path: string,

@@ -1,7 +1,7 @@
 /*
  * O seletor.
  *
- * Um `<select>` nativo, e nao uma lista desenhada a mao. O nativo abre o
+ * Um `<select>` nativo, e não uma lista desenhada a mão. O nativo abre o
  * seletor do sistema no celular — a roda do iOS, a lista do Android —, e
  * nenhuma lista personalizada chega perto disso em usabilidade ou em
  * acessibilidade. O que se desenha aqui e a caixa em volta.
@@ -37,9 +37,9 @@
 }
 
 /*
- * O placeholder de um `<select>` e a primeira opcao, desabilitada. Enquanto
- * ela esta escolhida, o campo inteiro usa a cor de texto secundario — e o
- * que faz "Escolha uma cidade" parecer um pedido, e nao uma resposta.
+ * O placeholder de um `<select>` e a primeira opção, desabilitada. Enquanto
+ * ela esta escolhida, o campo inteiro usa a cor de texto secundário — e o
+ * que faz "Escolha uma cidade" parecer um pedido, e não uma resposta.
  */
 .placeholder {
   color: var(--ink-soft);

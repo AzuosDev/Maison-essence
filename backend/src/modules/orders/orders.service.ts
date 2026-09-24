@@ -52,20 +52,20 @@ import type { WhatsappAddress } from './whatsapp-message.js';
 
 const DUPLICATE_KEY = 11000;
 
-/** Um dia inteiro em milissegundos, menos o ultimo: o fim de `to`. */
+/** Um dia inteiro em milissegundos, menos o último: o fim de `to`. */
 const END_OF_DAY = 24 * 60 * 60 * 1000 - 1;
 
 /**
- * Pedidos: a criacao pelo checkout e a gestao pelo painel.
+ * Pedidos: a criação pelo checkout e a gestão pelo painel.
  *
- * O pedido e o unico documento do sistema que nasce de fora, sem sessao e sem
- * ninguem conferindo do outro lado. Por isso nada do que chega no corpo vira
- * dinheiro: a cotacao e refeita do zero aqui dentro, pelo mesmo servico que
+ * O pedido e o único documento do sistema que nasce de fora, sem sessão e sem
+ * ninguém conferindo do outro lado. Por isso nada do que chega no corpo vira
+ * dinheiro: a cotação e refeita do zero aqui dentro, pelo mesmo serviço que
  * responde `POST /cart/quote`, e o que o cliente mandou de valor serve apenas
- * para uma pergunta — "e isto que voce viu na tela?".
+ * para uma pergunta — "e isto que você viu na tela?".
  *
- * Se nao for, o pedido nao e gravado com o numero novo em silencio: volta em
- * 409 com a cotacao atual, e quem decide se ainda quer comprar e quem ia
+ * Se não for, o pedido não e gravado com o número novo em silêncio: volta em
+ * 409 com a cotação atual, e quem decide se ainda quer comprar e quem ia
  * pagar.
  */
 @Injectable()
@@ -82,11 +82,11 @@ export class OrdersService {
   /**
    * Fecha o pedido: recotar, conferir, baixar estoque e gravar.
    *
-   * A ordem nao e arbitraria. O estoque so e baixado depois de a cotacao
-   * bater, para nao reservar unidade de um pedido que vai ser recusado; e a
-   * gravacao vem depois da baixa, porque um pedido gravado sem estoque
+   * A ordem não e arbitrária. O estoque só e baixado depois de a cotação
+   * bater, para não reservar unidade de um pedido que vai ser recusado; e a
+   * gravação vem depois da baixa, porque um pedido gravado sem estoque
    * reservado e exatamente a venda em duplicidade que se quer evitar. Se a
-   * gravacao falhar, a baixa e desfeita.
+   * gravação falhar, a baixa e desfeita.
    */
   async create(
     dto: CreateOrderDto,
@@ -94,7 +94,7 @@ export class OrdersService {
   ): Promise<CreatedOrderView> {
     // O limite por IP fica no guard da rota; este e o por telefone, que pega o
     // mesmo cliente insistindo de outro lugar — e, principalmente, o
-    // formulario reenviado seis vezes numa conexao ruim.
+    // formulário reenviado seis vezes numa conexão ruim.
     await this.limits.consume({ ...ORDER_PHONE_RATE_LIMIT, identity: dto.customer.phone });
 
     const quote = await this.cart.quote(dto);
@@ -108,7 +108,7 @@ export class OrdersService {
     try {
       return await this.persist(dto, quote, customer);
     } catch (error: unknown) {
-      // O pedido nao existe: o estoque que ele tirou nao pode continuar fora.
+      // O pedido não existe: o estoque que ele tirou não pode continuar fora.
       await this.stock.giveBack(lines);
 
       throw error;
@@ -116,10 +116,10 @@ export class OrdersService {
   }
 
   /**
-   * A listagem do painel: status, periodo e busca.
+   * A listagem do painel: status, período e busca.
    *
-   * Contagem e pagina em paralelo, como no catalogo: sao duas idas
-   * independentes ao banco, e na funcao serverless o que pesa e o tempo
+   * Contagem e página em paralelo, como no catálogo: são duas idas
+   * independentes ao banco, e na função serverless o que pesa e o tempo
    * somado.
    */
   async list(query: ListOrdersDto): Promise<Paginated<OrderSummaryView>> {
@@ -146,8 +146,8 @@ export class OrdersService {
   /**
    * Move o pedido de status. Cancelar devolve o estoque.
    *
-   * Regravar o mesmo status nao faz nada — e o que torna o cancelamento
-   * seguro de repetir: a segunda chamada encontra o pedido ja cancelado e sai
+   * Regravar o mesmo status não faz nada — e o que torna o cancelamento
+   * seguro de repetir: a segunda chamada encontra o pedido já cancelado e sai
    * antes de chegar perto do estoque.
    */
   async setStatus(
@@ -171,9 +171,9 @@ export class OrdersService {
         ? await this.cancel(order)
         : toOrderView(await this.moveTo(order, dto.status));
 
-    // Depois da gravacao, e nunca antes: trilha de acao que nao
-    // aconteceu e pior do que trilha nenhuma. O codigo do pedido vai
-    // junto porque e por ele que a dona procura, e nao pelo id.
+    // Depois da gravação, e nunca antes: trilha de ação que não
+    // aconteceu e pior do que trilha nenhuma. O código do pedido vai
+    // junto porque e por ele que a dona procura, e não pelo id.
     await this.audit.record({
       action: AUDIT_ACTIONS.ORDER_STATUS_CHANGED,
       actor: { id: actor.id, email: actor.email, role: actor.role },
@@ -188,14 +188,14 @@ export class OrdersService {
     return view;
   }
 
-  /** A virada simples de status, que e tudo o que nao e cancelamento. */
+  /** A virada simples de status, que e tudo o que não e cancelamento. */
   private moveTo(order: OrderDocument, status: OrderStatus): Promise<OrderDocument> {
     order.status = status;
 
     return order.save();
   }
 
-  /** A anotacao interna. Substitui a anterior; vazio apaga. */
+  /** A anotação interna. Substitui a anterior; vazio apaga. */
   async setNotes(id: string, dto: UpdateOrderNotesDto): Promise<OrderView> {
     const order = await this.findById(id);
 
@@ -205,17 +205,17 @@ export class OrdersService {
   }
 
   /**
-   * Cancela e devolve o estoque, uma vez so.
+   * Cancela e devolve o estoque, uma vez só.
    *
-   * A virada do status e a propria reserva do direito de devolver: quem
+   * A virada do status e a própria reserva do direito de devolver: quem
    * conseguir gravar `CANCELLED` partindo de qualquer outro status e quem
-   * devolve, e duas chamadas simultaneas nao podem as duas conseguir. E o que
-   * cumpre "cancelar duas vezes nao devolve duas vezes" sem depender de
-   * ninguem ter lido o pedido antes.
+   * devolve, e duas chamadas simultaneas não podem as duas conseguir. E o que
+   * cumpre "cancelar duas vezes não devolve duas vezes" sem depender de
+   * ninguém ter lido o pedido antes.
    *
-   * Falhando a devolucao depois da virada, o pedido fica cancelado e o
-   * estoque, baixado — e o lado seguro do erro: sobra conferencia manual, e
-   * nao unidade inventada que a loja nao tem na prateleira.
+   * Falhando a devolução depois da virada, o pedido fica cancelado e o
+   * estoque, baixado — e o lado seguro do erro: sobra conferência manual, e
+   * não unidade inventada que a loja não tem na prateleira.
    */
   private async cancel(order: OrderDocument): Promise<OrderView> {
     const claimed = await this.orders
@@ -227,7 +227,7 @@ export class OrdersService {
       .exec();
 
     if (claimed === null) {
-      // Outra chamada cancelou primeiro e ja devolveu o estoque.
+      // Outra chamada cancelou primeiro e já devolveu o estoque.
       return toOrderView(await this.findById(order._id.toHexString()));
     }
 
@@ -237,12 +237,12 @@ export class OrdersService {
   }
 
   /**
-   * Grava o pedido, sorteando outro codigo se o primeiro colidir.
+   * Grava o pedido, sorteando outro código se o primeiro colidir.
    *
-   * A colisao e improvavel — 1,6 milhao de combinacoes por dia — mas o indice
-   * unico em `code` existe justamente para que ela nao passe despercebida, e
+   * A colisão e improvável — 1,6 milhão de combinações por dia — mas o índice
+   * único em `code` existe justamente para que ela não passe despercebida, e
    * responder 500 a um cliente por causa de um sorteio seria desperdicar a
-   * venda. A mensagem e montada dentro do laco porque carrega o codigo.
+   * venda. A mensagem e montada dentro do laço porque carrega o código.
    */
   private async persist(
     dto: CreateOrderDto,
@@ -325,7 +325,7 @@ export class OrdersService {
     });
   }
 
-  /** Busca pelo id, tratando id malformado como "nao encontrado". */
+  /** Busca pelo id, tratando id malformado como "não encontrado". */
   private async findById(id: string): Promise<OrderDocument> {
     const found = Types.ObjectId.isValid(id)
       ? await this.orders.findById(new Types.ObjectId(id)).exec()
@@ -340,13 +340,13 @@ export class OrdersService {
 }
 
 /**
- * Confere se a cotacao refeita ainda e a que o cliente viu.
+ * Confere se a cotação refeita ainda e a que o cliente viu.
  *
- * Tres perguntas, tres respostas diferentes. Forma de pagamento que a loja
- * parou de aceitar e 422: nao e divergencia de valor, e um pedido que nao pode
- * existir do jeito que foi montado. Item indisponivel e total diferente sao
- * 409 com a cotacao nova no `details`, porque ha o que mostrar e ha o que
- * decidir — e a decisao e de quem paga.
+ * Três perguntas, três respostas diferentes. Forma de pagamento que a loja
+ * parou de aceitar e 422: não e divergência de valor, e um pedido que não pode
+ * existir do jeito que foi montado. Item indisponível e total diferente são
+ * 409 com a cotação nova no `details`, porque há o que mostrar e há o que
+ * decidir — e a decisão e de quem paga.
  */
 function assertQuoteHolds(dto: CreateOrderDto, quote: CartQuoteView): void {
   const blocked = quote.warnings.find(
@@ -368,8 +368,8 @@ function assertQuoteHolds(dto: CreateOrderDto, quote: CartQuoteView): void {
     throw mismatch(TOTAL_CHANGED_MESSAGE, QUOTE_MISMATCH_REASONS.TOTAL, quote);
   }
 
-  // So no cartao: no PIX o parcelamento pedido nao muda valor nenhum, e a
-  // cotacao ja avisa que o pagamento e a vista.
+  // Só no cartão: no PIX o parcelamento pedido não muda valor nenhum, e a
+  // cotação já avisa que o pagamento e a vista.
   if (
     quote.payment.method === PAYMENT_METHODS.CARD &&
     (dto.payment.installments ?? 1) !== quote.payment.installments
@@ -378,7 +378,7 @@ function assertQuoteHolds(dto: CreateOrderDto, quote: CartQuoteView): void {
   }
 }
 
-/** O 409 que o checkout entende: o motivo e a cotacao inteira, recalculada. */
+/** O 409 que o checkout entende: o motivo e a cotação inteira, recalculada. */
 function mismatch(
   message: string,
   reason: QuoteMismatchReason,
@@ -387,7 +387,7 @@ function mismatch(
   return new ConflictException({ message, details: { reason, quote } });
 }
 
-/** O pedido pronto para gravar, todo ele saido da cotacao do servidor. */
+/** O pedido pronto para gravar, todo ele saido da cotação do servidor. */
 function snapshotOf(
   dto: CreateOrderDto,
   quote: CartQuoteView,
@@ -433,14 +433,14 @@ function snapshotOf(
     },
     status: ORDER_STATUSES.PENDING_CONTACT,
     /**
-     * A conta de quem comprou, quando havia uma sessao.
+     * A conta de quem comprou, quando havia uma sessão.
      *
-     * `null` no checkout como convidado, que e o caminho padrao — e nao fica
+     * `null` no checkout como convidado, que e o caminho padrão — e não fica
      * `null` para sempre: se essa pessoa criar uma conta depois com o mesmo
      * telefone, e o cadastro que vem buscar este pedido (ver
      * `CustomerAuthService.adoptGuestOrders`).
      *
-     * Os dados de contato continuam vindo do formulario, mesmo com o cliente
+     * Os dados de contato continuam vindo do formulário, mesmo com o cliente
      * logado: quem compra para a irma preenche o nome e o telefone da irma, e
      * sobrescrever isso com os da conta mandaria a dona conversar com a pessoa
      * errada.
@@ -450,11 +450,11 @@ function snapshotOf(
 }
 
 /**
- * O endereco do pedido, ou `null` na retirada.
+ * O endereço do pedido, ou `null` na retirada.
  *
- * Quem decide e o modo que o `DeliveryService` confirmou, nao o que veio no
- * corpo: um endereco gravado num pedido de retirada viraria uma entrega que
- * ninguem combinou na leitura do painel.
+ * Quem decide e o modo que o `DeliveryService` confirmou, não o que veio no
+ * corpo: um endereço gravado num pedido de retirada viraria uma entrega que
+ * ninguém combinou na leitura do painel.
  */
 function addressOf(dto: CreateOrderDto, quote: CartQuoteView): WhatsappAddress | null {
   if (quote.fulfillment.mode !== FULFILLMENT_MODES.DELIVERY || dto.address === undefined) {
@@ -471,7 +471,7 @@ function addressOf(dto: CreateOrderDto, quote: CartQuoteView): WhatsappAddress |
   };
 }
 
-/** A linha da cotacao como a baixa de estoque a quer. */
+/** A linha da cotação como a baixa de estoque a quer. */
 function toStockTake(item: {
   productId: string;
   variantId: string;
@@ -486,7 +486,7 @@ function toStockTake(item: {
   };
 }
 
-/** O item gravado como a devolucao a quer. */
+/** O item gravado como a devolução a quer. */
 function toStockLine(item: OrderItem): StockLine {
   return {
     productId: item.productId.toHexString(),
@@ -495,7 +495,7 @@ function toStockLine(item: OrderItem): StockLine {
   };
 }
 
-/** O filtro da listagem, montado so com o que a dona preencheu. */
+/** O filtro da listagem, montado só com o que a dona preencheu. */
 function filterFor(query: ListOrdersDto): QueryFilter<Order> {
   const filter: QueryFilter<Order> = {};
 
@@ -518,12 +518,12 @@ function filterFor(query: ListOrdersDto): QueryFilter<Order> {
 }
 
 /**
- * Codigo ou telefone, decidido pelo que foi digitado.
+ * Código ou telefone, decidido pelo que foi digitado.
  *
- * Texto com letra e busca de codigo, comecando pelo inicio — `ME-2509` traz o
- * dia inteiro, que e como a dona procura quando so lembra a data. So digitos e
- * busca de telefone, e sem ancora: o que ela tem na tela do celular sao os
- * ultimos quatro numeros de quem esta ligando.
+ * Texto com letra e busca de código, começando pelo início — `ME-2509` traz o
+ * dia inteiro, que e como a dona procura quando só lembra a data. Só digitos e
+ * busca de telefone, e sem ancora: o que ela tem na tela do celular são os
+ * últimos quatro números de quem esta ligando.
  */
 function searchFor(term: string): QueryFilter<Order> {
   const digits = term.replace(/\D/g, '');
@@ -538,8 +538,8 @@ function searchFor(term: string): QueryFilter<Order> {
 /**
  * O fim do dia de `to`, quando ele veio sem hora.
  *
- * `to=2026-09-21` significa "ate o dia 21" para quem digitou, e significaria
- * "ate a meia-noite do dia 21" para o banco — o filtro deixaria de fora os
+ * `to=2026-09-21` significa "até o dia 21" para quem digitou, e significaria
+ * "até a meia-noite do dia 21" para o banco — o filtro deixaria de fora os
  * pedidos do dia inteiro que a dona queria ver, incluindo o que ela esta
  * procurando.
  */
@@ -549,7 +549,7 @@ function endOfDay(to: Date): Date {
     : to;
 }
 
-/** O termo digitado nao pode virar metacaractere de regex. */
+/** O termo digitado não pode virar metacaractere de regex. */
 function escapeRegex(term: string): string {
   return term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

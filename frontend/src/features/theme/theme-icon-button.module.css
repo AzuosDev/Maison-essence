@@ -1,28 +1,28 @@
 /*
- * O botao de tema.
+ * O botão de tema.
  *
- * Repete a caixa dos botoes de icone da loja — 44px de alvo, pilula, dourado
+ * Repete a caixa dos botões de ícone da loja — 44px de alvo, pílula, dourado
  * no hover — em vez de importar `icon-button.module.css`: aquele arquivo e de
- * `components/store`, e neste projeto `features` nao importa de `components`
- * (a direcao e a inversa, ver `theme-icons.tsx`). Quem usa este botao passa a
- * classe do lugar por cima para o que e posicao.
+ * `components/store`, e neste projeto `features` não importa de `components`
+ * (a direção e a inversa, ver `theme-icons.tsx`). Quem usa este botão passa a
+ * classe do lugar por cima para o que e posição.
  *
- * As medidas sao as mesmas de la de proposito. Se aquelas mudarem, estas
- * precisam mudar junto — no cabecalho o botao fica encostado nos outros tres,
+ * As medidas são as mesmas de lá de propósito. Se aquelas mudarem, estas
+ * precisam mudar junto — no cabeçalho o botão fica encostado nos outros três,
  * e um alvo de tamanho diferente no meio da fileira aparece.
  *
- * ## Por que as cores sao variaveis
+ * ## Por que as cores são variáveis
  *
- * O padrao e o do cabecalho da loja, que e claro. O mesmo botao mora no pe da
+ * O padrão e o do cabeçalho da loja, que e claro. O mesmo botão mora no pé da
  * coluna do painel, que e preta nos dois temas: `--ink` ali seria tinta preta
  * sobre fundo preto. Em vez de uma regra `:hover` de fora brigando por
- * especificidade com a daqui, quem coloca o botao troca as variaveis —
+ * especificidade com a daqui, quem coloca o botão troca as variáveis —
  * mesmo arranjo do `--toggle-ink` em `theme-toggle.module.css`.
  *
- * O canto esta entre elas pelo mesmo motivo de vizinhanca: a pilula e a forma
- * de toda acao clicavel da loja, e a coluna do painel nao tem nenhuma — os
- * itens de menu e o "Sair" sao chanfros de 4px. Um circulo ali seria a unica
- * coisa redonda da coluna, e leria como peca emprestada da loja.
+ * O canto esta entre elas pelo mesmo motivo de vizinhanca: a pílula e a forma
+ * de toda ação clicável da loja, e a coluna do painel não tem nenhuma — os
+ * itens de menu e o "Sair" são chanfros de 4px. Um círculo ali seria a única
+ * coisa redonda da coluna, e leria como peça emprestada da loja.
  */
 
 .button {
@@ -35,8 +35,8 @@
   align-items: center;
   justify-content: center;
 
-  /* `flex: none` porque o botao mora numa linha flex apertada: sem ele o alvo
-     de 44px encolhe ate a largura do desenho e o dedo erra. */
+  /* `flex: none` porque o botão mora numa linha flex apertada: sem ele o alvo
+     de 44px encolhe até a largura do desenho e o dedo erra. */
   flex: none;
   width: 2.75rem;
   height: 2.75rem;
@@ -66,12 +66,12 @@
 /*
  * O desenho troca sem piscar.
  *
- * Sol, lua e tela sao tres silhuetas diferentes, e a troca seca chama mais
- * atencao que a mudanca de tema que a acompanha. Um quarto de giro com a
- * opacidade entrando suaviza o corte sem virar animacao de brinquedo.
+ * Sol, lua e tela são três silhuetas diferentes, e a troca seca chama mais
+ * atenção que a mudanca de tema que a acompanha. Um quarto de giro com a
+ * opacidade entrando suaviza o corte sem virar animação de brinquedo.
  *
  * `prefers-reduced-motion` desliga o giro e mantem a opacidade: quem pediu
- * menos movimento nao pediu menos informacao.
+ * menos movimento não pediu menos informação.
  */
 .button svg {
   animation: swap var(--duration) var(--ease);

@@ -1,10 +1,10 @@
 /*
- * O botao de radio.
+ * O botão de radio.
  *
- * Mesma ideia da caixa de marcar: o `<input>` nativo fica invisivel mas
- * presente, e o circulo e um irmao pintado pelo estado dele. Aqui isso
- * importa ainda mais — a navegacao por setas dentro de um grupo e
- * comportamento nativo do radio, e so existe se o input existir de verdade.
+ * Mesma ideia da caixa de marcar: o `<input>` nativo fica invisível mas
+ * presente, e o círculo e um irmão pintado pelo estado dele. Aqui isso
+ * importa ainda mais — a navegação por setas dentro de um grupo e
+ * comportamento nativo do radio, e só existe se o input existir de verdade.
  */
 
 .group {
@@ -15,9 +15,9 @@
 }
 
 /*
- * As opcoes ficam num wrapper, e nao direto no `fieldset`: o `<legend>` tem
- * renderizacao propria e, dentro de um container flex horizontal, entraria
- * na mesma linha das opcoes.
+ * As opções ficam num wrapper, e não direto no `fieldset`: o `<legend>` tem
+ * renderização própria e, dentro de um container flex horizontal, entraria
+ * na mesma linha das opções.
  */
 .options {
   display: flex;
@@ -35,7 +35,7 @@
   color: var(--ink);
 }
 
-/* Lado a lado, quando as opcoes sao curtas: PIX / cartao. */
+/* Lado a lado, quando as opções são curtas: PIX / cartão. */
 .horizontal {
   flex-direction: row;
   flex-wrap: wrap;
@@ -51,12 +51,12 @@
 }
 
 /*
- * A variante cartao: a escolha que domina uma tela.
+ * A variante cartão: a escolha que domina uma tela.
  *
- * Entrega ou retirada, PIX ou cartao. A moldura transforma a opcao inteira
- * em area de toque — a linha de apoio e a borda passam a fazer parte do
- * alvo, em vez de so o circulo de 20px — e da a opcao marcada um estado que
- * continua legivel depois de rolar a pagina e voltar.
+ * Entrega ou retirada, PIX ou cartão. A moldura transforma a opção inteira
+ * em área de toque — a linha de apoio e a borda passam a fazer parte do
+ * alvo, em vez de só o círculo de 20px — e da a opção marcada um estado que
+ * continua legível depois de rolar a página e voltar.
  *
  * O `box-shadow` interno e que dobra a espessura do contorno quando ela e
  * escolhida. Uma borda de 2px mudaria a caixa e empurraria o texto 1px a
@@ -87,8 +87,8 @@
 }
 
 /*
- * O anel de foco passa a ser do cartao: e ele o alvo, e um anel no circulo
- * de 20px some no meio da moldura. O anel do circulo sai junto — dois aneis
+ * O anel de foco passa a ser do cartão: e ele o alvo, e um anel no círculo
+ * de 20px some no meio da moldura. O anel do círculo sai junto — dois aneis
  * concentricos no mesmo foco confundem mais do que marcam.
  */
 .card:has(.input:focus-visible) {

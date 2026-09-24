@@ -3,10 +3,10 @@ import type { SchemaOptions, Types } from 'mongoose';
 import { REDACTED_FIELDS } from '../common/redacted-fields.js';
 
 /**
- * Opcoes comuns a todo schema de dominio.
+ * Opções comuns a todo schema de domínio.
  *
- * O `@nestjs/mongoose` le o `@Schema()` da propria classe e nao sobe na cadeia
- * de heranca, entao cada schema precisa declarar as suas:
+ * O `@nestjs/mongoose` lê o `@Schema()` da própria classe e não sobe na cadeia
+ * de herança, então cada schema precisa declarar as suas:
  *
  * ```ts
  * @Schema(baseSchemaOptions())
@@ -27,13 +27,13 @@ export function baseSchemaOptions(overrides: SchemaOptions = {}): SchemaOptions 
 }
 
 /**
- * Opcoes de subdocumento embutido: mesma serializacao do documento raiz, sem
+ * Opções de subdocumento embutido: mesma serialização do documento raiz, sem
  * os timestamps.
  *
- * O `_id` continua ligado (padrao do Mongoose) porque uma variante de produto
- * precisa de identidade propria — e ela que o pedido guarda no snapshot e que
- * o painel usa para casar o array recebido no PATCH com o que ja existe.
- * `createdAt`/`updatedAt` por variante nao servem a nada e so pesam o
+ * O `_id` continua ligado (padrão do Mongoose) porque uma variante de produto
+ * precisa de identidade própria — e ela que o pedido guarda no snapshot e que
+ * o painel usa para casar o array recebido no PATCH com o que já existe.
+ * `createdAt`/`updatedAt` por variante não servem a nada e só pesam o
  * documento.
  */
 export function embeddedSchemaOptions(overrides: SchemaOptions = {}): SchemaOptions {
@@ -41,7 +41,7 @@ export function embeddedSchemaOptions(overrides: SchemaOptions = {}): SchemaOpti
 }
 
 /**
- * Campos que todo documento ganha de graca. Serve so para tipagem: `_id` e
+ * Campos que todo documento ganha de graça. Serve só para tipagem: `_id` e
  * virtual e os timestamps vem de `timestamps: true`, nenhum precisa de `@Prop`.
  */
 @Schema(baseSchemaOptions())
@@ -52,9 +52,9 @@ export abstract class BaseSchema {
 }
 
 /**
- * Tipagem dos campos que um subdocumento de array ganha de graca. Vale para os
+ * Tipagem dos campos que um subdocumento de array ganha de graça. Vale para os
  * embutidos que vivem em lista e precisam ser identificados um a um; os blocos
- * singulares (totais, pagamento) usam `_id: false` e nao herdam daqui.
+ * singulares (totais, pagamento) usam `_id: false` e não herdam daqui.
  */
 export abstract class EmbeddedSchema {
   id: string;

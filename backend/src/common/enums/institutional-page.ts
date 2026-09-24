@@ -1,6 +1,6 @@
 /**
- * Paginas institucionais. O slug e fixo porque o link e compartilhado no
- * WhatsApp e no rodape: a dona edita titulo e conteudo, nunca o endereco.
+ * Páginas institucionais. O slug e fixo porque o link e compartilhado no
+ * WhatsApp e no rodapé: a dona edita título e conteúdo, nunca o endereço.
  */
 export const INSTITUTIONAL_PAGE_SLUGS = {
   ABOUT: 'quem-somos',

@@ -39,7 +39,7 @@ import type {
 /**
  * Resposta publica junto da data que a versiona.
  *
- * O `updatedAt` nao vai no corpo — e estado do painel, nao informacao da loja
+ * O `updatedAt` não vai no corpo — e estado do painel, não informação da loja
  * — mas o controller precisa dele para montar o ETag, que e o que faz a borda
  * largar a copia velha assim que a dona grava (ver `common/etag.ts`).
  */
@@ -56,20 +56,20 @@ export class SettingsService {
   ) {}
 
   /**
-   * O documento unico das configuracoes, criado com os padroes na primeira
+   * O documento único das configurações, criado com os padrões na primeira
    * leitura.
    *
-   * E por aqui que os outros modulos leem a loja — o de pedidos vai buscar
-   * aqui o numero para onde a mensagem do cliente e enviada. Ler do banco a
-   * cada pedido, e nao de uma constante do build, e o que cumpre a promessa
-   * do painel: trocar o numero muda o destino da proxima mensagem, sem
+   * E por aqui que os outros módulos leem a loja — o de pedidos vai buscar
+   * aqui o número para onde a mensagem do cliente e enviada. Ler do banco a
+   * cada pedido, e não de uma constante do build, e o que cumpre a promessa
+   * do painel: trocar o número muda o destino da próxima mensagem, sem
    * redeploy.
    */
   current(): Promise<StoreSettingsDocument> {
     return this.settings.getOrCreate();
   }
 
-  /** As configuracoes como o painel as ve. */
+  /** As configurações como o painel as vê. */
   async adminView(): Promise<SettingsView> {
     return toSettingsView(await this.current());
   }
@@ -81,7 +81,7 @@ export class SettingsService {
     return { payload: toPublicSettingsView(settings, now), updatedAt: settings.updatedAt };
   }
 
-  /** Paginas publicadas, para o rodape montar os links. */
+  /** Páginas publicadas, para o rodapé montar os links. */
   async publicPages(): Promise<Versioned<PublicPageSummary[]>> {
     const settings = await this.current();
 
@@ -89,10 +89,10 @@ export class SettingsService {
   }
 
   /**
-   * Uma pagina pelo endereco.
+   * Uma página pelo endereço.
    *
-   * Pagina despublicada responde 404, e nao 403: para quem esta de fora, ela
-   * simplesmente nao existe ainda.
+   * Página despublicada responde 404, e não 403: para quem esta de fora, ela
+   * simplesmente não existe ainda.
    */
   async publicPage(slug: string): Promise<Versioned<PublicPageView>> {
     const settings = await this.current();
@@ -106,12 +106,12 @@ export class SettingsService {
   }
 
   /**
-   * Grava as configuracoes e registra na auditoria o que mudou.
+   * Grava as configurações e registra na auditoria o que mudou.
    *
-   * O retrato de antes e o de depois saem do mesmo documento, o segundo ja
+   * O retrato de antes e o de depois saem do mesmo documento, o segundo já
    * com o que o Mongoose normalizou no `save` — `trim`, sigla do estado em
-   * maiuscula, e-mail em minuscula. E o valor que ficou gravado que entra na
-   * trilha, nao o que o painel digitou.
+   * maiúscula, e-mail em minúscula. E o valor que ficou gravado que entra na
+   * trilha, não o que o painel digitou.
    */
   async update(actor: AuthenticatedUser, dto: UpdateSettingsDto): Promise<SettingsView> {
     const settings = await this.current();
@@ -135,9 +135,9 @@ export class SettingsService {
 
     const changes = diffOf(before, auditSnapshot(settings));
 
-    // PATCH que nao mudou nada — a tela salva sem edicao — nao vira linha de
-    // auditoria: a trilha existe para mostrar alteracao, e ruido nela custa a
-    // confianca de quem a le.
+    // PATCH que não mudou nada — a tela salva sem edição — não vira linha de
+    // auditoria: a trilha existe para mostrar alteração, e ruído nela custa a
+    // confiança de quem a lê.
     if (Object.keys(changes).length > 0) {
       await this.audit.record({
         action: AUDIT_ACTIONS.SETTINGS_UPDATED,
@@ -149,7 +149,7 @@ export class SettingsService {
     return toSettingsView(settings);
   }
 
-  /** Campos de valor unico: o que veio substitui o que estava. */
+  /** Campos de valor único: o que veio substitui o que estava. */
   private applyScalars(settings: StoreSettingsDocument, dto: UpdateSettingsDto): void {
     const scalars = [
       'storeName',
@@ -172,11 +172,11 @@ export class SettingsService {
   }
 
   /**
-   * Blocos aninhados: fusao campo a campo.
+   * Blocos aninhados: fusão campo a campo.
    *
-   * Substituir o bloco inteiro apagaria o que a tela nao mandou — corrigir o
-   * numero da casa nao pode limpar o ponto de referencia, e trocar o
-   * Instagram nao pode sumir com o TikTok.
+   * Substituir o bloco inteiro apagaria o que a tela não mandou — corrigir o
+   * número da casa não pode limpar o ponto de referência, e trocar o
+   * Instagram não pode sumir com o TikTok.
    */
   private applyBlocks(settings: StoreSettingsDocument, dto: UpdateSettingsDto): void {
     for (const block of ['pickupAddress', 'socialLinks'] as const) {
@@ -198,9 +198,9 @@ export class SettingsService {
    * O carrossel recebido, pronto para substituir o gravado.
    *
    * O `_id` de cada banner e preservado quando o painel manda o `id`: e ele
-   * que identifica a arte entre uma gravacao e outra, e e por ele que o
-   * modulo de uploads sabe que a imagem ainda esta em uso antes de deixar
-   * apaga-la. Banner sem `id` e novo e ganha o seu.
+   * que identifica a arte entre uma gravação e outra, e e por ele que o
+   * módulo de uploads sabe que a imagem ainda esta em uso antes de deixar
+   * apaga-lá. Banner sem `id` e novo e ganha o seu.
    */
   private plannedBanners(
     settings: StoreSettingsDocument,
@@ -237,7 +237,7 @@ export class SettingsService {
         subtitle: banner.subtitle ?? '',
         buttonLabel: banner.buttonLabel ?? '',
         link: banner.link ?? '',
-        // Sem `order`, vale a posicao na lista que a dona arrastou na tela.
+        // Sem `order`, vale a posição na lista que a dona arrastou na tela.
         order: banner.order ?? index,
         startsAt,
         endsAt,
@@ -248,14 +248,14 @@ export class SettingsService {
 }
 
 /**
- * Retrato das configuracoes para a auditoria.
+ * Retrato das configurações para a auditoria.
  *
- * Banners e paginas viram objetos indexados por `id` e por `slug` em vez de
- * arrays: assim o diff diz "o banner tal mudou de data" e nao "a lista de
- * banners mudou", que e o que sairia de uma comparacao por posicao.
+ * Banners e páginas viram objetos indexados por `id` e por `slug` em vez de
+ * arrays: assim o diff diz "o banner tal mudou de data" e não "a lista de
+ * banners mudou", que e o que sairia de uma comparação por posição.
  *
- * As datas viram texto ISO porque dois `Date` com o mesmo instante sao
- * objetos diferentes, e o diff registraria alteracao onde nao houve.
+ * As datas viram texto ISO porque dois `Date` com o mesmo instante são
+ * objetos diferentes, e o diff registraria alteração onde não houve.
  */
 function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
   const { pickupAddress, socialLinks } = settings;

@@ -19,7 +19,7 @@ import {
   PUBLIC_PAGE_SIZE,
 } from '../products.constants.js';
 
-/** Filtros da vitrine. Tudo opcional, tudo combinavel. */
+/** Filtros da vitrine. Tudo opcional, tudo combinável. */
 export class ListPublicProductsDto {
   /** Slug da categoria. As subcategorias dela entram junto. */
   @IsOptional()
@@ -41,8 +41,8 @@ export class ListPublicProductsDto {
   @MaxLength(80)
   brand?: string;
 
-  // Em centavos, como todo dinheiro nesta API. O filtro de faixa de preco da
-  // vitrine e um slider que ja trabalha com o mesmo numero do card.
+  // Em centavos, como todo dinheiro nesta API. O filtro de faixa de preço da
+  // vitrine e um slider que já trabalha com o mesmo número do card.
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'preço mínimo inválido' })
@@ -72,7 +72,7 @@ export class ListPublicProductsDto {
   @IsBoolean()
   featured?: boolean;
 
-  /** Sem `sort`, a vitrine ordena por relevancia se ha busca e por novidade se nao ha. */
+  /** Sem `sort`, a vitrine ordena por relevância se há busca e por novidade se não há. */
   @IsOptional()
   @IsIn(PUBLIC_SORTS, { message: 'ordenação inválida' })
   sort?: PublicSort;

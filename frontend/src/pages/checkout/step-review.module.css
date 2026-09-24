@@ -1,10 +1,10 @@
 /*
- * Dados e revisao.
+ * Dados e revisão.
  *
- * Dois pesos visuais no mesmo cartao: os campos, que pedem acao, e a
- * conferencia, que so informa. O que os separa e a superficie — os campos
- * ficam sobre o branco do cartao, a conferencia sobre a areia — e nao mais
- * uma borda. Um bloco com moldura dentro de outro com moldura e o comeco da
+ * Dois pesos visuais no mesmo cartão: os campos, que pedem ação, e a
+ * conferência, que só informa. O que os separa e a superficie — os campos
+ * ficam sobre o branco do cartão, a conferência sobre a areia — e não mais
+ * uma borda. Um bloco com moldura dentro de outro com moldura e o começo da
  * caixa dentro da caixa.
  */
 
@@ -13,7 +13,7 @@
   gap: var(--space-16);
 }
 
-/* ---- A conferencia --------------------------------------------------------- */
+/* ---- A conferência --------------------------------------------------------- */
 
 .review {
   display: grid;
@@ -21,7 +21,7 @@
 
   /*
    * O fundo faz as vezes do filete entre os blocos: cada bloco e branco, e o
-   * 1px de espaco entre eles deixa a linha aparecer. Uma borda por bloco
+   * 1px de espaço entre eles deixa a linha aparecer. Uma borda por bloco
    * dobraria a espessura nos encontros.
    */
   background: var(--line);
@@ -57,11 +57,11 @@
 }
 
 /*
- * "Alterar" e um botao de texto, sublinhado.
+ * "Alterar" e um botão de texto, sublinhado.
  *
- * Sublinhado porque e a unica pista de que da para clicar: sem moldura e sem
- * cor de destaque, um texto curto no canto do bloco passa por rotulo. E
- * sublinhado no dourado, que e a cor de interacao desta loja.
+ * Sublinhado porque e a única pista de que da para clicar: sem moldura e sem
+ * cor de destaque, um texto curto no canto do bloco passa por rótulo. E
+ * sublinhado no dourado, que e a cor de interação desta loja.
  */
 .change {
   padding: 0;

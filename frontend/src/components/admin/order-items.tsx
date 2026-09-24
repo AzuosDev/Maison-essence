@@ -4,34 +4,34 @@ import { formatCents } from '@/lib/format';
 import styles from './order-items.module.css';
 
 /**
- * Os itens do pedido, como o painel os le.
+ * Os itens do pedido, como o painel os lê.
  *
- * ## Por que nao e o mesmo componente da conta do cliente
+ * ## Por que não e o mesmo componente da conta do cliente
  *
  * A lista da conta (`components/account/order-items`) mostra o comprovante
- * de quem comprou, e mostra sempre os valores — e o dinheiro da propria
+ * de quem comprou, e mostra sempre os valores — e o dinheiro da própria
  * pessoa. Esta aqui mostra o pedido para quem atende, e precisa saber
- * esconder preco: o STAFF ve o que foi pedido e para onde vai, sem a margem
- * da loja. Um componente so com uma bandeira acabaria importado dos dois
- * lados, e a separacao entre loja e painel deixaria de existir.
+ * esconder preço: o STAFF vê o que foi pedido e para onde vai, sem a margem
+ * da loja. Um componente só com uma bandeira acabaria importado dos dois
+ * lados, e a separação entre loja e painel deixaria de existir.
  *
- * ## Nenhum numero aqui e calculado
+ * ## Nenhum número aqui e calculado
  *
  * `lineTotalCents` chega congelado do pedido. Multiplicar quantidade por
- * preco unitario economizaria um campo e daria um numero diferente do que a
+ * preço unitário economizaria um campo e daria um número diferente do que a
  * cliente pagou, porque o desconto entra na linha. Um pedido que discorda do
  * que foi cobrado e pior do que um pedido sem detalhe.
  *
  * ## A foto e a do dia da compra
  *
- * O item guarda o `publicId` que valia na epoca. Se a dona trocou a foto do
- * produto desde entao, o pedido continua mostrando o frasco que a cliente
+ * O item guarda o `publicId` que valia na época. Se a dona trocou a foto do
+ * produto desde então, o pedido continua mostrando o frasco que a cliente
  * viu — e e sobre aquele frasco que a conversa no WhatsApp vai ser.
  */
 
 export interface OrderItemsProps {
   items: readonly AdminOrderItem[];
-  /** Desligado para o STAFF: ele ve o que foi pedido, nao o quanto. */
+  /** Desligado para o STAFF: ele vê o que foi pedido, não o quanto. */
   showPrices?: boolean;
 }
 

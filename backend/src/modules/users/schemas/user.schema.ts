@@ -10,7 +10,7 @@ import {
   textProp,
 } from '../../../database/schema-helpers.js';
 
-/** Usuario do painel administrativo. O cliente da loja vive em `Customer`. */
+/** Usuário do painel administrativo. O cliente da loja vive em `Customer`. */
 @Schema(baseSchemaOptions({ collection: 'users' }))
 export class User extends BaseSchema {
   @Prop(textProp({ required: true, max: 120 }))
@@ -20,8 +20,8 @@ export class User extends BaseSchema {
   email: string;
 
   /**
-   * `select: false`: o hash nao sai em consulta nenhuma por acidente. Quem
-   * precisa dele — so o login — pede com `.select('+passwordHash')`.
+   * `select: false`: o hash não sai em consulta nenhuma por acidente. Quem
+   * precisa dele — só o login — pede com `.select('+passwordHash')`.
    */
   @Prop(textProp({ required: true, max: 255, select: false }))
   passwordHash: string;
@@ -32,15 +32,15 @@ export class User extends BaseSchema {
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
 
-  /** Nasce `true`: usuario criado pelo painel recebe senha temporaria. */
+  /** Nasce `true`: usuário criado pelo painel recebe senha temporária. */
   @Prop({ type: Boolean, default: true })
   mustChangePassword: boolean;
 
   /**
-   * Versao da credencial, copiada para o payload do access token. Incrementar
-   * aqui invalida na hora todos os tokens ja emitidos para o usuario, sem
-   * esperar os 15 minutos de expiracao — e o que faz "desativar usuario"
-   * derrubar a sessao dele de verdade.
+   * Versão da credencial, copiada para o payload do access token. Incrementar
+   * aqui inválida na hora todos os tokens já emitidos para o usuário, sem
+   * esperar os 15 minutos de expiração — e o que faz "desativar usuário"
+   * derrubar a sessão dele de verdade.
    */
   @Prop(integerProp({ min: 1, default: 1 }))
   credentialVersion: number;

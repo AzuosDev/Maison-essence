@@ -1,16 +1,16 @@
 /**
  * As chaves de cache do painel.
  *
- * Raiz propria (`['admin']`), separada da do catalogo, e a separacao tem uma
- * consequencia pratica: sair do painel limpa tudo o que esta debaixo dela
- * sem tocar no catalogo publico que a mesma aba talvez esteja mostrando em
+ * Raiz própria (`['admin']`), separada da do catálogo, e a separação tem uma
+ * consequência prática: sair do painel limpa tudo o que esta debaixo dela
+ * sem tocar no catálogo público que a mesma aba talvez esteja mostrando em
  * outra guia.
  *
- * Toda lista carrega os filtros na chave, porque dois filtros diferentes sao
- * dois resultados diferentes. E toda escrita invalida a familia inteira —
- * `admin.orders()`, `admin.products()` —, nunca uma chave especifica: depois
- * de mudar o status de um pedido, a contagem do Inicio, a lista filtrada e o
- * detalhe estao todos desatualizados.
+ * Toda lista carrega os filtros na chave, porque dois filtros diferentes são
+ * dois resultados diferentes. E toda escrita inválida a família inteira —
+ * `admin.orders()`, `admin.products()` —, nunca uma chave específica: depois
+ * de mudar o status de um pedido, a contagem do Início, a lista filtrada e o
+ * detalhe estão todos desatualizados.
  */
 
 export interface AdminOrderListParams {
@@ -26,7 +26,7 @@ export interface AdminOrderListParams {
 export interface AdminProductListParams {
   q?: string;
   categoryId?: string;
-  /** So a prateleira de pronta entrega. Ausente traz o catalogo inteiro. */
+  /** Só a prateleira de pronta entrega. Ausente traz o catálogo inteiro. */
   readyToShip?: boolean;
   /** `all`, `active` ou `inactive`. Ausente vale como `all`. */
   status?: string;
@@ -47,18 +47,18 @@ export const adminKeys = {
   product: (id: string) => [...adminKeys.products(), 'detail', id] as const,
 
   /**
-   * A arvore de categorias.
+   * A árvore de categorias.
    *
-   * Sem parametros na chave: a rota devolve tudo, e quem filtra e a tela. Fica
+   * Sem parâmetros na chave: a rota devolve tudo, e quem filtra e a tela. Fica
    * debaixo de `['admin']` como o resto, e por isso sair do painel a limpa
-   * junto — a arvore que o STAFF viu nao pode sobreviver a troca de sessao.
+   * junto — a árvore que o STAFF viu não pode sobreviver a troca de sessão.
    */
   categories: () => [...adminKeys.all, 'categories'] as const,
 
   /**
    * As cidades atendidas.
    *
-   * Sem parametros: a rota devolve todas, ativas e desativadas, e quem
+   * Sem parâmetros: a rota devolve todas, ativas e desativadas, e quem
    * recorta e a tela. A ordem que vem dela e a mesma do seletor do checkout.
    */
   deliveryCities: () => [...adminKeys.all, 'delivery-cities'] as const,
@@ -66,28 +66,28 @@ export const adminKeys = {
   /**
    * As regras de pagamento.
    *
-   * Documento unico, sem parametros. Fica debaixo de `['admin']` como o resto
-   * — e a unica chave do painel que carrega a chave PIX inteira, e sair do
-   * painel precisa limpa-la junto.
+   * Documento único, sem parâmetros. Fica debaixo de `['admin']` como o resto
+   * — e a única chave do painel que carrega a chave PIX inteira, e sair do
+   * painel precisa limpa-lá junto.
    */
   paymentSettings: () => [...adminKeys.all, 'payment-settings'] as const,
 
   /**
-   * As configuracoes da loja.
+   * As configurações da loja.
    *
-   * Documento unico. Carrega os banners agendados e as paginas
-   * despublicadas — tudo o que a loja aberta nao ve.
+   * Documento único. Carrega os banners agendados e as páginas
+   * despublicadas — tudo o que a loja aberta não vê.
    */
   settings: () => [...adminKeys.all, 'settings'] as const,
 
-  /** Os numeros da abertura do painel. */
+  /** Os números da abertura do painel. */
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,
 
   /**
-   * A area de sistema.
+   * A área de sistema.
    *
    * Debaixo da mesma raiz `['admin']` — sair do painel limpa isto junto —,
-   * com uma familia por tela. A lista de usuarios nao tem parametros na
+   * com uma família por tela. A lista de usuários não tem parâmetros na
    * chave porque a rota devolve todo mundo: quem filtra e a tela.
    */
   system: () => [...adminKeys.all, 'system'] as const,

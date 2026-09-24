@@ -2,7 +2,7 @@ import { isImagePublicId } from '../../common/image-public-id.js';
 import { buildPublicId } from './public-id.js';
 
 describe('buildPublicId', () => {
-  it('poe a foto na pasta pedida, com o nome do arquivo legível', () => {
+  it('põe a foto na pasta pedida, com o nome do arquivo legível', () => {
     expect(buildPublicId('products', 'Asad Lattafa.jpg')).toMatch(
       /^maison-essence\/products\/asad-lattafa-[0-9a-f]{8}$/,
     );

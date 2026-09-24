@@ -19,15 +19,15 @@ import {
 /**
  * As regras de pagamento.
  *
- * Tres coisas erram em silencio aqui, e as tres custam dinheiro de um jeito
+ * Três coisas erram em silêncio aqui, e as três custam dinheiro de um jeito
  * direto:
  *
  * - **a chave PIX conferida contra o tipo errado** manda o cliente digitar
- *   onze digitos onde esta gravado um e-mail. A transferencia nao acontece e
- *   ninguem descobre pelo painel — descobre pelo cliente que desistiu;
+ *   onze digitos onde esta gravado um e-mail. A transferência não acontece e
+ *   ninguém descobre pelo painel — descobre pelo cliente que desistiu;
  * - **o percentual lido com `parseFloat`** vira `1.9900000000000002` e o
  *   servidor recusa o `PATCH` por passar de duas casas;
- * - **a normalizacao divergindo do backend** faz o campo se achar sujo a cada
+ * - **a normalização divergindo do backend** faz o campo se achar sujo a cada
  *   abertura e reenviar o mesmo valor para sempre.
  */
 
@@ -77,7 +77,7 @@ test('chave vazia e valida: e a loja que ainda não configurou', () => {
 });
 
 test('a chave gravada volta pontuada, e a pontuação desfaz sem sobra', () => {
-  // A dona confere a chave olhando. Onze digitos corridos ninguem confere.
+  // A dona confere a chave olhando. Onze digitos corridos ninguém confere.
   expect(prettyPixKey('12345678901', 'cpf')).toBe('123.456.789-01');
   expect(prettyPixKey('12345678000190', 'cnpj')).toBe('12.345.678/0001-90');
   expect(prettyPixKey('+5588999999999', 'phone')).toBe('+55 (88) 99999-9999');
@@ -89,7 +89,7 @@ test('a chave gravada volta pontuada, e a pontuação desfaz sem sobra', () => {
   }
 });
 
-/* ---- A validacao ------------------------------------------------------------- */
+/* ---- A validação ------------------------------------------------------------- */
 
 test('um rascunho vindo do servidor passa', () => {
   expect(hasPaymentErrors(validatePayment(draft()))).toBe(false);
@@ -108,8 +108,8 @@ test('os tetos do servidor valem aqui também', () => {
 });
 
 test('zero passa em tudo que aceita zero, e vazio não passa em nada', () => {
-  // Zero e uma decisao: "nao dou desconto", "nao cobro juros", "nao tenho
-  // parcela minima". Vazio nao diz nada.
+  // Zero e uma decisão: "não dou desconto", "não cobro juros", "não tenho
+  // parcela mínima". Vazio não diz nada.
   expect(hasPaymentErrors(validatePayment(draft({ pixDiscount: '0', monthlyInterest: '0' })))).toBe(
     false,
   );
@@ -123,7 +123,7 @@ test('desconto quebrado não passa: o servidor só aceita percentual inteiro', (
 
 test('o campo de parcelas não aceita número pela metade', () => {
   // `Number.parseInt` leria `12x` como `12`, e o `PATCH` sairia com um valor
-  // que a dona nao digitou.
+  // que a dona não digitou.
   expect(validatePayment(draft({ maxInstallments: '12x' })).maxInstallments).toBeDefined();
 });
 
@@ -143,7 +143,7 @@ test('as duas formas desligadas avisam a loja inteira', () => {
 });
 
 test('juros que nunca são cobrados avisam', () => {
-  // Sem juros ate 12, parcela ate 12: a taxa esta cadastrada e nao alcanca
+  // Sem juros até 12, parcela até 12: a taxa esta cadastrada e não alcança
   // nenhuma parcela.
   const avisos = warningsOf(draft({ maxInstallments: '12', interestFreeUpTo: '12' }));
 
@@ -172,7 +172,7 @@ test('só o campo alterado viaja', () => {
 });
 
 test('trocar só o tipo manda a chave junto', () => {
-  // O servidor confere o par. Um `PATCH` so com o tipo o obrigaria a
+  // O servidor confere o par. Um `PATCH` só com o tipo o obrigaria a
   // adivinhar contra qual chave conferir.
   const mudanca = changesOf(draft({ pixKeyType: 'random', pixKey: '' }), settings());
 
@@ -188,10 +188,10 @@ test('os juros saem com duas casas exatas', () => {
   expect(percentFromInput('dois')).toBeNull();
 });
 
-/* ---- A previa ------------------------------------------------------------------ */
+/* ---- A prévia ------------------------------------------------------------------ */
 
-test('a prévia le o rascunho, e não o que esta salvo', () => {
-  // E o que a faz ser ao vivo: a dona ve o efeito antes de decidir salvar.
+test('a prévia lê o rascunho, e não o que esta salvo', () => {
+  // E o que a faz ser ao vivo: a dona vê o efeito antes de decidir salvar.
   expect(previewCard(draft({ maxInstallments: '6' }))?.maxInstallments).toBe(6);
 });
 
@@ -205,8 +205,8 @@ test('a prévia some enquanto o número ainda não e número', () => {
 });
 
 test('o limite sem juros e aparado pelo máximo de parcelas', () => {
-  // O rascunho "sem juros ate 12, parcela ate 6" e recusado na validacao, mas
-  // existe no meio da digitacao — e sem o aparo a previa anunciaria juros
+  // O rascunho "sem juros até 12, parcela até 6" e recusado na validação, mas
+  // existe no meio da digitação — e sem o aparo a prévia anunciaria juros
   // zero em tudo por causa de um estado que dura dois caracteres.
   expect(previewCard(draft({ maxInstallments: '6', interestFreeUpTo: '12' }))).toEqual({
     maxInstallments: 6,
@@ -225,14 +225,14 @@ test('a prévia do PIX some com o PIX desligado', () => {
 });
 
 test('o desconto arredonda a favor de quem paga', () => {
-  // 5% de R$ 99,99 sao R$ 4,9995, e o cliente leva os cinco centavos —
+  // 5% de R$ 99,99 são R$ 4,9995, e o cliente leva os cinco centavos —
   // mesma escolha do backend.
   expect(pixPreview(draft(), 9999)?.discountCents).toBe(500);
 });
 
 test('uma chave escrita errada conta como pendência, ainda que não haja o que mandar', () => {
-  // Sem isto, digitar um e-mail no campo marcado como CPF nao produziria
-  // mudanca nenhuma — e a tela nao reagiria de jeito nenhum.
+  // Sem isto, digitar um e-mail no campo marcado como CPF não produziria
+  // mudanca nenhuma — e a tela não reagiria de jeito nenhum.
   const errada = draft({ pixKey: 'loja@exemplo.com.br' });
 
   expect(changesOf(errada, settings())).toBeNull();

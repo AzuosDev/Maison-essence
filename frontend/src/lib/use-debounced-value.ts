@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
 /**
- * O valor depois que a digitacao para.
+ * O valor depois que a digitação para.
  *
  * Existe para a busca: sem ele, "perfume" dispara sete consultas ao servidor,
- * seis das quais chegam com resultado ja obsoleto. Com 300ms, quem digita
- * corrido gera uma consulta so — e quem digita devagar continua vendo a lista
+ * seis das quais chegam com resultado já obsoleto. Com 300ms, quem digita
+ * corrido gera uma consulta só — e quem digita devagar continua vendo a lista
  * acompanhar.
  *
- * O atraso e cancelado a cada tecla, entao o contador so chega ao fim quando
+ * O atraso e cancelado a cada tecla, então o contador só chega ao fim quando
  * a pessoa realmente parou.
  */
 export function useDebouncedValue<T>(value: T, delayMs: number): T {

@@ -31,15 +31,15 @@ import {
 import { discountLadder, entryTier } from './quantity-discount.js';
 import type { QuantityDiscountRule, QuantityDiscountTier } from './quantity-discount.js';
 
-/** O card nao mostra a descricao, e ela e o maior campo do produto. */
+/** O card não mostra a descrição, e ela e o maior campo do produto. */
 const CARD_FIELDS = '-description';
 
 /**
- * Quantas posicoes do ranking buscar para cada vaga da prateleira.
+ * Quantas posições do ranking buscar para cada vaga da prateleira.
  *
  * O ranking sai dos pedidos, que continuam citando produto desativado ou
- * excluido da loja. Buscar com folga evita que a prateleira de mais vendidos
- * chegue pela metade a home por causa de dois produtos que sairam de linha.
+ * excluído da loja. Buscar com folga evita que a prateleira de mais vendidos
+ * chegue pela metade a home por causa de dois produtos que saíram de linha.
  */
 const RANKING_SLACK = 3;
 
@@ -49,12 +49,12 @@ interface SoldRow {
 }
 
 /**
- * A loja aberta: tudo que a vitrine le.
+ * A loja aberta: tudo que a vitrine lê.
  *
- * Separado de `ProductsService` porque as duas leituras nao se parecem. O
+ * Separado de `ProductsService` porque as duas leituras não se parecem. O
  * painel lista para editar — quer o inativo, o esgotado, o SKU. A vitrine
- * lista para vender, nunca grava nada, e por isso le `lean`: sem hidratar
- * documento do Mongoose, que na funcao serverless custa tempo por resposta.
+ * lista para vender, nunca grava nada, e por isso lê `lean`: sem hidratar
+ * documento do Mongoose, que na função serverless custa tempo por resposta.
  */
 @Injectable()
 export class PublicCatalogService {
@@ -66,10 +66,10 @@ export class PublicCatalogService {
   ) {}
 
   /**
-   * A vitrine com busca, filtros e pagina.
+   * A vitrine com busca, filtros e página.
    *
-   * Os filtros viram um documento so, e a contagem roda em paralelo com a
-   * pagina: sao duas idas ao Atlas independentes, e o que pesa na funcao
+   * Os filtros viram um documento só, e a contagem roda em paralelo com a
+   * página: são duas idas ao Atlas independentes, e o que pesa na função
    * serverless e o tempo somado.
    */
   async list(query: ListPublicProductsDto): Promise<Paginated<PublicProductView>> {
@@ -119,9 +119,9 @@ export class PublicCatalogService {
   /**
    * Mais vendidos, por quantidade somada nos pedidos que viraram venda.
    *
-   * A soma e de unidades e nao de pedidos: dez frascos em uma compra so pesam
-   * dez. O ranking sai dos pedidos e a vitrine sai do catalogo, entao produto
-   * desativado desaparece da prateleira sem sumir do historico.
+   * A soma e de unidades e não de pedidos: dez frascos em uma compra só pesam
+   * dez. O ranking sai dos pedidos e a vitrine sai do catálogo, então produto
+   * desativado desaparece da prateleira sem sumir do histórico.
    */
   async bestSellers(limit = SHELF_SIZE): Promise<PublicProductView[]> {
     const ranking = await this.orders
@@ -148,8 +148,8 @@ export class PublicCatalogService {
       .lean<LeanProduct[]>()
       .exec();
     const byId = new Map(found.map((product) => [product._id.toHexString(), product]));
-    // A ordem e a do ranking, nao a do `$in`: o Mongo devolve na ordem que
-    // achar melhor, e aqui a ordem e o conteudo da prateleira.
+    // A ordem e a do ranking, não a do `$in`: o Mongo devolve na ordem que
+    // achar melhor, e aqui a ordem e o conteúdo da prateleira.
     const ordered = ranking
       .map((row) => byId.get(row._id.toHexString()))
       .filter((product): product is LeanProduct => product !== undefined)
@@ -159,11 +159,11 @@ export class PublicCatalogService {
   }
 
   /**
-   * A pagina do produto: ele, as categorias dele e ate oito relacionados.
+   * A página do produto: ele, as categorias dele e até oito relacionados.
    *
    * Produto inativo e produto que ficou sem nenhuma variante a venda dao 404
-   * iguais. O segundo caso nao e detalhe: sem variante ativa nao ha preco nem
-   * botao de comprar, e a pagina so serviria para frustrar quem clicou.
+   * iguais. O segundo caso não e detalhe: sem variante ativa não há preço nem
+   * botão de comprar, e a página só serviria para frustrar quem clicou.
    */
   async findBySlug(slug: string): Promise<PublicProductDetailView> {
     const product = await this.products
@@ -259,8 +259,8 @@ export class PublicCatalogService {
   /**
    * As regras de desconto por quantidade que podem valer para estes produtos.
    *
-   * Uma consulta para a pagina inteira, e nao uma por card: sao poucas regras
-   * no total, e resolver qual vale para cada produto e conta de memoria.
+   * Uma consulta para a página inteira, e não uma por card: são poucas regras
+   * no total, e resolver qual vale para cada produto e conta de memória.
    */
   private async rulesFor(products: readonly LeanProduct[]): Promise<QuantityDiscountRule[]> {
     if (products.length === 0) {
@@ -289,11 +289,11 @@ export class PublicCatalogService {
   /**
    * A categoria pedida no filtro, com as subcategorias dela.
    *
-   * O menu exibe "Perfumes (12)" somando os filhos; filtrar so pelo id do pai
+   * O menu exibe "Perfumes (12)" somando os filhos; filtrar só pelo id do pai
    * abriria a categoria vazia logo depois de prometer doze produtos.
    *
-   * Endereco antigo tambem resolve, sem redirecionamento: aqui a categoria e
-   * um filtro, nao a pagina — quem chegou por um link velho ve a lista certa.
+   * Endereço antigo também resolve, sem redirecionamento: aqui a categoria e
+   * um filtro, não a página — quem chegou por um link velho vê a lista certa.
    */
   private async categoryBranch(slug: string): Promise<Types.ObjectId[]> {
     const wanted = slugify(slug);
@@ -306,7 +306,7 @@ export class PublicCatalogService {
       throw new NotFoundException(CATEGORY_NOT_FOUND_MESSAGE);
     }
 
-    // Subcategoria nao tem filhos: nem consulta.
+    // Subcategoria não tem filhos: nem consulta.
     const children = category.parentId
       ? []
       : await this.categories

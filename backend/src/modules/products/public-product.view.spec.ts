@@ -38,9 +38,9 @@ function product(overrides: Partial<LeanProduct> = {}): LeanProduct {
 
 describe('toPublicVariantView', () => {
   /**
-   * O que a vitrine nao recebe e tao importante quanto o que ela recebe: o
-   * SKU e controle de estoque da dona e nao tem por que trafegar na loja
-   * aberta, e `allowBackorder` e a politica de compra dela com o
+   * O que a vitrine não recebe e tão importante quanto o que ela recebe: o
+   * SKU e controle de estoque da dona e não tem por que trafegar na loja
+   * aberta, e `allowBackorder` e a política de compra dela com o
    * distribuidor.
    */
   it('não entrega sku, isActive nem a política de encomenda', () => {

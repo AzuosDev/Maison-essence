@@ -31,48 +31,48 @@ import { StepReview } from './step-review';
 import styles from './checkout-page.module.css';
 
 /**
- * `/checkout`: as quatro etapas, em uma pagina so.
+ * `/checkout`: as quatro etapas, em uma página só.
  *
- * Um endereco, quatro passos, sem rota por etapa. A escolha tem
- * consequencias e as duas maiores sao boas: o botao "voltar" do navegador
+ * Um endereço, quatro passos, sem rota por etapa. A escolha tem
+ * consequências e as duas maiores são boas: o botão "voltar" do navegador
  * sai da loja em vez de desfazer um passo pela metade, e o estado do
- * checkout nao precisa ser reconstruido a cada troca de URL — ele esta no
- * armazenamento, e a pagina so le em qual passo parar.
+ * checkout não precisa ser reconstruido a cada troca de URL — ele esta no
+ * armazenamento, e a página só lê em qual passo parar.
  *
- * ## Recarregar nao perde nada
+ * ## Recarregar não perde nada
  *
- * E o criterio de aceite mais importante desta tela, e ele nao mora aqui:
- * mora em `checkout.store`, que grava etapa, modo, cidade, endereco,
+ * E o critério de aceite mais importante desta tela, e ele não mora aqui:
+ * mora em `checkout.store`, que grava etapa, modo, cidade, endereço,
  * pagamento, parcelamento, nome e telefone no `localStorage` a cada
- * mudanca. Esta pagina simplesmente le o passo de la e desenha. Quem
- * recarrega no meio do endereco volta no meio do endereco, com o que ja
+ * mudanca. Esta página simplesmente lê o passo de lá e desenha. Quem
+ * recarrega no meio do endereço volta no meio do endereço, com o que já
  * tinha escrito.
  *
- * O que **nao** sobrevive e o total: ele nunca foi guardado. A cotacao e
- * refeita na montagem, contra o catalogo de agora, e e por isso que voltar
- * horas depois mostra o preco de hoje em vez do de ontem.
+ * O que **não** sobrevive e o total: ele nunca foi guardado. A cotação e
+ * refeita na montagem, contra o catálogo de agora, e e por isso que voltar
+ * horas depois mostra o preço de hoje em vez do de ontem.
  *
- * ## Tres blocos
+ * ## Três blocos
  *
  * Trilha em cima, passo no meio, resumo a direita. No celular a trilha vira
  * uma linha de contagem e o resumo desce para baixo do passo — que e a ordem
  * em que a pessoa precisa deles: primeiro o que fazer, depois quanto da.
  *
- * Na ultima etapa o resumo lateral sai de cena. A revisao **e** o resumo, e
+ * Na última etapa o resumo lateral sai de cena. A revisão **e** o resumo, e
  * manter os dois lado a lado faria o cliente conferir os mesmos cinco
- * numeros em dois lugares da mesma tela.
+ * números em dois lugares da mesma tela.
  *
  * ## O fecho
  *
  * O envio acontece em `useCreateOrder`, e a ordem das coisas depois do `201`
  * e deliberada: guardar o pedido no navegador, esvaziar a sacola, zerar o
- * checkout e so entao ir para `/pedido/:code`. A sacola e esvaziada **depois
+ * checkout e só então ir para `/pedido/:code`. A sacola e esvaziada **depois
  * da resposta**, nunca antes — qualquer falha no meio do caminho deixa tudo
  * exatamente onde estava, e o cliente tenta de novo sem remontar nada.
  *
- * ## Fora do indice
+ * ## Fora do índice
  *
- * `noindex`, como a sacola: esta pagina e de uma pessoa so e nao tem nada a
+ * `noindex`, como a sacola: esta página e de uma pessoa só e não tem nada a
  * dizer a quem chega pelo Google.
  */
 export default function CheckoutPage() {
@@ -101,16 +101,16 @@ export default function CheckoutPage() {
   });
 
   /**
-   * O cliente ja navegou entre passos nesta visita.
+   * O cliente já navegou entre passos nesta visita.
    *
-   * Comeca `false` para que a chegada a pagina deixe o foco no topo, com o
-   * cabecalho e a trilha. A partir do primeiro avanco, cada troca de passo
-   * leva o foco para o titulo do passo novo — ver `StepCard`.
+   * Começa `false` para que a chegada a página deixe o foco no topo, com o
+   * cabeçalho e a trilha. A partir do primeiro avanco, cada troca de passo
+   * leva o foco para o título do passo novo — ver `StepCard`.
    *
-   * Estado, e nao `ref`, porque o valor e **lido durante o render**: ele vai
+   * Estado, e não `ref`, porque o valor e **lido durante o render**: ele vai
    * como prop para o passo. Em `ref`, a leitura aconteceria antes de o React
    * garantir que o valor novo e o que esta em tela — e a regra existe
-   * justamente para os casos em que isso da errado em silencio.
+   * justamente para os casos em que isso da errado em silêncio.
    */
   const [moved, setMoved] = useState(false);
 
@@ -120,17 +120,17 @@ export default function CheckoutPage() {
   };
 
   /**
-   * O pedido ja foi fechado nesta visita.
+   * O pedido já foi fechado nesta visita.
    *
-   * Em `ref`, e nao em estado, pelo mesmo motivo da trava de duplo clique em
+   * Em `ref`, e não em estado, pelo mesmo motivo da trava de duplo clique em
    * `useCreateOrder`: ele precisa valer **no mesmo instante** em que e
    * escrito.
    *
    * A corrida e real e foi vista em navegador. Esvaziar a sacola e uma
    * escrita no store externo do zustand, e o React reage a ela com um render
-   * proprio; a ida para `/pedido/:code` e uma navegacao assincrona do
-   * roteador, que so se completa depois. No meio dos dois, a guarda de
-   * "sacola vazia nao tem checkout" roda — e, com um `useState`, leria o
+   * próprio; a ida para `/pedido/:code` e uma navegação assincrona do
+   * roteador, que só se completa depois. No meio dos dois, a guarda de
+   * "sacola vazia não tem checkout" roda — e, com um `useState`, leria o
    * valor antigo e mandaria a pessoa para `/sacola` bem na hora em que o
    * pedido acabou de dar certo. O `ref` fecha essa janela.
    */
@@ -139,38 +139,38 @@ export default function CheckoutPage() {
   /**
    * O total que estava na tela no momento do envio.
    *
-   * Congelado aqui, e nao lido da cotacao quando o `409` chega: quando ele
-   * chega, a cotacao em tela ja pode ter sido revalidada e mostrar outro
-   * numero. O modal compara o que o cliente **viu** com o que o servidor
-   * calculou, e o primeiro dos dois so existe neste instante.
+   * Congelado aqui, e não lido da cotação quando o `409` chega: quando ele
+   * chega, a cotação em tela já pode ter sido revalidada e mostrar outro
+   * número. O modal compara o que o cliente **viu** com o que o servidor
+   * calculou, e o primeiro dos dois só existe neste instante.
    */
   const [submittedTotal, setSubmittedTotal] = useState(0);
 
   const order = useCreateOrder({
     onSuccess: (created) => {
-      // Guardar antes de limpar: e a unica copia que a tela de confirmacao
-      // tera, e ela e montada no proximo instante.
+      // Guardar antes de limpar: e a única copia que a tela de confirmação
+      // terá, e ela e montada no próximo instante.
       rememberOrder(created);
 
-      // A sacola so e esvaziada depois da resposta de sucesso. Se o envio
+      // A sacola só e esvaziada depois da resposta de sucesso. Se o envio
       // falhar, tudo continua onde estava.
       placed.current = true;
       clearCart();
       resetCheckout();
 
-      // `replace` para que o "voltar" do navegador nao traga a pessoa de
-      // volta a um checkout que ja nao existe — a sacola esta vazia e o
+      // `replace` para que o "voltar" do navegador não traga a pessoa de
+      // volta a um checkout que já não existe — a sacola esta vazia e o
       // pedido, feito.
       void navigate(ROUTES.order(created.code), { replace: true });
     },
   });
 
   /**
-   * Sacola vazia nao tem checkout.
+   * Sacola vazia não tem checkout.
    *
-   * `placed` segura o redirecionamento no unico caso em que a sacola fica
-   * vazia de proposito — o pedido acabou de ser fechado, e mandar a pessoa
-   * para a sacola vazia nesse instante a tiraria do caminho da confirmacao.
+   * `placed` segura o redirecionamento no único caso em que a sacola fica
+   * vazia de propósito — o pedido acabou de ser fechado, e mandar a pessoa
+   * para a sacola vazia nesse instante a tiraria do caminho da confirmação.
    */
   useEffect(() => {
     if (isEmpty && !placed.current) {
@@ -193,11 +193,11 @@ export default function CheckoutPage() {
    * Tira da sacola o que o servidor disse que acabou, e volta aos itens.
    *
    * A alternativa — mandar o cliente achar sozinho, entre cinco linhas, qual
-   * e o frasco que saiu — e o tipo de trabalho que o sistema ja sabe fazer:
-   * o `409` veio com a cotacao nova, e nela cada item indisponivel esta
-   * marcado. A tela remove exatamente esses e nao toca em mais nada.
+   * e o frasco que saiu — e o tipo de trabalho que o sistema já sabe fazer:
+   * o `409` veio com a cotação nova, e nela cada item indisponível esta
+   * marcado. A tela remove exatamente esses e não toca em mais nada.
    *
-   * Removidos todos, a sacola pode ficar vazia. Ai a guarda acima assume e
+   * Removidos todos, a sacola pode ficar vazia. Aí a guarda acima assume e
    * leva a pessoa para `/sacola`, que e onde ela precisa estar.
    */
   const removeUnavailable = (): void => {
@@ -228,9 +228,9 @@ export default function CheckoutPage() {
         <div className={styles.column}>
           <CheckoutProgress current={step} onGoTo={move} locked={order.isSubmitting} />
 
-          {/* A etapa entra como `key`: trocar de passo remonta o cartao, e e
-              essa remontagem que zera o "ja tentei enviar" de cada
-              formulario e dispara o foco no titulo novo. */}
+          {/* A etapa entra como `key`: trocar de passo remonta o cartão, e e
+              essa remontagem que zera o "já tentei enviar" de cada
+              formulário e dispara o foco no título novo. */}
           <Step
             key={step}
             step={step}
@@ -355,16 +355,16 @@ function Step({
  * O pedido, montado a partir do que produziu o total na tela.
  *
  * Os itens, a entrega e o pagamento saem do **mesmo** `input` que gerou a
- * cotacao — e nao de uma segunda leitura do estado. Remontar aqui abriria a
+ * cotação — e não de uma segunda leitura do estado. Remontar aqui abriria a
  * chance de um campo sair diferente do que o servidor acabou de cotar, e o
- * pedido seria recusado por uma divergencia que a propria tela criou.
+ * pedido seria recusado por uma divergência que a própria tela criou.
  *
- * O endereco so entra na entrega. Na retirada ele nem e montado: o corpo
+ * O endereço só entra na entrega. Na retirada ele nem e montado: o corpo
  * sai sem o campo, que e o que o servidor espera.
  *
- * `null` quando ainda falta alguma coisa — cotacao no ar, telefone invalido.
- * Nao ha caminho pela tela que chegue aqui nesse estado; a guarda existe
- * para que, se houver um dia, o resultado seja "nao envia" em vez de um
+ * `null` quando ainda falta alguma coisa — cotação no ar, telefone inválido.
+ * Não há caminho pela tela que chegue aqui nesse estado; a guarda existe
+ * para que, se houver um dia, o resultado seja "não envia" em vez de um
  * pedido com o total errado.
  */
 function orderInputFrom(

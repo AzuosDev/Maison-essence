@@ -18,28 +18,28 @@ import styles from './account-home-page.module.css';
 /**
  * `/conta`: os dados de contato.
  *
- * ## Dois campos editaveis, e dois que nao sao
+ * ## Dois campos editáveis, e dois que não são
  *
- * Nome e e-mail se corrigem aqui. Telefone e senha, nao, e a ausencia dos
- * dois e do contrato — `PATCH /customer/me` nao aceita nenhum deles.
+ * Nome e e-mail se corrigem aqui. Telefone e senha, não, e a ausência dos
+ * dois e do contrato — `PATCH /customer/me` não aceita nenhum deles.
  *
- * Os motivos sao diferentes e os dois merecem estar escritos na tela, porque
+ * Os motivos são diferentes e os dois merecem estar escritos na tela, porque
  * a falta de um campo que se espera encontrar parece defeito:
  *
  * - **O telefone e a identidade da conta.** E por ele que os pedidos —
  *   inclusive os feitos como convidado — se ligam a ela. Trocar sozinho
- *   faria uma conta herdar o historico de outra pessoa, ou perder o proprio.
- *   Entao trocar numero e conversa com a loja.
- * - **A senha derruba sessao** e exige a senha atual, o que e outro fluxo e
- *   outra rota. A API ainda nao a publica, e a tela diz isso em vez de
- *   oferecer um campo que nao teria para onde enviar.
+ *   faria uma conta herdar o histórico de outra pessoa, ou perder o próprio.
+ *   Então trocar número e conversa com a loja.
+ * - **A senha derruba sessão** e exige a senha atual, o que e outro fluxo e
+ *   outra rota. A API ainda não a publica, e a tela diz isso em vez de
+ *   oferecer um campo que não teria para onde enviar.
  *
- * ## O formulario nasce preenchido, e espera o servidor
+ * ## O formulário nasce preenchido, e espera o servidor
  *
  * `useProfile` devolve o que o login guardou enquanto a consulta viaja.
- * Quando ela chega, o efeito reescreve os campos — mas so os que nao foram
- * tocados, via `reset` com os valores novos: quem ja estava digitando um
- * e-mail novo nao pode ver o campo voltar ao valor antigo no meio da frase.
+ * Quando ela chega, o efeito reescreve os campos — mas só os que não foram
+ * tocados, via `reset` com os valores novos: quem já estava digitando um
+ * e-mail novo não pode ver o campo voltar ao valor antigo no meio da frase.
  * E o que `isDirty` protege.
  */
 export default function AccountProfilePage() {
@@ -65,7 +65,7 @@ export default function AccountProfilePage() {
   });
 
   useEffect(() => {
-    // So enquanto ninguem mexeu: a resposta do servidor nao pode apagar o
+    // Só enquanto ninguém mexeu: a resposta do servidor não pode apagar o
     // que esta sendo digitado agora.
     if (profile !== undefined && !isDirty) {
       reset({ name: profile.name, email: profile.email });

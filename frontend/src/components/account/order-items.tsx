@@ -4,21 +4,21 @@ import { formatCents } from '@/lib/format';
 import styles from './order-items.module.css';
 
 /**
- * Os itens do pedido, com os precos do dia em que ele fechou.
+ * Os itens do pedido, com os preços do dia em que ele fechou.
  *
- * ## Nenhum numero desta lista e calculado aqui
+ * ## Nenhum número desta lista e calculado aqui
  *
- * `lineTotalCents` vem do pedido, congelado. A tentacao seria multiplicar
- * quantidade por preco unitario e economizar um campo — e seria errado: o
- * desconto por quantidade entra na linha, e a conta local daria um numero
+ * `lineTotalCents` vem do pedido, congelado. A tentação seria multiplicar
+ * quantidade por preço unitário e economizar um campo — e seria errado: o
+ * desconto por quantidade entra na linha, e a conta local daria um número
  * diferente do que a pessoa pagou. Um comprovante que discorda do que foi
- * cobrado e pior do que nao ter comprovante.
+ * cobrado e pior do que não ter comprovante.
  *
- * ## A foto e a do pedido, nao a do catalogo de hoje
+ * ## A foto e a do pedido, não a do catálogo de hoje
  *
- * O item guarda o `publicId` que valia na epoca. Se a dona trocou a foto do
- * produto desde entao, o historico continua mostrando o frasco que a cliente
- * viu quando comprou. `loading="lazy"` porque um pedido de quinze itens nao
+ * O item guarda o `publicId` que valia na época. Se a dona trocou a foto do
+ * produto desde então, o histórico continua mostrando o frasco que a cliente
+ * viu quando comprou. `loading="lazy"` porque um pedido de quinze itens não
  * pode segurar a primeira pintura da tela.
  */
 export function OrderItems({ items }: { items: readonly OrderItemView[] }) {

@@ -1,8 +1,8 @@
 /*
- * A moldura da loja: cabecalho fixo, conteudo, rodape.
+ * A moldura da loja: cabeçalho fixo, conteúdo, rodapé.
  *
- * O `flex` com `main` crescendo e o que segura o rodape embaixo mesmo numa
- * pagina curta — um 404, por exemplo — em vez de deixa-lo no meio da tela.
+ * O `flex` com `main` crescendo e o que segura o rodapé embaixo mesmo numa
+ * página curta — um 404, por exemplo — em vez de deixa-lo no meio da tela.
  */
 
 .layout {

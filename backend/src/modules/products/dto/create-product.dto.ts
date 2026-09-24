@@ -21,7 +21,7 @@ export class CreateProductDto {
   @MaxLength(160)
   name: string;
 
-  /** Opcional: sem ele, o endereco sai do nome. */
+  /** Opcional: sem ele, o endereço sai do nome. */
   @IsOptional()
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? slugify(value) : value,
@@ -47,11 +47,11 @@ export class CreateProductDto {
   categoryIds?: string[];
 
   /**
-   * `publicId`s do Cloudinary na ordem de exibicao: a posicao no array e a
-   * ordenacao das fotos, e a primeira e a capa.
+   * `publicId`s do Cloudinary na ordem de exibição: a posição no array e a
+   * ordenação das fotos, e a primeira e a capa.
    *
-   * So entra o que saiu do upload do painel, dentro das pastas da loja. E
-   * esta linha que fecha a injecao: sem ela, qualquer string viraria foto de
+   * Só entra o que saiu do upload do painel, dentro das pastas da loja. E
+   * esta linha que fecha a injeção: sem ela, qualquer string viraria foto de
    * produto e a vitrine passaria a carregar imagem de servidor alheio.
    */
   @IsOptional()
@@ -62,9 +62,9 @@ export class CreateProductDto {
   images?: string[];
 
   /**
-   * Sem `ArrayNotEmpty` de proposito: "produto sem variante nao existe" e
-   * regra de dominio, e quem a enuncia e o schema — em portugues e com 422.
-   * Barrar aqui responderia 400 com a frase generica do validador.
+   * Sem `ArrayNotEmpty` de propósito: "produto sem variante não existe" e
+   * regra de domínio, e quem a enuncia e o schema — em português e com 422.
+   * Barrar aqui responderia 400 com a frase genérica do validador.
    */
   @IsOptional()
   @IsArray()
@@ -82,7 +82,7 @@ export class CreateProductDto {
   @IsBoolean()
   isFeatured?: boolean;
 
-  /** Secao "pronta entrega". */
+  /** Seção "pronta entrega". */
   @IsOptional()
   @IsBoolean()
   isReadyToShip?: boolean;

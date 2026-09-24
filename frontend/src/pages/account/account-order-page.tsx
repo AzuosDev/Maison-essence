@@ -23,26 +23,26 @@ import styles from './account-order-page.module.css';
  *
  * ## O que esta tela e
  *
- * Um comprovante que continua valendo meses depois. Todos os numeros aqui
- * sao os que o servidor congelou quando o pedido fechou — preco unitario,
- * desconto, frete, total. Nenhum e recalculado, e essa e a unica maneira de
+ * Um comprovante que continua valendo meses depois. Todos os números aqui
+ * são os que o servidor congelou quando o pedido fechou — preço unitário,
+ * desconto, frete, total. Nenhum e recalculado, e essa e a única maneira de
  * a tela concordar com o que foi cobrado mesmo depois de a loja reajustar
  * tudo.
  *
- * ## Pedir novamente nao copia o passado
+ * ## Pedir novamente não copia o passado
  *
- * O botao pergunta ao catalogo de hoje o que ainda existe, poe na sacola o
- * que da e escreve na tela o que nao da. Ver `useReorder` e `planReorder`: a
- * parte dificil e que "nao da" tem dois significados — saiu de linha e
- * sobrou menos —, e eles pedem reacoes diferentes de quem esta comprando.
+ * O botão pergunta ao catálogo de hoje o que ainda existe, põe na sacola o
+ * que da e escreve na tela o que não da. Ver `useReorder` e `planReorder`: a
+ * parte difícil e que "não da" tem dois significados — saiu de linha e
+ * sobrou menos —, e eles pedem reações diferentes de quem esta comprando.
  *
- * ## O 404 nao e um erro de sistema
+ * ## O 404 não e um erro de sistema
  *
- * O backend responde `404` — e nao `403` — para um pedido que existe mas e
- * de outra conta: dizer "existe, mas nao e seu" ja contaria demais sobre um
- * codigo curto o bastante para se tentar adivinhar. A tela le esse `404` do
- * jeito certo para quem esta na frente dela: o pedido nao esta nesta conta,
- * e o motivo provavel e o telefone.
+ * O backend responde `404` — e não `403` — para um pedido que existe mas e
+ * de outra conta: dizer "existe, mas não e seu" já contaria demais sobre um
+ * código curto o bastante para se tentar adivinhar. A tela lê esse `404` do
+ * jeito certo para quem esta na frente dela: o pedido não esta nesta conta,
+ * e o motivo provável e o telefone.
  */
 export default function AccountOrderPage() {
   const { code = '' } = useParams<{ code: string }>();
@@ -107,7 +107,7 @@ export default function AccountOrderPage() {
           <Button
             type="button"
             loading={isPending}
-            loadingLabel="Conferindo o catalogo"
+            loadingLabel="Conferindo o catálogo"
             onClick={() => {
               reorder(order.items);
             }}
@@ -185,8 +185,8 @@ export default function AccountOrderPage() {
 /**
  * As linhas de valor.
  *
- * Desconto, frete e desconto do PIX so aparecem quando existem: uma linha
- * "Desconto R$ 0,00" nao informa nada e ainda sugere que algo foi perdido.
+ * Desconto, frete e desconto do PIX só aparecem quando existem: uma linha
+ * "Desconto R$ 0,00" não informa nada e ainda sugere que algo foi perdido.
  */
 function Totals({ order }: { order: CustomerOrderDetail }) {
   const { totals } = order;
@@ -232,10 +232,10 @@ function Totals({ order }: { order: CustomerOrderDetail }) {
 /**
  * Para onde o pedido vai — ou onde ele espera.
  *
- * Na retirada, o endereco mostrado e o **da loja**, tirado das
- * configuracoes: o pedido nao guarda endereco nenhum quando nao ha entrega,
+ * Na retirada, o endereço mostrado e o **da loja**, tirado das
+ * configurações: o pedido não guarda endereço nenhum quando não há entrega,
  * e "Retirada na loja" sem dizer onde fica manda a cliente procurar no
- * rodape.
+ * rodapé.
  */
 function Fulfillment({ order }: { order: CustomerOrderDetail }) {
   const { settings } = useStoreSettings();
@@ -304,7 +304,7 @@ function Fulfillment({ order }: { order: CustomerOrderDetail }) {
   );
 }
 
-/** "PIX" ou "Cartao em 3x, sem juros". */
+/** "PIX" ou "Cartão em 3x, sem juros". */
 function describePayment(order: CustomerOrderDetail): string {
   const { payment } = order;
 
@@ -319,14 +319,14 @@ function describePayment(order: CustomerOrderDetail): string {
   return `Cartão em ${payment.installments}x, ${payment.hasInterest ? 'com juros' : 'sem juros'}`;
 }
 
-/* ---- O pedido que nao esta aqui -------------------------------------------- */
+/* ---- O pedido que não esta aqui -------------------------------------------- */
 
 /**
  * O `404`, escrito para quem esta olhando.
  *
- * Nao e "erro 404" e nao e "algo deu errado": o pedido pode muito bem
- * existir. O que a tela sabe e que ele **nao esta nesta conta**, e o motivo
- * mais provavel e o unico acionavel — o pedido foi feito com outro telefone.
+ * Não e "erro 404" e não e "algo deu errado": o pedido pode muito bem
+ * existir. O que a tela sabe e que ele **não esta nesta conta**, e o motivo
+ * mais provável e o único acionável — o pedido foi feito com outro telefone.
  */
 function OrderNotHere({ code, error }: { code: string; error: unknown }) {
   const notFound = isApiError(error) && error.status === 404;

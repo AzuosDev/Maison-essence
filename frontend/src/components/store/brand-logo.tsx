@@ -15,7 +15,7 @@ interface BrandLogoProps {
   compact?: boolean;
   /** Sobre fundo escuro. */
   inverted?: boolean;
-  /** Sem link: no rodape e na gaveta, onde a marca nao e um caminho. */
+  /** Sem link: no rodapé e na gaveta, onde a marca não e um caminho. */
   asLink?: boolean;
   className?: string | undefined;
 }

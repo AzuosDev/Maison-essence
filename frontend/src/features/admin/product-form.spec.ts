@@ -18,10 +18,10 @@ import {
 /**
  * O cadastro do produto.
  *
- * O que estes casos cobram e o que erra em silencio: um preco lido um centavo
+ * O que estes casos cobram e o que erra em silêncio: um preço lido um centavo
  * errado, uma variante duplicada que rouba o SKU da original, uma capa que
- * troca sem ninguem pedir, um campo opcional que viaja vazio e derruba a
- * gravacao inteira. Nenhum deles quebra a tela — todos entram no banco.
+ * troca sem ninguém pedir, um campo opcional que viaja vazio e derruba a
+ * gravação inteira. Nenhum deles quebra a tela — todos entram no banco.
  */
 
 function product(patch: Partial<AdminProduct> = {}): AdminProduct {
@@ -64,7 +64,7 @@ function product(patch: Partial<AdminProduct> = {}): AdminProduct {
   };
 }
 
-/** Um rascunho valido, para os casos que mexem em um campo so. */
+/** Um rascunho válido, para os casos que mexem em um campo só. */
 function draft(patch: Partial<ProductDraft> = {}): ProductDraft {
   return {
     ...emptyProductDraft(),
@@ -94,7 +94,7 @@ test('sem preço de comparação o campo fica vazio, e não zerado', () => {
 });
 
 test('o cadastro novo já vem com uma variante', () => {
-  // Produto sem variante nao existe no dominio: o servidor recusa com 422, e
+  // Produto sem variante não existe no domínio: o servidor recusa com 422, e
   // abrir a tabela vazia ensinaria a dona a descobrir isso ao salvar.
   expect(emptyProductDraft().variants).toHaveLength(1);
 });
@@ -109,7 +109,7 @@ test('duplicar copia o trabalho e descarta a identidade', () => {
   expect(copy.price).toBe('189,90');
   expect(copy.label).toBe('100ml');
 
-  // O que nao se repete: o que e unico por variante.
+  // O que não se repete: o que e único por variante.
   expect(copy.id).toBeUndefined();
   expect(copy.sku).toBe('');
   expect(copy.key).not.toBe(original.key);
@@ -124,7 +124,7 @@ test('a chave de linha e sempre nova', () => {
 /* ---- As fotos ---------------------------------------------------------------- */
 
 test('definir a capa e levar a foto para a primeira posição', () => {
-  // Nao ha campo de capa: a ordem do array e a ordem de exibicao, e a
+  // Não há campo de capa: a ordem do array e a ordem de exibição, e a
   // primeira e a capa.
   expect(setCover(['a', 'b', 'c'], 2)).toEqual(['c', 'a', 'b']);
 });
@@ -144,7 +144,7 @@ test('remover tira só a escolhida', () => {
   expect(removeImage(['a', 'b', 'c'], 1)).toEqual(['a', 'c']);
 });
 
-/* ---- A validacao --------------------------------------------------------------- */
+/* ---- A validação --------------------------------------------------------------- */
 
 test('um rascunho completo passa', () => {
   expect(hasErrors(validateDraft(draft()))).toBe(false);
@@ -176,8 +176,8 @@ test('duas variantes com o mesmo nome barram as duas', () => {
   const b = { ...newVariant(), label: '100 ML', price: '189,90' };
   const errors = validateDraft(draft({ variants: [a, b] }));
 
-  // A comparacao ignora caixa e espaco nas pontas: "100ml" e "100 ML" sao a
-  // mesma variante para quem le a vitrine.
+  // A comparação ignora caixa e espaço nas pontas: "100ml" e "100 ML" são a
+  // mesma variante para quem lê a vitrine.
   expect(errors.variant[a.key]?.label).toBeDefined();
   expect(errors.variant[b.key]?.label).toBeDefined();
 });
@@ -188,7 +188,7 @@ test('SKU repetido barra, mas dois SKUs em branco não', () => {
 
   expect(validateDraft(draft({ variants: [a, b] })).variant[a.key]?.sku).toBeDefined();
 
-  // Em branco, o servidor gera um para cada — nao ha conflito a anunciar.
+  // Em branco, o servidor gera um para cada — não há conflito a anunciar.
   const c = { ...newVariant(), label: '50ml', price: '99,90' };
   const d = { ...newVariant(), label: '100ml', price: '189,90' };
 
@@ -207,7 +207,7 @@ test('produto sem nenhuma variante barra', () => {
   expect(validateDraft(draft({ variants: [] })).variants).toBeDefined();
 });
 
-/* ---- A saida ------------------------------------------------------------------- */
+/* ---- A saída ------------------------------------------------------------------- */
 
 test('o preço digitado vira centavos exatos', () => {
   // `19.99 * 100` daria `1998.9999...`, e o produto entraria um centavo mais
@@ -239,7 +239,7 @@ test('o endereço só entra na criação quando foi escrito', () => {
 });
 
 test('a edição nunca manda o endereço', () => {
-  // O link ja foi para o WhatsApp de alguem: troca-lo e outra operacao.
+  // O link já foi para o WhatsApp de alguém: troca-lo e outra operação.
   expect('slug' in draftToUpdate(draft({ slug: 'asad-elixir' }))).toBe(false);
 });
 

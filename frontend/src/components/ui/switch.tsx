@@ -5,38 +5,38 @@ import styles from './switch.module.css';
 /**
  * O interruptor: liga e desliga, na hora.
  *
- * ## Por que nao e um Checkbox
+ * ## Por que não e um Checkbox
  *
  * A caixa de marcar responde "isto vai valer quando eu salvar". O
- * interruptor responde "isto **ja** vale". Sao promessas diferentes, e usar o
- * desenho errado faz a dona apertar e depois procurar o botao de salvar que
- * nao existe — ou pior, apertar e ir embora achando que nao salvou.
+ * interruptor responde "isto **já** vale". São promessas diferentes, e usar o
+ * desenho errado faz a dona apertar e depois procurar o botão de salvar que
+ * não existe — ou pior, apertar e ir embora achando que não salvou.
  *
- * Por isso este componente nao pertence a um formulario. Ele pertence a uma
+ * Por isso este componente não pertence a um formulário. Ele pertence a uma
  * linha de tabela, ao lado do produto que acabou de ser publicado.
  *
- * ## `role="switch"`, e nao `checkbox`
+ * ## `role="switch"`, e não `checkbox`
  *
  * Um `<input type="checkbox">` com `role="switch"` continua sendo um input
- * nativo — recebe foco, responde ao Espaco, entra no formulario — e passa a
+ * nativo — recebe foco, responde ao Espaço, entra no formulário — e passa a
  * ser anunciado como "ligado/desligado" em vez de "marcado/desmarcado". E a
- * diferenca entre o leitor de tela descrever o que a pessoa ve e descrever
+ * diferença entre o leitor de tela descrever o que a pessoa vê e descrever
  * outro controle.
  *
- * ## O rotulo nunca some
+ * ## O rótulo nunca some
  *
- * `label` e obrigatorio. Ele pode ficar so para o leitor de tela com
- * `hideLabel` — numa tabela, onde a coluna ja diz "Status" e repetir o nome
- * do produto em cada linha seria ruido visual —, mas um interruptor sem nome
- * acessivel e um controle que ninguem que nao enxerga consegue usar.
+ * `label` e obrigatório. Ele pode ficar só para o leitor de tela com
+ * `hideLabel` — numa tabela, onde a coluna já diz "Status" e repetir o nome
+ * do produto em cada linha seria ruído visual —, mas um interruptor sem nome
+ * acessível e um controle que ninguém que não enxerga consegue usar.
  */
 export type SwitchProps = Omit<
   ComponentPropsWithoutRef<'input'>,
   'type' | 'className' | 'children'
 > & {
-  /** "Publicado", ou "Publicar Asad 100ml" quando o rotulo esta escondido. */
+  /** "Publicado", ou "Publicar Asad 100ml" quando o rótulo esta escondido. */
   label: string;
-  /** Mantem o rotulo so para o leitor de tela: a coluna da tabela ja o diz. */
+  /** Mantem o rótulo só para o leitor de tela: a coluna da tabela já o diz. */
   hideLabel?: boolean;
   className?: string | undefined;
 };
@@ -53,8 +53,8 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
         /*
           O detector pede `aria-checked` ao lado de `role="switch"`, e aqui
           ele estaria errado: em ARIA in HTML, um `<input type="checkbox">`
-          com este papel ja expoe o estado marcado como `aria-checked`, e
-          escrever o atributo a mao cria uma segunda fonte da mesma verdade —
+          com este papel já expoe o estado marcado como `aria-checked`, e
+          escrever o atributo a mão cria uma segunda fonte da mesma verdade —
           que e como um interruptor acaba anunciando "desligado" depois de
           ligado.
         */

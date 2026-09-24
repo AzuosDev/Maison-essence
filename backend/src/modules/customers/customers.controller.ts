@@ -36,14 +36,14 @@ import { UpdateCustomerDto } from './dto/update-customer.dto.js';
  * A conta do cliente da loja.
  *
  * Tudo aqui e opcional para comprar: o checkout funciona sem nada disto, e a
- * conta existe para quem quiser acompanhar os pedidos e nao redigitar o
- * endereco. Por isso o cadastro nao pede nada alem do que o checkout ja
+ * conta existe para quem quiser acompanhar os pedidos e não redigitar o
+ * endereço. Por isso o cadastro não pede nada além do que o checkout já
  * pediria, e por isso o telefone e a chave — e o que liga a conta aos pedidos
- * que ela ja tinha feito como convidado.
+ * que ela já tinha feito como convidado.
  *
- * Os tokens saem em duas vias, como no painel: cookies `httpOnly` proprios da
- * loja e o corpo da resposta, para quem nao aceita cookie de terceiro. Nada
- * nesta sessao carrega papel: nao ha claim, campo de resposta ou objeto de
+ * Os tokens saem em duas vias, como no painel: cookies `httpOnly` próprios da
+ * loja e o corpo da resposta, para quem não aceita cookie de terceiro. Nada
+ * nesta sessão carrega papel: não há claim, campo de resposta ou objeto de
  * request aqui que o controle de acesso do painel saiba ler.
  */
 @Controller('customer')
@@ -86,7 +86,7 @@ export class CustomersController {
   }
 
   /**
-   * Renova a sessao. Publica porque o access token expirado e justamente o
+   * Renova a sessão. Publica porque o access token expirado e justamente o
    * motivo da chamada: quem autentica aqui e o refresh token.
    */
   @Public()
@@ -115,8 +115,8 @@ export class CustomersController {
   @Get('me')
   me(@CurrentCustomer() customer: AuthenticatedCustomer): Promise<CustomerView> {
     // Recarrega do banco em vez de devolver o que o guard resolveu: o objeto
-    // do guard e o minimo para autorizar, e a tela quer a conta inteira, com
-    // os enderecos.
+    // do guard e o mínimo para autorizar, e a tela quer a conta inteira, com
+    // os endereços.
     return this.customers.profile(customer.id);
   }
 

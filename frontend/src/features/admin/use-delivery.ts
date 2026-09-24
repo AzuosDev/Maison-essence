@@ -18,14 +18,14 @@ import type {
  *
  * ## Cinco minutos de frescor
  *
- * A tabela de taxas muda quando o combustivel sobe, e nao durante o dia. Quem
- * a muda esta nesta tela e recebe a invalidacao na hora.
+ * A tabela de taxas muda quando o combustível sobe, e não durante o dia. Quem
+ * a muda esta nesta tela e recebe a invalidação na hora.
  *
  * ## Nada aqui e otimista, exceto a ordem
  *
- * Taxa e prazo sao dinheiro e promessa: a dona precisa **ver** que o valor
- * novo entrou, e nao ve-lo aparecer e voltar meio segundo depois. A
- * reordenacao e o caso oposto — o gesto e o arraste, e um item que volta ao
+ * Taxa e prazo são dinheiro e promessa: a dona precisa **ver** que o valor
+ * novo entrou, e não vê-lo aparecer e voltar meio segundo depois. A
+ * reordenação e o caso oposto — o gesto e o arraste, e um item que volta ao
  * lugar enquanto o servidor responde faz duvidar de que o arraste funcionou.
  */
 const STALE_TIME_MS = 5 * 60_000;
@@ -52,8 +52,8 @@ export function useCreateDeliveryCity() {
 /**
  * Salva uma linha da tabela.
  *
- * A resposta entra direto no cache, substituindo so a cidade alterada: uma
- * invalidacao pediria a lista inteira de volta a cada campo salvo, e a dona
+ * A resposta entra direto no cache, substituindo só a cidade alterada: uma
+ * invalidação pediria a lista inteira de volta a cada campo salvo, e a dona
  * salva cinco campos seguidos quando esta reajustando as taxas.
  */
 export function useUpdateDeliveryCity() {
@@ -72,7 +72,7 @@ export function useUpdateDeliveryCity() {
 }
 
 /**
- * Regrava a ordem, com a lista ja reposicionada na tela.
+ * Regrava a ordem, com a lista já reposicionada na tela.
  *
  * A ordem daqui e a ordem do seletor de cidade no checkout — a cidade da loja
  * em primeiro, porque e a de quase todo pedido. O retrato anterior volta se a

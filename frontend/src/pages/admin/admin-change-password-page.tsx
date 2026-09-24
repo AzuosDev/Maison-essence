@@ -15,33 +15,33 @@ import { usePageMeta } from '@/lib/use-page-meta';
 import styles from './admin-auth.module.css';
 
 /**
- * A troca da senha temporaria.
+ * A troca da senha temporária.
  *
- * Quem cria um acesso no painel define uma senha provisoria e a passa por
- * WhatsApp ou de viva voz. Ela serve para uma coisa so: chegar ate aqui. O
+ * Quem cria um acesso no painel define uma senha provisória e a passa por
+ * WhatsApp ou de viva voz. Ela serve para uma coisa só: chegar até aqui. O
  * backend marca a conta com `mustChangePassword` e recusa **toda** rota
- * administrativa enquanto a marca existir — entao esta tela nao e uma
- * sugestao de boas praticas, e sim o unico caminho para dentro.
+ * administrativa enquanto a marca existir — então esta tela não e uma
+ * sugestão de boas práticas, e sim o único caminho para dentro.
  *
- * A resposta da troca ja vem com a sessao nova, sem a marca: gravar essa
- * sessao e o que abre o painel, sem uma segunda consulta.
+ * A resposta da troca já vem com a sessão nova, sem a marca: gravar essa
+ * sessão e o que abre o painel, sem uma segunda consulta.
  *
- * ## O minimo de doze
+ * ## O mínimo de doze
  *
  * E a regra do backend (`PASSWORD_MIN_LENGTH`, em `auth.constants.ts`).
- * Conferir aqui tambem nao e duplicacao inutil: e a diferenca entre o campo
+ * Conferir aqui também não e duplicação inutil: e a diferença entre o campo
  * avisar enquanto se digita e o servidor recusar depois de um envio — e a
- * recusa dele chega em ingles, crua do `class-validator`.
+ * recusa dele chega em inglês, crua do `class-validator`.
  *
- * Nao confunda com os oito da conta de cliente (`CUSTOMER_PASSWORD_MIN_LENGTH`):
- * sao numeros diferentes de proposito, porque as duas contas protegem coisas
- * diferentes. Esta muda preco, estoque e usuario.
+ * Não confunda com os oito da conta de cliente (`CUSTOMER_PASSWORD_MIN_LENGTH`):
+ * são números diferentes de propósito, porque as duas contas protegem coisas
+ * diferentes. Esta muda preço, estoque e usuário.
  */
 
 /**
- * O piso, em um lugar so.
+ * O piso, em um lugar só.
  *
- * O schema e o texto embaixo do campo precisam dizer o mesmo numero. Quando
+ * O schema e o texto embaixo do campo precisam dizer o mesmo número. Quando
  * divergiram, a tela aceitou uma senha que o servidor recusou, e quem estava
  * entrando pela primeira vez ficou preso aqui sem entender o motivo.
  */

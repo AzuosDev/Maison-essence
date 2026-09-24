@@ -4,14 +4,14 @@ import { ButtonLink } from '@/components/ui';
 import { ROUTES } from '@/app/routes';
 
 /**
- * A tela que ainda nao existe.
+ * A tela que ainda não existe.
  *
- * Vitrine, pagina de produto, categoria, busca, sacola e paginas
- * institucionais tem endereco desde agora — o cabecalho e o rodape apontam
- * para eles — mas o conteudo entra nos proximos passos. Este placeholder
+ * Vitrine, página de produto, categoria, busca, sacola e páginas
+ * institucionais tem endereço desde agora — o cabeçalho e o rodapé apontam
+ * para eles — mas o conteúdo entra nos próximos passos. Este placeholder
  * ocupa o lugar deles para que nenhum link da moldura leve a um 404.
  *
- * E uma so para todas: registrar o mesmo modulo em varias rotas mantem um
+ * E uma só para todas: registrar o mesmo módulo em várias rotas mantem um
  * arquivo em vez de seis, e quando cada tela chegar ela substitui a sua
  * entrada no router sem tocar nas outras.
  */

@@ -2,51 +2,51 @@
  * A passagem para o WhatsApp — o instante em que o pedido sai do site.
  *
  * Tudo o que o checkout faz existe para chegar aqui. Se esta entrega falha, o
- * pedido ficou gravado no banco e ninguem conversou: a dona ve um pedido
- * aparecer sem mensagem nenhuma, e o cliente acha que nao deu certo.
+ * pedido ficou gravado no banco e ninguém conversou: a dona vê um pedido
+ * aparecer sem mensagem nenhuma, e o cliente acha que não deu certo.
  *
  * ## Por que a aba precisa ser aberta antes da resposta
  *
- * `window.open` so e permitido durante o tratamento de um gesto do usuario.
- * O clique em "Finalizar" satisfaz essa condicao, mas o `POST /orders` leva
- * de meio segundo a tres no 4G do interior — e quando a promessa resolve, o
- * gesto ja acabou. O Safari do iOS bloqueia a abertura nesse ponto, e o
+ * `window.open` só e permitido durante o tratamento de um gesto do usuário.
+ * O clique em "Finalizar" satisfaz essa condição, mas o `POST /orders` leva
+ * de meio segundo a três no 4G do interior — e quando a promessa resolve, o
+ * gesto já acabou. O Safari do iOS bloqueia a abertura nesse ponto, e o
  * Chrome do Android faz o mesmo em parte dos casos.
  *
- * A saida e reservar a aba **dentro do clique**, ainda vazia, e so trocar o
- * endereco dela quando a resposta chegar. Trocar o endereco de uma aba que ja
- * e nossa nao e "abrir janela": nao ha bloqueio a aplicar.
+ * A saída e reservar a aba **dentro do clique**, ainda vazia, e só trocar o
+ * endereço dela quando a resposta chegar. Trocar o endereço de uma aba que já
+ * e nossa não e "abrir janela": não há bloqueio a aplicar.
  *
- * Tres desfechos, e os tres precisam estar cobertos:
+ * Três desfechos, e os três precisam estar cobertos:
  *
  * 1. A reserva funcionou: a aba vai para o `wa.me`.
  * 2. A reserva foi bloqueada mesmo dentro do clique (bloqueador de pop-up
- *    ligado no braco). Tentamos de novo com a URL de verdade e, se tambem
+ *    ligado no braço). Tentamos de novo com a URL de verdade e, se também
  *    falhar, navegamos na aba atual — o plano manda escolher entre a janela
  *    previamente aberta e a mesma aba, e aqui a segunda e a rede da primeira.
  * 3. O pedido falhou: a aba reservada e fechada. Uma aba em branco esquecida
- *    depois de um erro e a pior confirmacao possivel de que algo quebrou.
+ *    depois de um erro e a pior confirmação possível de que algo quebrou.
  *
- * ## A mensagem nao e montada aqui
+ * ## A mensagem não e montada aqui
  *
- * A URL vem inteira do servidor, com a mensagem ja gravada no pedido e ja
- * codificada. Este modulo nao concatena, nao escapa e nao acrescenta
- * parametro nenhum: ele recebe uma string e a entrega ao navegador. E o que
- * garante que a quebra de linha e o acento que chegam ao WhatsApp sao os
- * mesmos que ficaram no pedido — reescrever a codificacao aqui criaria uma
- * segunda versao do texto, e as duas divergiriam no primeiro ajuste.
+ * A URL vem inteira do servidor, com a mensagem já gravada no pedido e já
+ * codificada. Este módulo não concatena, não escapa e não acrescenta
+ * parâmetro nenhum: ele recebe uma string e a entrega ao navegador. E o que
+ * garante que a quebra de linha e o acento que chegam ao WhatsApp são os
+ * mesmos que ficaram no pedido — reescrever a codificação aqui criaria uma
+ * segunda versão do texto, e as duas divergiriam no primeiro ajuste.
  */
 
 export interface WhatsappHandoff {
   /**
    * Leva a conversa para a aba reservada.
    *
-   * URL vazia — a loja ainda nao cadastrou o numero — fecha a aba e nao
-   * navega. A tela de confirmacao cobre esse caso com o codigo do pedido.
+   * URL vazia — a loja ainda não cadastrou o número — fecha a aba e não
+   * navega. A tela de confirmação cobre esse caso com o código do pedido.
    */
   send: (url: string) => void;
 
-  /** Nao ha o que enviar: fecha a aba antes que ela vire lixo na tela. */
+  /** Não há o que enviar: fecha a aba antes que ela vire lixo na tela. */
   release: () => void;
 }
 
@@ -75,7 +75,7 @@ export function reserveWhatsappTab(): WhatsappHandoff {
         return;
       }
 
-      // A reserva nao existiu. Uma segunda tentativa ainda pode passar em
+      // A reserva não existiu. Uma segunda tentativa ainda pode passar em
       // navegadores que contam o clique por mais tempo; a aba atual e o que
       // sobra, e e melhor do que um pedido sem conversa.
       if (openTab(url) === null) {
@@ -92,12 +92,12 @@ export function reserveWhatsappTab(): WhatsappHandoff {
 /**
  * O que a aba reservada mostra enquanto o pedido esta sendo criado.
  *
- * Sem isto, o cliente ve uma aba branca aparecer do nada e, por um ou dois
- * segundos, nao sabe se ela e parte do que ele pediu ou um anuncio. A frase
+ * Sem isto, o cliente vê uma aba branca aparecer do nada e, por um ou dois
+ * segundos, não sabe se ela e parte do que ele pediu ou um anuncio. A frase
  * responde a pergunta antes de ela ser feita.
  *
- * Escrito a mao e sem `<link>` nenhum: a aba nao carrega nada da aplicacao,
- * e um estilo que dependesse de requisicao chegaria depois do redirecionamento.
+ * Escrito a mão e sem `<link>` nenhum: a aba não carrega nada da aplicação,
+ * e um estilo que dependesse de requisição chegaria depois do redirecionamento.
  */
 const PLACEHOLDER = [
   '<!doctype html>',
@@ -119,17 +119,17 @@ function announce(tab: Window): void {
     tab.document.close();
   } catch {
     // Um navegador que recusa escrever no `about:blank` fica com a aba em
-    // branco por um instante. E feio, e nao e motivo para o pedido falhar.
+    // branco por um instante. E feio, e não e motivo para o pedido falhar.
   }
 }
 
 /**
  * Abre e devolve o controle da aba.
  *
- * Sem `noopener`, e de proposito: o sinalizador faz `window.open` devolver
+ * Sem `noopener`, e de propósito: o sinalizador faz `window.open` devolver
  * `null`, e e justamente o controle da aba que precisamos guardar para
- * redireciona-la depois. A ligacao de volta e cortada em `go`, antes da
- * navegacao.
+ * redireciona-lá depois. A ligação de volta e cortada em `go`, antes da
+ * navegação.
  */
 function openTab(url: string): Window | null {
   try {
@@ -142,18 +142,18 @@ function openTab(url: string): Window | null {
 /**
  * Manda a aba para a conversa, sem deixar o caminho de volta aberto.
  *
- * `opener = null` corta a referencia que a pagina aberta teria para esta —
+ * `opener = null` corta a referência que a página aberta teria para esta —
  * o mesmo que `rel="noopener"` faz num link. Feito **antes** de navegar,
- * enquanto a aba ainda e `about:blank` e, portanto, acessivel.
+ * enquanto a aba ainda e `about:blank` e, portanto, acessível.
  *
- * `replace` e nao `assign` para que a aba nova nao guarde um `about:blank`
- * no historico: o "voltar" dela nao tem para onde ir.
+ * `replace` e não `assign` para que a aba nova não guarde um `about:blank`
+ * no histórico: o "voltar" dela não tem para onde ir.
  */
 function go(tab: Window, url: string): void {
   try {
     tab.opener = null;
   } catch {
-    // Navegador que nao deixa mexer em `opener`. Segue: a navegacao importa
+    // Navegador que não deixa mexer em `opener`. Segue: a navegação importa
     // mais que o endurecimento.
   }
 
@@ -171,6 +171,6 @@ function close(tab: Window | null): void {
       tab.close();
     }
   } catch {
-    // Aba que recusa fechar nao e problema de ninguem aqui.
+    // Aba que recusa fechar não e problema de ninguém aqui.
   }
 }

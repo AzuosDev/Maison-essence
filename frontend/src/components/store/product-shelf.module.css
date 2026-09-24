@@ -1,8 +1,8 @@
 /*
- * A prateleira: titulo, atalho e a fileira que rola na horizontal.
+ * A prateleira: título, atalho e a fileira que rola na horizontal.
  *
- * A fileira sangra ate a borda da tela, e nao para no container. O card da
- * ponta cortado pela beirada e o que diz "ha mais coisa aqui" — parado no
+ * A fileira sangra até a borda da tela, e não para no container. O card da
+ * ponta cortado pela beirada e o que diz "há mais coisa aqui" — parado no
  * limite do container, com uma faixa de creme depois dele, a prateleira
  * pareceria terminada.
  */
@@ -16,18 +16,18 @@
  * A prateleira que nasce quase colada no que vem antes dela.
  *
  * E a primeira da home, logo abaixo do banner. O respiro de cima existe para
- * separar duas secoes de mesmo tom; contra uma foto escura de ponta a ponta
- * ele nao separa nada, so empurra o produto para fora da primeira tela.
+ * separar duas seções de mesmo tom; contra uma foto escura de ponta a ponta
+ * ele não separa nada, só empurra o produto para fora da primeira tela.
  *
- * 24px, e nao zero: a borda da foto nao pode servir de linha de base para o
- * titulo. Sem nenhum respiro, "DESTAQUES" encostava na beirada do banner e
- * passava a se ler como legenda da foto, nao como comeco de secao — e ficava
- * com mais espaco embaixo dele do que em cima, que e o contrario do que um
- * titulo pede.
+ * 24px, e não zero: a borda da foto não pode servir de linha de base para o
+ * título. Sem nenhum respiro, "DESTAQUES" encostava na beirada do banner e
+ * passava a se ler como legenda da foto, não como começo de seção — e ficava
+ * com mais espaço embaixo dele do que em cima, que e o contrário do que um
+ * título pede.
  *
- * Mora aqui, e nao numa folha da home passada por `className`, porque quem
- * ganha entre duas regras de mesma especificidade e a ultima a ser injetada —
- * e a ordem de injecao entre dois CSS Modules e do empacotador, nao nossa.
+ * Mora aqui, e não numa folha da home passada por `className`, porque quem
+ * ganha entre duas regras de mesma especificidade e a última a ser injetada —
+ * e a ordem de injeção entre dois CSS Modules e do empacotador, não nossa.
  */
 .flush {
   padding-top: var(--space-24);
@@ -38,11 +38,11 @@
 }
 
 /*
- * O atalho para a secao inteira, embaixo do titulo.
+ * O atalho para a seção inteira, embaixo do título.
  *
- * Sublinhado desde o repouso: aqui ele nao esta dentro de um paragrafo, onde
+ * Sublinhado desde o repouso: aqui ele não esta dentro de um parágrafo, onde
  * a cor bastaria para diferencia-lo do texto em volta — esta solto no meio de
- * uma faixa de respiro, e sem o risco nao se le como link.
+ * uma faixa de respiro, e sem o risco não se lê como link.
  */
 .headingLink {
   display: block;
@@ -71,9 +71,9 @@
 
 /* ---- A fileira -------------------------------------------------------- */
 
-/* 24px, e nao 32: o titulo, a linha de apoio e o atalho ja formam um bloco de
-   respiro proprio, e somar mais um vao antes da fileira afastava o produto do
-   nome da secao que o anuncia. */
+/* 24px, e não 32: o título, a linha de apoio e o atalho já formam um bloco de
+   respiro próprio, e somar mais um vão antes da fileira afastava o produto do
+   nome da seção que o anuncia. */
 .viewport {
   position: relative;
   margin-top: var(--space-24);
@@ -84,7 +84,7 @@
   gap: var(--space-16);
 
   /* O recuo lateral e o do container, aplicado como respiro interno: o
-     primeiro card alinha com o titulo, e o ultimo tem onde parar quando a
+     primeiro card alinha com o título, e o último tem onde parar quando a
      fileira chega ao fim. */
   padding-inline: var(--gutter);
   margin: 0;
@@ -95,18 +95,18 @@
   scroll-snap-type: x mandatory;
 
   /*
-   * O `scroll-padding` acompanha o respiro interno, e nao e opcional.
+   * O `scroll-padding` acompanha o respiro interno, e não e opcional.
    *
    * Com `scroll-snap-align: start`, o navegador encaixa a borda do card na
    * borda do scrollport — que ignora o `padding`. Resultado: a fileira nascia
    * rolada 40px, o primeiro card encostava na beirada da tela e a seta da
-   * esquerda acendia sem que ninguem tivesse rolado nada. Isto move o ponto
+   * esquerda acendia sem que ninguém tivesse rolado nada. Isto move o ponto
    * de encaixe para depois do respiro.
    */
   scroll-padding-inline: var(--gutter);
 
-  /* A barra de rolagem some: a fileira ja se anuncia pelo card cortado na
-     beirada, e uma barra de 10px embaixo de cada prateleira somaria tres
+  /* A barra de rolagem some: a fileira já se anuncia pelo card cortado na
+     beirada, e uma barra de 10px embaixo de cada prateleira somaria três
      riscos cinzas atravessando a vitrine. */
   scrollbar-width: none;
 }
@@ -116,24 +116,24 @@
 }
 
 /*
- * A largura do card no celular: 58%, e nao 44%.
+ * A largura do card no celular: 58%, e não 44%.
  *
- * Com 44% o card tinha 158px, e nele nem "R$ 389,00 – R$ 479,00" nem "em ate
- * 6x de R$ 64,83 sem juros" cabiam numa linha. Quebravam em duas — mas so nos
- * cards que tinham faixa de preco ou parcelamento, e como a fileira iguala a
- * altura de todos, os demais ganhavam um vao de vinte e poucos pixels acima
- * do botao. A fileira inteira ficava irregular por causa de duas linhas de
+ * Com 44% o card tinha 158px, e nele nem "R$ 389,00 – R$ 479,00" nem "em até
+ * 6x de R$ 64,83 sem juros" cabiam numa linha. Quebravam em duas — mas só nos
+ * cards que tinham faixa de preço ou parcelamento, e como a fileira iguala a
+ * altura de todos, os demais ganhavam um vão de vinte e poucos pixels acima
+ * do botão. A fileira inteira ficava irregular por causa de duas linhas de
  * texto.
  *
  * Com 58% o card tem 208px, as duas linhas cabem, e a fileira mostra um card
- * e meio — o que continua dizendo que ha mais coisa a direita.
+ * e meio — o que continua dizendo que há mais coisa a direita.
  */
 .item {
   flex: 0 0 58%;
   scroll-snap-align: start;
 
-  /* Sem isto, `min-width: auto` deixa o conteudo mais teimoso que a base:
-     basta um rotulo comprido dentro do card para ele estourar os 44% e sair
+  /* Sem isto, `min-width: auto` deixa o conteúdo mais teimoso que a base:
+     basta um rótulo comprido dentro do card para ele estourar os 44% e sair
      mais largo que os vizinhos. */
   min-width: 0;
 }
@@ -153,8 +153,8 @@
     padding-block: var(--space-64);
   }
 
-  /* Depois de `.shelf`, e nao antes: sao regras de mesma especificidade, e a
-     que vale e a ultima escrita. */
+  /* Depois de `.shelf`, e não antes: são regras de mesma especificidade, e a
+     que vale e a última escrita. */
   .flush {
     padding-top: var(--space-24);
   }
@@ -167,8 +167,8 @@
 @media (min-width: 80rem) {
   .track {
     /* No desktop a fileira volta a alinhar com o container em vez de sangrar
-       a tela inteira: em monitor largo, o card comecando a 16px da borda
-       esquerda deixaria o titulo centralizado longe de tudo. */
+       a tela inteira: em monitor largo, o card começando a 16px da borda
+       esquerda deixaria o título centralizado longe de tudo. */
     padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2));
     scroll-padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2));
   }
@@ -185,7 +185,7 @@
 }
 
 /*
- * So onde ha mouse. `hover: hover` e nao uma largura: o que decide e o
+ * Só onde há mouse. `hover: hover` e não uma largura: o que decide e o
  * apontador, e existe tablet largo sem mouse e laptop estreito com um.
  */
 @media (hover: hover) and (min-width: 64rem) {
@@ -233,7 +233,7 @@
     right: var(--space-8);
   }
 
-  /* Um desenho de seta so, virado. O giro vai dentro do `transform`, junto do
+  /* Um desenho de seta só, virado. O giro vai dentro do `transform`, junto do
      `translateY`: na propriedade `rotate` ele se aplicaria antes, e o
      `translateY(-50%)` passaria a empurrar a seta para baixo. */
   .arrowPrevious {

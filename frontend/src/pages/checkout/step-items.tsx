@@ -11,28 +11,28 @@ import styles from './step-items.module.css';
 /**
  * Etapa 1: o que vai no pedido.
  *
- * A lista e a mesma da sacola, na versao compacta — o componente de linha e
- * literalmente o mesmo, `CartLineRow`. Isso nao e economia de codigo: e o
- * que garante que o teto de estoque, o "remover", o estado indisponivel e o
- * que acontece antes da primeira cotacao se comportem aqui exatamente como
+ * A lista e a mesma da sacola, na versão compacta — o componente de linha e
+ * literalmente o mesmo, `CartLineRow`. Isso não e economia de código: e o
+ * que garante que o teto de estoque, o "remover", o estado indisponível e o
+ * que acontece antes da primeira cotação se comportem aqui exatamente como
  * se comportaram na tela anterior. Uma segunda lista escrita para o checkout
- * divergiria na primeira borda, e as bordas aqui sao quase tudo.
+ * divergiria na primeira borda, e as bordas aqui são quase tudo.
  *
- * Editavel de proposito. Descobrir no checkout que sao dois frascos e nao
- * tres, e ter que voltar para a sacola para corrigir, e uma viagem de ida e
- * volta que custa vendas — e cada alteracao aqui refaz a cotacao pelo
+ * Editável de propósito. Descobrir no checkout que são dois frascos e não
+ * três, e ter que voltar para a sacola para corrigir, e uma viagem de ida e
+ * volta que custa vendas — e cada alteração aqui refaz a cotação pelo
  * servidor, como em qualquer outro lugar.
  *
- * ## O botao que nao deixa passar
+ * ## O botão que não deixa passar
  *
- * Com item indisponivel na lista, continuar e impossivel: o servidor
+ * Com item indisponível na lista, continuar e impossível: o servidor
  * recusaria o pedido no fim com `409`, depois de a pessoa ter preenchido
- * endereco, pagamento e telefone. Barrar aqui e devolver trinta segundos de
+ * endereço, pagamento e telefone. Barrar aqui e devolver trinta segundos de
  * trabalho a quem ia perde-los.
  *
- * Quem decide e `itemsSchema`, e a mesma resposta serve de rotulo: um botao
- * apagado sem explicacao e um beco sem saida, e a frase do esquema diz o que
- * fazer para sair dele. Quais itens sairam e por que, isso esta logo acima,
+ * Quem decide e `itemsSchema`, e a mesma resposta serve de rótulo: um botão
+ * apagado sem explicação e um beco sem saída, e a frase do esquema diz o que
+ * fazer para sair dele. Quais itens saíram e por que, isso esta logo acima,
  * em `CartNotices`, nas palavras que o servidor escreveu.
  */
 
@@ -51,11 +51,11 @@ export function StepItems({ quoting, focusOnMount, onContinue }: StepItemsProps)
   /**
    * A regra da etapa, aplicada ao que o servidor respondeu.
    *
-   * Enquanto a primeira cotacao nao chega, a lista de itens cotados esta
+   * Enquanto a primeira cotação não chega, a lista de itens cotados esta
    * vazia — e uma sacola vazia e justamente o que o esquema reprova. Por
-   * isso o resultado so e consultado depois: durante a espera o botao fica
+   * isso o resultado só e consultado depois: durante a espera o botão fica
    * desabilitado por `isPending`, sem a frase "sua sacola esta vazia" na
-   * tela de quem tem tres itens nela.
+   * tela de quem tem três itens nela.
    */
   const gate = itemsSchema.safeParse({ items: quote?.items ?? [] });
   const blockedBecause = isPending || gate.success ? null : gate.error.issues[0]?.message;
@@ -110,8 +110,8 @@ export function StepItems({ quoting, focusOnMount, onContinue }: StepItemsProps)
         </Link>
       </div>
 
-      {/* A razao de o botao estar apagado, no lugar onde ele esta. Nao e um
-          alerta generico: e o rotulo do impedimento, e some junto com ele. */}
+      {/* A razão de o botão estar apagado, no lugar onde ele esta. Não e um
+          alerta generico: e o rótulo do impedimento, e some junto com ele. */}
       {blockedBecause === null ? null : (
         <p className={styles.blocked} role="alert">
           {blockedBecause}
@@ -121,7 +121,7 @@ export function StepItems({ quoting, focusOnMount, onContinue }: StepItemsProps)
   );
 }
 
-/** O subtotal na linha do celular, logo acima do botao. */
+/** O subtotal na linha do celular, logo acima do botão. */
 function Subtotal({ quoting }: { quoting: CheckoutQuoteView }) {
   return (
     <>

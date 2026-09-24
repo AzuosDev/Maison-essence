@@ -9,8 +9,8 @@ import { UploadsService } from './uploads.service.js';
 /**
  * Envio de imagens do painel.
  *
- * `MANAGES_STORE` e so a dona; o `RolesGuard` ainda libera o SUPER_ADMIN por
- * conta propria. O STAFF fica de fora de proposito: ele le o catalogo para
+ * `MANAGES_STORE` e só a dona; o `RolesGuard` ainda libera o SUPER_ADMIN por
+ * conta própria. O STAFF fica de fora de propósito: ele lê o catálogo para
  * atender, mas quem publica foto da loja e quem responde por ela.
  */
 @Roles(...MANAGES_STORE)
@@ -18,7 +18,7 @@ import { UploadsService } from './uploads.service.js';
 export class UploadsController {
   constructor(private readonly uploads: UploadsService) {}
 
-  /** 200 e nao 201: a assinatura autoriza, nao cria nada. */
+  /** 200 e não 201: a assinatura autoriza, não cria nada. */
   @Post('signature')
   @HttpCode(HttpStatus.OK)
   signature(@Body() dto: CreateUploadSignatureDto): UploadSignature {
@@ -34,8 +34,8 @@ export class UploadsController {
   /**
    * O `publicId` tem barras (`maison-essence/products/foto-9f3a`), e barra
    * crua aqui viraria outro segmento de rota. O painel manda o identificador
-   * percent-encoded — `%2F` nao casa com o separador na hora de escolher a
-   * rota, e o Express entrega o valor ja decodificado.
+   * percent-encoded — `%2F` não casa com o separador na hora de escolher a
+   * rota, e o Express entrega o valor já decodificado.
    */
   @Delete(':publicId')
   @HttpCode(HttpStatus.NO_CONTENT)

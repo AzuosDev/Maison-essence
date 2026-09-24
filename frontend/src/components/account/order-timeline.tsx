@@ -7,25 +7,25 @@ import styles from './order-timeline.module.css';
 /**
  * O andamento do pedido, passo a passo.
  *
- * ## O que esta tela **nao** inventa
+ * ## O que esta tela **não** inventa
  *
- * O pedido guarda duas datas: quando foi feito e quando mudou pela ultima
- * vez. Nao ha, na API publica, um registro por transicao. Entao um pedido
+ * O pedido guarda duas datas: quando foi feito e quando mudou pela última
+ * vez. Não há, na API publica, um registro por transição. Então um pedido
  * entregue mostra "Confirmado" e "Em preparo" como cumpridos e **sem data** —
- * porque eles foram cumpridos e a data nao existe deste lado.
+ * porque eles foram cumpridos e a data não existe deste lado.
  *
- * A alternativa seria distribuir datas plausiveis entre os passos. Ficaria
- * mais bonito e seria mentira: alguem cobraria a loja por um prazo que um
+ * A alternativa seria distribuir datas plausíveis entre os passos. Ficaria
+ * mais bonito e seria mentira: alguém cobraria a loja por um prazo que um
  * `Math` escreveu.
  *
- * O rodape explica a ausencia em uma linha, e so aparece quando ha ausencia.
+ * O rodapé explica a ausência em uma linha, e só aparece quando há ausência.
  * Sem ele, o buraco pareceria defeito.
  *
- * ## A trilha nao e uma barra de progresso
+ * ## A trilha não e uma barra de progresso
  *
  * Cada passo traz o que significa — "Seu pedido esta sendo separado e
- * embalado" —, porque "Em preparo" sozinho nao diz se alguem ja pegou o
- * frasco da prateleira. E os passos futuros ficam apagados e visiveis, e nao
+ * embalado" —, porque "Em preparo" sozinho não diz se alguém já pegou o
+ * frasco da prateleira. E os passos futuros ficam apagados e visíveis, e não
  * escondidos: saber que ainda faltam dois e parte de saber onde se esta.
  */
 export function OrderTimeline({ order }: { order: CustomerOrderDetail }) {

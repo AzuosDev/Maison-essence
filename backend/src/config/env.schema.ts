@@ -5,11 +5,11 @@ const MIN_SECRET_LENGTH = 32;
 const SECRET_TOO_SHORT = `deve ter ao menos ${MIN_SECRET_LENGTH} caracteres`;
 
 /**
- * Variavel que pode nao existir.
+ * Variável que pode não existir.
  *
- * O `preprocess` trata string vazia como ausente: apagar uma variavel no
- * painel da Vercel costuma deixar `''` para tras, e `''` reprovado pelo schema
- * derrubaria o boot em vez de significar "nao configurado".
+ * O `preprocess` trata string vazia como ausente: apagar uma variável no
+ * painel da Vercel costuma deixar `''` para trás, e `''` reprovado pelo schema
+ * derrubaria o boot em vez de significar "não configurado".
  */
 function optional<Schema extends z.ZodType>(schema: Schema) {
   return z.preprocess((value) => (value === '' ? undefined : value), schema.optional());
@@ -20,12 +20,12 @@ export const envSchema = z.object({
     .enum(['development', 'test', 'production'])
     .default('development'),
   PORT: z.coerce.number().int().positive().max(65535).default(3333),
-  // Origens do CORS, uma a uma. Curinga e recusado no boot de proposito: com
-  // `credentials: true` ele nem funcionaria no navegador, e a tentacao de
-  // liberar tudo "so para destravar o deploy" acaba virando permanente.
+  // Origens do CORS, uma a uma. Curinga e recusado no boot de propósito: com
+  // `credentials: true` ele nem funcionaria no navegador, e a tentação de
+  // liberar tudo "só para destravar o deploy" acaba virando permanente.
   CORS_ORIGINS: z
     .string()
-    .min(1, 'informe ao menos uma origem, separada por virgula')
+    .min(1, 'informe ao menos uma origem, separada por vírgula')
     .refine(
       (value) => !parseCorsOrigins(value).includes('*'),
       'curinga não e aceito: liste as origens uma a uma',
@@ -43,30 +43,30 @@ export const envSchema = z.object({
       'deve começar com mongodb:// ou mongodb+srv://',
     ),
   // O nome do banco vem sempre daqui, nunca do caminho da URI: o Atlas entrega
-  // a string de conexao sem banco e o Mongoose cairia no default "test".
+  // a string de conexão sem banco e o Mongoose cairia no default "test".
   MONGODB_DB_NAME: z.string().min(1).default('maison-essence'),
-  // Segredos dos tokens. O piso de 32 caracteres nao e enfeite: a assinatura
-  // HS256 nao e mais forte que o segredo, e segredo curto vira access token
+  // Segredos dos tokens. O piso de 32 caracteres não e enfeite: a assinatura
+  // HS256 não e mais forte que o segredo, e segredo curto vira access token
   // forjado com o papel que o atacante quiser.
   JWT_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
   JWT_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
-  // Segredos da conta de cliente. Separados dos do painel de proposito: sao
-  // duas populacoes com riscos diferentes — o cadastro do cliente e aberto na
-  // internet, o do painel nao — e um segredo vazado de um lado nao pode
+  // Segredos da conta de cliente. Separados dos do painel de propósito: são
+  // duas populações com riscos diferentes — o cadastro do cliente e aberto na
+  // internet, o do painel não — e um segredo vazado de um lado não pode
   // assinar token do outro. Com chaves distintas, "token de cliente vira token
-  // de administrador" deixa de depender de o codigo conferir alguma claim.
+  // de administrador" deixa de depender de o código conferir alguma claim.
   JWT_CUSTOMER_ACCESS_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
   JWT_CUSTOMER_REFRESH_SECRET: z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT),
-  // Conta do Cloudinary, onde ficam as imagens. As tres sao opcionais porque
+  // Conta do Cloudinary, onde ficam as imagens. As três são opcionais porque
   // nenhuma outra rota depende delas: a API sobe e a loja funciona sem conta
-  // de imagens, e so o envio de fotos responde 503 ate elas existirem. O
+  // de imagens, e só o envio de fotos responde 503 até elas existirem. O
   // segredo assina os uploads e nunca vai para o navegador.
   CLOUDINARY_CLOUD_NAME: optional(z.string().min(1)),
   CLOUDINARY_API_KEY: optional(z.string().min(1)),
   CLOUDINARY_API_SECRET: optional(z.string().min(1)),
-  // Criacao do primeiro SUPER_ADMIN. As tres sao opcionais porque a API
+  // Criação do primeiro SUPER_ADMIN. As três são opcionais porque a API
   // precisa subir sem elas: depois do primeiro acesso elas saem do ambiente,
-  // e uma variavel obrigatoria que deve ser removida e uma contradicao.
+  // e uma variável obrigatória que deve ser removida e uma contradição.
   BOOTSTRAP_SUPERADMIN_EMAIL: optional(
     z.email('informe um e-mail válido').transform((email) => email.trim().toLowerCase()),
   ),
@@ -74,9 +74,9 @@ export const envSchema = z.object({
     z.string().min(PASSWORD_MIN_LENGTH, `deve ter ao menos ${PASSWORD_MIN_LENGTH} caracteres`),
   ),
   BOOTSTRAP_SUPERADMIN_NAME: z.string().min(1).max(120).default('Super Admin'),
-  // Usuario e senha da documentacao em producao. As duas juntas ou nenhuma:
-  // sem elas, `/api/v1/docs` nao sobe em producao (ver `swagger.ts`). Fora de
-  // producao a documentacao e aberta, porque ali ela e ferramenta de trabalho.
+  // Usuário e senha da documentação em produção. As duas juntas ou nenhuma:
+  // sem elas, `/api/v1/docs` não sobe em produção (ver `swagger.ts`). Fora de
+  // produção a documentação e aberta, porque ali ela e ferramenta de trabalho.
   DOCS_USER: optional(z.string().min(1)),
   DOCS_PASSWORD: optional(z.string().min(12, 'deve ter ao menos 12 caracteres')),
   // Libera POST /auth/bootstrap. Sem ela a rota responde 404, que e o estado
@@ -161,9 +161,9 @@ export function parseCorsOrigins(value: string): string[] {
 /**
  * Origem no sentido do navegador: esquema, host e porta, sem caminho.
  *
- * `https://loja.com.br/` com a barra no fim nao e a mesma coisa que o
- * navegador manda no cabecalho `Origin`, e a comparacao exata falharia em
- * producao com o erro mais confuso possivel — tudo funcionando, menos o
+ * `https://loja.com.br/` com a barra no fim não e a mesma coisa que o
+ * navegador manda no cabeçalho `Origin`, e a comparação exata falharia em
+ * produção com o erro mais confuso possível — tudo funcionando, menos o
  * navegador. Reprovar no boot troca isso por uma mensagem.
  */
 function isOrigin(value: string): boolean {

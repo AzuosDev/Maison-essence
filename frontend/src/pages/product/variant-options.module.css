@@ -1,10 +1,10 @@
 /*
- * As pilulas de variante.
+ * As pílulas de variante.
  *
- * O `<input>` fica escondido — e nao `display: none`, que o tiraria da ordem
- * do foco e mataria a navegacao por setas. Escondido por tamanho zero e
- * opacidade, ele continua sendo o controle de verdade, e a pilula ao lado e
- * so o desenho dele.
+ * O `<input>` fica escondido — e não `display: none`, que o tiraria da ordem
+ * do foco e mataria a navegação por setas. Escondido por tamanho zero e
+ * opacidade, ele continua sendo o controle de verdade, e a pílula ao lado e
+ * só o desenho dele.
  */
 
 .group {
@@ -90,11 +90,11 @@
 }
 
 /*
- * A opcao esgotada: visivel, riscada, fora de alcance.
+ * A opção esgotada: visível, riscada, fora de alcance.
  *
- * O risco e o portador do recado para quem ve; o `disabled` do input e o
+ * O risco e o portador do recado para quem vê; o `disabled` do input e o
  * portador para quem usa teclado ou leitor de tela, e e ele que garante o
- * "nao selecionavel" — nao ha clique nem Enter que a marque.
+ * "não selecionável" — não há clique nem Enter que a marque.
  */
 .soldOut {
   cursor: not-allowed;

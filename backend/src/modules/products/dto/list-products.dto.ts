@@ -13,12 +13,12 @@ import {
 import { QueryFlag } from '../../../common/query-flag.js';
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from '../products.constants.js';
 
-/** Filtro de status do painel. `all` e o padrao: a dona quer ver tudo. */
+/** Filtro de status do painel. `all` e o padrão: a dona quer ver tudo. */
 export const PRODUCT_STATUS_FILTERS = ['all', 'active', 'inactive'] as const;
 
 export type ProductStatusFilter = (typeof PRODUCT_STATUS_FILTERS)[number];
 
-/** Busca da listagem do painel. Tudo opcional, tudo combinavel. */
+/** Busca da listagem do painel. Tudo opcional, tudo combinável. */
 export class ListProductsDto {
   /** Busca por nome e marca. */
   @IsOptional()
@@ -38,10 +38,10 @@ export class ListProductsDto {
   status?: ProductStatusFilter;
 
   /**
-   * So o que esta em pronta entrega, ou so o que nao esta.
+   * Só o que esta em pronta entrega, ou só o que não esta.
    *
-   * A pronta entrega e a prateleira fisica da loja, e a secao que mais vende
-   * no local. Conferir o que esta nela pede a lista ja recortada, e nao mais
+   * A pronta entrega e a prateleira física da loja, e a seção que mais vende
+   * no local. Conferir o que esta nela pede a lista já recortada, e não mais
    * um filtro para marcar dentro de uma listagem de duzentos produtos.
    */
   @IsOptional()
@@ -49,7 +49,7 @@ export class ListProductsDto {
   @IsBoolean({ message: 'filtro de pronta entrega inválido' })
   readyToShip?: boolean;
 
-  // `@Type` porque query string chega como texto e o ValidationPipe nao
+  // `@Type` porque query string chega como texto e o ValidationPipe não
   // converte sozinho: sem isso, `page=2` reprovaria no `@IsInt`.
   @IsOptional()
   @Type(() => Number)

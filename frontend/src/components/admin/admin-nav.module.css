@@ -2,10 +2,10 @@
  * O menu do painel.
  *
  * Escrito para a coluna escura, e reaproveitado na gaveta do celular, que
- * tambem e escura: um menu so, com um contexto de cor so, em vez de duas
+ * também e escura: um menu só, com um contexto de cor só, em vez de duas
  * variantes que precisam ser mantidas iguais.
  *
- * O alvo de toque tem 44px de altura. Nao e um numero solto: e o minimo que
+ * O alvo de toque tem 44px de altura. Não e um número solto: e o mínimo que
  * um dedo acerta sem ampliar a tela, e o painel e usado no celular na maior
  * parte do tempo.
  */
@@ -27,7 +27,7 @@
   min-height: 2.75rem;
   padding: var(--space-8) var(--space-12);
 
-  /* O filete dourado do item ativo ja existe aqui, transparente: sem ele, o
+  /* O filete dourado do item ativo já existe aqui, transparente: sem ele, o
      texto de todos os itens andaria 3px para a direita ao ficar ativo. */
   border-left: var(--admin-item-border) solid transparent;
   border-radius: 0 var(--radius-chip) var(--radius-chip) 0;
@@ -52,8 +52,8 @@
  * na borda esquerda.
  *
  * O contraste do texto sobe para `--cream` junto — o fundo translucido sozinho
- * distingue pouco a 14%, e quem enxerga menos precisa da diferenca de
- * luminosidade, nao so da de cor.
+ * distingue pouco a 14%, e quem enxerga menos precisa da diferença de
+ * luminosidade, não só da de cor.
  */
 .active {
   background-color: var(--admin-item-active);
@@ -74,12 +74,12 @@
 }
 
 /*
- * O comeco de um grupo novo.
+ * O começo de um grupo novo.
  *
- * Um filete e o espaco acima dele. Cor com 12% de opacidade sobre o preto:
- * o bastante para separar, pouco o bastante para nao competir com o filete
- * dourado do item ativo, que e a unica linha desta coluna que deve chamar
- * atencao.
+ * Um filete e o espaço acima dele. Cor com 12% de opacidade sobre o preto:
+ * o bastante para separar, pouco o bastante para não competir com o filete
+ * dourado do item ativo, que e a única linha desta coluna que deve chamar
+ * atenção.
  */
 .group {
   margin-top: var(--space-8);

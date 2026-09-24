@@ -19,33 +19,33 @@ import styles from './order-confirmation-page.module.css';
 /**
  * `/pedido/:code`: o fim do caminho.
  *
- * A pessoa atravessou catalogo, sacola e quatro etapas de checkout, e esta e
- * a tela que diz se valeu. Por isso ela e curta e tem uma coisa so em
- * destaque: o codigo. Tudo o mais — reenviar, copiar, criar conta, voltar a
+ * A pessoa atravessou catálogo, sacola e quatro etapas de checkout, e esta e
+ * a tela que diz se valeu. Por isso ela e curta e tem uma coisa só em
+ * destaque: o código. Tudo o mais — reenviar, copiar, criar conta, voltar a
  * loja — esta abaixo dele, na ordem em que faz falta.
  *
- * ## A confirmacao e o que ja aconteceu
+ * ## A confirmação e o que já aconteceu
  *
  * Quando esta tela aparece, o pedido **existe** no banco e a aba do WhatsApp
- * ja foi disparada. O texto nao promete, informa: "confira o WhatsApp da
- * loja", e nao "clique para enviar". O botao de reenviar existe para o caso
- * de o navegador ter bloqueado a aba — nao e o caminho normal, e por isso e
- * secundario.
+ * já foi disparada. O texto não promete, informa: "confira o WhatsApp da
+ * loja", e não "clique para enviar". O botão de reenviar existe para o caso
+ * de o navegador ter bloqueado a aba — não e o caminho normal, e por isso e
+ * secundário.
  *
  * ## De onde sai o pedido desta tela
  *
- * Do proprio navegador, guardado no instante em que o servidor respondeu —
- * ver `placed-orders`. Nao ha rota publica para ler um pedido pelo codigo, e
- * e melhor que nao haja: um endereco adivinhavel devolvendo nome, telefone e
- * endereco de quem comprou seria um vazamento a espera de um robo.
+ * Do próprio navegador, guardado no instante em que o servidor respondeu —
+ * ver `placed-orders`. Não há rota publica para ler um pedido pelo código, e
+ * e melhor que não haja: um endereço adivinhável devolvendo nome, telefone e
+ * endereço de quem comprou seria um vazamento a espera de um robo.
  *
- * O preco disso e o caso do link aberto em outro aparelho, que cai no estado
- * de "nao esta guardado aqui". Ele nao e um erro, e a tela nao o trata como
- * um: o pedido foi feito, a loja o tem, e o caminho para ve-lo e a conta.
+ * O preço disso e o caso do link aberto em outro aparelho, que cai no estado
+ * de "não esta guardado aqui". Ele não e um erro, e a tela não o trata como
+ * um: o pedido foi feito, a loja o tem, e o caminho para vê-lo e a conta.
  *
- * ## Fora do indice
+ * ## Fora do índice
  *
- * `noindex`, como o checkout e a sacola: e a tela de uma pessoa so.
+ * `noindex`, como o checkout e a sacola: e a tela de uma pessoa só.
  */
 export default function OrderConfirmationPage() {
   const { code = '' } = useParams<{ code: string }>();
@@ -127,18 +127,18 @@ function Confirmation({ order }: { order: PlacedOrder }) {
   );
 }
 
-/* ---- Os dois botoes do fecho ----------------------------------------------- */
+/* ---- Os dois botões do fecho ----------------------------------------------- */
 
 /**
  * A segunda chance de abrir a conversa.
  *
- * Passa pela mesma reserva de aba do envio original, e nao por um
- * `window.open` direto: e o mesmo encadeamento de saidas — aba nova, segunda
- * tentativa, aba atual —, e quem chega a este botao e justamente quem ja foi
+ * Passa pela mesma reserva de aba do envio original, e não por um
+ * `window.open` direto: e o mesmo encadeamento de saídas — aba nova, segunda
+ * tentativa, aba atual —, e quem chega a este botão e justamente quem já foi
  * bloqueado uma vez.
  *
  * A URL vai como o servidor a mandou. Nenhuma parte dela e remontada aqui:
- * e o que mantem a quebra de linha e o acento identicos aos do pedido
+ * e o que mantem a quebra de linha e o acento idênticos aos do pedido
  * gravado.
  */
 function ResendButton({ url }: { url: string }) {
@@ -155,23 +155,23 @@ function ResendButton({ url }: { url: string }) {
   );
 }
 
-/** Quanto tempo o botao fica dizendo que copiou. */
+/** Quanto tempo o botão fica dizendo que copiou. */
 const COPIED_FEEDBACK_MS = 2600;
 
 /**
- * A mensagem do pedido na area de transferencia.
+ * A mensagem do pedido na área de transferência.
  *
- * E a saida de quem prefere colar a conversa que ja tem aberta com a loja, e
- * a unica saida de quem esta num aparelho onde o `wa.me` nao abre. O texto e
- * o `whatsappMessage` gravado no pedido, sem codificacao de URL — colar
- * `%0A` no lugar da quebra de linha seria pior do que nao ter o botao.
+ * E a saída de quem prefere colar a conversa que já tem aberta com a loja, e
+ * a única saída de quem esta num aparelho onde o `wa.me` não abre. O texto e
+ * o `whatsappMessage` gravado no pedido, sem codificação de URL — colar
+ * `%0A` no lugar da quebra de linha seria pior do que não ter o botão.
  *
- * ## Quando a area de transferencia nao existe
+ * ## Quando a área de transferência não existe
  *
- * `navigator.clipboard` exige contexto seguro e permissao, e as duas coisas
- * faltam com frequencia: HTTP na rede local, navegador antigo, WebView de
- * aplicativo. Em vez de um erro, o botao revela o texto num campo ja
- * selecionado — dois toques e o menu de copiar do proprio sistema.
+ * `navigator.clipboard` exige contexto seguro e permissão, e as duas coisas
+ * faltam com frequência: HTTP na rede local, navegador antigo, WebView de
+ * aplicativo. Em vez de um erro, o botão revela o texto num campo já
+ * selecionado — dois toques e o menu de copiar do próprio sistema.
  */
 function CopyButton({ message, primary }: { message: string; primary: boolean }) {
   const [state, setState] = useState<'idle' | 'copied' | 'manual'>('idle');
@@ -191,9 +191,9 @@ function CopyButton({ message, primary }: { message: string; primary: boolean })
   }, [state]);
 
   const copy = (): void => {
-    // Tipado como opcional de proposito: o `lib.dom` promete um `Clipboard`
-    // sempre, e o navegador nao cumpre essa promessa fora de contexto
-    // seguro — e justamente esse o caso que este botao precisa cobrir.
+    // Tipado como opcional de propósito: o `lib.dom` promete um `Clipboard`
+    // sempre, e o navegador não cumpre essa promessa fora de contexto
+    // seguro — e justamente esse o caso que este botão precisa cobrir.
     const clipboard: Clipboard | undefined = navigator.clipboard;
 
     if (clipboard === undefined) {
@@ -238,9 +238,9 @@ function CopyButton({ message, primary }: { message: string; primary: boolean })
 }
 
 /**
- * O texto a mao, quando o navegador nao deixou copiar.
+ * O texto a mão, quando o navegador não deixou copiar.
  *
- * Selecionado assim que aparece: o proximo gesto e o menu do sistema, e nao
+ * Selecionado assim que aparece: o próximo gesto e o menu do sistema, e não
  * arrastar o dedo por trinta linhas de mensagem.
  */
 function ManualCopy({ message }: { message: string }) {
@@ -269,9 +269,9 @@ function ManualCopy({ message }: { message: string }) {
 /**
  * O resumo curto, para conferir sem sair da tela.
  *
- * Quatro linhas, e nao o pedido inteiro: a lista de itens com precos esta na
- * mensagem do WhatsApp, que o cliente acabou de receber, e repeti-la aqui so
- * faria o codigo do pedido disputar espaco com ela.
+ * Quatro linhas, e não o pedido inteiro: a lista de itens com preços esta na
+ * mensagem do WhatsApp, que o cliente acabou de receber, e repeti-lá aqui só
+ * faria o código do pedido disputar espaço com ela.
  */
 function Recap({ order }: { order: PlacedOrder }) {
   return (
@@ -308,16 +308,16 @@ function Recap({ order }: { order: PlacedOrder }) {
 /* ---- A conta, que continua sendo opcional ---------------------------------- */
 
 /**
- * O convite — e ele nunca vira exigencia.
+ * O convite — e ele nunca vira exigência.
  *
- * Quem ja esta logado ve o caminho para os proprios pedidos. Quem comprou
- * como convidado ve a oferta, com o telefone do pedido ja no link: e por ele
+ * Quem já esta logado vê o caminho para os próprios pedidos. Quem comprou
+ * como convidado vê a oferta, com o telefone do pedido já no link: e por ele
  * que o servidor liga as compras antigas a conta nova, e dizer isso e o que
- * torna a oferta interessante — "seus pedidos anteriores aparecem la" vale
+ * torna a oferta interessante — "seus pedidos anteriores aparecem lá" vale
  * mais do que "crie uma conta".
  *
- * Em nenhum dos dois casos ha parede: a tela inteira funciona sem conta
- * nenhuma, e este bloco e o ultimo da pagina de proposito.
+ * Em nenhum dos dois casos há parede: a tela inteira funciona sem conta
+ * nenhuma, e este bloco e o último da página de propósito.
  */
 function AccountInvite({ order }: { order: PlacedOrder }) {
   const customer = useCustomerSession((state) => state.user);
@@ -353,13 +353,13 @@ function AccountInvite({ order }: { order: PlacedOrder }) {
   );
 }
 
-/* ---- O pedido que nao esta neste navegador --------------------------------- */
+/* ---- O pedido que não esta neste navegador --------------------------------- */
 
 /**
  * O link chegou de outro aparelho, ou o navegador foi limpo.
  *
- * Nao e um 404 e nao se escreve como um: o pedido existe, a loja o tem, e o
- * codigo continua valendo na conversa. O que falta e o caminho ate ele — e
+ * Não e um 404 e não se escreve como um: o pedido existe, a loja o tem, e o
+ * código continua valendo na conversa. O que falta e o caminho até ele — e
  * ele e a conta.
  */
 function NotHere({ code }: { code: string }) {

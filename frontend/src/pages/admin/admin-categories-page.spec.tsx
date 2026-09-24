@@ -14,11 +14,11 @@ import AdminCategoriesPage from './admin-categories-page';
  * O que estes casos cobram:
  *
  * - **a ordem que vai para o servidor** — a lista plana em ordem de menu, que
- *   nao aparece em tela nenhuma e e quem determina o menu da loja;
- * - **renomear no lugar** manda so o nome;
- * - **a oferta de desativar** quando a exclusao e recusada por 409;
- * - **o STAFF nao entra**, nem digitando o endereco;
- * - **"dentro de" some** quando a categoria ja tem subcategorias.
+ *   não aparece em tela nenhuma e e quem determina o menu da loja;
+ * - **renomear no lugar** manda só o nome;
+ * - **a oferta de desativar** quando a exclusão e recusada por 409;
+ * - **o STAFF não entra**, nem digitando o endereço;
+ * - **"dentro de" some** quando a categoria já tem subcategorias.
  */
 
 const TREE = [
@@ -67,7 +67,7 @@ const TREE = [
 ];
 
 let calls: { url: string; method: string; body: string }[] = [];
-/** O que a proxima escrita deve responder. */
+/** O que a próxima escrita deve responder. */
 let nextWrite: () => Response = () => jsonResponse(TREE[0]);
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -154,7 +154,7 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
   return calls.findLast((call) => call.method !== 'GET');
 }
 
-/* ---- A arvore -------------------------------------------------------------- */
+/* ---- A árvore -------------------------------------------------------------- */
 
 test('desenha o menu com pai, filho e as contagens', async () => {
   signInAs(USER_ROLES.OWNER);
@@ -259,7 +259,7 @@ test('um nome curto demais volta ao anterior sem chamar o servidor', async () =>
   await user.type(screen.getByRole('textbox', { name: 'Nome de Feminino' }), 'F{Enter}');
 
   // O servidor exige duas letras: barrar aqui evita uma ida a rede para
-  // receber de volta um erro que a tela ja sabia.
+  // receber de volta um erro que a tela já sabia.
   expect(lastWrite()).toBeUndefined();
   expect(screen.getByRole('button', { name: 'Renomear Feminino' })).toBeDefined();
 });
@@ -312,7 +312,7 @@ test('excluir de verdade chama DELETE depois da confirmação', async () => {
   });
 });
 
-/* ---- O dialogo -------------------------------------------------------------------- */
+/* ---- O diálogo -------------------------------------------------------------------- */
 
 test('adicionar subcategoria já abre dentro do pai', async () => {
   const user = userEvent.setup();
@@ -342,7 +342,7 @@ test('quem já tem subcategorias não vê o campo de pai', async () => {
 
   const dialog = await screen.findByRole('dialog');
 
-  // Uma subcategoria nao pode ter filhos: mostrar o campo levaria so a um
+  // Uma subcategoria não pode ter filhos: mostrar o campo levaria só a um
   // erro do servidor.
   expect(within(dialog).queryByLabelText('Dentro de')).toBeNull();
   expect(dialog.textContent).toContain('subcategoria não pode ter filhos');
@@ -366,7 +366,7 @@ test('criar uma categoria manda nome e pai nulo', async () => {
     const write = lastWrite();
 
     expect(write?.method).toBe('POST');
-    // Sem endereco: o servidor o gera a partir do nome.
+    // Sem endereço: o servidor o gera a partir do nome.
     expect(JSON.parse(write?.body ?? '{}')).toEqual({ name: 'Árabes', parentId: null });
   });
 });

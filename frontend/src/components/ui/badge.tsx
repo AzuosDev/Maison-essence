@@ -5,8 +5,8 @@ import styles from './badge.module.css';
 /**
  * O selo: `Esgotado`, `-33%`, `Pronta entrega`.
  *
- * A cor nunca e o unico portador do recado — cada selo tem texto, e o texto
- * diz o que a cor sugere. Quem nao distingue verde de vermelho le "esgotado"
+ * A cor nunca e o único portador do recado — cada selo tem texto, e o texto
+ * diz o que a cor sugere. Quem não distingue verde de vermelho lê "esgotado"
  * do mesmo jeito.
  */
 
@@ -14,7 +14,7 @@ export type BadgeVariant = 'ink' | 'success' | 'danger' | 'gold' | 'muted';
 
 export type BadgeProps = ComponentPropsWithoutRef<'span'> & {
   variant?: BadgeVariant;
-  /** Numero em largura fixa: contagem que aparece em coluna de tabela. */
+  /** Número em largura fixa: contagem que aparece em coluna de tabela. */
   numeric?: boolean;
 };
 

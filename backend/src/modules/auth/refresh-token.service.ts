@@ -14,17 +14,17 @@ import { TOKEN_AUDIENCES } from './auth.types.js';
 import { RefreshToken } from './schemas/refresh-token.schema.js';
 import { TokenService } from './token.service.js';
 
-/** Refresh token recem-emitido: o valor em texto so existe aqui e na resposta. */
+/** Refresh token recém-emitido: o valor em texto só existe aqui e na resposta. */
 export interface IssuedRefreshToken {
   token: string;
   expiresAt: Date;
 }
 
 /**
- * Quem e o dono da sessao.
+ * Quem e o dono da sessão.
  *
  * Os dois campos andam sempre juntos: o `id` sozinho e ambiguo, porque o
- * mesmo ObjectId poderia existir nas duas colecoes, e e a audiencia que diz
+ * mesmo ObjectId poderia existir nas duas coleções, e e a audiência que diz
  * em qual delas procurar e qual segredo assina o token.
  */
 export interface SessionOwner {
@@ -32,7 +32,7 @@ export interface SessionOwner {
   audience: TokenAudience;
 }
 
-/** Sessao consumida pela rotacao: o documento ja foi revogado quando isso volta. */
+/** Sessão consumida pela rotação: o documento já foi revogado quando isso volta. */
 export interface ClaimedSession {
   tokenId: Types.ObjectId;
   ownerId: Types.ObjectId;
@@ -41,16 +41,16 @@ export interface ClaimedSession {
 const MAX_USER_AGENT_LENGTH = 255;
 
 /**
- * Ciclo de vida das sessoes, do painel e da loja.
+ * Ciclo de vida das sessões, do painel e da loja.
  *
- * A colecao guarda o SHA-256 do token, nunca o token. SHA-256 e nao argon2
- * porque o que esta sendo protegido nao e uma senha: o token e um JWT
- * aleatorio de entropia alta, imune a dicionario, e um KDF lento so
- * acrescentaria dezenas de milissegundos a cada renovacao.
+ * A coleção guarda o SHA-256 do token, nunca o token. SHA-256 e não argon2
+ * porque o que esta sendo protegido não e uma senha: o token e um JWT
+ * aleatório de entropia alta, imune a dicionário, e um KDF lento só
+ * acrescentaria dezenas de milissegundos a cada renovação.
  *
- * As duas audiencias passam por aqui, e toda consulta filtra pela audiencia
+ * As duas audiências passam por aqui, e toda consulta filtra pela audiência
  * do chamador. Um refresh token de cliente nem chega a ser comparado com uma
- * sessao de painel: antes disso ele ja falhou na assinatura, porque o segredo
+ * sessão de painel: antes disso ele já falhou na assinatura, porque o segredo
  * e outro.
  */
 @Injectable()
@@ -59,9 +59,9 @@ export class RefreshTokenService {
 
   constructor(
     @InjectModel(RefreshToken.name) private readonly tokens: Model<RefreshToken>,
-    // O contador de credencial vive no dono da sessao, mas quem o incrementa e
-    // a revogacao em massa daqui: derrubar as sessoes sem matar os access
-    // tokens ja emitidos deixaria o intruso com ate 15 minutos de acesso.
+    // O contador de credencial vive no dono da sessão, mas quem o incrementa e
+    // a revogação em massa daqui: derrubar as sessões sem matar os access
+    // tokens já emitidos deixaria o intruso com até 15 minutos de acesso.
     @InjectModel(User.name) private readonly users: Model<User>,
     @InjectModel(Customer.name) private readonly customers: Model<Customer>,
     private readonly tokenService: TokenService,
@@ -69,7 +69,7 @@ export class RefreshTokenService {
 
   /**
    * Emite um refresh token novo. `replaces` liga o token anterior a este na
-   * arvore de rotacao (`replacedBy`).
+   * árvore de rotação (`replacedBy`).
    */
   async issue(
     owner: SessionOwner,
@@ -103,15 +103,15 @@ export class RefreshTokenService {
 
   /**
    * Consome um refresh token: confere a assinatura e o revoga na mesma
-   * operacao atomica que o encontra.
+   * operação atômica que o encontra.
    *
-   * Atomica de proposito. Dois requests simultaneos com o mesmo token — o
-   * caso comum de duas abas renovando junto — nao podem ambos receber uma
-   * sessao nova; o segundo cai no caminho de reuso.
+   * Atômica de propósito. Dois requests simultaneos com o mesmo token — o
+   * caso comum de duas abas renovando junto — não podem ambos receber uma
+   * sessão nova; o segundo cai no caminho de reuso.
    *
-   * Reuso de token ja revogado derruba todas as sessoes do dono: se o token
-   * vazou, nao da para saber qual das duas partes e a legitima, entao as duas
-   * perdem a sessao e quem e dono refaz o login.
+   * Reuso de token já revogado derruba todas as sessões do dono: se o token
+   * vazou, não da para saber qual das duas partes e a legitima, então as duas
+   * perdem a sessão e quem e dono refaz o login.
    */
   async claim(rawToken: string, audience: TokenAudience): Promise<ClaimedSession> {
     const payload = await this.tokenService.verifyRefreshToken(rawToken, audience);
@@ -148,7 +148,7 @@ export class RefreshTokenService {
     throw new UnauthorizedException('Sessão inválida.');
   }
 
-  /** Revoga a sessao apresentada. Usado no logout; nunca dispara deteccao de reuso. */
+  /** Revoga a sessão apresentada. Usado no logout; nunca dispara detecção de reuso. */
   async revoke(rawToken: string, audience: TokenAudience): Promise<void> {
     const payload = await this.tokenService.verifyRefreshToken(rawToken, audience);
     const tokenId = toObjectId(payload.jti);
@@ -167,8 +167,8 @@ export class RefreshTokenService {
 
   /**
    * Derruba o dono em todos os dispositivos: revoga os refresh tokens abertos
-   * e incrementa `credentialVersion`, o que invalida na hora os access tokens
-   * ja emitidos.
+   * e incrementa `credentialVersion`, o que inválida na hora os access tokens
+   * já emitidos.
    */
   async revokeAllSessions(owner: SessionOwner): Promise<number> {
     const revoked = await this.revokeRefreshTokens(owner);
@@ -179,10 +179,10 @@ export class RefreshTokenService {
   }
 
   /**
-   * Revoga so os refresh tokens, sem tocar na versao da credencial.
+   * Revoga só os refresh tokens, sem tocar na versão da credencial.
    *
-   * Existe para quem ja vai incrementar a versao na mesma escrita que faz
-   * outra coisa — a troca de senha grava hash, flag e versao de uma vez so.
+   * Existe para quem já vai incrementar a versão na mesma escrita que faz
+   * outra coisa — a troca de senha grava hash, flag e versão de uma vez só.
    */
   async revokeRefreshTokens(owner: SessionOwner): Promise<number> {
     const result = await this.tokens
@@ -196,17 +196,17 @@ export class RefreshTokenService {
   }
 
   /**
-   * Invalida os access tokens em circulacao sem encerrar as sessoes.
+   * Inválida os access tokens em circulação sem encerrar as sessões.
    *
    * E o que uma mudanca de papel precisa: o token atual para de valer na hora
-   * (o papel dentro dele ficou velho), o refresh continua valido e a proxima
-   * renovacao ja sai com o papel novo, sem novo login.
+   * (o papel dentro dele ficou velho), o refresh continua válido e a próxima
+   * renovação já sai com o papel novo, sem novo login.
    */
   async bumpCredentialVersion(owner: SessionOwner): Promise<void> {
     const bump = { $inc: { credentialVersion: 1 } };
 
-    // Dois `updateOne` em vez de um sobre a colecao escolhida: sao models de
-    // tipos diferentes, e uniao de models nao se chama.
+    // Dois `updateOne` em vez de um sobre a coleção escolhida: são models de
+    // tipos diferentes, e união de models não se chama.
     if (owner.audience === TOKEN_AUDIENCES.CUSTOMER) {
       await this.customers.updateOne({ _id: owner.id }, bump).exec();
 
@@ -217,17 +217,17 @@ export class RefreshTokenService {
   }
 }
 
-/** A sessao e de um usuario do painel. */
+/** A sessão e de um usuário do painel. */
 export function adminOwner(id: Types.ObjectId): SessionOwner {
   return { id, audience: TOKEN_AUDIENCES.ADMIN };
 }
 
-/** A sessao e de um cliente da loja. */
+/** A sessão e de um cliente da loja. */
 export function customerOwner(id: Types.ObjectId): SessionOwner {
   return { id, audience: TOKEN_AUDIENCES.CUSTOMER };
 }
 
-/** SHA-256 em hex: 64 caracteres, deterministico, indexavel. */
+/** SHA-256 em hex: 64 caracteres, deterministico, indexável. */
 export function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex');
 }

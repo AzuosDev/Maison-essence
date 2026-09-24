@@ -12,15 +12,15 @@ import styles from './cart-drawer.module.css';
 /**
  * O miolo da gaveta da sacola.
  *
- * Separado de `cart-drawer.tsx` por peso, e nao por organizacao. A moldura
- * da loja importa a gaveta, e tudo o que a gaveta importar de forma estatica
- * entra no pedaco inicial: a lista, o resumo, a cotacao, o vazio com a
- * ilustracao. Sao doze kilobytes que toda visita baixaria — inclusive a de
+ * Separado de `cart-drawer.tsx` por peso, e não por organização. A moldura
+ * da loja importa a gaveta, e tudo o que a gaveta importar de forma estática
+ * entra no pedaço inicial: a lista, o resumo, a cotação, o vazio com a
+ * ilustração. São doze kilobytes que toda visita baixaria — inclusive a de
  * quem abriu a home para ver um perfume e nunca clicou em "adicionar".
  *
  * Aqui eles viram um pedido separado, feito na primeira vez que a gaveta
- * abre. O atraso e o de um arquivo pequeno ja em cache de borda, e ele
- * acontece por tras da animacao de entrada; o toast de confirmacao ja esta
+ * abre. O atraso e o de um arquivo pequeno já em cache de borda, e ele
+ * acontece por trás da animação de entrada; o toast de confirmação já esta
  * na tela nesse meio tempo.
  */
 export function CartDrawerPanel() {
@@ -62,15 +62,15 @@ export function CartDrawerPanel() {
             />
 
             {/*
-              Dois botoes, e so dois: fechar o pedido e voltar a comprar.
-              Sao as duas coisas que alguem faz depois de adicionar um item,
-              e dar a elas o mesmo peso de um terceiro botao apagaria a
-              hierarquia — tres botoes empilhados viram uma lista de opcoes
+              Dois botões, e só dois: fechar o pedido e voltar a comprar.
+              São as duas coisas que alguém faz depois de adicionar um item,
+              e dar a elas o mesmo peso de um terceiro botão apagaria a
+              hierarquia — três botões empilhados viram uma lista de opções
               que precisa ser lida inteira para escolher.
 
               "Ver a sacola" e um link de texto abaixo deles. E um destino,
-              nao uma decisao, e quem quer a lista inteira e a minoria: a
-              gaveta ja mostra os itens e o total.
+              não uma decisão, e quem quer a lista inteira e a minoria: a
+              gaveta já mostra os itens e o total.
             */}
             <div className={styles.actions}>
               <Button
@@ -124,7 +124,7 @@ export function CartDrawerPanel() {
   );
 }
 
-/* ---- O resumo do rodape ------------------------------------------------- */
+/* ---- O resumo do rodapé ------------------------------------------------- */
 
 interface SummaryProps {
   subtotalCents: number | null;
@@ -143,8 +143,8 @@ function Summary({
   isError,
   onRetry,
 }: SummaryProps) {
-  // Erro com um total anterior na tela nao vira tela de erro: o numero que
-  // esta ali continua valendo mais que um aviso, e a proxima mexida tenta de
+  // Erro com um total anterior na tela não vira tela de erro: o número que
+  // esta ali continua valendo mais que um aviso, e a próxima mexida tenta de
   // novo sozinha.
   if (isError && subtotalCents === null) {
     return (
@@ -159,8 +159,8 @@ function Summary({
   }
 
   return (
-    // `aria-busy` enquanto o servidor recalcula: quem ouve a pagina fica
-    // sabendo que o numero em tela ainda vai mudar.
+    // `aria-busy` enquanto o servidor recalcula: quem ouve a página fica
+    // sabendo que o número em tela ainda vai mudar.
     <div className={cx(styles.summary, isFetching && styles.recalculating)} aria-busy={isFetching}>
       {discountCents > 0 ? (
         <p className={styles.line}>

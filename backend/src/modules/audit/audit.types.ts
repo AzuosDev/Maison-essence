@@ -1,19 +1,19 @@
 import type { UserRole } from '../../common/enums/user-role.js';
 import type { AuditAction, AuditTargetKind } from './audit.constants.js';
 
-/** Quem agiu. Sempre presente: acao sem ator nao e trilha, e ruido. */
+/** Quem agiu. Sempre presente: ação sem ator não e trilha, e ruído. */
 export interface AuditActor {
   id: string;
   email: string;
-  /** Ausente so no login recusado, onde nao ha usuario resolvido. */
+  /** Ausente só no login recusado, onde não há usuário resolvido. */
   role?: UserRole;
 }
 
-/** Sobre o que a acao foi, com o rotulo que um humano reconhece. */
+/** Sobre o que a ação foi, com o rótulo que um humano reconhece. */
 export interface AuditTarget {
   kind: AuditTargetKind;
   id: string;
-  /** E-mail do usuario, codigo do pedido, nome do produto. */
+  /** E-mail do usuário, código do pedido, nome do produto. */
   label?: string;
 }
 
@@ -30,8 +30,8 @@ export interface AuditEntryInput {
   action: AuditAction;
   actor: AuditActor;
   target?: AuditTarget;
-  /** O diff, quando a acao foi uma edicao. */
+  /** O diff, quando a ação foi uma edição. */
   changes?: AuditChanges;
-  /** O que mais explica a acao. Nunca senha, nunca token, nunca chave PIX. */
+  /** O que mais explica a ação. Nunca senha, nunca token, nunca chave PIX. */
   details?: Record<string, unknown>;
 }

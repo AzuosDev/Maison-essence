@@ -7,7 +7,7 @@ import type { PublicCard } from './payments.types';
  *
  * O que estes casos protegem e a igualdade com o backend: a parcela anunciada
  * na vitrine precisa ser a mesma que o checkout vai oferecer. Um `round` no
- * lugar do `floor` passa despercebido na tela e so aparece quando o cliente
+ * lugar do `floor` passa despercebido na tela e só aparece quando o cliente
  * soma as parcelas na calculadora.
  */
 
@@ -19,7 +19,7 @@ const CARD: PublicCard = {
 };
 
 test('escolhe o maior número de parcelas que cabe no mínimo', () => {
-  // R$ 180 em 6x da R$ 30, acima do minimo de R$ 20.
+  // R$ 180 em 6x da R$ 30, acima do mínimo de R$ 20.
   expect(bestInterestFreeInstallment(18000, CARD)).toEqual({
     count: 6,
     installmentCents: 3000,
@@ -34,20 +34,20 @@ test('desce as parcelas até respeitar o valor mínimo', () => {
   });
 });
 
-test('não parcela quando nem 2x alcanca o mínimo', () => {
+test('não parcela quando nem 2x alcança o mínimo', () => {
   expect(bestInterestFreeInstallment(3000, CARD)).toBeNull();
 });
 
 test('arredonda para baixo, como o backend', () => {
-  // R$ 100 em 3x: R$ 33,33 e nao R$ 33,34. A sobra de um centavo vai para a
-  // primeira parcela, que e conta do checkout — o card so mostra a repetida.
+  // R$ 100 em 3x: R$ 33,33 e não R$ 33,34. A sobra de um centavo vai para a
+  // primeira parcela, que e conta do checkout — o card só mostra a repetida.
   const tresVezes: PublicCard = { ...CARD, interestFreeUpTo: 3 };
 
   expect(bestInterestFreeInstallment(10000, tresVezes)?.installmentCents).toBe(3333);
 });
 
 test('não passa do teto de parcelas da loja', () => {
-  // Sem juros ate 6x, mas a loja so aceita 3 no total.
+  // Sem juros até 6x, mas a loja só aceita 3 no total.
   const limitado: PublicCard = { ...CARD, maxInstallments: 3 };
 
   expect(bestInterestFreeInstallment(18000, limitado)?.count).toBe(3);
@@ -63,7 +63,7 @@ test('loja que não parcela não anuncia parcela', () => {
 
 /**
  * `buildInstallmentOptions` e o que o painel mostra a dona quando ela mexe
- * nos juros, e o que o checkout oferece ao cliente. Os numeros abaixo sao os
+ * nos juros, e o que o checkout oferece ao cliente. Os números abaixo são os
  * do backend: se um dia divergirem, e porque uma das duas contas mudou.
  */
 
@@ -92,7 +92,7 @@ test('até o limite sem juros, o total não muda', () => {
 test('acima do limite, a tabela price entra e o total sobe', () => {
   const options = buildInstallmentOptions(30000, CARD);
 
-  // R$ 300 em 7x a 1,99% ao mes. Mesmos centavos do backend.
+  // R$ 300 em 7x a 1,99% ao mês. Mesmos centavos do backend.
   expect(options[6]).toEqual({
     count: 7,
     installmentCents: 4633,
@@ -103,8 +103,8 @@ test('acima do limite, a tabela price entra e o total sobe', () => {
 });
 
 test('a soma das parcelas e exatamente o total, em toda opção', () => {
-  // E o que a primeira parcela maior existe para garantir. Uma soma que nao
-  // fecha vira discussao com o cliente na hora de cobrar.
+  // E o que a primeira parcela maior existe para garantir. Uma soma que não
+  // fecha vira discussão com o cliente na hora de cobrar.
   for (const option of buildInstallmentOptions(30000, CARD)) {
     const rest = option.installmentCents * (option.count - 1);
 
@@ -113,14 +113,14 @@ test('a soma das parcelas e exatamente o total, em toda opção', () => {
 });
 
 test('a parcela mínima corta as opções de baixo, mas nunca o a vista', () => {
-  // R$ 90: em 5x a parcela seria R$ 18, abaixo do minimo de R$ 20.
+  // R$ 90: em 5x a parcela seria R$ 18, abaixo do mínimo de R$ 20.
   const options = buildInstallmentOptions(9000, CARD);
 
   expect(options.map((option) => option.count)).toEqual([1, 2, 3, 4]);
 });
 
 test('o a vista sobrevive a um pedido menor que a parcela mínima', () => {
-  // Recusar R$ 15 no cartao porque o minimo de parcela e R$ 20 seria recusar
+  // Recusar R$ 15 no cartão porque o mínimo de parcela e R$ 20 seria recusar
   // a venda: a regra existe para impedir "12x de R$ 1,25".
   const options = buildInstallmentOptions(1500, CARD);
 
@@ -138,7 +138,7 @@ test('sem juros cadastrados, nada e financiado', () => {
 });
 
 test('a tabela price devolve o valor a vista quando a taxa e zero', () => {
-  // A formula viraria `0 / 0`. Quem chamar de fora merece o valor, e nao um
-  // `NaN` que so aparece tres somas adiante.
+  // A formula viraria `0 / 0`. Quem chamar de fora merece o valor, e não um
+  // `NaN` que só aparece três somas adiante.
   expect(priceTotal(30000, 10, 0)).toBe(30000);
 });

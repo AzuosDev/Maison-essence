@@ -21,19 +21,19 @@ import type {
 } from './catalog.types';
 
 /**
- * Os hooks de leitura do catalogo.
+ * Os hooks de leitura do catálogo.
  *
- * Ficam separados da camada de chamada (`catalog.api.ts`) para que a funcao
- * de rede continue testavel sem React, e para que a politica de cache de cada
- * consulta esteja num lugar so — e nao repetida em cada tela que a usa.
+ * Ficam separados da camada de chamada (`catalog.api.ts`) para que a função
+ * de rede continue testável sem React, e para que a política de cache de cada
+ * consulta esteja num lugar só — e não repetida em cada tela que a usa.
  */
 
 /**
- * A arvore de categorias do menu.
+ * A árvore de categorias do menu.
  *
  * Meia hora de frescor: o menu e a mesma coisa em toda visita, e a dona
- * mexer em categoria e evento raro. O `GET /categories` ja vem com cache de
- * borda, entao mesmo a revalidacao costuma ser um `304`.
+ * mexer em categoria e evento raro. O `GET /categories` já vem com cache de
+ * borda, então mesmo a revalidação costuma ser um `304`.
  */
 const CATEGORY_STALE_TIME_MS = 30 * 60 * 1000;
 
@@ -45,19 +45,19 @@ export function useCategoryTree() {
   });
 }
 
-/** A partir de quantas letras a busca comeca a sugerir. */
+/** A partir de quantas letras a busca começa a sugerir. */
 export const MIN_SEARCH_LENGTH = 3;
 
 /**
- * As sugestoes da caixa de busca.
+ * As sugestões da caixa de busca.
  *
- * O termo que chega aqui ja passou pelo atraso de digitacao — quem espera e
- * o `useDebouncedValue` da caixa, e nao esta consulta. Abaixo de tres letras
- * a consulta fica desligada: `pe` traria meio catalogo e gastaria uma ida ao
+ * O termo que chega aqui já passou pelo atraso de digitação — quem espera e
+ * o `useDebouncedValue` da caixa, e não esta consulta. Abaixo de três letras
+ * a consulta fica desligada: `pe` traria meio catálogo e gastaria uma ida ao
  * servidor por letra digitada.
  *
  * `placeholderData` mantem o resultado anterior enquanto o novo termo
- * carrega. Sem isso, a lista pisca vazia a cada letra e o cliente ve o menu
+ * carrega. Sem isso, a lista pisca vazia a cada letra e o cliente vê o menu
  * saltar embaixo do dedo.
  */
 export function useSearchSuggestions(term: string) {
@@ -74,21 +74,21 @@ export function useSearchSuggestions(term: string) {
 /**
  * Um minuto de frescor para as prateleiras da home.
  *
- * E o mesmo numero que o `QueryClient` ja usa como padrao, e esta escrito de
- * novo aqui de proposito: o padrao vale para a aplicacao inteira e pode mudar
+ * E o mesmo número que o `QueryClient` já usa como padrão, e esta escrito de
+ * novo aqui de propósito: o padrão vale para a aplicação inteira e pode mudar
  * por um motivo que nada tem a ver com a vitrine. A prateleira depende deste
  * valor — e o que faz a dona marcar um produto como destaque e ver a home
  * mudar no minuto seguinte, sem redeploy — e por isso ele fica declarado onde
- * a dependencia esta.
+ * a dependência esta.
  */
 const SHELF_STALE_TIME_MS = 60_000;
 
 /**
  * Uma prateleira da home: destaques, pronta entrega ou mais vendidos.
  *
- * As tres compartilham hook, chave e politica de cache porque sao a mesma
+ * As três compartilham hook, chave e política de cache porque são a mesma
  * consulta com outro nome. O `limit` entra na chave: duas larguras diferentes
- * da mesma prateleira sao duas respostas diferentes, e servir uma pela outra
+ * da mesma prateleira são duas respostas diferentes, e servir uma pela outra
  * faria a lista encolher ou crescer sozinha ao navegar.
  */
 export function useShelf(name: ShelfName, limit?: number) {
@@ -102,9 +102,9 @@ export function useShelf(name: ShelfName, limit?: number) {
 /**
  * A prateleira de novidades.
  *
- * Hook proprio, e nao `useShelf`, porque a origem e outra: as tres do
- * `useShelf` sao rotas de prateleira, e esta e a listagem do catalogo com um
- * teto. A chave e a politica de cache sao as mesmas de proposito — para a
+ * Hook próprio, e não `useShelf`, porque a origem e outra: as três do
+ * `useShelf` são rotas de prateleira, e esta e a listagem do catálogo com um
+ * teto. A chave e a política de cache são as mesmas de propósito — para a
  * home ela e uma prateleira como as outras.
  */
 export function useLatest(limit?: number) {
@@ -118,7 +118,7 @@ export function useLatest(limit?: number) {
 /**
  * A prateleira de uma marca.
  *
- * Mesma politica das outras: a dona cadastra um perfume da marca e ele
+ * Mesma política das outras: a dona cadastra um perfume da marca e ele
  * aparece na home no minuto seguinte, sem redeploy.
  */
 export function useBrandShelf(brand: string, limit?: number) {
@@ -132,25 +132,25 @@ export function useBrandShelf(brand: string, limit?: number) {
 /**
  * Uma prateleira com mais de uma marca dentro.
  *
- * ## Por que nao e uma consulta so
+ * ## Por que não e uma consulta só
  *
  * O filtro de marca do backend aceita uma marca por vez — ele casa a marca
- * inteira, e nao uma lista. Entao sao N consultas em paralelo, uma por
- * marca, cada uma com a chave e o cache que ja teria se estivesse sozinha na
+ * inteira, e não uma lista. Então são N consultas em paralelo, uma por
+ * marca, cada uma com a chave e o cache que já teria se estivesse sozinha na
  * home: trocar a ordem das marcas, ou promover uma delas para prateleira
- * propria depois, nao custa nenhuma ida nova ao servidor.
+ * própria depois, não custa nenhuma ida nova ao servidor.
  *
- * ## Por que intercalado, e nao emendado
+ * ## Por que intercalado, e não emendado
  *
  * Emendando as listas, as cinco vagas da fileira sairiam todas da primeira
  * marca sempre que ela tivesse cinco produtos — e a segunda marca nunca
  * apareceria na prateleira que leva o nome dela. Intercalando, as duas
- * entram na fileira: com cinco vagas e duas marcas, tres e duas.
+ * entram na fileira: com cinco vagas e duas marcas, três e duas.
  *
- * ## Erro parcial nao apaga a prateleira
+ * ## Erro parcial não apaga a prateleira
  *
- * `isError` so quando **todas** falham. Uma marca fora do ar nao e motivo
- * para sumir com a fileira inteira — o cliente veria uma secao a menos sem
+ * `isError` só quando **todas** falham. Uma marca fora do ar não e motivo
+ * para sumir com a fileira inteira — o cliente veria uma seção a menos sem
  * nenhum aviso, e a loja perderia a outra marca junto.
  */
 export function useBrandsShelf(brands: readonly string[], limit = BRAND_SHELF_LIMIT) {
@@ -173,7 +173,7 @@ export function useBrandsShelf(brands: readonly string[], limit = BRAND_SHELF_LI
 }
 
 /**
- * As listas alternadas entre si, ate o teto: a primeira de cada, depois a
+ * As listas alternadas entre si, até o teto: a primeira de cada, depois a
  * segunda de cada, e assim por diante.
  *
  * Uma lista que acaba antes das outras simplesmente para de contribuir — com
@@ -197,13 +197,13 @@ function interleave(lists: readonly (PublicProduct[] | undefined)[], limit: numb
   return picked;
 }
 
-/* ---- A categoria da pagina --------------------------------------------- */
+/* ---- A categoria da página --------------------------------------------- */
 
 /**
- * A categoria pelo endereco, com as subcategorias dela.
+ * A categoria pelo endereço, com as subcategorias dela.
  *
- * Mesmo frescor do menu: nome e foto de categoria nao mudam durante uma
- * visita. O `enabled` desliga a consulta em `/produtos` e `/busca`, que nao
+ * Mesmo frescor do menu: nome e foto de categoria não mudam durante uma
+ * visita. O `enabled` desliga a consulta em `/produtos` e `/busca`, que não
  * tem categoria nenhuma — sem ele, a vitrine pediria `/categories/` a cada
  * abertura e levaria um 404.
  */
@@ -219,10 +219,10 @@ export function useCategory(slug: string | undefined) {
 /**
  * A categoria de verdade, ou nada.
  *
- * `GET /categories/:slug` responde 301 quando o endereco mudou de nome, e o
- * navegador segue o redirecionamento sozinho — entao o corpo `MovedCategory`
- * quase nunca chega aqui. Quando chega, e tratado como ausencia: a pagina
- * desenha o cabecalho generico em vez de mostrar `undefined` no titulo.
+ * `GET /categories/:slug` responde 301 quando o endereço mudou de nome, e o
+ * navegador segue o redirecionamento sozinho — então o corpo `MovedCategory`
+ * quase nunca chega aqui. Quando chega, e tratado como ausência: a página
+ * desenha o cabeçalho genérico em vez de mostrar `undefined` no título.
  */
 export function asCategory(data: CategoryTree | MovedCategory | undefined): CategoryTree | null {
   return data !== undefined && 'name' in data ? data : null;
@@ -230,19 +230,19 @@ export function asCategory(data: CategoryTree | MovedCategory | undefined): Cate
 
 /* ---- O produto ---------------------------------------------------------- */
 
-/** O mesmo minuto do resto do catalogo. */
+/** O mesmo minuto do resto do catálogo. */
 const PRODUCT_STALE_TIME_MS = 60_000;
 
 /**
- * O produto da pagina dele.
+ * O produto da página dele.
  *
  * Mesma chave e mesmo frescor da prebusca do card — e e essa igualdade que
- * torna a navegacao instantanea. Quem passou o mouse pelo card antes de
+ * torna a navegação instantanea. Quem passou o mouse pelo card antes de
  * clicar chega aqui e encontra a resposta pronta no cache, sem esqueleto e
  * sem ida a rede.
  *
- * O `enabled` protege do endereco sem slug, que nao existe pela rota mas
- * existe enquanto o React Router resolve os parametros.
+ * O `enabled` protege do endereço sem slug, que não existe pela rota mas
+ * existe enquanto o React Router resolve os parâmetros.
  */
 export function useProduct(slug: string) {
   return useQuery<PublicProductDetail>({
@@ -259,13 +259,13 @@ export function useProduct(slug: string) {
  * O produto sob o cursor, buscado antes do clique.
  *
  * Meio segundo separa o hover do clique, e e tempo de sobra para a API
- * responder. Quando a pagina do produto abrir, ela vai pedir exatamente esta
- * chave e encontrar o dado pronto: a navegacao parece instantanea porque,
+ * responder. Quando a página do produto abrir, ela vai pedir exatamente esta
+ * chave e encontrar o dado pronto: a navegação parece instantanea porque,
  * para os dados, ela e.
  *
- * `prefetchQuery` respeita `staleTime`, entao passar o mouse dez vezes pelo
- * mesmo card e uma requisicao so. A promessa e descartada de proposito —
- * prebusca que falha nao e erro: e so um clique que vai esperar como
+ * `prefetchQuery` respeita `staleTime`, então passar o mouse dez vezes pelo
+ * mesmo card e uma requisição só. A promessa e descartada de propósito —
+ * prebusca que falha não e erro: e só um clique que vai esperar como
  * esperaria sem ela.
  */
 export function usePrefetchProduct(): (slug: string) => void {

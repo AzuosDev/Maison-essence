@@ -5,9 +5,9 @@ export const ORDER_CODE_PREFIX = 'ME';
 /**
  * Fuso da loja.
  *
- * A funcao serverless roda em UTC, entao um pedido feito as 21h de Fortaleza
- * nasceria com a data do dia seguinte. O codigo e lido pela dona no WhatsApp
- * junto do horario da mensagem: as duas datas precisam bater.
+ * A função serverless roda em UTC, então um pedido feito as 21h de Fortaleza
+ * nasceria com a data do dia seguinte. O código e lido pela dona no WhatsApp
+ * junto do horário da mensagem: as duas datas precisam bater.
  */
 export const ORDER_CODE_TIMEZONE = 'America/Sao_Paulo';
 
@@ -25,11 +25,11 @@ const DATE_FORMAT = new Intl.DateTimeFormat('en-CA', {
 });
 
 /**
- * Gera o codigo do pedido no formato `ME-AAMMDD-XXXX`.
+ * Gera o código do pedido no formato `ME-AAMMDD-XXXX`.
  *
- * A parte aleatoria tem 1,6 milhao de combinacoes por dia, o que torna
- * colisao improvavel; quando ela mesmo assim acontecer, o indice unico em
- * `code` rejeita a gravacao e sobra tentar de novo.
+ * A parte aleatória tem 1,6 milhão de combinações por dia, o que torna
+ * colisão improvável; quando ela mesmo assim acontecer, o índice único em
+ * `code` rejeita a gravação e sobra tentar de novo.
  */
 export function generateOrderCode(now: Date = new Date()): string {
   return `${ORDER_CODE_PREFIX}-${formatDatePart(now)}-${randomPart()}`;

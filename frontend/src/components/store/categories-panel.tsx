@@ -5,19 +5,19 @@ import { useCategoryTree } from '@/features/catalog';
 import styles from './categories-panel.module.css';
 
 /**
- * O painel de categorias, em largura total sob o cabecalho.
+ * O painel de categorias, em largura total sob o cabeçalho.
  *
- * As categorias vem de `GET /categories`, ja em arvore de um nivel: cada
- * coluna e uma categoria pai, e as subcategorias vao listadas abaixo dela. O
- * que a dona cadastrar aparece aqui sem ninguem tocar no codigo — inclusive
+ * As categorias vem de `GET /categories`, já em árvore de um nível: cada
+ * coluna e uma categoria pai, e as subcategorias vão listadas abaixo dela. O
+ * que a dona cadastrar aparece aqui sem ninguém tocar no código — inclusive
  * a sexta coluna, porque o grid se acomoda sozinho.
  *
- * O painel e um bloco de links, e nao um dialogo: nao prende o foco. Quem
+ * O painel e um bloco de links, e não um diálogo: não prende o foco. Quem
  * chega de teclado passa por ele com Tab na ordem natural, e o Escape — que
- * o cabecalho trata — fecha e devolve o foco ao botao "Categorias".
+ * o cabeçalho trata — fecha e devolve o foco ao botão "Categorias".
  */
 interface CategoriesPanelProps {
-  /** O id que o botao "Categorias" aponta em `aria-controls`. */
+  /** O id que o botão "Categorias" aponta em `aria-controls`. */
   id: string;
   /** Fecha o painel: todo link daqui navega e o painel precisa sumir. */
   onNavigate: () => void;

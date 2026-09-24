@@ -15,23 +15,23 @@ import {
 import { reserveWhatsappTab, type WhatsappHandoff } from './whatsapp-handoff';
 
 /**
- * O envio do pedido, com as duas protecoes que este botao exige.
+ * O envio do pedido, com as duas proteções que este botão exige.
  *
  * ## O duplo clique
  *
- * E o jeito mais comum de gerar pedido duplicado, e nao por descuido: o
- * botao fica no fim de um formulario longo, a rede do celular demora, nada
+ * E o jeito mais comum de gerar pedido duplicado, e não por descuido: o
+ * botão fica no fim de um formulário longo, a rede do celular demora, nada
  * acontece na tela por um segundo e a pessoa clica de novo. Dois pedidos
- * iguais chegam ao WhatsApp da dona, e alguem precisa descobrir qual
+ * iguais chegam ao WhatsApp da dona, e alguém precisa descobrir qual
  * cancelar.
  *
- * A trava tem duas camadas, e as duas sao necessarias:
+ * A trava tem duas camadas, e as duas são necessarias:
  *
- * 1. `isSubmitting` desabilita o botao. Resolve o caso visivel e avisa o
+ * 1. `isSubmitting` desabilita o botão. Resolve o caso visível e avisa o
  *    cliente do que esta acontecendo.
  * 2. O `useRef` recusa a segunda chamada **no mesmo instante**. Dois cliques
- *    rapidos sao dois eventos separados, e o segundo pode chegar antes de o
- *    React ter redesenhado o botao com o estado novo — a bandeira em `ref`
+ *    rapidos são dois eventos separados, e o segundo pode chegar antes de o
+ *    React ter redesenhado o botão com o estado novo — a bandeira em `ref`
  *    muda no mesmo quadro, sem esperar render nenhum, e e ela que fecha essa
  *    janela.
  *
@@ -41,25 +41,25 @@ import { reserveWhatsappTab, type WhatsappHandoff } from './whatsapp-handoff';
  *
  * ## O 409
  *
- * O servidor refaz a cotacao inteira antes de gravar e compara com o total
- * que estava na tela. Divergiu, ele recusa e devolve a cotacao nova. Isso
- * nao e erro — e o sistema funcionando: o preco mudou, o desconto venceu ou
- * a ultima unidade acabou entre montar a sacola e apertar o botao.
+ * O servidor refaz a cotação inteira antes de gravar e compara com o total
+ * que estava na tela. Divergiu, ele recusa e devolve a cotação nova. Isso
+ * não e erro — e o sistema funcionando: o preço mudou, o desconto venceu ou
+ * a última unidade acabou entre montar a sacola e apertar o botão.
  *
- * O conflito nao vira mensagem vermelha e nao reenvia nada sozinho. Ele
+ * O conflito não vira mensagem vermelha e não reenvia nada sozinho. Ele
  * fica guardado aqui, a tela abre o modal comparando o valor antigo com o
- * novo, e nada acontece ate alguem decidir. Reenviar automaticamente com o
- * valor recalculado seria cobrar um preco que o cliente nao viu — que e
- * exatamente o que a conferencia do servidor existe para impedir.
+ * novo, e nada acontece até alguém decidir. Reenviar automaticamente com o
+ * valor recalculado seria cobrar um preço que o cliente não viu — que e
+ * exatamente o que a conferência do servidor existe para impedir.
  *
  * ## A aba do WhatsApp
  *
- * A reserva da aba mora aqui, e nao na tela, por um motivo so: sao tres os
- * caminhos que criam um pedido — o envio, a confirmacao do `409` e a
- * repeticao depois de uma falha —, e os tres saem de um clique. Se a reserva
- * ficasse na pagina, cada um deles precisaria lembrar de fazer a mesma
+ * A reserva da aba mora aqui, e não na tela, por um motivo só: são três os
+ * caminhos que criam um pedido — o envio, a confirmação do `409` e a
+ * repetição depois de uma falha —, e os três saem de um clique. Se a reserva
+ * ficasse na página, cada um deles precisaria lembrar de fazer a mesma
  * chamada, na mesma ordem, antes do mesmo `await`; o dia em que um esquecer,
- * o pedido e criado e a conversa nao abre — e so no iPhone de alguem.
+ * o pedido e criado e a conversa não abre — e só no iPhone de alguém.
  *
  * Todos passam por `send`, e `send` reserva. Ver `whatsapp-handoff`.
  */
@@ -68,26 +68,26 @@ export interface CreateOrderView {
   /** Envia. A segunda chamada durante um envio e ignorada. */
   submit: (input: CreateOrderInput) => void;
   isSubmitting: boolean;
-  /** O `409` aberto, esperando decisao. `null` quando nao ha. */
+  /** O `409` aberto, esperando decisão. `null` quando não há. */
   conflict: QuoteConflict | null;
   /** Segue com o valor novo: reenvia o mesmo pedido com o total recalculado. */
   acceptConflict: () => void;
   /** Fecha o modal sem enviar nada. O pedido continua por fazer. */
   dismissConflict: () => void;
-  /** O que deu errado, quando nao foi conflito de cotacao. */
+  /** O que deu errado, quando não foi conflito de cotação. */
   failure: OrderFailure | null;
   /**
    * Manda de novo o mesmo pedido, sem mudar nada.
    *
-   * E a saida das falhas que nao sao do conteudo do pedido — queda de rede,
-   * servidor fora do ar. Reaproveita o corpo que ja foi montado em vez de
+   * E a saída das falhas que não são do conteúdo do pedido — queda de rede,
+   * servidor fora do ar. Reaproveita o corpo que já foi montado em vez de
    * mandar o cliente refazer as quatro etapas.
    */
   retry: () => void;
 }
 
 export interface UseCreateOrderOptions {
-  /** O pedido existe. E aqui que a sacola e esvaziada, e so aqui. */
+  /** O pedido existe. E aqui que a sacola e esvaziada, e só aqui. */
   onSuccess: (order: CreatedOrder) => void;
 }
 
@@ -98,17 +98,17 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
   /**
    * A bandeira do duplo clique.
    *
-   * Em `ref`, e nao em estado: ela precisa valer no mesmo quadro do clique,
-   * antes de qualquer render. Um `useState` aqui so mudaria o valor lido na
-   * renderizacao seguinte — e a segunda chamada de um duplo clique acontece
+   * Em `ref`, e não em estado: ela precisa valer no mesmo quadro do clique,
+   * antes de qualquer render. Um `useState` aqui só mudaria o valor lido na
+   * renderização seguinte — e a segunda chamada de um duplo clique acontece
    * antes dela.
    */
   const inFlight = useRef(false);
 
   /**
-   * O ultimo corpo enviado, para o reenvio do conflito.
+   * O último corpo enviado, para o reenvio do conflito.
    *
-   * Guardado aqui e nao no estado do conflito porque e a mesma coisa que foi
+   * Guardado aqui e não no estado do conflito porque e a mesma coisa que foi
    * mandada, byte a byte: o reenvio troca `expectedTotalCents` e, quando e o
    * caso, o parcelamento — e nada mais. Remontar o corpo a partir da tela
    * abriria a chance de ele sair diferente do que produziu o total que o
@@ -119,7 +119,7 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
   /**
    * A aba reservada no clique, esperando a resposta.
    *
-   * Em `ref` pela mesma razao da bandeira acima: ela e aberta durante o
+   * Em `ref` pela mesma razão da bandeira acima: ela e aberta durante o
    * evento e usada quando a promessa resolve, sem nenhum render no meio.
    */
   const handoff = useRef<WhatsappHandoff | null>(null);
@@ -131,9 +131,9 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
       setConflict(null);
       setFailure(null);
 
-      // A conversa primeiro. A tela de confirmacao que `onSuccess` abre e a
-      // rede de seguranca de quem teve a aba bloqueada — e ela precisa
-      // aparecer com a passagem ja tentada, e nao antes dela.
+      // A conversa primeiro. A tela de confirmação que `onSuccess` abre e a
+      // rede de segurança de quem teve a aba bloqueada — e ela precisa
+      // aparecer com a passagem já tentada, e não antes dela.
       handoff.current?.send(order.whatsappUrl);
       handoff.current = null;
 
@@ -141,8 +141,8 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
     },
 
     onError: (reason) => {
-      // Nada foi criado: a aba reservada nao tem para onde ir. Fechada aqui,
-      // e nao deixada em branco atras da tela de erro.
+      // Nada foi criado: a aba reservada não tem para onde ir. Fechada aqui,
+      // e não deixada em branco atrás da tela de erro.
       handoff.current?.release();
       handoff.current = null;
 
@@ -154,7 +154,7 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
         return;
       }
 
-      // Conflito nao e erro na tela: e uma decisao esperando o cliente.
+      // Conflito não e erro na tela: e uma decisão esperando o cliente.
       setFailure(null);
       setConflict(mismatch);
     },
@@ -174,7 +174,7 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
       lastInput.current = input;
       setFailure(null);
 
-      // Antes do `mutate`, e nao depois: a reserva so e permitida enquanto o
+      // Antes do `mutate`, e não depois: a reserva só e permitida enquanto o
       // clique que a pediu ainda esta sendo tratado.
       handoff.current = reserveWhatsappTab();
 
@@ -201,7 +201,7 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
   /**
    * De novo, igual.
    *
-   * O mesmo corpo, sem remontar nada: o pedido que falhou por rede nao tem
+   * O mesmo corpo, sem remontar nada: o pedido que falhou por rede não tem
    * defeito nenhum, e recalcular a partir da tela abriria a chance de ele
    * sair diferente — inclusive com outro total, que o servidor recusaria.
    */
@@ -227,13 +227,13 @@ export function useCreateOrder({ onSuccess }: UseCreateOrderOptions): CreateOrde
 /**
  * O mesmo pedido, agora com o valor que o servidor calculou.
  *
- * Duas trocas, e so duas. O total passa a ser o da cotacao nova — e o que o
+ * Duas trocas, e só duas. O total passa a ser o da cotação nova — e o que o
  * cliente acabou de ver no modal e confirmar. O parcelamento acompanha
- * quando o conflito foi sobre ele: o servidor ja diz, em `quote.payment`,
+ * quando o conflito foi sobre ele: o servidor já diz, em `quote.payment`,
  * em quantas vezes esse total cabe, e mandar de novo as 10x que ele acabou
- * de recusar so produziria o mesmo `409`.
+ * de recusar só produziria o mesmo `409`.
  *
- * No PIX o parcelamento nao e tocado: ele nao existe ali.
+ * No PIX o parcelamento não e tocado: ele não existe ali.
  */
 function withRecalculatedTotal(
   input: CreateOrderInput,

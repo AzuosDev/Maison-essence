@@ -5,38 +5,38 @@ import { ButtonLink } from '@/components/ui';
 import styles from './account-invite.module.css';
 
 export interface AccountInviteProps {
-  /** O que esta atras desta porta, dito como promessa e nao como bloqueio. */
+  /** O que esta atrás desta porta, dito como promessa e não como bloqueio. */
   title: string;
   description: string;
 }
 
 /**
- * O convite. **Nao** e uma parede de login.
+ * O convite. **Não** e uma parede de login.
  *
- * ## A diferenca, e por que ela decide o desenho
+ * ## A diferença, e por que ela decide o desenho
  *
- * Uma parede diz "voce precisa entrar" e nao deixa sair. Este componente diz
- * o contrario, em ordem: aqui e o que voce ganha, estas sao as duas portas,
- * e — a linha que nenhuma parede tem — **voce nao precisa de nada disso para
+ * Uma parede diz "você precisa entrar" e não deixa sair. Este componente diz
+ * o contrário, em ordem: aqui e o que você ganha, estas são as duas portas,
+ * e — a linha que nenhuma parede tem — **você não precisa de nada disso para
  * comprar**, com o caminho de volta a loja logo ao lado.
  *
- * Por isso a area da conta nao redireciona ninguem. Quem digita
- * `/conta/pedidos` sem sessao continua em `/conta/pedidos`, lendo isto. Um
- * `<Navigate to="/conta/entrar">` seria a parede: trocaria o endereco que a
- * pessoa escolheu por um formulario que ela nao pediu, e o botao "voltar" do
+ * Por isso a área da conta não redireciona ninguém. Quem digita
+ * `/conta/pedidos` sem sessão continua em `/conta/pedidos`, lendo isto. Um
+ * `<Navigate to="/conta/entrar">` seria a parede: trocaria o endereço que a
+ * pessoa escolheu por um formulário que ela não pediu, e o botão "voltar" do
  * navegador a jogaria de novo no mesmo lugar.
  *
- * ## O que os botoes levam junto
+ * ## O que os botões levam junto
  *
- * O endereco atual, em `state.from`. Quem entra a partir daqui volta para a
- * tela que queria — nao para uma pagina inicial de conta que nao responde a
+ * O endereço atual, em `state.from`. Quem entra a partir daqui volta para a
+ * tela que queria — não para uma página inicial de conta que não responde a
  * pergunta que o trouxe.
  *
- * ## A razao que convence de verdade
+ * ## A razão que convence de verdade
  *
- * Nao e "acompanhe seus pedidos": e que **os pedidos feitos sem conta entram
+ * Não e "acompanhe seus pedidos": e que **os pedidos feitos sem conta entram
  * na lista** quando a conta e criada com o mesmo telefone. Quem esta lendo
- * isto provavelmente ja comprou aqui como convidado, e essa frase e a unica
+ * isto provavelmente já comprou aqui como convidado, e essa frase e a única
  * que transforma um cadastro em algo que devolve alguma coisa na hora.
  */
 export function AccountInvite({ title, description }: AccountInviteProps) {

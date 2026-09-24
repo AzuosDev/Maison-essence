@@ -16,13 +16,13 @@ export class SanitizeResponseInterceptor implements NestInterceptor {
 }
 
 /**
- * `path` guarda os objetos do caminho da raiz ate aqui, e nao tudo que ja foi
+ * `path` guarda os objetos do caminho da raiz até aqui, e não tudo que já foi
  * visitado.
  *
- * A diferenca aparece quando a mesma referencia e usada duas vezes em lugares
+ * A diferença aparece quando a mesma referência e usada duas vezes em lugares
  * diferentes da resposta — a regra de desconto que o produto anuncia no card e
- * repete na escada, por exemplo. Isso nao e ciclo: e o mesmo objeto em dois
- * ramos, e cortar o segundo apagaria um pedaco legitimo da resposta.
+ * repete na escada, por exemplo. Isso não e ciclo: e o mesmo objeto em dois
+ * ramos, e cortar o segundo apagaria um pedaço legitimo da resposta.
  */
 function sanitize(value: unknown, path: WeakSet<object>): unknown {
   if (value === null || typeof value !== 'object') {
@@ -47,7 +47,7 @@ function sanitize(value: unknown, path: WeakSet<object>): unknown {
     return sanitizeObject(value, path);
   } finally {
     // Sai do caminho ao voltar: daqui para a frente, encontrar este objeto de
-    // novo e reaproveitamento, nao ciclo.
+    // novo e reaproveitamento, não ciclo.
     path.delete(value);
   }
 }

@@ -5,34 +5,34 @@ import styles from './category-picker.module.css';
 /**
  * Onde o produto aparece na loja.
  *
- * ## Por que caixas de marcar, e nao um `<select multiple>`
+ * ## Por que caixas de marcar, e não um `<select multiple>`
  *
  * O `<select multiple>` nativo exige Ctrl+clique para escolher o segundo
  * item e desmarca tudo com um clique distraido — em celular ele vira uma
- * lista de rolagem minuscula. Um produto entra em uma ou duas categorias, e
- * o que se quer e **ver** quais estao marcadas sem abrir nada.
+ * lista de rolagem minúscula. Um produto entra em uma ou duas categorias, e
+ * o que se quer e **ver** quais estão marcadas sem abrir nada.
  *
- * ## O pai nao marca os filhos
+ * ## O pai não marca os filhos
  *
- * Marcar "Masculino" nao marca "Amadeirado" embaixo dele, e e de proposito:
- * no dominio, categoria pai e uma categoria como as outras, e um produto
- * pode estar so nela. A contagem da vitrine ja soma os filhos no pai, entao
- * marcar os dois nao acrescenta alcance nenhum — so duplica o produto nas
+ * Marcar "Masculino" não marca "Amadeirado" embaixo dele, e e de propósito:
+ * no domínio, categoria pai e uma categoria como as outras, e um produto
+ * pode estar só nela. A contagem da vitrine já soma os filhos no pai, então
+ * marcar os dois não acrescenta alcance nenhum — só duplica o produto nas
  * contas.
  *
- * O que a tela faz e mostrar a relacao: o filho entra recuado, debaixo do
+ * O que a tela faz e mostrar a relação: o filho entra recuado, debaixo do
  * pai, com um filete ligando os dois.
  *
  * ## A categoria desativada continua aparecendo
  *
- * Marcada em cinza, com a palavra escrita. Esconde-la faria o produto perder
- * silenciosamente uma categoria que ele ja tem ao ser salvo — a tela manda o
- * array inteiro, e o que nao esta na tela nao esta no array.
+ * Marcada em cinza, com a palavra escrita. Esconde-lá faria o produto perder
+ * silenciosamente uma categoria que ele já tem ao ser salvo — a tela manda o
+ * array inteiro, e o que não esta na tela não esta no array.
  */
 
 export interface CategoryPickerProps {
   tree: readonly AdminCategoryNode[];
-  /** Os ids escolhidos. A ordem nao importa para a API. */
+  /** Os ids escolhidos. A ordem não importa para a API. */
   selected: readonly string[];
   onChange: (ids: string[]) => void;
   disabled?: boolean;

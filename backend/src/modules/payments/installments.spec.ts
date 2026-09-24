@@ -1,7 +1,7 @@
 import { buildInstallmentOptions, priceTotal } from './installments.js';
 import type { InstallmentOption, InstallmentRules } from './installments.js';
 
-/** As regras padrao da loja: 12x, tres sem juros, 1,99% ao mes, minimo R$ 20. */
+/** As regras padrão da loja: 12x, três sem juros, 1,99% ao mês, mínimo R$ 20. */
 const RULES: InstallmentRules = {
   maxInstallments: 12,
   interestFreeUpTo: 3,
@@ -35,7 +35,7 @@ describe('buildInstallmentOptions', () => {
     const semJuros = options.filter((option) => !option.hasInterest);
 
     expect(numbersOf(semJuros)).toEqual([1, 2, 3]);
-    // Sem juros, o que o cliente paga no fim e o preco do produto.
+    // Sem juros, o que o cliente paga no fim e o preço do produto.
     expect(semJuros.every((option) => option.totalCents === 100_000)).toBe(true);
   });
 
@@ -46,7 +46,7 @@ describe('buildInstallmentOptions', () => {
     expect(seis).toEqual({
       number: 6,
       installmentCents: 17_846,
-      // A primeira carrega os tres centavos que a divisao deixou.
+      // A primeira carrega os três centavos que a divisão deixou.
       firstInstallmentCents: 17_849,
       totalCents: 107_079,
       hasInterest: true,
@@ -56,15 +56,15 @@ describe('buildInstallmentOptions', () => {
   it('juros zerados não criam juros acima do limite', () => {
     const options = buildInstallmentOptions(100_000, rules({ monthlyInterestPercent: 0 }));
 
-    // Sem taxa, "acima do limite sem juros" nao quer dizer nada: a divisao
-    // continua simples e o total continua sendo o preco.
+    // Sem taxa, "acima do limite sem juros" não quer dizer nada: a divisão
+    // continua simples e o total continua sendo o preço.
     expect(options.every((option) => !option.hasInterest)).toBe(true);
     expect(options.every((option) => option.totalCents === 100_000)).toBe(true);
   });
 
   describe('parcela mínima', () => {
     /**
-     * Criterio de aceite: 12 parcelas no maximo, minimo de R$ 20, total de
+     * Critério de aceite: 12 parcelas no máximo, mínimo de R$ 20, total de
      * R$ 100. A sexta parcela cairia abaixo de R$ 20 e por isso nem aparece.
      */
     it('R$ 100 em até 12x com mínimo de R$ 20 devolve 5 opções', () => {
@@ -81,9 +81,9 @@ describe('buildInstallmentOptions', () => {
     });
 
     /**
-     * Em 1x nao ha parcela: ha o preco. Recusar um pedido de R$ 15 porque a
-     * parcela minima e R$ 20 seria recusar a venda — a regra existe para
-     * impedir "12x de R$ 1,25", nao compra pequena no cartao.
+     * Em 1x não há parcela: há o preço. Recusar um pedido de R$ 15 porque a
+     * parcela mínima e R$ 20 seria recusar a venda — a regra existe para
+     * impedir "12x de R$ 1,25", não compra pequena no cartão.
      */
     it('mantem o pagamento a vista mesmo abaixo do mínimo', () => {
       const options = buildInstallmentOptions(1500, rules());
@@ -97,7 +97,7 @@ describe('buildInstallmentOptions', () => {
     it('joga a diferença na primeira parcela', () => {
       const [, , tres] = buildInstallmentOptions(10_000, rules());
 
-      // R$ 100 em 3x da R$ 33,33, e tres vezes isso sao R$ 99,99. O centavo
+      // R$ 100 em 3x da R$ 33,33, e três vezes isso são R$ 99,99. O centavo
       // que falta esta na primeira.
       expect(tres.installmentCents).toBe(3333);
       expect(tres.firstInstallmentCents).toBe(3334);
@@ -105,13 +105,13 @@ describe('buildInstallmentOptions', () => {
     });
 
     /**
-     * A invariante que nao pode quebrar nunca, em 50 totais diferentes: a
-     * soma das parcelas e exatamente o total da opcao, sem centavo sobrando
+     * A invariante que não pode quebrar nunca, em 50 totais diferentes: a
+     * soma das parcelas e exatamente o total da opção, sem centavo sobrando
      * nem faltando.
      *
-     * Os valores sao pseudoaleatorios de semente fixa, e nao `Math.random`:
-     * uma falha aqui precisa ser reproduzivel na maquina de quem for
-     * conserta-la, e teste que so quebra as vezes acaba sendo ignorado.
+     * Os valores são pseudoaleatórios de semente fixa, e não `Math.random`:
+     * uma falha aqui precisa ser reproduzível na máquina de quem for
+     * conserta-lá, e teste que só quebra as vezes acaba sendo ignorado.
      */
     it('a soma das parcelas fecha com o total em 50 valores', () => {
       for (const total of pseudoRandomTotals(50)) {
@@ -125,8 +125,8 @@ describe('buildInstallmentOptions', () => {
             sum: option.totalCents,
           });
 
-          // Sem juros, o total da opcao e o proprio preco: o parcelamento
-          // sem juros nao pode custar um centavo a mais que o a vista.
+          // Sem juros, o total da opção e o próprio preço: o parcelamento
+          // sem juros não pode custar um centavo a mais que o a vista.
           if (!option.hasInterest) {
             expect(option.totalCents).toBe(total);
           }
@@ -139,7 +139,7 @@ describe('buildInstallmentOptions', () => {
         for (const option of buildInstallmentOptions(total, rules())) {
           const extra = option.firstInstallmentCents - option.installmentCents;
 
-          // No maximo um centavo por parcela restante, e nunca negativo: a
+          // No máximo um centavo por parcela restante, e nunca negativo: a
           // primeira parcela e sempre a maior, jamais a menor.
           expect(extra).toBeGreaterThanOrEqual(0);
           expect(extra).toBeLessThan(option.number);
@@ -167,8 +167,8 @@ describe('priceTotal', () => {
 /**
  * Totais entre R$ 1,00 e R$ 5.000,00, sempre os mesmos.
  *
- * Congruencia linear simples: nao precisa de qualidade estatistica, precisa
- * de espalhar os restos de divisao — e o resto e o unico lugar de onde o
+ * Congruência linear simples: não precisa de qualidade estatística, precisa
+ * de espalhar os restos de divisão — e o resto e o único lugar de onde o
  * centavo perdido poderia sair.
  */
 function pseudoRandomTotals(count: number): number[] {

@@ -10,13 +10,13 @@ import AdminHomePage from './admin-home-page';
 /**
  * A abertura do painel, com papel de verdade.
  *
- * O que estes casos cobram e o criterio de aceite: **o STAFF nao ve preco**.
- * Nao e uma classe de CSS a conferir — e a ausencia do card de faturamento,
- * a ausencia da coluna de total e a ausencia dos itens de menu que levariam
- * ao catalogo.
+ * O que estes casos cobram e o critério de aceite: **o STAFF não vê preço**.
+ * Não e uma classe de CSS a conferir — e a ausência do card de faturamento,
+ * a ausência da coluna de total e a ausência dos itens de menu que levariam
+ * ao catálogo.
  *
- * A sessao e escrita direto no store, e nao por um login simulado: o que
- * esta em teste e o recorte por papel, e nao a tela de entrada.
+ * A sessão e escrita direto no store, e não por um login simulado: o que
+ * esta em teste e o recorte por papel, e não a tela de entrada.
  */
 
 const ORDERS = {
@@ -93,8 +93,8 @@ function jsonResponse(body: unknown): Response {
 }
 
 beforeEach(() => {
-  // O jsdom nao tem `matchMedia`, e sem ele o painel se desenha como celular:
-  // a coluna vira gaveta fechada, e o menu nao existe no documento. Como o
+  // O jsdom não tem `matchMedia`, e sem ele o painel se desenha como celular:
+  // a coluna vira gaveta fechada, e o menu não existe no documento. Como o
   // que esta em teste e o recorte por papel — e ele aparece no menu —, a
   // tela e montada na largura de desktop.
   vi.stubGlobal('matchMedia', (query: string) => ({
@@ -201,8 +201,8 @@ test('a dona vê o menu inteiro, o faturamento e o total do pedido', async () =>
   expect(within(menu).getByRole('link', { name: 'Produtos' })).toBeDefined();
   expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
 
-  // Configuracoes nao: a moldura da loja se acerta uma vez, com quem mantem
-  // o sistema, e nao no dia a dia de quem vende.
+  // Configurações não: a moldura da loja se acerta uma vez, com quem mantem
+  // o sistema, e não no dia a dia de quem vende.
   expect(within(menu).queryByRole('link', { name: 'Configurações' })).toBeNull();
 
   // O total do pedido na lista.
@@ -214,7 +214,7 @@ test('o STAFF não vê preço em lugar nenhum da abertura', async () => {
 
   abrirPainel();
 
-  // A lista carrega: e depois dela que a ausencia do valor significa algo.
+  // A lista carrega: e depois dela que a ausência do valor significa algo.
   expect(await screen.findByText('ME-260922-K4P1')).toBeDefined();
 
   expect(screen.queryByText(/Faturamento do mês/)).toBeNull();
@@ -235,12 +235,12 @@ test('o menu do STAFF tem duas áreas', () => {
 });
 
 /**
- * O tema, no pe da coluna, em um alvo so.
+ * O tema, no pé da coluna, em um alvo só.
  *
- * O caso e negativo de proposito: o que se cobra aqui e que a pilula de tres
- * segmentos **nao** voltou para a coluna de 15rem, onde ela passava da
+ * O caso e negativo de propósito: o que se cobra aqui e que a pílula de três
+ * segmentos **não** voltou para a coluna de 15rem, onde ela passava da
  * largura e punha uma barra de rolagem horizontal debaixo do menu. O que o
- * botao faz quando clicado esta coberto em `theme-toggle.spec.tsx`, onde ha
+ * botão faz quando clicado esta coberto em `theme-toggle.spec.tsx`, onde há
  * provedor de tema em volta.
  */
 test('o tema no painel e um botão, e não o grupo de três opções', () => {
@@ -258,9 +258,9 @@ test('o pedido esperando contato acende o card de alerta', async () => {
 
   abrirPainel();
 
-  // `findByText` e nao `findByRole`: o card aparece antes da resposta, com um
-  // tracinho no lugar do numero. O que esta em teste e o que ele diz **depois**
-  // de saber que ha um pedido parado.
+  // `findByText` e não `findByRole`: o card aparece antes da resposta, com um
+  // tracinho no lugar do número. O que esta em teste e o que ele diz **depois**
+  // de saber que há um pedido parado.
   expect(await screen.findByText(/Abra a conversa/)).toBeDefined();
 
   const card = screen.getByRole('link', { name: /Esperando contato/ });

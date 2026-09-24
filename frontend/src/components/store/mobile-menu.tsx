@@ -9,11 +9,11 @@ import styles from './mobile-menu.module.css';
 /**
  * O menu do celular.
  *
- * A gaveta vem do design system, entao o foco preso, o Escape e a devolucao
- * do foco ao hamburguer ja vem prontos. O que muda e o conteudo: busca em
- * cima, categorias em acordeao no meio, institucional embaixo.
+ * A gaveta vem do design system, então o foco preso, o Escape e a devolução
+ * do foco ao hamburguer já vem prontos. O que muda e o conteúdo: busca em
+ * cima, categorias em acordeão no meio, institucional embaixo.
  *
- * A arvore usa o `Accordion` — o mesmo componente da pagina de perguntas
+ * A árvore usa o `Accordion` — o mesmo componente da página de perguntas
  * frequentes — e por isso as setas do teclado navegam entre as categorias
  * sem nenhuma linha a mais aqui.
  */

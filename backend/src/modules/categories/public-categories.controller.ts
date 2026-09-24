@@ -5,17 +5,17 @@ import { Public } from '../../common/decorators/public.decorator.js';
 import { CategoriesService } from './categories.service.js';
 import type { PublicCategoryView, WithChildren } from './category.view.js';
 
-/** O que o cliente recebe quando pede um endereco que mudou de nome. */
+/** O que o cliente recebe quando pede um endereço que mudou de nome. */
 export interface MovedCategory {
-  /** O endereco atual, para o cliente que trata o 301 na mao. */
+  /** O endereço atual, para o cliente que trata o 301 na mão. */
   slug: string;
   location: string;
 }
 
 /**
- * Categorias para a vitrine. Sem autenticacao: e o menu da loja aberta.
+ * Categorias para a vitrine. Sem autenticação: e o menu da loja aberta.
  *
- * Mesmo cache do catalogo: o menu e o que abre em toda visita, e nenhuma
+ * Mesmo cache do catálogo: o menu e o que abre em toda visita, e nenhuma
  * dessas respostas muda entre um cliente e outro.
  */
 @Public()
@@ -24,20 +24,20 @@ export interface MovedCategory {
 export class PublicCategoriesController {
   constructor(private readonly categories: CategoriesService) {}
 
-  /** A arvore inteira do menu, so com o que esta ativo. */
+  /** A árvore inteira do menu, só com o que esta ativo. */
   @Get()
   tree(): Promise<WithChildren<PublicCategoryView>[]> {
     return this.categories.publicTree();
   }
 
   /**
-   * Uma categoria pelo endereco, com as subcategorias dela.
+   * Uma categoria pelo endereço, com as subcategorias dela.
    *
-   * Endereco antigo responde 301 com `Location` para o atual, em vez de 404:
-   * o link da categoria ja circulou no WhatsApp antes da dona renomea-la, e
+   * Endereço antigo responde 301 com `Location` para o atual, em vez de 404:
+   * o link da categoria já circulou no WhatsApp antes da dona renomea-lá, e
    * quem clicar semanas depois precisa cair na categoria certa. Quem segue
    * redirecionamento — navegador, WhatsApp, buscador — chega sozinho; quem
-   * nao segue acha o endereco novo no corpo da resposta.
+   * não segue acha o endereço novo no corpo da resposta.
    */
   @Get(':slug')
   async bySlug(
@@ -61,9 +61,9 @@ export class PublicCategoriesController {
 }
 
 /**
- * Troca o ultimo trecho do caminho pelo slug novo.
+ * Troca o último trecho do caminho pelo slug novo.
  *
- * Montar a partir da URL recebida, e nao de uma constante, e o que mantem o
+ * Montar a partir da URL recebida, e não de uma constante, e o que mantem o
  * `Location` correto se o prefixo global mudar ou a API for servida sob outro
  * caminho. `originalUrl` preserva esse prefixo, que o Express tira de `url`.
  */

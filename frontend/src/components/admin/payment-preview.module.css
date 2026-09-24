@@ -1,13 +1,13 @@
 /*
- * A previa do pagamento.
+ * A prévia do pagamento.
  *
- * E a unica parte do painel que imita a loja: fundo creme, numeros grandes,
+ * E a única parte do painel que imita a loja: fundo creme, números grandes,
  * a lista de parcelas escrita como o checkout a escreve. A semelhanca e o
- * ponto — a dona esta olhando para o lado de la, e a previa precisa parecer
- * o lado de la, e nao mais um cartao do painel.
+ * ponto — a dona esta olhando para o lado de lá, e a prévia precisa parecer
+ * o lado de lá, e não mais um cartão do painel.
  *
- * No desktop ela fica presa ao lado do formulario, porque a leitura e sempre
- * de ida e volta: mexe no numero, olha a lista, mexe de novo. Rolar entre um
+ * No desktop ela fica presa ao lado do formulário, porque a leitura e sempre
+ * de ida e volta: mexe no número, olha a lista, mexe de novo. Rolar entre um
  * e outro quebraria justamente esse movimento.
  */
 
@@ -58,7 +58,7 @@
   color: var(--ink-soft);
 }
 
-/* A forma desligada, ou o valor que ainda nao e numero. */
+/* A forma desligada, ou o valor que ainda não e número. */
 .off {
   margin: 0;
 
@@ -88,7 +88,7 @@
  * O desconto, na cor de quem ganha.
  *
  * `--success` sobre o creme passa de 4.5:1 em 14px, e a frase diz o mesmo que
- * a cor: a informacao nao depende dela.
+ * a cor: a informação não depende dela.
  */
 .saving {
   margin: 0;
@@ -102,11 +102,11 @@
 /* ---- As parcelas ------------------------------------------------------------ */
 
 /*
- * O titulo do grupo.
+ * O título do grupo.
  *
- * "Sem juros" e "Com juros" separam a lista em duas, e e a separacao que
- * responde a pergunta da tela: onde o total comeca a subir. Com um rotulo por
- * linha, a mesma informacao viraria vinte e quatro repeticoes.
+ * "Sem juros" e "Com juros" separam a lista em duas, e e a separação que
+ * responde a pergunta da tela: onde o total começa a subir. Com um rótulo por
+ * linha, a mesma informação viraria vinte e quatro repetições.
  */
 .groupTitle {
   display: flex;
@@ -137,7 +137,7 @@
 }
 
 /*
- * Uma opcao por linha: quantidade, valor da parcela e, quando ha juros, o
+ * Uma opção por linha: quantidade, valor da parcela e, quando há juros, o
  * total.
  *
  * `tabular-nums` e o que faz a coluna do meio se comparar de cima a baixo.
@@ -179,8 +179,8 @@
 /*
  * A nota do corte.
  *
- * A parcela minima apaga opcoes sem dizer nada — a lista simplesmente acaba
- * antes. Esta linha e a unica pista de que o numero do campo ao lado foi o
+ * A parcela mínima apaga opções sem dizer nada — a lista simplesmente acaba
+ * antes. Esta linha e a única pista de que o número do campo ao lado foi o
  * que a encurtou.
  */
 .note {
@@ -194,11 +194,11 @@
 }
 
 /*
- * Presa ao lado do formulario a partir da largura em que os dois cabem.
+ * Presa ao lado do formulário a partir da largura em que os dois cabem.
  *
- * `max-height` com rolagem propria porque vinte e quatro parcelas passam da
+ * `max-height` com rolagem própria porque vinte e quatro parcelas passam da
  * altura da tela: sem isso o fim da lista ficaria fora de alcance justamente
- * onde a parcela minima corta.
+ * onde a parcela mínima corta.
  */
 @media (min-width: 64rem) {
   .panel {

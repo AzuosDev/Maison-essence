@@ -16,7 +16,7 @@ describe('imageUrl', () => {
 
   /**
    * `f_auto` e o que entrega webp para quem suporta e jpg para o resto,
-   * decidindo pelo cabecalho `Accept` do navegador. Sem ele, a loja serviria
+   * decidindo pelo cabeçalho `Accept` do navegador. Sem ele, a loja serviria
    * o formato original para todo mundo.
    */
   it('deixa o formato a cargo do navegador, via f_auto', () => {

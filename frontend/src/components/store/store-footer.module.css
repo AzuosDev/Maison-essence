@@ -1,24 +1,24 @@
 /*
- * O rodape da loja.
+ * O rodapé da loja.
  *
  * Preto, com quatro colunas. A ordem no markup e a ordem em que fazem
  * sentido lidas de cima para baixo — institucional, categorias, contato,
- * redes —, entao o empilhamento do celular nao precisa de reordenacao
+ * redes —, então o empilhamento do celular não precisa de reordenação
  * nenhuma.
  *
- * Abaixo de 40rem as quatro nao empilham: viram acordeao. Quatro listas
- * abertas uma sob a outra somavam mais de 800px de rodape, e quem chega ao
+ * Abaixo de 40rem as quatro não empilham: viram acordeão. Quatro listas
+ * abertas uma sob a outra somavam mais de 800px de rodapé, e quem chega ao
  * fim da vitrine no celular tinha de rolar um segundo documento inteiro para
  * achar o CNPJ. Fechadas, as quatro cabem em 176px e continuam sendo um
- * indice: o cliente ve os quatro assuntos e abre o que quer.
+ * índice: o cliente vê os quatro assuntos e abre o que quer.
  */
 
 /*
- * O respiro antes do rodape e menor do que era.
+ * O respiro antes do rodapé e menor do que era.
  *
- * Com 96px, e a ultima prateleira em areia logo acima, sobrava uma faixa de
+ * Com 96px, e a última prateleira em areia logo acima, sobrava uma faixa de
  * creme entre as duas que se lia como buraco: nem parte da vitrine, nem parte
- * do rodape. O preto ja separa o suficiente por conta propria.
+ * do rodapé. O preto já separa o suficiente por conta própria.
  */
 .footer {
   margin-top: var(--space-48);
@@ -26,16 +26,16 @@
   color: var(--slab-ink);
 
   /*
-   * O filete que so aparece no tema escuro.
+   * O filete que só aparece no tema escuro.
    *
    * No claro a laje preta contra o creme da 18:1 e se separa sozinha — o
-   * comentario acima vale inteiro. No escuro nao ha esse luxo: a laje
-   * (#16130e) contra o fundo (#0b0b0b) da 1,06:1, e o rodape simplesmente
-   * deixa de ser um bloco. Nao ha como ir mais escuro que a pagina, entao
+   * comentário acima vale inteiro. No escuro não há esse luxo: a laje
+   * (#16130e) contra o fundo (#0b0b0b) da 1,06:1, e o rodapé simplesmente
+   * deixa de ser um bloco. Não há como ir mais escuro que a página, então
    * quem marca a emenda e a linha.
    *
    * `--line` faz o trabalho nos dois sem nenhuma condicional: no claro ele e
-   * #e3dacd contra o creme logo acima, quase invisivel, que e o que se quer
+   * #e3dacd contra o creme logo acima, quase invisível, que e o que se quer
    * ali; no escuro e #2e2a24 contra o quase preto, um fio discreto mas
    * presente.
    */
@@ -71,11 +71,11 @@
 /* ---- Colunas ----------------------------------------------------------- */
 
 /*
- * No celular nao ha vao nem recuo entre as colunas: uma fileira de acordeao
- * se le como fileira porque as linhas se encostam. O espaco de 32px que
- * separava blocos empilhados aqui separaria o titulo do filete que e dele, e
+ * No celular não há vão nem recuo entre as colunas: uma fileira de acordeão
+ * se lê como fileira porque as linhas se encostam. O espaço de 32px que
+ * separava blocos empilhados aqui separaria o título do filete que e dele, e
  * o recuo vertical abriria uma faixa vazia entre o filete dos selos de
- * confianca e o da primeira fileira — duas reguas a 24px uma da outra, sem
+ * confiança e o da primeira fileira — duas reguas a 24px uma da outra, sem
  * nada no meio.
  */
 .columns {
@@ -100,10 +100,10 @@
 }
 
 /*
- * Os filetes da fileira sao os das proprias linhas, e so os que faltam.
+ * Os filetes da fileira são os das próprias linhas, e só os que faltam.
  *
- * Em cima da primeira ja existe o que fecha os selos de confianca; embaixo da
- * ultima, o que abre a linha legal. Desenhar os dois de novo daria uma regua
+ * Em cima da primeira já existe o que fecha os selos de confiança; embaixo da
+ * última, o que abre a linha legal. Desenhar os dois de novo daria uma regua
  * dupla nas duas pontas.
  */
 .column {
@@ -121,12 +121,12 @@
   }
 }
 
-/* ---- O cabecalho da coluna --------------------------------------------- */
+/* ---- O cabeçalho da coluna --------------------------------------------- */
 
 /*
- * O titulo continua sendo um `<h2>` nos dois tamanhos de tela — e o que da a
+ * O título continua sendo um `<h2>` nos dois tamanhos de tela — e o que da a
  * quem navega por marcos a mesma lista de assuntos no celular e no desktop.
- * O que muda e o que vai dentro dele: um botao que abre, ou so o texto.
+ * O que muda e o que vai dentro dele: um botão que abre, ou só o texto.
  */
 .columnHeading {
   margin: 0;
@@ -155,7 +155,7 @@
   color: var(--slab-ink);
 }
 
-/* O unico movimento do rodape, e o que diz de que lado a lista vai sair. */
+/* O único movimento do rodapé, e o que diz de que lado a lista vai sair. */
 .chevron {
   flex-shrink: 0;
   color: var(--muted);
@@ -170,7 +170,7 @@
   padding-bottom: var(--space-16);
 }
 
-/* O titulo do desktop, sem botao em volta. */
+/* O título do desktop, sem botão em volta. */
 .columnTitle {
   margin-bottom: var(--space-16);
 
@@ -184,9 +184,9 @@
 /* ---- As listas --------------------------------------------------------- */
 
 /*
- * No celular cada link e uma fileira de 44px, e nao uma linha de texto de 20
- * com 8 de respiro: dentro de um acordeao de rodape o dedo mira no assunto,
- * nao na palavra. O `gap` sai junto — a altura da fileira ja e o espaco.
+ * No celular cada link e uma fileira de 44px, e não uma linha de texto de 20
+ * com 8 de respiro: dentro de um acordeão de rodapé o dedo mira no assunto,
+ * não na palavra. O `gap` sai junto — a altura da fileira já e o espaço.
  */
 .list {
   display: flex;
@@ -285,10 +285,10 @@
 /*
  * O controle de tema, na faixa legal.
  *
- * No celular ele vem **antes** dos dois textos, e nao depois: empilhados, o
- * ultimo item fica a um dedo da borda inferior da tela, onde moram a barra
+ * No celular ele vem **antes** dos dois textos, e não depois: empilhados, o
+ * último item fica a um dedo da borda inferior da tela, onde moram a barra
  * do navegador e o gesto de voltar. Um alvo de 36px ali e o alvo que se erra.
- * Como `order` so vale entre irmaos do mesmo flex, os dois paragrafos nao
+ * Como `order` só vale entre irmaos do mesmo flex, os dois parágrafos não
  * precisam de nada — basta este sair na frente.
  */
 .theme {
@@ -302,22 +302,22 @@
     align-items: center;
     justify-content: space-between;
 
-    /* Tres itens numa linha so: com `nowrap`, a razao social inteira mais o
-       aviso de direitos mais a pilula estouravam a largura entre 768 e 900px
-       e o ultimo saia cortado pela beirada. */
+    /* Três itens numa linha só: com `nowrap`, a razão social inteira mais o
+       aviso de direitos mais a pílula estouravam a largura entre 768 e 900px
+       e o último saia cortado pela beirada. */
     flex-wrap: wrap;
     gap: var(--space-16);
   }
 
   /* De volta ao fim da linha: o motivo de estar na frente era a borda de
-     baixo da tela do celular, que aqui nao existe. */
+     baixo da tela do celular, que aqui não existe. */
   .theme {
     order: 0;
     margin-bottom: 0;
   }
 }
 
-/* O anel de foco dourado claro sobre o preto do rodape. */
+/* O anel de foco dourado claro sobre o preto do rodapé. */
 .footer {
   --focus-color: var(--gold);
 }

@@ -13,20 +13,20 @@ import SearchPage from './search-page';
  * A listagem contra a API.
  *
  * O `fetch` e trocado por um duble que registra cada chamada, e e sobre esse
- * registro que os criterios de aceite sao verificados. Tres deles nao tem
+ * registro que os critérios de aceite são verificados. Três deles não tem
  * como ser checados de outro jeito:
  *
- * - **Aplicar tres filtros e recarregar mantem tudo.** "Recarregar" aqui e
+ * - **Aplicar três filtros e recarregar mantem tudo.** "Recarregar" aqui e
  *   montar a tela com a URL filtrada, que e literalmente o que o navegador
- *   faz — nao ha estado a restaurar.
- * - **Sem resultados, aparece o estado vazio e nao um grid em branco.**
- * - **A pagina carregada e preservada.** O "carregar mais" empilha, e as
- *   paginas anteriores continuam em tela.
+ *   faz — não há estado a restaurar.
+ * - **Sem resultados, aparece o estado vazio e não um grid em branco.**
+ * - **A página carregada e preservada.** O "carregar mais" empilha, e as
+ *   páginas anteriores continuam em tela.
  */
 
 /** Cada `fetch` que a tela fez, na ordem. */
 let chamadas: string[];
-/** Quantos produtos cada pagina responde. Um caso pode zerar. */
+/** Quantos produtos cada página responde. Um caso pode zerar. */
 let paginas: Record<number, string[]>;
 let totalItems: number;
 
@@ -95,7 +95,7 @@ beforeEach(() => {
       const query = new URLSearchParams(url.split('?')[1] ?? '');
 
       // As rotas de nome fixo vem antes da listagem: `/products/best-sellers`
-      // tambem contem `/products`.
+      // também contem `/products`.
       if (url.includes('/products/best-sellers')) {
         return Promise.resolve(jsonResponse([]));
       }
@@ -133,7 +133,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-/** O endereco atual, para verificar o que a tela escreveu na URL. */
+/** O endereço atual, para verificar o que a tela escreveu na URL. */
 function Endereco() {
   const { search } = useLocation();
 
@@ -160,7 +160,7 @@ function abrir(rota: string) {
   );
 }
 
-/** A chamada de listagem — nao a das facetas, que pede `limit=48`. */
+/** A chamada de listagem — não a das facetas, que pede `limit=48`. */
 function listagens(): URLSearchParams[] {
   return chamadas
     .filter((url) => url.includes('/products?') && url.includes('limit=24'))
@@ -170,7 +170,7 @@ function listagens(): URLSearchParams[] {
 /* ---- A URL e o estado --------------------------------------------------- */
 
 test('três filtros na URL chegam aplicados na consulta', async () => {
-  // E o criterio de "recarregar a pagina mantem tudo": montar com esta URL e
+  // E o critério de "recarregar a página mantem tudo": montar com esta URL e
   // exatamente o que o navegador faz numa recarga.
   abrir('/produtos?marca=Lattafa&min=100&estoque=1');
 
@@ -184,7 +184,7 @@ test('três filtros na URL chegam aplicados na consulta', async () => {
 });
 
 test('nenhum parâmetro em português vaza para a API', () => {
-  // O backend valida com `forbidNonWhitelisted`: um `marca=` no fio nao
+  // O backend valida com `forbidNonWhitelisted`: um `marca=` no fio não
   // seria ignorado, seria um 400 e uma vitrine vazia.
   abrir('/produtos?marca=Lattafa&min=100&estoque=1&desconto=1&ordem=nome&pagina=2');
 
@@ -204,8 +204,8 @@ test('marcar um filtro escreve na URL', async () => {
   await user.click(await screen.findByRole('button', { name: /^Filtros/ }));
   await user.click(await screen.findByLabelText('Somente em estoque'));
 
-  // A URL e o unico estado: e ela que sera copiada para o WhatsApp e lida de
-  // volta na proxima abertura.
+  // A URL e o único estado: e ela que será copiada para o WhatsApp e lida de
+  // volta na próxima abertura.
   await waitFor(() => {
     expect(screen.getByTestId('url').textContent).toBe('?estoque=1');
   });
@@ -229,11 +229,11 @@ test('sem resultados, a tela mostra o vazio desenhado e não um grid em branco',
     await screen.findByRole('heading', { name: 'Nenhum produto com estes filtros' }),
   ).toBeDefined();
 
-  // E a saida oferecida, que e o que recupera a visita.
+  // E a saída oferecida, que e o que recupera a visita.
   expect(screen.getByRole('button', { name: 'Limpar filtros' })).toBeDefined();
 });
 
-test('limpar filtros devolve o catalogo cheio', async () => {
+test('limpar filtros devolve o catálogo cheio', async () => {
   const user = userEvent.setup();
 
   paginas = { 1: [] };
@@ -259,7 +259,7 @@ test('sem filtro nenhum, o vazio não oferece um botão que não faria nada', as
   expect(screen.queryByRole('button', { name: 'Limpar filtros' })).toBeNull();
 });
 
-/* ---- Paginacao ---------------------------------------------------------- */
+/* ---- Paginação ---------------------------------------------------------- */
 
 test('carregar mais empilha a página nova sem tirar a anterior', async () => {
   const user = userEvent.setup();
@@ -269,8 +269,8 @@ test('carregar mais empilha a página nova sem tirar a anterior', async () => {
   await screen.findByRole('heading', { name: 'Asad' });
   await user.click(screen.getByRole('button', { name: 'Carregar mais' }));
 
-  // O da pagina 2 aparece e os da 1 continuam: e a "pagina carregada" que o
-  // criterio de aceite manda preservar na volta do produto.
+  // O da página 2 aparece e os da 1 continuam: e a "página carregada" que o
+  // critério de aceite manda preservar na volta do produto.
   expect(await screen.findByRole('heading', { name: 'Fakhar' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Asad' })).toBeDefined();
   expect(screen.getByTestId('url').textContent).toBe('?pagina=2');
@@ -278,7 +278,7 @@ test('carregar mais empilha a página nova sem tirar a anterior', async () => {
 
 test('reabrir na página 2 traz as duas páginas empilhadas', async () => {
   // E o que acontece na volta do produto: a tela remonta com `?pagina=2` e
-  // precisa reconstruir a lista inteira, e nao so a segunda pagina.
+  // precisa reconstruir a lista inteira, e não só a segunda página.
   abrir('/produtos?pagina=2');
 
   expect(await screen.findByRole('heading', { name: 'Asad' })).toBeDefined();
@@ -308,10 +308,10 @@ test('a busca manda o termo para a API e o mostra no título', async () => {
 
 /* ---- Categoria ---------------------------------------------------------- */
 
-test('a categoria monta o fio de pao, as pilulas e o filtro da rota', async () => {
+test('a categoria monta o fio de pão, as pílulas e o filtro da rota', async () => {
   abrir('/categorias/amadeirados');
 
-  // O nome vem da arvore do menu, que ja esta em cache na loja de verdade.
+  // O nome vem da árvore do menu, que já esta em cache na loja de verdade.
   const pilulas = await screen.findByRole('navigation', { name: 'Subcategorias' });
 
   expect(within(pilulas).getByRole('link', { name: /Tudo em Masculino/ })).toBeDefined();
@@ -333,8 +333,8 @@ test('passar o mouse no card busca o produto antes do clique', async () => {
 
   abrir('/produtos');
 
-  // O link do nome, e nao o cabecalho em volta: `mouseenter` nao borbulha,
-  // e quem carrega a prebusca sao os dois links que levam ao produto.
+  // O link do nome, e não o cabeçalho em volta: `mouseenter` não borbulha,
+  // e quem carrega a prebusca são os dois links que levam ao produto.
   await user.hover(await screen.findByRole('link', { name: 'Asad' }));
 
   await waitFor(() => {
@@ -345,15 +345,15 @@ test('passar o mouse no card busca o produto antes do clique', async () => {
 /* ---- Desktop ------------------------------------------------------------ */
 
 /**
- * O desktop muda mais que a aparencia.
+ * O desktop muda mais que a aparência.
  *
- * La a barra de filtros e uma coluna sempre visivel — e nao uma gaveta — e a
- * paginacao e numerada: a pagina pedida e a unica em tela, em vez de empilhar
+ * La a barra de filtros e uma coluna sempre visível — e não uma gaveta — e a
+ * paginação e numerada: a página pedida e a única em tela, em vez de empilhar
  * as anteriores. Como isso decide quantas consultas a tela faz, precisa de
- * caso proprio; um `@media` na folha de estilo nao seria testavel assim.
+ * caso próprio; um `@media` na folha de estilo não seria testável assim.
  *
- * O jsdom nao implementa `matchMedia`, entao os casos acima rodam no caminho
- * do celular, que e o padrao do `useMediaQuery` quando a API nao existe.
+ * O jsdom não implementa `matchMedia`, então os casos acima rodam no caminho
+ * do celular, que e o padrão do `useMediaQuery` quando a API não existe.
  */
 function noDesktop(): void {
   vi.stubGlobal(
@@ -384,7 +384,7 @@ test('no desktop a paginação e numerada e troca a página em tela', async () =
   await screen.findByRole('heading', { name: 'Asad' });
   await user.click(screen.getByRole('button', { name: 'Página 2' }));
 
-  // A pagina 2 substitui a 1, em vez de empilhar como no celular.
+  // A página 2 substitui a 1, em vez de empilhar como no celular.
   expect(await screen.findByRole('heading', { name: 'Fakhar' })).toBeDefined();
 
   await waitFor(() => {

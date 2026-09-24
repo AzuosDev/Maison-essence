@@ -6,8 +6,8 @@ import styles from './checkbox.module.css';
 /**
  * A caixa de marcar: "lembrar de mim", "aceito", "selecionar todos".
  *
- * O rotulo e um `<label>` em volta de tudo, e nao um texto ao lado: o alvo
- * de toque passa a ser a linha inteira, o que no celular e a diferenca entre
+ * O rótulo e um `<label>` em volta de tudo, e não um texto ao lado: o alvo
+ * de toque passa a ser a linha inteira, o que no celular e a diferença entre
  * marcar de primeira e errar duas vezes.
  */
 export type CheckboxProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'className'> & {
@@ -15,9 +15,9 @@ export type CheckboxProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'cl
   hint?: string | undefined;
   error?: string | undefined;
   /**
-   * Nem marcado nem desmarcado: o "selecionar todos" quando so alguns estao.
+   * Nem marcado nem desmarcado: o "selecionar todos" quando só alguns estão.
    *
-   * E uma propriedade do elemento e nao um atributo — nao existe
+   * E uma propriedade do elemento e não um atributo — não existe
    * `indeterminate` no HTML —, por isso ela e aplicada por efeito.
    */
   indeterminate?: boolean;

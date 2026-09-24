@@ -1,8 +1,8 @@
 /*
  * O aviso de rota ausente.
  *
- * Nao usa o vermelho de erro: nao ha falha, ha uma ausencia conhecida. O
- * contorno pontilhado e o vocabulario de "lugar reservado" — o mesmo que um
+ * Não usa o vermelho de erro: não há falha, há uma ausência conhecida. O
+ * contorno pontilhado e o vocabulário de "lugar reservado" — o mesmo que um
  * slot vazio de layout usa —, e e isso que este aviso e.
  */
 

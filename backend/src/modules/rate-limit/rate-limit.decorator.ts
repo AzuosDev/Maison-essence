@@ -7,8 +7,8 @@ export interface RateLimitRule {
   /**
    * Nome da regra, que separa os contadores.
    *
-   * Sem ele, o mesmo IP gastaria no orcamento da cotacao as chamadas que fez
-   * na busca do catalogo — o limite precisa ser por rota, nao por visitante.
+   * Sem ele, o mesmo IP gastaria no orçamento da cotação as chamadas que fez
+   * na busca do catálogo — o limite precisa ser por rota, não por visitante.
    */
   scope: string;
   /** Chamadas permitidas dentro da janela. */
@@ -19,8 +19,8 @@ export interface RateLimitRule {
 /**
  * Liga o limite na rota ou no controller.
  *
- * Sem o decorator o guard deixa passar: rota que nao declarou regra nao tem
- * limite, e o contrario — inventar um teto padrao — quebraria rota
- * administrativa que ninguem pediu para limitar.
+ * Sem o decorator o guard deixa passar: rota que não declarou regra não tem
+ * limite, e o contrário — inventar um teto padrão — quebraria rota
+ * administrativa que ninguém pediu para limitar.
  */
 export const RateLimit = (rule: RateLimitRule) => SetMetadata(RATE_LIMIT_KEY, rule);

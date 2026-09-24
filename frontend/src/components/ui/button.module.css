@@ -1,8 +1,8 @@
 /*
- * O botao do design system.
+ * O botão do design system.
  *
  * Altura de 48px, caixa alta e `letter-spacing` de .08em vem da
- * especificacao e valem para todas as variantes: o que muda entre elas e o
+ * especificação e valem para todas as variantes: o que muda entre elas e o
  * preenchimento, nunca a forma.
  */
 
@@ -36,8 +36,8 @@
 }
 
 /*
- * Desabilitado e carregando tem a mesma aparencia de proposito: nos dois o
- * clique nao vale, e inventar um terceiro estado visual so faria o cliente
+ * Desabilitado e carregando tem a mesma aparência de propósito: nos dois o
+ * clique não vale, e inventar um terceiro estado visual só faria o cliente
  * decidir qual dos dois cinzas responde.
  */
 .button:disabled {
@@ -68,7 +68,7 @@
   color: var(--cream);
 }
 
-/* Acao terciaria — "cancelar", "voltar". Sem caixa, so o texto. */
+/* Ação terciaria — "cancelar", "voltar". Sem caixa, só o texto. */
 .ghost {
   min-height: var(--control-height-small);
   padding: 0 var(--space-12);
@@ -87,8 +87,8 @@
 /*
  * Destrutivo: excluir produto, cancelar pedido.
  *
- * Contornado, e nao preenchido de vermelho. O vermelho cheio puxa o olho
- * para a acao mais perigosa da tela e a transforma no caminho obvio; o
+ * Contornado, e não preenchido de vermelho. O vermelho cheio puxa o olho
+ * para a ação mais perigosa da tela e a transforma no caminho obvio; o
  * contorno deixa claro o que e sem convidar para o clique.
  */
 .danger {
@@ -111,16 +111,16 @@
   font-size: var(--text-12);
 }
 
-/* Ocupa a linha inteira: o botao do passo do checkout e o do formulario. */
+/* Ocupa a linha inteira: o botão do passo do checkout e o do formulário. */
 /*
- * O botao que ocupa a largura inteira do que o contem.
+ * O botão que ocupa a largura inteira do que o contem.
  *
- * E o unico que pode quebrar linha. O `nowrap` do botao comum existe para que
- * um rotulo curto nao se parta em duas linhas no meio de uma barra de acoes —
- * mas num botao de largura total ele se volta contra o layout: `nowrap` fixa
- * a largura minima do botao no comprimento do rotulo, e como item de flex tem
+ * E o único que pode quebrar linha. O `nowrap` do botão comum existe para que
+ * um rótulo curto não se parta em duas linhas no meio de uma barra de ações —
+ * mas num botão de largura total ele se volta contra o layout: `nowrap` fixa
+ * a largura mínima do botão no comprimento do rótulo, e como item de flex tem
  * `min-width: auto`, essa largura sobe pelo card inteiro e o alarga. Era o que
- * acontecia na vitrine: o card de "Escolher opcoes" saia 43px mais largo que
+ * acontecia na vitrine: o card de "Escolher opções" saia 43px mais largo que
  * os vizinhos e desalinhava a fileira.
  */
 .block {
@@ -130,8 +130,8 @@
 }
 
 /* ---- Carregando ------------------------------------------------------
-   O rotulo continua no lugar, invisivel, segurando a largura do botao: sem
-   isso o botao encolhe para o tamanho do circulo e a tela salta embaixo do
+   O rótulo continua no lugar, invisível, segurando a largura do botão: sem
+   isso o botão encolhe para o tamanho do círculo e a tela salta embaixo do
    dedo de quem acabou de clicar. */
 
 .label {
@@ -153,7 +153,7 @@
   width: 1.125rem;
   height: 1.125rem;
   border: 2px solid currentcolor;
-  /* A volta que falta e o que se ve girando. */
+  /* A volta que falta e o que se vê girando. */
   border-top-color: transparent;
   border-radius: var(--radius-pill);
   animation: spin 720ms linear infinite;

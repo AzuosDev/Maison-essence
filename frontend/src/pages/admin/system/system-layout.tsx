@@ -10,26 +10,26 @@ import { AccessDenied } from './access-denied';
 import styles from './system-layout.module.css';
 
 /**
- * A moldura da area de sistema.
+ * A moldura da área de sistema.
  *
- * ## Um item de menu, tres telas
+ * ## Um item de menu, três telas
  *
- * O menu do painel tem oito areas e nao merece uma nona, decima e decima
- * primeira entrada para usuarios, auditoria e saude — sao a mesma tarefa
- * ("manter a aplicacao") vista de tres angulos. Entao "Sistema" e um item
- * so, e aqui dentro as tres telas sao abas.
+ * O menu do painel tem oito áreas e não merece uma nona, decima e decima
+ * primeira entrada para usuários, auditoria e saúde — são a mesma tarefa
+ * ("manter a aplicação") vista de três angulos. Então "Sistema" e um item
+ * só, e aqui dentro as três telas são abas.
  *
- * As abas sao rotas de verdade, e nao estado local: quem esta investigando
+ * As abas são rotas de verdade, e não estado local: quem esta investigando
  * um incidente precisa poder mandar `/admin/system/auditoria` para outra
- * pessoa, e poder voltar com o botao do navegador.
+ * pessoa, e poder voltar com o botão do navegador.
  *
  * ## O guarda
  *
- * `canManageSystem` decide, e o que ele recusa nao e um erro: e uma area que
- * nao pertence a quem entrou. Por isso a tela de acesso negado fica **dentro**
+ * `canManageSystem` decide, e o que ele recusa não e um erro: e uma área que
+ * não pertence a quem entrou. Por isso a tela de acesso negado fica **dentro**
  * da moldura do painel, com o menu ao lado — quem tropecou aqui digitando a
  * URL continua a um clique de onde queria ir. Um `throw` ou um redirecionamento
- * para a home dariam a mesma protecao e tratariam a dona da loja como
+ * para a home dariam a mesma proteção e tratariam a dona da loja como
  * intrusa.
  *
  * O guarda esconde; quem impede e o servidor, com `@Roles(...)` em cada

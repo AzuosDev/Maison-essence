@@ -3,40 +3,40 @@ import { createElement, Fragment, type ReactNode } from 'react';
 /**
  * O Markdown que a dona escreve no painel, desenhado como React.
  *
- * As paginas institucionais — trocas e devolucoes, como comprar — sao
- * guardadas como Markdown e aparecem nas abas da pagina do produto. Alguem
- * precisa transformar `**aviso**` em negrito, e ha duas maneiras de fazer
+ * As páginas institucionais — trocas e devoluções, como comprar — são
+ * guardadas como Markdown e aparecem nas abas da página do produto. Alguém
+ * precisa transformar `**aviso**` em negrito, e há duas maneiras de fazer
  * isso.
  *
  * A comum e converter para HTML e injetar com `dangerouslySetInnerHTML`.
- * Nao e o que este arquivo faz, e a razao e direta: o texto vem de um
- * formulario. Um `<script>` colado ali por acidente — ou por alguem que
+ * Não e o que este arquivo faz, e a razão e direta: o texto vem de um
+ * formulário. Um `<script>` colado ali por acidente — ou por alguém que
  * entrou no painel — viraria script de verdade na loja de todo cliente.
  * Aqui o Markdown vira **elementos React**, e texto e sempre texto: o pior
  * que um `<script>` digitado pode fazer e aparecer escrito na tela.
  *
  * ## O subconjunto
  *
- * Titulo, paragrafo, lista, negrito, italico e link. E o que cabe numa
- * politica de trocas, e cada coisa a mais seria uma regra nova para manter
- * por um uso que ninguem pediu. O que nao e reconhecido aparece como foi
- * escrito, em vez de sumir — esta e a diferenca entre um texto com um
- * asterisco sobrando e um paragrafo que o cliente nunca le.
+ * Título, parágrafo, lista, negrito, itálico e link. E o que cabe numa
+ * política de trocas, e cada coisa a mais seria uma regra nova para manter
+ * por um uso que ninguém pediu. O que não e reconhecido aparece como foi
+ * escrito, em vez de sumir — esta e a diferença entre um texto com um
+ * asterisco sobrando e um parágrafo que o cliente nunca lê.
  *
- * Quebra de linha simples vira `<br>`, e nao espaco como manda o Markdown
- * canonico: quem escreve um endereco ou um horario de atendimento no painel
+ * Quebra de linha simples vira `<br>`, e não espaço como manda o Markdown
+ * canônico: quem escreve um endereço ou um horário de atendimento no painel
  * aperta Enter esperando ver a linha quebrada.
  */
 
 export interface MarkdownProps {
-  /** O texto como foi escrito. Vazio nao desenha nada. */
+  /** O texto como foi escrito. Vazio não desenha nada. */
   text: string;
   /**
-   * O nivel do primeiro titulo (`#`).
+   * O nível do primeiro título (`#`).
    *
-   * Tres por padrao, que e onde as abas da pagina do produto estao: o `h1` e
-   * o nome do produto e o `h2` e o titulo do bloco. Um `#` virando `<h1>`
-   * dentro de uma aba daria dois primeiros titulos a mesma pagina.
+   * Três por padrão, que e onde as abas da página do produto estão: o `h1` e
+   * o nome do produto e o `h2` e o título do bloco. Um `#` virando `<h1>`
+   * dentro de uma aba daria dois primeiros títulos a mesma página.
    */
   headingLevel?: 2 | 3 | 4;
   className?: string | undefined;
@@ -56,7 +56,7 @@ export function Markdown({ text, headingLevel = 3, className }: MarkdownProps) {
 
 interface Block {
   kind: 'heading' | 'paragraph' | 'bullets' | 'numbers';
-  /** O nivel do titulo, contado a partir do `headingLevel`. */
+  /** O nível do título, contado a partir do `headingLevel`. */
   depth: number;
   lines: string[];
 }
@@ -70,8 +70,8 @@ const NUMBER = /^\s*\d+[.)]\s+(.*)$/;
  *
  * Linha em branco separa blocos, como no Markdown. Dentro de um bloco, o
  * tipo e decidido pela primeira linha: se ela e um item de lista, o bloco e
- * uma lista, e as linhas que nao sao itens entram como continuacao do item
- * anterior — que e o que acontece quando alguem quebra uma frase longa no
+ * uma lista, e as linhas que não são itens entram como continuação do item
+ * anterior — que e o que acontece quando alguém quebra uma frase longa no
  * meio.
  */
 function blocksOf(text: string): Block[] {
@@ -90,7 +90,7 @@ function blocksOf(text: string): Block[] {
     if (heading) {
       blocks.push({ kind: 'heading', depth: (heading[1] ?? '#').length, lines: [heading[2] ?? ''] });
 
-      // O resto do bloco, se houver, e paragrafo: um titulo nao continua na
+      // O resto do bloco, se houver, e parágrafo: um título não continua na
       // linha de baixo.
       if (lines.length > 1) {
         blocks.push({ kind: 'paragraph', depth: 0, lines: lines.slice(1) });
@@ -141,8 +141,8 @@ function renderBlock(block: Block, index: number, headingLevel: number): ReactNo
   const key = `block-${String(index)}`;
 
   if (block.kind === 'heading') {
-    // O `#` mais fundo que o documento comporta vira o menor titulo, e nao
-    // um `<h7>` que nao existe.
+    // O `#` mais fundo que o documento comporta vira o menor título, e não
+    // um `<h7>` que não existe.
     const level = Math.min(headingLevel + block.depth - 1, 6);
 
     return createElement(`h${String(level)}`, { key }, inline(block.lines[0] ?? ''));
@@ -175,11 +175,11 @@ function renderBlock(block: Block, index: number, headingLevel: number): ReactNo
 /* ---- O que vai dentro da linha ------------------------------------------ */
 
 /**
- * Negrito, italico e link.
+ * Negrito, itálico e link.
  *
- * Uma passada so, com uma expressao que reconhece as quatro formas de uma
+ * Uma passada só, com uma expressão que reconhece as quatro formas de uma
  * vez: percorrer o texto quatro vezes faria `**[texto](url)**` perder o
- * link. O que nao casa com nenhuma delas e copiado como esta.
+ * link. O que não casa com nenhuma delas e copiado como esta.
  */
 const INLINE = /\*\*([^*]+)\*\*|\*([^*]+)\*|_([^_]+)_|\[([^\]]+)\]\(([^)\s]+)\)/g;
 
@@ -187,8 +187,8 @@ function inline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
   let cursor = 0;
 
-  // `matchAll` cria um iterador proprio e nao depende do `lastIndex` da
-  // expressao, que e global e seria compartilhado entre chamadas.
+  // `matchAll` cria um iterador próprio e não depende do `lastIndex` da
+  // expressão, que e global e seria compartilhado entre chamadas.
   for (const match of text.matchAll(INLINE)) {
     const at = match.index ?? 0;
 
@@ -224,8 +224,8 @@ function inlineNode(match: RegExpMatchArray, key: number): ReactNode {
         key={key}
         href={safeHref(href)}
         // Link escrito no painel pode apontar para fora — o Instagram da
-        // loja, um formulario. `noreferrer` junto de `_blank` e o que impede
-        // a pagina aberta de mexer nesta pela `window.opener`.
+        // loja, um formulário. `noreferrer` junto de `_blank` e o que impede
+        // a página aberta de mexer nesta pela `window.opener`.
         {...(href.startsWith('/') ? {} : { target: '_blank', rel: 'noreferrer noopener' })}
       >
         {label}
@@ -237,11 +237,11 @@ function inlineNode(match: RegExpMatchArray, key: number): ReactNode {
 }
 
 /**
- * O endereco do link, quando ele e um endereco.
+ * O endereço do link, quando ele e um endereço.
  *
  * `javascript:` num `href` executa ao clique, e o texto vem de um
- * formulario. So `http`, `https`, `mailto`, `tel` e caminho interno passam;
- * o resto vira `#`, um link que nao leva a lugar nenhum e nao faz nada.
+ * formulário. Só `http`, `https`, `mailto`, `tel` e caminho interno passam;
+ * o resto vira `#`, um link que não leva a lugar nenhum e não faz nada.
  */
 const SAFE_PROTOCOL = /^(?:https?:|mailto:|tel:|\/)/i;
 

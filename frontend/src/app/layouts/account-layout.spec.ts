@@ -5,21 +5,21 @@ import { expect, test } from 'vitest';
 /**
  * A moldura da conta, lida no arquivo de estilo.
  *
- * Nenhum ambiente de teste deste projeto calcula CSS — o jsdom nao resolve
- * `grid-template-columns` e nao mede nada —, entao a regra que importa aqui
- * so pode ser conferida no texto. Vale o incomodo por causa do defeito que
- * ela consertou: sem sessao, a moldura nao desenha o menu lateral, e o
+ * Nenhum ambiente de teste deste projeto calcula CSS — o jsdom não resolve
+ * `grid-template-columns` e não mede nada —, então a regra que importa aqui
+ * só pode ser conferida no texto. Vale o incomodo por causa do defeito que
+ * ela consertou: sem sessão, a moldura não desenha o menu lateral, e o
  * `grid-template-columns: 15rem 1fr` incondicional espremia entrar, criar
  * conta e o convite nos 240px da coluna do menu — encostados a esquerda,
- * com metade da pagina vazia ao lado. Nao havia teste que percebesse, e nao
- * ha como haver: o DOM estava certo o tempo todo.
+ * com metade da página vazia ao lado. Não havia teste que percebesse, e não
+ * há como haver: o DOM estava certo o tempo todo.
  */
 
 const css = readFileSync(fileURLToPath(new URL('./account-layout.module.css', import.meta.url)), {
   encoding: 'utf8',
 });
 
-/** As declaracoes de uma regra, pelo seletor. */
+/** As declarações de uma regra, pelo seletor. */
 function regra(seletor: string): string | null {
   const encontrada = new RegExp(
     `(?:^|\\})\\s*${seletor.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\{([^}]*)\\}`,
@@ -34,8 +34,8 @@ test('as duas colunas só valem quando há um menu para por na primeira', () => 
 });
 
 /**
- * O contraponto do caso acima, e o que de fato quebra se alguem desfizer a
- * correcao: `.body` sozinho nao pode voltar a declarar as duas colunas.
+ * O contraponto do caso acima, e o que de fato quebra se alguém desfizer a
+ * correção: `.body` sozinho não pode voltar a declarar as duas colunas.
  */
 test('o .body sozinho não declara coluna nenhuma', () => {
   const corpo = regra('.body');

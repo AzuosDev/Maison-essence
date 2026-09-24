@@ -1,7 +1,7 @@
 import type { UserRole } from '../../common/enums/user-role.js';
 import type { UserDocument } from './schemas/user.schema.js';
 
-/** Usuario como o painel o ve. Monta campo a campo: `passwordHash` nao tem
+/** Usuário como o painel o vê. Monta campo a campo: `passwordHash` não tem
  * como escapar por descuido. */
 export interface UserView {
   id: string;

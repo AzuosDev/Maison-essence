@@ -9,20 +9,20 @@ import { runSeed } from './seed-runner.js';
 /**
  * `npm run seed:superadmin`
  *
- * Cria o primeiro usuario do painel a partir de `BOOTSTRAP_SUPERADMIN_EMAIL` e
+ * Cria o primeiro usuário do painel a partir de `BOOTSTRAP_SUPERADMIN_EMAIL` e
  * `BOOTSTRAP_SUPERADMIN_PASSWORD`. Quem faz o trabalho e o `BootstrapService`,
  * o mesmo de `POST /auth/bootstrap`.
  *
- * Idempotente: com um SUPER_ADMIN ja no banco ele avisa e nao cria nada, e
- * sai com codigo 0 — rodar duas vezes nao e erro, e o caso normal de quem nao
- * lembra se ja rodou.
+ * Idempotente: com um SUPER_ADMIN já no banco ele avisa e não cria nada, e
+ * sai com código 0 — rodar duas vezes não e erro, e o caso normal de quem não
+ * lembra se já rodou.
  */
 await runSeed('seed:superadmin', async (app, logger) => {
   const result = await app.get(BootstrapService).run({
     origin: BOOTSTRAP_ORIGINS.CLI,
-    // Diferente da rota: aqui basta nao haver SUPER_ADMIN. Quem roda o
-    // comando ja tem a URI do banco na mao, nao ha o que proteger alem da
-    // idempotencia.
+    // Diferente da rota: aqui basta não haver SUPER_ADMIN. Quem roda o
+    // comando já tem a URI do banco na mão, não há o que proteger além da
+    // idempotência.
     requireEmptyDatabase: false,
   });
 

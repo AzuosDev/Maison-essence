@@ -2,19 +2,19 @@ import { mergeCategory, mergeProduct, normalizeSku } from './catalog-merge.js';
 import type { IncomingProduct, StoredProduct, StoredVariant } from './catalog-merge.js';
 
 /**
- * O que estes testes protegem e uma frase so: **a lista do fornecedor nao
+ * O que estes testes protegem e uma frase só: **a lista do fornecedor não
  * apaga o trabalho da dona.**
  *
- * Todos os casos aqui sao a mesma situacao vista de angulos diferentes — o
+ * Todos os casos aqui são a mesma situação vista de angulos diferentes — o
  * arquivo traz o campo vazio, o banco traz o campo preenchido, e o que fica
- * gravado e o do banco. Errar qualquer um deles nao quebra teste nenhum em
- * producao: apaga descricao, foto e estoque de 269 produtos de uma vez, em
- * silencio.
+ * gravado e o do banco. Errar qualquer um deles não quebra teste nenhum em
+ * produção: apaga descrição, foto e estoque de 269 produtos de uma vez, em
+ * silêncio.
  */
 
 const VARIANT_ID = '64b7f1c2a1b2c3d4e5f60001';
 
-/** Uma linha da lista do fornecedor: preco cheio, o resto vazio. */
+/** Uma linha da lista do fornecedor: preço cheio, o resto vazio. */
 function fromFile(overrides: Partial<IncomingProduct> = {}): IncomingProduct {
   return {
     name: 'Khamrah Qahwa',
@@ -80,7 +80,7 @@ describe('mergeProduct, produto novo', () => {
     expect(data.name).toBe('Khamrah Qahwa');
     expect(data.flags).toEqual({ isActive: false, isFeatured: true, isReadyToShip: false });
     expect(variantsCreated).toBe(1);
-    // Variante nova nao tem `_id`: quem gera e o Mongoose.
+    // Variante nova não tem `_id`: quem gera e o Mongoose.
     expect(data.variants[0]?._id).toBeUndefined();
   });
 });
@@ -108,8 +108,8 @@ describe('mergeProduct, o vazio do arquivo não apaga o banco', () => {
   });
 
   it('não zera o preço gravado quando o arquivo traz zero', () => {
-    // Uma exportacao quebrada, cheia de zeros, nao pode zerar o catalogo. E
-    // ninguem vende a R$ 0,00: zero aqui e ausencia, nao preco.
+    // Uma exportação quebrada, cheia de zeros, não pode zerar o catálogo. E
+    // ninguém vende a R$ 0,00: zero aqui e ausência, não preço.
     const { data } = mergeProduct(
       fromFile({ variants: [{ sku: 'ME-0036', priceCents: 0 }] }),
       fromPanel(),
@@ -147,7 +147,7 @@ describe('mergeProduct, o vazio do arquivo não apaga o banco', () => {
 describe('mergeProduct, as chaves de vitrine são do painel', () => {
   it('não mexe em isActive, isFeatured e isReadyToShip de produto que já existe', () => {
     // O produto que a dona destacou na home continua destacado, e o que ela
-    // tirou de linha nao volta a vender porque a lista ainda o cita.
+    // tirou de linha não volta a vender porque a lista ainda o cita.
     const { data } = mergeProduct(fromFile({ isFeatured: false, isActive: true }), fromPanel());
 
     expect(data.flags).toBeUndefined();
@@ -165,7 +165,7 @@ describe('mergeProduct, as chaves de vitrine são do painel', () => {
 
 describe('mergeProduct, casamento de variantes pelo SKU', () => {
   it('preserva o _id da variante que continua', () => {
-    // O pedido guarda `items.variantId`. Trocar o `_id` quebraria a devolucao
+    // O pedido guarda `items.variantId`. Trocar o `_id` quebraria a devolução
     // de estoque do cancelamento.
     const { data } = mergeProduct(fromFile(), fromPanel());
 
@@ -184,8 +184,8 @@ describe('mergeProduct, casamento de variantes pelo SKU', () => {
   });
 
   it('não conta de novo a variante que já estava desativada', () => {
-    // Sem isso, toda importacao repetiria o mesmo numero de desativadas para
-    // sempre e o relatorio deixaria de descrever aquela execucao.
+    // Sem isso, toda importação repetiria o mesmo número de desativadas para
+    // sempre e o relatório deixaria de descrever aquela execução.
     const { variantsDeactivated } = mergeProduct(
       fromFile(),
       fromPanel({
@@ -241,8 +241,8 @@ describe('mergeCategory', () => {
   });
 
   it('atualiza o nome e o pai, e deixa o menu como o painel o deixou', () => {
-    // Reordenar o menu e arrastar categoria por categoria. Uma importacao de
-    // preco nao desfaz isso.
+    // Reordenar o menu e arrastar categoria por categoria. Uma importação de
+    // preço não desfaz isso.
     const data = mergeCategory(
       { name: 'Árabes Masculinos', slug: 'arabes-masculinos', order: 1, isActive: true },
       'pai',

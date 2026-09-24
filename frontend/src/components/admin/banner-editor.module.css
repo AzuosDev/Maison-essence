@@ -2,11 +2,11 @@
  * O carrossel da home.
  *
  * Cada banner e um bloco com a arte a esquerda e os textos a direita — a
- * mesma leitura que a home faz, para que a decisao "esse titulo cabe nessa
+ * mesma leitura que a home faz, para que a decisão "esse título cabe nessa
  * imagem?" possa ser tomada aqui, sem abrir o site.
  *
  * No celular a arte vai para cima dos campos, porque 320px de imagem e
- * 320px de formulario nao convivem em 360px de tela.
+ * 320px de formulário não convivem em 360px de tela.
  */
 
 .editor {
@@ -34,9 +34,9 @@
 }
 
 /*
- * Onde o banner vai cair: a regua de insercao no topo do alvo, como na arvore
+ * Onde o banner vai cair: a regua de inserção no topo do alvo, como na árvore
  * de categorias e na tabela de entrega. O fundo dourado diz qual linha, a
- * regua diz de que lado. E informacao do arraste, nao decoracao da linha.
+ * regua diz de que lado. E informação do arraste, não decoração da linha.
  */
 .dropTarget {
   background-color: var(--gold-wash);
@@ -50,7 +50,7 @@
   padding: var(--space-12);
 }
 
-/* ---- O cabecalho da linha ------------------------------------------------- */
+/* ---- O cabeçalho da linha ------------------------------------------------- */
 
 .head {
   display: flex;
@@ -84,8 +84,8 @@
  * O estado do banner, escrito.
  *
  * Quatro estados que se confundem: "no ar", "agendado", "encerrado" e
- * "desligado". A palavra carrega a informacao e a cor so reforca — um
- * quadradinho colorido sozinho exigiria uma legenda que nao cabe na linha.
+ * "desligado". A palavra carrega a informação e a cor só reforca — um
+ * quadradinho colorido sozinho exigiria uma legenda que não cabe na linha.
  */
 .status {
   flex: none;
@@ -130,7 +130,7 @@
 /*
  * A arte de computador, no formato em que a home a mostra.
  *
- * `object-fit: cover` porque a proporcao enviada nem sempre e a do banner, e
+ * `object-fit: cover` porque a proporção enviada nem sempre e a do banner, e
  * o que interessa aqui e reconhecer a imagem — o corte fiel quem faz e a
  * home.
  */
@@ -145,10 +145,10 @@
 }
 
 /*
- * O lugar da arte de celular, enquanto ela nao existe.
+ * O lugar da arte de celular, enquanto ela não existe.
  *
- * Um alvo do tamanho do que vai entrar, e nao um botao de texto: a forma
- * retrato ao lado da paisagem e o que explica, sem uma frase, por que sao
+ * Um alvo do tamanho do que vai entrar, e não um botão de texto: a forma
+ * retrato ao lado da paisagem e o que explica, sem uma frase, por que são
  * duas artes.
  */
 .mobileSlot {
@@ -254,7 +254,7 @@
   color: var(--danger);
 }
 
-/* ---- O rodape do editor ------------------------------------------------------ */
+/* ---- O rodapé do editor ------------------------------------------------------ */
 
 .empty,
 .room {
@@ -295,7 +295,7 @@
   color: var(--danger);
 }
 
-/* A arte ao lado dos campos quando ha largura para as duas colunas. */
+/* A arte ao lado dos campos quando há largura para as duas colunas. */
 @media (min-width: 48rem) {
   .row {
     padding: var(--space-16);

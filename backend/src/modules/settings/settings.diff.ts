@@ -3,27 +3,27 @@ import type { AuditChanges } from '../audit/audit.types.js';
 /**
  * O diff que vai para a trilha de auditoria.
  *
- * Compara dois retratos das configuracoes e devolve so o que mudou, com o
+ * Compara dois retratos das configurações e devolve só o que mudou, com o
  * caminho do campo como chave: `whatsappNumber`, `pickupAddress.city`,
  * `institutionalPages.quem-somos.isActive`.
  *
  * Bloco aninhado desce por caminho em vez de sair inteiro porque a pergunta
  * que a auditoria responde e "o que mudou?", e um `pickupAddress` completo
- * repetido de um lado e do outro obriga quem le a procurar a diferenca no
- * olho. Banners e paginas viram objetos indexados por id e por slug antes de
- * chegar aqui (ver `auditSnapshot`), e nao arrays: assim arrastar um banner
- * de lugar nao aparece como se todos tivessem sido reescritos.
+ * repetido de um lado e do outro obriga quem lê a procurar a diferença no
+ * olho. Banners e páginas viram objetos indexados por id e por slug antes de
+ * chegar aqui (ver `auditSnapshot`), e não arrays: assim arrastar um banner
+ * de lugar não aparece como se todos tivessem sido reescritos.
  */
 
-/** Retrato das configuracoes, com blocos aninhados e nenhum array. */
+/** Retrato das configurações, com blocos aninhados e nenhum array. */
 export type AuditSnapshot = Record<string, unknown>;
 
 /**
  * Quanto de um texto cabe no log.
  *
- * O conteudo de uma pagina institucional vai a vinte mil caracteres, e
- * duplica-lo a cada virgula corrigida entope o log sem informar nada: a
- * trilha registra que a pagina mudou e quem mudou, nao guarda versoes do
+ * O conteúdo de uma página institucional vai a vinte mil caracteres, e
+ * duplica-lo a cada vírgula corrigida entope o log sem informar nada: a
+ * trilha registra que a página mudou e quem mudou, não guarda versões do
  * texto.
  */
 export const MAX_AUDIT_TEXT_LENGTH = 120;
@@ -53,10 +53,10 @@ function walk(path: string, before: unknown, after: unknown, changes: AuditChang
 }
 
 /**
- * Objeto simples, e nao qualquer coisa com propriedades.
+ * Objeto simples, e não qualquer coisa com propriedades.
  *
- * `null` e array ficam de fora: array e comparado como valor unico (a ordem
- * faz parte do que mudou) e `null` e o valor "campo vazio", nao um bloco para
+ * `null` e array ficam de fora: array e comparado como valor único (a ordem
+ * faz parte do que mudou) e `null` e o valor "campo vazio", não um bloco para
  * descer.
  */
 function isPlainObject(value: unknown): value is Record<string, unknown> {

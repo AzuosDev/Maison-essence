@@ -17,9 +17,9 @@
   gap: var(--space-8);
   /*
    * A fila rola de lado no celular sem cortar o item — `-webkit-overflow-
-   * scrolling` nao e mais necessario, mas o respiro lateral sim: sem os
-   * `padding` e `margin` negativos, o ultimo item encostaria na borda da
-   * tela e pareceria cortado em vez de rolavel.
+   * scrolling` não e mais necessário, mas o respiro lateral sim: sem os
+   * `padding` e `margin` negativos, o último item encostaria na borda da
+   * tela e pareceria cortado em vez de rolável.
    */
   padding-inline: var(--gutter);
   margin-inline: calc(var(--gutter) * -1);
@@ -60,7 +60,7 @@
 }
 
 /*
- * O item aberto: tinta cheia. A cor nao e o unico sinal — `aria-current` vem
+ * O item aberto: tinta cheia. A cor não e o único sinal — `aria-current` vem
  * do NavLink e e o que o leitor de tela anuncia.
  */
 .active,
@@ -79,9 +79,9 @@
 /*
  * Sair.
  *
- * Fora da lista, e nao como quarto item: os tres de cima levam a algum
- * lugar, este encerra a sessao. Discreto de proposito — e uma acao que
- * ninguem quer fazer sem querer, e a conta nao ganha nada empurrando a
+ * Fora da lista, e não como quarto item: os três de cima levam a algum
+ * lugar, este encerra a sessão. Discreto de propósito — e uma ação que
+ * ninguém quer fazer sem querer, e a conta não ganha nada empurrando a
  * pessoa para fora.
  */
 .signOut {

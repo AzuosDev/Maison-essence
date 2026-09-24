@@ -8,24 +8,24 @@ import { useMediaQuery } from '@/lib/use-media-query';
 import styles from './related-products.module.css';
 
 /**
- * O que mais existe na mesma categoria, no fim da pagina.
+ * O que mais existe na mesma categoria, no fim da página.
  *
- * Carrossel, e nao grade — e a diferenca e de intencao. A grade da home
- * convida a percorrer o catalogo; aqui embaixo o cliente ja tem um produto em
- * maos, e a faixa e uma segunda opcao oferecida de lado, sem tomar a altura
- * de tela que uma grade de oito tomaria. Quem nao esta interessado passa
- * direto para o rodape.
+ * Carrossel, e não grade — e a diferença e de intenção. A grade da home
+ * convida a percorrer o catálogo; aqui embaixo o cliente já tem um produto em
+ * mãos, e a faixa e uma segunda opção oferecida de lado, sem tomar a altura
+ * de tela que uma grade de oito tomaria. Quem não esta interessado passa
+ * direto para o rodapé.
  *
  * ## A rolagem e do navegador
  *
- * Nada de `transform` com indice: a faixa e uma lista que rola, com
- * `scroll-snap` encaixando cada card. Isso da de graca o que uma pilha de
+ * Nada de `transform` com índice: a faixa e uma lista que rola, com
+ * `scroll-snap` encaixando cada card. Isso da de graça o que uma pilha de
  * slides animados custa caro — o deslize com o dedo, o atrito do sistema, o
- * Tab que rola ate o card focado e a roda horizontal do trackpad. Os botoes
- * do desktop so empurram a mesma rolagem.
+ * Tab que rola até o card focado e a roda horizontal do trackpad. Os botões
+ * do desktop só empurram a mesma rolagem.
  *
- * Os botoes desaparecem quando nao ha o que rolar: dois produtos
- * relacionados cabem na tela, e uma seta que nao leva a lugar nenhum e um
+ * Os botões desaparecem quando não há o que rolar: dois produtos
+ * relacionados cabem na tela, e uma seta que não leva a lugar nenhum e um
  * convite a clicar em nada.
  */
 
@@ -53,8 +53,8 @@ export function RelatedProducts({ products }: { products: readonly PublicProduct
     }
 
     // Um pixel de folga nas duas pontas: com zoom do navegador ou largura
-    // fracionaria, `scrollLeft` para em 0.5 e o botao ficaria eternamente
-    // habilitado no comeco da faixa.
+    // fracionaria, `scrollLeft` para em 0.5 e o botão ficaria eternamente
+    // habilitado no começo da faixa.
     setAtStart(track.scrollLeft <= 1);
     setAtEnd(track.scrollLeft + track.clientWidth >= track.scrollWidth - 1);
   }, []);
@@ -69,8 +69,8 @@ export function RelatedProducts({ products }: { products: readonly PublicProduct
     }
 
     // A faixa muda de largura sem rolar nenhuma vez — girar o celular, abrir
-    // o console, arrastar a janela — e o `onScroll` nao tem como saber. O
-    // observador ja mede uma vez ao comecar a observar.
+    // o console, arrastar a janela — e o `onScroll` não tem como saber. O
+    // observador já mede uma vez ao começar a observar.
     const observer = new ResizeObserver(measure);
 
     observer.observe(track);
@@ -81,7 +81,7 @@ export function RelatedProducts({ products }: { products: readonly PublicProduct
   }, [measure]);
 
   // Uma lista nova muda o `scrollWidth` sem mudar a caixa da faixa, e o
-  // observador acima nao dispara: quem a observa e o elemento, e ele
+  // observador acima não dispara: quem a observa e o elemento, e ele
   // continua do mesmo tamanho com dois ou com doze cards dentro.
   useLayoutEffect(() => {
     if (products.length > 0) {
@@ -160,8 +160,8 @@ interface ArrowButtonProps {
 /**
  * A seta, que e o chevron do sistema girado.
  *
- * Um icone novo para cada lado seriam dois caminhos SVG a manter em dia com
- * o mesmo traco; o giro sai do mesmo desenho e nao pode divergir dele.
+ * Um ícone novo para cada lado seriam dois caminhos SVG a manter em dia com
+ * o mesmo traço; o giro sai do mesmo desenho e não pode divergir dele.
  */
 function ArrowButton({ direction, disabled, onClick }: ArrowButtonProps) {
   const previous = direction === 'previous';

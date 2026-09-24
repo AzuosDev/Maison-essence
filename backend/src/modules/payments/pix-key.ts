@@ -4,30 +4,30 @@ import { PIX_KEY_TYPES } from '../../common/enums/payment-method.js';
 /**
  * A chave PIX da loja, normalizada e conferida contra o tipo escolhido.
  *
- * O par chave/tipo precisa ser coerente por uma razao que so aparece depois:
- * a rota publica expoe o *tipo* e nunca a chave, entao o cliente le "chave:
+ * O par chave/tipo precisa ser coerente por uma razão que só aparece depois:
+ * a rota publica expoe o *tipo* e nunca a chave, então o cliente lê "chave:
  * CPF" e digita onze digitos no aplicativo do banco. Se o que estiver gravado
- * for um e-mail, a transferencia nao acontece e ninguem descobre pelo painel
+ * for um e-mail, a transferência não acontece e ninguém descobre pelo painel
  * — descobre pelo cliente que desistiu da compra.
  *
- * A normalizacao segue a mesma escolha do numero do WhatsApp: aceita o que a
- * dona colar do jeito que o banco dela mostra — CPF com ponto e traco,
+ * A normalização segue a mesma escolha do número do WhatsApp: aceita o que a
+ * dona colar do jeito que o banco dela mostra — CPF com ponto e traço,
  * telefone com parentese — e guarda no formato que o PIX usa.
  */
 
-/** Chave aleatoria: UUID, do jeito que o banco a entrega. */
+/** Chave aleatória: UUID, do jeito que o banco a entrega. */
 const RANDOM_KEY = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
-/** Suficiente para pegar erro de digitacao; o banco valida o resto. */
+/** Suficiente para pegar erro de digitação; o banco valida o resto. */
 const EMAIL_KEY = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/;
 
-/** Pontuacao que vem colada junto e que a chave nao guarda. */
+/** Pontuação que vem colada junto e que a chave não guarda. */
 const PUNCTUATION = /[\s.\-()/+]/g;
 
 /** Telefone em formato internacional, como o PIX o registra: `+5588999999999`. */
 const PHONE_DIGITS = /^\d{12,15}$/;
 
-/** Codigo do pais assumido quando o telefone vem sem ele. */
+/** Código do pais assumido quando o telefone vem sem ele. */
 const DEFAULT_COUNTRY_CODE = '55';
 
 /** Telefone brasileiro sem o pais: DDD de dois digitos mais 8 ou 9 digitos. */
@@ -44,10 +44,10 @@ export const PIX_KEY_MESSAGES: Record<PixKeyType, string> = {
 };
 
 /**
- * A chave no formato em que o PIX a registra, ou `null` quando ela nao
+ * A chave no formato em que o PIX a registra, ou `null` quando ela não
  * corresponde ao tipo escolhido.
  *
- * Vazio e resposta valida: e a loja que ainda nao configurou a chave, estado
+ * Vazio e resposta valida: e a loja que ainda não configurou a chave, estado
  * em que ela nasce.
  */
 export function normalizePixKey(value: unknown, type: PixKeyType): string | null {
@@ -91,7 +91,7 @@ export function normalizePixKey(value: unknown, type: PixKeyType): string | null
     ? `${DEFAULT_COUNTRY_CODE}${digits}`
     : digits;
 
-  // O `+` faz parte da chave de telefone, ao contrario do numero do WhatsApp,
+  // O `+` faz parte da chave de telefone, ao contrário do número do WhatsApp,
   // onde ele quebraria o link `wa.me`.
   return PHONE_DIGITS.test(international) ? `+${international}` : null;
 }
@@ -99,13 +99,13 @@ export function normalizePixKey(value: unknown, type: PixKeyType): string | null
 /**
  * A chave PIX reduzida ao que da para mostrar num log.
  *
- * Sobram os quatro ultimos caracteres, que bastam para quem conhece a chave
- * reconhece-la e para a trilha de auditoria provar que ela mudou. A chave
- * inteira num log e o endereco para onde vai o dinheiro da loja, e log e o
+ * Sobram os quatro últimos caracteres, que bastam para quem conhece a chave
+ * reconhece-lá e para a trilha de auditoria provar que ela mudou. A chave
+ * inteira num log e o endereço para onde vai o dinheiro da loja, e log e o
  * lugar menos protegido de todo o sistema.
  *
- * Chave vazia continua vazia: nao ha o que esconder, e um `****` no lugar de
- * "nao havia chave" faria a trilha mentir.
+ * Chave vazia continua vazia: não há o que esconder, e um `****` no lugar de
+ * "não havia chave" faria a trilha mentir.
  */
 export function maskPixKey(key: string): string {
   if (key.length === 0) {

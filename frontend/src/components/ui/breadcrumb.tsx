@@ -4,23 +4,23 @@ import { cx } from '@/lib/cx';
 import styles from './breadcrumb.module.css';
 
 /**
- * O fio de pao: Inicio / Masculino / Asad Lattafa.
+ * O fio de pão: Início / Masculino / Asad Lattafa.
  *
- * Dentro de um `<nav>` com rotulo e de uma `<ol>`, porque e uma lista
- * ordenada de verdade — a ordem e a informacao. O ultimo item nao e link e
- * leva `aria-current="page"`: linkar a pagina em que se esta e um clique que
- * nao leva a lugar nenhum.
+ * Dentro de um `<nav>` com rótulo e de uma `<ol>`, porque e uma lista
+ * ordenada de verdade — a ordem e a informação. O último item não e link e
+ * leva `aria-current="page"`: linkar a página em que se esta e um clique que
+ * não leva a lugar nenhum.
  */
 
 export interface BreadcrumbItem {
   label: string;
-  /** Sem `to`, o item e texto. O ultimo sempre e. */
+  /** Sem `to`, o item e texto. O último sempre e. */
   to?: string;
 }
 
 export type BreadcrumbProps = ComponentPropsWithoutRef<'nav'> & {
   items: readonly BreadcrumbItem[];
-  /** O rotulo do `<nav>`, para quem navega por marcos. */
+  /** O rótulo do `<nav>`, para quem navega por marcos. */
   label?: string;
 };
 

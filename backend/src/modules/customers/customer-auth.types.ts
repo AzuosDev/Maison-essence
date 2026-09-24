@@ -3,9 +3,9 @@ import type { CustomerDocument } from './schemas/customer.schema.js';
 /**
  * Cliente autenticado, como o guard o anexa ao request.
  *
- * Nao ha papel nenhum aqui, e nao e esquecimento: nao existe campo neste tipo
- * que o `RolesGuard` possa ler como permissao. Uma conta de loja que virasse
- * acesso de painel teria de inventar um dado que este objeto nao carrega.
+ * Não há papel nenhum aqui, e não e esquecimento: não existe campo neste tipo
+ * que o `RolesGuard` possa ler como permissão. Uma conta de loja que virasse
+ * acesso de painel teria de inventar um dado que este objeto não carrega.
  */
 export interface AuthenticatedCustomer {
   id: string;

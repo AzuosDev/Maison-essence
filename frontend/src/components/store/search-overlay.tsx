@@ -15,29 +15,29 @@ import styles from './search-overlay.module.css';
 /**
  * A busca em tela cheia.
  *
- * Tres comportamentos, e cada um resolve um problema diferente.
+ * Três comportamentos, e cada um resolve um problema diferente.
  *
  * **O atraso de 300ms** existe porque cada tecla seria uma ida ao servidor:
- * "perfume" sao sete consultas, seis delas ja obsoletas quando respondem. O
- * atraso e do campo, e nao da consulta — `useDebouncedValue` segura o termo,
- * e a consulta so ve o que sobrou depois que a digitacao parou.
+ * "perfume" são sete consultas, seis delas já obsoletas quando respondem. O
+ * atraso e do campo, e não da consulta — `useDebouncedValue` segura o termo,
+ * e a consulta só vê o que sobrou depois que a digitação parou.
  *
- * **O minimo de tres letras** existe porque `pe` casaria com meio catalogo.
+ * **O mínimo de três letras** existe porque `pe` casaria com meio catálogo.
  * Abaixo disso a consulta nem e disparada, e o painel mostra as buscas
  * recentes, que e o que ajuda quem abriu a lupa sem um termo em mente.
  *
- * **As buscas recentes** ficam so no `localStorage` deste navegador. Nao vao
- * para a API e nao se ligam a conta nenhuma.
+ * **As buscas recentes** ficam só no `localStorage` deste navegador. Não vão
+ * para a API e não se ligam a conta nenhuma.
  *
  * O foco e preso pelo mesmo `useDialog` do modal e da gaveta: abrir a busca
- * com o teclado e ficar preso atras dela seria pior do que nao ter atalho.
+ * com o teclado e ficar preso atrás dela seria pior do que não ter atalho.
  */
 interface SearchOverlayProps {
   open: boolean;
   onClose: () => void;
 }
 
-/** Quanto tempo o campo espera a digitacao parar. */
+/** Quanto tempo o campo espera a digitação parar. */
 const DEBOUNCE_MS = 300;
 
 export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
@@ -50,13 +50,13 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   const { ref, onOverlayClick } = useDialog<HTMLDivElement>({ open, onClose });
 
-  // O campo volta a ficar vazio a cada abertura: a busca anterior ja virou
-  // historico, e reabrir a lupa com o termo antigo obrigaria a apagar antes
+  // O campo volta a ficar vazio a cada abertura: a busca anterior já virou
+  // histórico, e reabrir a lupa com o termo antigo obrigaria a apagar antes
   // de digitar.
   //
   // Ajustado durante o render, comparando com o estado anterior de `open`, e
-  // nao num efeito — o efeito limparia o campo um quadro depois de a busca
-  // ja ter aparecido com o texto velho.
+  // não num efeito — o efeito limparia o campo um quadro depois de a busca
+  // já ter aparecido com o texto velho.
   const [wasOpen, setWasOpen] = useState(open);
 
   if (wasOpen !== open) {
@@ -95,7 +95,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const searching = debounced.length >= MIN_SEARCH_LENGTH;
 
   return createPortal(
-    // O veu fecha no clique; o equivalente de teclado e o Escape, tratado
+    // O véu fecha no clique; o equivalente de teclado e o Escape, tratado
     // pelo `useDialog`. Ver a nota em `modal.tsx`.
     // oxlint-disable-next-line click-events-have-key-events, no-static-element-interactions
     <div className={styles.overlay} onClick={onOverlayClick}>
@@ -108,8 +108,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         tabIndex={-1}
         className={styles.panel}
       >
-        {/* `<search>` e o marco de busca da pagina — o mesmo papel que
-            `role="search"` faria, com o elemento que o HTML ja tem para
+        {/* `<search>` e o marco de busca da página — o mesmo papel que
+            `role="search"` faria, com o elemento que o HTML já tem para
             isso. Quem navega por marcos chega aqui direto. */}
         <search>
           <form className={styles.form} onSubmit={submit}>
@@ -117,8 +117,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
             <input
               type="search"
-              // O foco entra aqui porque e o primeiro focavel do dialogo — e
-              // quem abre a busca quer digitar, nao procurar onde clicar.
+              // O foco entra aqui porque e o primeiro focável do diálogo — e
+              // quem abre a busca quer digitar, não procurar onde clicar.
               value={term}
               onChange={(event) => {
                 setTerm(event.target.value);

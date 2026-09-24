@@ -6,12 +6,12 @@ import { CategoriesService } from './categories.service.js';
 import { PublicCategoriesController } from './public-categories.controller.js';
 
 /**
- * Categorias do catalogo, no painel e na vitrine.
+ * Categorias do catálogo, no painel e na vitrine.
  *
- * Registra tambem o model `Product` — nao para gerenciar produto, mas porque
+ * Registra também o model `Product` — não para gerenciar produto, mas porque
  * duas regras daqui dependem dele: a contagem que o menu exibe e a recusa em
- * excluir categoria que ainda tem produto. O modulo de produtos registra o
- * mesmo model por conta propria; `forFeature` repetido e idempotente.
+ * excluir categoria que ainda tem produto. O módulo de produtos registra o
+ * mesmo model por conta própria; `forFeature` repetido e idempotente.
  */
 @Module({
   imports: [

@@ -7,37 +7,37 @@ import {
 } from './admin.types';
 
 /**
- * As regras de pagamento, enquanto estao sendo editadas.
+ * As regras de pagamento, enquanto estão sendo editadas.
  *
  * ## Por que o rascunho guarda texto
  *
- * Mesma razao do cadastro de produto e da tabela de taxas: no banco os juros
- * sao `1.99` e a parcela minima e `2000`, na tela e o que a dona esta
+ * Mesma razão do cadastro de produto e da tabela de taxas: no banco os juros
+ * são `1.99` e a parcela mínima e `2000`, na tela e o que a dona esta
  * digitando, e no meio do caminho ela passa por `1`, `1,` e `1,9` — nenhum
- * dos quais e um numero. A conversao acontece uma vez, na saida, depois de
+ * dos quais e um número. A conversão acontece uma vez, na saída, depois de
  * validar.
  *
  * ## Por que os percentuais passam por `centsFromInput`
  *
- * `1,99%` e um numero com duas casas, exatamente como `R$ 1,99` e um valor
+ * `1,99%` e um número com duas casas, exatamente como `R$ 1,99` e um valor
  * com duas casas. Ler com `parseFloat` o texto em reais e o erro que faz
  * `19.99 * 100` virar `1998,9999...`; ler em centesimos inteiros e dividir
- * por cem uma vez so devolve o `1.99` que o servidor espera.
+ * por cem uma vez só devolve o `1.99` que o servidor espera.
  *
- * ## O que esta tela nao valida
+ * ## O que esta tela não valida
  *
- * Nada alem do que o servidor validaria. A chave PIX e a excecao aparente:
+ * Nada além do que o servidor validaria. A chave PIX e a exceção aparente:
  * ela e conferida aqui **porque** o servidor a confere contra o tipo, e a
  * viagem de ida e volta para descobrir que "CPF" estava marcado com um
  * e-mail dentro custa mais do que a copia da regra. O servidor continua sendo
  * quem decide.
  */
 
-/** As regras como a tela as carrega, com os numeros em texto. */
+/** As regras como a tela as carrega, com os números em texto. */
 export interface PaymentDraft {
   acceptsPix: boolean;
   pixKeyType: PixKeyType;
-  /** Como a dona a le: com ponto e traco, do jeito que o banco mostra. */
+  /** Como a dona a lê: com ponto e traço, do jeito que o banco mostra. */
   pixKey: string;
   /** Percentual inteiro. `5` e cinco por cento. */
   pixDiscount: string;
@@ -46,7 +46,7 @@ export interface PaymentDraft {
   interestFreeUpTo: string;
   /** `1,99`. Duas casas, porque a maquininha cobra assim. */
   monthlyInterest: string;
-  /** `20,00`. Zero e legitimo: e a loja que nao tem parcela minima. */
+  /** `20,00`. Zero e legitimo: e a loja que não tem parcela mínima. */
   minInstallment: string;
 }
 
@@ -54,15 +54,15 @@ export interface PaymentDraft {
 export type PaymentErrors = Partial<Record<keyof PaymentDraft, string>>;
 
 /**
- * Um aviso: o servidor aceita, e mesmo assim nao e o que a dona quis.
+ * Um aviso: o servidor aceita, e mesmo assim não e o que a dona quis.
  *
- * Nao sao erros — bloquear o salvamento por causa deles seria a tela
- * discordando da API. Sao os tres jeitos de configurar esta tela de um modo
- * que *parece* certo aqui e nao aparece do outro lado, e cada um deles so se
+ * Não são erros — bloquear o salvamento por causa deles seria a tela
+ * discordando da API. São os três jeitos de configurar esta tela de um modo
+ * que *parece* certo aqui e não aparece do outro lado, e cada um deles só se
  * descobre quando um cliente reclama.
  *
  * O `scope` diz onde o aviso mora: dentro do bloco do PIX, dentro do bloco do
- * cartao, ou acima dos dois quando e a loja inteira que fica sem forma de
+ * cartão, ou acima dos dois quando e a loja inteira que fica sem forma de
  * pagamento.
  */
 export interface PaymentWarning {
@@ -93,9 +93,9 @@ export const PIX_KEY_PLACEHOLDERS: Record<PixKeyType, string> = {
 /**
  * As mesmas frases do backend, palavra por palavra.
  *
- * Iguais de proposito: se um dia a checagem daqui deixar passar algo que a de
- * la recusa, a dona vai ler a mesma mensagem nos dois lugares e nao vai
- * precisar descobrir que sao dois sistemas.
+ * Iguais de propósito: se um dia a checagem daqui deixar passar algo que a de
+ * lá recusa, a dona vai ler a mesma mensagem nos dois lugares e não vai
+ * precisar descobrir que são dois sistemas.
  */
 export const PIX_KEY_MESSAGES: Record<PixKeyType, string> = {
   cpf: 'A chave PIX do tipo CPF deve ter 11 digitos.',
@@ -105,13 +105,13 @@ export const PIX_KEY_MESSAGES: Record<PixKeyType, string> = {
   random: 'A chave aleatória e o código de 36 caracteres que o banco gera.',
 };
 
-/** Chave aleatoria: UUID, do jeito que o banco a entrega. */
+/** Chave aleatória: UUID, do jeito que o banco a entrega. */
 const RANDOM_KEY = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
-/** Suficiente para pegar erro de digitacao; o banco valida o resto. */
+/** Suficiente para pegar erro de digitação; o banco valida o resto. */
 const EMAIL_KEY = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/;
 
-/** Pontuacao que vem colada junto e que a chave nao guarda. */
+/** Pontuação que vem colada junto e que a chave não guarda. */
 const PUNCTUATION = /[\s.\-()/+]/g;
 
 /** Telefone em formato internacional, como o PIX o registra. */
@@ -123,16 +123,16 @@ const DEFAULT_COUNTRY_CODE = '55';
 const BRAZILIAN_WITHOUT_COUNTRY = /^[1-9][0-9]\d{8,9}$/;
 
 /**
- * A chave no formato em que o PIX a registra, ou `null` quando ela nao
+ * A chave no formato em que o PIX a registra, ou `null` quando ela não
  * corresponde ao tipo escolhido.
  *
  * Copia de `normalizePixKey` do backend, inclusive no `+55` que ele acrescenta
- * ao telefone sem pais. A copia tem que ser fiel por uma razao que nao e
- * cosmetica: `changesOf` compara o resultado disto com o que o servidor
- * devolveu. Se as duas normalizacoes divergirem, o campo se acharia sujo a
+ * ao telefone sem pais. A copia tem que ser fiel por uma razão que não e
+ * cosmética: `changesOf` compara o resultado disto com o que o servidor
+ * devolveu. Se as duas normalizações divergirem, o campo se acharia sujo a
  * cada abertura da tela e reenviaria o mesmo valor para sempre.
  *
- * Vazio e resposta valida: e a loja que ainda nao configurou a chave.
+ * Vazio e resposta valida: e a loja que ainda não configurou a chave.
  */
 export function normalizePixKey(value: string, type: PixKeyType): string | null {
   const trimmed = value.trim();
@@ -171,7 +171,7 @@ export function normalizePixKey(value: string, type: PixKeyType): string | null 
     ? `${DEFAULT_COUNTRY_CODE}${digits}`
     : digits;
 
-  // O `+` faz parte da chave de telefone, ao contrario do numero do WhatsApp,
+  // O `+` faz parte da chave de telefone, ao contrário do número do WhatsApp,
   // onde ele quebraria o link `wa.me`.
   return PHONE_DIGITS.test(international) ? `+${international}` : null;
 }
@@ -179,13 +179,13 @@ export function normalizePixKey(value: string, type: PixKeyType): string | null 
 /**
  * A chave gravada, escrita do jeito que a dona a reconhece.
  *
- * O banco guarda `12345678901`, e ninguem confere onze digitos corridos
- * olhando. Conferir a chave e a unica coisa que se faz neste campo, e a
- * pontuacao e o que torna isso possivel num relance.
+ * O banco guarda `12345678901`, e ninguém confere onze digitos corridos
+ * olhando. Conferir a chave e a única coisa que se faz neste campo, e a
+ * pontuação e o que torna isso possível num relance.
  *
- * Nao e mascara enquanto se digita, de proposito: reposicionar o cursor a
- * cada tecla e o jeito mais rapido de fazer alguem errar a chave. A formatacao
- * acontece ao abrir a tela; `normalizePixKey` desfaz na saida.
+ * Não e máscara enquanto se digita, de propósito: reposicionar o cursor a
+ * cada tecla e o jeito mais rápido de fazer alguém errar a chave. A formatação
+ * acontece ao abrir a tela; `normalizePixKey` desfaz na saída.
  */
 export function prettyPixKey(key: string, type: PixKeyType): string {
   if (type === 'cpf' && key.length === 11) {
@@ -209,7 +209,7 @@ export function prettyPixKey(key: string, type: PixKeyType): string {
 
 /* ---- Abrir e fechar o rascunho ---------------------------------------------- */
 
-/** As regras salvas, abertas para edicao. */
+/** As regras salvas, abertas para edição. */
 export function draftFromSettings(settings: AdminPaymentSettings): PaymentDraft {
   return {
     acceptsPix: settings.acceptsPix,
@@ -227,10 +227,10 @@ export function draftFromSettings(settings: AdminPaymentSettings): PaymentDraft 
 /**
  * O que impede as regras de serem salvas.
  *
- * Os campos do cartao continuam sendo validados com o cartao desligado. A
- * alternativa — deixar passar qualquer coisa enquanto a opcao esta fora do ar
- * — grava um `maxInstallments` invalido que so vai reclamar meses depois,
- * quando a dona religar o cartao numa promocao e o `PATCH` voltar 400 sem
+ * Os campos do cartão continuam sendo validados com o cartão desligado. A
+ * alternativa — deixar passar qualquer coisa enquanto a opção esta fora do ar
+ * — grava um `maxInstallments` inválido que só vai reclamar meses depois,
+ * quando a dona religar o cartão numa promoção e o `PATCH` voltar 400 sem
  * ela ter tocado naquele campo.
  */
 export function validatePayment(draft: PaymentDraft): PaymentErrors {
@@ -265,8 +265,8 @@ export function validatePayment(draft: PaymentDraft): PaymentErrors {
   } else if (free > PAYMENT_LIMITS.installments) {
     errors.interestFreeUpTo = `O limite do sistema e de ${String(PAYMENT_LIMITS.installments)} parcelas.`;
   } else if (max !== null && free > max) {
-    // A mesma recusa do schema, antecipada: parcela sem juros alem do maximo
-    // de parcelas nao significa nada.
+    // A mesma recusa do schema, antecipada: parcela sem juros além do máximo
+    // de parcelas não significa nada.
     errors.interestFreeUpTo = 'Sem juros até mais parcelas do que a loja aceita parcelar.';
   }
 
@@ -294,10 +294,10 @@ export function hasPaymentErrors(errors: PaymentErrors): boolean {
 }
 
 /**
- * O que o servidor aceita e a dona provavelmente nao quis.
+ * O que o servidor aceita e a dona provavelmente não quis.
  *
- * Roda sobre o rascunho, e nao sobre o que esta salvo: o objetivo e a dona
- * ler o aviso **antes** de salvar, enquanto ainda esta com a mao no campo que
+ * Roda sobre o rascunho, e não sobre o que esta salvo: o objetivo e a dona
+ * ler o aviso **antes** de salvar, enquanto ainda esta com a mão no campo que
  * o causou.
  */
 export function warningsOf(draft: PaymentDraft): PaymentWarning[] {
@@ -310,9 +310,9 @@ export function warningsOf(draft: PaymentDraft): PaymentWarning[] {
     });
   }
 
-  // O caso que mais acontece: a opcao fica ligada, a chave nunca e
+  // O caso que mais acontece: a opção fica ligada, a chave nunca e
   // preenchida, e a rota publica devolve `hasKey: false` — o PIX simplesmente
-  // nao aparece, sem erro nenhum em lugar nenhum.
+  // não aparece, sem erro nenhum em lugar nenhum.
   if (draft.acceptsPix && draft.pixKey.trim() === '') {
     warnings.push({
       scope: 'pix',
@@ -342,15 +342,15 @@ export function warningsOf(draft: PaymentDraft): PaymentWarning[] {
 }
 
 /**
- * So o que mudou em relacao ao que veio do servidor.
+ * Só o que mudou em relação ao que veio do servidor.
  *
  * Devolve `null` quando nada mudou, e quem chama usa isso para desligar o
- * botao de salvar. Mandar o documento inteiro a cada gravacao sobrescreveria
+ * botão de salvar. Mandar o documento inteiro a cada gravação sobrescreveria
  * com valores antigos o que outra aba acabou de mudar — e este e um documento
- * unico, entao "outra aba" inclui a propria dona no celular.
+ * único, então "outra aba" inclui a própria dona no celular.
  *
  * A chave e o tipo viajam juntos quando qualquer um dos dois muda: o servidor
- * confere o par, e um `PATCH` so com o tipo o obrigaria a adivinhar contra
+ * confere o par, e um `PATCH` só com o tipo o obrigaria a adivinhar contra
  * qual chave conferir.
  */
 export function changesOf(
@@ -408,35 +408,35 @@ export function changesOf(
 }
 
 /**
- * Ha algo pendente na tela.
+ * Há algo pendente na tela.
  *
- * Nao e o mesmo que `changesOf(...) !== null`, e a diferenca importa: uma
- * chave PIX escrita errada para o tipo escolhido nao vira mudanca nenhuma —
- * nao ha o que mandar —, e sem isto aqui a dona digitaria a chave errada e a
- * tela nao reagiria de jeito nenhum. Nem barra, nem erro, nem nada.
+ * Não e o mesmo que `changesOf(...) !== null`, e a diferença importa: uma
+ * chave PIX escrita errada para o tipo escolhido não vira mudanca nenhuma —
+ * não há o que mandar —, e sem isto aqui a dona digitaria a chave errada e a
+ * tela não reagiria de jeito nenhum. Nem barra, nem erro, nem nada.
  *
- * Com o campo invalido contando como pendencia, a barra aparece, o botao
+ * Com o campo inválido contando como pendência, a barra aparece, o botão
  * revela o erro e o caminho se fecha.
  */
 export function isDirty(draft: PaymentDraft, settings: AdminPaymentSettings): boolean {
   return changesOf(draft, settings) !== null || hasPaymentErrors(validatePayment(draft));
 }
 
-/* ---- A previa ---------------------------------------------------------------- */
+/* ---- A prévia ---------------------------------------------------------------- */
 
 /**
- * As regras do rascunho, no formato que o calculo de parcelas consome.
+ * As regras do rascunho, no formato que o cálculo de parcelas consome.
  *
- * Do rascunho e nao do que esta salvo: e isso que faz a previa ser ao vivo. A
- * dona troca `3` por `6` no limite sem juros e ve a lista inteira mudar antes
- * de salvar, que e o unico momento em que a decisao ainda pode ser outra.
+ * Do rascunho e não do que esta salvo: e isso que faz a prévia ser ao vivo. A
+ * dona troca `3` por `6` no limite sem juros e vê a lista inteira mudar antes
+ * de salvar, que e o único momento em que a decisão ainda pode ser outra.
  *
- * Devolve `null` com o cartao desligado ou com um numero que ainda nao e
- * numero — a previa some em vez de mostrar uma conta feita sobre zero.
+ * Devolve `null` com o cartão desligado ou com um número que ainda não e
+ * número — a prévia some em vez de mostrar uma conta feita sobre zero.
  *
- * O limite sem juros e aparado pelo maximo de parcelas. Um rascunho com "sem
- * juros ate 12" e "parcela ate 6" e recusado na validacao, mas ele existe no
- * meio da digitacao, e sem o aparo a previa anunciaria juros zero em tudo por
+ * O limite sem juros e aparado pelo máximo de parcelas. Um rascunho com "sem
+ * juros até 12" e "parcela até 6" e recusado na validação, mas ele existe no
+ * meio da digitação, e sem o aparo a prévia anunciaria juros zero em tudo por
  * causa de um estado que dura dois caracteres.
  */
 export function previewCard(draft: PaymentDraft): PublicCard | null {
@@ -469,7 +469,7 @@ export function previewCard(draft: PaymentDraft): PublicCard | null {
   };
 }
 
-/** O que a previa do PIX mostra, ou `null` com o PIX desligado. */
+/** O que a prévia do PIX mostra, ou `null` com o PIX desligado. */
 export interface PixPreview {
   discountCents: number;
   totalCents: number;
@@ -480,7 +480,7 @@ export interface PixPreview {
  *
  * Copia de `pixQuoteOf` do backend, sem a parte da entrega: aqui o valor
  * digitado e o subtotal de produtos, e o desconto do PIX nunca incide sobre o
- * frete — ele nao e margem da loja, e ja foi pago a quem leva.
+ * frete — ele não e margem da loja, e já foi pago a quem leva.
  *
  * `Math.round` na virada do centavo, a favor de quem paga, como no servidor.
  */
@@ -500,12 +500,12 @@ export function pixPreview(draft: PaymentDraft, subtotalCents: number): PixPrevi
   return { discountCents, totalCents: subtotalCents - discountCents };
 }
 
-/* ---- Numeros ------------------------------------------------------------------ */
+/* ---- Números ------------------------------------------------------------------ */
 
 /**
- * Um inteiro escrito a mao, ou `null`.
+ * Um inteiro escrito a mão, ou `null`.
  *
- * `Number.parseInt` nao serve: ele le `12abc` como `12` e `1,5` como `1`, e
+ * `Number.parseInt` não serve: ele lê `12abc` como `12` e `1,5` como `1`, e
  * os dois entrariam no `PATCH` como se a dona tivesse digitado outra coisa.
  */
 function integerOf(value: string): number | null {
@@ -515,12 +515,12 @@ function integerOf(value: string): number | null {
 }
 
 /**
- * Um percentual com ate duas casas, ou `null`.
+ * Um percentual com até duas casas, ou `null`.
  *
  * Passa por `centsFromInput` porque `1,99%` tem a mesma forma que `R$ 1,99`:
- * ler em centesimos inteiros e dividir por cem uma vez so e o que devolve
- * exatamente `1.99`, e nao o `1.9900000000000002` que um `parseFloat` sobre
- * texto com virgula acaba produzindo depois de qualquer conta.
+ * ler em centesimos inteiros e dividir por cem uma vez só e o que devolve
+ * exatamente `1.99`, e não o `1.9900000000000002` que um `parseFloat` sobre
+ * texto com vírgula acaba produzindo depois de qualquer conta.
  */
 export function percentFromInput(value: string): number | null {
   const hundredths = centsFromInput(value);

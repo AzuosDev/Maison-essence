@@ -1,9 +1,9 @@
 /*
  * A tela de recado da loja: 404, erro de rota, lista vazia.
  *
- * Centralizada, com muito ar em volta e um filete dourado em cima do titulo.
- * A ideia e que um erro continue parecendo a Maison Essence, e nao a tela
- * cinza padrao do navegador.
+ * Centralizada, com muito ar em volta e um filete dourado em cima do título.
+ * A ideia e que um erro continue parecendo a Maison Essence, e não a tela
+ * cinza padrão do navegador.
  */
 
 .screen {
@@ -18,7 +18,7 @@
   text-align: center;
 }
 
-/* O numero do erro, quando ha: discreto, acima do titulo. */
+/* O número do erro, quando há: discreto, acima do título. */
 .code {
   font-family: var(--font-body);
   font-size: var(--text-12);
@@ -61,7 +61,7 @@
 }
 
 /*
- * O detalhe tecnico do erro. Fica em `<details>`, fechado: o cliente nao
+ * O detalhe técnico do erro. Fica em `<details>`, fechado: o cliente não
  * precisa dele, e quem esta depurando abre em um clique.
  */
 .details {

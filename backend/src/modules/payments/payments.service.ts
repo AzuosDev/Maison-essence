@@ -22,7 +22,7 @@ import type {
   PaymentSettingsModel,
 } from './schemas/payment-settings.schema.js';
 
-/** Campos de valor unico: o que veio substitui o que estava. */
+/** Campos de valor único: o que veio substitui o que estava. */
 const SCALARS = [
   'acceptsPix',
   'pixDiscountPercent',
@@ -36,9 +36,9 @@ const SCALARS = [
 /**
  * As regras de pagamento da loja.
  *
- * Nenhum pagamento e processado aqui, e isso nao e limitacao: e o desenho. A
+ * Nenhum pagamento e processado aqui, e isso não e limitação: e o desenho. A
  * loja informa o que aceita, o cliente paga por fora — PIX no aplicativo do
- * banco, cartao na maquininha ou no link que a dona manda — e o sistema so
+ * banco, cartão na maquininha ou no link que a dona manda — e o sistema só
  * precisa acertar as contas que aparecem antes disso.
  */
 @Injectable()
@@ -49,10 +49,10 @@ export class PaymentsService {
   ) {}
 
   /**
-   * O documento unico, criado com os padroes na primeira leitura.
+   * O documento único, criado com os padrões na primeira leitura.
    *
-   * E por aqui que os outros modulos leem as regras: o calculo de parcelas e
-   * o de desconto do PIX. Ler do banco a cada pedido, e nao de uma constante
+   * E por aqui que os outros módulos leem as regras: o cálculo de parcelas e
+   * o de desconto do PIX. Ler do banco a cada pedido, e não de uma constante
    * do build, e o que faz um reajuste de juros valer no pedido seguinte.
    */
   current(): Promise<PaymentSettingsDocument> {
@@ -73,9 +73,9 @@ export class PaymentsService {
   /**
    * Grava as regras e registra na auditoria o que mudou.
    *
-   * Mesma trilha das configuracoes da loja, e pelo mesmo motivo: sao regras
-   * que mexem no valor que o cliente paga. "Quem baixou a parcela minima?" e
-   * "quando o desconto do PIX virou 15%?" sao perguntas que aparecem depois,
+   * Mesma trilha das configurações da loja, e pelo mesmo motivo: são regras
+   * que mexem no valor que o cliente paga. "Quem baixou a parcela mínima?" e
+   * "quando o desconto do PIX virou 15%?" são perguntas que aparecem depois,
    * olhando um pedido antigo, e a resposta precisa estar em algum lugar.
    */
   async update(
@@ -113,9 +113,9 @@ export class PaymentsService {
   /**
    * O desconto do PIX de um pedido.
    *
-   * Recebe o subtotal e a entrega separados porque o desconto so incide sobre
-   * o primeiro. Com o PIX desligado nao ha desconto nenhum — nem quando a
-   * dona deixou um percentual gravado de uma promocao anterior.
+   * Recebe o subtotal e a entrega separados porque o desconto só incide sobre
+   * o primeiro. Com o PIX desligado não há desconto nenhum — nem quando a
+   * dona deixou um percentual gravado de uma promoção anterior.
    */
   async pixQuote(subtotalCents: number, deliveryFeeCents: number): Promise<PixQuote> {
     const settings = await this.current();
@@ -130,10 +130,10 @@ export class PaymentsService {
   /**
    * Aplica a chave PIX conferindo-a contra o tipo.
    *
-   * A checagem roda tambem quando so o tipo mudou: trocar "e-mail" por "CPF"
-   * sem trocar a chave deixaria gravado um par que o cliente nao consegue
-   * usar, e a rota publica passaria a anunciar um tipo que nao corresponde ao
-   * que esta la.
+   * A checagem roda também quando só o tipo mudou: trocar "e-mail" por "CPF"
+   * sem trocar a chave deixaria gravado um par que o cliente não consegue
+   * usar, e a rota publica passaria a anunciar um tipo que não corresponde ao
+   * que esta lá.
    */
   private applyPixKey(
     settings: PaymentSettingsDocument,

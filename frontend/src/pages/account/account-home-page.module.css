@@ -1,7 +1,7 @@
 /*
  * Os dados de contato.
  *
- * Formulario curto numa coluna estreita: tres informacoes nao pedem duas
+ * Formulário curto numa coluna estreita: três informações não pedem duas
  * colunas, e um campo de nome esticado por 1000px parece pedir mais do que
  * pede.
  */
@@ -35,11 +35,11 @@
 }
 
 /*
- * O telefone, que nao se edita.
+ * O telefone, que não se edita.
  *
- * Desenhado como informacao e nao como campo desabilitado: um input cinza
- * convida ao clique e devolve silencio. Aqui a resposta esta escrita — por
- * que ele nao muda e o que fazer para muda-lo.
+ * Desenhado como informação e não como campo desabilitado: um input cinza
+ * convida ao clique e devolve silêncio. Aqui a resposta esta escrita — por
+ * que ele não muda e o que fazer para muda-lo.
  */
 .locked {
   padding: var(--space-12) var(--space-16);

@@ -20,40 +20,40 @@ import styles from './system-users-page.module.css';
 /**
  * As contas que entram no painel.
  *
- * ## A senha temporaria existe uma vez
+ * ## A senha temporária existe uma vez
  *
- * E o criterio que define esta tela. Na criacao, o painel gera a senha
+ * E o critério que define esta tela. Na criação, o painel gera a senha
  * (`generateTemporaryPassword`), manda no corpo da chamada e mostra o que
- * gerou — o servidor guarda so o hash argon2. No reset, quem gera e o
- * servidor e a senha volta no corpo da resposta, tambem uma vez.
+ * gerou — o servidor guarda só o hash argon2. No reset, quem gera e o
+ * servidor e a senha volta no corpo da resposta, também uma vez.
  *
  * Nos dois caminhos ela vai para o estado local desta tela e para mais lugar
- * nenhum: nao entra no cache do React Query, nao vai para a URL, nao e
- * gravada. Fechar o dialogo a apaga, e o unico jeito de ter outra e resetar
- * de novo — o que e barato, e e exatamente por isso que nao ha um lugar onde
+ * nenhum: não entra no cache do React Query, não vai para a URL, não e
+ * gravada. Fechar o diálogo a apaga, e o único jeito de ter outra e resetar
+ * de novo — o que e barato, e e exatamente por isso que não há um lugar onde
  * ela fique guardada.
  *
- * ## Tudo o que destroi passa por uma confirmacao que nomeia o alvo
+ * ## Tudo o que destroi passa por uma confirmação que nomeia o alvo
  *
- * Desativar, resetar senha e encerrar sessoes atingem outra pessoa, no meio
- * do expediente dela. As tres param no `ConfirmDialog`, que mostra o e-mail
- * do alvo em destaque — numa tabela de linhas parecidas, conferir o endereco
+ * Desativar, resetar senha e encerrar sessões atingem outra pessoa, no meio
+ * do expediente dela. As três param no `ConfirmDialog`, que mostra o e-mail
+ * do alvo em destaque — numa tabela de linhas parecidas, conferir o endereço
  * e o que separa "desativar o acesso antigo" de "desativar quem esta
  * atendendo agora".
  *
  * ## O interruptor e otimista, e o erro aqui e comum
  *
  * `useSetUserStatus` aplica a mudanca no cache antes da resposta. O servidor
- * recusa por dois motivos reais — "voce nao pode desativar a si mesmo" e
- * "este e o ultimo administrador ativo" —, e quando recusa o cache volta e o
- * aviso traz a frase do servidor, que ja vem escrita para ser lida.
+ * recusa por dois motivos reais — "você não pode desativar a si mesmo" e
+ * "este e o último administrador ativo" —, e quando recusa o cache volta e o
+ * aviso traz a frase do servidor, que já vem escrita para ser lida.
  *
  * ## A busca e no cliente
  *
- * `GET /users` devolve a lista inteira, sem paginacao nem filtro: e uma
- * decisao do backend que combina com o tamanho do problema — uma loja tem
- * tres a dez contas. Mandar `?q=` para uma rota que o ignora criaria um
- * filtro que parece funcionar e nao funciona.
+ * `GET /users` devolve a lista inteira, sem paginação nem filtro: e uma
+ * decisão do backend que combina com o tamanho do problema — uma loja tem
+ * três a dez contas. Mandar `?q=` para uma rota que o ignora criaria um
+ * filtro que parece funcionar e não funciona.
  */
 export default function SystemUsersPage() {
   const me = useAdminUser();
@@ -102,9 +102,9 @@ export default function SystemUsersPage() {
       return;
     }
 
-    // A senha e gerada aqui, no envio, e nao no estado do formulario: se a
-    // chamada falhar por e-mail repetido, a proxima tentativa leva uma senha
-    // nova em vez de reusar a que ja saiu daqui uma vez.
+    // A senha e gerada aqui, no envio, e não no estado do formulário: se a
+    // chamada falhar por e-mail repetido, a próxima tentativa leva uma senha
+    // nova em vez de reusar a que já saiu daqui uma vez.
     const temporaryPassword = generateTemporaryPassword();
 
     create.mutate(
@@ -139,7 +139,7 @@ export default function SystemUsersPage() {
               title: user.isActive
                 ? `${user.name} foi desativado.`
                 : `${user.name} voltou a ter acesso.`,
-              ...(user.isActive ? { description: 'As sessões abertas dele cairam na hora.' } : {}),
+              ...(user.isActive ? { description: 'As sessões abertas dele caíram na hora.' } : {}),
               variant: 'success',
             });
           },
@@ -188,8 +188,8 @@ export default function SystemUsersPage() {
       onError: (failure) => {
         closeConfirm();
 
-        // O 404 aqui nao e falha: a rota nao existe. O aviso manda para a
-        // acao que produz o mesmo efeito hoje, em vez de pedir que se tente
+        // O 404 aqui não e falha: a rota não existe. O aviso manda para a
+        // ação que produz o mesmo efeito hoje, em vez de pedir que se tente
         // de novo um caminho que nunca vai responder.
         toast({
           title: isMissingRoute(failure)
@@ -315,7 +315,7 @@ interface ConfirmCopy {
   tone: 'danger' | 'neutral';
 }
 
-/** O texto de cada confirmacao. Sempre diz o que acontece com a pessoa. */
+/** O texto de cada confirmação. Sempre diz o que acontece com a pessoa. */
 function copyFor({ kind, user }: Confirmation): ConfirmCopy {
   if (kind === 'status') {
     return user.isActive
@@ -351,11 +351,11 @@ function copyFor({ kind, user }: Confirmation): ConfirmCopy {
 }
 
 /**
- * A busca: nome ou e-mail, sem diferenciar maiusculas.
+ * A busca: nome ou e-mail, sem diferenciar maiúsculas.
  *
  * Exportada para o teste. Um `includes` resolve uma lista de dez contas, e
- * uma busca tolerante a erro de digitacao seria codigo para um problema que
- * esta tela nao tem.
+ * uma busca tolerante a erro de digitação seria código para um problema que
+ * esta tela não tem.
  */
 export function filterUsers(users: readonly SystemUser[], search: string): SystemUser[] {
   const term = search.trim().toLowerCase();

@@ -1,38 +1,38 @@
 import type { ProductListParams } from './catalog.keys';
 
 /**
- * Os filtros da vitrine, em tres formatos.
+ * Os filtros da vitrine, em três formatos.
  *
- * O mesmo filtro precisa existir de tres jeitos, e este arquivo e a unica
+ * O mesmo filtro precisa existir de três jeitos, e este arquivo e a única
  * ponte entre eles:
  *
  * 1. **Na URL** — `?marca=lattafa&min=100&estoque=1`. E o formato que o
- *    cliente ve, copia e manda no WhatsApp, e por isso as chaves estao em
- *    portugues e o preco esta em reais: `min=100` se le, `minPrice=10000`
- *    nao.
- * 2. **Em memoria** — `CatalogFilters`, com tipo, ja validado e com o preco
- *    em centavos, que e a moeda de todo o resto do codigo.
+ *    cliente vê, copia e manda no WhatsApp, e por isso as chaves estão em
+ *    português e o preço esta em reais: `min=100` se lê, `minPrice=10000`
+ *    não.
+ * 2. **Em memória** — `CatalogFilters`, com tipo, já validado e com o preço
+ *    em centavos, que e a moeda de todo o resto do código.
  * 3. **No fio** — `ProductListParams`, exatamente os nomes que
  *    `GET /products` aceita.
  *
- * A traducao do terceiro formato nao e cosmetica. O backend valida a query
- * com `forbidNonWhitelisted`, entao um parametro que ele nao conhece nao e
+ * A tradução do terceiro formato não e cosmética. O backend valida a query
+ * com `forbidNonWhitelisted`, então um parâmetro que ele não conhece não e
  * ignorado: e um 400. Mandar a URL da tela direto para a API derrubaria a
- * listagem no primeiro filtro escrito em portugues.
+ * listagem no primeiro filtro escrito em português.
  *
- * Tudo aqui e funcao pura sobre `URLSearchParams`. Nao ha estado, nao ha
- * React e nao ha rede — e o que permite testar o criterio de aceite
- * ("aplicar tres filtros e recarregar mantem tudo") sem montar uma tela.
+ * Tudo aqui e função pura sobre `URLSearchParams`. Não há estado, não há
+ * React e não há rede — e o que permite testar o critério de aceite
+ * ("aplicar três filtros e recarregar mantem tudo") sem montar uma tela.
  */
 
-/* ---- Ordenacao -------------------------------------------------------- */
+/* ---- Ordenação -------------------------------------------------------- */
 
 /**
  * As ordens, com o nome que vai na URL.
  *
- * Em portugues pelo mesmo motivo das outras chaves, e mapeadas para o valor
- * que o backend aceita logo abaixo. Manter os dois vocabularios separados
- * significa que renomear `price_asc` no backend nao invalida nenhum link ja
+ * Em português pelo mesmo motivo das outras chaves, e mapeadas para o valor
+ * que o backend aceita logo abaixo. Manter os dois vocabulários separados
+ * significa que renomear `price_asc` no backend não inválida nenhum link já
  * compartilhado.
  */
 export const SORT_KEYS = [
@@ -70,7 +70,7 @@ const SORT_TO_API: Record<SortKey, string> = {
 export interface CatalogFilters {
   /** O termo buscado. Vazio fora de `/busca`. */
   q: string;
-  /** Marca exata. O backend casa sem diferenciar maiuscula. */
+  /** Marca exata. O backend casa sem diferenciar maiúscula. */
   brand: string;
   /** Em centavos, como todo dinheiro. `null` e "sem piso". */
   minCents: number | null;
@@ -78,13 +78,13 @@ export interface CatalogFilters {
   inStock: boolean;
   readyToShip: boolean;
   /**
-   * So produtos com desconto.
+   * Só produtos com desconto.
    *
-   * Nao existe como filtro em `GET /products` — ver `apiParamsFrom`, que
+   * Não existe como filtro em `GET /products` — ver `apiParamsFrom`, que
    * explica o que a vitrine faz no lugar.
    */
   onSale: boolean;
-  /** `null` deixa a escolha com o backend: relevancia com busca, novidade sem. */
+  /** `null` deixa a escolha com o backend: relevância com busca, novidade sem. */
   sort: SortKey | null;
   page: number;
 }
@@ -102,12 +102,12 @@ export const EMPTY_FILTERS: CatalogFilters = {
 };
 
 /**
- * O que a rota ja decidiu, e que portanto nao e escolha do cliente.
+ * O que a rota já decidiu, e que portanto não e escolha do cliente.
  *
  * `/categorias/amadeirados` fixa a categoria e `/pronta-entrega` fixa a
- * bandeira. Os dois viajam para a API como filtro, mas nao aparecem na barra
+ * bandeira. Os dois viajam para a API como filtro, mas não aparecem na barra
  * lateral nem contam como "filtro aplicado": desmarcar aquilo que e o
- * proprio endereco da pagina nao faria sentido.
+ * próprio endereço da página não faria sentido.
  */
 export interface CatalogContext {
   category?: string | undefined;
@@ -116,7 +116,7 @@ export interface CatalogContext {
 
 /* ---- URL -> estado ----------------------------------------------------- */
 
-/** As chaves como aparecem na barra de enderecos. */
+/** As chaves como aparecem na barra de endereços. */
 const KEYS = {
   q: 'q',
   brand: 'marca',
@@ -139,9 +139,9 @@ export function filtersFromSearch(search: URLSearchParams): CatalogFilters {
   return {
     q: (search.get(KEYS.q) ?? '').trim(),
     brand: (search.get(KEYS.brand) ?? '').trim(),
-    // Faixa invertida — `min=500&max=100`, que so acontece em link editado a
-    // mao — vira faixa nenhuma. O alternativo seria uma lista vazia sem
-    // explicacao nenhuma na tela.
+    // Faixa invertida — `min=500&max=100`, que só acontece em link editado a
+    // mão — vira faixa nenhuma. O alternativo seria uma lista vazia sem
+    // explicação nenhuma na tela.
     ...orderedRange(minCents, maxCents),
     inStock: flagFrom(search.get(KEYS.inStock)),
     readyToShip: flagFrom(search.get(KEYS.readyToShip)),
@@ -156,10 +156,10 @@ export function filtersFromSearch(search: URLSearchParams): CatalogFilters {
 /**
  * A query string de um estado de filtros.
  *
- * O que esta no padrao nao e escrito: um catalogo sem filtro nenhum tem a
- * URL limpa `/produtos`, e nao `/produtos?marca=&min=&pagina=1`. Alem de
- * legivel, isso mantem uma so URL por estado — duas grafias do mesmo recorte
- * seriam duas entradas de cache e duas paginas para o Google indexar.
+ * O que esta no padrão não e escrito: um catálogo sem filtro nenhum tem a
+ * URL limpa `/produtos`, e não `/produtos?marca=&min=&pagina=1`. Além de
+ * legível, isso mantem uma só URL por estado — duas grafias do mesmo recorte
+ * seriam duas entradas de cache e duas páginas para o Google indexar.
  */
 export function searchFromFilters(filters: CatalogFilters): URLSearchParams {
   const search = new URLSearchParams();
@@ -183,13 +183,13 @@ export function searchFromFilters(filters: CatalogFilters): URLSearchParams {
 /* ---- estado -> API ----------------------------------------------------- */
 
 /**
- * Teto de itens por pagina do backend (`MAX_PUBLIC_PAGE_SIZE`).
+ * Teto de itens por página do backend (`MAX_PUBLIC_PAGE_SIZE`).
  *
- * So e usado no modo "so com desconto", explicado logo abaixo.
+ * Só e usado no modo "só com desconto", explicado logo abaixo.
  */
 export const MAX_API_PAGE_SIZE = 48;
 
-/** Quantos produtos a vitrine mostra por pagina. */
+/** Quantos produtos a vitrine mostra por página. */
 export const PAGE_SIZE = 24;
 
 /**
@@ -197,19 +197,19 @@ export const PAGE_SIZE = 24;
  *
  * ## O filtro de desconto
  *
- * `GET /products` nao tem parametro de "so com desconto" — tem a ordem
- * `discount`, que poe os maiores descontos na frente. A vitrine se apoia
- * nisso: com o filtro ligado ela pede a ordem `discount` e a pagina cheia
+ * `GET /products` não tem parâmetro de "só com desconto" — tem a ordem
+ * `discount`, que põe os maiores descontos na frente. A vitrine se apoia
+ * nisso: com o filtro ligado ela pede a ordem `discount` e a página cheia
  * (48, o teto do backend), e descarta no cliente o que vier com desconto
- * zero. Como a ordem garante que todo produto em promocao vem antes de todo
- * produto sem promocao, o que sobra e exatamente o conjunto pedido — ate o
+ * zero. Como a ordem garante que todo produto em promoção vem antes de todo
+ * produto sem promoção, o que sobra e exatamente o conjunto pedido — até o
  * quadragesimo oitavo.
  *
- * A consequencia esta assumida e aparece na tela: passando de 48 produtos em
- * promocao ao mesmo tempo, a lista para no 48. Enquanto o backend estiver
- * fechado, e isto ou um filtro que mente na contagem. Um parametro
- * `hasDiscount` na API resolveria em uma linha, e ai esta funcao volta a ser
- * a traducao direta que e em todos os outros casos.
+ * A consequência esta assumida e aparece na tela: passando de 48 produtos em
+ * promoção ao mesmo tempo, a lista para no 48. Enquanto o backend estiver
+ * fechado, e isto ou um filtro que mente na contagem. Um parâmetro
+ * `hasDiscount` na API resolveria em uma linha, e aí esta função volta a ser
+ * a tradução direta que e em todos os outros casos.
  */
 export function apiParamsFrom(
   filters: CatalogFilters,
@@ -237,8 +237,8 @@ export function apiParamsFrom(
     params.maxPrice = filters.maxCents;
   }
 
-  // Bandeira desligada nao viaja: para o backend, `readyToShip=false` quer
-  // dizer "tanto faz", e mandar o campo a toa so engorda a chave de cache.
+  // Bandeira desligada não viaja: para o backend, `readyToShip=false` quer
+  // dizer "tanto faz", e mandar o campo a toa só engorda a chave de cache.
   if (filters.inStock) {
     params.inStock = true;
   }
@@ -248,8 +248,8 @@ export function apiParamsFrom(
   }
 
   if (filters.onSale) {
-    // A varredura unica descrita acima: uma pagina cheia, ja ordenada por
-    // desconto, que a tela recorta e pagina por conta propria.
+    // A varredura única descrita acima: uma página cheia, já ordenada por
+    // desconto, que a tela recorta e página por conta própria.
     params.sort = SORT_TO_API.desconto;
     params.page = 1;
     params.limit = MAX_API_PAGE_SIZE;
@@ -275,12 +275,12 @@ export function apiParamsFrom(
 /**
  * Quantos filtros o cliente aplicou.
  *
- * E o numero na bolinha do botao "Filtros" no celular. A faixa de preco
+ * E o número na bolinha do botão "Filtros" no celular. A faixa de preço
  * conta como um filtro mesmo com as duas pontas mexidas: para quem olha a
- * tela, arrastar o slider foi uma decisao, nao duas.
+ * tela, arrastar o slider foi uma decisão, não duas.
  *
- * O que a rota impos nao entra na conta. Em `/pronta-entrega`, a bandeira de
- * pronta entrega e o endereco da pagina, e nao um filtro para limpar.
+ * O que a rota impos não entra na conta. Em `/pronta-entrega`, a bandeira de
+ * pronta entrega e o endereço da página, e não um filtro para limpar.
  */
 export function countActiveFilters(filters: CatalogFilters, context: CatalogContext = {}): number {
   let count = 0;
@@ -309,24 +309,24 @@ export function countActiveFilters(filters: CatalogFilters, context: CatalogCont
 }
 
 /**
- * Limpa os filtros e preserva o que nao e filtro.
+ * Limpa os filtros e preserva o que não e filtro.
  *
  * O termo buscado fica: em `/busca?q=amadeirado`, "limpar filtros" quer
- * dizer "me mostre tudo o que casa com amadeirado", e nao "me tire desta
- * busca". A ordem tambem fica — e uma preferencia de leitura, e nao um
- * recorte do catalogo.
+ * dizer "me mostre tudo o que casa com amadeirado", e não "me tire desta
+ * busca". A ordem também fica — e uma preferência de leitura, e não um
+ * recorte do catálogo.
  */
 export function clearedFilters(filters: CatalogFilters): CatalogFilters {
   return { ...EMPTY_FILTERS, q: filters.q, sort: filters.sort };
 }
 
-/* ---- Conversoes -------------------------------------------------------- */
+/* ---- Conversões -------------------------------------------------------- */
 
 /**
  * `"100"` (reais, na URL) vira `10000` (centavos).
  *
- * Aceita so inteiro: o slider trabalha em reais cheios, e centavo na barra
- * de enderecos seria ruido num link que vai para o WhatsApp. Qualquer outra
+ * Aceita só inteiro: o slider trabalha em reais cheios, e centavo na barra
+ * de endereços seria ruído num link que vai para o WhatsApp. Qualquer outra
  * coisa — texto, negativo, vazio, acima do teto — vira `null`, que e "sem
  * limite". Link estragado abre a vitrine inteira, em vez de uma tela de erro.
  */
@@ -347,7 +347,7 @@ function centsToReais(cents: number | null): string {
 /**
  * Uma faixa em ordem, ou faixa nenhuma.
  *
- * `min` acima de `max` nao e um filtro estreito: e um filtro impossivel, que
+ * `min` acima de `max` não e um filtro estreito: e um filtro impossível, que
  * o backend obedeceria devolvendo zero produtos.
  */
 function orderedRange(
@@ -361,7 +361,7 @@ function orderedRange(
   return { minCents, maxCents };
 }
 
-/** `?estoque=1` liga; a ausencia e qualquer outro valor deixam desligado. */
+/** `?estoque=1` liga; a ausência e qualquer outro valor deixam desligado. */
 function flagFrom(raw: string | null): boolean {
   return raw === '1';
 }

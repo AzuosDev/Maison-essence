@@ -2,7 +2,7 @@
  * A sacola vazia.
  *
  * Centralizada, com respiro acima e abaixo: uma tela vazia apertada contra o
- * cabecalho parece erro de carregamento, e uma com ar parece uma escolha.
+ * cabeçalho parece erro de carregamento, e uma com ar parece uma escolha.
  */
 
 .empty {
@@ -39,7 +39,7 @@
 }
 
 .description {
-  /* Duas linhas de leitura, e nao uma faixa de texto atravessando a pagina. */
+  /* Duas linhas de leitura, e não uma faixa de texto atravessando a página. */
   max-width: 38ch;
   margin: 0 0 var(--space-12);
 

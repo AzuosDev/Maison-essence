@@ -3,20 +3,20 @@ import { useCallback, useState } from 'react';
 /**
  * As buscas recentes de quem esta neste navegador.
  *
- * Ficam so aqui, no `localStorage`: nao vao para a API, nao ficam ligadas a
- * conta nenhuma e nao saem deste aparelho. Uma lista do que alguem procurou
- * numa perfumaria e um dado mais pessoal do que parece, e ela nao precisa
- * existir em lugar nenhum alem da maquina de quem digitou.
+ * Ficam só aqui, no `localStorage`: não vão para a API, não ficam ligadas a
+ * conta nenhuma e não saem deste aparelho. Uma lista do que alguém procurou
+ * numa perfumaria e um dado mais pessoal do que parece, e ela não precisa
+ * existir em lugar nenhum além da máquina de quem digitou.
  *
  * Toda leitura e escrita esta dentro de `try`: em aba anonima, com dados de
- * site bloqueados ou com a cota estourada, `localStorage` lanca em vez de
- * devolver vazio. Perder o historico e aceitavel; derrubar a busca por causa
- * dele nao e.
+ * site bloqueados ou com a cota estourada, `localStorage` lança em vez de
+ * devolver vazio. Perder o histórico e aceitável; derrubar a busca por causa
+ * dele não e.
  */
 
 const STORAGE_KEY = 'maison-essence.recent-searches';
 
-/** Cinco. A lista e um atalho, nao um arquivo. */
+/** Cinco. A lista e um atalho, não um arquivo. */
 const MAX_ITEMS = 5;
 
 function read(): string[] {
@@ -39,7 +39,7 @@ function write(items: string[]): void {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   } catch {
-    // Sem historico nesta sessao. A busca continua funcionando.
+    // Sem histórico nesta sessão. A busca continua funcionando.
   }
 }
 
@@ -51,7 +51,7 @@ interface RecentSearches {
 }
 
 export function useRecentSearches(): RecentSearches {
-  // A leitura inicial e preguicosa: roda uma vez, na montagem, e nao a cada
+  // A leitura inicial e preguicosa: roda uma vez, na montagem, e não a cada
   // render da caixa de busca.
   const [recent, setRecent] = useState<string[]>(read);
 
@@ -64,7 +64,7 @@ export function useRecentSearches(): RecentSearches {
 
     setRecent((current) => {
       // O termo repetido sobe para o topo em vez de duplicar — e o mesmo
-      // comportamento do historico do navegador.
+      // comportamento do histórico do navegador.
       const next = [trimmed, ...current.filter((item) => item !== trimmed)].slice(0, MAX_ITEMS);
 
       write(next);

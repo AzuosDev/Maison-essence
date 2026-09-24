@@ -8,24 +8,24 @@ import { SettingsService } from './settings.service.js';
 import type { SettingsView } from './settings.view.js';
 
 /**
- * Configuracoes da loja pelo painel.
+ * Configurações da loja pelo painel.
  *
- * Documento unico: nao ha `POST` nem `:id`, so ler e alterar.
+ * Documento único: não há `POST` nem `:id`, só ler e alterar.
  *
- * ## Por que so o SUPER_ADMIN
+ * ## Por que só o SUPER_ADMIN
  *
- * Um degrau acima de `MANAGES_STORE`, como a importacao de catalogo, e pela
- * mesma natureza de risco: o que se muda aqui nao e um produto, e a moldura
- * da loja inteira. O numero do WhatsApp errado manda todo pedido para o
- * vazio, a chave da barra de avisos aparece em toda pagina, e uma pagina
- * institucional despublicada tira do ar um link que ja circula no WhatsApp de
+ * Um degrau acima de `MANAGES_STORE`, como a importação de catálogo, e pela
+ * mesma natureza de risco: o que se muda aqui não e um produto, e a moldura
+ * da loja inteira. O número do WhatsApp errado manda todo pedido para o
+ * vazio, a chave da barra de avisos aparece em toda página, e uma página
+ * institucional despublicada tira do ar um link que já circula no WhatsApp de
  * quem comprou.
  *
- * Nada disso muda no dia a dia, e nenhuma dessas decisoes e tomada sozinha —
- * sao configuracoes de implantacao, feitas com quem mantem o sistema. Quem
- * opera a loja cuida de catalogo, pedido, entrega e pagamento.
+ * Nada disso muda no dia a dia, e nenhuma dessas decisões e tomada sozinha —
+ * são configurações de implantação, feitas com quem mantem o sistema. Quem
+ * opera a loja cuida de catálogo, pedido, entrega e pagamento.
  *
- * O `@CurrentUser()` no PATCH nao e enfeite: e ele que a trilha de auditoria
+ * O `@CurrentUser()` no PATCH não e enfeite: e ele que a trilha de auditoria
  * registra junto do diff.
  */
 @Roles(USER_ROLES.SUPER_ADMIN)

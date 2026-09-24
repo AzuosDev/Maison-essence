@@ -1,13 +1,13 @@
 /*
  * O interruptor.
  *
- * O `<input>` nativo continua no documento, invisivel: e ele que recebe o
- * foco, responde ao Espaco e e anunciado. O trilho e a bolinha sao `<span>`
- * irmaos, pintados pelo estado dele — a mesma construcao do Checkbox, pelas
- * mesmas razoes.
+ * O `<input>` nativo continua no documento, invisível: e ele que recebe o
+ * foco, responde ao Espaço e e anunciado. O trilho e a bolinha são `<span>`
+ * irmaos, pintados pelo estado dele — a mesma construção do Checkbox, pelas
+ * mesmas razões.
  *
- * Desligado e um contorno; ligado e um bloco cheio em `--ink`. A diferenca
- * nao e so a cor: a bolinha atravessa o trilho, e esse movimento e o que se
+ * Desligado e um contorno; ligado e um bloco cheio em `--ink`. A diferença
+ * não e só a cor: a bolinha atravessa o trilho, e esse movimento e o que se
  * reconhece de longe numa tabela de vinte linhas.
  */
 
@@ -20,7 +20,7 @@
 }
 
 .input {
-  /* Fora da tela, mas focavel: tamanho zero seria clicavel por engano e
+  /* Fora da tela, mas focável: tamanho zero seria clicável por engano e
      `display: none` tiraria o elemento do foco e do leitor de tela. */
   position: absolute;
   width: 1px;
@@ -79,7 +79,7 @@
   transform: translateX(1.125rem);
 }
 
-/* O anel vai no trilho, ja que o input esta fora da tela. */
+/* O anel vai no trilho, já que o input esta fora da tela. */
 .input:focus-visible + .track {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
@@ -114,8 +114,8 @@
 }
 
 /*
- * Quem pediu menos movimento ve a bolinha aparecer do outro lado, sem o
- * percurso. O estado continua legivel; o que some e a travessia.
+ * Quem pediu menos movimento vê a bolinha aparecer do outro lado, sem o
+ * percurso. O estado continua legível; o que some e a travessia.
  */
 @media (prefers-reduced-motion: reduce) {
   .thumb {

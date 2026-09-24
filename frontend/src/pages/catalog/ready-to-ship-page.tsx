@@ -4,9 +4,9 @@ import { CatalogView } from './catalog-view';
 /**
  * Pronta entrega: `/pronta-entrega`.
  *
- * A bandeira chega como contexto, e nao como filtro marcavel — e o endereco
- * da pagina, nao uma escolha. Por isso a caixa "somente pronta entrega" nao
- * aparece na barra lateral daqui, e "limpar filtros" nao tira o cliente
+ * A bandeira chega como contexto, e não como filtro marcável — e o endereço
+ * da página, não uma escolha. Por isso a caixa "somente pronta entrega" não
+ * aparece na barra lateral daqui, e "limpar filtros" não tira o cliente
  * desta lista.
  */
 export default function ReadyToShipPage() {

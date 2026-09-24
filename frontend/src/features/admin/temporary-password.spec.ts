@@ -4,10 +4,10 @@ import { TEMPORARY_PASSWORD_LENGTH, generateTemporaryPassword } from './temporar
 /**
  * A senha do primeiro acesso.
  *
- * Tres coisas precisam continuar verdadeiras, e as tres tem consequencia
+ * Três coisas precisam continuar verdadeiras, e as três tem consequência
  * fora do teste: o comprimento (a API recusa abaixo de doze), o alfabeto (a
  * senha e lida em voz alta) e o fato de cada chamada devolver uma senha
- * diferente — o erro que uma implementacao com semente fixa cometeria sem
+ * diferente — o erro que uma implementação com semente fixa cometeria sem
  * nunca falhar em nada mais.
  */
 

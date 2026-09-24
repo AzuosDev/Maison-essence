@@ -9,23 +9,23 @@ import styles from './delivery-estimate.module.css';
  * Quanto custa e quando chega — antes do checkout.
  *
  * Esta loja entrega num punhado de cidades do Cariri, com taxa fixa por
- * cidade cadastrada no painel. Nao ha calculo por CEP, e essa simplicidade e
+ * cidade cadastrada no painel. Não há cálculo por CEP, e essa simplicidade e
  * uma vantagem: da para responder "quanto e o frete?" aqui, com um seletor,
- * em vez de mandar o cliente preencher um endereco para descobrir.
+ * em vez de mandar o cliente preencher um endereço para descobrir.
  *
  * A pergunta e a que mais chega pelo WhatsApp antes da compra. Respondida na
- * pagina do produto, ela deixa de ser uma conversa.
+ * página do produto, ela deixa de ser uma conversa.
  *
  * ## A cidade fica lembrada
  *
  * No `localStorage`, por `useChosenCity`. Quem mora em Juazeiro informa isso
- * uma vez, e nao a cada produto que abre — e o checkout vai encontrar a
- * mesma escolha ja feita.
+ * uma vez, e não a cada produto que abre — e o checkout vai encontrar a
+ * mesma escolha já feita.
  *
  * ## A retirada
  *
- * Aparece quando a dona liga a retirada e cadastra o endereco. E uma opcao
- * de verdade para quem mora perto: sem taxa e sem prazo, com o endereco
+ * Aparece quando a dona liga a retirada e cadastra o endereço. E uma opção
+ * de verdade para quem mora perto: sem taxa e sem prazo, com o endereço
  * escrito por extenso para caber no aplicativo de mapa.
  */
 export function DeliveryEstimate() {
@@ -40,8 +40,8 @@ export function DeliveryEstimate() {
   const chosen = options.find((city) => city.id === cityId) ?? null;
   const pickup = settings?.pickupEnabled === true ? settings.pickupAddress : null;
 
-  // Sem cidade cadastrada e sem retirada nao ha o que dizer, e uma caixa
-  // vazia com o titulo "Entrega" so ocuparia espaco entre o preco e as abas.
+  // Sem cidade cadastrada e sem retirada não há o que dizer, e uma caixa
+  // vazia com o título "Entrega" só ocuparia espaço entre o preço e as abas.
   if (!isPending && options.length === 0 && pickup === null) {
     return null;
   }

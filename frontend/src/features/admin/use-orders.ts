@@ -10,17 +10,17 @@ import type { AdminOrder, OrderStatus } from './admin.types';
  *
  * O painel fica aberto o dia inteiro numa aba enquanto a dona atende. Meio
  * minuto e curto o bastante para um pedido novo aparecer sozinho entre uma
- * conversa e outra, e longo o bastante para trocar de aba nao disparar uma
+ * conversa e outra, e longo o bastante para trocar de aba não disparar uma
  * consulta a cada vez.
  *
- * ## Por que a invalidacao e sempre da familia inteira
+ * ## Por que a invalidação e sempre da família inteira
  *
  * Mudar o status de um pedido desatualiza mais coisa do que parece: o
- * detalhe, a lista filtrada que esta atras dele, a lista **sem** filtro, a
- * contagem de "esperando contato" da abertura e o faturamento do mes — e
+ * detalhe, a lista filtrada que esta atrás dele, a lista **sem** filtro, a
+ * contagem de "esperando contato" da abertura e o faturamento do mês — e
  * `useDashboard` monta as dele com `adminKeys.orderList(...)`, debaixo da
- * mesma raiz. Invalidar `adminKeys.orders()` alcanca as cinco; invalidar a
- * chave especifica deixaria quatro numeros errados na tela ao lado.
+ * mesma raiz. Invalidar `adminKeys.orders()` alcança as cinco; invalidar a
+ * chave específica deixaria quatro números errados na tela ao lado.
  */
 
 /** Meio minuto. Ver a nota acima. */
@@ -51,13 +51,13 @@ export function useOrder(id: string) {
 /**
  * Move o pedido de status, com o seletor virando na hora.
  *
- * O otimismo aqui e menos sobre velocidade e mais sobre confianca: a dona
+ * O otimismo aqui e menos sobre velocidade e mais sobre confiança: a dona
  * marca "Confirmado" e volta para o WhatsApp no mesmo segundo. Se ela
  * precisar esperar o servidor para ver a mudanca, ela clica de novo.
  *
- * O que o servidor pode recusar e real e tem mensagem propria — cancelar um
- * pedido ja cancelado responde 409 —, e nesse caso o retrato guardado volta
- * ao lugar e quem chamou mostra o texto que veio de la.
+ * O que o servidor pode recusar e real e tem mensagem própria — cancelar um
+ * pedido já cancelado responde 409 —, e nesse caso o retrato guardado volta
+ * ao lugar e quem chamou mostra o texto que veio de lá.
  */
 export function useSetOrderStatus() {
   const client = useQueryClient();
@@ -88,7 +88,7 @@ export function useSetOrderStatus() {
 
     // No sucesso e na falha: o servidor mexeu em mais do que o status — o
     // `updatedAt` mudou, e o cancelamento gravou `stockRestoredAt` e
-    // devolveu unidades ao catalogo.
+    // devolveu unidades ao catálogo.
     onSettled: () => {
       void client.invalidateQueries({ queryKey: adminKeys.orders() });
       void client.invalidateQueries({ queryKey: adminKeys.products() });
@@ -97,10 +97,10 @@ export function useSetOrderStatus() {
 }
 
 /**
- * A anotacao interna do pedido.
+ * A anotação interna do pedido.
  *
- * Sem otimismo: a anotacao e salva por um botao, e nao por um interruptor.
- * Quem acabou de escrever tres linhas sobre o combinado com o cliente
+ * Sem otimismo: a anotação e salva por um botão, e não por um interruptor.
+ * Quem acabou de escrever três linhas sobre o combinado com o cliente
  * precisa saber que elas chegaram — e um "salvando" de meio segundo diz
  * isso melhor do que um texto que aparece salvo e some depois.
  */

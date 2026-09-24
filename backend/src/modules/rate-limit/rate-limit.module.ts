@@ -15,32 +15,32 @@ const rateLimitHit = { name: RateLimitHit.name, schema: RateLimitHitSchema };
 /**
  * O limite de chamadas da API inteira.
  *
- * O guard entra como `APP_GUARD` e este modulo e o primeiro da lista do
- * `AppModule`: guards globais rodam na ordem em que os modulos sao
- * registrados, e o limite precisa vir antes da autenticacao — a tentativa de
+ * O guard entra como `APP_GUARD` e este módulo e o primeiro da lista do
+ * `AppModule`: guards globais rodam na ordem em que os módulos são
+ * registrados, e o limite precisa vir antes da autenticação — a tentativa de
  * login errada tem que ser contada, e ela nunca passa do primeiro guard.
  *
  * O `@nestjs/throttler` entra com o armazenamento trocado. O dele e um `Map`
- * de processo, que em serverless nao limita nada (ver
+ * de processo, que em serverless não limita nada (ver
  * `mongo-throttler.storage.ts`); o que sobra dele — a leitura dos metadados da
- * rota, os cabecalhos `X-RateLimit-*`, o `Retry-After` — e justamente o que
- * nao vale a pena reescrever.
+ * rota, os cabeçalhos `X-RateLimit-*`, o `Retry-After` — e justamente o que
+ * não vale a pena reescrever.
  */
 @Module({
   imports: [
     MongooseModule.forFeature([rateLimitHit]),
     ThrottlerModule.forRootAsync({
-      // O `forRootAsync` so aceita `imports`, entao o model e pedido de novo
-      // aqui. Sao dois providers para o mesmo model compilado, nao duas
-      // conexoes.
+      // O `forRootAsync` só aceita `imports`, então o model e pedido de novo
+      // aqui. São dois providers para o mesmo model compilado, não duas
+      // conexões.
       imports: [MongooseModule.forFeature([rateLimitHit])],
       inject: [Reflector, getModelToken(RateLimitHit.name)],
       useFactory: (reflector: Reflector, hits: Model<RateLimitHit>): ThrottlerModuleOptions => ({
         storage: new MongoThrottlerStorage(hits),
-        // Um throttler so. Varios throttlers nomeados valeriam todos ao mesmo
-        // tempo em toda rota, e o que este projeto quer e o contrario: uma
+        // Um throttler só. Vários throttlers nomeados valeriam todos ao mesmo
+        // tempo em toda rota, e o que este projeto quer e o contrário: uma
         // regra por rota, escolhida por `resolveRateLimitRule`. As duas
-        // funcoes abaixo sao o que faz a regra da rota chegar ate o guard.
+        // funções abaixo são o que faz a regra da rota chegar até o guard.
         throttlers: [
           {
             name: 'default',

@@ -1,10 +1,10 @@
 /*
- * A comparacao dos dois totais.
+ * A comparação dos dois totais.
  *
- * Duas colunas de peso igual, separadas por um filete: a decisao e "aceito
- * ou nao", e desenhar o valor novo maior ou em destaque seria a tela
+ * Duas colunas de peso igual, separadas por um filete: a decisão e "aceito
+ * ou não", e desenhar o valor novo maior ou em destaque seria a tela
  * empurrando a resposta. O que diferencia os dois e o risco no valor antigo
- * — ele nao vale mais.
+ * — ele não vale mais.
  */
 
 .compare {
@@ -46,7 +46,7 @@
   color: var(--ink);
 }
 
-/* O valor antigo riscado: ele e referencia, e nao alternativa. */
+/* O valor antigo riscado: ele e referência, e não alternativa. */
 .old {
   color: var(--ink-soft);
   text-decoration: line-through;
@@ -88,9 +88,9 @@
 }
 
 /*
- * As duas saidas, com a confirmacao no fim da linha.
+ * As duas saídas, com a confirmação no fim da linha.
  *
- * No celular elas empilham e a confirmacao fica embaixo — que e onde o
+ * No celular elas empilham e a confirmação fica embaixo — que e onde o
  * polegar chega. Sem `order` em nenhum dos dois casos: a ordem visual e a do
  * DOM, e portanto a do teclado.
  */

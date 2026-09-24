@@ -1,10 +1,10 @@
 /**
- * A area do cliente.
+ * A área do cliente.
  *
  * Importe daqui — `import { useMyOrders } from '@/features/account'` — e
- * nunca dos arquivos internos, com uma excecao: `account-session` e
- * carregado pelo modulo de providers antes de qualquer tela existir, e passa
- * direto para nao arrastar o resto da area para o pedaco inicial do bundle.
+ * nunca dos arquivos internos, com uma exceção: `account-session` e
+ * carregado pelo módulo de providers antes de qualquer tela existir, e passa
+ * direto para não arrastar o resto da área para o pedaço inicial do bundle.
  */
 
 export {

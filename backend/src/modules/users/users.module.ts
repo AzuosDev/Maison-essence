@@ -4,11 +4,11 @@ import { UsersController } from './users.controller.js';
 import { UsersService } from './users.service.js';
 
 /**
- * Usuarios administrativos.
+ * Usuários administrativos.
  *
- * Importa o `AuthModule` inteiro: de la vem o model `User`, o hash de senha,
- * a revogacao de sessoes e a trilha de auditoria. A dependencia e so nesse
- * sentido — o modulo de autenticacao nao conhece este.
+ * Importa o `AuthModule` inteiro: de lá vem o model `User`, o hash de senha,
+ * a revogação de sessões e a trilha de auditoria. A dependência e só nesse
+ * sentido — o módulo de autenticação não conhece este.
  */
 @Module({
   imports: [AuthModule],

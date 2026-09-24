@@ -25,7 +25,7 @@ export class QuantityDiscount extends BaseSchema {
   @Prop(objectIdProp({ ref: Category.name, default: null }))
   categoryId: Types.ObjectId | null;
 
-  /** A partir de quantas unidades a regra vale. Menos de duas nao e "por quantidade". */
+  /** A partir de quantas unidades a regra vale. Menos de duas não e "por quantidade". */
   @Prop(integerProp({ required: true, min: 2, max: 1000 }))
   minQty: number;
 
@@ -51,6 +51,6 @@ QuantityDiscountSchema.pre('validate', function () {
   }
 });
 
-// Buscar as regras que valem para um item da cotacao.
+// Buscar as regras que valem para um item da cotação.
 QuantityDiscountSchema.index({ productId: 1, minQty: 1 });
 QuantityDiscountSchema.index({ categoryId: 1, minQty: 1 });

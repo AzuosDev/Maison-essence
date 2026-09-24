@@ -12,60 +12,60 @@ import type { CartQuote, QuoteLine } from './quote.types';
 /**
  * Quanto custa a sacola — perguntado ao servidor, sempre.
  *
- * Nenhuma tela do carrinho multiplica quantidade por preco. O subtotal, o
+ * Nenhuma tela do carrinho multiplica quantidade por preço. O subtotal, o
  * desconto por quantidade e o total saem daqui, e daqui saem calculados
- * contra o catalogo de agora: o preco que a dona mudou ontem, o produto que
- * ela desativou hoje e o estoque que acabou ha dez minutos entram na conta
+ * contra o catálogo de agora: o preço que a dona mudou ontem, o produto que
+ * ela desativou hoje e o estoque que acabou há dez minutos entram na conta
  * sem que o navegador precise saber de nada disso.
  *
  * ## O atraso de 400ms
  *
- * Quem aperta o "+" quatro vezes seguidas quer seis unidades, e nao quatro
- * cotacoes. O atraso junta a rajada em uma consulta so, e o numero antigo
- * fica na tela — esmaecido — ate o novo chegar, em vez de a coluna de
+ * Quem aperta o "+" quatro vezes seguidas quer seis unidades, e não quatro
+ * cotações. O atraso junta a rajada em uma consulta só, e o número antigo
+ * fica na tela — esmaecido — até o novo chegar, em vez de a coluna de
  * valores piscar vazia a cada clique.
  *
- * A primeira cotacao nao espera: `useDebouncedValue` comeca com o valor que
- * recebeu, entao abrir a sacola dispara a consulta no mesmo quadro. O atraso
- * so existe para as mudancas seguintes, que sao as unicas que se acumulam.
+ * A primeira cotação não espera: `useDebouncedValue` começa com o valor que
+ * recebeu, então abrir a sacola dispara a consulta no mesmo quadro. O atraso
+ * só existe para as mudancas seguintes, que são as únicas que se acumulam.
  *
- * ## A entrega, que a sacola nao escolhe
+ * ## A entrega, que a sacola não escolhe
  *
  * O resumo diz "frete a calcular", e diz a verdade: a cidade e escolhida no
  * fechamento do pedido, e o total que a sacola mostra e o dos produtos.
  *
- * Mas `POST /cart/quote` exige um modo de entrega — a rota serve tambem ao
- * checkout, onde a taxa e parte da conta —, e os dois modos tem exigencia
- * propria: a retirada precisa estar ligada no painel, e a entrega precisa de
+ * Mas `POST /cart/quote` exige um modo de entrega — a rota serve também ao
+ * checkout, onde a taxa e parte da conta —, e os dois modos tem exigência
+ * própria: a retirada precisa estar ligada no painel, e a entrega precisa de
  * uma cidade atendida. `fulfillmentFor` escolhe o que a loja aceita hoje; a
  * taxa que voltar e simplesmente ignorada pela tela, que exibe o
  * `subtotalCents` como total. Nenhuma conta e refeita no navegador para
  * isso: e outro campo da mesma resposta.
  *
- * O pagamento vai como cartao a vista pelo mesmo motivo — e a forma que nao
+ * O pagamento vai como cartão a vista pelo mesmo motivo — e a forma que não
  * mexe no valor. O PIX desconta um percentual, e esse desconto pertence a
- * tela que o oferece, nao a sacola.
+ * tela que o oferece, não a sacola.
  */
 
-/** O atraso entre a ultima mexida e a cotacao. */
+/** O atraso entre a última mexida e a cotação. */
 export const QUOTE_DEBOUNCE_MS = 400;
 
 export interface CartQuoteView {
   quote: CartQuote | undefined;
   /** As linhas que entram no total. */
   available: QuoteLine[];
-  /** As que sairam: produto desativado, opcao encerrada, estoque insuficiente. */
+  /** As que saíram: produto desativado, opção encerrada, estoque insuficiente. */
   unavailable: QuoteLine[];
-  /** A primeira cotacao ainda nao respondeu: nao ha numero nenhum em tela. */
+  /** A primeira cotação ainda não respondeu: não há número nenhum em tela. */
   isPending: boolean;
-  /** Ha uma cotacao no ar. Os numeros em tela sao os anteriores. */
+  /** Há uma cotação no ar. Os números em tela são os anteriores. */
   isFetching: boolean;
   isError: boolean;
   refetch: () => void;
   /**
-   * Algum preco mudou desde a ultima visita.
+   * Algum preço mudou desde a última visita.
    *
-   * Comparado por impressao digital, sem guardar valor — ver `price-watch`.
+   * Comparado por impressão digital, sem guardar valor — ver `price-watch`.
    */
   pricesChanged: boolean;
   dismissPriceNotice: () => void;
@@ -91,8 +91,8 @@ export function useCartQuote(): CartQuoteView {
     queryFn: ({ signal }) => fetchCartQuote(input ?? EMPTY_INPUT, signal),
     enabled: input !== null,
 
-    // Cotacao nao se serve de cache: o preco de um minuto atras e um preco
-    // que pode ja nao existir. Zero aqui nao significa pedir a cada render —
+    // Cotação não se serve de cache: o preço de um minuto atrás e um preço
+    // que pode já não existir. Zero aqui não significa pedir a cada render —
     // significa que toda montagem e toda mudanca de chave refazem a conta.
     staleTime: 0,
 
@@ -120,20 +120,20 @@ export function useCartQuote(): CartQuoteView {
   };
 }
 
-/* ---- A entrega que a cotacao exige -------------------------------------- */
+/* ---- A entrega que a cotação exige -------------------------------------- */
 
 /**
  * O modo de entrega que a loja aceita hoje.
  *
- * Retirada primeiro: nao depende de cidade nenhuma e a taxa e zero, que e
- * exatamente o que a sacola quer de um campo que ela nao vai mostrar. Sem
+ * Retirada primeiro: não depende de cidade nenhuma e a taxa e zero, que e
+ * exatamente o que a sacola quer de um campo que ela não vai mostrar. Sem
  * retirada, vale a primeira cidade atendida — qualquer uma serve, porque a
- * taxa que ela produz nao entra na tela.
+ * taxa que ela produz não entra na tela.
  *
- * `null` quando a loja nao tem nem retirada nem cidade cadastrada. A
- * cotacao fica desligada e a sacola mostra os itens sem totais, que e o
- * unico desenho honesto: nao ha como essa loja fechar um pedido, e inventar
- * um total no navegador seria o comeco do problema que este modulo inteiro
+ * `null` quando a loja não tem nem retirada nem cidade cadastrada. A
+ * cotação fica desligada e a sacola mostra os itens sem totais, que e o
+ * único desenho honesto: não há como essa loja fechar um pedido, e inventar
+ * um total no navegador seria o começo do problema que este módulo inteiro
  * existe para evitar.
  */
 function useQuoteFulfillment(): QuoteInput['fulfillment'] | null {
@@ -155,19 +155,19 @@ function useQuoteFulfillment(): QuoteInput['fulfillment'] | null {
 /* ---- O aviso de reajuste ------------------------------------------------ */
 
 /**
- * Anota os precos desta cotacao e decide se ha o que avisar.
+ * Anota os preços desta cotação e decide se há o que avisar.
  *
  * Exportado porque o checkout precisa do mesmo aviso: o "Comprar agora" da
- * pagina do produto pula a sacola e cai direto em `/checkout`, e quem chega
- * por ali com uma sacola de semanas atras merece a mesma linha discreta
- * dizendo que os valores foram atualizados. Um segundo aviso escrito la
- * teria que repetir a leitura do retrato anterior, a comparacao por digest e
- * a regra de quando regravar — tres coisas que so funcionam se forem
+ * página do produto pula a sacola e cai direto em `/checkout`, e quem chega
+ * por ali com uma sacola de semanas atrás merece a mesma linha discreta
+ * dizendo que os valores foram atualizados. Um segundo aviso escrito lá
+ * teria que repetir a leitura do retrato anterior, a comparação por digest e
+ * a regra de quando regravar — três coisas que só funcionam se forem
  * exatamente iguais nas duas telas.
  *
- * O efeito depende dos ids e dos precos da resposta, e nao do objeto: a
- * consulta devolve uma instancia nova a cada revalidacao, e comparar por
- * identidade reescreveria a anotacao — e reabriria o aviso — a cada ida ao
+ * O efeito depende dos ids e dos preços da resposta, e não do objeto: a
+ * consulta devolve uma instância nova a cada revalidação, e comparar por
+ * identidade reescreveria a anotação — e reabriria o aviso — a cada ida ao
  * servidor.
  */
 export function usePriceNotice(quote: CartQuote | undefined): {
@@ -179,27 +179,27 @@ export function usePriceNotice(quote: CartQuote | undefined): {
   /**
    * O retrato de antes desta visita, lido uma vez.
    *
-   * No inicializador do `useState`, e nao a cada render: a partir da segunda
-   * cotacao o armazenamento ja tera sido reescrito pelo efeito abaixo, e
-   * reler dali produziria a comparacao de uma coisa com ela mesma. O que
+   * No inicializador do `useState`, e não a cada render: a partir da segunda
+   * cotação o armazenamento já terá sido reescrito pelo efeito abaixo, e
+   * reler dali produziria a comparação de uma coisa com ela mesma. O que
    * interessa e o que estava gravado quando o cliente chegou.
    */
   const [before] = useState(readPriceSnapshot);
 
   const items = quote?.items;
 
-  // Derivado durante o render, e nao um estado que um efeito liga depois: o
-  // aviso ja nasce pronto no quadro em que a cotacao chega, sem a segunda
-  // renderizacao que um `setState` em efeito custaria.
+  // Derivado durante o render, e não um estado que um efeito liga depois: o
+  // aviso já nasce pronto no quadro em que a cotação chega, sem a segunda
+  // renderização que um `setState` em efeito custaria.
   const changed = items !== undefined && items.length > 0 && pricesChangedSince(before, items);
 
   /**
-   * A escrita fica no efeito porque e o que ela e: sincronizacao com um
-   * sistema externo. Ela nao decide nada e nao mexe em estado nenhum.
+   * A escrita fica no efeito porque e o que ela e: sincronização com um
+   * sistema externo. Ela não decide nada e não mexe em estado nenhum.
    *
-   * Roda a cada resposta nova — e nao so quando algum preco muda — e isso
+   * Roda a cada resposta nova — e não só quando algum preço muda — e isso
    * esta certo: regravar os mesmos digests e barato e idempotente, e o que
-   * decide o aviso e o `before` la de cima, capturado na montagem e imune a
+   * decide o aviso e o `before` lá de cima, capturado na montagem e imune a
    * estas escritas.
    */
   useEffect(() => {
@@ -218,7 +218,7 @@ export function usePriceNotice(quote: CartQuote | undefined): {
 
 /* ---- Auxiliares --------------------------------------------------------- */
 
-/** A sacola vazia nunca e cotada; este corpo so existe para o tipo fechar. */
+/** A sacola vazia nunca e cotada; este corpo só existe para o tipo fechar. */
 const EMPTY_INPUT: QuoteInput = {
   items: [],
   fulfillment: { mode: 'pickup' },

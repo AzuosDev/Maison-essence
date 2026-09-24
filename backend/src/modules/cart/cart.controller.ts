@@ -14,20 +14,20 @@ import { QuoteCartDto } from './dto/quote-cart.dto.js';
 import type { CartQuoteView } from './quote.view.js';
 
 /**
- * Validacao propria do corpo da cotacao, sem `forbidNonWhitelisted`.
+ * Validação própria do corpo da cotação, sem `forbidNonWhitelisted`.
  *
  * O pipe global do projeto recusa campo desconhecido com 400, e e o
- * comportamento certo no painel: campo que o servidor nao conhece e quase
+ * comportamento certo no painel: campo que o servidor não conhece e quase
  * sempre erro de quem chamou. Aqui e o oposto. O carrinho vive no
- * `localStorage` do visitante junto do nome, da foto e do preco de cada item,
- * e o checkout manda o objeto inteiro. Recusar isso transformaria "preco
- * enviado pelo cliente" em erro de integracao; ignora-lo e a regra que esta
- * rota existe para cumprir — o que nao esta no DTO e descartado aqui, em
- * silencio, antes de qualquer conta.
+ * `localStorage` do visitante junto do nome, da foto e do preço de cada item,
+ * e o checkout manda o objeto inteiro. Recusar isso transformaria "preço
+ * enviado pelo cliente" em erro de integração; ignora-lo e a regra que esta
+ * rota existe para cumprir — o que não esta no DTO e descartado aqui, em
+ * silêncio, antes de qualquer conta.
  *
- * `expectedType` no lugar do tipo do parametro e o que faz o pipe global
- * passar direto: com o parametro declarado como `object`, ele nao tem classe
- * para validar e nao opina, e quem valida e este.
+ * `expectedType` no lugar do tipo do parâmetro e o que faz o pipe global
+ * passar direto: com o parâmetro declarado como `object`, ele não tem classe
+ * para validar e não opina, e quem valida e este.
  */
 const QUOTE_BODY = new ValidationPipe({
   expectedType: QuoteCartDto,
@@ -36,18 +36,18 @@ const QUOTE_BODY = new ValidationPipe({
 });
 
 /**
- * A cotacao do carrinho.
+ * A cotação do carrinho.
  *
- * Publica e sem sessao: quem esta montando a sacola ainda nao se identificou,
- * e exigir cadastro para ver o total seria perder a venda antes dela comecar.
+ * Publica e sem sessão: quem esta montando a sacola ainda não se identificou,
+ * e exigir cadastro para ver o total seria perder a venda antes dela começar.
  * O que protege a rota e o limite de trinta chamadas por minuto por IP —
  * suficiente para quem recalcula o carrinho a cada clique, curto para quem
- * quer varrer a tabela de precos da loja item a item.
+ * quer varrer a tabela de preços da loja item a item.
  *
- * Nao leva `@CdnCache`: o resultado depende do estoque do minuto e do
- * pagamento escolhido, e uma resposta dessas guardada na borda seria um preco
+ * Não leva `@CdnCache`: o resultado depende do estoque do minuto e do
+ * pagamento escolhido, e uma resposta dessas guardada na borda seria um preço
  * errado servido a outra pessoa. Sendo POST, nenhuma CDN a guardaria de
- * qualquer forma — o que falta e a tentacao de adicionar o cabecalho depois.
+ * qualquer forma — o que falta e a tentação de adicionar o cabeçalho depois.
  */
 @Public()
 @RateLimit(QUOTE_RATE_LIMIT)
@@ -56,15 +56,15 @@ export class CartController {
   constructor(private readonly cart: CartQuoteService) {}
 
   /**
-   * `200`, e nao `201`: a cotacao nao cria nada. Nenhum documento sai desta
+   * `200`, e não `201`: a cotação não cria nada. Nenhum documento sai desta
    * rota, nenhum estoque e reservado e nada do que foi simulado fica gravado.
    */
   @Post('quote')
   @HttpCode(HttpStatus.OK)
   quote(@Body(QUOTE_BODY) body: object): Promise<CartQuoteView> {
-    // O pipe acima devolve uma instancia de `QuoteCartDto` ja validada e sem
-    // os campos que nao pertencem a ela; o tipo do parametro e `object` so
-    // para o pipe global nao tentar valida-lo antes.
+    // O pipe acima devolve uma instância de `QuoteCartDto` já validada e sem
+    // os campos que não pertencem a ela; o tipo do parâmetro e `object` só
+    // para o pipe global não tentar valida-lo antes.
     return this.cart.quote(body as QuoteCartDto);
   }
 }

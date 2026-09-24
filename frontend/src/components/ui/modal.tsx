@@ -5,35 +5,35 @@ import { useDialog } from './use-dialog';
 import styles from './modal.module.css';
 
 /**
- * O modal: confirmar exclusao, escolher a variante, ler a politica de troca.
+ * O modal: confirmar exclusão, escolher a variante, ler a política de troca.
  *
- * Tres coisas o tornam utilizavel por quem nao usa mouse, e as tres vem do
- * `useDialog`: o foco entra no dialogo e nao sai dele pelo Tab, o Escape
- * fecha, e ao fechar o foco volta para o botao que abriu.
+ * Três coisas o tornam utilizável por quem não usa mouse, e as três vem do
+ * `useDialog`: o foco entra no diálogo e não sai dele pelo Tab, o Escape
+ * fecha, e ao fechar o foco volta para o botão que abriu.
  *
- * Renderizado por portal, direto no `<body>`. Nao e detalhe de arrumacao:
- * dentro da arvore, qualquer ancestral com `overflow: hidden`, `transform`
- * ou `z-index` proprio — e o card de produto tem os tres — recortaria o
- * modal ou o colocaria atras do cabecalho.
+ * Renderizado por portal, direto no `<body>`. Não e detalhe de arrumação:
+ * dentro da árvore, qualquer ancestral com `overflow: hidden`, `transform`
+ * ou `z-index` próprio — e o card de produto tem os três — recortaria o
+ * modal ou o colocaria atrás do cabeçalho.
  */
 
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
-  /** Vai no `<h2>` e e o nome do dialogo para o leitor de tela. */
+  /** Vai no `<h2>` e e o nome do diálogo para o leitor de tela. */
   title: string;
-  /** Uma linha de contexto embaixo do titulo. */
+  /** Uma linha de contexto embaixo do título. */
   description?: ReactNode;
-  /** As acoes do rodape. Sem elas, o rodape nao aparece. */
+  /** As ações do rodapé. Sem elas, o rodapé não aparece. */
   footer?: ReactNode;
-  /** 48rem em vez de 32rem: tabela, formulario longo. */
+  /** 48rem em vez de 32rem: tabela, formulário longo. */
   wide?: boolean;
   /**
-   * Clicar no veu fecha. Ligado por padrao; o passo que nao pode ser
+   * Clicar no véu fecha. Ligado por padrão; o passo que não pode ser
    * abandonado no meio — um pagamento em andamento — desliga.
    */
   closeOnOverlayClick?: boolean;
-  /** O rotulo do X, para o leitor de tela. */
+  /** O rótulo do X, para o leitor de tela. */
   closeLabel?: string;
   className?: string | undefined;
   children: ReactNode;
@@ -65,17 +65,17 @@ export function Modal({
   }
 
   return createPortal(
-    // O veu nao e um controle e nao entra na ordem do Tab de proposito:
+    // O véu não e um controle e não entra na ordem do Tab de propósito:
     // fechar clicando fora e um atalho de mouse, e o equivalente de teclado
-    // ja existe e e o Escape, tratado pelo `useDialog`. Um veu focavel seria
+    // já existe e e o Escape, tratado pelo `useDialog`. Um véu focável seria
     // uma parada a mais no caminho de quem navega por teclado, sem ganho.
     // oxlint-disable-next-line click-events-have-key-events, no-static-element-interactions
     <div className={styles.overlay} onClick={onOverlayClick}>
       <div
         ref={ref}
-        // Nao e um `<dialog>` nativo: o nativo so prende o foco com
+        // Não e um `<dialog>` nativo: o nativo só prende o foco com
         // `showModal()`, que o move para a camada de topo do navegador e
-        // leva junto regras de estilo e de animacao proprias. O
+        // leva junto regras de estilo e de animação próprias. O
         // comportamento que importa — foco preso, Escape, foco devolvido —
         // esta no `useDialog` e vale igual nos dois.
         // oxlint-disable-next-line prefer-tag-over-role
@@ -83,8 +83,8 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         aria-describedby={description ? descriptionId : undefined}
-        // Recebe o foco quando nao ha nada focavel dentro — um modal so de
-        // texto. Sem isto o foco ficaria na pagina atras do veu.
+        // Recebe o foco quando não há nada focável dentro — um modal só de
+        // texto. Sem isto o foco ficaria na página atrás do véu.
         tabIndex={-1}
         className={cx(styles.dialog, wide && styles.wide, className)}
       >

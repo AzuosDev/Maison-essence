@@ -21,34 +21,34 @@ import styles from './account-auth.module.css';
  *
  * ## Quatro campos, e nenhum a mais
  *
- * Nome, celular, e-mail e senha. Os quatro sao exigidos pelo backend — nao
- * ha o que cortar sem que o cadastro seja recusado do outro lado — e nao ha
- * o que acrescentar: nem confirmacao de senha, nem data de nascimento, nem
+ * Nome, celular, e-mail e senha. Os quatro são exigidos pelo backend — não
+ * há o que cortar sem que o cadastro seja recusado do outro lado — e não há
+ * o que acrescentar: nem confirmação de senha, nem data de nascimento, nem
  * caixa de "aceito receber novidades".
  *
- * A confirmacao de senha merece a explicacao, porque e o campo que todo
- * cadastro tem. Ela existe para pegar erro de digitacao numa senha que nao
- * se ve — e o olho do `PasswordField` resolve isso melhor, mostrando o que
+ * A confirmação de senha merece a explicação, porque e o campo que todo
+ * cadastro tem. Ela existe para pegar erro de digitação numa senha que não
+ * se vê — e o olho do `PasswordField` resolve isso melhor, mostrando o que
  * foi digitado. Um quinto campo no teclado do celular custa mais do que
  * rende.
  *
  * ## O telefone chega preenchido, e e o ponto
  *
- * A confirmacao do pedido oferece a conta a quem comprou como convidado, e
- * manda o telefone do pedido em `?telefone=`. E por esse numero que o
- * servidor liga as compras anteriores a conta nova — pedir o numero de novo
- * aqui so criaria a chance de ele ser digitado diferente, e de o historico
+ * A confirmação do pedido oferece a conta a quem comprou como convidado, e
+ * manda o telefone do pedido em `?telefone=`. E por esse número que o
+ * servidor liga as compras anteriores a conta nova — pedir o número de novo
+ * aqui só criaria a chance de ele ser digitado diferente, e de o histórico
  * nunca aparecer.
  *
- * A promessa esta escrita em cima do formulario, porque e o unico argumento
+ * A promessa esta escrita em cima do formulário, porque e o único argumento
  * que devolve algo no mesmo minuto: "seus pedidos anteriores aparecem
  * sozinhos".
  *
- * ## Telefone repetido manda para o login, com o numero junto
+ * ## Telefone repetido manda para o login, com o número junto
  *
- * O `409` daqui e o unico erro desta area que **explica o que houve**: quem
- * esta na tela acabou de digitar o proprio numero, nao ha o que esconder, e
- * a unica saida util e a tela de entrada. Ela recebe o numero ja preenchido.
+ * O `409` daqui e o único erro desta área que **explica o que houve**: quem
+ * esta na tela acabou de digitar o próprio número, não há o que esconder, e
+ * a única saída útil e a tela de entrada. Ela recebe o número já preenchido.
  */
 
 interface LocationState {
@@ -78,12 +78,12 @@ export default function AccountRegisterPage() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: '',
-      // `normalizePhone` antes da mascara, e nao so a mascara.
+      // `normalizePhone` antes da máscara, e não só a máscara.
       //
-      // O numero pode chegar com o `55` na frente — de um contato salvo, de
+      // O número pode chegar com o `55` na frente — de um contato salvo, de
       // um link antigo. `maskPhone` sozinha cortaria nos onze primeiros
-      // digitos e produziria `(55) 88999-99988`, um numero que nao e de
-      // ninguem: o campo abriria preenchido com lixo e o cadastro seria
+      // digitos e produziria `(55) 88999-99988`, um número que não e de
+      // ninguém: o campo abriria preenchido com lixo e o cadastro seria
       // recusado sem que a pessoa entendesse o motivo.
       phone: maskPhone(normalizePhone(raw) ?? raw),
       email: '',
@@ -202,10 +202,10 @@ export default function AccountRegisterPage() {
 /**
  * O que deu errado no cadastro.
  *
- * Ao contrario do login, aqui o `409` conta o que houve: quem esta na tela
- * acabou de digitar o proprio numero, e manda-lo tentar de novo as cegas
- * seria a unica coisa pior do que nao dizer nada. A frase vem do servidor,
- * que ja a escreve pronta; o link para a entrada e acrescentado pela tela.
+ * Ao contrário do login, aqui o `409` conta o que houve: quem esta na tela
+ * acabou de digitar o próprio número, e manda-lo tentar de novo as cegas
+ * seria a única coisa pior do que não dizer nada. A frase vem do servidor,
+ * que já a escreve pronta; o link para a entrada e acrescentado pela tela.
  */
 function registerErrorMessage(error: unknown): string {
   if (isApiError(error) && error.status === 429) {

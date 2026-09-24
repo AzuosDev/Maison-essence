@@ -1,9 +1,9 @@
 /*
- * As paginas institucionais.
+ * As páginas institucionais.
  *
  * Uma lista de cinco linhas que se abrem. Fechadas, cada uma cabe numa linha
  * e responde a pergunta que traz a dona aqui: o que falta escrever. Aberta, e
- * um formulario inteiro.
+ * um formulário inteiro.
  */
 
 .list {
@@ -55,8 +55,8 @@
   outline-offset: calc(var(--focus-offset) * -1);
 }
 
-/* A seta gira ao abrir: e o unico movimento da lista, e diz de onde o
-   conteudo saiu. */
+/* A seta gira ao abrir: e o único movimento da lista, e diz de onde o
+   conteúdo saiu. */
 .chevron {
   flex: none;
 
@@ -80,7 +80,7 @@
 }
 
 /* "Publicada, sem texto" e o estado que se quer enxergar de longe; o cinza
-   e o mesmo do resto dos rotulos, e a frase e que carrega o sentido. */
+   e o mesmo do resto dos rótulos, e a frase e que carrega o sentido. */
 .state {
   flex: none;
 
@@ -99,9 +99,9 @@
 /*
  * O interruptor, depois do texto.
  *
- * A ordem e a da decisao: escreve-se e depois publica-se. A frase ao lado
- * muda com o estado porque "publicada" e "despublicada" tem consequencias
- * diferentes no rodape, e nenhuma delas e obvia olhando o interruptor.
+ * A ordem e a da decisão: escreve-se e depois publica-se. A frase ao lado
+ * muda com o estado porque "publicada" e "despublicada" tem consequências
+ * diferentes no rodapé, e nenhuma delas e obvia olhando o interruptor.
  */
 .publish {
   display: flex;

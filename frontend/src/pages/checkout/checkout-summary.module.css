@@ -1,8 +1,8 @@
 /*
  * A moldura do resumo.
  *
- * As linhas de dinheiro estao em `quote-totals.module.css`; aqui ficam a
- * superficie, o titulo e o grude ao rolar.
+ * As linhas de dinheiro estão em `quote-totals.module.css`; aqui ficam a
+ * superficie, o título e o grude ao rolar.
  */
 
 .summary {
@@ -42,7 +42,7 @@
   color: var(--ink-soft);
 }
 
-/* ---- Quando a cotacao falha ---------------------------------------------- */
+/* ---- Quando a cotação falha ---------------------------------------------- */
 
 .failed {
   display: grid;
@@ -61,8 +61,8 @@
   .summary {
     position: sticky;
 
-    /* Abaixo do cabecalho encolhido, que e a altura que ele tem depois de a
-       pagina rolar — e rolar e a unica forma de chegar ate aqui. */
+    /* Abaixo do cabeçalho encolhido, que e a altura que ele tem depois de a
+       página rolar — e rolar e a única forma de chegar até aqui. */
     top: calc(var(--header-height-compact) + var(--space-24));
   }
 }

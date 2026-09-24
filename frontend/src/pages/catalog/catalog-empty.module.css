@@ -2,9 +2,9 @@
  * O vazio da listagem.
  *
  * Ocupa altura de verdade: o `EmptyState` sozinho, num container largo,
- * ficaria como uma faixa fina perdida no meio da pagina, e o rodape subiria
- * ate quase encostar no cabecalho. A reserva mantem a pagina com a forma de
- * sempre, e o que muda e so o que ha dentro dela.
+ * ficaria como uma faixa fina perdida no meio da página, e o rodapé subiria
+ * até quase encostar no cabeçalho. A reserva mantem a página com a forma de
+ * sempre, e o que muda e só o que há dentro dela.
  */
 
 .empty {

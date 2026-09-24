@@ -5,13 +5,13 @@ import { orderTimeline, statusLabel, statusTone } from './order-status';
 /**
  * O pedido escrito para quem comprou.
  *
- * Dois assuntos, e os dois tem consequencia fora do teste:
+ * Dois assuntos, e os dois tem consequência fora do teste:
  *
  * 1. **Retirada e entrega leem o mesmo status de jeitos diferentes.** Quem
  *    marcou retirada nunca pode ver uma palavra sobre entrega.
- * 2. **A trilha nao inventa data.** O pedido guarda duas — quando nasceu e
- *    quando mudou pela ultima vez —, e os passos do meio ficam sem horario
- *    de proposito. Uma data plausivel escrita por um `Math` viraria um prazo
+ * 2. **A trilha não inventa data.** O pedido guarda duas — quando nasceu e
+ *    quando mudou pela última vez —, e os passos do meio ficam sem horário
+ *    de propósito. Uma data plausível escrita por um `Math` viraria um prazo
  *    cobrado da loja.
  */
 
@@ -35,7 +35,7 @@ test('o mesmo status muda de palavra conforme entrega ou retirada', () => {
 
 test('o status que espera a loja não diz ao cliente que ele tem de ligar', () => {
   // O painel chama de "Aguardando contato", que e uma tarefa da dona. Aqui a
-  // mesma palavra faria a cliente achar que o proximo passo e dela.
+  // mesma palavra faria a cliente achar que o próximo passo e dela.
   expect(statusLabel(ORDER_STATUSES.PENDING_CONTACT, 'delivery')).toBe('Aguardando confirmação');
 });
 
@@ -46,7 +46,7 @@ test('os tons dizem o mesmo que as palavras', () => {
   expect(statusTone(ORDER_STATUSES.SHIPPED)).toBe('ink');
 });
 
-test('o pedido recem-feito esta no primeiro passo, com a data de criação', () => {
+test('o pedido recém-feito esta no primeiro passo, com a data de criação', () => {
   const passos = trilha(ORDER_STATUSES.PENDING_CONTACT);
 
   expect(passos[0]?.state).toBe('current');
@@ -63,15 +63,15 @@ test('o passo atual leva a data da última mudanca', () => {
 });
 
 test('os passos cumpridos no meio aparecem sem data, e não com uma inventada', () => {
-  // O criterio honesto desta tela. Um pedido entregue passou por confirmado
-  // e por em preparo; dizer *quando* exigiria um numero que nao existe.
+  // O critério honesto desta tela. Um pedido entregue passou por confirmado
+  // e por em preparo; dizer *quando* exigiria um número que não existe.
   const passos = trilha(ORDER_STATUSES.DELIVERED);
   const meio = passos.filter((passo) => passo.state === 'done').slice(1);
 
   expect(meio).toHaveLength(3);
   expect(meio.every((passo) => passo.at === null)).toBe(true);
 
-  // O primeiro passo e a excecao: o pedido nasce nele, e essa data existe.
+  // O primeiro passo e a exceção: o pedido nasce nele, e essa data existe.
   expect(passos[0]?.at).toBe(CRIADO);
 });
 

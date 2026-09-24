@@ -11,16 +11,16 @@ import { DEFAULT_ORDERS_PAGE_SIZE, ORDER_NOT_FOUND_MESSAGE } from './customers.c
 import type { ListCustomerOrdersDto } from './dto/list-customer-orders.dto.js';
 
 /**
- * O historico de quem comprou.
+ * O histórico de quem comprou.
  *
- * Toda consulta e filtrada por `customerId` — nunca por telefone. A diferenca
- * importa: o vinculo e conferido na adocao dos pedidos, uma vez, com a conta
- * ja autenticada; se a leitura procurasse por telefone, qualquer conta criada
- * com o numero de outra pessoa leria os pedidos dela sem que nada tivesse
+ * Toda consulta e filtrada por `customerId` — nunca por telefone. A diferença
+ * importa: o vínculo e conferido na adoção dos pedidos, uma vez, com a conta
+ * já autenticada; se a leitura procurasse por telefone, qualquer conta criada
+ * com o número de outra pessoa leria os pedidos dela sem que nada tivesse
  * sido vinculado.
  *
- * As mesmas projecoes do painel, sem a anotacao interna: `CustomerOrderView` e
- * a visao que o pedido ja oferecia a quem o criou, e reaproveita-la garante
+ * As mesmas projeções do painel, sem a anotação interna: `CustomerOrderView` e
+ * a visão que o pedido já oferecia a quem o criou, e reaproveita-lá garante
  * que os dois lugares nunca divirjam sobre o que o cliente pode ver.
  */
 @Injectable()
@@ -48,12 +48,12 @@ export class CustomerOrdersService {
   }
 
   /**
-   * Um pedido pelo codigo, dentro da propria conta.
+   * Um pedido pelo código, dentro da própria conta.
    *
-   * O `customerId` no filtro e o que impede o codigo de outra pessoa de ser
+   * O `customerId` no filtro e o que impede o código de outra pessoa de ser
    * lido por quem o adivinhar — e `ME-AAMMDD-XXXX` e curto o bastante para
-   * alguem tentar. Pedido de outra conta responde 404, e nao 403: dizer
-   * "existe, mas nao e seu" ja seria contar demais.
+   * alguém tentar. Pedido de outra conta responde 404, e não 403: dizer
+   * "existe, mas não e seu" já seria contar demais.
    */
   async findByCode(customerId: string, code: string): Promise<CustomerOrderView> {
     const found = await this.orders

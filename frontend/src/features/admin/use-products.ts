@@ -17,21 +17,21 @@ import type {
 } from './admin.types';
 
 /**
- * O catalogo, do ponto de vista de quem o mantem.
+ * O catálogo, do ponto de vista de quem o mantem.
  *
  * ## Um minuto de frescor
  *
- * Mais que os pedidos, e de proposito. Pedido chega sozinho o dia inteiro;
- * produto muda quando alguem o edita, e quem edita esta nesta tela e recebe a
- * invalidacao na hora. Consultar de novo a cada troca de aba so gastaria
+ * Mais que os pedidos, e de propósito. Pedido chega sozinho o dia inteiro;
+ * produto muda quando alguém o edita, e quem edita esta nesta tela e recebe a
+ * invalidação na hora. Consultar de novo a cada troca de aba só gastaria
  * rede.
  *
- * ## A invalidacao alcanca a abertura do painel
+ * ## A invalidação alcança a abertura do painel
  *
  * `useDashboard` monta as consultas dele com `adminKeys.productList(...)`,
  * debaixo da mesma raiz. Invalidar `adminKeys.products()` corrige junto o
- * card de "Sem estoque" e o aviso de estoque acabando — que sao exatamente os
- * numeros que mudam quando a dona acaba de cadastrar ou desativar algo.
+ * card de "Sem estoque" e o aviso de estoque acabando — que são exatamente os
+ * números que mudam quando a dona acaba de cadastrar ou desativar algo.
  */
 const STALE_TIME_MS = 60_000;
 
@@ -59,13 +59,13 @@ export function useProduct(id: string) {
 /**
  * Publica e despublica pela tabela, com o interruptor virando no dedo.
  *
- * E a acao mais repetida da tela, e a que mais se faz em sequencia: a dona
+ * E a ação mais repetida da tela, e a que mais se faz em sequência: a dona
  * desativa quatro produtos que acabaram enquanto confere o estoque. Esperar o
  * servidor a cada um transformaria isso em quatro pausas.
  *
- * O retrato guardado e a **pagina inteira**, e nao so a linha alterada. E o
- * caminho mais curto para ficar correto quando duas linhas sao viradas quase
- * ao mesmo tempo: cada mutacao restaura o retrato que ela mesma viu.
+ * O retrato guardado e a **página inteira**, e não só a linha alterada. E o
+ * caminho mais curto para ficar correto quando duas linhas são viradas quase
+ * ao mesmo tempo: cada mutação restaura o retrato que ela mesma viu.
  */
 export function useSetProductStatus(params: AdminProductListParams) {
   const client = useQueryClient();
@@ -100,8 +100,8 @@ export function useSetProductStatus(params: AdminProductListParams) {
       }
     },
 
-    // No sucesso tambem: o servidor mexeu no `updatedAt`, e o card de "Sem
-    // estoque" da abertura conta so os publicados.
+    // No sucesso também: o servidor mexeu no `updatedAt`, e o card de "Sem
+    // estoque" da abertura conta só os publicados.
     onSettled: () => {
       void client.invalidateQueries({ queryKey: adminKeys.products() });
     },
@@ -109,24 +109,24 @@ export function useSetProductStatus(params: AdminProductListParams) {
 }
 
 /**
- * O que salvar: um cadastro novo ou a edicao de um que existe.
+ * O que salvar: um cadastro novo ou a edição de um que existe.
  *
- * Uniao discriminada pelo `id`, e nao um `id` opcional com o mesmo corpo nos
- * dois lados. A diferenca nao e cosmetica: `CreateProductInput` tem `slug` e
- * `UpdateProductInput` nao, porque o endereco do produto ja foi para o
- * WhatsApp de alguem e nao se troca numa edicao. Com um tipo so, o `slug`
+ * União discriminada pelo `id`, e não um `id` opcional com o mesmo corpo nos
+ * dois lados. A diferença não e cosmética: `CreateProductInput` tem `slug` e
+ * `UpdateProductInput` não, porque o endereço do produto já foi para o
+ * WhatsApp de alguém e não se troca numa edição. Com um tipo só, o `slug`
  * viajava no `PATCH` sem que nada reclamasse — e o servidor o ignorava em
- * silencio, que e a pior forma de estar errado.
+ * silêncio, que e a pior forma de estar errado.
  */
 export type SaveProductInput =
   { id?: undefined; input: CreateProductInput } | { id: string; input: UpdateProductInput };
 
 /**
- * Salva o cadastro: cria quando nao ha id, edita quando ha.
+ * Salva o cadastro: cria quando não há id, edita quando há.
  *
- * Uma mutacao so para os dois caminhos porque a tela e a mesma e o que ela
- * faz depois tambem e o mesmo — mostrar o aviso e voltar para a lista. O que
- * separa `POST` de `PATCH` e o tipo acima, e nao um casting.
+ * Uma mutação só para os dois caminhos porque a tela e a mesma e o que ela
+ * faz depois também e o mesmo — mostrar o aviso e voltar para a lista. O que
+ * separa `POST` de `PATCH` e o tipo acima, e não um casting.
  */
 export function useSaveProduct() {
   const client = useQueryClient();
@@ -139,7 +139,7 @@ export function useSaveProduct() {
 
     onSuccess: (product) => {
       // O produto que voltou e o mais novo que existe: entra no cache do
-      // detalhe antes da invalidacao, para que voltar ao formulario nao mostre
+      // detalhe antes da invalidação, para que voltar ao formulário não mostre
       // o esqueleto de algo que acabou de ser salvo.
       client.setQueryData(adminKeys.product(product.id), product);
 
@@ -153,9 +153,9 @@ export function useSaveProduct() {
 /**
  * Apaga o produto.
  *
- * O servidor recusa quando ha pedido apontando para ele — o historico do
- * pedido guarda nome e preco congelados, mas o vinculo continua existindo. A
- * tela mostra a frase de la em vez de traduzi-la: e ela que diz **quantos**
+ * O servidor recusa quando há pedido apontando para ele — o histórico do
+ * pedido guarda nome e preço congelados, mas o vínculo continua existindo. A
+ * tela mostra a frase de lá em vez de traduzi-lá: e ela que diz **quantos**
  * pedidos impedem.
  */
 export function useDeleteProduct() {
@@ -174,25 +174,25 @@ export function useDeleteProduct() {
 }
 
 /**
- * Poe ou tira o produto da prateleira de pronta entrega.
+ * Põe ou tira o produto da prateleira de pronta entrega.
  *
  * ## A linha some, e isso e o certo
  *
- * A tela de pronta entrega mostra so o que esta na prateleira. Tirar um
- * produto dela e tira-lo da lista — manter a linha la, com o interruptor
- * desligado, seria a tela discordando do proprio recorte, e a contagem do
- * cabecalho passaria a mentir enquanto a dona confere o estoque.
+ * A tela de pronta entrega mostra só o que esta na prateleira. Tirar um
+ * produto dela e tira-lo da lista — manter a linha lá, com o interruptor
+ * desligado, seria a tela discordando do próprio recorte, e a contagem do
+ * cabeçalho passaria a mentir enquanto a dona confere o estoque.
  *
- * O caminho de volta nao e desfazer a some: e o "Desfazer" do aviso, que a
- * tela oferece. Por isso a mutacao devolve o produto — quem chama precisa
+ * O caminho de volta não e desfazer a some: e o "Desfazer" do aviso, que a
+ * tela oferece. Por isso a mutação devolve o produto — quem chama precisa
  * dele para saber o que religar.
  *
- * ## Por que otimista aqui, ao contrario da taxa de entrega
+ * ## Por que otimista aqui, ao contrário da taxa de entrega
  *
- * Porque o gesto e uma conferencia de prateleira: dez produtos em sequencia,
- * com a dona olhando para a caixa e nao para a tela. Esperar a rede a cada
- * clique transformaria a conferencia numa fila de esperas — e, diferente de
- * um preco, o que se ve aqui e uma presenca, nao um numero que precisa estar
+ * Porque o gesto e uma conferência de prateleira: dez produtos em sequência,
+ * com a dona olhando para a caixa e não para a tela. Esperar a rede a cada
+ * clique transformaria a conferência numa fila de esperas — e, diferente de
+ * um preço, o que se vê aqui e uma presença, não um número que precisa estar
  * certo no centavo.
  */
 export function useSetReadyToShip(params: AdminProductListParams) {
@@ -215,7 +215,7 @@ export function useSetReadyToShip(params: AdminProductListParams) {
               ...current,
               items: current.items.filter((product) => product.id !== id),
               // A contagem acompanha: ela e o que a dona esta conferindo, e
-              // ve-la parada enquanto a lista encurta e pior do que nao ve-la.
+              // vê-lá parada enquanto a lista encurta e pior do que não vê-lá.
               totalItems: Math.max(current.totalItems - 1, 0),
             },
       );

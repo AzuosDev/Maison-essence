@@ -40,11 +40,11 @@ import { RefreshDto } from './dto/refresh.dto.js';
 import { BootstrapSecretGuard } from './guards/bootstrap-secret.guard.js';
 
 /**
- * Rotas de sessao do painel.
+ * Rotas de sessão do painel.
  *
  * Os tokens saem em duas vias: nos cookies `httpOnly` (o caminho do painel,
  * onde o JavaScript nunca toca no token) e no corpo da resposta, para o
- * cliente que nao aceita cookie de terceiro. Quem usa o corpo manda o access
+ * cliente que não aceita cookie de terceiro. Quem usa o corpo manda o access
  * token em `Authorization: Bearer` e o refresh no corpo do `/auth/refresh`.
  */
 @Controller('auth')
@@ -72,7 +72,7 @@ export class AuthController {
   }
 
   /**
-   * Renova a sessao. Publica porque o access token expirado e justamente o
+   * Renova a sessão. Publica porque o access token expirado e justamente o
    * motivo da chamada: quem autentica aqui e o refresh token.
    */
   @Public()
@@ -110,9 +110,9 @@ export class AuthController {
   }
 
   /**
-   * Encerra todas as sessoes do usuario, inclusive a atual: alem de revogar
+   * Encerra todas as sessões do usuário, inclusive a atual: além de revogar
    * os refresh tokens, incrementa `credentialVersion`, o que mata os access
-   * tokens ja emitidos sem esperar os 15 minutos.
+   * tokens já emitidos sem esperar os 15 minutos.
    */
   @AllowPendingPassword()
   @Post('logout-all')
@@ -127,11 +127,11 @@ export class AuthController {
   }
 
   /**
-   * Troca de senha do proprio usuario.
+   * Troca de senha do próprio usuário.
    *
-   * E a unica rota administrativa liberada para quem esta com senha
-   * temporaria — e, no caminho normal, tambem o fim desse estado. Responde
-   * com uma sessao nova, ja sem a flag.
+   * E a única rota administrativa liberada para quem esta com senha
+   * temporária — e, no caminho normal, também o fim desse estado. Responde
+   * com uma sessão nova, já sem a flag.
    */
   @AllowPendingPassword()
   @Patch('change-password')
@@ -152,15 +152,15 @@ export class AuthController {
   /**
    * Cria o primeiro SUPER_ADMIN de um banco vazio.
    *
-   * Existe porque a Vercel nao da shell: sem esta rota, abrir o painel em
-   * producao dependeria de rodar `npm run seed:superadmin` contra o banco de
-   * la. Quem autoriza e o header `x-bootstrap-secret`, conferido pelo
+   * Existe porque a Vercel não da shell: sem esta rota, abrir o painel em
+   * produção dependeria de rodar `npm run seed:superadmin` contra o banco de
+   * lá. Quem autoriza e o header `x-bootstrap-secret`, conferido pelo
    * `BootstrapSecretGuard` — sem `BOOTSTRAP_SECRET` no ambiente a rota
    * responde 404.
    *
-   * `@Public()` porque nao ha como autenticar: esta e justamente a chamada
-   * anterior a existir alguem para autenticar. Ela exige o banco sem usuario
-   * nenhum, entao se fecha sozinha depois do primeiro acesso.
+   * `@Public()` porque não há como autenticar: esta e justamente a chamada
+   * anterior a existir alguém para autenticar. Ela exige o banco sem usuário
+   * nenhum, então se fecha sozinha depois do primeiro acesso.
    */
   @Public()
   @UseGuards(BootstrapSecretGuard)
@@ -171,7 +171,7 @@ export class AuthController {
       .run({ origin: BOOTSTRAP_ORIGINS.HTTP, requireEmptyDatabase: true })
       .catch((error: unknown) => {
         // Segredo certo, ambiente incompleto: quem chamou e o operador, e
-        // dizer qual variavel falta poupa uma investigacao as cegas.
+        // dizer qual variável falta poupa uma investigação as cegas.
         if (error instanceof BootstrapNotConfiguredError) {
           throw new ServiceUnavailableException(error.message);
         }
@@ -186,8 +186,8 @@ export class AuthController {
     return { user: result.user };
   }
 
-  /** Quem esta logado. Liberada com senha temporaria: e por ela que o painel
-   * descobre que precisa mandar o usuario trocar a senha. */
+  /** Quem esta logado. Liberada com senha temporária: e por ela que o painel
+   * descobre que precisa mandar o usuário trocar a senha. */
   @AllowPendingPassword()
   @Get('me')
   me(@CurrentUser() user: AuthenticatedUser): AuthenticatedUser {

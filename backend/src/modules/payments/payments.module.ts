@@ -9,10 +9,10 @@ import { PublicPaymentsController } from './public-payments.controller.js';
 /**
  * Regras de pagamento: o que a loja aceita e como o total se divide.
  *
- * Exporta os dois servicos porque o modulo de pedidos vai precisar dos dois —
+ * Exporta os dois serviços porque o módulo de pedidos vai precisar dos dois —
  * `InstallmentService` para as parcelas e `PaymentsService.pixQuote` para o
- * desconto do PIX. Sao, junto do `DeliveryService`, as unicas fontes de
- * numero no fechamento de um pedido.
+ * desconto do PIX. São, junto do `DeliveryService`, as únicas fontes de
+ * número no fechamento de um pedido.
  */
 @Module({
   imports: [

@@ -23,28 +23,28 @@ import styles from './delivery-table.module.css';
  *
  * ## Por que os campos ficam sempre abertos
  *
- * Esta tela nao e consultada: ela e **ajustada**. O gasolina subiu e a dona
+ * Esta tela não e consultada: ela e **ajustada**. O gasolina subiu e a dona
  * reajusta cinco cidades de uma vez, comparando os valores uns com os outros
- * enquanto digita. Campos que so aparecem depois de um clique transformariam
+ * enquanto digita. Campos que só aparecem depois de um clique transformariam
  * isso em dez cliques e tirariam da vista justamente a coluna que ela esta
  * comparando.
  *
- * E por isso que o desktop e uma planilha, e nao uma lista com um botao de
+ * E por isso que o desktop e uma planilha, e não uma lista com um botão de
  * editar por linha.
  *
  * ## Cada campo salva ao sair dele
  *
- * Nao ha botao de salvar. Sair do campo — Tab, Enter, um clique em outro
- * lugar — grava, e so o que mudou (`changesOf`): sair sem alterar nada nao
+ * Não há botão de salvar. Sair do campo — Tab, Enter, um clique em outro
+ * lugar — grava, e só o que mudou (`changesOf`): sair sem alterar nada não
  * gasta chamada nenhuma, e e o gesto mais comum de quem esta conferindo.
  *
  * A linha acende em verde por um instante quando o servidor confirma. Sem
- * isso, gravar sem apertar nada fica indistinguivel de nao gravar.
+ * isso, gravar sem apertar nada fica indistinguível de não gravar.
  *
- * ## O prazo aparece escrito ao lado do numero
+ * ## O prazo aparece escrito ao lado do número
  *
  * `2` no campo e `Ate 2 dias uteis` ao lado — que e a frase exata que a
- * cliente le no checkout. E o que impede o cadastro de `0` achando que
+ * cliente lê no checkout. E o que impede o cadastro de `0` achando que
  * significa "sem prazo definido" quando significa "no mesmo dia".
  */
 
@@ -53,9 +53,9 @@ const WIDE = '(min-width: 64rem)';
 
 export interface DeliveryTableProps {
   cities: readonly AdminDeliveryCity[];
-  /** A lista ja reordenada, pronta para o servidor. */
+  /** A lista já reordenada, pronta para o servidor. */
   onReorder: (cities: AdminDeliveryCity[]) => void;
-  /** So o que mudou. `null` de `changesOf` nunca chega aqui. */
+  /** Só o que mudou. `null` de `changesOf` nunca chega aqui. */
   onSave: (city: AdminDeliveryCity, changes: UpdateDeliveryCityInput) => void;
   onToggleActive: (city: AdminDeliveryCity) => void;
   onDelete: (city: AdminDeliveryCity) => void;
@@ -182,16 +182,16 @@ interface CityFieldsProps {
 /**
  * Os campos de uma cidade.
  *
- * O rascunho e iniciado uma vez, a partir do que veio do servidor, e nao e
- * ressincronizado quando a resposta chega. A tentacao seria remontar a linha
+ * O rascunho e iniciado uma vez, a partir do que veio do servidor, e não e
+ * ressincronizado quando a resposta chega. A tentação seria remontar a linha
  * a cada salvamento — e o custo seria o foco: a dona sai do campo de taxa
- * para o de prazo, a gravacao dispara no `blur`, a resposta chega e o campo
+ * para o de prazo, a gravação dispara no `blur`, a resposta chega e o campo
  * onde ela acabou de entrar desmonta embaixo do cursor.
  *
- * Nao ha divergencia a temer. O que ela digitou e o que foi gravado, e
+ * Não há divergência a temer. O que ela digitou e o que foi gravado, e
  * `changesOf` compara contra o `city` atualizado: um estado escrito "ce" e
- * gravado "CE" volta como "CE", e a comparacao — que maiusculiza antes — nao
- * enxerga diferenca nenhuma. Nada reenvia em laco.
+ * gravado "CE" volta como "CE", e a comparação — que maiusculiza antes — não
+ * enxerga diferença nenhuma. Nada reenvia em laço.
  */
 function CityFields({
   city,
@@ -222,9 +222,9 @@ function CityFields({
   /**
    * Grava ao sair do campo.
    *
-   * Tres saidas possiveis, e as tres sao tratadas aqui: nada mudou (nao
-   * chama), o que mudou e invalido (marca o campo e nao chama), o que mudou e
-   * valido (chama com o diff).
+   * Três saídas possíveis, e as três são tratadas aqui: nada mudou (não
+   * chama), o que mudou e inválido (marca o campo e não chama), o que mudou e
+   * válido (chama com o diff).
    */
   const commit = (): void => {
     setTouched(true);

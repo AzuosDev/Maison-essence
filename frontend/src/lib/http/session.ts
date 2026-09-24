@@ -1,15 +1,15 @@
 /**
- * De quem e a sessao que autentica cada requisicao.
+ * De quem e a sessão que autentica cada requisição.
  *
- * Existem duas, e elas convivem no mesmo navegador de proposito: a dona
- * compra na propria loja. O backend emite os dois pares de token com segredos
- * diferentes, audiencias diferentes (`maison-essence/admin` e
+ * Existem duas, e elas convivem no mesmo navegador de propósito: a dona
+ * compra na própria loja. O backend emite os dois pares de token com segredos
+ * diferentes, audiências diferentes (`maison-essence/admin` e
  * `maison-essence/customer`) e cookies de nome diferente — e renova cada um
- * em uma rota propria. Um cliente HTTP que conhecesse "o token" derrubaria
- * uma sessao ao renovar a outra.
+ * em uma rota própria. Um cliente HTTP que conhecesse "o token" derrubaria
+ * uma sessão ao renovar a outra.
  *
- * O cliente HTTP nao sabe onde os tokens moram: ele conhece esta interface, e
- * quem a implementa e o store de sessao em `features/auth`. A inversao existe
+ * O cliente HTTP não sabe onde os tokens moram: ele conhece esta interface, e
+ * quem a implementa e o store de sessão em `features/auth`. A inversão existe
  * para quebrar o ciclo — o store precisa do cliente para chamar a API, e o
  * cliente precisa do token que o store guarda.
  */
@@ -24,32 +24,32 @@ export const SESSION_SCOPES = {
 export type SessionScope = (typeof SESSION_SCOPES)[keyof typeof SESSION_SCOPES];
 
 /**
- * O par de tokens de uma sessao.
+ * O par de tokens de uma sessão.
  *
- * Os dois chegam no corpo do login. Os mesmos valores tambem vem em cookie
+ * Os dois chegam no corpo do login. Os mesmos valores também vem em cookie
  * `httpOnly`, e esse e o caminho preferido — mas ele depende de cookie de
- * terceiro, que o Safari bloqueia por padrao quando a loja e a API estao em
- * dominios diferentes. Por isso o backend devolve os dois no corpo tambem, e
+ * terceiro, que o Safari bloqueia por padrão quando a loja e a API estão em
+ * domínios diferentes. Por isso o backend devolve os dois no corpo também, e
  * por isso o cliente manda `Authorization: Bearer` mesmo quando o cookie
- * existe: o que nao for usado e ignorado, e a sessao funciona nos dois casos.
+ * existe: o que não for usado e ignorado, e a sessão funciona nos dois casos.
  */
 export interface SessionTokens {
   accessToken: string;
-  /** `null` quando so o cookie carrega o refresh. */
+  /** `null` quando só o cookie carrega o refresh. */
   refreshToken: string | null;
 }
 
 export interface SessionPort {
-  /** Onde a renovacao e pedida. `/auth/refresh` no painel, `/customer/refresh` na loja. */
+  /** Onde a renovação e pedida. `/auth/refresh` no painel, `/customer/refresh` na loja. */
   readonly refreshPath: string;
 
-  /** Os tokens de agora, ou `null` quando nao ha sessao. */
+  /** Os tokens de agora, ou `null` quando não há sessão. */
   read(): SessionTokens | null;
 
-  /** Guarda o par recem-emitido pela renovacao. */
+  /** Guarda o par recém-emitido pela renovação. */
   write(tokens: SessionTokens): void;
 
-  /** A renovacao falhou: a sessao acabou e quem implementa decide o que fazer. */
+  /** A renovação falhou: a sessão acabou e quem implementa decide o que fazer. */
   clear(): void;
 }
 
@@ -57,7 +57,7 @@ const ports = new Map<SessionScope, SessionPort>();
 
 /**
  * Liga um escopo ao store que o mantem. Chamado uma vez, no boot da
- * aplicacao (`app/providers.tsx`), antes da primeira requisicao.
+ * aplicação (`app/providers.tsx`), antes da primeira requisição.
  */
 export function registerSession(scope: SessionScope, port: SessionPort): void {
   ports.set(scope, port);

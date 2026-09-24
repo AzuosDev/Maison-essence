@@ -17,25 +17,25 @@ import styles from './toast.module.css';
 /**
  * O aviso passageiro.
  *
- * Tres partes: `Toast` desenha um aviso, `ToastProvider` guarda a fila e a
- * desenha por portal, e `useToast` e como o resto da aplicacao pede um.
+ * Três partes: `Toast` desenha um aviso, `ToastProvider` guarda a fila e a
+ * desenha por portal, e `useToast` e como o resto da aplicação pede um.
  *
  * A regra que decide o que vira toast: aviso que o cliente pode perder sem
- * prejuizo. "Produto adicionado a sacola" cabe aqui — se ele nao vir, a
- * sacola com um item a mais conta a mesma coisa. "Nao foi possivel enviar o
- * pedido" nao cabe: isso fica na tela, ao lado do botao, ate ser resolvido.
+ * prejuizo. "Produto adicionado a sacola" cabe aqui — se ele não vir, a
+ * sacola com um item a mais conta a mesma coisa. "Não foi possível enviar o
+ * pedido" não cabe: isso fica na tela, ao lado do botão, até ser resolvido.
  */
 
 export type ToastVariant = 'info' | 'success' | 'danger';
 
 /**
- * O atalho no rodape do aviso: "Ver a sacola".
+ * O atalho no rodapé do aviso: "Ver a sacola".
  *
- * E um `onSelect`, e nao um endereco, e a razao e de arquitetura: o
+ * E um `onSelect`, e não um endereço, e a razão e de arquitetura: o
  * `ToastProvider` fica **por fora** do `RouterProvider` (ver `app/App.tsx`),
- * entao um `<Link>` desenhado aqui dentro nao encontraria contexto de
+ * então um `<Link>` desenhado aqui dentro não encontraria contexto de
  * roteador nenhum e derrubaria o primeiro aviso que tentasse usa-lo. Quem
- * pede o toast esta dentro do router e tem `useNavigate` a mao; este
+ * pede o toast esta dentro do router e tem `useNavigate` a mão; este
  * primitivo continua sem saber que rotas existem, que e como o resto de
  * `components/ui` funciona.
  */
@@ -48,14 +48,14 @@ export interface ToastOptions {
   title: string;
   description?: string;
   variant?: ToastVariant;
-  /** Quanto tempo fica na tela. `0` para so sair no clique. */
+  /** Quanto tempo fica na tela. `0` para só sair no clique. */
   duration?: number;
   action?: ToastAction;
 }
 
 /**
  * Cinco segundos: o bastante para ler duas linhas sem pressa, pouco o
- * bastante para nao acumular avisos na tela de quem esta clicando rapido.
+ * bastante para não acumular avisos na tela de quem esta clicando rápido.
  */
 const DEFAULT_DURATION_MS = 5000;
 
@@ -83,7 +83,7 @@ export function useToast(): ToastContextValue {
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [entries, setEntries] = useState<ToastEntry[]>([]);
 
-  // Os temporizadores ficam num ref, e nao no estado: eles nao desenham
+  // Os temporizadores ficam num ref, e não no estado: eles não desenham
   // nada, e guarda-los no estado faria a fila renderizar de novo a cada
   // agendamento.
   const timers = useRef(new Map<string, ReturnType<typeof setTimeout>>());
@@ -120,10 +120,10 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     [dismiss],
   );
 
-  // Ao desmontar, nenhum temporizador fica de pe tentando mexer num estado
-  // que nao existe mais. O ref e lido dentro do efeito, e nao no corpo do
-  // componente: `.current` durante o render e um valor que o React nao
-  // garante estavel.
+  // Ao desmontar, nenhum temporizador fica de pé tentando mexer num estado
+  // que não existe mais. O ref e lido dentro do efeito, e não no corpo do
+  // componente: `.current` durante o render e um valor que o React não
+  // garante estável.
   useEffect(() => {
     const scheduled = timers.current;
 
@@ -144,9 +144,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
       {entries.length > 0
         ? createPortal(
-            // Uma `<section>` com rotulo — ou seja, um marco de navegacao —
-            // para que quem navega por marcos consiga chegar ate os avisos.
-            // Cada aviso tem o seu proprio `role`.
+            // Uma `<section>` com rótulo — ou seja, um marco de navegação —
+            // para que quem navega por marcos consiga chegar até os avisos.
+            // Cada aviso tem o seu próprio `role`.
             <section className={styles.viewport} aria-label="Avisos">
               {entries.map((entry) => (
                 <Toast
@@ -175,17 +175,17 @@ export type ToastProps = Omit<ComponentPropsWithoutRef<'div'>, 'title'> & {
   title: string;
   description?: string | undefined;
   variant?: ToastVariant | undefined;
-  /** O link do rodape do aviso: "Ver a sacola". */
+  /** O link do rodapé do aviso: "Ver a sacola". */
   action?: ToastAction | undefined;
   /**
    * O atalho foi usado.
    *
    * O aviso sai da tela junto: deixa-lo anunciando que o item entrou na
-   * sacola por cima da propria sacola aberta e dar a mesma noticia duas
+   * sacola por cima da própria sacola aberta e dar a mesma noticia duas
    * vezes, com uma delas cobrindo a outra.
    */
   onSelectAction?: (() => void) | undefined;
-  /** Sem ele, o aviso nao mostra o X — util so no styleguide. */
+  /** Sem ele, o aviso não mostra o X — útil só no styleguide. */
   onDismiss?: (() => void) | undefined;
   closeLabel?: string;
 };

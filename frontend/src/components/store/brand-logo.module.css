@@ -2,8 +2,8 @@
  * O logotipo: monograma ME numa moldura dourada, com o nome em caixa alta
  * bem espacada embaixo.
  *
- * As medidas sao variaveis locais para que o cabecalho as reduza ao encolher
- * — trocar dois numeros num lugar so, em vez de repetir o bloco inteiro numa
+ * As medidas são variáveis locais para que o cabeçalho as reduza ao encolher
+ * — trocar dois números num lugar só, em vez de repetir o bloco inteiro numa
  * classe `.small`.
  */
 
@@ -19,18 +19,18 @@
 
   color: var(--ink);
 
-  /* Sem transicao nas medidas: a assinatura encolhe junto com o cabecalho, e
-     animar largura, altura e corpo de fonte remede a pagina a cada quadro.
-     A troca e instantanea, como a do cabecalho que a contem. */
+  /* Sem transição nas medidas: a assinatura encolhe junto com o cabeçalho, e
+     animar largura, altura e corpo de fonte remede a página a cada quadro.
+     A troca e instantanea, como a do cabeçalho que a contem. */
   transition: color var(--transition);
 }
 
-/* Encolhido: o cabecalho passa esta classe ao rolar a pagina. */
+/* Encolhido: o cabeçalho passa esta classe ao rolar a página. */
 /*
  * A assinatura deitada: monograma ao lado do nome.
  *
- * E a do cabecalho, onde so ha uma faixa de altura para trabalhar. A empilhada
- * fica para o rodape e para o bloco da marca, que tem espaco para ela respirar.
+ * E a do cabeçalho, onde só há uma faixa de altura para trabalhar. A empilhada
+ * fica para o rodapé e para o bloco da marca, que tem espaço para ela respirar.
  */
 .compact {
   --monogram-size: 2rem;
@@ -43,8 +43,8 @@
 }
 
 /*
- * No celular, "MAISON ESSENCE" em caixa alta com 0.28em de espacamento nao
- * cabe entre o menu e os dois icones. A assinatura encolhe — e fecha o
+ * No celular, "MAISON ESSENCE" em caixa alta com 0.28em de espacamento não
+ * cabe entre o menu e os dois ícones. A assinatura encolhe — e fecha o
  * espacamento junto, que e o que de fato ocupa a largura — em vez de sumir:
  * o nome da loja no alto da tela e o que diz ao cliente onde ele esta.
  */
@@ -94,7 +94,7 @@
   white-space: nowrap;
 }
 
-/* No rodape e na gaveta, sobre fundo escuro. */
+/* No rodapé e na gaveta, sobre fundo escuro. */
 .inverted {
   color: var(--cream);
 }

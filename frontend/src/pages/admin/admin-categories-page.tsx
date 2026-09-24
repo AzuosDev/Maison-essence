@@ -24,24 +24,24 @@ import styles from './admin-categories-page.module.css';
 /**
  * As categorias.
  *
- * ## Esta tela nao lista registros: ela desenha o menu
+ * ## Esta tela não lista registros: ela desenha o menu
  *
  * O que esta na tela e o menu da vitrine, na mesma ordem e com o mesmo
- * aninhamento. Por isso nao ha busca, nao ha paginacao e nao ha filtro — uma
+ * aninhamento. Por isso não há busca, não há paginação e não há filtro — uma
  * loja de perfumes tem dez ou quinze categorias, e a dona precisa ver todas
  * de uma vez para decidir a ordem entre elas.
  *
- * ## Excluir quase sempre nao e o que ela quer
+ * ## Excluir quase sempre não e o que ela quer
  *
  * O servidor recusa apagar categoria com subcategoria ou produto ativo, e
- * manda as contagens junto. A tela usa esses numeros para oferecer
+ * manda as contagens junto. A tela usa esses números para oferecer
  * **desativar** ali mesmo: some do menu da loja e nenhum produto sai do
  * lugar, que e o que ela queria em quase todo caso.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * Nada. O menu da loja e cadastro, e o recorte do papel ja esconde o item no
- * menu lateral — esta tela so recusa quem digitou o endereco.
+ * Nada. O menu da loja e cadastro, e o recorte do papel já esconde o item no
+ * menu lateral — esta tela só recusa quem digitou o endereço.
  */
 export default function AdminCategoriesPage() {
   const role = useAdminRole();
@@ -81,8 +81,8 @@ export default function AdminCategoriesPage() {
   /**
    * Desativa a categoria.
    *
-   * E a saida que o 409 de exclusao oferece, e tambem o que o interruptor da
-   * linha faz. Uma funcao so para os dois porque o efeito e o mesmo: a
+   * E a saída que o 409 de exclusão oferece, e também o que o interruptor da
+   * linha faz. Uma função só para os dois porque o efeito e o mesmo: a
    * categoria some do menu da loja sem que nenhum produto mude de lugar.
    */
   const deactivate = (category: AdminCategory): void => {
@@ -102,7 +102,7 @@ export default function AdminCategoriesPage() {
     );
   };
 
-  /** Fecha o dialogo e avisa, depois de criar ou salvar. */
+  /** Fecha o diálogo e avisa, depois de criar ou salvar. */
   const saved = (name: string) => () => {
     setDialog(null);
     toast({ variant: 'success', title: `${name} foi salva` });
@@ -246,7 +246,7 @@ export default function AdminCategoriesPage() {
                 return;
               }
 
-              // O dialogo fica aberto: a mensagem do servidor diz o que
+              // O diálogo fica aberto: a mensagem do servidor diz o que
               // impede, e a oferta de desativar continua a um clique.
               toast({
                 variant: 'danger',
@@ -266,15 +266,15 @@ export default function AdminCategoriesPage() {
   );
 }
 
-/* ---- A confirmacao de exclusao ---------------------------------------------- */
+/* ---- A confirmação de exclusão ---------------------------------------------- */
 
 /**
- * Confirmar a exclusao, com a saida ao lado.
+ * Confirmar a exclusão, com a saída ao lado.
  *
- * Nao e um `ConfirmDialog` puro porque esta acao tem **tres** respostas, e
- * nao duas: apagar, desistir e "na verdade eu so queria tirar do menu". A
- * terceira e a que a dona quer em quase todo caso, e escondê-la atras de uma
- * mensagem de erro seria fazê-la descobrir por tentativa.
+ * Não e um `ConfirmDialog` puro porque esta ação tem **três** respostas, e
+ * não duas: apagar, desistir e "na verdade eu só queria tirar do menu". A
+ * terceira e a que a dona quer em quase todo caso, e escondê-lá atrás de uma
+ * mensagem de erro seria fazê-lá descobrir por tentativa.
  */
 function DeleteDialog({
   category,

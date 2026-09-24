@@ -1,14 +1,14 @@
 /*
- * A pagina do produto: a foto de um lado, a decisao do outro.
+ * A página do produto: a foto de um lado, a decisão do outro.
  *
- * As duas colunas nao dividem a largura ao meio. A galeria leva um pouco
- * mais porque e a peca que o cliente veio ver; a coluna de compra leva o
- * bastante para o preco, as opcoes e os dois botoes caberem sem apertar, e
- * nada alem disso — uma coluna de compra de 600px espalha seis linhas de
+ * As duas colunas não dividem a largura ao meio. A galeria leva um pouco
+ * mais porque e a peça que o cliente veio ver; a coluna de compra leva o
+ * bastante para o preço, as opções e os dois botões caberem sem apertar, e
+ * nada além disso — uma coluna de compra de 600px espalha seis linhas de
  * texto por meia tela e obriga o olho a varrer no lugar de ler.
  *
- * Por isso a grade tem largura maxima propria, menor que a do container, e
- * fica centrada nele: acima de 1120px a pagina para de esticar e passa a
+ * Por isso a grade tem largura máxima própria, menor que a do container, e
+ * fica centrada nele: acima de 1120px a página para de esticar e passa a
  * ganhar margem.
  */
 
@@ -28,8 +28,8 @@
 /*
  * `min-width: 0` nas duas colunas.
  *
- * O padrao de um item de grade e `min-width: auto`, que o impede de encolher
- * abaixo do conteudo. Na galeria, isso significa a moldura da foto
+ * O padrão de um item de grade e `min-width: auto`, que o impede de encolher
+ * abaixo do conteúdo. Na galeria, isso significa a moldura da foto
  * empurrando a coluna de compra para fora da tela no primeiro nome de
  * produto comprido.
  */
@@ -67,10 +67,10 @@
 
 /* ---- O esqueleto --------------------------------------------------------
  *
- * Mora nesta folha, e nao numa propria, porque a unica funcao dele e ocupar
- * exatamente a geometria acima enquanto o produto nao chega. Em dois
+ * Mora nesta folha, e não numa própria, porque a única função dele e ocupar
+ * exatamente a geometria acima enquanto o produto não chega. Em dois
  * arquivos, a grade mudaria em um e o esqueleto passaria a prometer um
- * layout que a pagina nao entrega mais.
+ * layout que a página não entrega mais.
  */
 
 .skeletonFrame {

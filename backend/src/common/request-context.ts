@@ -1,6 +1,6 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
-/** O que atravessa a requisicao inteira sem ser passado de mao em mao. */
+/** O que atravessa a requisição inteira sem ser passado de mão em mão. */
 interface RequestScope {
   requestId: string;
 }
@@ -8,12 +8,12 @@ interface RequestScope {
 const storage = new AsyncLocalStorage<RequestScope>();
 
 /**
- * Abre o escopo da requisicao.
+ * Abre o escopo da requisição.
  *
- * `AsyncLocalStorage` e o unico jeito de o log de um servico no fundo da pilha
- * saber a qual requisicao ele pertence sem que `requestId` vire parametro de
- * toda funcao do projeto. Em funcao serverless a economia e maior ainda: uma
- * instancia atende varias requisicoes em sequencia, e uma variavel de modulo
+ * `AsyncLocalStorage` e o único jeito de o log de um serviço no fundo da pilha
+ * saber a qual requisição ele pertence sem que `requestId` vire parâmetro de
+ * toda função do projeto. Em função serverless a economia e maior ainda: uma
+ * instância atende várias requisições em sequência, e uma variável de módulo
  * misturaria os identificadores da anterior com os da atual.
  */
 export function runWithRequestId(requestId: string, next: () => void): void {
@@ -21,10 +21,10 @@ export function runWithRequestId(requestId: string, next: () => void): void {
 }
 
 /**
- * O identificador da requisicao em curso, quando ha uma.
+ * O identificador da requisição em curso, quando há uma.
  *
- * `undefined` fora de requisicao — no boot, num seed, num script — e isso nao
- * e erro: nem toda linha de log nasce de alguem chamando a API.
+ * `undefined` fora de requisição — no boot, num seed, num script — e isso não
+ * e erro: nem toda linha de log nasce de alguém chamando a API.
  */
 export function currentRequestId(): string | undefined {
   return storage.getStore()?.requestId;

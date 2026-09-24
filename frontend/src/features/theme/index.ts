@@ -1,8 +1,8 @@
 /**
  * O tema da interface.
  *
- * Tres pecas: a logica sem React (`theme.ts`), o estado compartilhado
- * (`theme-context.tsx`) e o controle (`theme-toggle.tsx`). A quarta peca nao
+ * Três peças: a lógica sem React (`theme.ts`), o estado compartilhado
+ * (`theme-context.tsx`) e o controle (`theme-toggle.tsx`). A quarta peça não
  * mora aqui — e o script embutido no `index.html`, que escreve o atributo
  * antes da primeira pintura.
  */

@@ -6,31 +6,31 @@ import type { UserRole } from '@/features/auth';
 import styles from './access-denied.module.css';
 
 /**
- * A area existe e nao e sua.
+ * A área existe e não e sua.
  *
- * ## Por que nao e um 404 nem um erro
+ * ## Por que não e um 404 nem um erro
  *
- * Esconder a area do menu e a regra; mentir sobre a existencia dela nao e.
- * Quem chega aqui digitou `/admin/system` ou clicou num link que alguem
+ * Esconder a área do menu e a regra; mentir sobre a existência dela não e.
+ * Quem chega aqui digitou `/admin/system` ou clicou num link que alguém
  * mandou, e em qualquer dos dois casos e uma pessoa autenticada, com conta
- * legitima, dentro do proprio painel. Um 404 a faria procurar um endereco
- * que nao errou; um "algo deu errado" a faria recarregar a pagina tres
+ * legitima, dentro do próprio painel. Um 404 a faria procurar um endereço
+ * que não errou; um "algo deu errado" a faria recarregar a página três
  * vezes.
  *
- * O que ela precisa saber cabe em tres frases: a area existe, e de outro
- * papel, e o caminho de volta e este botao. O papel dela aparece escrito
- * porque e a informacao que resolve a duvida seguinte — "mas eu nao sou
+ * O que ela precisa saber cabe em três frases: a área existe, e de outro
+ * papel, e o caminho de volta e este botão. O papel dela aparece escrito
+ * porque e a informação que resolve a dúvida seguinte — "mas eu não sou
  * administradora?" — sem precisar de uma conversa.
  *
- * ## Isto nao e a protecao
+ * ## Isto não e a proteção
  *
- * E a explicacao. A protecao esta no `@Roles(...)` de cada controlador: sem
- * ela, esta tela seria apenas uma cortina, e as rotas de usuario
+ * E a explicação. A proteção esta no `@Roles(...)` de cada controlador: sem
+ * ela, esta tela seria apenas uma cortina, e as rotas de usuário
  * responderiam a qualquer um que soubesse chamar a API direto.
  */
 
 export interface AccessDeniedProps {
-  /** O papel de quem entrou. Ausente so entre o login e o `/auth/me`. */
+  /** O papel de quem entrou. Ausente só entre o login e o `/auth/me`. */
   role: UserRole | undefined;
 }
 

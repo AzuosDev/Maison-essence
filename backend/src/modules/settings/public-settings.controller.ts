@@ -7,18 +7,18 @@ import { SettingsService } from './settings.service.js';
 import type { PublicSettingsView } from './settings.view.js';
 
 /**
- * As configuracoes que a loja aberta consome.
+ * As configurações que a loja aberta consome.
  *
  * Cinco minutos na CDN (`SETTINGS_CACHE`) porque esta resposta e pedida em
- * toda visita: cabecalho, rodape, barra de avisos, banners da home e o botao
+ * toda visita: cabeçalho, rodapé, barra de avisos, banners da home e o botão
  * do WhatsApp saem daqui.
  *
- * A invalidacao e por versao no ETag, e nao por expurgo na borda. O ETag
- * carrega o `updatedAt` do documento, entao todo PATCH no painel ja muda a
- * etiqueta: na primeira revalidacao depois da gravacao a CDN recebe 200 com
- * o conteudo novo, e enquanto nada muda ela recebe 304 sem corpo. E o que
- * torna a loja operavel sem redeploy — trocar o numero do WhatsApp no painel
- * troca o destino do pedido, com a janela de cache como unico atraso.
+ * A invalidação e por versão no ETag, e não por expurgo na borda. O ETag
+ * carrega o `updatedAt` do documento, então todo PATCH no painel já muda a
+ * etiqueta: na primeira revalidação depois da gravação a CDN recebe 200 com
+ * o conteúdo novo, e enquanto nada muda ela recebe 304 sem corpo. E o que
+ * torna a loja operável sem redeploy — trocar o número do WhatsApp no painel
+ * troca o destino do pedido, com a janela de cache como único atraso.
  */
 @Public()
 @CdnCache(SETTINGS_CACHE)

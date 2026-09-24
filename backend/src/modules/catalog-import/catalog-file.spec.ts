@@ -19,7 +19,7 @@ describe('readCatalogEnvelope', () => {
   });
 
   it('recusa o que não tem as duas listas', () => {
-    // E a unica recusa que derruba a importacao inteira: sem as listas nao ha
+    // E a única recusa que derruba a importação inteira: sem as listas não há
     // o que importar nem o que relatar.
     expect(() => readCatalogEnvelope({ products: [] })).toThrow(CatalogFormatError);
     expect(() => readCatalogEnvelope([])).toThrow(CatalogFormatError);
@@ -29,7 +29,7 @@ describe('readCatalogEnvelope', () => {
 
 describe('readProductEntry', () => {
   it('tira os nulos que o arquivo usa onde a API usa a ausência', () => {
-    // `brand: null` e "esta lista nao informa marca", nao "apague a marca". O
+    // `brand: null` e "esta lista não informa marca", não "apague a marca". O
     // `@IsOptional` deixaria o nulo passar e a marca gravada seria apagada.
     const { candidate } = readProductEntry({
       name: 'Asad',
@@ -65,8 +65,8 @@ describe('readProductEntry', () => {
   });
 
   it('não converte nada: o valor errado chega cru ao validador', () => {
-    // Coagir aqui transformaria um preco digitado errado num numero plausivel
-    // em vez de numa linha no relatorio.
+    // Coagir aqui transformaria um preço digitado errado num número plausível
+    // em vez de numa linha no relatório.
     const { candidate } = readProductEntry({
       name: 'Asad',
       slug: 'asad',
@@ -108,7 +108,7 @@ describe('readProductEntry', () => {
 });
 
 describe('readCategoryEntry', () => {
-  it('le a mãe, e trata a raiz como raiz', () => {
+  it('lê a mãe, e trata a raiz como raiz', () => {
     expect(readCategoryEntry({ slug: 'perfumes', parentSlug: null }).parentSlug).toBeNull();
     expect(
       readCategoryEntry({ slug: 'arabes', parentSlug: 'perfumes' }).parentSlug,
@@ -116,8 +116,8 @@ describe('readCategoryEntry', () => {
   });
 
   it('manda o slug explicito, para a próxima importação achar a mesma linha', () => {
-    // Sem ele o hook do schema geraria o endereco a partir do nome, e a chave
-    // da idempotencia deixaria de ser previsivel.
+    // Sem ele o hook do schema geraria o endereço a partir do nome, e a chave
+    // da idempotência deixaria de ser previsível.
     const entry = readCategoryEntry({ name: 'Árabes Masculinos' });
 
     expect(entry.candidate.slug).toBe('arabes-masculinos');

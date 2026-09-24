@@ -28,10 +28,10 @@ import { generateOrderCode } from './order-code.js';
  * Item do pedido, congelado no momento da compra.
  *
  * Tudo que a leitura precisa esta aqui dentro, copiado: nome do produto,
- * label da variante, imagem, preco unitario e desconto. `productId` e
- * `variantId` sao guardados sem `ref` de proposito — nao existe `populate`
- * possivel neles, e essa e a garantia de que ninguem vai, por descuido,
- * exibir o preco de hoje num pedido de tres meses atras.
+ * label da variante, imagem, preço unitário e desconto. `productId` e
+ * `variantId` são guardados sem `ref` de propósito — não existe `populate`
+ * possível neles, e essa e a garantia de que ninguém vai, por descuido,
+ * exibir o preço de hoje num pedido de três meses atrás.
  */
 @Schema(embeddedSchemaOptions())
 export class OrderItem extends EmbeddedSchema {
@@ -47,7 +47,7 @@ export class OrderItem extends EmbeddedSchema {
   @Prop(textProp({ max: 60, default: '' }))
   variantLabel: string;
 
-  /** `publicId` do Cloudinary, copiado na criacao do pedido. */
+  /** `publicId` do Cloudinary, copiado na criação do pedido. */
   @Prop(textProp({ max: 200, default: '' }))
   image: string;
 
@@ -57,7 +57,7 @@ export class OrderItem extends EmbeddedSchema {
   @Prop(integerProp({ required: true, min: 1, max: 9999 }))
   quantity: number;
 
-  /** Desconto por quantidade aplicado a esta linha, ja resolvido. */
+  /** Desconto por quantidade aplicado a esta linha, já resolvido. */
   @Prop(percentProp({ required: true, default: 0 }))
   discountPercent: number;
 
@@ -68,7 +68,7 @@ export class OrderItem extends EmbeddedSchema {
 
 export const OrderItemSchema = createSchema(OrderItem);
 
-/** Endereco de entrega, copiado no momento do pedido. */
+/** Endereço de entrega, copiado no momento do pedido. */
 @Schema(embeddedSchemaOptions({ _id: false }))
 export class OrderAddress {
   @Prop(textProp({ max: 160, default: '' }))
@@ -95,8 +95,8 @@ export const OrderAddressSchema = createSchema(OrderAddress);
 /**
  * Como o pedido chega ao cliente.
  *
- * Nome, estado e taxa da cidade sao copiados: a dona pode desativar ou
- * reajustar a cidade amanha, e o pedido de hoje continua legivel com o que
+ * Nome, estado e taxa da cidade são copiados: a dona pode desativar ou
+ * reajustar a cidade amanha, e o pedido de hoje continua legível com o que
  * foi combinado.
  */
 @Schema(embeddedSchemaOptions({ _id: false }))
@@ -159,13 +159,13 @@ export class OrderTotals {
 
 export const OrderTotalsSchema = createSchema(OrderTotals);
 
-/** Dados de contato de quem comprou. O checkout como convidado e o padrao. */
+/** Dados de contato de quem comprou. O checkout como convidado e o padrão. */
 @Schema(embeddedSchemaOptions({ _id: false }))
 export class OrderCustomer {
   @Prop(textProp({ required: true, max: 120 }))
   name: string;
 
-  /** Celular brasileiro com DDD, so digitos. E a chave que liga pedido e cliente. */
+  /** Celular brasileiro com DDD, só digitos. E a chave que liga pedido e cliente. */
   @Prop(
     textProp({
       required: true,
@@ -181,10 +181,10 @@ export class OrderCustomer {
 
 export const OrderCustomerSchema = createSchema(OrderCustomer);
 
-/** Pedido. Documento imutavel em tudo que diz respeito a precos. */
+/** Pedido. Documento imutável em tudo que diz respeito a preços. */
 @Schema(baseSchemaOptions({ collection: 'orders' }))
 export class Order extends BaseSchema {
-  /** `ME-AAMMDD-XXXX`. Gerado no `pre('validate')` quando nao vem preenchido. */
+  /** `ME-AAMMDD-XXXX`. Gerado no `pre('validate')` quando não vem preenchido. */
   @Prop(textProp({ required: true, max: 20, uppercase: true }))
   code: string;
 
@@ -210,19 +210,19 @@ export class Order extends BaseSchema {
   @Prop(textProp({ max: 6000, default: '' }))
   whatsappMessage: string;
 
-  /** Anotacao interna da dona. Nunca sai em rota publica. */
+  /** Anotação interna da dona. Nunca sai em rota publica. */
   @Prop(textProp({ max: 2000, default: '' }))
   notes: string;
 
   /**
-   * Cliente com conta, quando houver. Aqui o `ref` e legitimo: e vinculo
-   * vivo, nao preco congelado — o cliente pode se cadastrar depois com o
+   * Cliente com conta, quando houver. Aqui o `ref` e legitimo: e vínculo
+   * vivo, não preço congelado — o cliente pode se cadastrar depois com o
    * mesmo telefone e receber os pedidos antigos.
    */
   @Prop(objectIdProp({ ref: Customer.name, default: null }))
   customerId: Types.ObjectId | null;
 
-  /** Marcado no cancelamento, para o estoque nao ser devolvido duas vezes. */
+  /** Marcado no cancelamento, para o estoque não ser devolvido duas vezes. */
   @Prop({ type: Date, default: null })
   stockRestoredAt: Date | null;
 }
@@ -240,11 +240,11 @@ OrderSchema.pre('validate', function () {
 OrderSchema.index({ code: 1 }, { unique: true });
 // Painel: pedidos de um status, do mais recente para o mais antigo.
 OrderSchema.index({ status: 1, createdAt: -1 });
-// Historico de um cliente, com ou sem conta — o telefone e a chave natural.
+// Histórico de um cliente, com ou sem conta — o telefone e a chave natural.
 OrderSchema.index({ 'customer.phone': 1, createdAt: -1 });
 /**
- * "Esta variante ja foi vendida?" — a pergunta que o modulo de produtos faz
+ * "Esta variante já foi vendida?" — a pergunta que o módulo de produtos faz
  * antes de apagar uma variante que saiu da lista, e antes de excluir um
- * produto. Sem o indice, cada gravacao no painel varreria os pedidos.
+ * produto. Sem o índice, cada gravação no painel varreria os pedidos.
  */
 OrderSchema.index({ 'items.variantId': 1 });

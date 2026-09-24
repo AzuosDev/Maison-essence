@@ -15,11 +15,11 @@ import {
 } from './admin-auth.api';
 
 /**
- * A sessao do painel, do ponto de vista das telas.
+ * A sessão do painel, do ponto de vista das telas.
  *
- * O store de sessao (`features/auth`) guarda usuario e tokens; estes hooks
- * sao a camada que as telas usam, e existem para que nenhuma delas precise
- * saber que ha um `zustand` embaixo — nem repetir o par "gravar sessao e
+ * O store de sessão (`features/auth`) guarda usuário e tokens; estes hooks
+ * são a camada que as telas usam, e existem para que nenhuma delas precise
+ * saber que há um `zustand` embaixo — nem repetir o par "gravar sessão e
  * limpar o cache" em cada lugar que faz login.
  */
 
@@ -28,23 +28,23 @@ export function useAdminUser(): AdminUser | null {
   return useAdminSession((state) => state.user);
 }
 
-/** O papel de quem esta logado. `undefined` quando nao ha ninguem. */
+/** O papel de quem esta logado. `undefined` quando não há ninguém. */
 export function useAdminRole(): UserRole | undefined {
   return useAdminSession((state) => state.user?.role);
 }
 
-/** Ha sessao guardada neste navegador. */
+/** Há sessão guardada neste navegador. */
 export function useIsSignedIn(): boolean {
   return useAdminSession((state) => state.status === 'authenticated');
 }
 
 /**
- * A senha e temporaria e precisa ser trocada.
+ * A senha e temporária e precisa ser trocada.
  *
- * Enquanto for verdade, o painel inteiro fica bloqueado atras da tela de
+ * Enquanto for verdade, o painel inteiro fica bloqueado atrás da tela de
  * troca — o backend concorda: com `mustChangePassword`, toda rota
  * administrativa responde 403 menos `/auth/change-password` e `/auth/me`.
- * Nao adiantaria deixar o menu aberto para telas que so devolveriam erro.
+ * Não adiantaria deixar o menu aberto para telas que só devolveriam erro.
  */
 export function useMustChangePassword(): boolean {
   return useAdminSession((state) => state.user?.mustChangePassword === true);
@@ -53,10 +53,10 @@ export function useMustChangePassword(): boolean {
 /**
  * O login.
  *
- * Sucesso grava a sessao e **limpa o cache de consultas**. A limpeza nao e
+ * Sucesso grava a sessão e **limpa o cache de consultas**. A limpeza não e
  * zelo: duas pessoas usam o mesmo computador da loja, e sem ela a primeira
- * tela depois da troca de usuario mostraria os pedidos carregados pela
- * sessao anterior — inclusive para um STAFF que nao deveria ve-los.
+ * tela depois da troca de usuário mostraria os pedidos carregados pela
+ * sessão anterior — inclusive para um STAFF que não deveria vê-los.
  */
 export function useAdminLogin() {
   const signIn = useAdminSession((state) => state.signIn);
@@ -77,7 +77,7 @@ export function useAdminLogin() {
 /**
  * A troca de senha.
  *
- * A resposta ja e uma sessao nova, sem a marca de senha temporaria: grava-la
+ * A resposta já e uma sessão nova, sem a marca de senha temporária: grava-lá
  * e o que libera o painel, sem nenhuma consulta a mais.
  */
 export function useChangePassword() {
@@ -97,14 +97,14 @@ export function useChangePassword() {
 /**
  * Sair.
  *
- * A sessao local cai primeiro e o aviso ao servidor vai depois, sem espera:
- * quem clicou em "Sair" precisa estar fora **agora**, e uma rede lenta nao
+ * A sessão local cai primeiro e o aviso ao servidor vai depois, sem espera:
+ * quem clicou em "Sair" precisa estar fora **agora**, e uma rede lenta não
  * pode deixar o painel aberto mais dez segundos. Se a chamada falhar, o
  * refresh token expira sozinho.
  */
 export function useAdminSignOut(): () => void {
-  // Lidos por seletor, e nao por `getState()` dentro do callback: o store e
-  // um hook, e um hook guardado numa variavel para ser chamado depois e
+  // Lidos por seletor, e não por `getState()` dentro do callback: o store e
+  // um hook, e um hook guardado numa variável para ser chamado depois e
   // justamente o que as regras de hooks proibem.
   const signOut = useAdminSession((state) => state.signOut);
   const refreshToken = useAdminSession((state) => state.tokens?.refreshToken ?? null);
@@ -116,7 +116,7 @@ export function useAdminSignOut(): () => void {
 
     if (refreshToken !== null) {
       void logout(refreshToken).catch(() => {
-        // Sessao ja encerrada aqui. O servidor esquece o token no vencimento.
+        // Sessão já encerrada aqui. O servidor esquece o token no vencimento.
       });
     }
   }, [signOut, refreshToken, client]);

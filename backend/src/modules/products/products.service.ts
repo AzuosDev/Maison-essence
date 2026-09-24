@@ -48,10 +48,10 @@ export class ProductsService {
   ) {}
 
   /**
-   * Listagem do painel: busca, filtro e pagina.
+   * Listagem do painel: busca, filtro e página.
    *
-   * A contagem vai em paralelo com a pagina porque sao duas idas ao banco
-   * independentes, e na funcao serverless o que pesa e o tempo somado.
+   * A contagem vai em paralelo com a página porque são duas idas ao banco
+   * independentes, e na função serverless o que pesa e o tempo somado.
    */
   async list(query: ListProductsDto): Promise<Paginated<ProductView>> {
     const page = query.page ?? 1;
@@ -61,7 +61,7 @@ export class ProductsService {
     const finder = this.products.find(filter);
 
     if (term.length > 0 && usesTextIndex(term)) {
-      // Relevancia primeiro: quem procurou "asad" quer o Asad no topo, e nao
+      // Relevância primeiro: quem procurou "asad" quer o Asad no topo, e não
       // o mais recente que cite a palavra.
       finder
         .select({ score: { $meta: 'textScore' } })
@@ -89,8 +89,8 @@ export class ProductsService {
 
     const product = new this.products({
       name: dto.name,
-      // Vazio de proposito quando nao veio: o hook do schema gera o endereco
-      // a partir do nome, desviando para `nome-2` se ja estiver ocupado.
+      // Vazio de propósito quando não veio: o hook do schema gera o endereço
+      // a partir do nome, desviando para `nome-2` se já estiver ocupado.
       slug: dto.slug ?? '',
       description: dto.description ?? '',
       brand: dto.brand ?? '',
@@ -113,8 +113,8 @@ export class ProductsService {
     dto: UpdateProductDto,
   ): Promise<ProductView> {
     const product = await this.findById(id);
-    // O retrato precisa ser tirado antes de qualquer atribuicao: depois
-    // dela o documento ja e o depois, e o antes so existiria no banco.
+    // O retrato precisa ser tirado antes de qualquer atribuição: depois
+    // dela o documento já e o depois, e o antes só existiria no banco.
     const before = priceSnapshotOf(product);
 
     if (dto.variants !== undefined) {
@@ -138,7 +138,7 @@ export class ProductsService {
     }
 
     if (dto.images !== undefined) {
-      // A posicao no array e a ordenacao das fotos: a primeira e a capa.
+      // A posição no array e a ordenação das fotos: a primeira e a capa.
       product.set({ images: dto.images });
     }
 
@@ -161,10 +161,10 @@ export class ProductsService {
     const saved = await this.save(product);
     const changes = priceChangesBetween(before, priceSnapshotOf(saved));
 
-    // Preco e o campo que mais causa problema quando muda sem ninguem
-    // saber: a loja anuncia um valor, o cliente ve outro, e a conversa
+    // Preço e o campo que mais causa problema quando muda sem ninguém
+    // saber: a loja anuncia um valor, o cliente vê outro, e a conversa
     // termina no WhatsApp. Os outros campos do produto mudam sem trilha;
-    // este nao.
+    // este não.
     if (Object.keys(changes).length > 0) {
       await this.audit.record({
         action: AUDIT_ACTIONS.PRODUCT_PRICE_CHANGED,
@@ -200,9 +200,9 @@ export class ProductsService {
   /**
    * Exclui, desde que o produto nunca tenha sido vendido.
    *
-   * O pedido guarda nome, preco e imagem copiados, entao apagar o produto nao
-   * estraga a leitura do historico — mas estraga o cancelamento, que devolve
-   * o estoque procurando a variante pelo `items.variantId`. Produto ja
+   * O pedido guarda nome, preço e imagem copiados, então apagar o produto não
+   * estraga a leitura do histórico — mas estraga o cancelamento, que devolve
+   * o estoque procurando a variante pelo `items.variantId`. Produto já
    * vendido se desativa; some da loja e o pedido antigo continua inteiro.
    */
   async remove(id: string): Promise<void> {
@@ -280,7 +280,7 @@ export class ProductsService {
 
     // Os SKUs que sobrevivem, antes de gerar qualquer um: a variante
     // aposentada fica no fim da lista, mas o SKU dela continua ocupado e o
-    // gerado para uma variante nova nao pode esbarrar nele.
+    // gerado para uma variante nova não pode esbarrar nele.
     const taken = new Set<string>();
 
     for (const plan of plans) {
@@ -325,10 +325,10 @@ export class ProductsService {
   }
 
   /**
-   * Quais variantes deste produto ja aparecem em algum pedido.
+   * Quais variantes deste produto já aparecem em algum pedido.
    *
    * O `distinct` devolve os `variantId` dos pedidos que casaram — inclusive
-   * de outros produtos comprados junto. Nao incomoda: so sao consultadas as
+   * de outros produtos comprados junto. Não incomoda: só são consultadas as
    * chaves deste produto.
    */
   private async soldVariantIds(product: ProductDocument): Promise<Set<string>> {
@@ -365,7 +365,7 @@ export class ProductsService {
     }
   }
 
-  /** Busca pelo id, tratando id malformado como "nao encontrado". */
+  /** Busca pelo id, tratando id malformado como "não encontrado". */
   private async findById(id: string): Promise<ProductDocument> {
     const found = Types.ObjectId.isValid(id)
       ? await this.products.findById(new Types.ObjectId(id)).exec()
@@ -378,7 +378,7 @@ export class ProductsService {
     return found;
   }
 
-  /** Salva traduzindo a colisao do indice unico de slug em 409. */
+  /** Salva traduzindo a colisão do índice único de slug em 409. */
   private async save(product: ProductDocument): Promise<ProductDocument> {
     try {
       return await product.save();
@@ -395,8 +395,8 @@ export class ProductsService {
 const DUPLICATE_KEY = 11000;
 
 /**
- * O SKU com que uma variante que ja existe vai ficar: o que o PATCH mandou,
- * ou o que ela ja tinha. A aposentada nunca troca de SKU — ela nem veio na
+ * O SKU com que uma variante que já existe vai ficar: o que o PATCH mandou,
+ * ou o que ela já tinha. A aposentada nunca troca de SKU — ela nem veio na
  * lista recebida.
  */
 function skuOf(
@@ -425,7 +425,7 @@ function resolveSku(
   return sku;
 }
 
-/** Variante nova: o que o DTO trouxe, com o padrao de cada campo omitido. */
+/** Variante nova: o que o DTO trouxe, com o padrão de cada campo omitido. */
 function variantData(data: VariantInput, sku: string): VariantData {
   return {
     sku,
@@ -439,7 +439,7 @@ function variantData(data: VariantInput, sku: string): VariantData {
   };
 }
 
-/** Variante que ja existe, campo a campo. */
+/** Variante que já existe, campo a campo. */
 function variantDataOf(variant: ProductVariant): VariantData {
   return {
     sku: variant.sku,
@@ -454,10 +454,10 @@ function variantDataOf(variant: ProductVariant): VariantData {
 }
 
 /**
- * Sobrepoe na variante gravada so o que veio no PATCH.
+ * Sobrepoe na variante gravada só o que veio no PATCH.
  *
- * Campo omitido fica como esta, e nao volta ao padrao: o painel que manda so
- * o estoque novo nao pode, por isso, reativar uma variante desativada.
+ * Campo omitido fica como esta, e não volta ao padrão: o painel que manda só
+ * o estoque novo não pode, por isso, reativar uma variante desativada.
  */
 function merge(variant: ProductVariant, data: VariantInput): VariantData {
   const current = variantDataOf(variant);

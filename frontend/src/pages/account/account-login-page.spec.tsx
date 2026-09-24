@@ -8,17 +8,17 @@ import { useAdminSession, useCustomerSession } from '@/features/auth';
 import AccountLoginPage from './account-login-page';
 
 /**
- * A porta unica.
+ * A porta única.
  *
- * Esta area tem duas sessoes, dois logins no servidor e um formulario so. O
- * que estes casos protegem nao e o desenho: e a decisao de para onde cada
+ * Esta área tem duas sessões, dois logins no servidor e um formulário só. O
+ * que estes casos protegem não e o desenho: e a decisão de para onde cada
  * tentativa vai, que acontece **neste navegador**, a partir do formato do
  * que foi digitado. Um erro aqui manda a dona para o login de cliente e
- * devolve "celular ou senha nao conferem" a quem digitou o proprio e-mail.
+ * devolve "celular ou senha não conferem" a quem digitou o próprio e-mail.
  *
- * A tela e montada sem a moldura da conta de proposito: cabecalho, rodape e
- * consulta de configuracao nao participam de nenhuma destas decisoes, e
- * traze-los so daria a estes casos motivos de quebrar que nao sao deles.
+ * A tela e montada sem a moldura da conta de propósito: cabeçalho, rodapé e
+ * consulta de configuração não participam de nenhuma destas decisões, e
+ * traze-los só daria a estes casos motivos de quebrar que não são deles.
  */
 
 const CLIENTE = {
@@ -55,7 +55,7 @@ let enviado: Record<string, unknown> = {};
 /** As duas rotas de login recusam quando isto tem o nome delas. */
 let recusa = new Set<string>();
 
-/** A dona chega com senha temporaria quando isto e verdade. */
+/** A dona chega com senha temporária quando isto e verdade. */
 let senhaTemporaria = false;
 
 beforeEach(() => {
@@ -120,10 +120,10 @@ afterEach(() => {
 });
 
 /**
- * A tela, com os destinos possiveis em cena.
+ * A tela, com os destinos possíveis em cena.
  *
- * As quatro rotas de chegada existem para que o caso confira **o endereco**
- * e nao uma chamada de `navigate`: e o endereco que diz se a pessoa entrou
+ * As quatro rotas de chegada existem para que o caso confira **o endereço**
+ * e não uma chamada de `navigate`: e o endereço que diz se a pessoa entrou
  * no lugar certo.
  */
 function abrirEntrada(state?: { from: string }) {
@@ -188,8 +188,8 @@ test('o e-mail vai para o login do painel, e a sessão aberta e a do painel', as
     expect(router.state.location.pathname).toBe('/admin');
   });
 
-  // Em minusculas: e a mesma chave que o limite de tentativas do servidor
-  // usa, e "Dona@..." nao pode contar como outra combinacao.
+  // Em minúsculas: e a mesma chave que o limite de tentativas do servidor
+  // usa, e "Dona@..." não pode contar como outra combinação.
   expect(enviado.staffLogin).toEqual({
     email: 'dona@maisonessence.test',
     password: 'senhadaloja123',
@@ -201,7 +201,7 @@ test('o e-mail vai para o login do painel, e a sessão aberta e a do painel', as
 });
 
 /**
- * A senha temporaria vence o destino.
+ * A senha temporária vence o destino.
  *
  * Com ela, o backend recusa toda rota administrativa menos a da troca:
  * mandar a pessoa para o painel mostraria erro em cada tela que ela abrisse.
@@ -242,11 +242,11 @@ test('o cliente volta para a tela que o trouxe até aqui', async () => {
 });
 
 /**
- * O la e ca sem fim, que o filtro de `from` existe para impedir.
+ * O lá e ca sem fim, que o filtro de `from` existe para impedir.
  *
- * Um cliente esbarra no painel, o guarda de la o manda para esta tela com
- * `from: '/admin'`, e ele entra com o proprio celular. Mandado para
- * `/admin`, o guarda o devolveria para ca; a sessao dele, valida, o mandaria
+ * Um cliente esbarra no painel, o guarda de lá o manda para esta tela com
+ * `from: '/admin'`, e ele entra com o próprio celular. Mandado para
+ * `/admin`, o guarda o devolveria para ca; a sessão dele, valida, o mandaria
  * de novo para `/admin`. O destino do cliente nunca e o painel.
  */
 test('o cliente que veio do painel não e devolvido ao painel', async () => {
@@ -263,11 +263,11 @@ test('o cliente que veio do painel não e devolvido ao painel', async () => {
 /* ---- A recusa -------------------------------------------------------------- */
 
 /**
- * O conselho sobre o DDD sai de quem digitou, nao de quem respondeu.
+ * O conselho sobre o DDD sai de quem digitou, não de quem respondeu.
  *
- * O `401` e o mesmo nos dois logins, de proposito. O que a tela adapta e a
+ * O `401` e o mesmo nos dois logins, de propósito. O que a tela adapta e a
  * frase, a partir do formato do que esta no campo — uma leitura local, que
- * nao conta nada a quem nao digitou aquilo.
+ * não conta nada a quem não digitou aquilo.
  */
 test('errar o e-mail não rende conselho sobre DDD', async () => {
   recusa.add('staff');
@@ -298,10 +298,10 @@ test('errar o celular rende o conselho sobre DDD', async () => {
 /**
  * A recusa anterior sai de cena antes da tentativa seguinte.
  *
- * Sao dois logins com dois estados de erro, e sem limpar um deles a tela
- * mostraria a mensagem do canal errado. O caso duro nao e a frase: e o
+ * São dois logins com dois estados de erro, e sem limpar um deles a tela
+ * mostraria a mensagem do canal errado. O caso duro não e a frase: e o
  * `429` de um canal sobrevivendo ao `401` do outro, mandando esperar quem
- * so precisava conferir a senha.
+ * só precisava conferir a senha.
  */
 test('errar no celular e depois no e-mail mostra a recusa do e-mail', async () => {
   recusa.add('customer');
@@ -325,10 +325,10 @@ test('errar no celular e depois no e-mail mostra a recusa do e-mail', async () =
 /* ---- O campo --------------------------------------------------------------- */
 
 /**
- * O placeholder nao pode desmentir o rotulo.
+ * O placeholder não pode desmentir o rótulo.
  *
  * Havia `(88) 99999-9999` ali, herdado do campo de telefone. Um exemplo
- * preenchido pesa mais que o nome do campo: com ele, a tela pedia um numero
+ * preenchido pesa mais que o nome do campo: com ele, a tela pedia um número
  * mesmo escrito "celular ou e-mail" logo acima, e quem ia entrar com e-mail
  * parava para perguntar.
  */
@@ -340,13 +340,13 @@ test('o campo não anuncia só um dos dois formatos', () => {
   expect(anuncio).toMatch(/celular/i);
   expect(anuncio).toMatch(/e-mail/i);
 
-  // Um telefone de exemplo e justamente o que dizia "so numero aqui".
+  // Um telefone de exemplo e justamente o que dizia "só número aqui".
   expect(anuncio).not.toMatch(/\d/);
 });
 
 /**
- * Nada sai deste navegador enquanto o que foi digitado nao for nem uma coisa
- * nem outra. Mandar para o servidor adivinhar so gastaria uma das tentativas
+ * Nada sai deste navegador enquanto o que foi digitado não for nem uma coisa
+ * nem outra. Mandar para o servidor adivinhar só gastaria uma das tentativas
  * que o limite conta.
  */
 test('o que não e celular nem e-mail não chega a virar requisição', async () => {
@@ -361,11 +361,11 @@ test('o que não e celular nem e-mail não chega a virar requisição', async ()
 });
 
 /**
- * O campo e um so, e a mascara nao pode atrapalhar quem vai escrever letras.
- * O caso duro e o e-mail que comeca com numeros: ate a arroba, ele e
- * indistinguivel de um telefone.
+ * O campo e um só, e a máscara não pode atrapalhar quem vai escrever letras.
+ * O caso duro e o e-mail que começa com números: até a arroba, ele e
+ * indistinguível de um telefone.
  */
-test('o e-mail que começa com números não sai com parenteses dentro', async () => {
+test('o e-mail que começa com números não sai com parênteses dentro', async () => {
   const usuario = userEvent.setup();
 
   abrirEntrada();
@@ -379,7 +379,7 @@ test('o e-mail que começa com números não sai com parenteses dentro', async (
   });
 });
 
-/** Quem digitou um numero e nao tem conta leva o numero para o cadastro. */
+/** Quem digitou um número e não tem conta leva o número para o cadastro. */
 test('o celular digitado atravessa para o cadastro', async () => {
   const usuario = userEvent.setup();
 
@@ -391,7 +391,7 @@ test('o celular digitado atravessa para o cadastro', async () => {
   expect(link.getAttribute('href')).toBe('/conta/criar?telefone=88999998888');
 });
 
-/** Um e-mail, nao: o cadastro do cliente e pelo telefone. */
+/** Um e-mail, não: o cadastro do cliente e pelo telefone. */
 test('o e-mail digitado não atravessa para o cadastro', async () => {
   const usuario = userEvent.setup();
 

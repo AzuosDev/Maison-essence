@@ -6,23 +6,23 @@ import styles from './input.module.css';
 /**
  * O campo de texto.
  *
- * Recebe `label`, `hint` e `error` e monta a moldura por dentro: nao ha como
+ * Recebe `label`, `hint` e `error` e monta a moldura por dentro: não há como
  * usar o campo e esquecer o `htmlFor` ou o `aria-describedby`. O resto das
  * props e de `<input>` — `type`, `placeholder`, `maxLength`, `autoComplete`
- * — porque nao ha razao para reinventar o que o HTML ja nomeia.
+ * — porque não há razão para reinventar o que o HTML já nomeia.
  */
 export type InputProps = FieldOwnProps &
   // `prefix` sai dos tipos nativos: o HTML tem um atributo `prefix` (RDFa,
   // uma string) que nada aqui usa, e mante-lo cruzaria com o nosso na
-  // intersecao — o tipo resultante seria `string & ReactNode`, que nenhum
-  // icone satisfaz. O componente ja o retira das props antes de espalhar o
-  // resto no `<input>`, entao tira-lo do tipo so descreve o que ja acontece.
+  // interseção — o tipo resultante seria `string & ReactNode`, que nenhum
+  // ícone satisfaz. O componente já o retira das props antes de espalhar o
+  // resto no `<input>`, então tira-lo do tipo só descreve o que já acontece.
   Omit<ComponentPropsWithoutRef<'input'>, 'className' | 'prefix'> & {
-    /** `R$` no campo de preco, a lupa na busca. */
+    /** `R$` no campo de preço, a lupa na busca. */
     prefix?: ReactNode;
     /** `%` no desconto, `kg` no peso. */
     suffix?: ReactNode;
-    /** Numero em largura fixa: preco, quantidade, parcela. */
+    /** Número em largura fixa: preço, quantidade, parcela. */
     numeric?: boolean;
     /** Classe do campo em si, quando a tela precisa ajustar a largura. */
     inputClassName?: string | undefined;
@@ -66,8 +66,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           ref={ref}
           id={wiring.id}
           required={required}
-          // A presenca da mensagem e o que define o campo como invalido: um
-          // so estado, sem prop de `invalid` que possa discordar do erro.
+          // A presença da mensagem e o que define o campo como inválido: um
+          // só estado, sem prop de `invalid` que possa discordar do erro.
           aria-invalid={error ? true : undefined}
           aria-describedby={wiring.describedBy}
           className={cx(

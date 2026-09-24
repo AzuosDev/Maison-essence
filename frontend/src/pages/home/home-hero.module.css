@@ -2,18 +2,18 @@
  * O hero: o banner ocupa a largura inteira e o texto vive sobre ele.
  *
  * Antes eram duas colunas — foto de um lado, bloco preto do outro. A foto
- * chegava cortada pela metade e o bloco preto era um retangulo vazio com tres
- * linhas no meio. Banner de loja e uma imagem so, grande, com a frase dentro:
- * e assim que o cliente ja esta acostumado a ler, e e o que da a foto o
+ * chegava cortada pela metade e o bloco preto era um retângulo vazio com três
+ * linhas no meio. Banner de loja e uma imagem só, grande, com a frase dentro:
+ * e assim que o cliente já esta acostumado a ler, e e o que da a foto o
  * tamanho que ela precisa para valer a primeira tela.
  *
- * O que segura o contraste do texto e o veu (`.scrim`), nao o corte.
+ * O que segura o contraste do texto e o véu (`.scrim`), não o corte.
  */
 
 .hero {
   position: relative;
 
-  /* Tokens locais para o par escuro/claro do bloco. O botao la embaixo os
+  /* Tokens locais para o par escuro/claro do bloco. O botão lá embaixo os
      inverte para pintar a si mesmo sem escrever cor nova. */
   --dark: var(--slab);
   --light: var(--slab-ink);
@@ -27,10 +27,10 @@
 }
 
 /*
- * Os slides ocupam a mesma celula e trocam por opacidade.
+ * Os slides ocupam a mesma célula e trocam por opacidade.
  *
- * `visibility` junto da opacidade porque so ela tira o slide inativo da ordem
- * do Tab; o atraso na transicao a segura ate a opacidade terminar, senao o
+ * `visibility` junto da opacidade porque só ela tira o slide inativo da ordem
+ * do Tab; o atraso na transição a segura até a opacidade terminar, senão o
  * slide que sai desaparece de um golpe no primeiro quadro.
  */
 .slide {
@@ -58,10 +58,10 @@
   position: relative;
   grid-area: 1 / 1;
 
-  /* Proporcao fixa: a caixa esta reservada antes de o arquivo chegar, e a
-     pagina nao salta quando ele chega nem quando o carrossel gira entre
-     banners de formatos diferentes. Retrato no celular, panoramica no
-     desktop — sao arquivos diferentes, servidos por `<picture>`. */
+  /* Proporção fixa: a caixa esta reservada antes de o arquivo chegar, e a
+     página não salta quando ele chega nem quando o carrossel gira entre
+     banners de formatos diferentes. Retrato no celular, panorâmica no
+     desktop — são arquivos diferentes, servidos por `<picture>`. */
   aspect-ratio: 4 / 5;
   background-color: var(--ink-soft);
   overflow: hidden;
@@ -70,10 +70,10 @@
 /*
  * A foto, presa as quatro bordas da caixa.
  *
- * `position: absolute` e nao `height: 100%`. A imagem mora dentro de um
- * `<picture>`, que e um elemento de fluxo normal sem altura propria: uma
- * altura percentual ali dentro nao tem contra o que resolver, cai para
- * `auto` e a foto volta a proporcao natural do arquivo. Era o que acontecia —
+ * `position: absolute` e não `height: 100%`. A imagem mora dentro de um
+ * `<picture>`, que e um elemento de fluxo normal sem altura própria: uma
+ * altura percentual ali dentro não tem contra o que resolver, cai para
+ * `auto` e a foto volta a proporção natural do arquivo. Era o que acontecia —
  * a caixa tinha os 672px certos, a foto saia com 1920px, e o banner mostrava
  * o terco de cima da arte em vez do corte centralizado que o `cover` deveria
  * dar. Ancorada nas bordas, ela ignora o `<picture>` e obedece a caixa.
@@ -88,9 +88,9 @@
 }
 
 /*
- * O veu que segura o contraste do texto.
+ * O véu que segura o contraste do texto.
  *
- * Nao e um escurecimento chapado da foto inteira: e um degrade que so fecha
+ * Não e um escurecimento chapado da foto inteira: e um degrade que só fecha
  * onde a frase cai — embaixo no celular, na faixa da esquerda no desktop. O
  * resto da arte continua com a luz que o fornecedor deu a ela.
  */
@@ -109,30 +109,30 @@
 /* ---- Banner que e a arte inteira -------------------------------------- */
 
 /*
- * Banner sem titulo, chamada nem botao cadastrados chega com tudo desenhado
- * dentro do arquivo: logo, frase e botao ja fazem parte da imagem. Aqui ele
- * aparece sem veu e sem bloco de texto por cima — o arquivo e o banner.
+ * Banner sem título, chamada nem botão cadastrados chega com tudo desenhado
+ * dentro do arquivo: logo, frase e botão já fazem parte da imagem. Aqui ele
+ * aparece sem véu e sem bloco de texto por cima — o arquivo e o banner.
  *
  * ## A medida
  *
- * 1920 x 562,283, que e a faixa que a loja pediu. Nao e uma proporcao de
- * catalogo — e uma medida de arte —, e por isso esta escrita como os dois
- * numeros e nao reduzida a "3,4/1": quem for conferir contra o arquivo do
- * design quer ver os mesmos numeros dos dois lados.
+ * 1920 x 562,283, que e a faixa que a loja pediu. Não e uma proporção de
+ * catálogo — e uma medida de arte —, e por isso esta escrita como os dois
+ * números e não reduzida a "3,4/1": quem for conferir contra o arquivo do
+ * design quer ver os mesmos números dos dois lados.
  *
- * A 1440 de largura da 422px de banner. E uma faixa, e nao um cartaz de
+ * A 1440 de largura da 422px de banner. E uma faixa, e não um cartaz de
  * tela cheia: sobra tela para a primeira fileira de produtos aparecer sem
- * ninguem precisar rolar.
+ * ninguém precisar rolar.
  *
  * ## Por que `cover` aqui, e `contain` seria errado
  *
  * A arte tem de encostar nas quatro bordas. Enquanto o arquivo enviado tiver
- * a medida acima, os dois dao o mesmo resultado e a discussao e teorica; a
- * diferenca aparece no arquivo que chega fora da medida — e ai `contain`
+ * a medida acima, os dois dao o mesmo resultado e a discussão e teórica; a
+ * diferença aparece no arquivo que chega fora da medida — e aí `contain`
  * encolheria a arte deixando tarja preta em volta, que e exatamente o
  * defeito que esta regra existe para resolver. `cover` corta, e corte pelo
  * centro de uma faixa larga tira margem; tarja lateral anuncia que a arte
- * nao coube.
+ * não coube.
  */
 .slideWide {
   grid-template-columns: minmax(0, 1fr);
@@ -150,10 +150,10 @@
 /* ---- O bloco de texto ------------------------------------------------- */
 
 /*
- * O texto fica na mesma celula da foto, encostado embaixo.
+ * O texto fica na mesma célula da foto, encostado embaixo.
  *
- * `pointer-events: none` no bloco e `auto` no botao: sem isso o retangulo
- * invisivel do bloco cobriria a foto e engoliria o clique das setas que
+ * `pointer-events: none` no bloco e `auto` no botão: sem isso o retângulo
+ * invisível do bloco cobriria a foto e engoliria o clique das setas que
  * passam por baixo dele.
  */
 .panel {
@@ -183,8 +183,8 @@
   text-wrap: balance;
   color: var(--light);
 
-  /* A sombra nao e decoracao: e a rede de seguranca para a foto clara que a
-     dona sobe sem avisar. O veu resolve o caso comum; isto resolve o resto. */
+  /* A sombra não e decoração: e a rede de segurança para a foto clara que a
+     dona sobe sem avisar. O véu resolve o caso comum; isto resolve o resto. */
   text-shadow: 0 1px 24px rgb(14 14 14 / 0.45);
 }
 
@@ -197,11 +197,11 @@
 }
 
 /*
- * O botao do banner: creme cheio sobre a foto.
+ * O botão do banner: creme cheio sobre a foto.
  *
- * O contornado que estava aqui antes dependia da foto atras dele para ter
- * contraste — sobre uma area clara da arte, o contorno creme sumia. O botao
- * cheio traz o proprio fundo.
+ * O contornado que estava aqui antes dependia da foto atrás dele para ter
+ * contraste — sobre uma área clara da arte, o contorno creme sumia. O botão
+ * cheio traz o próprio fundo.
  */
 .action {
   --ink: var(--light);
@@ -214,8 +214,8 @@
 /* ---- As setas --------------------------------------------------------- */
 
 /*
- * So aparecem onde ha mouse. `hover: hover` e nao uma largura minima: o que
- * decide e o apontador, e ha tablet largo sem mouse e laptop estreito com um.
+ * Só aparecem onde há mouse. `hover: hover` e não uma largura mínima: o que
+ * decide e o apontador, e há tablet largo sem mouse e laptop estreito com um.
  */
 .arrow {
   display: none;
@@ -238,8 +238,8 @@
     border: 1px solid rgb(250 247 242 / 0.3);
     border-radius: var(--radius-pill);
 
-    /* O `translateY` mora aqui e nao no `top` porque o hover mexe na escala:
-       as duas transformacoes precisam estar na mesma declaracao, senao uma
+    /* O `translateY` mora aqui e não no `top` porque o hover mexe na escala:
+       as duas transformações precisam estar na mesma declaração, senão uma
        apaga a outra. */
     transform: translateY(-50%);
     transition:
@@ -257,12 +257,12 @@
   }
 
   /*
-   * Um desenho de seta so, virado.
+   * Um desenho de seta só, virado.
    *
-   * O giro entra dentro do `transform`, junto do `translateY`, e nao na
+   * O giro entra dentro do `transform`, junto do `translateY`, e não na
    * propriedade `rotate`. As duas se compoem nesta ordem: `rotate` primeiro,
    * `transform` depois — e o `translateY(-50%)` do `transform` passaria a
-   * valer num sistema de coordenadas ja virado de cabeca para baixo, jogando
+   * valer num sistema de coordenadas já virado de cabeca para baixo, jogando
    * a seta para baixo em vez de para cima. As duas setas terminavam a 88px
    * uma da outra.
    */
@@ -310,7 +310,7 @@
   --focus-color: var(--gold);
 }
 
-/* O alvo de toque de 44px que o risco de 2px nao tem. Invisivel, centrado no
+/* O alvo de toque de 44px que o risco de 2px não tem. Invisível, centrado no
    risco, e e nele que o dedo acerta. */
 .indicator::after {
   content: '';
@@ -327,23 +327,23 @@
 
 @media (min-width: 64rem) {
   .media {
-    /* Panoramica, com um teto: em monitor largo o 16/9 puro daria um hero de
+    /* Panorâmica, com um teto: em monitor largo o 16/9 puro daria um hero de
        810px de altura e empurraria a primeira prateleira para fora da tela.
 
-       O teto e de 32rem, e nao dos 42rem que eram. Com 42, um 1440x900 dava
-       177px de cabecalho mais 672 de banner: a primeira tela era o banner e
+       O teto e de 32rem, e não dos 42rem que eram. Com 42, um 1440x900 dava
+       177px de cabeçalho mais 672 de banner: a primeira tela era o banner e
        nada mais, e o cliente precisava rolar para descobrir que a loja vende
        alguma coisa. Com 32 o banner termina em 689px e a primeira fileira de
-       produtos comeca em 861 — dentro da dobra, que e o que a referencia faz.
+       produtos começa em 861 — dentro da dobra, que e o que a referência faz.
        A 1440 de largura da uma faixa de 2,8:1, que continua sendo um banner
-       panoramico e nao uma tarja: o painel do texto ocupa cerca de 400px
-       mesmo com o titulo em duas linhas, e sobra folga.
+       panoramico e não uma tarja: o painel do texto ocupa cerca de 400px
+       mesmo com o título em duas linhas, e sobra folga.
 
-       O `width: 100%` e obrigatorio ao lado do `max-height`. Sem ele, a caixa
-       tem proporcao mas nao tem largura definida, e o navegador respeita a
-       proporcao encolhendo a largura: o banner encolhia para 1195px e sobrava
+       O `width: 100%` e obrigatório ao lado do `max-height`. Sem ele, a caixa
+       tem proporção mas não tem largura definida, e o navegador respeita a
+       proporção encolhendo a largura: o banner encolhia para 1195px e sobrava
        uma tarja preta na direita da tela. Com a largura fixada, quem cede e a
-       proporcao, e o corte fica por conta do `object-fit: cover` da foto —
+       proporção, e o corte fica por conta do `object-fit: cover` da foto —
        que e exatamente o que se quer de um banner panoramico. */
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -351,7 +351,7 @@
   }
 
   .scrim {
-    /* No desktop a frase esta na esquerda, nao embaixo: o veu vira com ela. */
+    /* No desktop a frase esta na esquerda, não embaixo: o véu vira com ela. */
     background-image: linear-gradient(
       to right,
       rgb(14 14 14 / 0.78) 0%,
@@ -379,11 +379,11 @@
   }
 
   /*
-   * A faixa larga nao obedece ao `max-height` do banner com texto: quem manda
-   * na altura dela e a medida da arte, declarada la em cima.
+   * A faixa larga não obedece ao `max-height` do banner com texto: quem manda
+   * na altura dela e a medida da arte, declarada lá em cima.
    *
-   * O `max-width` e o limite do arquivo: 120rem sao os 1920px que a arte tem,
-   * e passar disso seria amplia-la e entregar borrao. Em monitor mais largo o
+   * O `max-width` e o limite do arquivo: 120rem são os 1920px que a arte tem,
+   * e passar disso seria amplia-lá e entregar borrão. Em monitor mais largo o
    * banner para de crescer e fica centrado.
    */
   .slideWide {
@@ -391,10 +391,10 @@
   }
 
   .mediaWide {
-    /* A medida repetida aqui, e nao herdada da regra base: `.media` declara
+    /* A medida repetida aqui, e não herdada da regra base: `.media` declara
        16/9 neste mesmo `@media` e vem antes na folha. Entre duas regras de
-       mesma especificidade vale a ultima escrita, e sem esta linha o banner
-       de arte sairia com a proporcao do banner de foto — 810px de altura em
+       mesma especificidade vale a última escrita, e sem esta linha o banner
+       de arte sairia com a proporção do banner de foto — 810px de altura em
        vez de 422. */
     aspect-ratio: 1920 / 562.283;
     height: auto;
@@ -407,7 +407,7 @@
 /* ---- O hero sem banner nenhum ----------------------------------------- */
 
 /*
- * Sem foto para dar altura, o bloco ficaria com a altura das tres linhas de
+ * Sem foto para dar altura, o bloco ficaria com a altura das três linhas de
  * texto e a home comecaria com uma tarja. O `min-height` o segura na mesma
  * faixa que o banner de verdade ocupa.
  */

@@ -1,9 +1,9 @@
 /**
- * O catalogo como a vitrine o recebe.
+ * O catálogo como a vitrine o recebe.
  *
- * Espelho das views publicas do backend. So o que a moldura da loja usa por
- * enquanto: a arvore de categorias do menu e o produto no formato do card,
- * que e o que as sugestoes da busca mostram.
+ * Espelho das views públicas do backend. Só o que a moldura da loja usa por
+ * enquanto: a árvore de categorias do menu e o produto no formato do card,
+ * que e o que as sugestões da busca mostram.
  */
 
 /** Categoria como o menu a desenha. */
@@ -11,13 +11,13 @@ export interface PublicCategory {
   id: string;
   name: string;
   slug: string;
-  /** `publicId` do Cloudinary. Vazio quando a categoria nao tem foto. */
+  /** `publicId` do Cloudinary. Vazio quando a categoria não tem foto. */
   image: string;
-  /** Produtos ativos. No pai, ja somados os das subcategorias. */
+  /** Produtos ativos. No pai, já somados os das subcategorias. */
   productCount: number;
 }
 
-/** Um nivel de aninhamento, e so um: subcategoria nao tem filhos. */
+/** Um nível de aninhamento, e só um: subcategoria não tem filhos. */
 export type WithChildren<T> = T & { children: T[] };
 
 export type CategoryTree = WithChildren<PublicCategory>;
@@ -30,16 +30,16 @@ export interface PriceRange {
 /**
  * Um degrau do desconto progressivo: "leve 3 e ganhe 10%".
  *
- * O card anuncia um so — o primeiro da escada, de menor quantidade, que e o
- * que o backend ja escolhe e manda em `quantityDiscount`. A escada inteira
- * so aparece na pagina do produto.
+ * O card anuncia um só — o primeiro da escada, de menor quantidade, que e o
+ * que o backend já escolhe e manda em `quantityDiscount`. A escada inteira
+ * só aparece na página do produto.
  */
 export interface QuantityDiscountTier {
   minQty: number;
   percentOff: number;
 }
 
-/** Variante como o cliente a ve. */
+/** Variante como o cliente a vê. */
 export interface PublicVariant {
   id: string;
   label: string;
@@ -52,7 +52,7 @@ export interface PublicVariant {
   image: string;
 }
 
-/** Produto no card da vitrine — e na sugestao da busca. */
+/** Produto no card da vitrine — e na sugestão da busca. */
 export interface PublicProduct {
   id: string;
   name: string;
@@ -68,11 +68,11 @@ export interface PublicProduct {
   isFeatured: boolean;
   isReadyToShip: boolean;
   tags: string[];
-  /** A chamada de desconto progressivo. `null` quando nao ha regra. */
+  /** A chamada de desconto progressivo. `null` quando não há regra. */
   quantityDiscount: QuantityDiscountTier | null;
 }
 
-/** Uma pagina de resultados, no formato que a API devolve. */
+/** Uma página de resultados, no formato que a API devolve. */
 export interface Paginated<T> {
   items: T[];
   page: number;
@@ -81,7 +81,7 @@ export interface Paginated<T> {
   hasMore: boolean;
 }
 
-/** Categoria no fio de pao da pagina do produto. */
+/** Categoria no fio de pão da página do produto. */
 export interface PublicProductCategory {
   id: string;
   name: string;
@@ -89,28 +89,28 @@ export interface PublicProductCategory {
 }
 
 /**
- * O produto na pagina dele: tudo do card, mais o que so ela mostra.
+ * O produto na página dele: tudo do card, mais o que só ela mostra.
  *
- * Existe aqui antes de a pagina existir porque o card ja a prebusca no hover
+ * Existe aqui antes de a página existir porque o card já a prebusca no hover
  * — e prebuscar sem tipo significaria gravar no cache, sob a chave
  * `catalogKeys.product`, um objeto de formato diferente do que a tela vai
- * pedir depois. A chave e a mesma; o tipo precisa ser o mesmo tambem.
+ * pedir depois. A chave e a mesma; o tipo precisa ser o mesmo também.
  */
 export interface PublicProductDetail extends PublicProduct {
   description: string;
   categories: PublicProductCategory[];
-  /** A escada inteira, para a pagina mostrar quanto se ganha levando mais. */
+  /** A escada inteira, para a página mostrar quanto se ganha levando mais. */
   quantityDiscounts: QuantityDiscountTier[];
   related: PublicProduct[];
 }
 
 /**
- * O que `GET /categories/:slug` devolve quando o endereco mudou de nome.
+ * O que `GET /categories/:slug` devolve quando o endereço mudou de nome.
  *
  * O backend responde `301` com `Location`, e o `fetch` do navegador segue o
- * redirecionamento sozinho — este formato so aparece para quem nao segue.
+ * redirecionamento sozinho — este formato só aparece para quem não segue.
  * Esta declarado para que o discriminante (`'location' in resposta`) tenha
- * tipo, e nao para ser o caso comum.
+ * tipo, e não para ser o caso comum.
  */
 export interface MovedCategory {
   slug: string;

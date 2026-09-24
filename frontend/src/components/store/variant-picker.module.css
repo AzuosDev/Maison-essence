@@ -1,9 +1,9 @@
 /*
- * O seletor rapido de variante, dentro do modal.
+ * O seletor rápido de variante, dentro do modal.
  *
  * Existe para resolver a compra sem tirar o cliente da vitrine: ele escolhe
- * os 100ml, adiciona e continua olhando a grade de onde parou. A pagina do
- * produto continua sendo o lugar de ler a descricao e ver as outras fotos.
+ * os 100ml, adiciona e continua olhando a grade de onde parou. A página do
+ * produto continua sendo o lugar de ler a descrição e ver as outras fotos.
  */
 
 .summary {
@@ -43,7 +43,7 @@
   margin-top: var(--space-16);
 }
 
-/* O preco da opcao, na linha de apoio do radio. */
+/* O preço da opção, na linha de apoio do radio. */
 .optionPrice {
   font-weight: var(--weight-medium);
   color: var(--ink);

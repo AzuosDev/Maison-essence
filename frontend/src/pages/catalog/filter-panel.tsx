@@ -10,22 +10,22 @@ import styles from './filter-panel.module.css';
  * A barra de filtros.
  *
  * O mesmo componente serve os dois lugares em que ela aparece: a coluna fixa
- * do desktop e a gaveta do celular. Nao ha duas versoes a manter em dia — a
- * diferenca entre uma e outra e a moldura em volta, e quem a desenha e a
- * pagina.
+ * do desktop e a gaveta do celular. Não há duas versões a manter em dia — a
+ * diferença entre uma e outra e a moldura em volta, e quem a desenha e a
+ * página.
  *
- * ## Aplicar na hora, e nao num botao
+ * ## Aplicar na hora, e não num botão
  *
- * Cada marcacao aplica o filtro imediatamente. Um botao "aplicar" faria
- * sentido se cada mudanca custasse caro; aqui a lista ja esta em cache e a
- * resposta e imediata, entao o botao so acrescentaria um passo entre a
- * intencao e o resultado. A faixa de preco e a excecao parcial: aplica ao
- * soltar, porque durante o arrasto ainda nao ha intencao nenhuma.
+ * Cada marcação aplica o filtro imediatamente. Um botão "aplicar" faria
+ * sentido se cada mudanca custasse caro; aqui a lista já esta em cache e a
+ * resposta e imediata, então o botão só acrescentaria um passo entre a
+ * intenção e o resultado. A faixa de preço e a exceção parcial: aplica ao
+ * soltar, porque durante o arrasto ainda não há intenção nenhuma.
  *
- * ## O que a rota impos nao aparece
+ * ## O que a rota impos não aparece
  *
  * Em `/pronta-entrega`, a caixa "somente pronta entrega" fica de fora: o
- * filtro ja e o endereco da pagina, e uma caixa marcada que nao se pode
+ * filtro já e o endereço da página, e uma caixa marcada que não se pode
  * desmarcar e pior que caixa nenhuma.
  */
 
@@ -35,7 +35,7 @@ export interface FilterPanelProps {
   facets: CatalogFacets;
   onChange: (patch: Partial<CatalogFilters>) => void;
   onClear: () => void;
-  /** Quantos filtros estao aplicados: decide se "limpar" aparece. */
+  /** Quantos filtros estão aplicados: decide se "limpar" aparece. */
   activeCount: number;
   className?: string | undefined;
 }
@@ -122,18 +122,18 @@ export function FilterPanel({
 }
 
 /**
- * A marca, com busca dentro da propria lista.
+ * A marca, com busca dentro da própria lista.
  *
- * A busca interna existe porque a lista cresce com o catalogo: com trinta
+ * A busca interna existe porque a lista cresce com o catálogo: com trinta
  * marcas, rolar a coluna inteira para achar "Lattafa" e mais lento do que
- * digitar quatro letras. Abaixo de um punhado de marcas o campo seria ruido,
- * entao ele so aparece quando ha o que procurar.
+ * digitar quatro letras. Abaixo de um punhado de marcas o campo seria ruído,
+ * então ele só aparece quando há o que procurar.
  *
- * A comparacao ignora acento e caixa: quem digita "acqua" acha "Àcqua".
+ * A comparação ignora acento e caixa: quem digita "acqua" acha "Àcqua".
  *
- * Os itens sao botoes com `aria-pressed`, e nao radios. E uma escolha unica,
+ * Os itens são botões com `aria-pressed`, e não radios. E uma escolha única,
  * como um radio, mas a lista encolhe conforme se digita — e um grupo de
- * radios que perde opcoes enquanto a pessoa navega por ele com as setas
+ * radios que perde opções enquanto a pessoa navega por ele com as setas
  * confunde mais do que ajuda.
  */
 interface BrandFilterProps {
@@ -207,7 +207,7 @@ function BrandFilter({ brands, isLoading, selected, onSelect }: BrandFilterProps
               className={cx(styles.brand, selected === brand && styles.brandActive)}
               aria-pressed={selected === brand}
               onClick={() => {
-                // Clicar na marca ja escolhida desmarca. E o caminho de volta
+                // Clicar na marca já escolhida desmarca. E o caminho de volta
                 // sem precisar achar "Todas as marcas" no alto de uma lista
                 // que pode estar rolada.
                 onSelect(selected === brand ? '' : brand);

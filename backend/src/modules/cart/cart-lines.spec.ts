@@ -73,8 +73,8 @@ describe('mergeLines', () => {
 });
 
 describe('quoteItems', () => {
-  it('usa o preço do catalogo, não o que veio na linha', () => {
-    // A linha nao tem onde carregar um preco: o tipo so aceita ids e
+  it('usa o preço do catálogo, não o que veio na linha', () => {
+    // A linha não tem onde carregar um preço: o tipo só aceita ids e
     // quantidade, e o valor sai da variante.
     const [item] = quoteItems([line({ quantity: 2 })], [product()], []);
 
@@ -82,7 +82,7 @@ describe('quoteItems', () => {
     expect(item?.lineTotalCents).toBe(20_000);
   });
 
-  it('copia nome, variante e imagem do catalogo', () => {
+  it('copia nome, variante e imagem do catálogo', () => {
     const [item] = quoteItems([line()], [product()], []);
 
     expect(item?.productName).toBe('Asad');
@@ -96,7 +96,7 @@ describe('quoteItems', () => {
     expect(quoteItems([line()], [withImage], [])[0]?.image).toBe('frasco');
   });
 
-  it('recusa a linha de produto que não esta no catalogo', () => {
+  it('recusa a linha de produto que não esta no catálogo', () => {
     const [item] = quoteItems([line({ productId: 'sumiu' })], [], []);
 
     expect(item?.unavailable).toBe(true);
@@ -193,7 +193,7 @@ describe('quoteItems', () => {
 
 describe('lineTotalsOf', () => {
   it('arredonda o centavo a favor de quem paga', () => {
-    // 10% de R$ 19,99 sao R$ 1,999 — o desconto vira R$ 2,00.
+    // 10% de R$ 19,99 são R$ 1,999 — o desconto vira R$ 2,00.
     expect(lineTotalsOf(1_999, 1, 10)).toEqual({ discountCents: 200, lineTotalCents: 1_799 });
   });
 

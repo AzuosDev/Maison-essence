@@ -3,27 +3,27 @@ import { cx } from '@/lib/cx';
 import styles from './card.module.css';
 
 /**
- * O cartao, e as tres partes que ele costuma ter.
+ * O cartão, e as três partes que ele costuma ter.
  *
- * `Card` sozinho ja serve — e uma superficie com borda e raio. `CardHeader`,
+ * `Card` sozinho já serve — e uma superficie com borda e raio. `CardHeader`,
  * `CardBody` e `CardFooter` existem para o formato que se repete: o passo do
- * checkout, que e titulo de 18px, campos empilhados e botao largo embaixo,
+ * checkout, que e título de 18px, campos empilhados e botão largo embaixo,
  * separado por uma linha.
  *
- * `Card` nao e clicavel por conta propria. Quando o cartao inteiro leva a
+ * `Card` não e clicável por conta própria. Quando o cartão inteiro leva a
  * algum lugar — o card de produto —, quem leva e um `<a>` por dentro, com o
- * nome do produto como conteudo: um cartao inteiro virado em botao e
- * anunciado como um bloco de texto enorme e sem rotulo.
+ * nome do produto como conteúdo: um cartão inteiro virado em botão e
+ * anunciado como um bloco de texto enorme e sem rótulo.
  */
 
 export type CardProps = ComponentPropsWithoutRef<'div'> & {
   /** Sem `padding`: a imagem do card de produto encosta na borda. */
   flush?: boolean;
-  /** `padding` uniforme, para o cartao que e um bloco so. */
+  /** `padding` uniforme, para o cartão que e um bloco só. */
   padded?: boolean;
-  /** Sobe 2px no hover. So para o cartao que leva a algum lugar. */
+  /** Sobe 2px no hover. Só para o cartão que leva a algum lugar. */
   interactive?: boolean;
-  /** A sombra ja em repouso: o cartao que flutua sobre o fundo creme. */
+  /** A sombra já em repouso: o cartão que flutua sobre o fundo creme. */
   raised?: boolean;
 };
 
@@ -50,9 +50,9 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 export type CardHeaderProps = ComponentPropsWithoutRef<'div'> & {
   title: ReactNode;
   subtitle?: ReactNode;
-  /** Um selo ou um botao no canto direito do cabecalho. */
+  /** Um selo ou um botão no canto direito do cabeçalho. */
   action?: ReactNode;
-  /** O nivel do titulo no documento. O padrao serve a um bloco dentro de uma pagina. */
+  /** O nível do título no documento. O padrão serve a um bloco dentro de uma página. */
   as?: 'h2' | 'h3' | 'h4' | 'p';
 };
 
@@ -80,7 +80,7 @@ export const CardBody = forwardRef<HTMLDivElement, CardBodyProps>(function CardB
 });
 
 export type CardFooterProps = ComponentPropsWithoutRef<'div'> & {
-  /** Acoes lado a lado, alinhadas a direita, a partir de 640px. */
+  /** Ações lado a lado, alinhadas a direita, a partir de 640px. */
   inline?: boolean;
 };
 

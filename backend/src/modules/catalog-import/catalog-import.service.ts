@@ -26,16 +26,16 @@ import { emptyReport } from './catalog-report.js';
 import type { CatalogImportReport } from './catalog-report.js';
 
 export interface ImportOptions {
-  /** Simula: le tudo, monta o relatorio inteiro e nao grava nada. */
+  /** Simula: lê tudo, monta o relatório inteiro e não grava nada. */
   dryRun?: boolean;
-  /** Importa um produto so, pelo slug. As categorias continuam entrando. */
+  /** Importa um produto só, pelo slug. As categorias continuam entrando. */
   only?: string;
   /**
-   * Quanto tempo a importacao pode levar antes de parar num limite de lote.
+   * Quanto tempo a importação pode levar antes de parar num limite de lote.
    *
-   * Existe por causa da funcao serverless, que e morta pelo relogio sem
-   * chance de responder nada. Chegando no teto, a importacao para **entre
-   * dois lotes** — com produtos inteiros gravados — e devolve o relatorio
+   * Existe por causa da função serverless, que e morta pelo relógio sem
+   * chance de responder nada. Chegando no teto, a importação para **entre
+   * dois lotes** — com produtos inteiros gravados — e devolve o relatório
    * dizendo quantos faltaram. Como ela e idempotente, mandar o mesmo arquivo
    * de novo continua de onde parou.
    */
@@ -43,7 +43,7 @@ export interface ImportOptions {
   actor?: AuditActor;
 }
 
-/** Entrada que nao entrou. A mensagem vai crua para o relatorio. */
+/** Entrada que não entrou. A mensagem vai crua para o relatório. */
 export class CatalogEntryError extends Error {
   constructor(message: string) {
     super(message);
@@ -52,30 +52,30 @@ export class CatalogEntryError extends Error {
 }
 
 /**
- * A importacao do catalogo.
+ * A importação do catálogo.
  *
  * ## O mesmo motor para os dois caminhos
  *
- * `npm run seed:catalog` e `POST /admin/catalog/import` chamam este servico.
- * Nao ha uma "versao do script" e uma "versao da rota": a dona nao tem shell
- * na Vercel, e um caminho que so o desenvolvedor testa e o caminho que quebra
+ * `npm run seed:catalog` e `POST /admin/catalog/import` chamam este serviço.
+ * Não há uma "versão do script" e uma "versão da rota": a dona não tem shell
+ * na Vercel, e um caminho que só o desenvolvedor testa e o caminho que quebra
  * no dia em que ela precisa.
  *
- * ## Uma entrada ruim nao derruba as outras
+ * ## Uma entrada ruim não derruba as outras
  *
  * Cada produto e validado pelo `CreateProductDto` — o mesmo da rota do painel,
- * nao uma copia — e uma reprovacao vira uma linha no relatorio, com slug e
- * motivo, enquanto a importacao segue. Uma lista de 269 produtos com um preco
+ * não uma copia — e uma reprovação vira uma linha no relatório, com slug e
+ * motivo, enquanto a importação segue. Uma lista de 269 produtos com um preço
  * digitado errado precisa importar 268; abortar tudo seria transformar um erro
- * de digitacao numa tarde perdida.
+ * de digitação numa tarde perdida.
  *
- * ## Transacao quando o cluster deixa
+ * ## Transação quando o cluster deixa
  *
- * Transacao no Mongo exige replica set. O Atlas tem; um `mongod` solto, nao —
- * e e num `mongod` solto que os testes rodam. Entao a importacao pergunta ao
- * servidor antes: havendo suporte, tudo entra ou nada entra; nao havendo, ela
- * grava direto e guarda os ids do que criou, que e a unica forma de desfazer
- * uma importacao interrompida.
+ * Transação no Mongo exige replica set. O Atlas tem; um `mongod` solto, não —
+ * e e num `mongod` solto que os testes rodam. Então a importação pergunta ao
+ * servidor antes: havendo suporte, tudo entra ou nada entra; não havendo, ela
+ * grava direto e guarda os ids do que criou, que e a única forma de desfazer
+ * uma importação interrompida.
  */
 @Injectable()
 export class CatalogImportService {
@@ -92,7 +92,7 @@ export class CatalogImportService {
     const started = Date.now();
     const envelope = readCatalogEnvelope(raw);
     const dryRun = options.dryRun ?? false;
-    // A simulacao nunca abre sessao: ela nao grava, e uma transacao aberta
+    // A simulação nunca abre sessão: ela não grava, e uma transação aberta
     // para ser abortada custaria uma ida ao servidor por nada.
     const transactional = !dryRun && (await this.supportsTransactions());
 
@@ -104,7 +104,7 @@ export class CatalogImportService {
       try {
         await session.withTransaction(async () => {
           // Dentro do callback porque `withTransaction` repete a tentativa em
-          // erro transitorio: um relatorio montado fora somaria duas vezes.
+          // erro transitório: um relatório montado fora somaria duas vezes.
           report = emptyReport();
           report.transactional = true;
 
@@ -114,8 +114,8 @@ export class CatalogImportService {
         await session.endSession();
       }
     } else {
-      // Sem transacao, os ids do que nasceu sao a unica forma de desfazer uma
-      // importacao que parou no meio. Na simulacao nao nasce nada.
+      // Sem transação, os ids do que nasceu são a única forma de desfazer uma
+      // importação que parou no meio. Na simulação não nasce nada.
       if (!dryRun) {
         report.rollback = { categoryIds: [], productIds: [] };
       }
@@ -131,7 +131,7 @@ export class CatalogImportService {
     return report;
   }
 
-  /** Categorias primeiro: um produto sem elas nao tem onde se encaixar. */
+  /** Categorias primeiro: um produto sem elas não tem onde se encaixar. */
   private async run(
     envelope: { categories: unknown[]; products: unknown[] },
     options: ImportOptions,
@@ -149,8 +149,8 @@ export class CatalogImportService {
   /**
    * Importa as categorias e devolve o mapa slug -> id.
    *
-   * As raizes primeiro, as filhas depois: uma subcategoria precisa que a mae
-   * exista para apontar para ela, e o arquivo nao garante ordem nenhuma.
+   * As raizes primeiro, as filhas depois: uma subcategoria precisa que a mãe
+   * exista para apontar para ela, e o arquivo não garante ordem nenhuma.
    */
   private async importCategories(
     raw: readonly unknown[],
@@ -190,9 +190,9 @@ export class CatalogImportService {
   ): Promise<string> {
     const dto = await validateAs(CreateCategoryDto, entry.candidate);
     const stored = await this.categories.findOne({ slug: entry.slug }).session(session).exec();
-    // Campo a campo, e nao por espalhamento: o que atravessa da validacao
-    // para a fusao fica escrito, e um campo novo no DTO nao entra aqui de
-    // carona sem alguem decidir o que ele faz numa reimportacao.
+    // Campo a campo, e não por espalhamento: o que atravessa da validação
+    // para a fusão fica escrito, e um campo novo no DTO não entra aqui de
+    // carona sem alguém decidir o que ele faz numa reimportação.
     const data = mergeCategory(
       { name: dto.name, slug: entry.slug, order: dto.order, isActive: dto.isActive },
       parentId,
@@ -205,8 +205,8 @@ export class CatalogImportService {
       parentId: data.parentId === null ? null : new Types.ObjectId(data.parentId),
     });
 
-    // A simulacao para aqui, um passo antes do banco: ela ja leu o que existe,
-    // ja fundiu e ja sabe o que teria acontecido — que e o relatorio inteiro.
+    // A simulação para aqui, um passo antes do banco: ela já leu o que existe,
+    // já fundiu e já sabe o que teria acontecido — que e o relatório inteiro.
     if (options.dryRun !== true) {
       await document.save({ session });
     }
@@ -224,9 +224,9 @@ export class CatalogImportService {
   /**
    * O `parentId` de uma categoria do arquivo.
    *
-   * A mae pode vir no mesmo arquivo (e ja esta no mapa) ou ja estar no banco
-   * de antes. As duas regras da arvore de um nivel so continuam valendo aqui,
-   * com as mesmas frases da rota do painel: a mae precisa existir e precisa
+   * A mãe pode vir no mesmo arquivo (e já esta no mapa) ou já estar no banco
+   * de antes. As duas regras da árvore de um nível só continuam valendo aqui,
+   * com as mesmas frases da rota do painel: a mãe precisa existir e precisa
    * ser uma categoria principal.
    */
   private async resolveParent(
@@ -312,8 +312,8 @@ export class CatalogImportService {
     session: ClientSession | null,
   ): Promise<void> {
     if (seen.has(entry.slug)) {
-      // Dois produtos com o mesmo endereco: o segundo sobrescreveria o
-      // primeiro e a importacao pareceria ter dado certo.
+      // Dois produtos com o mesmo endereço: o segundo sobrescreveria o
+      // primeiro e a importação pareceria ter dado certo.
       throw new CatalogEntryError('Este endereço aparece mais de uma vez no arquivo.');
     }
 
@@ -359,15 +359,15 @@ export class CatalogImportService {
     }
   }
 
-  /* ---- Transacao e relogio ------------------------------------------------ */
+  /* ---- Transação e relógio ------------------------------------------------ */
 
   /**
-   * Se este cluster aceita transacao.
+   * Se este cluster aceita transação.
    *
    * A pergunta vai ao servidor em vez de ser tentada e falhada no meio da
-   * primeira gravacao: `setName` e replica set, `isdbgrid` e um mongos. Um
-   * `mongod` solto — o do desenvolvimento e o dos testes — nao tem nenhum dos
-   * dois, e e ele que cai no caminho sem transacao.
+   * primeira gravação: `setName` e replica set, `isdbgrid` e um mongos. Um
+   * `mongod` solto — o do desenvolvimento e o dos testes — não tem nenhum dos
+   * dois, e e ele que cai no caminho sem transação.
    */
   private async supportsTransactions(): Promise<boolean> {
     try {
@@ -386,13 +386,13 @@ export class CatalogImportService {
   }
 
   /**
-   * Uma entrada de trilha por importacao, nao uma por produto.
+   * Uma entrada de trilha por importação, não uma por produto.
    *
-   * O preco muda em massa aqui, e a rota do painel registra cada troca de
-   * preco justamente porque preco que muda sem ninguem saber vira briga no
+   * O preço muda em massa aqui, e a rota do painel registra cada troca de
+   * preço justamente porque preço que muda sem ninguém saber vira briga no
    * WhatsApp. Duzentas e sessenta e nove entradas responderiam pior do que
-   * uma: quem investiga quer saber que o catalogo foi importado, por quem e
-   * quando — a lista de precos esta no arquivo que foi importado.
+   * uma: quem investiga quer saber que o catálogo foi importado, por quem e
+   * quando — a lista de preços esta no arquivo que foi importado.
    */
   private async recordAudit(
     report: CatalogImportReport,
@@ -405,7 +405,7 @@ export class CatalogImportService {
     await this.audit.record({
       action: AUDIT_ACTIONS.CATALOG_IMPORTED,
       actor: options.actor,
-      target: { kind: AUDIT_TARGETS.CATALOG, id: '', label: 'Catalogo' },
+      target: { kind: AUDIT_TARGETS.CATALOG, id: '', label: 'Catálogo' },
       details: {
         categories: report.categories,
         products: report.products,
@@ -423,7 +423,7 @@ function isRoot(entry: CategoryEntry): boolean {
   return entry.parentSlug === null;
 }
 
-/** Grava a fusao no documento, com as chaves so quando o produto nasce. */
+/** Grava a fusão no documento, com as chaves só quando o produto nasce. */
 function write(document: ProductDocument, data: ProductData): void {
   document.set({
     name: data.name,
@@ -436,8 +436,8 @@ function write(document: ProductDocument, data: ProductData): void {
     ...data.flags,
   });
 
-  // Em `set` proprio: a lista de variantes e substituida inteira, e misturar a
-  // troca com os campos simples esconderia isso de quem le.
+  // Em `set` próprio: a lista de variantes e substituida inteira, e misturar a
+  // troca com os campos simples esconderia isso de quem lê.
   document.set({ variants: data.variants });
 }
 
@@ -457,7 +457,7 @@ function resolveCategories(
   });
 }
 
-/** O produto gravado, reduzido ao que a fusao precisa enxergar. */
+/** O produto gravado, reduzido ao que a fusão precisa enxergar. */
 function toStoredProduct(product: ProductDocument): StoredProduct {
   return {
     name: product.name,
@@ -481,10 +481,10 @@ function toStoredProduct(product: ProductDocument): StoredProduct {
 }
 
 /**
- * Valida com o DTO da API, com as mesmas opcoes do pipe global.
+ * Valida com o DTO da API, com as mesmas opções do pipe global.
  *
- * Mesmas opcoes importa: `whitelist` sem `forbidNonWhitelisted` aceitaria
- * calado um campo escrito errado no arquivo, e a importacao passaria semanas
+ * Mesmas opções importa: `whitelist` sem `forbidNonWhitelisted` aceitaria
+ * calado um campo escrito errado no arquivo, e a importação passaria semanas
  * ignorando um dado que quem escreveu o arquivo acha que esta gravando.
  */
 async function validateAs<T extends object>(

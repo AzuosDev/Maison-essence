@@ -11,10 +11,10 @@ import {
 /**
  * Como o pedido aparece escrito no painel.
  *
- * Os nomes do contrato (`PENDING_CONTACT`) nao sao os nomes da tela
- * ("Aguardando contato"). A traducao mora aqui, e nao dentro de cada
+ * Os nomes do contrato (`PENDING_CONTACT`) não são os nomes da tela
+ * ("Aguardando contato"). A tradução mora aqui, e não dentro de cada
  * componente, porque o mesmo status aparece na tabela, no detalhe, no
- * seletor e no filtro — e quatro traducoes soltas viram quatro palavras
+ * seletor e no filtro — e quatro traduções soltas viram quatro palavras
  * diferentes para o mesmo estado.
  */
 
@@ -30,8 +30,8 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 /**
  * A ordem do ciclo de vida, para o seletor de status.
  *
- * Nao e a ordem alfabetica nem a do objeto de constantes: e a ordem em que o
- * pedido anda de verdade, que e como a dona procura o proximo passo.
+ * Não e a ordem alfabética nem a do objeto de constantes: e a ordem em que o
+ * pedido anda de verdade, que e como a dona procura o próximo passo.
  */
 export const ORDER_STATUS_FLOW: readonly OrderStatus[] = [
   ORDER_STATUSES.PENDING_CONTACT,
@@ -53,22 +53,22 @@ export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
 };
 
 /**
- * As opcoes do filtro e do seletor de status.
+ * As opções do filtro e do seletor de status.
  *
- * Derivadas do fluxo e dos rotulos, e nao escritas a mao: um status novo no
- * dominio aparece nos dois controles sem ninguem lembrar de acrescenta-lo.
- * O tipo e o minimo que `<Select>` pede, para que este modulo continue sem
+ * Derivadas do fluxo e dos rótulos, e não escritas a mão: um status novo no
+ * domínio aparece nos dois controles sem ninguém lembrar de acrescenta-lo.
+ * O tipo e o mínimo que `<Select>` pede, para que este módulo continue sem
  * saber que existe um design system do outro lado.
  */
 export const ORDER_STATUS_OPTIONS: readonly { value: OrderStatus; label: string }[] =
   ORDER_STATUS_FLOW.map((status) => ({ value: status, label: ORDER_STATUS_LABELS[status] }));
 
 /**
- * Como o pagamento cabe numa celula: `PIX`, `Cartao`, `Cartao 6x`.
+ * Como o pagamento cabe numa célula: `PIX`, `Cartao`, `Cartao 6x`.
  *
- * O numero de parcelas entra so quando ha mais de uma — "Cartao 1x" e ruido,
- * e a coluna existe para ser lida de relance. Se ha juros ou nao fica de
- * fora aqui de proposito: e uma frase, nao um rotulo, e o detalhe do pedido
+ * O número de parcelas entra só quando há mais de uma — "Cartão 1x" e ruído,
+ * e a coluna existe para ser lida de relance. Se há juros ou não fica de
+ * fora aqui de propósito: e uma frase, não um rótulo, e o detalhe do pedido
  * a escreve por extenso.
  */
 export function paymentLabel(payment: AdminOrderPayment): string {
@@ -85,9 +85,9 @@ export function paymentLabel(payment: AdminOrderPayment): string {
  * O tom do selo de status.
  *
  * Quatro tons para seis status, porque o que a cor precisa dizer e mais
- * simples que o estado: **este pedido espera voce** (dourado), **esta
+ * simples que o estado: **este pedido espera você** (dourado), **esta
  * andando** (tinta), **acabou bem** (verde), **acabou mal** (vermelho). A
- * palavra continua escrita no selo — a cor nunca e o unico portador.
+ * palavra continua escrita no selo — a cor nunca e o único portador.
  */
 export function statusTone(status: OrderStatus): 'gold' | 'ink' | 'success' | 'danger' {
   if (status === ORDER_STATUSES.PENDING_CONTACT) {
@@ -104,10 +104,10 @@ export function statusTone(status: OrderStatus): 'gold' | 'ink' | 'success' | 'd
 /**
  * O link que abre a conversa com o cliente.
  *
- * `wa.me` com o numero em digitos e o codigo do pais. O telefone chega do
- * backend com onze digitos e sem o pais — e ele que a dona ve na tela —,
- * entao o `55` entra aqui, uma vez, em vez de em cada lugar que oferece o
- * botao.
+ * `wa.me` com o número em digitos e o código do pais. O telefone chega do
+ * backend com onze digitos e sem o pais — e ele que a dona vê na tela —,
+ * então o `55` entra aqui, uma vez, em vez de em cada lugar que oferece o
+ * botão.
  */
 export function whatsappLink(phone: string, message?: string): string {
   const digits = phone.replace(/\D/g, '');

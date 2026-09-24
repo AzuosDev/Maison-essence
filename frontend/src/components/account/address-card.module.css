@@ -1,8 +1,8 @@
 /*
- * Um endereco salvo.
+ * Um endereço salvo.
  *
- * O cartao inteiro nao e clicavel, ao contrario do cartao de pedido: aqui
- * nao ha "para onde ir" — ha tres acoes diferentes, e uma delas apaga o que
+ * O cartão inteiro não e clicável, ao contrário do cartão de pedido: aqui
+ * não há "para onde ir" — há três ações diferentes, e uma delas apaga o que
  * esta escrito. Um alvo esticado por cima disso seria um clique acidental
  * esperando acontecer.
  */
@@ -99,8 +99,8 @@
 }
 
 /*
- * A confirmacao ocupa o lugar dos botoes, dentro do cartao. O fundo de aviso
- * e o mesmo do resto da loja, e o endereco continua escrito logo acima: a
+ * A confirmação ocupa o lugar dos botões, dentro do cartão. O fundo de aviso
+ * e o mesmo do resto da loja, e o endereço continua escrito logo acima: a
  * pergunta nunca aparece longe do que ela vai apagar.
  */
 .confirm {

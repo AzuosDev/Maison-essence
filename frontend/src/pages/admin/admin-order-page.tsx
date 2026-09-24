@@ -41,36 +41,36 @@ import styles from './admin-order-page.module.css';
  * ## O que esta tela e
  *
  * E a tela que fica aberta ao lado do WhatsApp. A dona chega aqui vinda de
- * uma mensagem — "oi, e sobre o ME-260922-K4P1" — e precisa de tres coisas
+ * uma mensagem — "oi, e sobre o ME-260922-K4P1" — e precisa de três coisas
  * na ordem: **o que a pessoa pediu**, **para onde vai**, e **o que eu
  * respondo**. A coluna larga responde a primeira, a coluna estreita responde
- * a segunda, e a fileira de acoes no topo responde a terceira.
+ * a segunda, e a fileira de ações no topo responde a terceira.
  *
- * ## Abrir conversa e copiar mensagem sao coisas diferentes
+ * ## Abrir conversa e copiar mensagem são coisas diferentes
  *
- * Parecem o mesmo botao e nao sao. **Abrir conversa** leva ao WhatsApp com o
- * numero e a caixa de texto **vazia**: a dona esta respondendo, e mandar o
+ * Parecem o mesmo botão e não são. **Abrir conversa** leva ao WhatsApp com o
+ * número e a caixa de texto **vazia**: a dona esta respondendo, e mandar o
  * pedido de volta para quem acabou de manda-lo seria estranho. **Copiar
- * mensagem** poe o texto do pedido na area de transferencia, para quando ela
+ * mensagem** põe o texto do pedido na área de transferência, para quando ela
  * precisa reenviar — o cliente apagou a conversa, ou quer repassar para
  * quem vai retirar.
  *
- * ## O cancelamento e a unica acao que nao volta
+ * ## O cancelamento e a única ação que não volta
  *
- * O seletor de status move o pedido livremente, e de proposito: um pedido
- * pago no balcao pula para entregue, um que voltou dos Correios volta para
- * preparando. O backend nao tem maquina de estados porque a vida da loja nao
+ * O seletor de status move o pedido livremente, e de propósito: um pedido
+ * pago no balção pula para entregue, um que voltou dos Correios volta para
+ * preparando. O backend não tem máquina de estados porque a vida da loja não
  * tem.
  *
- * O cancelamento e outra coisa. Ele devolve o estoque das variantes e nao
+ * O cancelamento e outra coisa. Ele devolve o estoque das variantes e não
  * pode ser desfeito — o servidor recusa com 409 qualquer status depois dele.
- * Por isso ele nao esta no seletor: e um botao proprio, vermelho, com
- * confirmacao que nomeia o codigo do pedido. Esconde-lo do seletor e o que
+ * Por isso ele não esta no seletor: e um botão próprio, vermelho, com
+ * confirmação que nomeia o código do pedido. Esconde-lo do seletor e o que
  * impede o gesto de "mudar o status" de, num deslize, devolver estoque.
  *
- * ## O que o STAFF ve
+ * ## O que o STAFF vê
  *
- * O pedido inteiro, sem um numero de dinheiro: nem preco unitario, nem total
+ * O pedido inteiro, sem um número de dinheiro: nem preço unitário, nem total
  * de linha, nem o resumo de valores. Ele move status, anota e abre a
  * conversa — que e o trabalho dele.
  */
@@ -212,14 +212,14 @@ function Order({ order, showPrices }: { order: AdminOrder; showPrices: boolean }
   );
 }
 
-/* ---- As acoes rapidas ----------------------------------------------------- */
+/* ---- As ações rápidas ----------------------------------------------------- */
 
 /**
  * A fileira que fica ao alcance do polegar, acima de tudo.
  *
- * As tres acoes que a dona faz nesta tela, na ordem em que ela as faz:
+ * As três ações que a dona faz nesta tela, na ordem em que ela as faz:
  * responder, reenviar, desistir. O cancelamento fica separado a direita, e
- * nao ao lado das outras duas — a distancia e o que impede o dedo de errar
+ * não ao lado das outras duas — a distância e o que impede o dedo de errar
  * o alvo no celular.
  */
 function QuickActions({ order, isCancelled }: { order: AdminOrder; isCancelled: boolean }) {
@@ -229,7 +229,7 @@ function QuickActions({ order, isCancelled }: { order: AdminOrder; isCancelled: 
   const setStatus = useSetOrderStatus();
 
   // O "copiado" volta ao normal sozinho. Dois segundos e o bastante para a
-  // confirmacao ser vista sem que o botao fique preso no estado de sucesso.
+  // confirmação ser vista sem que o botão fique preso no estado de sucesso.
   useEffect(() => {
     if (!copied) {
       return;
@@ -252,10 +252,10 @@ function QuickActions({ order, isCancelled }: { order: AdminOrder; isCancelled: 
       return;
     }
 
-    // `navigator.clipboard` nao existe em contexto inseguro — e o painel
+    // `navigator.clipboard` não existe em contexto inseguro — e o painel
     // aberto por IP na rede da loja e um contexto inseguro. Em vez de um
-    // erro mudo, a tela aponta o caminho manual: a mensagem esta na pagina,
-    // selecionavel.
+    // erro mudo, a tela aponta o caminho manual: a mensagem esta na página,
+    // selecionável.
     toast({
       variant: 'danger',
       title: 'Não consegui copiar',
@@ -396,9 +396,9 @@ function StatusPicker({ order, isCancelled }: { order: AdminOrder; isCancelled: 
         block
         value={order.status}
         disabled={setStatus.isPending}
-        // O cancelamento sai da lista: ele devolve estoque e nao volta atras,
-        // e uma acao assim nao pertence a um menu onde se escolhe por
-        // aproximacao. Ele e o botao vermelho la em cima.
+        // O cancelamento sai da lista: ele devolve estoque e não volta atrás,
+        // e uma ação assim não pertence a um menu onde se escolhe por
+        // aproximação. Ele e o botão vermelho lá em cima.
         options={ORDER_STATUS_OPTIONS.filter((option) => option.value !== ORDER_STATUSES.CANCELLED)}
         onChange={(event) => {
           move(event.target.value as OrderStatus);
@@ -445,8 +445,8 @@ function Fulfillment({ order }: { order: AdminOrder }) {
       ) : null}
 
       {isPickup || fulfillment.address === null ? (
-        // Na retirada nao ha endereco a preencher, e dizer isso e melhor do
-        // que deixar a coluna terminar sem explicacao.
+        // Na retirada não há endereço a preencher, e dizer isso e melhor do
+        // que deixar a coluna terminar sem explicação.
         <div className={styles.fact}>
           <dt>Endereço</dt>
           <dd className={styles.pickup}>A cliente retira na loja.</dd>
@@ -515,18 +515,18 @@ function Totals({ order }: { order: AdminOrder }) {
   );
 }
 
-/* ---- A anotacao interna --------------------------------------------------------- */
+/* ---- A anotação interna --------------------------------------------------------- */
 
 /**
  * A conversa da loja sobre o pedido.
  *
  * Nunca sai daqui: a rota do cliente devolve o pedido sem este campo. E onde
- * fica "combinou de pagar na entrega" e "ja atrasou duas vezes, confirmar
+ * fica "combinou de pagar na entrega" e "já atrasou duas vezes, confirmar
  * antes de sair" — e e por isso que vale o aviso escrito na tela, para que
- * ninguem escreva aqui achando que o cliente le.
+ * ninguém escreva aqui achando que o cliente lê.
  *
- * O botao so acorda quando o texto muda. Salvar o mesmo texto de novo e uma
- * escrita a toa no banco e um "salvo!" que nao significa nada.
+ * O botão só acorda quando o texto muda. Salvar o mesmo texto de novo e uma
+ * escrita a toa no banco e um "salvo!" que não significa nada.
  */
 function Notes({ order }: { order: AdminOrder }) {
   const { toast } = useToast();
@@ -534,11 +534,11 @@ function Notes({ order }: { order: AdminOrder }) {
   const [known, setKnown] = useState(order.notes);
   const save = useSetOrderNotes();
 
-  // A anotacao pode chegar diferente do servidor — outra aba escreveu, ou a
-  // consulta revalidou depois de salvar. Ajustada durante o render, e nao num
+  // A anotação pode chegar diferente do servidor — outra aba escreveu, ou a
+  // consulta revalidou depois de salvar. Ajustada durante o render, e não num
   // efeito: um efeito pintaria o texto antigo primeiro e o trocaria no quadro
-  // seguinte, e o campo piscaria. `known` guarda o ultimo valor que veio de
-  // la, e a comparacao so dispara quando ele realmente muda.
+  // seguinte, e o campo piscaria. `known` guarda o último valor que veio de
+  // lá, e a comparação só dispara quando ele realmente muda.
   if (order.notes !== known) {
     setKnown(order.notes);
     setDraft(order.notes);
@@ -605,7 +605,7 @@ function Notes({ order }: { order: AdminOrder }) {
   );
 }
 
-/* ---- As pecas repetidas ---------------------------------------------------------- */
+/* ---- As peças repetidas ---------------------------------------------------------- */
 
 function Panel({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
   return (

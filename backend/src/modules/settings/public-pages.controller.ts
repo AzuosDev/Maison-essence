@@ -7,15 +7,15 @@ import { SettingsService } from './settings.service.js';
 import type { PublicPageSummary, PublicPageView } from './settings.view.js';
 
 /**
- * Paginas institucionais da loja aberta.
+ * Páginas institucionais da loja aberta.
  *
- * Endereco fixo e sem id: `/pages/politica-de-privacidade` e um link que vai
- * para o rodape, para o WhatsApp e, no caso da politica, para o registro de
- * um terceiro. Por isso o slug vem de uma lista fechada e a dona edita so o
- * titulo e o texto.
+ * Endereço fixo e sem id: `/pages/politica-de-privacidade` e um link que vai
+ * para o rodapé, para o WhatsApp e, no caso da política, para o registro de
+ * um terceiro. Por isso o slug vem de uma lista fechada e a dona edita só o
+ * título e o texto.
  *
- * Mesmo cache das configuracoes: sao os mesmos cinco campos de texto, mudam
- * na mesma frequencia, e a listagem daqui monta o rodape de toda pagina.
+ * Mesmo cache das configurações: são os mesmos cinco campos de texto, mudam
+ * na mesma frequência, e a listagem daqui monta o rodapé de toda página.
  */
 @Public()
 @CdnCache(SETTINGS_CACHE)
@@ -23,7 +23,7 @@ import type { PublicPageSummary, PublicPageView } from './settings.view.js';
 export class PublicPagesController {
   constructor(private readonly settings: SettingsService) {}
 
-  /** So as publicadas, sem o conteudo: o rodape precisa de titulo e endereco. */
+  /** Só as publicadas, sem o conteúdo: o rodapé precisa de título e endereço. */
   @Get()
   async list(
     @Req() request: Request,

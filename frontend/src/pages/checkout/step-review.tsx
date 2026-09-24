@@ -19,42 +19,42 @@ import { SubmitFailure } from './submit-failure';
 import styles from './step-review.module.css';
 
 /**
- * Etapa 4: quem esta comprando, e a conferencia de tudo.
+ * Etapa 4: quem esta comprando, e a conferência de tudo.
  *
- * Dois pedacos com papeis opostos. Em cima, os unicos dois campos que ainda
+ * Dois pedaços com papéis opostos. Em cima, os únicos dois campos que ainda
  * faltam — nome e WhatsApp. Embaixo, nada para preencher: o que o cliente
  * escolheu, escrito por extenso, com um "alterar" ao lado de cada bloco.
  *
- * O "alterar" e o que torna a revisao util. Uma revisao que so mostra
+ * O "alterar" e o que torna a revisão útil. Uma revisão que só mostra
  * obriga quem viu o bairro errado a procurar o caminho de volta — e ele,
- * num fluxo de quatro passos, e tres cliques no "voltar". Com o atalho, e
+ * num fluxo de quatro passos, e três cliques no "voltar". Com o atalho, e
  * um.
  *
- * ## Dois campos, e nao cinco
+ * ## Dois campos, e não cinco
  *
- * Nao ha e-mail, nao ha CPF, nao ha confirmacao de senha. A loja fala pelo
+ * Não há e-mail, não há CPF, não há confirmação de senha. A loja fala pelo
  * WhatsApp, e o telefone e a chave que liga o pedido ao cliente — cada campo
- * a mais neste ponto e uma chance a mais de a pessoa desistir na ultima
- * tela, que e onde a desistencia custa tudo o que ja foi feito.
+ * a mais neste ponto e uma chance a mais de a pessoa desistir na última
+ * tela, que e onde a desistência custa tudo o que já foi feito.
  *
- * ## A mascara que nunca recusa tecla
+ * ## A máscara que nunca recusa tecla
  *
- * `maskPhone` so acrescenta os parenteses e o hifen; nunca reordena nem
- * corta o que foi digitado no meio. A validacao e `normalizePhone`, a mesma
- * funcao que o backend usa — o que passa aqui passa la, e ninguem descobre
- * que o numero era invalido depois de o pedido sair.
+ * `maskPhone` só acrescenta os parênteses e o hífen; nunca reordena nem
+ * corta o que foi digitado no meio. A validação e `normalizePhone`, a mesma
+ * função que o backend usa — o que passa aqui passa lá, e ninguém descobre
+ * que o número era inválido depois de o pedido sair.
  */
 
 export interface StepReviewProps {
   quoting: CheckoutQuoteView;
   focusOnMount: boolean;
   onBack: () => void;
-  /** O atalho de cada bloco da revisao. */
+  /** O atalho de cada bloco da revisão. */
   onGoTo: (step: CheckoutStep) => void;
-  /** Os dados estao validos: a pagina monta e envia o pedido. */
+  /** Os dados estão válidos: a página monta e envia o pedido. */
   onFinish: () => void;
   isSubmitting: boolean;
-  /** O que deu errado no envio, quando nao foi conflito de cotacao. */
+  /** O que deu errado no envio, quando não foi conflito de cotação. */
   failure: OrderFailure | null;
   /** Manda o mesmo pedido de novo, sem refazer nada. */
   onRetry: () => void;
@@ -94,9 +94,9 @@ export function StepReview({
       onAction={submit}
       onBack={onBack}
       actionLoading={isSubmitting}
-      // Sem a linha de total do rodape, que os outros passos tem. Aqui o
-      // bloco de valores esta dentro do proprio cartao, a dois dedos do
-      // botao: a linha repetiria o mesmo numero duas vezes na mesma dobra do
+      // Sem a linha de total do rodapé, que os outros passos tem. Aqui o
+      // bloco de valores esta dentro do próprio cartão, a dois dedos do
+      // botão: a linha repetiria o mesmo número duas vezes na mesma dobra do
       // celular.
     >
       <div className={styles.fields}>
@@ -160,7 +160,7 @@ export function StepReview({
   );
 }
 
-/* ---- A conferencia --------------------------------------------------------- */
+/* ---- A conferência --------------------------------------------------------- */
 
 function Review({
   quoting,

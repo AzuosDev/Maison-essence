@@ -1,8 +1,8 @@
 /*
- * O aviso passageiro: "produto adicionado", "pedido enviado", "nao foi
- * possivel salvar".
+ * O aviso passageiro: "produto adicionado", "pedido enviado", "não foi
+ * possível salvar".
  *
- * No celular ocupa a largura toda embaixo, acima do polegar e do botao
+ * No celular ocupa a largura toda embaixo, acima do polegar e do botão
  * flutuante do WhatsApp. No desktop vai para o canto inferior direito.
  */
 
@@ -15,7 +15,7 @@
   flex-direction: column;
   gap: var(--space-8);
 
-  /* O container inteiro nao intercepta clique: so os avisos dentro dele. */
+  /* O container inteiro não intercepta clique: só os avisos dentro dele. */
   pointer-events: none;
 }
 
@@ -43,13 +43,13 @@
 }
 
 /*
- * O sinal cromatico e o fundo lavado mais a borda inteira, e nao um filete
- * grosso de um lado so — aquele filete e o carimbo mais reconhecivel de
- * interface montada as pressas, e aqui ele era redundante: o fundo ja dizia
+ * O sinal cromatico e o fundo lavado mais a borda inteira, e não um filete
+ * grosso de um lado só — aquele filete e o carimbo mais reconhecível de
+ * interface montada as pressas, e aqui ele era redundante: o fundo já dizia
  * a mesma coisa.
  *
- * A cor nunca vai sozinha: o texto diz o que aconteceu. Quem nao distingue
- * verde de vermelho le "pedido enviado" e "nao foi possivel salvar" igual.
+ * A cor nunca vai sozinha: o texto diz o que aconteceu. Quem não distingue
+ * verde de vermelho lê "pedido enviado" e "não foi possível salvar" igual.
  */
 .success {
   background-color: var(--success-wash);
@@ -91,7 +91,7 @@
  * Desenhado como link de texto — sublinhado dourado, afastado da letra, como
  * o resto dos links da loja — ainda que seja um `<button>` por baixo. A
  * escolha do elemento esta explicada em `toast.tsx`, e e sobre onde o
- * provedor mora na arvore; a aparencia continua sendo a de um link porque e
+ * provedor mora na árvore; a aparência continua sendo a de um link porque e
  * isso que ele faz: leva a outra tela.
  */
 .action {

@@ -64,7 +64,7 @@
   outline-offset: var(--focus-offset);
 }
 
-/* O degrau que a quantidade atual ja alcancou. */
+/* O degrau que a quantidade atual já alcancou. */
 .reached {
   border-color: var(--ink);
 }
@@ -74,8 +74,8 @@
   font-weight: var(--weight-medium);
 }
 
-/* Verde, pelo mesmo motivo do preco no PIX: e desconto, e o dourado escuro
-   nao alcanca o contraste minimo em 14px. */
+/* Verde, pelo mesmo motivo do preço no PIX: e desconto, e o dourado escuro
+   não alcança o contraste mínimo em 14px. */
 .percent {
   font-size: var(--text-14);
   font-weight: var(--weight-semibold);

@@ -10,18 +10,18 @@ import AdminProductFormPage from './admin-product-form-page';
 import AdminProductsPage from './admin-products-page';
 
 /**
- * A area de produtos do painel.
+ * A área de produtos do painel.
  *
- * O que estes casos cobram sao os criterios de aceite do prompt:
+ * O que estes casos cobram são os critérios de aceite do prompt:
  *
- * - **o STAFF nao ve nem altera preco** — nem a coluna, nem o interruptor,
+ * - **o STAFF não vê nem altera preço** — nem a coluna, nem o interruptor,
  *   nem o cadastro;
- * - **o recorte mora no endereco**, e chega a API como consulta filtrada;
+ * - **o recorte mora no endereço**, e chega a API como consulta filtrada;
  * - **o interruptor vira na hora** e manda o valor oposto ao servidor;
  * - **cadastrar um produto com variantes funciona**, e o corpo que sai tem os
- *   precos em centavos;
+ *   preços em centavos;
  * - **duplicar uma variante** copia o trabalho sem copiar o SKU;
- * - **excluir pede confirmacao nomeando o produto**.
+ * - **excluir pede confirmação nomeando o produto**.
  */
 
 const CATEGORY_ID = '68d1f2a3c4b5e6f708192a3b';
@@ -82,7 +82,7 @@ const PRODUCT = {
 
 const LIST = { items: [PRODUCT], page: 1, totalPages: 1, totalItems: 1, hasMore: false };
 
-/** As chamadas que sairam, para os casos que perguntam o que foi pedido. */
+/** As chamadas que saíram, para os casos que perguntam o que foi pedido. */
 let calls: { url: string; method: string; body: string }[] = [];
 
 function jsonResponse(body: unknown, status = 200): Response {
@@ -96,7 +96,7 @@ beforeEach(() => {
   calls = [];
 
   // Sem `matchMedia` o jsdom desenha tudo como celular, e e na largura de
-  // desktop que a tabela tem colunas — e nas colunas que a ausencia do preco
+  // desktop que a tabela tem colunas — e nas colunas que a ausência do preço
   // significa alguma coisa.
   vi.stubGlobal('matchMedia', (query: string) => ({
     matches: query.includes('min-width'),
@@ -199,14 +199,14 @@ test('a dona vê o preço, a categoria e o interruptor', async () => {
   expect(await screen.findByRole('link', { name: 'Asad' })).toBeDefined();
   expect(screen.getByText('R$ 189,90')).toBeDefined();
 
-  // Na celula da tabela, e nao na opcao do filtro: as duas dizem "Masculino".
+  // Na célula da tabela, e não na opção do filtro: as duas dizem "Masculino".
   await waitFor(() => {
     expect(within(screen.getByRole('table')).getByText('Masculino')).toBeDefined();
   });
   expect(screen.getByRole('switch', { name: 'Publicar Asad' })).toBeDefined();
 });
 
-test('o STAFF le o catalogo sem preço e sem poder mexer', async () => {
+test('o STAFF lê o catálogo sem preço e sem poder mexer', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir('/admin/produtos');
@@ -295,7 +295,7 @@ test('o cadastro novo abre com uma variante e sem nada preenchido', async () => 
 
   expect(await screen.findByRole('heading', { name: 'Novo produto' })).toBeDefined();
 
-  // Produto sem variante nao existe: a tabela ja abre com a primeira linha.
+  // Produto sem variante não existe: a tabela já abre com a primeira linha.
   expect(screen.getByRole('textbox', { name: 'Nome da variante 1' })).toBeDefined();
 });
 
@@ -329,7 +329,7 @@ test('cadastrar manda o preço em centavos', async () => {
     const write = lastWrite();
 
     expect(write?.method).toBe('POST');
-    // `189,90` e nao `18990.000000001`: a conversao passa por inteiro.
+    // `189,90` e não `18990.000000001`: a conversão passa por inteiro.
     expect(write?.body).toContain('"priceCents":18990');
   });
 });
@@ -351,7 +351,7 @@ test('duplicar a variante copia o preço e limpa o SKU', async () => {
   const sku2 = screen.getByRole('textbox', { name: 'SKU da variante 2' });
 
   expect((price2 as HTMLInputElement).value).toBe('189,90');
-  // O SKU e unico por variante: copia-lo faria a linha nova sobrescrever a
+  // O SKU e único por variante: copia-lo faria a linha nova sobrescrever a
   // original ao salvar.
   expect((sku2 as HTMLInputElement).value).toBe('');
 });
@@ -371,7 +371,7 @@ test('a edição manda PATCH e não muda o endereço do produto', async () => {
 
     expect(write?.method).toBe('PATCH');
     expect(write?.body).toContain('Asad Elixir');
-    // O link ja foi para o WhatsApp de alguem: o endereco nao viaja no PATCH.
+    // O link já foi para o WhatsApp de alguém: o endereço não viaja no PATCH.
     expect(write?.body).not.toContain('"slug"');
   });
 });

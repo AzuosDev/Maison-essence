@@ -22,7 +22,7 @@ import {
 import type { QuoteCartDto } from './dto/quote-cart.dto.js';
 import type { CartQuoteView, QuotePaymentView } from './quote.view.js';
 
-/** O card nao mostra a descricao, e ela e o maior campo do produto. */
+/** O card não mostra a descrição, e ela e o maior campo do produto. */
 const QUOTE_FIELDS = '-description';
 
 /** O que o pagamento resolve: o total, o desconto do PIX e as parcelas. */
@@ -34,17 +34,17 @@ interface SettledPayment {
 }
 
 /**
- * A cotacao do carrinho, refeita do zero a cada chamada.
+ * A cotação do carrinho, refeita do zero a cada chamada.
  *
- * E a resposta a pergunta "quanto da isto?", e e a unica resposta que vale:
+ * E a resposta a pergunta "quanto da isto?", e e a única resposta que vale:
  * o que o navegador mostrou pode estar velho por minutos ou por dias — carrinho
- * guardado no `localStorage` sobrevive a reajuste de preco, a produto
+ * guardado no `localStorage` sobrevive a reajuste de preço, a produto
  * desativado e a estoque que acabou. Por isso nada do que o cliente manda
  * sobre valores e lido: os ids dizem *o que* ele quer, e o banco diz *quanto
  * custa*.
  *
- * Nada e gravado aqui. A rota nao cria carrinho, nao reserva estoque e nao
- * deixa rastro do que foi simulado — quem persiste e a criacao do pedido, que
+ * Nada e gravado aqui. A rota não cria carrinho, não reserva estoque e não
+ * deixa rastro do que foi simulado — quem persiste e a criação do pedido, que
  * refaz esta mesma conta antes de gravar.
  */
 @Injectable()
@@ -60,13 +60,13 @@ export class CartQuoteService {
   /**
    * Recalcula a sacola inteira: itens, entrega e pagamento.
    *
-   * Item invalido nao derruba a cotacao. Ele volta marcado, com o motivo, e
+   * Item inválido não derruba a cotação. Ele volta marcado, com o motivo, e
    * vale zero — quem esta com seis itens na sacola e um deles esgotou merece
-   * ver o total dos outros cinco, nao um erro que apaga a tela inteira.
+   * ver o total dos outros cinco, não um erro que apaga a tela inteira.
    *
-   * O que derruba e a escolha de entrega: cidade que a loja nao atende mais
-   * ou retirada desligada vem do `DeliveryService` como 422, porque ai nao ha
-   * cotacao parcial possivel — nao da para somar uma taxa que nao existe.
+   * O que derruba e a escolha de entrega: cidade que a loja não atende mais
+   * ou retirada desligada vem do `DeliveryService` como 422, porque aí não há
+   * cotação parcial possível — não da para somar uma taxa que não existe.
    */
   async quote(dto: QuoteCartDto): Promise<CartQuoteView> {
     const { lines, warnings } = mergeLines(dto.items);
@@ -103,7 +103,7 @@ export class CartQuoteService {
    * Os produtos citados na sacola, inclusive os desativados.
    *
    * Filtrar por `isActive` na consulta pareceria natural e seria pior: o
-   * produto que saiu do catalogo voltaria como "produto nao encontrado", sem
+   * produto que saiu do catálogo voltaria como "produto não encontrado", sem
    * nome, e a sacola exibiria uma linha anonima. Buscando todos, a linha
    * recusada ainda sabe dizer de qual produto se trata.
    */
@@ -128,9 +128,9 @@ export class CartQuoteService {
   /**
    * As regras de desconto por quantidade que podem valer para esta sacola.
    *
-   * Uma consulta so para o carrinho inteiro, como na vitrine: sao poucas
+   * Uma consulta só para o carrinho inteiro, como na vitrine: são poucas
    * regras no total, e decidir qual vale para cada produto e conta de
-   * memoria.
+   * memória.
    */
   private async rulesFor(products: readonly CatalogProduct[]): Promise<QuantityDiscountRule[]> {
     if (products.length === 0) {
@@ -165,10 +165,10 @@ export class CartQuoteService {
   /**
    * Fecha a conta pela forma de pagamento escolhida.
    *
-   * O PIX e o cartao nao sao o mesmo total com etiquetas diferentes: o PIX
-   * desconta um percentual do subtotal e nao se parcela; o cartao paga o
-   * valor cheio e se divide. Trocar a forma muda o numero, e e por isso que a
-   * escolha entra na cotacao em vez de ser decidida so na hora de fechar.
+   * O PIX e o cartão não são o mesmo total com etiquetas diferentes: o PIX
+   * desconta um percentual do subtotal e não se parcela; o cartão paga o
+   * valor cheio e se divide. Trocar a forma muda o número, e e por isso que a
+   * escolha entra na cotação em vez de ser decidida só na hora de fechar.
    */
   private async settle(
     chosen: QuoteCartDto['payment'],
@@ -179,9 +179,9 @@ export class CartQuoteService {
       const pix = await this.payments.pixQuote(subtotalCents, deliveryFeeCents);
 
       return {
-        // Uma parcela, sempre: no PIX o pagamento e unico, e oferecer uma
-        // lista vazia e mais honesto do que repetir as opcoes do cartao com
-        // um total que nao vale para elas.
+        // Uma parcela, sempre: no PIX o pagamento e único, e oferecer uma
+        // lista vazia e mais honesto do que repetir as opções do cartão com
+        // um total que não vale para elas.
         payment: { method: chosen.method, installments: 1, selected: null },
         pixDiscountCents: pix.discountCents,
         totalCents: pix.totalCents,
@@ -193,8 +193,8 @@ export class CartQuoteService {
     const installmentOptions = await this.installments.buildOptions(totalCents);
     const requested = chosen.installments ?? 1;
     // O parcelamento que vale e o que existe na lista calculada agora. Quando
-    // o pedido nao esta la — 12x num total que nao alcanca a parcela minima —,
-    // vale a vista, que e a unica opcao sempre oferecida.
+    // o pedido não esta lá — 12x num total que não alcança a parcela mínima —,
+    // vale a vista, que e a única opção sempre oferecida.
     const selected =
       installmentOptions.find((option) => option.number === requested) ??
       installmentOptions[0] ??
@@ -208,7 +208,7 @@ export class CartQuoteService {
     };
   }
 
-  /** O que dizer sobre a forma de pagamento escolhida, sem recusar a cotacao. */
+  /** O que dizer sobre a forma de pagamento escolhida, sem recusar a cotação. */
   private async paymentWarnings(
     chosen: QuoteCartDto['payment'],
     settled: SettledPayment,
@@ -224,8 +224,8 @@ export class CartQuoteService {
       ];
     }
 
-    // Lista vazia no cartao so acontece de um jeito: a loja nao o aceita. A
-    // opcao a vista nunca e filtrada pela parcela minima.
+    // Lista vazia no cartão só acontece de um jeito: a loja não o aceita. A
+    // opção a vista nunca e filtrada pela parcela mínima.
     if (settled.installmentOptions.length === 0) {
       return [CARD_UNAVAILABLE_WARNING];
     }
@@ -236,7 +236,7 @@ export class CartQuoteService {
   }
 }
 
-/** O produto do banco traduzido para o que o calculo entende. */
+/** O produto do banco traduzido para o que o cálculo entende. */
 function toCatalogProduct(product: LeanProduct): CatalogProduct {
   return {
     id: product._id.toHexString(),
@@ -257,7 +257,7 @@ function toCatalogProduct(product: LeanProduct): CatalogProduct {
   };
 }
 
-/** Sacola inteira recusada: e a unica diferenca entre "sem itens" e "total zero". */
+/** Sacola inteira recusada: e a única diferença entre "sem itens" e "total zero". */
 function emptyWarning(items: readonly QuoteItem[]): string[] {
   return items.every((item) => item.unavailable) ? [EMPTY_QUOTE_WARNING] : [];
 }

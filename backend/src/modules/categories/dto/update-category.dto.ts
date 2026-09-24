@@ -15,7 +15,7 @@ import { MAX_CATEGORY_ORDER } from '../categories.constants.js';
 import { NormalizeSlug } from './create-category.dto.js';
 
 /**
- * Edicao de categoria. Todo campo e opcional: o painel manda so o que mudou.
+ * Edição de categoria. Todo campo e opcional: o painel manda só o que mudou.
  *
  * `parentId: null` promove a subcategoria a categoria principal; omitir o
  * campo deixa o pai como esta. Trocar o `slug` guarda o anterior em
@@ -39,7 +39,7 @@ export class UpdateCategoryDto {
   @IsMongoId({ message: 'categoria pai inválida' })
   parentId?: string | null;
 
-  /** `publicId` do Cloudinary, so das pastas da loja. Vazio tira a foto. */
+  /** `publicId` do Cloudinary, só das pastas da loja. Vazio tira a foto. */
   @IsOptional()
   @IsString()
   @IsOptionalImagePublicId()

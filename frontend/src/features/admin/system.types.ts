@@ -1,19 +1,19 @@
 import type { UserRole } from '@/features/auth';
 
 /**
- * O que a area de sistema consome da API.
+ * O que a área de sistema consome da API.
  *
- * Espelhos escritos a mao, como o resto de `features/auth`: o frontend
- * consome a API publicada, nao o codigo dela. Os campos aqui sao os que
+ * Espelhos escritos a mão, como o resto de `features/auth`: o frontend
+ * consome a API publicada, não o código dela. Os campos aqui são os que
  * quebram a tela na hora se divergirem, e por isso valem ser conferidos
  * quando o contrato mudar.
  *
- * ## Por que `SystemUser` nao e `AdminUser`
+ * ## Por que `SystemUser` não e `AdminUser`
  *
- * Sao duas vistas do mesmo registro, e diferentes de proposito. `AdminUser`
- * e **quem esta logado**: tem `credentialVersion`, que so interessa a
- * sessao. `SystemUser` e **um usuario na lista**: tem `createdAt` e
- * `updatedAt`, que so interessam a quem administra. Juntar as duas criaria
+ * São duas vistas do mesmo registro, e diferentes de propósito. `AdminUser`
+ * e **quem esta logado**: tem `credentialVersion`, que só interessa a
+ * sessão. `SystemUser` e **um usuário na lista**: tem `createdAt` e
+ * `updatedAt`, que só interessam a quem administra. Juntar as duas criaria
  * um tipo com metade dos campos sempre irrelevante.
  */
 export interface SystemUser {
@@ -22,7 +22,7 @@ export interface SystemUser {
   email: string;
   role: UserRole;
   isActive: boolean;
-  /** Senha temporaria pendente: a pessoa ainda nao entrou de verdade. */
+  /** Senha temporária pendente: a pessoa ainda não entrou de verdade. */
   mustChangePassword: boolean;
   /** `null` em quem nunca entrou. */
   lastLoginAt: string | null;
@@ -38,20 +38,20 @@ export interface CreateUserInput {
    * A senha do primeiro acesso.
    *
    * Vai no corpo porque e a rota que a pede: `POST /users` recebe a senha,
-   * nao a gera. Quem gera e o painel — ver `temporary-password.ts` —, e por
-   * isso ela existe em texto de um lado so, por uma chamada.
+   * não a gera. Quem gera e o painel — ver `temporary-password.ts` —, e por
+   * isso ela existe em texto de um lado só, por uma chamada.
    */
   temporaryPassword: string;
 }
 
-/** Edicao de cadastro. Status e senha tem rota propria: sao acoes. */
+/** Edição de cadastro. Status e senha tem rota própria: são ações. */
 export interface UpdateUserInput {
   name?: string;
   email?: string;
   role?: UserRole;
 }
 
-/** A resposta do reset: a senha em texto, uma vez so. */
+/** A resposta do reset: a senha em texto, uma vez só. */
 export interface PasswordResetResult {
   user: SystemUser;
   temporaryPassword: string;
@@ -60,12 +60,12 @@ export interface PasswordResetResult {
 /* ---- Auditoria ---------------------------------------------------------- */
 
 /**
- * O vocabulario da trilha, igual ao do backend.
+ * O vocabulário da trilha, igual ao do backend.
  *
  * O prefixo antes do ponto e o assunto; o que vem depois e o verbo no
- * passado. A lista e fechada porque o filtro por acao e um `<select>`: uma
- * acao nova no servidor aparece na lista mesmo sem entrar aqui — ver
- * `describeAction` —, so nao ganha filtro proprio ate alguem adiciona-la.
+ * passado. A lista e fechada porque o filtro por ação e um `<select>`: uma
+ * ação nova no servidor aparece na lista mesmo sem entrar aqui — ver
+ * `describeAction` —, só não ganha filtro próprio até alguém adiciona-lá.
  */
 export const AUDIT_ACTIONS = {
   LOGIN_SUCCEEDED: 'login.succeeded',
@@ -100,20 +100,20 @@ export interface FieldChange {
 }
 
 /**
- * Uma acao registrada.
+ * Uma ação registrada.
  *
- * `changes` e `details` sao `Mixed` no banco e chegam com a forma que o
- * servico que os escreveu lhes deu — um diff de configuracoes nao se parece
- * com a troca de status de um pedido. Quem os traduz em linhas legiveis e
- * `audit-diff.ts`, e e la que a variacao esta tratada.
+ * `changes` e `details` são `Mixed` no banco e chegam com a forma que o
+ * serviço que os escreveu lhes deu — um diff de configurações não se parece
+ * com a troca de status de um pedido. Quem os traduz em linhas legíveis e
+ * `audit-diff.ts`, e e lá que a variação esta tratada.
  */
 export interface AuditEntry {
   id: string;
   /**
-   * A acao, como o servidor a gravou.
+   * A ação, como o servidor a gravou.
    *
-   * `string` e nao `AuditAction`: a trilha guarda dois anos, e uma acao
-   * criada depois desta versao do painel tem de aparecer na lista em vez de
+   * `string` e não `AuditAction`: a trilha guarda dois anos, e uma ação
+   * criada depois desta versão do painel tem de aparecer na lista em vez de
    * quebrar a tipagem. `describeAction` traduz o que conhece e mostra o
    * identificador cru para o resto.
    */
@@ -131,7 +131,7 @@ export interface AuditEntry {
 }
 
 export interface AuditListParams {
-  /** Id do usuario que agiu. */
+  /** Id do usuário que agiu. */
   actorId?: string;
   action?: string;
   /** Recorte por data, em ISO. `from` inclusivo, `to` exclusivo. */
@@ -142,7 +142,7 @@ export interface AuditListParams {
   [key: string]: string | number | boolean | undefined;
 }
 
-/* ---- Saude -------------------------------------------------------------- */
+/* ---- Saúde -------------------------------------------------------------- */
 
 export type DatabaseStatus =
   'connected' | 'connecting' | 'disconnecting' | 'disconnected' | 'uninitialized';
@@ -155,13 +155,13 @@ export interface HealthStatus {
   database: { status: DatabaseStatus; readyState: number };
 }
 
-/** Quantos documentos ha em uma colecao. */
+/** Quantos documentos há em uma coleção. */
 export interface CollectionCount {
   name: string;
   count: number;
 }
 
-/** O que o seed de demonstracao criou. */
+/** O que o seed de demonstração criou. */
 export interface SeedResult {
   collections: CollectionCount[];
 }

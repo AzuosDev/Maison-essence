@@ -15,7 +15,7 @@ export interface CloudinaryCredentials {
   apiSecret: string;
 }
 
-/** O que interessa de um arquivo ja guardado na conta. */
+/** O que interessa de um arquivo já guardado na conta. */
 export interface CloudinaryAsset {
   publicId: string;
   format: string;
@@ -28,8 +28,8 @@ export interface CloudinaryAsset {
 /**
  * Teto de espera das chamadas ao Cloudinary.
  *
- * A funcao serverless da Vercel tem tempo contado, e uma chamada pendurada
- * consome o orcamento inteiro e ainda devolve o erro generico da plataforma.
+ * A função serverless da Vercel tem tempo contado, e uma chamada pendurada
+ * consome o orçamento inteiro e ainda devolve o erro genérico da plataforma.
  * Melhor desistir cedo com uma mensagem que a dona entende.
  */
 const REQUEST_TIMEOUT_MS = 8000;
@@ -37,12 +37,12 @@ const REQUEST_TIMEOUT_MS = 8000;
 /**
  * Conversa com a API do Cloudinary.
  *
- * Separado do `UploadsService` de proposito: aqui fica o que depende de rede e
- * de credencial, e la fica a regra da loja. E a fronteira que os testes
- * trocam por um dublê para exercitar a regra sem sair da maquina.
+ * Separado do `UploadsService` de propósito: aqui fica o que depende de rede e
+ * de credencial, e lá fica a regra da loja. E a fronteira que os testes
+ * trocam por um dublê para exercitar a regra sem sair da máquina.
  *
- * Sem SDK: as duas chamadas usadas sao `POST /image/destroy` e um `GET` de
- * consulta, ambas HTTP simples. Uma dependencia a menos no pacote e menos
+ * Sem SDK: as duas chamadas usadas são `POST /image/destroy` e um `GET` de
+ * consulta, ambas HTTP simples. Uma dependência a menos no pacote e menos
  * tempo de cold start.
  */
 @Injectable()
@@ -62,9 +62,9 @@ export class CloudinaryService {
   /**
    * As credenciais, ou 503.
    *
-   * As tres variaveis sao opcionais no schema do ambiente porque a API precisa
+   * As três variáveis são opcionais no schema do ambiente porque a API precisa
    * subir sem elas — o backend vai ao ar antes da conta de imagens existir, e
-   * nenhuma outra rota depende disso. Quem cobra a configuracao e a rota que
+   * nenhuma outra rota depende disso. Quem cobra a configuração e a rota que
    * de fato precisa, no momento em que e chamada.
    */
   credentials(): CloudinaryCredentials {
@@ -86,9 +86,9 @@ export class CloudinaryService {
   /**
    * Consulta um arquivo na conta.
    *
-   * `null` quando nao existe. E assim que o `confirm` descobre que o
-   * `publicId` recebido e real: metadado vindo do navegador e afirmacao do
-   * cliente, nao fato.
+   * `null` quando não existe. E assim que o `confirm` descobre que o
+   * `publicId` recebido e real: metadado vindo do navegador e afirmação do
+   * cliente, não fato.
    */
   async findImage(publicId: string): Promise<CloudinaryAsset | null> {
     const { cloudName, apiKey, apiSecret } = this.credentials();
@@ -110,10 +110,10 @@ export class CloudinaryService {
   }
 
   /**
-   * Apaga o arquivo. `false` quando ele ja nao estava la.
+   * Apaga o arquivo. `false` quando ele já não estava lá.
    *
    * `invalidate` limpa as copias no CDN: sem isso, a foto trocada continuaria
-   * aparecendo nas regioes que ja a tinham em cache.
+   * aparecendo nas regiões que já a tinham em cache.
    */
   async destroy(publicId: string): Promise<boolean> {
     const { cloudName, apiKey } = this.credentials();

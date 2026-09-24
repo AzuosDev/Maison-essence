@@ -8,7 +8,7 @@ import { CustomerAuthGuard } from '../guards/customer-auth.guard.js';
  *
  * Faz as duas coisas que precisam andar juntas: tira a rota do caminho do
  * guard do painel e coloca o guard da loja no lugar. Separadas, uma delas
- * seria esquecida algum dia — e esquecer a primeira deixa a rota inalcancavel,
+ * seria esquecida algum dia — e esquecer a primeira deixa a rota inalcancável,
  * enquanto esquecer a segunda a deixa aberta.
  */
 export const CustomerAuth = () =>

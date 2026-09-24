@@ -10,21 +10,21 @@ import styles from './cart-page.module.css';
 /**
  * `/sacola`: a sacola inteira.
  *
- * A gaveta responde "entrou mesmo?"; esta pagina responde "e agora?". E onde
- * se confere o que vai junto, se ajusta a quantidade com calma e se le o que
- * mudou desde a ultima visita — e onde cabe a lista de dez itens que nao
+ * A gaveta responde "entrou mesmo?"; esta página responde "e agora?". E onde
+ * se confere o que vai junto, se ajusta a quantidade com calma e se lê o que
+ * mudou desde a última visita — e onde cabe a lista de dez itens que não
  * caberia numa gaveta de 26rem.
  *
- * ## Tres blocos
+ * ## Três blocos
  *
  * Lista a esquerda, resumo a direita, e no celular um embaixo do outro, nesta
  * ordem: o cliente confere o que esta levando antes de olhar o total, que e a
- * ordem em que ele faria isso com a sacola na mao.
+ * ordem em que ele faria isso com a sacola na mão.
  *
- * ## Fora do indice
+ * ## Fora do índice
  *
- * A sacola e de uma pessoa so e nao tem nada a dizer a quem chega pelo
- * Google. O `robots` com `noindex` evita que o endereco entre no indice —
+ * A sacola e de uma pessoa só e não tem nada a dizer a quem chega pelo
+ * Google. O `robots` com `noindex` evita que o endereço entre no índice —
  * mesmo vazio, que e como o rastreador sempre a encontraria.
  */
 export default function CartPage() {

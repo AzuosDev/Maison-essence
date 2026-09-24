@@ -10,7 +10,7 @@ const ICONS: Record<ThemeMode, typeof SunIcon> = {
   dark: MoonIcon,
 };
 
-/** O proximo da roda: sistema, claro, escuro e de volta ao sistema. */
+/** O próximo da roda: sistema, claro, escuro e de volta ao sistema. */
 function nextMode(current: ThemeMode): ThemeMode {
   const position = THEME_MODES.indexOf(current);
 
@@ -18,29 +18,29 @@ function nextMode(current: ThemeMode): ThemeMode {
 }
 
 /**
- * O tema em um alvo so: o cabecalho da loja e o pe da coluna do painel.
+ * O tema em um alvo só: o cabeçalho da loja e o pé da coluna do painel.
  *
- * ## Por que aqui ele gira, e no rodape sao tres botoes
+ * ## Por que aqui ele gira, e no rodapé são três botões
  *
- * Sao dois momentos diferentes. O rodape da loja tem largura para as tres
- * opcoes a vista, e e la que alguem **descobre** que ha uma escolha. Nos dois
- * lugares deste botao nao cabem tres rotulos, e nem deveriam: no cabecalho o
- * espaco e de um alvo de 44px ao lado da sacola, e na coluna do painel a
- * pilula de tres segmentos passava dos 15rem da coluna e punha uma barra de
- * rolagem horizontal debaixo do menu. Quem clica nos dois ja sabe o que quer
+ * São dois momentos diferentes. O rodapé da loja tem largura para as três
+ * opções a vista, e e lá que alguém **descobre** que há uma escolha. Nos dois
+ * lugares deste botão não cabem três rótulos, e nem deveriam: no cabeçalho o
+ * espaço e de um alvo de 44px ao lado da sacola, e na coluna do painel a
+ * pílula de três segmentos passava dos 15rem da coluna e punha uma barra de
+ * rolagem horizontal debaixo do menu. Quem clica nos dois já sabe o que quer
  * e quer um toque — no painel, ainda por cima, e a mesma pessoa todo dia.
  *
- * A objecao conhecida a um botao que gira e nao dizer para onde vai. Aqui
- * ela esta respondida de duas formas: o `title` e o nome acessivel dizem o
- * estado atual **e** o proximo — "Tema: sistema. Trocar para claro" —, e a
- * roda tem so tres paradas, entao o pior caso para voltar sao dois toques.
+ * A objeção conhecida a um botão que gira e não dizer para onde vai. Aqui
+ * ela esta respondida de duas formas: o `title` e o nome acessível dizem o
+ * estado atual **e** o próximo — "Tema: sistema. Trocar para claro" —, e a
+ * roda tem só três paradas, então o pior caso para voltar são dois toques.
  *
- * ## O que o icone mostra
+ * ## O que o ícone mostra
  *
- * O **modo escolhido**, e nao o tema que esta na tela. Com `system` a
- * escolher, o icone e a tela do aparelho — e nao o sol, mesmo que o sol seja
- * o que se ve. Mostrar o resultado esconderia justamente a informacao que o
- * botao existe para dar: se a loja esta acompanhando o aparelho ou nao.
+ * O **modo escolhido**, e não o tema que esta na tela. Com `system` a
+ * escolher, o ícone e a tela do aparelho — e não o sol, mesmo que o sol seja
+ * o que se vê. Mostrar o resultado esconderia justamente a informação que o
+ * botão existe para dar: se a loja esta acompanhando o aparelho ou não.
  */
 export function ThemeIconButton({ className }: { className?: string | undefined }) {
   const { mode, setMode } = useTheme();

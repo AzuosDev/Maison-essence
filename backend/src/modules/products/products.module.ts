@@ -18,13 +18,13 @@ import { PublicProductsController } from './public-products.controller.js';
 /**
  * Produtos e variantes, no painel e na vitrine.
  *
- * Registra `Order` para duas perguntas: esta variante ja foi vendida? — a que
- * decide entre apagar a variante que saiu da lista e apenas aposenta-la, por
+ * Registra `Order` para duas perguntas: esta variante já foi vendida? — a que
+ * decide entre apagar a variante que saiu da lista e apenas aposenta-lá, por
  * causa do estoque devolvido no cancelamento — e quanto cada produto vendeu,
  * que e a prateleira de mais vendidos.
  *
  * `Category` entra para resolver o filtro por slug da vitrine, e
- * `QuantityDiscount` para o card anunciar o desconto progressivo. O modulo de
+ * `QuantityDiscount` para o card anunciar o desconto progressivo. O módulo de
  * categorias registra `Product` pelo mesmo tipo de motivo; `forFeature`
  * repetido e idempotente.
  */

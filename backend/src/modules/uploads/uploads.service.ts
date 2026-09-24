@@ -38,27 +38,27 @@ export class UploadsService {
   /**
    * Autoriza um envio, sem tocar no arquivo.
    *
-   * O arquivo vai do navegador direto para o Cloudinary: a funcao serverless
-   * da Vercel tem teto de corpo de requisicao e de tempo, e uma foto de
+   * O arquivo vai do navegador direto para o Cloudinary: a função serverless
+   * da Vercel tem teto de corpo de requisição e de tempo, e uma foto de
    * celular atravessando o backend gastaria os dois a toa.
    *
    * O que a assinatura prende:
    *
    * - `public_id` completo, montado aqui, com a pasta no caminho. E o que
-   *   torna a pasta inegociavel: o navegador nao consegue desviar o arquivo
+   *   torna a pasta inegociável: o navegador não consegue desviar o arquivo
    *   para fora dela sem quebrar a assinatura;
-   * - `allowed_formats`, que faz o Cloudinary recusar o que nao for imagem
-   *   dos tres tipos;
+   * - `allowed_formats`, que faz o Cloudinary recusar o que não for imagem
+   *   dos três tipos;
    * - `transformation`, aplicada na entrada, que derruba o maior lado para o
    *   teto antes de guardar.
    *
-   * Nao ha como prender o tamanho: `max_file_size` nao e parametro do upload
-   * assinado, so de upload preset. O teto de 5 MB e conferido pelo painel
+   * Não há como prender o tamanho: `max_file_size` não e parâmetro do upload
+   * assinado, só de upload preset. O teto de 5 MB e conferido pelo painel
    * antes de enviar e pela API no `confirm`, que e o que de fato manda.
    */
   signature(dto: CreateUploadSignatureDto): UploadSignature {
     const { cloudName, apiKey } = this.cloudinary.credentials();
-    // Segundos, nao milissegundos: o Cloudinary le o timestamp em unix time e
+    // Segundos, não milissegundos: o Cloudinary lê o timestamp em unix time e
     // recusa assinatura com mais de uma hora — dai a validade do enunciado.
     const timestamp = Math.floor(Date.now() / 1000);
     const publicId = buildPublicId(dto.folder, dto.filename);
@@ -85,17 +85,17 @@ export class UploadsService {
   }
 
   /**
-   * Confere a foto recem-enviada e devolve o identificador que pode ser
+   * Confere a foto recém-enviada e devolve o identificador que pode ser
    * gravado em um produto.
    *
    * Duas perguntas, nesta ordem: o `publicId` e de uma pasta da loja, e o
-   * arquivo existe mesmo na conta. A primeira barra a injecao — sem ela, o
+   * arquivo existe mesmo na conta. A primeira barra a injeção — sem ela, o
    * painel (ou quem tomasse o token dele) gravaria qualquer string como foto,
    * inclusive o `publicId` da conta de um terceiro. A segunda barra o erro
    * honesto, que acabaria em card com imagem quebrada.
    *
-   * Os metadados que o painel manda nao decidem nada: o que vale e o que a
-   * conta responde. Divergencia vira aviso no log, porque sinaliza painel
+   * Os metadados que o painel manda não decidem nada: o que vale e o que a
+   * conta responde. Divergência vira aviso no log, porque sinaliza painel
    * desatualizado.
    */
   async confirm(dto: ConfirmUploadDto): Promise<UploadedImage> {
@@ -131,11 +131,11 @@ export class UploadsService {
   }
 
   /**
-   * Apaga a foto da conta, quando ninguem mais a usa.
+   * Apaga a foto da conta, quando ninguém mais a usa.
    *
-   * A conferencia vem antes porque remover imagem em uso nao quebra so a tela
+   * A conferência vem antes porque remover imagem em uso não quebra só a tela
    * onde a dona estava: quebra o card na vitrine, o menu e o banner da home,
-   * em silencio, e ninguem liga uma coisa a outra depois. Recusar com a
+   * em silêncio, e ninguém liga uma coisa a outra depois. Recusar com a
    * contagem diz onde trocar a foto primeiro.
    */
   async remove(publicId: string): Promise<void> {
@@ -153,7 +153,7 @@ export class UploadsService {
       });
     }
 
-    // `false` significa que o arquivo ja nao estava la, o que e o estado
+    // `false` significa que o arquivo já não estava lá, o que e o estado
     // desejado: remover duas vezes responde 204 nas duas.
     await this.cloudinary.destroy(publicId);
   }
@@ -178,8 +178,8 @@ export class UploadsService {
   /**
    * Formato e tamanho, conferidos na fonte.
    *
-   * O arquivo que reprova e apagado: ele ja esta na conta, nunca sera
-   * vinculado a nada e so ocuparia espaco — e ninguem voltaria para limpa-lo.
+   * O arquivo que reprova e apagado: ele já esta na conta, nunca será
+   * vinculado a nada e só ocuparia espaço — e ninguém voltaria para limpa-lo.
    */
   private async assertAllowed(asset: CloudinaryAsset): Promise<void> {
     const problem = problemWith(asset);

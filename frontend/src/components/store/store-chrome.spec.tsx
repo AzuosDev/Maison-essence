@@ -10,10 +10,10 @@ import headerStyles from './store-header.module.css';
 /**
  * A moldura da loja contra a API.
  *
- * O `fetch` e trocado por um duble que responde as tres rotas que o layout
- * consome. E o que permite verificar o que so se ve com dado de verdade: que
+ * O `fetch` e trocado por um duble que responde as três rotas que o layout
+ * consome. E o que permite verificar o que só se vê com dado de verdade: que
  * o menu mostra as categorias cadastradas, que a barra de avisos mostra o
- * texto do painel e que o botao do WhatsApp aponta para o numero
+ * texto do painel e que o botão do WhatsApp aponta para o número
  * configurado — em vez de conferir isso a olho depois de cada mudanca.
  */
 
@@ -57,7 +57,7 @@ const CATEGORIES = [
   },
   {
     id: '2',
-    name: 'Velas aromaticas',
+    name: 'Velas aromáticas',
     slug: 'velas-aromaticas',
     image: '',
     productCount: 6,
@@ -92,8 +92,8 @@ beforeEach(() => {
     }),
   );
 
-  // O observador do rodape nao existe no jsdom. O botao do WhatsApp so o usa
-  // para decidir se sobe, e nao para aparecer.
+  // O observador do rodapé não existe no jsdom. O botão do WhatsApp só o usa
+  // para decidir se sobe, e não para aparecer.
   vi.stubGlobal(
     'IntersectionObserver',
     class {
@@ -110,12 +110,12 @@ afterEach(() => {
 });
 
 /**
- * A moldura monta num roteador de dados, e nao num `<MemoryRouter>`.
+ * A moldura monta num roteador de dados, e não num `<MemoryRouter>`.
  *
  * O layout da loja traz o `<ScrollRestoration>`, que e um componente das
  * APIs de dados do React Router e exige um roteador criado por
- * `createMemoryRouter` ou `createBrowserRouter` — que e o que a aplicacao de
- * verdade usa. Com o roteador declarativo antigo, ele lanca na montagem.
+ * `createMemoryRouter` ou `createBrowserRouter` — que e o que a aplicação de
+ * verdade usa. Com o roteador declarativo antigo, ele lança na montagem.
  */
 function abrirLoja() {
   const client = new QueryClient({
@@ -142,11 +142,11 @@ function abrirLoja() {
 /**
  * Monta a moldura na largura do desktop.
  *
- * O jsdom nao implementa `matchMedia`, e sem ele o `useMediaQuery` responde
- * `false` — o caminho do celular. La o rodape e um acordeao: as quatro
- * colunas viram botoes fechados, e um deles se chama "Categorias", que e
- * tambem o nome do botao do menu no cabecalho. Os casos que falam do painel
- * do cabecalho e das colunas do rodape pedem, os dois, a forma do desktop.
+ * O jsdom não implementa `matchMedia`, e sem ele o `useMediaQuery` responde
+ * `false` — o caminho do celular. La o rodapé e um acordeão: as quatro
+ * colunas viram botões fechados, e um deles se chama "Categorias", que e
+ * também o nome do botão do menu no cabeçalho. Os casos que falam do painel
+ * do cabeçalho e das colunas do rodapé pedem, os dois, a forma do desktop.
  */
 function noDesktop(): void {
   vi.stubGlobal(
@@ -162,7 +162,7 @@ function noDesktop(): void {
 test('a barra de avisos mostra o texto cadastrado no painel', async () => {
   abrirLoja();
 
-  // Duas copias no markup: a segunda e `aria-hidden` e existe so para o
+  // Duas copias no markup: a segunda e `aria-hidden` e existe só para o
   // texto reentrar pela direita sem intervalo.
   const avisos = await screen.findAllByText(/Frete fixo para o Cariri/);
 
@@ -183,13 +183,13 @@ test('o menu de categorias reflete o que esta cadastrado', async () => {
 
   expect(botao.getAttribute('aria-expanded')).toBe('true');
 
-  // Dentro do cabecalho: os mesmos nomes aparecem no rodape.
+  // Dentro do cabeçalho: os mesmos nomes aparecem no rodapé.
   const cabecalho = screen.getByRole('banner');
 
   // As duas categorias da API, com a subcategoria da primeira.
   expect(await within(cabecalho).findByRole('link', { name: /Masculino/ })).toBeDefined();
   expect(within(cabecalho).getByRole('link', { name: 'Amadeirados' })).toBeDefined();
-  expect(within(cabecalho).getByRole('link', { name: /Velas aromaticas/ })).toBeDefined();
+  expect(within(cabecalho).getByRole('link', { name: /Velas aromáticas/ })).toBeDefined();
 });
 
 test('o Escape fecha o painel de categorias', async () => {
@@ -215,7 +215,7 @@ test('o botão do WhatsApp abre a conversa com o número configurado', async () 
   const href = botao.getAttribute('href') ?? '';
 
   expect(href.startsWith('https://wa.me/5588999998888')).toBe(true);
-  // A mensagem de abertura ja vai preenchida.
+  // A mensagem de abertura já vai preenchida.
   expect(href).toContain('?text=');
   expect(decodeURIComponent(href)).toContain('Vim pelo site');
 });
@@ -249,23 +249,23 @@ test('o rodapé monta as colunas com o que a API devolveu', async () => {
 
   const rodape = await screen.findByRole('contentinfo');
 
-  // `findBy`, e nao `getBy`: o rodape aparece antes de as duas consultas
+  // `findBy`, e não `getBy`: o rodapé aparece antes de as duas consultas
   // responderem, e e justamente isso que ele deve fazer — a moldura desenha
   // com o que tem, e as colunas se preenchem quando a resposta chega.
   expect(await within(rodape).findByRole('link', { name: 'Quem somos' })).toBeDefined();
   expect(await within(rodape).findByRole('link', { name: /Masculino/ })).toBeDefined();
   expect(within(rodape).getByText('contato@maisonessence.test')).toBeDefined();
   expect(within(rodape).getByText('Seg a sex, 9h as 18h')).toBeDefined();
-  // O numero aparece formatado para leitura, sem o codigo do pais.
+  // O número aparece formatado para leitura, sem o código do pais.
   expect(within(rodape).getByText('(88) 99999-8888')).toBeDefined();
 });
 
 /**
- * No celular o rodape e um indice, nao um segundo documento.
+ * No celular o rodapé e um índice, não um segundo documento.
  *
  * Quatro listas abertas somavam mais de 800px logo abaixo da vitrine. O caso
- * guarda as duas metades do contrato: fechada, a lista nao esta na arvore
- * acessivel — e `hidden`, e nao apenas escondida por CSS, que um leitor de
+ * guarda as duas metades do contrato: fechada, a lista não esta na árvore
+ * acessível — e `hidden`, e não apenas escondida por CSS, que um leitor de
  * tela anunciaria assim mesmo; aberta, esta.
  */
 test('no celular as colunas do rodapé começam fechadas e abrem no toque', async () => {

@@ -15,24 +15,24 @@ const logger = new Logger('MongooseConnection');
       useFactory: (config: ConfigService<Env, true>): MongooseModuleFactoryOptions => ({
         uri: config.get('MONGODB_URI', { infer: true }),
         dbName: config.get('MONGODB_DB_NAME', { infer: true }),
-        // Sem buffer a query falha na hora quando nao ha conexao, em vez de
-        // ficar pendurada ate a funcao serverless estourar o tempo limite.
+        // Sem buffer a query falha na hora quando não há conexão, em vez de
+        // ficar pendurada até a função serverless estourar o tempo limite.
         bufferCommands: false,
-        // Uma instancia serverless atende um request por vez; o pool existe
+        // Uma instância serverless atende um request por vez; o pool existe
         // para as queries paralelas de um mesmo request.
         maxPoolSize: 10,
-        // Zero: instancias ociosas nao seguram socket no Atlas, que tem limite
-        // de conexoes simultaneas por cluster.
+        // Zero: instâncias ociosas não seguram socket no Atlas, que tem limite
+        // de conexões simultaneas por cluster.
         minPoolSize: 0,
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
-        // Sincronizar indices custa uma ida ao banco por schema a cada boot.
-        // Em producao isso e trabalho do deploy, nao de cada cold start.
+        // Sincronizar índices custa uma ida ao banco por schema a cada boot.
+        // Em produção isso e trabalho do deploy, não de cada cold start.
         autoIndex: config.get('NODE_ENV', { infer: true }) === 'development',
-        // O MongooseModule sempre cria a propria Connection e nao aceita uma
+        // O MongooseModule sempre cria a própria Connection e não aceita uma
         // pronta. Com lazyConnection ele para de esperar por ela, e o
         // connectionFactory abaixo decide o que devolver: a do cache global
-        // se ja houver, senao esta mesma (ai sim aguardando o handshake).
+        // se já houver, senão esta mesma (aí sim aguardando o handshake).
         lazyConnection: true,
         connectionFactory: (connection: Connection): Promise<Connection> =>
           connectOnce(connection, logger),

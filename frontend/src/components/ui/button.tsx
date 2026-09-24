@@ -4,13 +4,13 @@ import { cx } from '@/lib/cx';
 import styles from './button.module.css';
 
 /**
- * O botao, nas quatro variantes do design system.
+ * O botão, nas quatro variantes do design system.
  *
- * `Button` e `ButtonLink` existem separados de proposito, e a distincao nao e
- * estetica: `<button>` executa uma acao, `<a>` leva a outro endereco. Quem
- * navega por teclado espera Enter num link e Espaco num botao; quem usa
- * leitor de tela ouve "link" ou "botao"; e so o link abre em nova aba com o
- * meio do mouse. Um `<div onClick>` com cara de botao perde as tres coisas.
+ * `Button` e `ButtonLink` existem separados de propósito, e a distinção não e
+ * estética: `<button>` executa uma ação, `<a>` leva a outro endereço. Quem
+ * navega por teclado espera Enter num link e Espaço num botão; quem usa
+ * leitor de tela ouve "link" ou "botão"; e só o link abre em nova aba com o
+ * meio do mouse. Um `<div onClick>` com cara de botão perde as três coisas.
  */
 
 export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -20,16 +20,16 @@ export type ButtonSize = 'default' | 'small';
 interface ButtonStyleProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  /** Ocupa a largura toda: o botao do formulario e o do passo do checkout. */
+  /** Ocupa a largura toda: o botão do formulário e o do passo do checkout. */
   block?: boolean;
 }
 
 export type ButtonProps = ButtonStyleProps &
   ComponentPropsWithoutRef<'button'> & {
     /**
-     * A acao esta em andamento.
+     * A ação esta em andamento.
      *
-     * Desabilita o botao junto, e nao so desenha o circulo: um envio de
+     * Desabilita o botão junto, e não só desenha o círculo: um envio de
      * pedido que aceita o segundo clique cria o segundo pedido.
      */
     loading?: boolean;
@@ -55,12 +55,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   return (
     <button
       ref={ref}
-      // `type="button"` por padrao: o padrao do HTML e `submit`, e um botao
-      // de "remover item" dentro de um formulario o enviaria sem querer.
+      // `type="button"` por padrão: o padrão do HTML e `submit`, e um botão
+      // de "remover item" dentro de um formulário o enviaria sem querer.
       type={type}
       disabled={disabled ?? loading}
-      // `aria-busy` e o que conta para o leitor de tela o que o circulo
-      // girando conta para quem ve.
+      // `aria-busy` e o que conta para o leitor de tela o que o círculo
+      // girando conta para quem vê.
       aria-busy={loading || undefined}
       className={cx(buttonClass({ variant, size, block }), loading && styles.loading, className)}
       {...props}

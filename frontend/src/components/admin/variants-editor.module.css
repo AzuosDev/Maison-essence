@@ -1,14 +1,14 @@
 /*
  * As variantes, nas duas formas.
  *
- * A tabela do desktop e uma planilha: colunas estreitas, campos sem rotulo
- * visivel (o cabecalho ja o diz), e o olho descendo pela coluna de preco
- * comparando as tres linhas — que e exatamente o que se faz ao cadastrar
+ * A tabela do desktop e uma planilha: colunas estreitas, campos sem rótulo
+ * visível (o cabeçalho já o diz), e o olho descendo pela coluna de preço
+ * comparando as três linhas — que e exatamente o que se faz ao cadastrar
  * 50, 100 e 200 ml.
  *
- * O bloco do celular e um formulario: rotulo em cima do campo, campos em
- * pares quando cabem, e o nome da variante virando titulo do bloco para que
- * a lista continue navegavel com quatro variantes.
+ * O bloco do celular e um formulário: rótulo em cima do campo, campos em
+ * pares quando cabem, e o nome da variante virando título do bloco para que
+ * a lista continue navegável com quatro variantes.
  */
 
 .editor {
@@ -75,10 +75,10 @@
 }
 
 /*
- * As colunas numericas sao estreitas de proposito.
+ * As colunas numericas são estreitas de propósito.
  *
- * `R$ 1.299,90` cabe em 8rem, e dar mais espaco a elas tiraria do nome da
- * variante, que e o campo que a dona le para saber em qual linha esta.
+ * `R$ 1.299,90` cabe em 8rem, e dar mais espaço a elas tiraria do nome da
+ * variante, que e o campo que a dona lê para saber em qual linha esta.
  */
 .priceCell {
   width: 9rem;
@@ -93,11 +93,11 @@
 }
 
 /*
- * Os dois interruptores empilhados na mesma celula.
+ * Os dois interruptores empilhados na mesma célula.
  *
- * Alinhados a esquerda e com o rotulo escrito: "A venda" e "Sem estoque" sao
+ * Alinhados a esquerda e com o rótulo escrito: "A venda" e "Sem estoque" são
  * perguntas diferentes, e sem as palavras dois interruptores iguais um sobre
- * o outro nao dizem qual e qual.
+ * o outro não dizem qual e qual.
  */
 .availability {
   display: grid;
@@ -161,7 +161,7 @@
  * Dois campos por linha quando cabem.
  *
  * `auto-fit` com piso de 8rem: em 360px eles ficam um por linha, e a partir
- * de ~19rem de espaco util entram lado a lado. Preco e "preco de" juntos
+ * de ~19rem de espaço útil entram lado a lado. Preço e "preço de" juntos
  * ajudam a comparar; separados, a pessoa rola entre um e outro.
  */
 .pair {
@@ -189,7 +189,7 @@
 .variantThumb {
   flex: none;
 
-  /* Alinha com o campo, e nao com o rotulo acima dele. */
+  /* Alinha com o campo, e não com o rótulo acima dele. */
   margin-bottom: 0.375rem;
 
   width: 2.25rem;
@@ -213,7 +213,7 @@
   align-items: center;
   justify-content: center;
 
-  /* 44px: o minimo que um dedo acerta sem ampliar a tela. */
+  /* 44px: o mínimo que um dedo acerta sem ampliar a tela. */
   width: 2.75rem;
   height: 2.75rem;
 
