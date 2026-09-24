@@ -3,14 +3,17 @@ import type { AdminOrderListParams, AdminProductListParams } from './admin.keys'
 import type {
   AdminCategory,
   AdminCategoryNode,
+  AdminDeliveryCity,
   AdminOrder,
   AdminOrderSummary,
   AdminPage,
   AdminProduct,
   CreateCategoryInput,
+  CreateDeliveryCityInput,
   CreateProductInput,
   OrderStatus,
   UpdateCategoryInput,
+  UpdateDeliveryCityInput,
   UpdateProductInput,
 } from './admin.types';
 
@@ -237,6 +240,70 @@ export function reorderCategories(
  */
 export function deleteCategory(id: string, signal?: AbortSignal): Promise<void> {
   return api.delete<void>(`/admin/categories/${encodeURIComponent(id)}`, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/* ---- Entrega ------------------------------------------------------------- */
+
+/**
+ * As cidades atendidas, todas de uma vez.
+ *
+ * Sem paginacao: uma loja atende dez ou vinte cidades, e a tela precisa da
+ * lista inteira para que a dona compare as taxas entre elas — que e a razao
+ * de a tela existir.
+ */
+export function listDeliveryCities(signal?: AbortSignal): Promise<AdminDeliveryCity[]> {
+  return api.get<AdminDeliveryCity[]>('/admin/delivery-cities', {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function createDeliveryCity(
+  input: CreateDeliveryCityInput,
+  signal?: AbortSignal,
+): Promise<AdminDeliveryCity> {
+  return api.post<AdminDeliveryCity>('/admin/delivery-cities', input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function updateDeliveryCity(
+  id: string,
+  input: UpdateDeliveryCityInput,
+  signal?: AbortSignal,
+): Promise<AdminDeliveryCity> {
+  return api.patch<AdminDeliveryCity>(`/admin/delivery-cities/${encodeURIComponent(id)}`, input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/** Regrava a ordem da lista. A do checkout e esta. */
+export function reorderDeliveryCities(
+  ids: readonly string[],
+  signal?: AbortSignal,
+): Promise<AdminDeliveryCity[]> {
+  return api.patch<AdminDeliveryCity[]>(
+    '/admin/delivery-cities/reorder',
+    { ids },
+    { scope: SESSION_SCOPES.ADMIN, ...(signal ? { signal } : {}) },
+  );
+}
+
+/**
+ * Exclui a cidade.
+ *
+ * Sem checagem, ao contrario da exclusao de categoria: o pedido guarda nome,
+ * estado, prazo e taxa em copia propria, e continua legivel depois que a
+ * cidade some. O que se perde e poder voltar a atender ali sem recadastrar —
+ * e por isso a tela oferece desativar.
+ */
+export function deleteDeliveryCity(id: string, signal?: AbortSignal): Promise<void> {
+  return api.delete<void>(`/admin/delivery-cities/${encodeURIComponent(id)}`, {
     scope: SESSION_SCOPES.ADMIN,
     ...(signal ? { signal } : {}),
   });

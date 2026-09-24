@@ -1,0 +1,226 @@
+/*
+ * A tabela de taxas.
+ *
+ * No desktop e uma planilha: campos abertos, colunas estreitas, a de taxa
+ * alinhada para que os cinco valores se comparem de cima a baixo — que e o
+ * gesto que a tela existe para servir.
+ *
+ * No celular cada cidade e um bloco de formulario, com os rotulos escritos.
+ * Seis campos numa linha nao cabem em 360px, e uma planilha com rolagem
+ * horizontal faz perder o campo enquanto se digita.
+ */
+
+.tableWrap {
+  overflow-x: auto;
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--space-8);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table thead th {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+
+  border-bottom: var(--border);
+  white-space: nowrap;
+}
+
+.table tbody tr + tr td {
+  border-top: var(--border);
+}
+
+/*
+ * Enquanto o servidor confirma a nova ordem.
+ *
+ * `pointer-events` impede um segundo arraste de entrar em cima do primeiro,
+ * que e como duas reordenacoes chegam fora de ordem do outro lado.
+ */
+.busy {
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--transition);
+}
+
+/* ---- As colunas ------------------------------------------------------------ */
+
+.gripCell {
+  width: 1px;
+  padding-right: 0;
+  padding-top: var(--space-16);
+}
+
+.grip {
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--muted);
+  cursor: grab;
+}
+
+.nameCell {
+  min-width: 11rem;
+}
+
+.stateCell {
+  width: 5.5rem;
+}
+
+/*
+ * Taxa, prazo e frete gratis em larguras fixas.
+ *
+ * Fixas para que as colunas se alinhem linha a linha: a comparacao entre
+ * cinco taxas so funciona se elas comecarem no mesmo x.
+ */
+.feeCell {
+  width: 9rem;
+}
+
+.daysCell {
+  width: 9rem;
+}
+
+.freeCell {
+  width: 11rem;
+}
+
+.actionsCell {
+  width: 1px;
+  padding-left: 0;
+}
+
+/* A sigla do estado sempre em caixa alta, inclusive enquanto se digita: o
+   servidor a grava assim, e ver "ce" virar "CE" depois de salvar confunde. */
+.upper {
+  text-transform: uppercase;
+}
+
+/*
+ * A frase que a cliente le, embaixo do numero.
+ *
+ * `Ate 2 dias uteis` e `segue a loja` nao sao rotulos do campo: sao a
+ * traducao do que o numero significa do outro lado. Por isso vem depois dele,
+ * e nao acima.
+ */
+.daysLabel,
+.freeLabel {
+  display: block;
+  padding-top: var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
+/* ---- Estados da linha -------------------------------------------------------- */
+
+.dragging {
+  opacity: 0.4;
+}
+
+/*
+ * Onde a linha vai cair: a regua de insercao no topo do alvo, como na arvore
+ * de categorias. O fundo dourado diz qual linha, a regua diz de que lado.
+ */
+.dropTarget td,
+.dropTarget.block {
+  background-color: var(--gold-wash);
+  box-shadow: inset 0 2px 0 var(--gold-deep);
+}
+
+/*
+ * Salvo agora.
+ *
+ * Um segundo de verde e depois o normal. E a unica confirmacao que existe —
+ * nao ha botao de salvar —, e sem ela gravar ao sair do campo fica
+ * indistinguivel de nao gravar.
+ *
+ * A transicao e so na volta: a cor entra na hora e se apaga devagar, que e a
+ * forma de um aviso que ja foi lido.
+ */
+.saved td,
+.saved.block {
+  background-color: var(--success-wash);
+  transition: background-color 1s var(--ease);
+}
+
+/* Fora do checkout: a linha inteira recua. O interruptor escreve o motivo. */
+.inactive .grip,
+.inactive .daysLabel,
+.inactive .freeLabel {
+  color: var(--muted);
+}
+
+.inactive td,
+.inactive.block {
+  opacity: 0.72;
+}
+
+/* ---- Os blocos do celular ------------------------------------------------------ */
+
+.blocks {
+  display: grid;
+  gap: var(--space-16);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.block {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.blockHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.blockTitle {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* UF e taxa lado a lado: sao os dois campos curtos, e juntos eles cabem
+   numa linha ate em 360px. */
+.pair {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr);
+  gap: var(--space-12);
+}
+
+.blockFoot {
+  padding-top: var(--space-4);
+  border-top: var(--border);
+}

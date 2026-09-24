@@ -415,3 +415,61 @@ export interface CategoryBlockedDetails {
   productCount: number;
   canDeactivate: boolean;
 }
+
+/* ---- Entrega ------------------------------------------------------------- */
+
+/**
+ * Uma cidade atendida, como o painel a ve.
+ *
+ * Nao ha CEP nem integracao com os Correios: a dona escolhe as cidades para
+ * onde leva e quanto cobra em cada uma. E o modelo que corresponde a como a
+ * entrega acontece de verdade — moto propria em Sobral, transportadora para
+ * Fortaleza.
+ */
+export interface AdminDeliveryCity {
+  id: string;
+  name: string;
+  /** Sigla de duas letras, gravada em maiuscula. */
+  state: string;
+  /** Zero e legitimo: e a cidade em que a loja nao cobra. */
+  feeCents: number;
+  /** Dias uteis. Zero e entrega no mesmo dia. */
+  estimatedDays: number;
+  /**
+   * Frete gratis nesta cidade a partir deste valor.
+   *
+   * `null` **nao** e "sem frete gratis": e "sem regra propria", e a cidade
+   * fica sob o minimo global da loja, que mora em Configuracoes. A distincao
+   * importa na hora de salvar — mandar `null` apaga a regra da cidade, e
+   * omitir o campo nao mexe nela.
+   */
+  minOrderForFreeCents: number | null;
+  isActive: boolean;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateDeliveryCityInput {
+  name: string;
+  state: string;
+  feeCents: number;
+  estimatedDays?: number;
+  minOrderForFreeCents?: number | null;
+  isActive?: boolean;
+  order?: number;
+}
+
+/** Edicao de cidade. Campo omitido fica como esta. */
+export type UpdateDeliveryCityInput = Partial<CreateDeliveryCityInput>;
+
+/** Os limites que o servidor impoe ao cadastro de cidade. */
+export const DELIVERY_LIMITS = {
+  name: 120,
+  /** `MAX_ESTIMATED_DAYS`: tres meses ja e prazo de encomenda. */
+  estimatedDays: 90,
+  /** `MAX_CENTS`. */
+  feeCents: 99_999_999,
+  /** `MAX_DELIVERY_CITY_ORDER`. */
+  order: 9999,
+} as const;

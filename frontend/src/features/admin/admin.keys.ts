@@ -53,6 +53,14 @@ export const adminKeys = {
    */
   categories: () => [...adminKeys.all, 'categories'] as const,
 
+  /**
+   * As cidades atendidas.
+   *
+   * Sem parametros: a rota devolve todas, ativas e desativadas, e quem
+   * recorta e a tela. A ordem que vem dela e a mesma do seletor do checkout.
+   */
+  deliveryCities: () => [...adminKeys.all, 'delivery-cities'] as const,
+
   /** Os numeros da abertura do painel. */
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,
 

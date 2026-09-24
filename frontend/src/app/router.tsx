@@ -256,7 +256,13 @@ const adminRoutes: RouteObject = {
         // As areas que o menu ja lista e cujas telas entram nos proximos
         // passos. Existem agora para que um item do menu nunca jogue a dona
         // para fora do painel, na tela de 404 da loja.
-        ...adminSoonRoutes(['pronta-entrega', 'entrega', 'pagamento', 'configuracoes']),
+        {
+          path: 'entrega',
+          lazy: page(() => import('@/pages/admin/admin-delivery-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
+        ...adminSoonRoutes(['pronta-entrega', 'pagamento', 'configuracoes']),
 
         // A area de sistema, do SUPER_ADMIN. Fica dentro da moldura do
         // painel — e nao num grupo proprio — porque quem chega aqui sem o

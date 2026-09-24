@@ -25,7 +25,7 @@ export type InputProps = FieldOwnProps &
     /** Numero em largura fixa: preco, quantidade, parcela. */
     numeric?: boolean;
     /** Classe do campo em si, quando a tela precisa ajustar a largura. */
-    inputClassName?: string;
+    inputClassName?: string | undefined;
   };
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(

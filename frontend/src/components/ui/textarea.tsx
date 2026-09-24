@@ -15,7 +15,7 @@ export type TextareaProps = FieldOwnProps &
   Omit<ComponentPropsWithoutRef<'textarea'>, 'className'> & {
     /** Mostra `120 / 500` embaixo. Exige `maxLength` e `value`. */
     showCount?: boolean;
-    textareaClassName?: string;
+    textareaClassName?: string | undefined;
   };
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(

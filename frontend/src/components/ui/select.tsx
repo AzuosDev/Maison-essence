@@ -32,7 +32,7 @@ export type SelectProps = FieldOwnProps &
      * escolhido.
      */
     placeholder?: string;
-    selectClassName?: string;
+    selectClassName?: string | undefined;
   };
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(

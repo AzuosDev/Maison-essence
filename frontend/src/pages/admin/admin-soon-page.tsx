@@ -25,7 +25,6 @@ export default function AdminSoonPage() {
 function areaLabel(pathname: string): string {
   const labels: Record<string, string> = {
     'pronta-entrega': 'Pronta entrega',
-    entrega: 'Entrega',
     pagamento: 'Pagamento',
     configuracoes: 'Configuracoes',
   };
