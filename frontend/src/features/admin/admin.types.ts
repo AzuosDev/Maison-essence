@@ -11,6 +11,8 @@
  * as duas coisas funcionam no texto ordenavel que o JSON ja traz.
  */
 
+import type { PixKeyType } from '@/features/payments';
+
 /* ---- Paginacao ---------------------------------------------------------- */
 
 export interface AdminPage<T> {
@@ -472,4 +474,61 @@ export const DELIVERY_LIMITS = {
   feeCents: 99_999_999,
   /** `MAX_DELIVERY_CITY_ORDER`. */
   order: 9999,
+} as const;
+
+/* ---- Pagamento ----------------------------------------------------------- */
+
+/**
+ * As regras de pagamento, como so o painel as ve.
+ *
+ * A diferenca para `PublicPaymentSettings` e uma linha: a chave PIX inteira.
+ * Ela nao sai na rota publica — e o endereco para onde vai o dinheiro da
+ * loja, e so faz sentido no fim do pedido, junto do valor e do titular. Aqui
+ * ela precisa aparecer, porque e aqui que se confere se esta certa.
+ *
+ * Nenhum pagamento e processado pelo sistema. Estes campos descrevem o que a
+ * loja aceita e alimentam a conta das parcelas; a cobranca acontece por fora.
+ */
+export interface AdminPaymentSettings {
+  acceptsPix: boolean;
+  /** Vazia e o estado em que a loja nasce — e o PIX nao pode ser oferecido. */
+  pixKey: string;
+  pixKeyType: PixKeyType;
+  /** Incide so sobre o subtotal de produtos, nunca sobre a entrega. */
+  pixDiscountPercent: number;
+  acceptsCard: boolean;
+  maxInstallments: number;
+  /** Ate aqui, divisao simples. Acima, tabela price. */
+  interestFreeUpTo: number;
+  /** O unico percentual fracionario do projeto: 1,99 e o valor da maquininha. */
+  monthlyInterestPercent: number;
+  /** Opcao cuja parcela cai abaixo disto nao e oferecida. */
+  minInstallmentCents: number;
+  updatedAt: string;
+}
+
+/**
+ * Edicao das regras. Campo omitido fica como esta.
+ *
+ * `pixKey` e `pixKeyType` viajam juntos quando qualquer um dos dois muda: o
+ * servidor confere o par, e trocar so o tipo deixaria gravada uma chave que o
+ * cliente nao consegue usar.
+ */
+export type UpdatePaymentSettingsInput = Partial<Omit<AdminPaymentSettings, 'updatedAt'>>;
+
+/** Os tetos que o servidor impoe as regras de pagamento. */
+export const PAYMENT_LIMITS = {
+  /** `MAX_INSTALLMENTS`: cartao nenhum aceita mais. */
+  installments: 24,
+  /** `MAX_MONTHLY_INTEREST_PERCENT`. */
+  monthlyInterestPercent: 20,
+  /**
+   * `MAX_PIX_DISCOUNT_PERCENT`. Metade do pedido ja e absurdo, e o teto existe
+   * para o zero a mais nao virar promocao: 50 no lugar de 5 e erro de dedo.
+   */
+  pixDiscountPercent: 50,
+  /** `MAX_PIX_KEY_LENGTH`. */
+  pixKeyLength: 140,
+  /** `MAX_CENTS`. */
+  minInstallmentCents: 99_999_999,
 } as const;

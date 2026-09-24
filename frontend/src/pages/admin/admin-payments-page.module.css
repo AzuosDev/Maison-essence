@@ -1,0 +1,274 @@
+/*
+ * Pagamento.
+ *
+ * O formulario de um lado e o checkout da cliente do outro. A leitura desta
+ * tela e de ida e volta — mexe no numero, olha a lista, mexe de novo —, e
+ * todo o layout existe para que esse movimento nao precise de rolagem.
+ *
+ * `flex` e nao `grid` na pagina de proposito: a barra de salvar e um item que
+ * gruda no rodape da viewport, e o bloco que contem um item grudento precisa
+ * ser o conteudo inteiro. Numa grade, o bloco de um item e a faixa da linha
+ * dele, e a barra so apareceria depois de rolar ate o fim.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-24);
+}
+
+.header {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+.subtitle {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/* ---- As duas colunas ------------------------------------------------------- */
+
+.layout {
+  display: grid;
+  gap: var(--space-24);
+  align-items: start;
+}
+
+.form {
+  display: grid;
+  gap: var(--space-16);
+  min-width: 0;
+}
+
+/*
+ * A previa entra depois do formulario no celular, e ao lado dele a partir de
+ * 64rem — a mesma largura em que a coluna do painel deixa de ser gaveta.
+ * Abaixo disso, duas colunas dariam 18rem para cada uma, e nenhuma das duas
+ * funciona nessa largura.
+ */
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr) 22rem;
+  }
+}
+
+/* ---- Os blocos do formulario ------------------------------------------------- */
+
+.card {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.cardHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.cardTitle {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/*
+ * A linha que explica o bloco.
+ *
+ * Fica escrita e nao num tooltip: "a chave nunca aparece na vitrine" e uma
+ * duvida que quem cadastra tem uma vez so, mas tem — e ela decide se a dona
+ * se sente segura de colar a chave ali.
+ */
+.cardHint {
+  margin: 0;
+  max-width: 62ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-16);
+
+  padding-top: var(--space-4);
+}
+
+/* Dois campos que se leem juntos: o maximo com o limite sem juros, os juros
+   com a parcela minima. Empilham sozinhos abaixo de 7rem por coluna. */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-16);
+}
+
+/* ---- Os avisos ---------------------------------------------------------------- */
+
+/*
+ * O que o servidor aceita e provavelmente nao era a intencao.
+ *
+ * Dourado e nao vermelho: nao ha erro nenhum, ha uma configuracao que some do
+ * outro lado sem avisar. O icone entra como segundo portador do sinal, para
+ * que a cor nao seja a unica coisa que o diferencia do resto do texto.
+ */
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--gold-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.warning svg {
+  flex: none;
+
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+
+  color: var(--gold-deep);
+}
+
+/* ---- A barra de salvar --------------------------------------------------------- */
+
+/*
+ * Aparece quando ha o que salvar, e gruda no rodape ate ser resolvida.
+ *
+ * A previa ao lado muda enquanto se digita, e e facil ler aquilo como "ja
+ * esta valendo". Esta barra e a correcao dessa leitura: ela diz, com todas as
+ * letras, que quem esta comprando agora continua vendo as regras antigas.
+ *
+ * A sombra sobe — o deslocamento e negativo — porque a barra flutua sobre o
+ * conteudo que esta **acima** dela.
+ */
+.bar {
+  position: sticky;
+  bottom: var(--space-16);
+  z-index: 1;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+
+  padding: var(--space-12) var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 -2px 4px rgb(14 14 14 / 0.04),
+    0 -12px 28px rgb(14 14 14 / 0.1);
+}
+
+.barText {
+  flex: 1 1 14rem;
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.barTitle {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.barActions {
+  display: flex;
+  gap: var(--space-8);
+}
+
+/* ---- O resto -------------------------------------------------------------------- */
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: 2.75rem;
+  padding-inline: var(--space-8);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.backLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.skeleton {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .card {
+    padding: var(--space-24);
+  }
+
+  .bar {
+    padding: var(--space-16) var(--space-24);
+  }
+}

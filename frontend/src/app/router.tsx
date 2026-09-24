@@ -253,16 +253,25 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // As areas que o menu ja lista e cujas telas entram nos proximos
-        // passos. Existem agora para que um item do menu nunca jogue a dona
-        // para fora do painel, na tela de 404 da loja.
+        // A tabela de taxas por cidade, e as regras de pagamento. As duas
+        // ficam fora do alcance do STAFF pelo proprio backend; as telas
+        // repetem o recorte para nao pedir o que sera recusado.
         {
           path: 'entrega',
           lazy: page(() => import('@/pages/admin/admin-delivery-page')),
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        ...adminSoonRoutes(['pronta-entrega', 'pagamento', 'configuracoes']),
+        {
+          path: 'pagamento',
+          lazy: page(() => import('@/pages/admin/admin-payments-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
+        // O que o menu ja lista e cuja tela entra nos proximos passos.
+        // Existe agora para que um item do menu nunca jogue a dona para fora
+        // do painel, na tela de 404 da loja.
+        ...adminSoonRoutes(['pronta-entrega', 'configuracoes']),
 
         // A area de sistema, do SUPER_ADMIN. Fica dentro da moldura do
         // painel — e nao num grupo proprio — porque quem chega aqui sem o

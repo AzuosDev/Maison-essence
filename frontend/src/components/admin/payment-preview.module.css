@@ -1,0 +1,211 @@
+/*
+ * A previa do pagamento.
+ *
+ * E a unica parte do painel que imita a loja: fundo creme, numeros grandes,
+ * a lista de parcelas escrita como o checkout a escreve. A semelhanca e o
+ * ponto — a dona esta olhando para o lado de la, e a previa precisa parecer
+ * o lado de la, e nao mais um cartao do painel.
+ *
+ * No desktop ela fica presa ao lado do formulario, porque a leitura e sempre
+ * de ida e volta: mexe no numero, olha a lista, mexe de novo. Rolar entre um
+ * e outro quebraria justamente esse movimento.
+ */
+
+.panel {
+  display: grid;
+  align-content: start;
+  gap: var(--space-16);
+
+  padding: var(--space-16);
+
+  background-color: var(--bg);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* ---- Os dois blocos ------------------------------------------------------- */
+
+.block {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-top: var(--space-16);
+  border-top: var(--border);
+}
+
+.blockTitle {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* A forma desligada, ou o valor que ainda nao e numero. */
+.off {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- O PIX ----------------------------------------------------------------- */
+
+.line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-12);
+
+  margin: 0;
+}
+
+.lineLabel {
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+/*
+ * O desconto, na cor de quem ganha.
+ *
+ * `--success` sobre o creme passa de 4.5:1 em 14px, e a frase diz o mesmo que
+ * a cor: a informacao nao depende dela.
+ */
+.saving {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--success);
+  text-wrap: pretty;
+}
+
+/* ---- As parcelas ------------------------------------------------------------ */
+
+/*
+ * O titulo do grupo.
+ *
+ * "Sem juros" e "Com juros" separam a lista em duas, e e a separacao que
+ * responde a pergunta da tela: onde o total comeca a subir. Com um rotulo por
+ * linha, a mesma informacao viraria vinte e quatro repeticoes.
+ */
+.groupTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding-top: var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.groupRate {
+  font-weight: var(--weight-regular);
+  color: var(--ink-soft);
+}
+
+.options {
+  display: grid;
+  gap: var(--space-4);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Uma opcao por linha: quantidade, valor da parcela e, quando ha juros, o
+ * total.
+ *
+ * `tabular-nums` e o que faz a coluna do meio se comparar de cima a baixo.
+ * Sem ele, `R$ 111,11` fica visivelmente mais estreito que `R$ 222,22` e a
+ * lista deixa de ser uma coluna.
+ */
+.option {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  padding-block: var(--space-4);
+
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.option + .option {
+  border-top: 1px solid color-mix(in srgb, var(--line) 60%, transparent);
+}
+
+.count {
+  color: var(--ink-soft);
+}
+
+.amount {
+  font-weight: var(--weight-medium);
+}
+
+/* O total financiado, a direita: e a coluna que se compara com o valor cheio. */
+.total {
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+/*
+ * A nota do corte.
+ *
+ * A parcela minima apaga opcoes sem dizer nada — a lista simplesmente acaba
+ * antes. Esta linha e a unica pista de que o numero do campo ao lado foi o
+ * que a encurtou.
+ */
+.note {
+  margin: 0;
+  padding-top: var(--space-4);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/*
+ * Presa ao lado do formulario a partir da largura em que os dois cabem.
+ *
+ * `max-height` com rolagem propria porque vinte e quatro parcelas passam da
+ * altura da tela: sem isso o fim da lista ficaria fora de alcance justamente
+ * onde a parcela minima corta.
+ */
+@media (min-width: 64rem) {
+  .panel {
+    position: sticky;
+    top: var(--space-24);
+
+    max-height: calc(100dvh - var(--space-48));
+    overflow-y: auto;
+  }
+}

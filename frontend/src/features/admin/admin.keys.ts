@@ -61,6 +61,15 @@ export const adminKeys = {
    */
   deliveryCities: () => [...adminKeys.all, 'delivery-cities'] as const,
 
+  /**
+   * As regras de pagamento.
+   *
+   * Documento unico, sem parametros. Fica debaixo de `['admin']` como o resto
+   * — e a unica chave do painel que carrega a chave PIX inteira, e sair do
+   * painel precisa limpa-la junto.
+   */
+  paymentSettings: () => [...adminKeys.all, 'payment-settings'] as const,
+
   /** Os numeros da abertura do painel. */
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,
 

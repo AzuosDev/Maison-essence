@@ -7,6 +7,7 @@ import type {
   AdminOrder,
   AdminOrderSummary,
   AdminPage,
+  AdminPaymentSettings,
   AdminProduct,
   CreateCategoryInput,
   CreateDeliveryCityInput,
@@ -14,6 +15,7 @@ import type {
   OrderStatus,
   UpdateCategoryInput,
   UpdateDeliveryCityInput,
+  UpdatePaymentSettingsInput,
   UpdateProductInput,
 } from './admin.types';
 
@@ -304,6 +306,40 @@ export function reorderDeliveryCities(
  */
 export function deleteDeliveryCity(id: string, signal?: AbortSignal): Promise<void> {
   return api.delete<void>(`/admin/delivery-cities/${encodeURIComponent(id)}`, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/* ---- Pagamento ----------------------------------------------------------- */
+
+/**
+ * As regras de pagamento, com a chave PIX inteira.
+ *
+ * `MANAGES_STORE` inclusive na leitura: o backend recusa o STAFF antes de
+ * responder, e a tela nao chega a pedir. O nome carrega o `admin` porque a
+ * loja tem a sua propria `fetchPaymentSettings`, que devolve outra coisa —
+ * as formas aceitas, sem a chave.
+ */
+export function fetchAdminPaymentSettings(signal?: AbortSignal): Promise<AdminPaymentSettings> {
+  return api.get<AdminPaymentSettings>('/admin/payment-settings', {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Grava as regras.
+ *
+ * Documento unico: nao ha `:id`. A resposta vem com tudo ja normalizado pelo
+ * servidor — a chave de telefone volta como `+5588...` — e e ela que entra no
+ * cache, e nao o que foi enviado.
+ */
+export function updatePaymentSettings(
+  input: UpdatePaymentSettingsInput,
+  signal?: AbortSignal,
+): Promise<AdminPaymentSettings> {
+  return api.patch<AdminPaymentSettings>('/admin/payment-settings', input, {
     scope: SESSION_SCOPES.ADMIN,
     ...(signal ? { signal } : {}),
   });

@@ -54,6 +54,7 @@ export { MissingRoute, type MissingRouteProps } from './missing-route';
 export { OneTimeSecret, type OneTimeSecretProps } from './one-time-secret';
 export { OrderItems, type OrderItemsProps } from './order-items';
 export { RowMenu, type RowMenuItem, type RowMenuProps } from './row-menu';
+export { PaymentPreview, type PaymentPreviewProps } from './payment-preview';
 export { OrdersTable, type OrdersTableProps } from './orders-table';
 export { ProductsTable, type ProductsTableProps } from './products-table';
 export { StatCard, type StatCardProps } from './stat-card';
