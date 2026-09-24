@@ -1,7 +1,9 @@
 import { useRef, useState, type DragEvent } from 'react';
 import { Button, Input, Switch } from '@/components/ui';
 import {
+  BANNER_ART,
   BANNER_STATUS_LABELS,
+  bannerArtMeasure,
   SETTINGS_LIMITS,
   bannerStatus,
   moveBanner,
@@ -39,6 +41,16 @@ import styles from './banner-editor.module.css';
  * quatro na prática: o desligado volta com um clique, o encerrado precisa de
  * datas novas, e o agendado e o caso que mais assusta — "salvei e não
  * apareceu". Cada linha diz o seu em palavras.
+ *
+ * ## A medida fica à vista, e não num aviso que some
+ *
+ * As duas artes têm tamanho certo — `BANNER_ART` explica de onde ele sai —, e
+ * quem prepara a arte precisa dele **antes** de abrir o editor de imagem, não
+ * depois de publicar e ver o corte. Por isso a medida está escrita embaixo de
+ * cada arte e no rodapé do carrossel, sempre, e não só quando falta arte ou
+ * quando o ponteiro passa por cima: quem envia pelo celular não tem ponteiro,
+ * e a linha que só aparece no vazio some justamente quando a pessoa vai
+ * trocar a imagem.
  *
  * ## O último dia conta inteiro
  *
@@ -206,6 +218,18 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
             : 'Comece pela arte de computador. Ela e obrigatória; a de celular entra depois.'}
         </p>
       </div>
+
+      {/*
+        As medidas ficam fora do bloco do botão de propósito: ali elas
+        disputariam a linha com o texto que muda conforme sobra espaço, e
+        sumiriam da tela justamente quando o carrossel enche. Aqui elas são
+        uma linha fixa do editor.
+      */}
+      <p className={styles.sizes}>
+        Medida da arte — computador {bannerArtMeasure(BANNER_ART.desktop)}, celular{' '}
+        {bannerArtMeasure(BANNER_ART.mobile)}. Outro formato entra do mesmo jeito, mas a home
+        corta pelo centro o que sobrar.
+      </p>
     </div>
   );
 }
@@ -281,15 +305,21 @@ function BannerRow({
 
       <div className={styles.body}>
         <div className={styles.arts}>
-          <img
-            src={imageUrl(banner.imageDesktop, 'card')}
-            alt={`Arte de computador de ${name}`}
-            width="320"
-            height="180"
-            loading="lazy"
-            decoding="async"
-            className={styles.art}
-          />
+          <div className={styles.slot}>
+            <img
+              src={imageUrl(banner.imageDesktop, 'card')}
+              alt={`Arte de computador de ${name}`}
+              width="320"
+              height="180"
+              loading="lazy"
+              decoding="async"
+              className={styles.art}
+            />
+
+            <p className={styles.measure}>
+              Computador · {bannerArtMeasure(BANNER_ART.desktop)}
+            </p>
+          </div>
 
           <input
             ref={mobileRef}
@@ -308,17 +338,21 @@ function BannerRow({
           />
 
           {banner.imageMobile === '' ? (
-            <button
-              type="button"
-              className={styles.mobileSlot}
-              disabled={busy}
-              onClick={() => {
-                mobileRef.current?.click();
-              }}
-            >
-              <ImageIcon />
-              Enviar arte de celular
-            </button>
+            <div className={styles.slot}>
+              <button
+                type="button"
+                className={styles.mobileSlot}
+                disabled={busy}
+                onClick={() => {
+                  mobileRef.current?.click();
+                }}
+              >
+                <ImageIcon />
+                Enviar arte de celular
+              </button>
+
+              <p className={styles.measure}>Celular · {bannerArtMeasure(BANNER_ART.mobile)}</p>
+            </div>
           ) : (
             <div className={styles.mobileArt}>
               <img
@@ -331,15 +365,19 @@ function BannerRow({
                 className={styles.portrait}
               />
 
-              <button
-                type="button"
-                className={styles.linkButton}
-                onClick={() => {
-                  onSet({ imageMobile: '' });
-                }}
-              >
-                Remover a arte de celular
-              </button>
+              <div className={styles.slot}>
+                <p className={styles.measure}>Celular · {bannerArtMeasure(BANNER_ART.mobile)}</p>
+
+                <button
+                  type="button"
+                  className={styles.linkButton}
+                  onClick={() => {
+                    onSet({ imageMobile: '' });
+                  }}
+                >
+                  Remover a arte de celular
+                </button>
+              </div>
             </div>
           )}
 

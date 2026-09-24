@@ -394,6 +394,28 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
   });
 });
 
+/**
+ * A medida não depende de estado nenhum.
+ *
+ * É o defeito que este caso previne: uma medida que só aparece quando falta
+ * arte, ou quando o ponteiro passa por cima, some justamente na hora de
+ * trocar uma imagem que já existe — e quem envia do celular nunca a vê.
+ */
+test('a medida das duas artes fica na tela, em cada banner e no rodapé', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  await screen.findByRole('textbox', { name: 'WhatsApp' });
+
+  // Uma legenda por arte, nos dois banners da loja de mentira.
+  expect(screen.getAllByText('Computador · 1920 × 562 px')).toHaveLength(2);
+  expect(screen.getAllByText('Celular · 1200 × 1500 px')).toHaveLength(2);
+
+  // E a linha do rodapé, que não depende de haver espaço no carrossel.
+  expect(screen.getByText(/Medida da arte — computador 1920 × 562 px/)).toBeDefined();
+});
+
 /* ---- As páginas --------------------------------------------------------------------- */
 
 test('escrever numa página manda só aquela página', async () => {

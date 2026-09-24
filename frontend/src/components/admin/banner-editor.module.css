@@ -128,6 +128,36 @@
 }
 
 /*
+ * Cada arte e a medida que ela pede, grudadas.
+ *
+ * O `gap` e o menor do sistema: a legenda pertence a imagem de cima, e com o
+ * espaco normal de 8px ela flutuaria entre as duas artes sem dizer de qual
+ * esta falando.
+ */
+.slot {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/*
+ * A medida da arte.
+ *
+ * Nao e dica nem aviso de erro: e a ficha tecnica do que vai ali, e fica na
+ * tela o tempo todo. Por isso `--muted` e o corpo 12, o mesmo par que o
+ * rodape do editor usa — informacao de apoio que se le quando se procura por
+ * ela, e nao um recado que disputa a atencao com o estado do banner.
+ */
+.measure {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
  * A arte de computador, no formato em que a home a mostra.
  *
  * `object-fit: cover` porque a proporção enviada nem sempre e a do banner, e
@@ -282,6 +312,22 @@
 
 .room {
   flex: 1 1 16rem;
+}
+
+/*
+ * As duas medidas, sempre na tela.
+ *
+ * Mesma familia do `.room`, um degrau abaixo na cor: aquela linha fala do
+ * que da para fazer agora ("o carrossel esta cheio"), esta fala do que a arte
+ * precisa ser, que nao muda nunca.
+ */
+.sizes {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
 }
 
 .uploadError {

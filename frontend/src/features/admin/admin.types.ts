@@ -694,3 +694,28 @@ export const SETTINGS_LIMITS = {
   /** `MAX_CENTS`. */
   freeShippingMinCents: 99_999_999,
 } as const;
+
+/**
+ * A medida que a home pede de cada arte do carrossel.
+ *
+ * Os dois números saem de `home-hero.module.css`, e não de um palpite:
+ *
+ * - **Computador.** A faixa larga do banner sem texto tem
+ *   `aspect-ratio: 1920 / 562.283` e para de crescer em `120rem`, que são os
+ *   mesmos 1920px. Nessa medida o arquivo entra inteiro, sem corte.
+ * - **Celular.** A caixa é `aspect-ratio: 4 / 5` e a `<img>` da home declara
+ *   1200 × 1500, que é essa proporção no tamanho em que ela é servida.
+ *
+ * Quem enviar outra proporção não quebra nada: a home usa `object-fit: cover`
+ * e corta pelo centro. A medida existe para que a dona não descubra o corte
+ * depois de publicar.
+ */
+export const BANNER_ART = {
+  desktop: { width: 1920, height: 562 },
+  mobile: { width: 1200, height: 1500 },
+} as const;
+
+/** A medida como se lê: `1920 × 562 px`, com o sinal de multiplicação. */
+export function bannerArtMeasure(art: { width: number; height: number }): string {
+  return `${String(art.width)} × ${String(art.height)} px`;
+}
