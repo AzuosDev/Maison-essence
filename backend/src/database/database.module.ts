@@ -25,6 +25,15 @@ const logger = new Logger('MongooseConnection');
         // de conexões simultaneas por cluster.
         minPoolSize: 0,
         serverSelectionTimeoutMS: 5000,
+        // Sem repetir. O padrão do MongooseModule e tentar dez vezes, com
+        // três segundos entre elas, e numa função serverless isso e o pior
+        // dos dois mundos: o cliente espera mais de um minuto e, no fim, o
+        // Nest derruba o processo — a plataforma responde a própria página de
+        // erro e o motivo fica só no log. Banco fora do ar com uma tentativa
+        // falha em cinco segundos e responde 503 dizendo o que houve; a
+        // invocação seguinte tenta de novo com o cache de conexão limpo (ver
+        // `connection-cache.ts`), que e o retry que este desenho já tinha.
+        retryAttempts: 0,
         socketTimeoutMS: 45000,
         // Sincronizar índices custa uma ida ao banco por schema a cada boot.
         // Em produção isso e trabalho do deploy, não de cada cold start.
