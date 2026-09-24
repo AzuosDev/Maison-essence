@@ -1,10 +1,13 @@
 /*
  * A barra de avisos.
  *
- * O texto atravessa a tela em loop. A animação move um bloco que contem o
- * texto duas vezes, deslocando-o em exatamente metade da própria largura:
- * quando a primeira copia sai pela esquerda, a segunda esta na posição em
- * que a primeira começou, e o ciclo reinicia sem emenda visível.
+ * O texto atravessa a tela em loop. A fita traz o aviso repetido duas vezes o
+ * bastante para cobrir a tela, e a animação a desloca em exatamente metade da
+ * própria largura: quando a primeira metade sai pela esquerda, a segunda esta
+ * na posição em que a primeira começou, e o ciclo reinicia sem emenda
+ * visível. Quantas copias são e quanto tempo dura a volta e conta do
+ * componente — ver `announcement-bar.tsx` —, porque as duas dependem da
+ * largura que o texto ocupa, e isso só o navegador sabe.
  *
  * `translate3d` e não `left`: a animação roda na GPU, sem recalcular layout
  * a cada quadro. Numa barra que nunca para, essa diferença e bateria.
@@ -30,6 +33,13 @@
   overflow: hidden;
 }
 
+/*
+ * Os 28s são só o primeiro quadro e o navegador sem JavaScript.
+ *
+ * A duração de verdade chega do componente, medida em pixels por segundo. O
+ * valor aqui e o que segura a fita até lá — e como a medida acontece antes da
+ * pintura, ninguém chega a ver esta volta.
+ */
 .track {
   display: flex;
   width: max-content;
@@ -87,8 +97,8 @@
     justify-content: center;
   }
 
-  /* Com a faixa parada, a segunda copia só repetiria o texto na tela. */
-  .copy:nth-child(2) {
+  /* Com a faixa parada, as copias seguintes só repetiriam o texto na tela. */
+  .copy:not(:first-child) {
     display: none;
   }
 
