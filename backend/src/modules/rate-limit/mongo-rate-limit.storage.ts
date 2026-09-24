@@ -1,17 +1,9 @@
-import type { ThrottlerStorage } from '@nestjs/throttler';
 import type { Model } from 'mongoose';
 import { RateLimitHit } from './schemas/rate-limit-hit.schema.js';
+import { RateLimitStorage } from './rate-limit.storage.js';
+import type { RateLimitRecord } from './rate-limit.storage.js';
 
 const DUPLICATE_KEY = 11000;
-
-/**
- * O que o throttler espera de volta.
- *
- * Derivado da própria interface porque o pacote não exporta o tipo do
- * registro no índice: escreve-lo a mão aqui seria uma copia que envelhece
- * sozinha na próxima versão.
- */
-type ThrottlerStorageRecord = Awaited<ReturnType<ThrottlerStorage['increment']>>;
 
 /** A janela aberta de uma chave, do jeito que as duas escritas devolvem. */
 interface OpenWindow {
@@ -20,9 +12,9 @@ interface OpenWindow {
 }
 
 /**
- * O armazenamento do `@nestjs/throttler`, no Mongo.
+ * O contador de chamadas, no Mongo.
  *
- * O armazenamento padrão do throttler e um `Map` em memória, e em função
+ * O caminho curto seria um `Map` em memória, e em função
  * serverless isso não limita nada: cada invocação e um processo novo, a Vercel
  * sobe várias em paralelo e o contador zera a cada cold start. Quem quisesse
  * passar do teto só precisaria de requisições suficientemente espacadas para
@@ -39,22 +31,21 @@ interface OpenWindow {
  * e aceitável aqui, porque o que se quer evitar e o laço, não o cliente
  * apressado. Deslizante exigiria um documento por requisição.
  */
-export class MongoThrottlerStorage implements ThrottlerStorage {
-  // Construido a mão pela fabrica do `ThrottlerModule` (ver
-  // `rate-limit.module.ts`), e não por injeção: assim existe uma instância só,
-  // a mesma que o guard e o `RateLimitService` usam.
+export class MongoRateLimitStorage implements RateLimitStorage {
+  // Construido a mão pela fabrica do módulo (ver `rate-limit.module.ts`), e
+  // não por injeção: assim existe uma instância só, a mesma que o guard e o
+  // `RateLimitService` usam.
   constructor(private readonly hits: Model<RateLimitHit>) {}
 
   /**
    * Conta mais uma chamada da chave e diz como a janela ficou.
    *
-   * `ttl` e `blockDuration` chegam em milissegundos (contrato do throttler) e
-   * o registro devolvido fala em segundos. O bloqueio dura o que resta da
+   * `ttl` chega em milissegundos e o registro devolvido fala em segundos. O bloqueio dura o que resta da
    * janela: um castigo mais longo que ela exigiria um segundo estado no
    * documento para pouca diferença prática — passar do teto já significa
    * esperar a janela virar.
    */
-  async increment(key: string, ttl: number, limit: number): Promise<ThrottlerStorageRecord> {
+  async increment(key: string, ttl: number, limit: number): Promise<RateLimitRecord> {
     const now = Date.now();
     // Incremento e leitura na mesma operação: duas invocações simultaneas da
     // mesma função não podem ler o mesmo contador e grava-lo duas vezes com o

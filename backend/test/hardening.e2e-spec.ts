@@ -135,7 +135,7 @@ describe('endurecimento (e2e)', () => {
       const blocked = await login('senha-errada-porem-longa').expect(429);
 
       expect(blocked.body.message).toBe(
-        'Muitas requisicoes em pouco tempo. Espere um instante e tente de novo.',
+        'Muitas requisições em pouco tempo. Espere um instante e tente de novo.',
       );
       // Diz quando voltar, sem dizer quanto ja foi gasto.
       expect(blocked.headers['retry-after']).toBeDefined();
@@ -229,7 +229,7 @@ describe('endurecimento (e2e)', () => {
       const response = await request(server).post(`${API}/cart/quote`).send(body);
 
       expect(response.status).toBe(400);
-      expect(String(response.body.message)).toContain('no maximo 50 itens');
+      expect(String(response.body.message)).toContain('no máximo 50 itens');
     });
   });
 

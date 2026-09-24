@@ -1,8 +1,8 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
-import { ThrottlerStorage } from '@nestjs/throttler';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { TOO_MANY_REQUESTS_MESSAGE } from './rate-limit.constants.js';
 import type { RateLimitRule } from './rate-limit.decorator.js';
 import { rateLimitKey } from './rate-limit.rule.js';
+import { RateLimitStorage } from './rate-limit.storage.js';
 
 /** A regra somada a quem esta chamando — o IP na rota, o telefone no pedido. */
 export interface RateLimitInput extends RateLimitRule {
@@ -18,13 +18,13 @@ export interface RateLimitInput extends RateLimitRule {
  * normalizado, já dentro do serviço. São os dois lados do mesmo flood — a
  * mesma máquina insistindo e o mesmo cliente chegando de outra.
  *
- * Recebe o armazenamento pelo token do throttler, e não pela classe: assim e
- * literalmente o mesmo objeto que o guard usa, e não há como as duas contagens
- * divergirem um dia.
+ * Recebe o mesmo armazenamento que o guard — e literalmente o mesmo objeto,
+ * registrado uma vez no módulo —, e não há como as duas contagens divergirem
+ * um dia.
  */
 @Injectable()
 export class RateLimitService {
-  constructor(@Inject(ThrottlerStorage) private readonly storage: ThrottlerStorage) {}
+  constructor(private readonly storage: RateLimitStorage) {}
 
   /** Conta mais uma chamada e lança 429 quando ela passa do teto. */
   async consume(input: RateLimitInput): Promise<void> {
@@ -33,8 +33,6 @@ export class RateLimitService {
       rateLimitKey(input.scope, input.identity),
       windowMs,
       input.limit,
-      windowMs,
-      input.scope,
     );
 
     if (record.isBlocked) {
