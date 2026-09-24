@@ -18,6 +18,7 @@ export {
   updateCategory,
   updateDeliveryCity,
   updateOrderNotes,
+  setProductReadyToShip,
   updateOrderStatus,
   updatePaymentSettings,
   updateSettings,
@@ -191,6 +192,7 @@ export {
   useProducts,
   useSaveProduct,
   useSetProductStatus,
+  useSetReadyToShip,
   type SaveProductInput,
 } from './use-products';
 

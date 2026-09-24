@@ -1,5 +1,16 @@
 import { Transform, Type } from 'class-transformer';
-import { IsIn, IsInt, IsMongoId, IsOptional, IsString, Max, MaxLength, Min } from 'class-validator';
+import {
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsMongoId,
+  IsOptional,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+} from 'class-validator';
+import { QueryFlag } from '../../../common/query-flag.js';
 import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from '../products.constants.js';
 
 /** Filtro de status do painel. `all` e o padrao: a dona quer ver tudo. */
@@ -11,7 +22,9 @@ export type ProductStatusFilter = (typeof PRODUCT_STATUS_FILTERS)[number];
 export class ListProductsDto {
   /** Busca por nome e marca. */
   @IsOptional()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   @IsString()
   @MaxLength(120)
   q?: string;
@@ -23,6 +36,18 @@ export class ListProductsDto {
   @IsOptional()
   @IsIn(PRODUCT_STATUS_FILTERS, { message: 'status invalido' })
   status?: ProductStatusFilter;
+
+  /**
+   * So o que esta em pronta entrega, ou so o que nao esta.
+   *
+   * A pronta entrega e a prateleira fisica da loja, e a secao que mais vende
+   * no local. Conferir o que esta nela pede a lista ja recortada, e nao mais
+   * um filtro para marcar dentro de uma listagem de duzentos produtos.
+   */
+  @IsOptional()
+  @QueryFlag()
+  @IsBoolean({ message: 'filtro de pronta entrega invalido' })
+  readyToShip?: boolean;
 
   // `@Type` porque query string chega como texto e o ValidationPipe nao
   // converte sozinho: sem isso, `page=2` reprovaria no `@IsInt`.

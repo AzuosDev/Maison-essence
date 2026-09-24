@@ -26,6 +26,8 @@ export interface AdminOrderListParams {
 export interface AdminProductListParams {
   q?: string;
   categoryId?: string;
+  /** So a prateleira de pronta entrega. Ausente traz o catalogo inteiro. */
+  readyToShip?: boolean;
   /** `all`, `active` ou `inactive`. Ausente vale como `all`. */
   status?: string;
   page?: number;

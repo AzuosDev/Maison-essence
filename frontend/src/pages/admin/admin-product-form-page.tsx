@@ -335,16 +335,15 @@ function ProductForm({
           />
         </Section>
 
-        <Section title="Onde aparece" note="Um produto sem categoria so e encontrado pela busca.">
-          <CategoryPicker
-            tree={categories ?? []}
-            selected={draft.categoryIds}
-            onChange={(categoryIds) => {
-              set({ categoryIds });
-            }}
-          />
-        </Section>
+        {/*
+          A vitrine vem antes das categorias, e nao depois.
 
+          As tres decisoes daqui sao curtas e valem para o produto inteiro —
+          esta no ar, e destaque, esta na prateleira —, enquanto a arvore de
+          categorias tem dezenas de linhas e rola. Deixa-las embaixo dela
+          escondia os tres interruptores no fim de uma lista longa, e o
+          "Publicado" e justamente o que se confere por ultimo antes de salvar.
+        */}
         <Section title="Vitrine">
           <div className={styles.switches}>
             <Switch
@@ -371,6 +370,16 @@ function ProductForm({
               }}
             />
           </div>
+        </Section>
+
+        <Section title="Onde aparece" note="Um produto sem categoria so e encontrado pela busca.">
+          <CategoryPicker
+            tree={categories ?? []}
+            selected={draft.categoryIds}
+            onChange={(categoryIds) => {
+              set({ categoryIds });
+            }}
+          />
         </Section>
 
         {/*

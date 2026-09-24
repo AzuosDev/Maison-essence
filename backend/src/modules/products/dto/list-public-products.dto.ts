@@ -9,31 +9,15 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import { QueryFlag } from '../../../common/query-flag.js';
 import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { MAX_SLUG_LENGTH } from '../../../database/slug.js';
 import { PUBLIC_SORTS } from '../catalog.query.js';
 import type { PublicSort } from '../catalog.query.js';
-import { MAX_PUBLIC_PAGE_SIZE, PUBLIC_PAGE_SIZE } from '../products.constants.js';
-
-/**
- * Bandeira vinda da query string.
- *
- * `?inStock` sem valor, `?inStock=true` e `?inStock=1` querem dizer a mesma
- * coisa — o link vem do filtro da vitrine, e cada biblioteca de front monta
- * de um jeito. Sem isso, `@IsBoolean` reprovaria o texto `"true"`.
- */
-const QueryFlag = (): PropertyDecorator =>
-  Transform(({ value }: { value: unknown }) => {
-    if (value === '' || value === 'true' || value === '1') {
-      return true;
-    }
-
-    if (value === 'false' || value === '0') {
-      return false;
-    }
-
-    return value;
-  });
+import {
+  MAX_PUBLIC_PAGE_SIZE,
+  PUBLIC_PAGE_SIZE,
+} from '../products.constants.js';
 
 /** Filtros da vitrine. Tudo opcional, tudo combinavel. */
 export class ListPublicProductsDto {
@@ -45,7 +29,9 @@ export class ListPublicProductsDto {
 
   /** Busca por nome e marca. */
   @IsOptional()
-  @Transform(({ value }: { value: unknown }) => (typeof value === 'string' ? value.trim() : value))
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim() : value,
+  )
   @IsString()
   @MaxLength(120)
   q?: string;

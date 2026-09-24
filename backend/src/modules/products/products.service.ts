@@ -21,13 +21,20 @@ import { priceChangesBetween, priceSnapshotOf } from './price-audit.js';
 import { searchFilter, usesTextIndex } from './product-search.js';
 import { toProductView } from './product.view.js';
 import type { ProductView } from './product.view.js';
-import { DEFAULT_PAGE_SIZE, PRODUCT_NOT_FOUND_MESSAGE } from './products.constants.js';
-import type { ProductDocument, ProductVariant } from './schemas/product.schema.js';
+import {
+  DEFAULT_PAGE_SIZE,
+  PRODUCT_NOT_FOUND_MESSAGE,
+} from './products.constants.js';
+import type {
+  ProductDocument,
+  ProductVariant,
+} from './schemas/product.schema.js';
 import { generateSku } from './sku.js';
 import { planVariants } from './variants.diff.js';
 import type { VariantInput, VariantPlan } from './variants.diff.js';
 
-export const SLUG_TAKEN_MESSAGE = 'Ja existe um produto nesse endereco. Escolha outro.';
+export const SLUG_TAKEN_MESSAGE =
+  'Ja existe um produto nesse endereco. Escolha outro.';
 
 /** Variante pronta para gravar: campos crus, do jeito que o Mongoose aceita. */
 type VariantData = Record<string, unknown>;
@@ -175,7 +182,10 @@ export class ProductsService {
   }
 
   /** O interruptor da listagem: tira da vitrine sem abrir o cadastro. */
-  async setStatus(id: string, dto: UpdateProductStatusDto): Promise<ProductView> {
+  async setStatus(
+    id: string,
+    dto: UpdateProductStatusDto,
+  ): Promise<ProductView> {
     const product = await this.findById(id);
 
     if (product.isActive === dto.isActive) {
@@ -209,7 +219,10 @@ export class ProductsService {
     await product.deleteOne();
   }
 
-  private filterFor(query: ListProductsDto, term: string): QueryFilter<Product> {
+  private filterFor(
+    query: ListProductsDto,
+    term: string,
+  ): QueryFilter<Product> {
     const filter: QueryFilter<Product> = {};
 
     if (query.categoryId !== undefined) {
@@ -220,14 +233,23 @@ export class ProductsService {
       filter.isActive = query.status === 'active';
     }
 
+    if (query.readyToShip !== undefined) {
+      filter.isReadyToShip = query.readyToShip;
+    }
+
     return term.length > 0 ? { ...filter, ...searchFilter(term) } : filter;
   }
 
   /** Monta as variantes de um produto novo, gerando o SKU que faltar. */
-  private buildVariants(productName: string, incoming: readonly VariantInput[]): VariantData[] {
+  private buildVariants(
+    productName: string,
+    incoming: readonly VariantInput[],
+  ): VariantData[] {
     const taken = new Set<string>();
 
-    return incoming.map((data) => variantData(data, resolveSku(productName, data, taken)));
+    return incoming.map((data) =>
+      variantData(data, resolveSku(productName, data, taken)),
+    );
   }
 
   /**
@@ -241,7 +263,9 @@ export class ProductsService {
     product: ProductDocument,
     incoming: readonly VariantInput[],
   ): Promise<VariantData[]> {
-    const existing = new Map(product.variants.map((variant) => [variant.id, variant]));
+    const existing = new Map(
+      product.variants.map((variant) => [variant.id, variant]),
+    );
     const { plans, unknownIds } = planVariants(
       incoming,
       [...existing.keys()],
@@ -273,7 +297,9 @@ export class ProductsService {
       }
 
       if (plan.action === 'add') {
-        next.push(variantData(plan.data, resolveSku(product.name, plan.data, taken)));
+        next.push(
+          variantData(plan.data, resolveSku(product.name, plan.data, taken)),
+        );
 
         continue;
       }
@@ -287,7 +313,11 @@ export class ProductsService {
       next.push(
         plan.action === 'retire'
           ? { ...variantDataOf(variant), _id: plan.id, isActive: false }
-          : { ...merge(variant, plan.data), _id: plan.id, sku: skuOf(plan, existing) },
+          : {
+              ...merge(variant, plan.data),
+              _id: plan.id,
+              sku: skuOf(plan, existing),
+            },
       );
     }
 
@@ -322,7 +352,9 @@ export class ProductsService {
       return 0;
     }
 
-    return this.orders.countDocuments({ 'items.variantId': { $in: ids } }).exec();
+    return this.orders
+      .countDocuments({ 'items.variantId': { $in: ids } })
+      .exec();
   }
 
   private async assertSlugIsFree(slug: string): Promise<void> {
@@ -378,7 +410,11 @@ function skuOf(
 }
 
 /** SKU informado vence; sem ele, um gerado do nome do produto e do label. */
-function resolveSku(productName: string, data: VariantInput, taken: Set<string>): string {
+function resolveSku(
+  productName: string,
+  data: VariantInput,
+  taken: Set<string>,
+): string {
   const sku =
     data.sku && data.sku.length > 0
       ? data.sku
@@ -436,7 +472,9 @@ function merge(variant: ProductVariant, data: VariantInput): VariantData {
     ...(data.stock === undefined ? {} : { stock: data.stock }),
     ...(data.image === undefined ? {} : { image: data.image }),
     ...(data.isActive === undefined ? {} : { isActive: data.isActive }),
-    ...(data.allowBackorder === undefined ? {} : { allowBackorder: data.allowBackorder }),
+    ...(data.allowBackorder === undefined
+      ? {}
+      : { allowBackorder: data.allowBackorder }),
   };
 }
 

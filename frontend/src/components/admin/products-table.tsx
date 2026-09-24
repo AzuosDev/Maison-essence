@@ -51,7 +51,24 @@ export interface ProductsTableProps {
   /** Desligado para o STAFF: ele le o catalogo, nao o edita. */
   canEdit?: boolean;
   onToggleStatus: (product: AdminProduct) => void;
-  onDelete: (product: AdminProduct) => void;
+  /**
+   * Tira o produto da prateleira de pronta entrega.
+   *
+   * So a tela de pronta entrega o passa, e por isso ele e opcional: no
+   * catalogo inteiro, "tirar da pronta entrega" seria uma acao para um
+   * atributo que a linha nem sempre tem — e o lugar de liga-lo e o cadastro.
+   */
+  onToggleReadyToShip?: ((product: AdminProduct) => void) | undefined;
+  /**
+   * Exclui o cadastro.
+   *
+   * Opcional pela mesma razao que o de cima existe: na tela de pronta
+   * entrega se confere prateleira, e apagar um cadastro inteiro por engano no
+   * meio de uma conferencia e um estrago que nao se desfaz. Sem a funcao, o
+   * item nem aparece no menu — um item que nao faz nada e pior do que a
+   * ausencia dele.
+   */
+  onDelete?: ((product: AdminProduct) => void) | undefined;
 }
 
 export function ProductsTable({
@@ -61,6 +78,7 @@ export function ProductsTable({
   showPrices = true,
   canEdit = true,
   onToggleStatus,
+  onToggleReadyToShip,
   onDelete,
 }: ProductsTableProps) {
   const isWide = useMediaQuery(WIDE);
@@ -69,7 +87,15 @@ export function ProductsTable({
     return <ProductsSkeleton wide={isWide} />;
   }
 
-  const shared = { products, categoryNames, showPrices, canEdit, onToggleStatus, onDelete };
+  const shared = {
+    products,
+    categoryNames,
+    showPrices,
+    canEdit,
+    onToggleStatus,
+    onToggleReadyToShip,
+    onDelete,
+  };
 
   return isWide ? <ProductRows {...shared} /> : <ProductCards {...shared} />;
 }
@@ -85,6 +111,7 @@ function ProductRows({
   showPrices,
   canEdit,
   onToggleStatus,
+  onToggleReadyToShip,
   onDelete,
 }: RowProps) {
   return (
@@ -159,7 +186,10 @@ function ProductRows({
 
               {canEdit ? (
                 <td className={styles.actionsCell}>
-                  <RowMenu label={product.name} items={menuFor(product, onDelete)} />
+                  <RowMenu
+                    label={product.name}
+                    items={menuFor(product, onDelete, onToggleReadyToShip)}
+                  />
                 </td>
               ) : null}
             </tr>
@@ -178,6 +208,7 @@ function ProductCards({
   showPrices,
   canEdit,
   onToggleStatus,
+  onToggleReadyToShip,
   onDelete,
 }: RowProps) {
   return (
@@ -217,7 +248,9 @@ function ProductCards({
             />
           </div>
 
-          {canEdit ? <RowMenu label={product.name} items={menuFor(product, onDelete)} /> : null}
+          {canEdit ? (
+            <RowMenu label={product.name} items={menuFor(product, onDelete, onToggleReadyToShip)} />
+          ) : null}
         </li>
       ))}
     </ul>
@@ -296,18 +329,37 @@ function categoryLabel(product: AdminProduct, categoryNames: ReadonlyMap<string,
   return names.length === 0 ? 'sem categoria' : names.join(', ');
 }
 
-function menuFor(product: AdminProduct, onDelete: (product: AdminProduct) => void): RowMenuItem[] {
+function menuFor(
+  product: AdminProduct,
+  onDelete: ((product: AdminProduct) => void) | undefined,
+  onToggleReadyToShip: ((product: AdminProduct) => void) | undefined,
+): RowMenuItem[] {
   return [
     { label: 'Editar cadastro', icon: PencilIcon, to: ROUTES.admin.product(product.id) },
-    {
-      label: 'Excluir produto',
-      icon: TrashIcon,
-      tone: 'danger',
-      separated: true,
-      onSelect: () => {
-        onDelete(product);
-      },
-    },
+    ...(onToggleReadyToShip === undefined
+      ? []
+      : [
+          {
+            label: product.isReadyToShip ? 'Tirar da pronta entrega' : 'Por na pronta entrega',
+            icon: TruckIcon,
+            onSelect: () => {
+              onToggleReadyToShip(product);
+            },
+          } satisfies RowMenuItem,
+        ]),
+    ...(onDelete === undefined
+      ? []
+      : [
+          {
+            label: 'Excluir produto',
+            icon: TrashIcon,
+            tone: 'danger',
+            separated: true,
+            onSelect: () => {
+              onDelete(product);
+            },
+          } satisfies RowMenuItem,
+        ]),
   ];
 }
 

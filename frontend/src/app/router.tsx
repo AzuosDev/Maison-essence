@@ -274,10 +274,15 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // O que o menu ja lista e cuja tela entra no proximo passo. Existe
-        // agora para que um item do menu nunca jogue a dona para fora do
-        // painel, na tela de 404 da loja.
-        ...adminSoonRoutes(['pronta-entrega']),
+        // A prateleira: o catalogo recortado no que esta em pronta entrega.
+        // Endereco proprio, e nao `produtos?readyToShip`, porque nao e um
+        // recorte que se experimenta — e um lugar que se confere, e o link
+        // dele fica no menu.
+        {
+          path: 'pronta-entrega',
+          lazy: page(() => import('@/pages/admin/admin-ready-to-ship-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
 
         // A area de sistema, do SUPER_ADMIN. Fica dentro da moldura do
         // painel — e nao num grupo proprio — porque quem chega aqui sem o
@@ -310,14 +315,6 @@ const adminRoutes: RouteObject = {
     },
   ],
 };
-
-function adminSoonRoutes(paths: readonly string[]): RouteObject[] {
-  return paths.map((path) => ({
-    path,
-    lazy: page(() => import('@/pages/admin/admin-soon-page')),
-    ErrorBoundary: RouteErrorBoundary,
-  }));
-}
 
 /**
  * O endereco antigo do painel.

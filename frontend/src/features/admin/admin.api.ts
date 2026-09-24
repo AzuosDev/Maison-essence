@@ -316,6 +316,26 @@ export function deleteDeliveryCity(id: string, signal?: AbortSignal): Promise<vo
 /* ---- Pagamento ----------------------------------------------------------- */
 
 /**
+ * Poe ou tira o produto da prateleira de pronta entrega.
+ *
+ * Usa o `PATCH` do produto com um campo so — o DTO aceita parcial —, e nao
+ * uma rota propria como a de status: o interruptor de publicar existe em duas
+ * telas e mereceu o atalho; este existe em uma, e uma rota a mais para ele
+ * seria superficie de API sem quem a use.
+ */
+export function setProductReadyToShip(
+  id: string,
+  isReadyToShip: boolean,
+  signal?: AbortSignal,
+): Promise<AdminProduct> {
+  return api.patch<AdminProduct>(
+    `/admin/products/${encodeURIComponent(id)}`,
+    { isReadyToShip },
+    { scope: SESSION_SCOPES.ADMIN, ...(signal ? { signal } : {}) },
+  );
+}
+
+/**
  * As regras de pagamento, com a chave PIX inteira.
  *
  * `MANAGES_STORE` inclusive na leitura: o backend recusa o STAFF antes de

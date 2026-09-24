@@ -1,0 +1,145 @@
+/*
+ * A prateleira.
+ *
+ * Mesma moldura da tela de produtos — e de proposito: e a mesma tabela, com o
+ * mesmo jeito de buscar e de filtrar, e uma tela parecida que se comporta
+ * diferente e pior do que duas telas iguais. O que muda e o recorte, a linha
+ * que explica o que a marca faz na loja e o aviso do que esta fora do ar.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* `--ink-soft` e nao `--muted`: 14px no cinza de rotulo nao alcanca 4.5:1. */
+.count {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+/*
+ * A linha que explica o que a marca faz.
+ *
+ * Fica escrita porque a consequencia da marca acontece em outra tela: o selo
+ * verde no card e a secao da home. Quem confere a prateleira nunca ve as
+ * duas, e sem esta frase "pronta entrega" vira so o nome de um filtro.
+ */
+.hint {
+  margin: 0;
+  max-width: 68ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- Os filtros ------------------------------------------------------------- */
+
+.filters {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.category {
+  min-width: 0;
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  /* Busca larga, categoria estreita, "limpar" so quando ha o que limpar. */
+  .filters {
+    grid-template-columns: minmax(0, 1fr) 14rem auto;
+    align-items: start;
+  }
+}
+
+/* ---- O aviso ----------------------------------------------------------------- */
+
+/*
+ * Na prateleira e fora do ar.
+ *
+ * E o unico lugar do painel onde esse cruzamento aparece: a caixa esta na
+ * loja e a cliente nao consegue comprar. Dourado e nao vermelho — nao ha erro
+ * nenhum, ha uma combinacao que quase sempre e engano —, com o icone como
+ * segundo portador do sinal.
+ */
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--gold-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.warning svg {
+  flex: none;
+
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+
+  color: var(--gold-deep);
+}
+
+/* ---- Estados ------------------------------------------------------------------- */
+
+/*
+ * Enquanto a proxima pagina vem.
+ *
+ * A lista anterior continua na tela, apagada: trocar por esqueleto a cada
+ * letra digitada faria a tela piscar em toda busca.
+ */
+.refreshing {
+  opacity: 0.6;
+  transition: opacity var(--transition);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}

@@ -4,6 +4,7 @@ import {
   deleteProduct,
   fetchAdminProduct,
   listProducts,
+  setProductReadyToShip,
   updateProduct,
   updateProductStatus,
 } from './admin.api';
@@ -168,6 +169,68 @@ export function useDeleteProduct() {
 
       void client.invalidateQueries({ queryKey: adminKeys.products() });
       void client.invalidateQueries({ queryKey: adminKeys.categories() });
+    },
+  });
+}
+
+/**
+ * Poe ou tira o produto da prateleira de pronta entrega.
+ *
+ * ## A linha some, e isso e o certo
+ *
+ * A tela de pronta entrega mostra so o que esta na prateleira. Tirar um
+ * produto dela e tira-lo da lista — manter a linha la, com o interruptor
+ * desligado, seria a tela discordando do proprio recorte, e a contagem do
+ * cabecalho passaria a mentir enquanto a dona confere o estoque.
+ *
+ * O caminho de volta nao e desfazer a some: e o "Desfazer" do aviso, que a
+ * tela oferece. Por isso a mutacao devolve o produto — quem chama precisa
+ * dele para saber o que religar.
+ *
+ * ## Por que otimista aqui, ao contrario da taxa de entrega
+ *
+ * Porque o gesto e uma conferencia de prateleira: dez produtos em sequencia,
+ * com a dona olhando para a caixa e nao para a tela. Esperar a rede a cada
+ * clique transformaria a conferencia numa fila de esperas — e, diferente de
+ * um preco, o que se ve aqui e uma presenca, nao um numero que precisa estar
+ * certo no centavo.
+ */
+export function useSetReadyToShip(params: AdminProductListParams) {
+  const client = useQueryClient();
+  const key = adminKeys.productList(params);
+
+  return useMutation({
+    mutationFn: ({ id, isReadyToShip }: { id: string; isReadyToShip: boolean }) =>
+      setProductReadyToShip(id, isReadyToShip),
+
+    onMutate: async ({ id }) => {
+      await client.cancelQueries({ queryKey: key });
+
+      const previous = client.getQueryData<AdminPage<AdminProduct>>(key);
+
+      client.setQueryData<AdminPage<AdminProduct>>(key, (current) =>
+        current === undefined
+          ? current
+          : {
+              ...current,
+              items: current.items.filter((product) => product.id !== id),
+              // A contagem acompanha: ela e o que a dona esta conferindo, e
+              // ve-la parada enquanto a lista encurta e pior do que nao ve-la.
+              totalItems: Math.max(current.totalItems - 1, 0),
+            },
+      );
+
+      return { previous };
+    },
+
+    onError: (_error, _variables, context) => {
+      if (context?.previous !== undefined) {
+        client.setQueryData(key, context.previous);
+      }
+    },
+
+    onSettled: () => {
+      void client.invalidateQueries({ queryKey: adminKeys.products() });
     },
   });
 }
