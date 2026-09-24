@@ -32,11 +32,47 @@ function getServer(): Promise<express.Express> {
   return serverPromise;
 }
 
+/**
+ * TEMPORARIO — diagnostico do boot na Vercel.
+ *
+ * Quando o Nest nao sobe, a plataforma responde uma pagina generica
+ * (`FUNCTION_INVOCATION_FAILED`) e o motivo fica so no log de runtime. Este
+ * bloco devolve o motivo no corpo da resposta, para achar a causa sem
+ * depender do painel.
+ *
+ * Mostra `name`, `message` e a pilha — e nada do ambiente. Ainda assim **sai
+ * daqui assim que a API subir**: a pilha diz caminhos de arquivo e versoes de
+ * pacote, que nao tem por que ficar publicos.
+ *
+ * Sem interruptor de ambiente de proposito: uma variavel a mais custaria mais
+ * um ciclo de deploy para descobrir o que ja podia ser lido no proximo. So
+ * responde quando o boot falha — com a API de pe, este caminho nao roda.
+ */
 export default async function handler(
   req: IncomingMessage,
   res: ServerResponse,
 ): Promise<void> {
-  const server = await getServer();
+  let server: express.Express;
+
+  try {
+    server = await getServer();
+  } catch (error: unknown) {
+    const erro = error instanceof Error ? error : new Error(String(error));
+
+    res.statusCode = 500;
+    res.setHeader('content-type', 'text/plain; charset=utf-8');
+    res.end(
+      [
+        `${erro.name}: ${erro.message}`,
+        '',
+        erro.stack ?? '(sem pilha)',
+        '',
+        `causa: ${String((erro as { cause?: unknown }).cause ?? '(nenhuma)')}`,
+      ].join('\n'),
+    );
+
+    return;
+  }
 
   server(req, res);
 }
