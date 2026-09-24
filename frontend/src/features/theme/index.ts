@@ -2,9 +2,10 @@
  * O tema da interface.
  *
  * Três peças: a lógica sem React (`theme.ts`), o estado compartilhado
- * (`theme-context.tsx`) e o controle (`theme-toggle.tsx`). A quarta peça não
- * mora aqui — e o script embutido no `index.html`, que escreve o atributo
- * antes da primeira pintura.
+ * (`theme-context.tsx`) e os controles (`theme-toggle.tsx` e
+ * `theme-icon-button.tsx`). A quarta peça não mora aqui — é o script
+ * embutido no `index.html`, que escreve o atributo antes da primeira
+ * pintura.
  */
 
 export {
@@ -16,11 +17,10 @@ export {
   THEME_MODES,
   THEME_STORAGE_KEY,
   applyTheme,
+  initialMode,
   isThemeMode,
   readStoredMode,
-  resolveTheme,
   writeStoredMode,
-  type ResolvedTheme,
   type ThemeMode,
 } from './theme';
 

@@ -8,9 +8,9 @@ interface ThemeToggleProps {
   /**
    * Em que fundo o controle caiu.
    *
-   * `slab` e o padrão porque o lugar principal dele e o rodapé, que e a laje
+   * `slab` é o padrão porque o lugar principal dele é o rodapé, que é a laje
    * escura. Mesmo arranjo do `NewsletterForm` e do `TrustBadges`, que moram
-   * no mesmo lugar: quem sabe em que fundo o componente caiu e quem o
+   * no mesmo lugar: quem sabe em que fundo o componente caiu é quem o
    * coloca, não ele.
    */
   tone?: 'slab' | 'page';
@@ -18,30 +18,25 @@ interface ThemeToggleProps {
 }
 
 /**
- * A escolha de tema: sistema, claro, escuro.
+ * A escolha de tema: claro ou escuro.
  *
- * ## Por que três botões, e não um interruptor
+ * ## Por que dois botões, e não um interruptor
  *
- * Um interruptor de duas posições obriga a escolher entre claro e escuro
- * **para sempre**, e perde o caso mais comum: o aparelho que vira sozinho a
- * noite. Quem esta nesse caso não quer "escuro", quer "o que o celular
- * estiver". Com duas posições, a única forma de voltar a acompanhar o
- * aparelho seria limpar os dados do site.
- *
- * Três também resolve o problema de um interruptor de três estados, que e
- * não dizer para onde vai no próximo toque. Aqui as três opções estão a
- * vista e cada uma e um destino, não um passo.
+ * As duas opções ficam à vista e cada uma é um destino, não um passo. Um
+ * interruptor de duas posições mostra um estado e esconde o outro, e quem
+ * chega precisa deduzir se a peça acesa é o tema atual ou o que vai acontecer
+ * se ela for tocada. Com dois segmentos e um deles marcado, não há o que
+ * deduzir.
  *
  * ## Por que radio, e não botão
  *
- * São três opções mutuamente exclusivas de um mesmo assunto, que e a
- * definição de grupo de radio. De graça vem o que seria trabalhoso repetir a
- * mão: as setas do teclado andam entre as opções, o Tab entra e sai do grupo
- * de uma vez, e o leitor de tela anuncia "2 de 3" sem que nada aqui precise
- * dizer isso.
+ * São opções mutuamente exclusivas de um mesmo assunto, que é a definição de
+ * grupo de radio. De graça vem o que seria trabalhoso repetir à mão: as setas
+ * do teclado andam entre as opções, o Tab entra e sai do grupo de uma vez, e
+ * o leitor de tela anuncia "2 de 2" sem que nada aqui precise dizer isso.
  *
  * Os radios de verdade ficam invisíveis mas presentes — `opacity: 0` e não
- * `display: none`, que os tiraria da ordem de foco. O que se vê e o
+ * `display: none`, que os tiraria da ordem de foco. O que se vê é o
  * `<label>` de cada um.
  */
 export function ThemeToggle({ tone = 'slab', className }: ThemeToggleProps) {
@@ -52,7 +47,7 @@ export function ThemeToggle({ tone = 'slab', className }: ThemeToggleProps) {
     <fieldset className={cx(styles.group, tone === 'page' && styles.page, className)}>
       {/*
         `legend` de verdade, e não um `aria-label` no fieldset: o rótulo
-        precisa ser visível. Sem ele, três palavras soltas no pé da página
+        precisa ser visível. Sem ele, duas palavras soltas no pé da página
         não dizem do que são — "Claro" e "Escuro" ali poderiam ser qualquer
         coisa.
       */}

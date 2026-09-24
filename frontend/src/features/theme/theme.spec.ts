@@ -6,9 +6,9 @@ import {
   THEME_COLORS,
   THEME_MODES,
   THEME_STORAGE_KEY,
+  initialMode,
   isThemeMode,
   readStoredMode,
-  resolveTheme,
   writeStoredMode,
 } from './theme';
 
@@ -22,13 +22,10 @@ function armazenamento(inicial: Record<string, string> = {}) {
     setItem: (chave: string, valor: string) => {
       dados.set(chave, valor);
     },
-    removeItem: (chave: string) => {
-      dados.delete(chave);
-    },
   };
 }
 
-/** Um armazenamento bloqueado, como o de uma aba anonima sem dados de site. */
+/** Um armazenamento bloqueado, como o de uma aba anônima sem dados de site. */
 const bloqueado = {
   getItem: () => {
     throw new Error('SecurityError');
@@ -36,14 +33,11 @@ const bloqueado = {
   setItem: () => {
     throw new Error('SecurityError');
   },
-  removeItem: () => {
-    throw new Error('SecurityError');
-  },
 };
 
 describe('a escolha guardada', () => {
-  test('sem nada guardado, segue o sistema', () => {
-    expect(readStoredMode(armazenamento())).toBe('system');
+  test('sem nada guardado, não há escolha', () => {
+    expect(readStoredMode(armazenamento())).toBeUndefined();
   });
 
   test('lê o que foi guardado', () => {
@@ -51,54 +45,71 @@ describe('a escolha guardada', () => {
   });
 
   test('valor estranho na chave não vira tema', () => {
-    expect(readStoredMode(armazenamento({ [THEME_STORAGE_KEY]: 'roxo' }))).toBe('system');
-  });
-
-  test('escolher sistema apaga a chave em vez de gravar a palavra', () => {
-    const storage = armazenamento({ [THEME_STORAGE_KEY]: 'dark' });
-
-    writeStoredMode(storage, 'system');
-
-    expect(storage.dados.has(THEME_STORAGE_KEY)).toBe(false);
+    expect(readStoredMode(armazenamento({ [THEME_STORAGE_KEY]: 'roxo' }))).toBeUndefined();
   });
 
   /**
-   * `localStorage` **lança** numa aba anonima com dados de site bloqueados —
+   * As duas opções gravam.
+   *
+   * Enquanto existiu o modo `system`, escolher o padrão apagava a chave. Se
+   * `light` voltasse a apagar, quem escolhesse claro num celular no modo
+   * noturno acharia a loja escura de novo no carregamento seguinte.
+   */
+  test('escolher claro grava, e não apaga a chave', () => {
+    const storage = armazenamento({ [THEME_STORAGE_KEY]: 'dark' });
+
+    writeStoredMode(storage, 'light');
+
+    expect(storage.dados.get(THEME_STORAGE_KEY)).toBe('light');
+  });
+
+  /**
+   * `localStorage` **lança** numa aba anônima com dados de site bloqueados —
    * não devolve `null`. Sem a guarda, a loja inteira deixaria de montar por
    * causa da preferência de tema.
    */
   test('armazenamento bloqueado não derruba a leitura nem a escrita', () => {
     expect(() => readStoredMode(bloqueado)).not.toThrow();
-    expect(readStoredMode(bloqueado)).toBe(DEFAULT_THEME_MODE);
+    expect(readStoredMode(bloqueado)).toBeUndefined();
     expect(() => writeStoredMode(bloqueado, 'dark')).not.toThrow();
   });
 
   test('sem armazenamento nenhum também não derruba', () => {
-    expect(readStoredMode(undefined)).toBe(DEFAULT_THEME_MODE);
+    expect(readStoredMode(undefined)).toBeUndefined();
     expect(() => writeStoredMode(undefined, 'dark')).not.toThrow();
   });
 });
 
-describe('o tema que fica na tela', () => {
-  test('escolha explicita ignora o sistema', () => {
-    expect(resolveTheme('light', true)).toBe('light');
-    expect(resolveTheme('dark', false)).toBe('dark');
+describe('o tema com que a loja abre', () => {
+  test('a escolha guardada manda, e ignora o aparelho', () => {
+    const escolheuClaro = armazenamento({ [THEME_STORAGE_KEY]: 'light' });
+
+    expect(initialMode(escolheuClaro, true)).toBe('light');
+
+    const escolheuEscuro = armazenamento({ [THEME_STORAGE_KEY]: 'dark' });
+
+    expect(initialMode(escolheuEscuro, false)).toBe('dark');
   });
 
-  test('sistema acompanha o aparelho', () => {
-    expect(resolveTheme('system', true)).toBe('dark');
-    expect(resolveTheme('system', false)).toBe('light');
+  test('sem escolha, o aparelho decide o primeiro encontro', () => {
+    expect(initialMode(armazenamento(), true)).toBe('dark');
+    expect(initialMode(armazenamento(), false)).toBe('light');
+  });
+
+  test('sem escolha e sem aparelho que responda, fica o padrão', () => {
+    expect(initialMode(bloqueado, false)).toBe(DEFAULT_THEME_MODE);
   });
 });
 
-test('isThemeMode recusa o que não e modo', () => {
+test('isThemeMode recusa o que não é modo', () => {
   expect(isThemeMode('dark')).toBe(true);
-  expect(isThemeMode('System')).toBe(false);
+  expect(isThemeMode('Light')).toBe(false);
+  expect(isThemeMode('system')).toBe(false);
   expect(isThemeMode(null)).toBe(false);
   expect(isThemeMode(2)).toBe(false);
 });
 
-/* ---- As duas copias da lógica ------------------------------------------- */
+/* ---- As duas cópias da lógica ------------------------------------------- */
 
 const indexHtml = readFileSync(
   fileURLToPath(new URL('../../../index.html', import.meta.url)),
@@ -110,22 +121,24 @@ const indexHtml = readFileSync(
  *
  * Ele existe porque o tema precisa estar no documento antes da primeira
  * pintura, e importar um módulo ali reintroduziria a espera que ele evita.
- * O preço e uma copia — e o risco da copia e ela se separar do original sem
+ * O preço é uma cópia — e o risco da cópia é ela se separar do original sem
  * que nada quebre: o tema continuaria funcionando depois que o React monta,
  * só piscaria claro na abertura. Ninguém repara nisso numa revisão.
  *
- * Estes três casos amarram as duas pontas.
+ * Estes casos amarram as duas pontas.
  */
 describe('o script que roda antes da pintura', () => {
   test('usa a mesma chave de armazenamento', () => {
     expect(indexHtml).toContain(`'${THEME_STORAGE_KEY}'`);
   });
 
-  test('escreve o atributo só para os modos explicitos', () => {
-    // `system` não pode aparecer como valor de `data-theme`: não há seletor
-    // para essa palavra em `tokens.css`, e a página ficaria presa no claro.
-    expect(indexHtml).toContain("mode === 'light' || mode === 'dark'");
-    expect(indexHtml).not.toContain("'data-theme', 'system'");
+  test('só pergunta ao aparelho quando não há escolha guardada', () => {
+    expect(indexHtml).toContain("mode !== 'light' && mode !== 'dark'");
+  });
+
+  /** O modo que saiu não pode voltar por engano como valor do atributo. */
+  test('não conhece mais o modo sistema', () => {
+    expect(indexHtml).not.toContain("'system'");
   });
 
   test('usa as mesmas cores de barra do navegador', () => {

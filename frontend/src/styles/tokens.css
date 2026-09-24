@@ -285,15 +285,19 @@
 /*
  * ---- O tema escuro -------------------------------------------------------
  *
- * Três estados, e não dois:
+ * Dois estados, e o atributo esta sempre escrito:
  *
- *   sem atributo        segue o sistema operacional
- *   data-theme="light"  claro, mesmo com o sistema no escuro
- *   data-theme="dark"   escuro, mesmo com o sistema no claro
+ *   data-theme="light"  claro, mesmo com o aparelho no escuro
+ *   data-theme="dark"   escuro, mesmo com o aparelho no claro
  *
- * O `:not([data-theme='light'])` dentro do `@media` e o que faz o segundo
- * estado existir: sem ele, quem esta no escuro pelo sistema não conseguiria
- * escolher claro.
+ * O bloco dentro do `@media` alcanca apenas o intervalo entre a folha
+ * chegar e o script do `index.html` escrever o atributo — e o caso em que
+ * aquele script falha, com o armazenamento bloqueado. E pouco, e e por isso
+ * que ele continua aqui: sem ele, esse intervalo sai claro na cara de quem
+ * esta no escuro.
+ *
+ * O `:not([data-theme='light'])` e o que impede o bloco de valer depois: com
+ * o atributo posto, quem manda e ele.
  *
  * ATENÇÃO: os dois blocos abaixo são idênticos e precisam continuar
  * idênticos. Um esta dentro de um `@media` e o outro não, e CSS não permite

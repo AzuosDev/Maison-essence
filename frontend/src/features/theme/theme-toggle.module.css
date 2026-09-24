@@ -1,10 +1,10 @@
 /*
- * O controle de tema: um rótulo e três segmentos numa pílula.
+ * O controle de tema: um rótulo e dois segmentos numa pílula.
  *
  * A pílula e a forma de toda ação clicável nesta loja (ver `--radius-button`
  * em `tokens.css`), e e o que separa este controle do texto legal ao lado
- * dele no rodapé — sem ela, "Sistema Claro Escuro" leria como mais uma linha
- * de rodapé.
+ * dele no rodapé — sem ela, "Claro Escuro" leria como mais uma linha de
+ * rodapé.
  *
  * ## Os tons
  *
@@ -142,9 +142,9 @@
 }
 
 /*
- * No celular o controle ocupa a linha inteira e os três segmentos dividem a
- * largura em partes iguais. Empilhados a esquerda, os três somavam 240px
- * numa tela de 390 e sobrava um vão que fazia a pílula parecer cortada.
+ * No celular o controle ocupa a linha inteira e os dois segmentos dividem a
+ * largura em partes iguais. Encolhidos a esquerda, eles sobravam um vão que
+ * fazia a pílula parecer cortada.
  */
 @media (max-width: 47.99rem) {
   .options {
