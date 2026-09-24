@@ -8,7 +8,8 @@ import type { RequestHandler } from 'express';
 import type {
   CorsOptions,
 } from '@nestjs/common/interfaces/external/cors-options.interface.js';
-import helmet from 'helmet';
+import helmetImport from 'helmet';
+import type { HelmetOptions } from 'helmet';
 import { JsonLogger, logLevelsFor } from './common/json-logger.js';
 import { rejectMongoOperators } from './common/mongo-operator-guard.js';
 import { attachRequestId } from './common/request-id.middleware.js';
@@ -17,6 +18,49 @@ import { setupSwagger } from './common/swagger.js';
 import { MAX_IMPORT_BODY_SIZE } from './modules/catalog-import/catalog-import.constants.js';
 import type { Env } from './config/env.schema.js';
 import { parseCorsOrigins } from './config/env.schema.js';
+
+/**
+ * `helmet`, garantidamente chamavel.
+ *
+ * ## O que quebrava
+ *
+ * O build da Vercel parava com `TS2349: This expression is not callable` nas
+ * duas chamadas de `helmet(...)`, dizendo que
+ * `typeof import(".../helmet/index")` nao tem assinatura de chamada. Aqui o
+ * mesmo codigo compila: `tsc`, `nest build` e os testes passam.
+ *
+ * A diferenca esta em **como cada compilador resolve o pacote**. O helmet 8
+ * nao tem `index.d.ts`: sao dois arquivos, `index.d.mts` e `index.d.cts`,
+ * escolhidos pelo campo `exports`. Os dois declaram a funcao como
+ * `export default`. Quando o arquivo que importa e tratado como CommonJS e o
+ * compilador nao esta com `esModuleInterop` ligado, o binding do import
+ * default passa a ser tipado como o **namespace do modulo** — um objeto com
+ * `contentSecurityPolicy`, `hsts` e os demais, mas sem assinatura de chamada.
+ * Dai o erro. A mensagem da Vercel nao traz o `resolution-mode: "import"` que
+ * o TypeScript imprime no caminho resolvido como ESM, e e isso que denuncia o
+ * modo CommonJS.
+ *
+ * ## Por que um `as` resolve, e por que e seguro
+ *
+ * O problema e so de tipo. Em tempo de execucao os dois caminhos chegam na
+ * mesma funcao: o `index.cjs` do pacote termina com
+ * `module.exports = exports.default` seguido de
+ * `module.exports.default = module.exports`, entao `require('helmet')` e
+ * `require('helmet').default` sao o mesmo valor chamavel. Nenhum emit muda de
+ * comportamento por causa desta linha.
+ *
+ * O `as` tambem nao afrouxa o que interessa: o argumento continua sendo
+ * `HelmetOptions`, e `apiSecurityHeaders()` e `docsSecurityHeaders()` seguem
+ * conferidos nas duas chamadas.
+ *
+ * Os outros pacotes importados por default aqui — `compression`,
+ * `cookie-parser`, `express` — nao precisam disto: os tipos deles vem de
+ * `@types/*` com `export =`, que atravessa os dois modos sem ambiguidade. So
+ * o helmet declara os proprios tipos com `export default`.
+ */
+const helmet = helmetImport as unknown as (
+  options?: Readonly<HelmetOptions>,
+) => RequestHandler;
 
 export const GLOBAL_PREFIX = 'api/v1';
 
