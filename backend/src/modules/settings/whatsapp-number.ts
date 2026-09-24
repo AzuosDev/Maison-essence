@@ -26,7 +26,7 @@ export const WHATSAPP_NUMBER_PATTERN = new RegExp(
 );
 
 export const WHATSAPP_NUMBER_MESSAGE =
-  'o numero do WhatsApp deve estar no formato internacional, so com digitos, comecando pelo codigo do pais: 5588999999999. Envie vazio para remover o numero.';
+  'o número do WhatsApp deve estar no formato internacional, só com digitos, começando pelo código do pais: 5588999999999. Envie vazio para remover o número.';
 
 /** Codigo do pais assumido quando o numero vem sem ele. */
 const DEFAULT_COUNTRY_CODE = '55';

@@ -21,7 +21,7 @@ import {
 
 /* ---- O que o endereco diz ------------------------------------------------ */
 
-test('le o recorte que o endereco descreve', () => {
+test('le o recorte que o endereço descreve', () => {
   const filters = readOrderFilters(
     new URLSearchParams('q=ME-260922&status=CONFIRMED&from=2026-09-01&to=2026-09-30&page=3'),
   );
@@ -35,7 +35,7 @@ test('le o recorte que o endereco descreve', () => {
   });
 });
 
-test('endereco vazio e o recorte vazio', () => {
+test('endereço vazio e o recorte vazio', () => {
   expect(readOrderFilters(new URLSearchParams())).toEqual(EMPTY_ORDER_FILTERS);
 });
 
@@ -53,7 +53,7 @@ test('data mal formada e ignorada', () => {
   expect(filters.to).toBe('');
 });
 
-test('pagina invalida volta a ser a primeira', () => {
+test('página inválida volta a ser a primeira', () => {
   expect(readOrderFilters(new URLSearchParams('page=0')).page).toBe(1);
   expect(readOrderFilters(new URLSearchParams('page=-4')).page).toBe(1);
   expect(readOrderFilters(new URLSearchParams('page=abc')).page).toBe(1);
@@ -61,17 +61,17 @@ test('pagina invalida volta a ser a primeira', () => {
 
 /* ---- O que o endereco escreve -------------------------------------------- */
 
-test('o que esta vazio nao entra no endereco', () => {
+test('o que esta vazio não entra no endereço', () => {
   expect(orderFiltersToSearch(EMPTY_ORDER_FILTERS)).toEqual({});
 });
 
-test('a primeira pagina tambem nao entra', () => {
+test('a primeira página também não entra', () => {
   const search = orderFiltersToSearch({ ...EMPTY_ORDER_FILTERS, status: ORDER_STATUSES.SHIPPED });
 
   expect(search).toEqual({ status: 'SHIPPED' });
 });
 
-test('ida e volta pelo endereco preserva o recorte', () => {
+test('ida e volta pelo endereço preserva o recorte', () => {
   const filters = {
     q: '88999998888',
     status: ORDER_STATUSES.PREPARING,
@@ -85,7 +85,7 @@ test('ida e volta pelo endereco preserva o recorte', () => {
 
 /* ---- O que a API recebe --------------------------------------------------- */
 
-test('campo vazio nao viaja para a API', () => {
+test('campo vazio não viaja para a API', () => {
   const params = orderListParams(EMPTY_ORDER_FILTERS);
 
   expect(params.q).toBeUndefined();
@@ -95,7 +95,7 @@ test('campo vazio nao viaja para a API', () => {
   expect(params.page).toBe(1);
 });
 
-test('o periodo vira instante no fuso de quem esta olhando', () => {
+test('o período vira instante no fuso de quem esta olhando', () => {
   const params = orderListParams({ ...EMPTY_ORDER_FILTERS, from: '2026-09-22', to: '2026-09-22' });
 
   // Sem a conversao, `2026-09-22` viraria meia-noite UTC — e o pedido das
@@ -111,20 +111,20 @@ test('o periodo vira instante no fuso de quem esta olhando', () => {
 
 /* ---- Mudar de recorte ----------------------------------------------------- */
 
-test('mudar um filtro devolve a primeira pagina', () => {
+test('mudar um filtro devolve a primeira página', () => {
   const current = { ...EMPTY_ORDER_FILTERS, page: 4 };
 
   expect(withFilter(current, { status: ORDER_STATUSES.DELIVERED }).page).toBe(1);
 });
 
-test('mudar de pagina nao mexe no resto', () => {
+test('mudar de página não mexe no resto', () => {
   const current = { ...EMPTY_ORDER_FILTERS, q: 'ME-26', page: 1 };
   const next = withFilter(current, { page: 3 });
 
   expect(next).toEqual({ ...current, page: 3 });
 });
 
-test('a contagem de filtros ignora a pagina', () => {
+test('a contagem de filtros ignora a página', () => {
   expect(activeFilterCount({ ...EMPTY_ORDER_FILTERS, page: 7 })).toBe(0);
   expect(
     activeFilterCount({ ...EMPTY_ORDER_FILTERS, q: 'ME', status: ORDER_STATUSES.CONFIRMED }),

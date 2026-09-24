@@ -39,22 +39,22 @@ export function AccessDenied({ role }: AccessDeniedProps) {
     <section className={styles.box}>
       <ShieldIcon className={styles.icon} />
 
-      <h1 className={styles.title}>Esta area e do administrador do sistema</h1>
+      <h1 className={styles.title}>Esta área e do administrador do sistema</h1>
 
       <p className={styles.body}>
-        Aqui ficam as contas de acesso, a trilha de auditoria e a saude do servidor.
+        Aqui ficam as contas de acesso, a trilha de auditoria e a saúde do servidor.
         {role === undefined
-          ? ' Seu papel nao abre esta area.'
-          : ` Seu papel no painel e ${ROLE_LABELS[role].toLowerCase()}, e ele nao abre esta area.`}
+          ? ' Seu papel não abre esta área.'
+          : ` Seu papel no painel e ${ROLE_LABELS[role].toLowerCase()}, e ele não abre esta área.`}
       </p>
 
       <p className={styles.body}>
-        Se voce precisa de alguma coisa daqui — criar um acesso para quem vai ajudar no atendimento,
+        Se você precisa de alguma coisa daqui — criar um acesso para quem vai ajudar no atendimento,
         por exemplo —, fale com quem mantem o sistema.
       </p>
 
       <Link to={ROUTES.admin.root} className={styles.back}>
-        Voltar para o inicio do painel
+        Voltar para o início do painel
       </Link>
     </section>
   );

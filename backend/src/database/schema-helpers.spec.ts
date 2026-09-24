@@ -46,14 +46,14 @@ async function errorsOf(fields: Record<string, unknown>): Promise<ValidationErro
 }
 
 describe('centsProp', () => {
-  it('rejeita preco em reais com centavos decimais', async () => {
+  it('rejeita preço em reais com centavos decimais', async () => {
     const errors = await errorsOf({ priceCents: 199.9 });
 
     expect(errors.priceCents).toBeDefined();
     expect(errors.priceCents.message).toContain('19990');
   });
 
-  it('aceita o mesmo preco escrito em centavos', async () => {
+  it('aceita o mesmo preço escrito em centavos', async () => {
     expect((await errorsOf({ priceCents: 19_990 })).priceCents).toBeUndefined();
   });
 
@@ -71,42 +71,42 @@ describe('centsProp', () => {
     expect(errors.compareAtPriceCents).toBeUndefined();
   });
 
-  it('rejeita texto que nao e numero', async () => {
+  it('rejeita texto que não e número', async () => {
     // O cast falha antes da validacao: o erro e de tipo, nao de regra.
     expect((await errorsOf({ priceCents: 'gratis' })).priceCents).toBeDefined();
   });
 });
 
 describe('integerProp', () => {
-  it('rejeita fracao', async () => {
+  it('rejeita fração', async () => {
     expect((await errorsOf({ priceCents: 1, stock: 1.5 })).stock).toBeDefined();
   });
 
-  it('respeita o maximo', async () => {
+  it('respeita o máximo', async () => {
     expect((await errorsOf({ priceCents: 1, stock: 101 })).stock).toBeDefined();
   });
 });
 
 describe('percentProp', () => {
-  it('rejeita fracao no percentual inteiro', async () => {
+  it('rejeita fração no percentual inteiro', async () => {
     const errors = await errorsOf({ priceCents: 1, discountPercent: 10.5 });
 
     expect(errors.discountPercent).toBeDefined();
   });
 
-  it('aceita fracao onde o negocio pede, como nos juros', async () => {
+  it('aceita fração onde o negócio pede, como nos juros', async () => {
     expect((await errorsOf({ priceCents: 1, interest: 1.99 })).interest).toBeUndefined();
   });
 });
 
 describe('textProp', () => {
-  it('remove espaco nas pontas', () => {
+  it('remove espaço nas pontas', () => {
     const doc = new Sample({ priceCents: 1, name: '  vela  ' });
 
     expect(doc.get('name')).toBe('vela');
   });
 
-  it('rejeita texto acima do tamanho maximo', async () => {
+  it('rejeita texto acima do tamanho máximo', async () => {
     expect((await errorsOf({ priceCents: 1, name: 'x'.repeat(11) })).name).toBeDefined();
   });
 });

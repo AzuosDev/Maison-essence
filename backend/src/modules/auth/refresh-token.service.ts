@@ -120,7 +120,7 @@ export class RefreshTokenService {
     const now = new Date();
 
     if (!tokenId) {
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     const claimed = await this.tokens
@@ -139,13 +139,13 @@ export class RefreshTokenService {
     if (known?.revokedAt) {
       this.logger.warn(
         `Reuso de refresh token detectado (${audience}, dono ${known.userId.toHexString()}): ` +
-          'todas as sessoes foram revogadas',
+          'todas as sessões foram revogadas',
       );
       await this.revokeAllSessions({ id: known.userId, audience });
     }
 
     // Token expirado, desconhecido ou reusado: a resposta e a mesma.
-    throw new UnauthorizedException('Sessao invalida.');
+    throw new UnauthorizedException('Sessão inválida.');
   }
 
   /** Revoga a sessao apresentada. Usado no logout; nunca dispara deteccao de reuso. */

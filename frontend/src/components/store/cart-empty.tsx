@@ -25,7 +25,7 @@ import styles from './cart-empty.module.css';
  */
 export function CartEmpty({
   title = 'Sua sacola esta vazia',
-  description = 'Os perfumes que voce escolher aparecem aqui — e ficam guardados mesmo se voce fechar o navegador.',
+  description = 'Os perfumes que você escolher aparecem aqui — e ficam guardados mesmo se você fechar o navegador.',
   compact = false,
   onNavigate,
 }: {

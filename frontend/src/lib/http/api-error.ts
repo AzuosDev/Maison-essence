@@ -41,7 +41,7 @@ export class ApiError extends Error {
   readonly path: string;
 
   constructor(status: number, messages: string[], path: string, body: ApiErrorBody | null) {
-    super(messages[0] ?? `A requisicao falhou com status ${status}.`);
+    super(messages[0] ?? `A requisição falhou com status ${status}.`);
 
     this.name = 'ApiError';
     this.status = status;
@@ -78,7 +78,7 @@ export class NetworkError extends Error {
     super(
       timedOut
         ? 'O servidor demorou demais para responder. Tente novamente.'
-        : 'Nao foi possivel falar com o servidor. Confira sua conexao.',
+        : 'Não foi possível falar com o servidor. Confira sua conexão.',
     );
 
     this.name = 'NetworkError';

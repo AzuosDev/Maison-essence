@@ -25,7 +25,7 @@ export function BrandStatement() {
         <span className={styles.rule} aria-hidden="true" />
 
         <p className={styles.text}>
-          Uma selecao curta, escolhida peca a peca. Perfumes e velas que a gente compraria para casa
+          Uma seleção curta, escolhida peca a peca. Perfumes e velas que a gente compraria para casa
           — e por isso responde por cada um deles.
         </p>
 

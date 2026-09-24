@@ -50,7 +50,7 @@ export default function SystemLayout() {
         <h1 className={styles.title}>Sistema</h1>
 
         <p className={styles.subtitle}>
-          Quem entra no painel, o que foi feito nele e como o servidor esta. Visivel so para{' '}
+          Quem entra no painel, o que foi feito nele e como o servidor esta. Visível só para{' '}
           {ROLE_LABELS.SUPER_ADMIN.toLowerCase()}.
         </p>
       </header>
@@ -60,7 +60,7 @@ export default function SystemLayout() {
           <li>
             <NavLink to={ROUTES.admin.system} end className={tabClass}>
               <UsersIcon className={styles.tabIcon} />
-              Usuarios
+              Usuários
             </NavLink>
           </li>
 
@@ -74,7 +74,7 @@ export default function SystemLayout() {
           <li>
             <NavLink to={ROUTES.admin.systemHealth} className={tabClass}>
               <PulseIcon className={styles.tabIcon} />
-              Saude
+              Saúde
             </NavLink>
           </li>
         </ul>

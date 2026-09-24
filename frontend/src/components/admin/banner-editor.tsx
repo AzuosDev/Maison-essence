@@ -92,7 +92,7 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
     <div className={styles.editor}>
       {banners.length === 0 ? (
         <p className={styles.empty}>
-          A home ainda nao tem carrossel. Sem banner, ela comeca direto pelos produtos — o que
+          A home ainda não tem carrossel. Sem banner, ela começa direto pelos produtos — o que
           funciona, mas deixa de contar o que a loja quer contar primeiro.
         </p>
       ) : (
@@ -202,8 +202,8 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
 
         <p className={styles.room}>
           {room <= 0
-            ? `O carrossel esta cheio: ${String(SETTINGS_LIMITS.banners)} banners e o maximo que alguem assiste ate o fim.`
-            : 'Comece pela arte de computador. Ela e obrigatoria; a de celular entra depois.'}
+            ? `O carrossel esta cheio: ${String(SETTINGS_LIMITS.banners)} banners e o máximo que alguém assiste até o fim.`
+            : 'Comece pela arte de computador. Ela e obrigatória; a de celular entra depois.'}
         </p>
       </div>
     </div>
@@ -352,11 +352,11 @@ function BannerRow({
 
         <div className={styles.fields}>
           <Input
-            label="Titulo"
+            label="Título"
             block
             maxLength={SETTINGS_LIMITS.bannerTitle}
-            placeholder="Colecao de verao"
-            hint="Some da arte quando vazio. A imagem continua clicavel."
+            placeholder="Coleção de verão"
+            hint="Some da arte quando vazio. A imagem continua clicável."
             value={banner.title}
             error={errors?.title}
             onChange={(event) => {
@@ -368,7 +368,7 @@ function BannerRow({
             label="Linha de apoio"
             block
             maxLength={SETTINGS_LIMITS.bannerSubtitle}
-            placeholder="Notas citricas para os dias quentes"
+            placeholder="Notas cítricas para os dias quentes"
             value={banner.subtitle}
             error={errors?.subtitle}
             onChange={(event) => {
@@ -378,10 +378,10 @@ function BannerRow({
 
           <div className={styles.pair}>
             <Input
-              label="Texto do botao"
+              label="Texto do botão"
               block
               maxLength={SETTINGS_LIMITS.bannerButtonLabel}
-              placeholder="Ver a colecao"
+              placeholder="Ver a coleção"
               value={banner.buttonLabel}
               error={errors?.buttonLabel}
               onChange={(event) => {
@@ -394,7 +394,7 @@ function BannerRow({
               block
               maxLength={SETTINGS_LIMITS.bannerLink}
               placeholder="/produtos"
-              hint="Um caminho da loja, como /produtos, ou um endereco inteiro."
+              hint="Um caminho da loja, como /produtos, ou um endereço inteiro."
               value={banner.link}
               error={errors?.link}
               onChange={(event) => {
@@ -416,10 +416,10 @@ function BannerRow({
             />
 
             <Input
-              label="Ultimo dia"
+              label="Último dia"
               block
               type="date"
-              hint="O dia inteiro conta. Em branco, fica ate ser desligado."
+              hint="O dia inteiro conta. Em branco, fica até ser desligado."
               value={banner.endsOn}
               error={errors?.window}
               onChange={(event) => {

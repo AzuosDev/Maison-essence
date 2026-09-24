@@ -213,7 +213,7 @@ export function ImageManager({
           {isUploading && progressLabel !== undefined
             ? progressLabel
             : room <= 0
-              ? `Sao no maximo ${String(PRODUCT_LIMITS.images)} fotos. Tire uma para enviar outra.`
+              ? `São no máximo ${String(PRODUCT_LIMITS.images)} fotos. Tire uma para enviar outra.`
               : images.length === 0
                 ? 'A primeira foto vira a capa, e e ela que aparece na vitrine.'
                 : `Arraste para reordenar. Cabem mais ${String(room)}.`}

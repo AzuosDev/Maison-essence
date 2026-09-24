@@ -27,7 +27,7 @@ import AdminSettingsPage from './admin-settings-page';
 const SETTINGS = {
   storeName: 'Maison Essence',
   whatsappNumber: '5588999999999',
-  announcementText: 'Frete gratis acima de R$ 200',
+  announcementText: 'Frete grátis acima de R$ 200',
   contactEmail: 'contato@maisonessence.test',
   businessHours: 'Seg a Sex, 9h as 18h',
   pickupEnabled: true,
@@ -39,7 +39,7 @@ const SETTINGS = {
     city: 'Sobral',
     state: 'CE',
     zipCode: '62010-000',
-    reference: 'Em frente a praca',
+    reference: 'Em frente a praça',
   },
   pickupInstructions: 'Toque a campainha.',
   socialLinks: { instagram: '@maisonessence', tiktok: '' },
@@ -49,9 +49,9 @@ const SETTINGS = {
       id: 'b1',
       imageDesktop: 'banners/verao',
       imageMobile: 'banners/verao-mobile',
-      title: 'Colecao de verao',
-      subtitle: 'Notas citricas',
-      buttonLabel: 'Ver a colecao',
+      title: 'Coleção de verão',
+      subtitle: 'Notas cítricas',
+      buttonLabel: 'Ver a coleção',
       link: '/produtos',
       order: 0,
       startsAt: null,
@@ -74,13 +74,13 @@ const SETTINGS = {
     },
   ],
   institutionalPages: [
-    { slug: 'quem-somos', title: 'Quem somos', content: 'Perfumes arabes.', isActive: true },
+    { slug: 'quem-somos', title: 'Quem somos', content: 'Perfumes árabes.', isActive: true },
     { slug: 'como-comprar', title: 'Como comprar', content: '', isActive: false },
-    { slug: 'trocas-e-devolucoes', title: 'Trocas e devolucoes', content: '', isActive: false },
+    { slug: 'trocas-e-devolucoes', title: 'Trocas e devoluções', content: '', isActive: false },
     { slug: 'perguntas-frequentes', title: 'Perguntas frequentes', content: '', isActive: false },
     {
       slug: 'politica-de-privacidade',
-      title: 'Politica de privacidade',
+      title: 'Política de privacidade',
       content: '',
       isActive: false,
     },
@@ -204,7 +204,7 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
 
 /* ---- Abrir a tela ------------------------------------------------------------ */
 
-test('abre com o que esta gravado, e o numero legivel', async () => {
+test('abre com o que esta gravado, e o número legível', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
@@ -217,7 +217,7 @@ test('abre com o que esta gravado, e o numero legivel', async () => {
   );
 });
 
-test('abrir a tela nao a deixa suja, nem com banner agendado', async () => {
+test('abrir a tela não a deixa suja, nem com banner agendado', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
@@ -229,29 +229,29 @@ test('abrir a tela nao a deixa suja, nem com banner agendado', async () => {
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
-test('o gerente da loja nao entra: isto nao e decisao do dia de vender', async () => {
+test('o gerente da loja não entra: isto não e decisão do dia de vender', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem mantem o sistema/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem mantem o sistema/ }),
   ).toBeDefined();
 });
 
-test('o STAFF tambem nao entra', async () => {
+test('o STAFF também não entra', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem mantem o sistema/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem mantem o sistema/ }),
   ).toBeDefined();
 });
 
 /* ---- Salvar ------------------------------------------------------------------- */
 
-test('mudar o nome manda so o nome', async () => {
+test('mudar o nome manda só o nome', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
@@ -273,14 +273,14 @@ test('mudar o nome manda so o nome', async () => {
   });
 });
 
-test('mudar o numero da casa nao manda o endereco inteiro', async () => {
+test('mudar o número da casa não manda o endereço inteiro', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
-  const numero = await screen.findByRole('textbox', { name: 'Numero' });
+  const numero = await screen.findByRole('textbox', { name: 'Número' });
 
   await user.clear(numero);
   await user.type(numero, '130');
@@ -293,14 +293,14 @@ test('mudar o numero da casa nao manda o endereco inteiro', async () => {
   });
 });
 
-test('apagar o frete gratis geral manda null, e nao zero', async () => {
+test('apagar o frete grátis geral manda null, e não zero', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
-  const frete = await screen.findByRole('textbox', { name: 'Frete gratis a partir de' });
+  const frete = await screen.findByRole('textbox', { name: 'Frete grátis a partir de' });
 
   await user.clear(frete);
   await user.click(await screen.findByRole('button', { name: 'Salvar' }));
@@ -322,7 +322,7 @@ test('descartar devolve os campos ao que esta gravado', async () => {
   await user.clear(aviso);
   await user.click(await screen.findByRole('button', { name: 'Descartar' }));
 
-  expect((aviso as HTMLInputElement).value).toBe('Frete gratis acima de R$ 200');
+  expect((aviso as HTMLInputElement).value).toBe('Frete grátis acima de R$ 200');
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
@@ -339,10 +339,10 @@ test('apagar o WhatsApp avisa que o pedido fica sem destino', async () => {
 
   await user.clear(whatsapp);
 
-  expect(await screen.findByText(/nao tem para onde ser enviado/)).toBeDefined();
+  expect(await screen.findByText(/não tem para onde ser enviado/)).toBeDefined();
 });
 
-test('publicar uma pagina sem texto avisa, e diz qual e', async () => {
+test('publicar uma página sem texto avisa, e diz qual e', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
@@ -359,7 +359,7 @@ test('publicar uma pagina sem texto avisa, e diz qual e', async () => {
 
 /* ---- O carrossel ------------------------------------------------------------------ */
 
-test('o banner que ja passou diz que encerrou, em vez de parecer no ar', async () => {
+test('o banner que já passou diz que encerrou, em vez de parecer no ar', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
@@ -379,7 +379,7 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
 
   await screen.findByRole('textbox', { name: 'WhatsApp' });
 
-  await user.click(screen.getByRole('button', { name: 'Acoes de Colecao de verao' }));
+  await user.click(screen.getByRole('button', { name: 'Ações de Coleção de verão' }));
   await user.click(screen.getByRole('button', { name: 'Descer' }));
   await user.click(await screen.findByRole('button', { name: 'Salvar' }));
 
@@ -396,7 +396,7 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
 
 /* ---- As paginas --------------------------------------------------------------------- */
 
-test('escrever numa pagina manda so aquela pagina', async () => {
+test('escrever numa página manda só aquela página', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
@@ -423,7 +423,7 @@ test('escrever numa pagina manda so aquela pagina', async () => {
   });
 });
 
-test('a pagina fechada diz o essencial: publicada, e se ha o que publicar', async () => {
+test('a página fechada diz o essencial: publicada, e se há o que publicar', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();

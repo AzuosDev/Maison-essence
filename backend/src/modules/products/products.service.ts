@@ -34,7 +34,7 @@ import { planVariants } from './variants.diff.js';
 import type { VariantInput, VariantPlan } from './variants.diff.js';
 
 export const SLUG_TAKEN_MESSAGE =
-  'Ja existe um produto nesse endereco. Escolha outro.';
+  'Já existe um produto nesse endereço. Escolha outro.';
 
 /** Variante pronta para gravar: campos crus, do jeito que o Mongoose aceita. */
 type VariantData = Record<string, unknown>;
@@ -274,7 +274,7 @@ export class ProductsService {
 
     if (unknownIds.length > 0) {
       throw new UnprocessableEntityException(
-        `Variante que nao e deste produto: ${unknownIds.join(', ')}.`,
+        `Variante que não e deste produto: ${unknownIds.join(', ')}.`,
       );
     }
 
@@ -489,7 +489,7 @@ function toObjectIds(ids: readonly string[] | undefined): Types.ObjectId[] {
 function ordersMessage(count: number): string {
   const pedidos = count === 1 ? '1 pedido' : `${count} pedidos`;
 
-  return `Este produto ja aparece em ${pedidos} e por isso nao pode ser excluido. Desative o produto para tira-lo da loja sem mexer no historico.`;
+  return `Este produto já aparece em ${pedidos} e por isso não pode ser excluído. Desative o produto para tira-lo da loja sem mexer no histórico.`;
 }
 
 function isDuplicateKey(error: unknown): boolean {

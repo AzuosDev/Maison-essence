@@ -9,14 +9,14 @@ import { queryFlagOf } from './query-flag.js';
  * dele — devolver `false` aqui viraria um filtro silencioso.
  */
 describe('queryFlagOf', () => {
-  it('le as tres formas de dizer sim', () => {
+  it('le as três formas de dizer sim', () => {
     // `?readyToShip` sem valor e o que um `<a href="?readyToShip">` produz.
     expect(queryFlagOf('')).toBe(true);
     expect(queryFlagOf('true')).toBe(true);
     expect(queryFlagOf('1')).toBe(true);
   });
 
-  it('le as duas formas de dizer nao', () => {
+  it('le as duas formas de dizer não', () => {
     expect(queryFlagOf('false')).toBe(false);
     expect(queryFlagOf('0')).toBe(false);
   });

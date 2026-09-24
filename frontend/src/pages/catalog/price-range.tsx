@@ -95,7 +95,7 @@ export function PriceRange({ minCents, maxCents, ceilingCents, onCommit }: Price
           max={top}
           step={STEP_REAIS}
           value={range.from}
-          aria-label="Preco minimo"
+          aria-label="Preço mínimo"
           // O valor cru e um numero solto; sem isto o leitor de tela anuncia
           // "cento e vinte" e nao "cento e vinte reais".
           aria-valuetext={formatCents(range.from * 100)}
@@ -114,7 +114,7 @@ export function PriceRange({ minCents, maxCents, ceilingCents, onCommit }: Price
           max={top}
           step={STEP_REAIS}
           value={range.to}
-          aria-label="Preco maximo"
+          aria-label="Preço máximo"
           aria-valuetext={formatCents(range.to * 100)}
           onChange={(event) => {
             setRange(withTo(range, Number(event.target.value), bounds));

@@ -27,7 +27,7 @@ export class RegisterCustomerDto {
   phone: string;
 
   @Transform(trimmed)
-  @IsEmail({}, { message: 'informe um e-mail valido' })
+  @IsEmail({}, { message: 'informe um e-mail válido' })
   @MaxLength(160)
   email: string;
 

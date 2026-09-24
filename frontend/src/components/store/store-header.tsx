@@ -124,7 +124,7 @@ export function StoreHeader() {
               }}
             >
               <SearchIcon width="18" height="18" />
-              <span className={styles.searchLabel}>O que voce procura?</span>
+              <span className={styles.searchLabel}>O que você procura?</span>
             </button>
           </div>
 

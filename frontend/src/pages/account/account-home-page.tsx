@@ -76,7 +76,7 @@ export default function AccountProfilePage() {
     return (
       <AccountInvite
         title="Sua conta na Maison Essence"
-        description="Entre para ver seus pedidos, guardar enderecos e manter seus dados de contato em dia."
+        description="Entre para ver seus pedidos, guardar endereços e manter seus dados de contato em dia."
       />
     );
   }
@@ -87,7 +87,7 @@ export default function AccountProfilePage() {
       toast({ title: 'Dados atualizados.', variant: 'success' });
     } catch (failure) {
       toast({
-        title: 'Nao deu para salvar',
+        title: 'Não deu para salvar',
         description: errorMessage(failure),
         variant: 'danger',
       });
@@ -121,14 +121,14 @@ export default function AccountProfilePage() {
           <p className={styles.lockedLabel}>Celular</p>
           <p className={styles.lockedValue}>{profile?.phoneLabel ?? ''}</p>
           <p className={styles.lockedNote}>
-            E por este numero que seus pedidos encontram a conta, inclusive os que voce fez sem
+            E por este número que seus pedidos encontram a conta, inclusive os que você fez sem
             entrar. Para troca-lo, fale com a loja pelo WhatsApp.
           </p>
         </div>
 
         <div className={styles.actions}>
           <Button type="submit" loading={isPending} loadingLabel="Salvando" disabled={!isDirty}>
-            Salvar alteracoes
+            Salvar alterações
           </Button>
         </div>
       </form>
@@ -136,7 +136,7 @@ export default function AccountProfilePage() {
       <div className={styles.aside}>
         <h2 className={styles.asideTitle}>Senha</h2>
         <p className={styles.asideText}>
-          A troca de senha ainda nao esta disponivel por aqui. Se precisar mudar a sua, fale com a
+          A troca de senha ainda não esta disponível por aqui. Se precisar mudar a sua, fale com a
           loja pelo WhatsApp.
         </p>
 

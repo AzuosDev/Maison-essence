@@ -33,7 +33,7 @@ export interface DemoSeedSummary {
 }
 
 export const DEMO_SEED_REFUSED_MESSAGE =
-  'O seed de demonstracao sobrescreve as configuracoes da loja e nao roda com NODE_ENV=production. Use --force se e isso mesmo que voce quer.';
+  'O seed de demonstração sobrescreve as configurações da loja e não roda com NODE_ENV=production. Use --force se e isso mesmo que você quer.';
 
 export class DemoSeedRefusedError extends Error {
   constructor() {
@@ -201,7 +201,7 @@ export class DemoSeedService {
       this.logger.log(`${label}: ${count.created} criados, ${count.updated} atualizados`);
     }
 
-    this.logger.log('Configuracoes da loja e de pagamento gravadas.');
+    this.logger.log('Configurações da loja e de pagamento gravadas.');
   }
 }
 
@@ -221,7 +221,7 @@ function resolveCategories(
     const id = categoryIds.get(slug);
 
     if (!id) {
-      throw new Error(`Categoria ${slug} nao encontrada para o produto ${product.slug}.`);
+      throw new Error(`Categoria ${slug} não encontrada para o produto ${product.slug}.`);
     }
 
     return id;

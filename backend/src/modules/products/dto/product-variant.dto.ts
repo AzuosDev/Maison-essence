@@ -23,7 +23,7 @@ import { MAX_STOCK } from '../products.constants.js';
  */
 export class ProductVariantDto {
   @IsOptional()
-  @IsMongoId({ message: 'variante invalida' })
+  @IsMongoId({ message: 'variante inválida' })
   id?: string;
 
   /** Sem SKU, o servidor gera um a partir do nome do produto e do label. */
@@ -41,14 +41,14 @@ export class ProductVariantDto {
   @MaxLength(60)
   label?: string;
 
-  @IsInt({ message: 'o preco deve ser um inteiro em centavos: R$ 199,90 se escreve 19990' })
+  @IsInt({ message: 'o preço deve ser um inteiro em centavos: R$ 199,90 se escreve 19990' })
   @Min(0)
   @Max(MAX_CENTS)
   priceCents: number;
 
   /** Preco "de", riscado no card. `null` tira o desconto da variante. */
   @IsOptional()
-  @IsInt({ message: 'o preco de comparacao deve ser um inteiro em centavos' })
+  @IsInt({ message: 'o preço de comparação deve ser um inteiro em centavos' })
   @Min(0)
   @Max(MAX_CENTS)
   compareAtPriceCents?: number | null;

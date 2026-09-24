@@ -36,7 +36,7 @@ const schema = z.object({
     .string()
     .trim()
     .toLowerCase()
-    .email('Esse e-mail nao parece valido.')
+    .email('Esse e-mail não parece válido.')
     .max(160, 'E-mail longo demais.'),
   role: z.enum([USER_ROLES.SUPER_ADMIN, USER_ROLES.OWNER, USER_ROLES.STAFF]),
 });
@@ -52,8 +52,8 @@ export type UserFormValues = z.output<typeof schema>;
  * transformaria no caminho de menor esforco.
  */
 const ROLE_OPTIONS = [
-  { value: USER_ROLES.STAFF, label: `${ROLE_LABELS.STAFF} — pedidos, sem precos` },
-  { value: USER_ROLES.OWNER, label: `${ROLE_LABELS.OWNER} — catalogo, pedidos e precos` },
+  { value: USER_ROLES.STAFF, label: `${ROLE_LABELS.STAFF} — pedidos, sem preços` },
+  { value: USER_ROLES.OWNER, label: `${ROLE_LABELS.OWNER} — catalogo, pedidos e preços` },
   { value: USER_ROLES.SUPER_ADMIN, label: `${ROLE_LABELS.SUPER_ADMIN} — a loja e o sistema` },
 ];
 
@@ -109,7 +109,7 @@ export function UserFormDialog({
       title={editing ? 'Editar cadastro' : 'Novo acesso ao painel'}
       description={
         editing
-          ? 'Mudar o papel vale na proxima acao da pessoa, sem precisar que ela saia e entre.'
+          ? 'Mudar o papel vale na próxima ação da pessoa, sem precisar que ela saia e entre.'
           : 'O painel gera a senha do primeiro acesso e mostra uma vez, depois de salvar.'
       }
     >

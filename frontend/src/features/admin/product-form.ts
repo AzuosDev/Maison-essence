@@ -258,17 +258,17 @@ export function validateDraft(draft: ProductDraft): DraftErrors {
   }
 
   if (draft.description.length > PRODUCT_LIMITS.description) {
-    errors.description = `A descricao passa de ${String(PRODUCT_LIMITS.description)} caracteres.`;
+    errors.description = `A descrição passa de ${String(PRODUCT_LIMITS.description)} caracteres.`;
   }
 
   if (draft.images.length > PRODUCT_LIMITS.images) {
-    errors.images = `Sao no maximo ${String(PRODUCT_LIMITS.images)} fotos por produto.`;
+    errors.images = `São no máximo ${String(PRODUCT_LIMITS.images)} fotos por produto.`;
   }
 
   if (draft.variants.length === 0) {
     errors.variants = 'Todo produto precisa de ao menos uma variante, mesmo que sem nome.';
   } else if (draft.variants.length > PRODUCT_LIMITS.variants) {
-    errors.variants = `Sao no maximo ${String(PRODUCT_LIMITS.variants)} variantes.`;
+    errors.variants = `São no máximo ${String(PRODUCT_LIMITS.variants)} variantes.`;
   }
 
   const labels = new Map<string, number>();
@@ -280,28 +280,28 @@ export function validateDraft(draft: ProductDraft): DraftErrors {
     const cents = centsFromInput(variant.price);
 
     if (cents === null) {
-      line.price = 'Escreva o preco, como 199,90.';
+      line.price = 'Escreva o preço, como 199,90.';
     } else if (cents < 0) {
-      line.price = 'O preco nao pode ser negativo.';
+      line.price = 'O preço não pode ser negativo.';
     } else if (cents > PRODUCT_LIMITS.priceCents) {
-      line.price = 'Esse preco passa do limite do sistema.';
+      line.price = 'Esse preço passa do limite do sistema.';
     }
 
     if (variant.compareAtPrice.trim() !== '') {
       const compare = centsFromInput(variant.compareAtPrice);
 
       if (compare === null) {
-        line.price = line.price ?? 'O preco de comparacao nao e um numero.';
+        line.price = line.price ?? 'O preço de comparação não e um número.';
       } else if (cents !== null && compare <= cents) {
         // Um "de" menor que o "por" desenha um desconto negativo no card.
-        line.price = line.price ?? 'O preco de comparacao precisa ser maior que o preco.';
+        line.price = line.price ?? 'O preço de comparação precisa ser maior que o preço.';
       }
     }
 
     const stock = Number.parseInt(variant.stock, 10);
 
     if (variant.stock.trim() === '' || !Number.isInteger(stock) || stock < 0) {
-      line.stock = 'Escreva quantas unidades ha, ou zero.';
+      line.stock = 'Escreva quantas unidades há, ou zero.';
     } else if (stock > PRODUCT_LIMITS.stock) {
       line.stock = 'Esse estoque passa do limite do sistema.';
     }

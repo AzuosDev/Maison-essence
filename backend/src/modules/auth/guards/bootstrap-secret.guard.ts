@@ -6,7 +6,7 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 import type { Env } from '../../../config/env.schema.js';
 
 export const BOOTSTRAP_SECRET_HEADER = 'x-bootstrap-secret';
-export const BOOTSTRAP_UNAUTHORIZED_MESSAGE = 'Segredo de bootstrap invalido.';
+export const BOOTSTRAP_UNAUTHORIZED_MESSAGE = 'Segredo de bootstrap inválido.';
 
 /**
  * Porteiro de `POST /auth/bootstrap`.

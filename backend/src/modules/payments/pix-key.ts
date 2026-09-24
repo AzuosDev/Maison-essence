@@ -36,11 +36,11 @@ const BRAZILIAN_WITHOUT_COUNTRY = /^[1-9][0-9]\d{8,9}$/;
 export const PIX_KEY_MESSAGES: Record<PixKeyType, string> = {
   [PIX_KEY_TYPES.CPF]: 'a chave PIX do tipo CPF deve ter 11 digitos',
   [PIX_KEY_TYPES.CNPJ]: 'a chave PIX do tipo CNPJ deve ter 14 digitos',
-  [PIX_KEY_TYPES.EMAIL]: 'a chave PIX do tipo e-mail deve ser um endereco de e-mail valido',
+  [PIX_KEY_TYPES.EMAIL]: 'a chave PIX do tipo e-mail deve ser um endereço de e-mail válido',
   [PIX_KEY_TYPES.PHONE]:
-    'a chave PIX do tipo telefone deve ter DDD e numero, como (88) 99999-9999',
+    'a chave PIX do tipo telefone deve ter DDD e número, como (88) 99999-9999',
   [PIX_KEY_TYPES.RANDOM]:
-    'a chave PIX aleatoria e o codigo de 36 caracteres que o banco gera, como 3f2b1c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d',
+    'a chave PIX aleatória e o código de 36 caracteres que o banco gera, como 3f2b1c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d',
 };
 
 /**

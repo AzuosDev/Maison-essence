@@ -70,7 +70,7 @@ function serviceWith(
 
 describe('DeliveryService.resolveFee', () => {
   describe('retirada', () => {
-    it('zera a taxa e dispensa endereco', async () => {
+    it('zera a taxa e dispensa endereço', async () => {
       const service = serviceWith(storeWith(), null);
 
       const quote = await service.resolveFee({
@@ -85,7 +85,7 @@ describe('DeliveryService.resolveFee', () => {
       expect(quote.freeReason).not.toBe('');
     });
 
-    it('recusa quando a loja nao recebe para retirada', async () => {
+    it('recusa quando a loja não recebe para retirada', async () => {
       const service = serviceWith(storeWith({ pickupEnabled: false }), null);
 
       // Taxa zero e facil; o que nao existe e o lugar de buscar.

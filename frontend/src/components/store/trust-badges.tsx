@@ -20,11 +20,11 @@ const BADGES = [
   {
     icon: ShieldIcon,
     title: 'Site seguro',
-    note: 'Seus dados trafegam protegidos, do inicio ao fim.',
+    note: 'Seus dados trafegam protegidos, do início ao fim.',
   },
   {
     icon: CardIcon,
-    title: 'Parcelamento no cartao',
+    title: 'Parcelamento no cartão',
     note: 'Combinado direto com a gente, pelo WhatsApp.',
   },
 ] as const;

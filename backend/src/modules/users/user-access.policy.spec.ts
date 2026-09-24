@@ -29,9 +29,9 @@ function target(role: UserRole, id = 'alvo'): { id: string; role: UserRole } {
   return { id, role };
 }
 
-describe('policy de acesso a usuarios', () => {
+describe('policy de acesso a usuários', () => {
   describe('visibilidade', () => {
-    it('o OWNER nao enxerga SUPER_ADMIN', () => {
+    it('o OWNER não enxerga SUPER_ADMIN', () => {
       expect(isVisible(actor(USER_ROLES.OWNER), target(USER_ROLES.SUPER_ADMIN))).toBe(false);
       expect(isVisible(actor(USER_ROLES.OWNER), target(USER_ROLES.OWNER))).toBe(true);
       expect(isVisible(actor(USER_ROLES.OWNER), target(USER_ROLES.STAFF))).toBe(true);
@@ -58,7 +58,7 @@ describe('policy de acesso a usuarios', () => {
       }
     });
 
-    it('o OWNER so gerencia STAFF', () => {
+    it('o OWNER só gerencia STAFF', () => {
       const owner = actor(USER_ROLES.OWNER);
 
       expect(canManage(owner, target(USER_ROLES.STAFF))).toBe(true);
@@ -66,7 +66,7 @@ describe('policy de acesso a usuarios', () => {
       expect(canManage(owner, target(USER_ROLES.SUPER_ADMIN))).toBe(false);
     });
 
-    it('alvo invisivel responde 404 e alvo fora do alcance responde 403', () => {
+    it('alvo invisível responde 404 e alvo fora do alcance responde 403', () => {
       const owner = actor(USER_ROLES.OWNER);
 
       expect(() => assertCanManage(owner, target(USER_ROLES.SUPER_ADMIN))).toThrow(
@@ -77,7 +77,7 @@ describe('policy de acesso a usuarios', () => {
       );
     });
 
-    it('editar o proprio cadastro nao depende de alcance', () => {
+    it('editar o próprio cadastro não depende de alcance', () => {
       const owner = actor(USER_ROLES.OWNER, 'mesmo-id');
 
       expect(() =>
@@ -89,8 +89,8 @@ describe('policy de acesso a usuarios', () => {
     });
   });
 
-  describe('atribuicao de papel', () => {
-    it('o OWNER so atribui STAFF', () => {
+  describe('atribuição de papel', () => {
+    it('o OWNER só atribui STAFF', () => {
       const owner = actor(USER_ROLES.OWNER);
 
       expect(() => assertCanAssignRole(owner, USER_ROLES.STAFF)).not.toThrow();
@@ -108,7 +108,7 @@ describe('policy de acesso a usuarios', () => {
       }
     });
 
-    it('ninguem muda o proprio papel', () => {
+    it('ninguém muda o próprio papel', () => {
       const superAdmin = actor(USER_ROLES.SUPER_ADMIN, 'mesmo-id');
 
       expect(() => assertNotOwnRole(superAdmin, target(USER_ROLES.SUPER_ADMIN, 'mesmo-id'))).toThrow(

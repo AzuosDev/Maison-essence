@@ -46,7 +46,7 @@ export function MobileMenu({ open, onClose, onOpenSearch }: MobileMenuProps) {
         <ul className={styles.links}>
           <li>
             <Link to={ROUTES.home} className={styles.link} onClick={onClose}>
-              Inicio
+              Início
             </Link>
           </li>
           <li>

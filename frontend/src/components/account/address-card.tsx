@@ -71,7 +71,7 @@ export function AddressCard({
 
   // Numa lista de cartoes parecidos, tres botoes chamados "Editar" soam
   // iguais para quem ouve a tela. O nome acessivel leva o apelido junto.
-  const name = address.label === '' ? 'Meu endereco' : address.label;
+  const name = address.label === '' ? 'Meu endereço' : address.label;
 
   const lines = addressLines({
     street: address.street,
@@ -89,7 +89,7 @@ export function AddressCard({
       <div className={styles.head}>
         <h3 className={styles.label}>{name}</h3>
 
-        {address.isDefault ? <Badge variant="gold">Padrao</Badge> : null}
+        {address.isDefault ? <Badge variant="gold">Padrão</Badge> : null}
       </div>
 
       <div className={styles.lines}>
@@ -100,7 +100,7 @@ export function AddressCard({
 
       {address.reference === '' ? null : (
         <p className={styles.reference}>
-          <span className={styles.referenceLabel}>Referencia</span>
+          <span className={styles.referenceLabel}>Referência</span>
           {address.reference}
         </p>
       )}
@@ -143,13 +143,13 @@ export function AddressCard({
               type="button"
               className={styles.action}
               disabled={busy}
-              aria-label={`Usar ${name} como endereco padrao`}
+              aria-label={`Usar ${name} como endereço padrão`}
               onClick={() => {
                 onMakeDefault(address);
               }}
             >
               <StarIcon className={styles.actionIcon} />
-              Usar como padrao
+              Usar como padrão
             </button>
           )}
 

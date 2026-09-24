@@ -15,7 +15,7 @@ export const CurrentCustomer = createParamDecorator(
 
     if (!request.customer) {
       // So acontece se alguem usar o decorator numa rota sem `@CustomerAuth()`.
-      throw new UnauthorizedException('Autenticacao necessaria.');
+      throw new UnauthorizedException('Autenticação necessária.');
     }
 
     return request.customer;

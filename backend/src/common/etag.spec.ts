@@ -6,13 +6,13 @@ function requestWith(ifNoneMatch?: string | string[]): Request {
 }
 
 describe('hashOf', () => {
-  it('muda quando o conteudo muda', () => {
+  it('muda quando o conteúdo muda', () => {
     expect(hashOf('{"whatsappNumber":"5588999999999"}')).not.toBe(
       hashOf('{"whatsappNumber":"5588988888888"}'),
     );
   });
 
-  it('repete o mesmo valor para o mesmo conteudo', () => {
+  it('repete o mesmo valor para o mesmo conteúdo', () => {
     expect(hashOf('maison')).toBe(hashOf('maison'));
   });
 });
@@ -26,7 +26,7 @@ describe('versionedEtag', () => {
     );
   });
 
-  it('muda quando o corpo muda sozinho, com a mesma data de alteracao', () => {
+  it('muda quando o corpo muda sozinho, com a mesma data de alteração', () => {
     const updatedAt = new Date('2026-09-20T12:00:00Z');
 
     // O caso do banner agendado: ninguem tocou nas configuracoes, mas a home
@@ -40,11 +40,11 @@ describe('versionedEtag', () => {
 describe('isNotModified', () => {
   const etag = weakEtag('123-abc');
 
-  it('reconhece a mesma versao', () => {
+  it('reconhece a mesma versão', () => {
     expect(isNotModified(requestWith(etag), etag)).toBe(true);
   });
 
-  it('ignora o prefixo fraco na comparacao', () => {
+  it('ignora o prefixo fraco na comparação', () => {
     expect(isNotModified(requestWith('"123-abc"'), etag)).toBe(true);
   });
 
@@ -60,7 +60,7 @@ describe('isNotModified', () => {
     expect(isNotModified(requestWith('W/"456-def"'), etag)).toBe(false);
   });
 
-  it('diz que mudou quando o cliente nao mandou etiqueta', () => {
+  it('diz que mudou quando o cliente não mandou etiqueta', () => {
     expect(isNotModified(requestWith(), etag)).toBe(false);
   });
 });

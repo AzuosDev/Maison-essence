@@ -11,6 +11,6 @@ import type { OrderStatus } from '../../../common/enums/order-status.js';
  * porque so ele mexe no estoque (ver `orders.constants.ts`).
  */
 export class UpdateOrderStatusDto {
-  @IsIn(ORDER_STATUS_VALUES, { message: 'status invalido' })
+  @IsIn(ORDER_STATUS_VALUES, { message: 'status inválido' })
   status: OrderStatus;
 }

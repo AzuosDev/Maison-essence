@@ -18,7 +18,7 @@ describe('readCatalogEnvelope', () => {
     expect(envelope.products).toHaveLength(1);
   });
 
-  it('recusa o que nao tem as duas listas', () => {
+  it('recusa o que não tem as duas listas', () => {
     // E a unica recusa que derruba a importacao inteira: sem as listas nao ha
     // o que importar nem o que relatar.
     expect(() => readCatalogEnvelope({ products: [] })).toThrow(CatalogFormatError);
@@ -28,7 +28,7 @@ describe('readCatalogEnvelope', () => {
 });
 
 describe('readProductEntry', () => {
-  it('tira os nulos que o arquivo usa onde a API usa a ausencia', () => {
+  it('tira os nulos que o arquivo usa onde a API usa a ausência', () => {
     // `brand: null` e "esta lista nao informa marca", nao "apague a marca". O
     // `@IsOptional` deixaria o nulo passar e a marca gravada seria apagada.
     const { candidate } = readProductEntry({
@@ -48,7 +48,7 @@ describe('readProductEntry', () => {
     expect('image' in (variant ?? {})).toBe(false);
   });
 
-  it('preserva o zero e o falso, que sao valores e nao ausencias', () => {
+  it('preserva o zero e o falso, que são valores e não ausências', () => {
     const { candidate } = readProductEntry({
       name: 'Asad',
       slug: 'asad',
@@ -64,7 +64,7 @@ describe('readProductEntry', () => {
     expect(variant?.allowBackorder).toBe(false);
   });
 
-  it('nao converte nada: o valor errado chega cru ao validador', () => {
+  it('não converte nada: o valor errado chega cru ao validador', () => {
     // Coagir aqui transformaria um preco digitado errado num numero plausivel
     // em vez de numa linha no relatorio.
     const { candidate } = readProductEntry({
@@ -78,26 +78,26 @@ describe('readProductEntry', () => {
     expect(variant?.priceCents).toBe('18500');
   });
 
-  it('deriva o endereco do nome quando o arquivo nao traz slug', () => {
+  it('deriva o endereço do nome quando o arquivo não traz slug', () => {
     const entry = readProductEntry({ name: 'Perfume Árabe 100ml' });
 
     expect(entry.slug).toBe('perfume-arabe-100ml');
     expect(entry.candidate.slug).toBe('perfume-arabe-100ml');
   });
 
-  it('da um nome a entrada que nao tem nome nenhum, para o relatorio', () => {
+  it('da um nome a entrada que não tem nome nenhum, para o relatório', () => {
     const entry = readProductEntry({ variants: [] });
 
     expect(entry.slug).toBe('(sem slug)');
   });
 
-  it('descarta categoria que nao e texto em vez de quebrar', () => {
+  it('descarta categoria que não e texto em vez de quebrar', () => {
     const entry = readProductEntry({ name: 'Asad', categorySlugs: ['arabes', 7, null] });
 
     expect(entry.categorySlugs).toEqual(['arabes']);
   });
 
-  it('nao leva sourceCatalog: o produto nao tem onde guardar a origem', () => {
+  it('não leva sourceCatalog: o produto não tem onde guardar a origem', () => {
     const { candidate } = readProductEntry({
       name: 'Asad',
       sourceCatalog: 'AM Atacadista - Originais',
@@ -108,14 +108,14 @@ describe('readProductEntry', () => {
 });
 
 describe('readCategoryEntry', () => {
-  it('le a mae, e trata a raiz como raiz', () => {
+  it('le a mãe, e trata a raiz como raiz', () => {
     expect(readCategoryEntry({ slug: 'perfumes', parentSlug: null }).parentSlug).toBeNull();
     expect(
       readCategoryEntry({ slug: 'arabes', parentSlug: 'perfumes' }).parentSlug,
     ).toBe('perfumes');
   });
 
-  it('manda o slug explicito, para a proxima importacao achar a mesma linha', () => {
+  it('manda o slug explicito, para a próxima importação achar a mesma linha', () => {
     // Sem ele o hook do schema geraria o endereco a partir do nome, e a chave
     // da idempotencia deixaria de ser previsivel.
     const entry = readCategoryEntry({ name: 'Árabes Masculinos' });

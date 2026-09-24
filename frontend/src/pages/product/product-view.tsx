@@ -94,7 +94,7 @@ function breadcrumbFor(product: PublicProductDetail): BreadcrumbItem[] {
   const [category] = product.categories;
 
   return [
-    { label: 'Inicio', to: ROUTES.home },
+    { label: 'Início', to: ROUTES.home },
     ...(category === undefined
       ? []
       : [{ label: category.name, to: ROUTES.category(category.slug) }]),

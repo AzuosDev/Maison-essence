@@ -30,7 +30,7 @@ export const QUOTE_RATE_LIMIT: RateLimitRule = {
  */
 export const PRODUCT_UNAVAILABLE_REASON = 'Este produto saiu do catalogo.';
 
-export const VARIANT_UNAVAILABLE_REASON = 'Essa opcao nao esta mais a venda.';
+export const VARIANT_UNAVAILABLE_REASON = 'Essa opção não esta mais a venda.';
 
 /** Estoque insuficiente, dizendo quanto ainda da para levar. */
 export function outOfStockReason(stock: number): string {
@@ -41,12 +41,12 @@ export function outOfStockReason(stock: number): string {
 
 /** Aviso de linha que ficou de fora do total. */
 export function unavailableWarning(name: string, reason: string): string {
-  return `${name || 'Um item da sacola'}: ${reason} Ele nao entrou no total.`;
+  return `${name || 'Um item da sacola'}: ${reason} Ele não entrou no total.`;
 }
 
 /** O mesmo produto e a mesma variante chegaram em mais de uma linha. */
 export const MERGED_LINES_WARNING =
-  'Itens repetidos foram somados em uma linha so.';
+  'Itens repetidos foram somados em uma linha só.';
 
 /** A soma das linhas repetidas passou do teto por item. */
 export function cappedQuantityWarning(): string {
@@ -55,19 +55,19 @@ export function cappedQuantityWarning(): string {
 
 /** Nenhuma linha sobrou: o total e zero e nao ha o que fechar. */
 export const EMPTY_QUOTE_WARNING =
-  'Nenhum item da sacola esta disponivel. Revise o carrinho antes de fechar o pedido.';
+  'Nenhum item da sacola esta disponível. Revise o carrinho antes de fechar o pedido.';
 
 /** PIX escolhido com a loja sem aceitar PIX. */
 export const PIX_UNAVAILABLE_WARNING =
-  'A loja nao esta aceitando PIX no momento. Escolha outra forma de pagamento.';
+  'A loja não esta aceitando PIX no momento. Escolha outra forma de pagamento.';
 
 /** Cartao escolhido com a loja sem aceitar cartao. */
 export const CARD_UNAVAILABLE_WARNING =
-  'A loja nao esta aceitando cartao no momento. Escolha outra forma de pagamento.';
+  'A loja não esta aceitando cartão no momento. Escolha outra forma de pagamento.';
 
 /** O parcelamento pedido nao esta entre os oferecidos para este total. */
 export function installmentsUnavailableWarning(requested: number, total: number): string {
-  return `${requested}x nao esta disponivel para um pedido de ${formatCents(total)}.`;
+  return `${requested}x não esta disponível para um pedido de ${formatCents(total)}.`;
 }
 
 /** Parcelamento so existe no cartao; no PIX o pagamento e unico. */

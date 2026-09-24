@@ -20,9 +20,9 @@ export default function SoonPage() {
 
   return (
     <MessageScreen
-      title="Esta pagina esta a caminho"
-      description="A moldura da loja ja esta de pe. O conteudo desta tela entra em seguida."
-      actions={<ButtonLink to={ROUTES.home}>Voltar ao inicio</ButtonLink>}
+      title="Esta página esta a caminho"
+      description="A moldura da loja já esta de pé. O conteúdo desta tela entra em seguida."
+      actions={<ButtonLink to={ROUTES.home}>Voltar ao início</ButtonLink>}
       {...(import.meta.env.DEV ? { details: `Rota reservada: ${pathname}` } : {})}
     />
   );

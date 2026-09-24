@@ -42,7 +42,7 @@ export class OrderCustomerDto {
 
   /** Opcional de verdade: a loja atende pelo WhatsApp, nao por e-mail. */
   @IsOptional()
-  @IsEmail({}, { message: 'e-mail invalido' })
+  @IsEmail({}, { message: 'e-mail inválido' })
   @MaxLength(160)
   email?: string;
 }
@@ -78,7 +78,7 @@ export class OrderAddressDto {
 
   @IsOptional()
   @Transform(toZipCode)
-  @Matches(/^(?:\d{5}-\d{3})?$/, { message: 'CEP invalido' })
+  @Matches(/^(?:\d{5}-\d{3})?$/, { message: 'CEP inválido' })
   zipCode?: string;
 
   @IsOptional()
@@ -109,7 +109,7 @@ export class CreateOrderDto extends QuoteCartDto {
    * a resposta certa e 400 com o campo que faltou.
    */
   @ValidateIf((dto: CreateOrderDto) => dto.fulfillment?.mode === FULFILLMENT_MODES.DELIVERY)
-  @IsDefined({ message: 'informe o endereco de entrega' })
+  @IsDefined({ message: 'informe o endereço de entrega' })
   @ValidateNested()
   @Type(() => OrderAddressDto)
   address?: OrderAddressDto;
@@ -126,7 +126,7 @@ export class CreateOrderDto extends QuoteCartDto {
    * Obrigatorio para que essa conferencia nunca seja pulada por omissao.
    */
   @IsDefined({ message: 'informe o total que aparece na sacola' })
-  @IsInt({ message: 'total invalido' })
+  @IsInt({ message: 'total inválido' })
   @Min(0)
   @Max(MAX_CENTS)
   expectedTotalCents: number;

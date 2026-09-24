@@ -59,7 +59,7 @@ export interface DemoInstitutionalPage {
 }
 
 export const DEMO_CATEGORIES: readonly DemoCategory[] = [
-  { name: 'Perfumes Arabes', slug: 'perfumes-arabes', order: 1 },
+  { name: 'Perfumes Árabes', slug: 'perfumes-arabes', order: 1 },
   { name: 'Perfumes Importados', slug: 'perfumes-importados', order: 2 },
   { name: 'Casa e Aromas', slug: 'casa-e-aromas', order: 3 },
 ];
@@ -69,7 +69,7 @@ export const DEMO_PRODUCTS: readonly DemoProduct[] = [
     name: 'Asad',
     slug: 'asad',
     description:
-      'Amadeirado intenso, com abertura citrica e fundo de baunilha e ambar. O arabe mais pedido da loja.',
+      'Amadeirado intenso, com abertura cítrica e fundo de baunilha e âmbar. O árabe mais pedido da loja.',
     brand: 'Lattafa',
     categorySlugs: ['perfumes-arabes'],
     isFeatured: true,
@@ -96,7 +96,7 @@ export const DEMO_PRODUCTS: readonly DemoProduct[] = [
     name: 'Khamrah',
     slug: 'khamrah',
     description:
-      'Gourmand especiado: canela, rum e tonka. Fixacao longa e mais bonito no tempo frio.',
+      'Gourmand especiado: canela, rum e tonka. Fixação longa e mais bonito no tempo frio.',
     brand: 'Lattafa',
     categorySlugs: ['perfumes-arabes'],
     isFeatured: true,
@@ -134,7 +134,7 @@ export const DEMO_PRODUCTS: readonly DemoProduct[] = [
   {
     name: 'La Vie Est Belle',
     slug: 'la-vie-est-belle',
-    description: 'Iris, patchouli e praline. Classico frances, original lacrado e com caixa.',
+    description: 'Iris, patchouli e praline. Classico francês, original lacrado e com caixa.',
     brand: 'Lancome',
     categorySlugs: ['perfumes-importados'],
     isFeatured: true,
@@ -180,7 +180,7 @@ export const DEMO_PRODUCTS: readonly DemoProduct[] = [
     name: 'Vela Aromatica Lavanda',
     slug: 'vela-aromatica-lavanda',
     description:
-      'Cera vegetal e pavio de algodao, feita a mao. Cerca de 40 horas de queima no pote grande.',
+      'Cera vegetal e pavio de algodão, feita a mão. Cerca de 40 horas de queima no pote grande.',
     brand: 'Maison Essence',
     categorySlugs: ['casa-e-aromas'],
     isFeatured: false,
@@ -233,8 +233,8 @@ export const DEMO_INSTITUTIONAL_PAGES: readonly DemoInstitutionalPage[] = [
     content: [
       '## Maison Essence',
       '',
-      'Perfumaria em Sobral, no Ceara. Trabalhamos com arabes, importados',
-      'originais e velas feitas a mao.',
+      'Perfumaria em Sobral, no Ceará. Trabalhamos com árabes, importados',
+      'originais e velas feitas a mão.',
       '',
     ].join('\n'),
   },
@@ -250,10 +250,10 @@ export const DEMO_INSTITUTIONAL_PAGES: readonly DemoInstitutionalPage[] = [
   },
   {
     slug: INSTITUTIONAL_PAGE_SLUGS.RETURNS,
-    title: 'Trocas e devolucoes',
+    title: 'Trocas e devoluções',
     content: [
-      'Voce tem 7 dias corridos a partir do recebimento para desistir da',
-      'compra, conforme o Codigo de Defesa do Consumidor. O produto precisa',
+      'Você tem 7 dias corridos a partir do recebimento para desistir da',
+      'compra, conforme o Código de Defesa do Consumidor. O produto precisa',
       'voltar lacrado.',
       '',
     ].join('\n'),
@@ -264,7 +264,7 @@ export const DEMO_STORE_SETTINGS = {
   storeName: 'Maison Essence',
   // Numero de exemplo: troque no painel antes de mostrar a loja para alguem.
   whatsappNumber: '5588999999999',
-  announcementText: 'Frete gratis acima de R$ 250 para todo o Ceara',
+  announcementText: 'Frete grátis acima de R$ 250 para todo o Ceará',
   contactEmail: 'contato@maisonessence.com.br',
   businessHours: 'Seg a Sex, 9h as 18h. Sab, 9h as 13h',
   pickupEnabled: true,
@@ -276,9 +276,9 @@ export const DEMO_STORE_SETTINGS = {
     city: 'Sobral',
     state: 'CE',
     zipCode: '62010-000',
-    reference: 'Em frente a praca da Se',
+    reference: 'Em frente a praça da Se',
   },
-  pickupInstructions: 'Avise no WhatsApp antes de vir: separamos o pedido em ate duas horas.',
+  pickupInstructions: 'Avise no WhatsApp antes de vir: separamos o pedido em até duas horas.',
   socialLinks: {
     instagram: 'https://instagram.com/maisonessence',
     tiktok: '',

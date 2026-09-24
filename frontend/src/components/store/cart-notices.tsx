@@ -80,7 +80,7 @@ export function CartNotices({ unavailable, pricesChanged, onDismissPrices }: Car
           </ul>
 
           <p className={styles.note}>
-            Eles continuam na lista abaixo, fora do total, para voce conferir antes de tirar.
+            Eles continuam na lista abaixo, fora do total, para você conferir antes de tirar.
           </p>
 
           <button type="button" className={styles.action} onClick={removeAll}>
@@ -91,7 +91,7 @@ export function CartNotices({ unavailable, pricesChanged, onDismissPrices }: Car
 
       {pricesChanged ? (
         <p className={styles.prices} aria-live="polite">
-          <span>Os valores foram atualizados desde a sua ultima visita.</span>
+          <span>Os valores foram atualizados desde a sua última visita.</span>
 
           <button
             type="button"

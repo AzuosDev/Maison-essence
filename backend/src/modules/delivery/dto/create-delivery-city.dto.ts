@@ -52,7 +52,7 @@ export class CreateDeliveryCityDto {
    * cidade sob a regra global da loja, que esta em `StoreSettings`.
    */
   @IsOptional()
-  @IsInt({ message: 'o minimo para frete gratis deve ser um inteiro em centavos' })
+  @IsInt({ message: 'o mínimo para frete grátis deve ser um inteiro em centavos' })
   @Min(0)
   @Max(MAX_CENTS)
   minOrderForFreeCents?: number | null;

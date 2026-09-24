@@ -64,7 +64,7 @@ ProductVariantSchema.pre('validate', function () {
   if (this.compareAtPriceCents != null && this.compareAtPriceCents <= this.priceCents) {
     this.invalidate(
       'compareAtPriceCents',
-      'o preco de comparacao precisa ser maior que o preco de venda',
+      'o preço de comparação precisa ser maior que o preço de venda',
     );
   }
 });

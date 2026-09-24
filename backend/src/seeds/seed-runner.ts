@@ -64,10 +64,10 @@ async function ensureIndexes(app: INestApplicationContext, logger: Logger): Prom
       // Indice ja existente com outras opcoes: e divergencia entre o schema e
       // o banco, nao motivo para abortar o seed.
       logger.warn(
-        `Indices de ${model.modelName}: ${error instanceof Error ? error.message : String(error)}`,
+        `Índices de ${model.modelName}: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
 
-  logger.log(`Indices conferidos em ${models.length} colecoes.`);
+  logger.log(`Índices conferidos em ${models.length} coleções.`);
 }

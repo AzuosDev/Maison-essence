@@ -13,7 +13,7 @@ import { MAX_PAGE_CONTENT_LENGTH } from '../settings.constants.js';
  */
 export class InstitutionalPageDto {
   @IsIn(INSTITUTIONAL_PAGE_SLUG_VALUES, {
-    message: `pagina desconhecida: use um de ${INSTITUTIONAL_PAGE_SLUG_VALUES.join(', ')}`,
+    message: `página desconhecida: use um de ${INSTITUTIONAL_PAGE_SLUG_VALUES.join(', ')}`,
   })
   slug: InstitutionalPageSlug;
 

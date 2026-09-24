@@ -13,11 +13,11 @@ export default function ReadyToShipPage() {
   return (
     <CatalogView
       title="Pronta entrega"
-      description="O que esta em maos e sai hoje, sem esperar encomenda."
-      breadcrumb={[{ label: 'Inicio', to: ROUTES.home }, { label: 'Pronta entrega' }]}
+      description="O que esta em mãos e sai hoje, sem esperar encomenda."
+      breadcrumb={[{ label: 'Início', to: ROUTES.home }, { label: 'Pronta entrega' }]}
       context={{ readyToShip: true }}
       emptyTitle="Nada em pronta entrega agora"
-      emptyDescription="O estoque em maos acabou ou nao atende aos filtros escolhidos. Fale com a gente no WhatsApp para encomendar."
+      emptyDescription="O estoque em mãos acabou ou não atende aos filtros escolhidos. Fale com a gente no WhatsApp para encomendar."
     />
   );
 }

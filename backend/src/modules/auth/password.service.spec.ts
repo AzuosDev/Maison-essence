@@ -33,7 +33,7 @@ describe('PasswordService', () => {
     expect(missing).toBeGreaterThan(present / 10);
   });
 
-  it('recusa hash em formato invalido sem lancar', async () => {
+  it('recusa hash em formato inválido sem lancar', async () => {
     await expect(passwords.verify('nao-e-um-hash', 'qualquer-uma')).resolves.toBe(false);
   });
 });

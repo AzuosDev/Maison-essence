@@ -107,7 +107,7 @@ export function QuoteConflictModal({
     >
       <div className={styles.compare}>
         <div className={styles.column}>
-          <p className={styles.label}>Valor que voce viu</p>
+          <p className={styles.label}>Valor que você viu</p>
           <p className={cx(styles.value, styles.old, 'tabular')}>
             {formatCents(previousTotalCents)}
           </p>
@@ -154,12 +154,12 @@ function Difference({
     <p className={styles.difference}>
       {delta > 0 ? (
         <>
-          Sao <strong className="tabular">{formatCents(delta)}</strong> a mais que o valor
+          São <strong className="tabular">{formatCents(delta)}</strong> a mais que o valor
           anterior.
         </>
       ) : (
         <>
-          Sao <strong className="tabular">{formatCents(-delta)}</strong> a menos que o valor
+          São <strong className="tabular">{formatCents(-delta)}</strong> a menos que o valor
           anterior.
         </>
       )}

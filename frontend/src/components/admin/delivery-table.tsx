@@ -145,10 +145,10 @@ export function DeliveryTable({
             <th scope="col">UF</th>
             <th scope="col">Taxa</th>
             <th scope="col">Prazo</th>
-            <th scope="col">Frete gratis a partir de</th>
+            <th scope="col">Frete grátis a partir de</th>
             <th scope="col">No checkout</th>
             <th scope="col">
-              <span className="visually-hidden">Acoes</span>
+              <span className="visually-hidden">Ações</span>
             </th>
           </tr>
         </thead>
@@ -321,7 +321,7 @@ function CityFields({
     ),
     days: (
       <Input
-        label={wide ? `Prazo de ${city.name}` : 'Prazo em dias uteis'}
+        label={wide ? `Prazo de ${city.name}` : 'Prazo em dias úteis'}
         hideLabel={wide}
         block
         numeric
@@ -338,7 +338,7 @@ function CityFields({
     ),
     freeFrom: (
       <Input
-        label={wide ? `Frete gratis de ${city.name}` : 'Frete gratis a partir de'}
+        label={wide ? `Frete grátis de ${city.name}` : 'Frete grátis a partir de'}
         hideLabel={wide}
         block
         numeric
@@ -347,7 +347,7 @@ function CityFields({
         placeholder="regra da loja"
         value={draft.freeFrom}
         error={errors.freeFrom}
-        hint={wide ? undefined : 'Em branco, vale o minimo geral de Configuracoes.'}
+        hint={wide ? undefined : 'Em branco, vale o mínimo geral de Configurações.'}
         onChange={(event) => {
           set({ freeFrom: event.target.value });
         }}

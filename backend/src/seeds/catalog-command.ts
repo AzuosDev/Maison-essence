@@ -90,7 +90,7 @@ export function readCatalogFile(path: string): unknown {
     content = readFileSync(path, 'utf8');
   } catch {
     throw new CatalogFormatError(
-      `Nao encontrei o arquivo ${path}. Use --file=<caminho> para apontar outro.`,
+      `Não encontrei o arquivo ${path}. Use --file=<caminho> para apontar outro.`,
     );
   }
 
@@ -98,7 +98,7 @@ export function readCatalogFile(path: string): unknown {
     return JSON.parse(content);
   } catch (error: unknown) {
     throw new CatalogFormatError(
-      `O arquivo ${path} nao e um JSON valido: ${error instanceof Error ? error.message : ''}`,
+      `O arquivo ${path} não e um JSON válido: ${error instanceof Error ? error.message : ''}`,
     );
   }
 }
@@ -128,7 +128,7 @@ function writeRollback(report: CatalogImportReport, logger: Logger): void {
   mkdirSync(ROLLBACK_DIR, { recursive: true });
   writeFileSync(path, `${JSON.stringify(rollback, null, 2)}\n`, 'utf8');
 
-  logger.log(`Sem transacao: os ${total} ids criados ficaram em ${path}`);
+  logger.log(`Sem transação: os ${total} ids criados ficaram em ${path}`);
 }
 
 /** `--only=asad-elixir` e `--only asad-elixir` valem o mesmo. */

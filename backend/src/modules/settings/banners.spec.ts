@@ -8,23 +8,23 @@ function banner(overrides: Partial<ScheduledBanner> = {}): ScheduledBanner {
 }
 
 describe('isBannerLive', () => {
-  it('exibe o banner sem periodo definido', () => {
+  it('exibe o banner sem período definido', () => {
     expect(isBannerLive(banner(), NOW)).toBe(true);
   });
 
-  it('nao exibe banner cuja data de fim ja passou', () => {
+  it('não exibe banner cuja data de fim já passou', () => {
     expect(isBannerLive(banner({ endsAt: new Date('2026-09-19T23:59:59.000Z') }), NOW)).toBe(
       false,
     );
   });
 
-  it('nao exibe banner que ainda vai comecar', () => {
+  it('não exibe banner que ainda vai começar', () => {
     expect(isBannerLive(banner({ startsAt: new Date('2026-12-01T00:00:00.000Z') }), NOW)).toBe(
       false,
     );
   });
 
-  it('exibe banner dentro do periodo', () => {
+  it('exibe banner dentro do período', () => {
     const agendado = banner({
       startsAt: new Date('2026-09-01T00:00:00.000Z'),
       endsAt: new Date('2026-10-01T00:00:00.000Z'),
@@ -38,13 +38,13 @@ describe('isBannerLive', () => {
     expect(isBannerLive(banner({ startsAt: NOW }), NOW)).toBe(true);
   });
 
-  it('nao exibe banner desligado na mao, mesmo dentro do periodo', () => {
+  it('não exibe banner desligado na mão, mesmo dentro do período', () => {
     expect(isBannerLive(banner({ isActive: false }), NOW)).toBe(false);
   });
 });
 
 describe('liveBanners', () => {
-  it('devolve so os vigentes, na ordem escolhida', () => {
+  it('devolve só os vigentes, na ordem escolhida', () => {
     const banners = [
       banner({ order: 2 }),
       banner({ order: 0, endsAt: new Date('2026-01-01T00:00:00.000Z') }),
@@ -56,12 +56,12 @@ describe('liveBanners', () => {
 });
 
 describe('hasValidWindow', () => {
-  it('aceita periodo com uma ponta aberta', () => {
+  it('aceita período com uma ponta aberta', () => {
     expect(hasValidWindow({ startsAt: NOW, endsAt: null })).toBe(true);
     expect(hasValidWindow({ startsAt: null, endsAt: NOW })).toBe(true);
   });
 
-  it('recusa fim anterior ou igual ao inicio', () => {
+  it('recusa fim anterior ou igual ao início', () => {
     expect(
       hasValidWindow({ startsAt: NOW, endsAt: new Date('2026-09-19T00:00:00.000Z') }),
     ).toBe(false);
@@ -70,13 +70,13 @@ describe('hasValidWindow', () => {
 });
 
 describe('unknownBannerIds', () => {
-  it('aponta o id que nao existe mais', () => {
+  it('aponta o id que não existe mais', () => {
     const incoming = [{ id: 'aaa' }, {}, { id: 'ccc' }];
 
     expect(unknownBannerIds(incoming, ['aaa', 'bbb'])).toEqual(['ccc']);
   });
 
-  it('nao reclama de banner novo, que vem sem id', () => {
+  it('não reclama de banner novo, que vem sem id', () => {
     expect(unknownBannerIds([{}, {}], [])).toEqual([]);
   });
 });

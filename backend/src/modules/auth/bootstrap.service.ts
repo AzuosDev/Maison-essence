@@ -25,7 +25,7 @@ export type BootstrapOrigin = (typeof BOOTSTRAP_ORIGINS)[keyof typeof BOOTSTRAP_
 
 /** Resposta da rota quando o banco ja tem gente. Nao diz quem. */
 export const BOOTSTRAP_ALREADY_DONE_MESSAGE =
-  'O banco ja tem usuario: crie os proximos pelo painel.';
+  'O banco já tem usuário: crie os próximos pelo painel.';
 
 export const BOOTSTRAP_OUTCOMES = {
   CREATED: 'created',
@@ -50,7 +50,7 @@ export interface BootstrapOptions {
 /** Faltam as variaveis do primeiro usuario. Nao e erro de uso, e de ambiente. */
 export class BootstrapNotConfiguredError extends Error {
   constructor(readonly missing: readonly string[]) {
-    super(`Defina ${missing.join(' e ')} antes de criar o primeiro usuario.`);
+    super(`Defina ${missing.join(' e ')} antes de criar o primeiro usuário.`);
     this.name = 'BootstrapNotConfiguredError';
   }
 }
@@ -105,7 +105,7 @@ export class BootstrapService {
       const existing = await this.users.findOne({ email: input.email }).exec();
 
       if (!existing) {
-        throw new Error('Falha ao criar o primeiro usuario.');
+        throw new Error('Falha ao criar o primeiro usuário.');
       }
 
       return { outcome: BOOTSTRAP_OUTCOMES.ALREADY_BOOTSTRAPPED, blockedBy: toUserView(existing) };

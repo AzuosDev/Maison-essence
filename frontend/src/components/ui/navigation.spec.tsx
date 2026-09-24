@@ -19,42 +19,42 @@ afterEach(cleanup);
 function Abas() {
   return (
     <Tabs defaultValue="descricao">
-      <TabList aria-label="Informacoes do produto">
-        <Tab value="descricao">Descricao</Tab>
+      <TabList aria-label="Informações do produto">
+        <Tab value="descricao">Descrição</Tab>
         <Tab value="notas">Notas</Tab>
         <Tab value="entrega">Entrega</Tab>
       </TabList>
 
       <TabPanel value="descricao">Perfume amadeirado.</TabPanel>
-      <TabPanel value="notas">Bergamota e ambar.</TabPanel>
+      <TabPanel value="notas">Bergamota e âmbar.</TabPanel>
       <TabPanel value="entrega">Taxa fixa por cidade.</TabPanel>
     </Tabs>
   );
 }
 
-test('so a aba selecionada esta na ordem do Tab', () => {
+test('só a aba selecionada esta na ordem do Tab', () => {
   render(<Abas />);
 
-  expect(screen.getByRole('tab', { name: 'Descricao' }).tabIndex).toBe(0);
+  expect(screen.getByRole('tab', { name: 'Descrição' }).tabIndex).toBe(0);
   expect(screen.getByRole('tab', { name: 'Notas' }).tabIndex).toBe(-1);
   expect(screen.getByRole('tab', { name: 'Entrega' }).tabIndex).toBe(-1);
 });
 
-test('as setas trocam de aba e a selecao acompanha o foco', async () => {
+test('as setas trocam de aba e a seleção acompanha o foco', async () => {
   const user = userEvent.setup();
 
   render(<Abas />);
 
-  screen.getByRole('tab', { name: 'Descricao' }).focus();
+  screen.getByRole('tab', { name: 'Descrição' }).focus();
 
   await user.keyboard('{ArrowRight}');
 
   expect(screen.getByRole('tab', { name: 'Notas' })).toHaveProperty('ariaSelected', 'true');
-  expect(screen.getByText('Bergamota e ambar.')).toBeDefined();
+  expect(screen.getByText('Bergamota e âmbar.')).toBeDefined();
 
   await user.keyboard('{ArrowLeft}');
 
-  expect(screen.getByRole('tab', { name: 'Descricao' })).toHaveProperty('ariaSelected', 'true');
+  expect(screen.getByRole('tab', { name: 'Descrição' })).toHaveProperty('ariaSelected', 'true');
 });
 
 test('a fila de abas circula nas duas pontas', async () => {
@@ -62,7 +62,7 @@ test('a fila de abas circula nas duas pontas', async () => {
 
   render(<Abas />);
 
-  screen.getByRole('tab', { name: 'Descricao' }).focus();
+  screen.getByRole('tab', { name: 'Descrição' }).focus();
 
   // Para tras na primeira leva a ultima.
   await user.keyboard('{ArrowLeft}');
@@ -70,7 +70,7 @@ test('a fila de abas circula nas duas pontas', async () => {
 
   // E para frente na ultima volta a primeira.
   await user.keyboard('{ArrowRight}');
-  expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Descricao' }));
+  expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Descrição' }));
 });
 
 test('Home e End vao para as pontas', async () => {
@@ -78,13 +78,13 @@ test('Home e End vao para as pontas', async () => {
 
   render(<Abas />);
 
-  screen.getByRole('tab', { name: 'Descricao' }).focus();
+  screen.getByRole('tab', { name: 'Descrição' }).focus();
 
   await user.keyboard('{End}');
   expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Entrega' }));
 
   await user.keyboard('{Home}');
-  expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Descricao' }));
+  expect(document.activeElement).toBe(screen.getByRole('tab', { name: 'Descrição' }));
 });
 
 function Sanfona() {
@@ -94,10 +94,10 @@ function Sanfona() {
         Taxa fixa por cidade.
       </AccordionItem>
       <AccordionItem value="pagamento" title="Pagamento">
-        PIX e cartao.
+        PIX e cartão.
       </AccordionItem>
       <AccordionItem value="troca" title="Troca">
-        Ate sete dias.
+        Até sete dias.
       </AccordionItem>
     </Accordion>
   );
@@ -123,7 +123,7 @@ test('a sanfona abre e fecha, e anuncia o estado', async () => {
   expect(gatilho.getAttribute('aria-expanded')).toBe('false');
 });
 
-test('abrir um item fecha o anterior quando o modo e de um so', async () => {
+test('abrir um item fecha o anterior quando o modo e de um só', async () => {
   const user = userEvent.setup();
 
   render(<Sanfona />);
@@ -132,7 +132,7 @@ test('abrir um item fecha o anterior quando o modo e de um so', async () => {
   await user.click(screen.getByRole('button', { name: /Pagamento/ }));
 
   expect(screen.queryByText('Taxa fixa por cidade.')).toBeNull();
-  expect(screen.getByText('PIX e cartao.')).toBeDefined();
+  expect(screen.getByText('PIX e cartão.')).toBeDefined();
 });
 
 test('as setas movem entre os gatilhos da sanfona', async () => {

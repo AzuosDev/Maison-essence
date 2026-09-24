@@ -197,7 +197,7 @@ function StockNote({ quote }: { quote: QuoteLine | null }) {
   return (
     <p className={styles.stock}>
       {quote.availableStock === 1
-        ? 'Ultima unidade'
+        ? 'Última unidade'
         : `Restam ${String(quote.availableStock)} unidades`}
     </p>
   );

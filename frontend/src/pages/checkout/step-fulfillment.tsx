@@ -131,7 +131,7 @@ export function StepFulfillment({
       total={<StepTotal quoting={quoting} />}
     >
       <RadioGroup
-        legend="Como voce quer receber"
+        legend="Como você quer receber"
         name="fulfillment-mode"
         value={mode ?? ''}
         onChange={(value) => {
@@ -157,7 +157,7 @@ export function StepFulfillment({
           <Radio
             value={FULFILLMENT_MODES.PICKUP}
             label="Retirar na loja"
-            description="Sem taxa. Voce busca no endereco abaixo."
+            description="Sem taxa. Você busca no endereço abaixo."
             card
             className={styles.choice}
           />
@@ -209,7 +209,7 @@ export function StepFulfillment({
             />
 
             <Input
-              label="Numero"
+              label="Número"
               value={address.number}
               autoComplete="address-line2"
               placeholder="s/n"
@@ -235,7 +235,7 @@ export function StepFulfillment({
             />
 
             <Input
-              label="Ponto de referencia"
+              label="Ponto de referência"
               value={address.reference}
               hint="Perto de que? E o que mais ajuda a achar a sua casa."
               error={errors['address.reference']}
@@ -248,7 +248,7 @@ export function StepFulfillment({
               cliente procura o campo que sempre existiu nos outros sites e
               conclui que o formulario esta quebrado. */}
           <p className={styles.noZip}>
-            Nao pedimos CEP: a taxa vem da cidade escolhida, e nao da faixa de endereco.
+            Não pedimos CEP: a taxa vem da cidade escolhida, e não da faixa de endereço.
           </p>
         </div>
       ) : null}
@@ -288,7 +288,7 @@ function PickupPanel() {
 
       {settings?.businessHours ? (
         <p className={styles.panelRow}>
-          <span className={styles.panelLabel}>Horario</span>
+          <span className={styles.panelLabel}>Horário</span>
           {settings.businessHours}
         </p>
       ) : null}
@@ -349,7 +349,7 @@ function DeliveryFee({
         <span>Taxa de entrega</span>
 
         <strong className={cx(styles.feeValue, free && styles.feeFree, 'tabular')}>
-          {free ? 'Gratis' : formatCents(quoted?.deliveryFeeCents ?? city.feeCents)}
+          {free ? 'Grátis' : formatCents(quoted?.deliveryFeeCents ?? city.feeCents)}
         </strong>
       </p>
 
@@ -393,7 +393,7 @@ function useSavedAddressOptions(
 
     return customer.addresses.map((saved) => ({
       id: saved.id,
-      label: saved.label === '' ? 'Endereco salvo' : saved.label,
+      label: saved.label === '' ? 'Endereço salvo' : saved.label,
       line: savedAddressLine(saved),
       address: {
         street: saved.street,
@@ -433,7 +433,7 @@ function SavedAddresses({
 }) {
   return (
     <div className={styles.saved}>
-      <p className={styles.savedTitle}>Usar um endereco salvo</p>
+      <p className={styles.savedTitle}>Usar um endereço salvo</p>
 
       <ul className={styles.savedList}>
         {addresses.map((saved) => (

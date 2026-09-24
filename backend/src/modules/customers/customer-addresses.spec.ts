@@ -7,7 +7,7 @@ function address(data: Partial<CustomerAddressDto> = {}): CustomerAddressDto {
 }
 
 describe('planAddresses', () => {
-  it('preserva o id do endereco que ja existe', () => {
+  it('preserva o id do endereço que já existe', () => {
     const id = new Types.ObjectId().toHexString();
     const { addresses, unknown } = planAddresses([address({ id })], [id]);
 
@@ -15,13 +15,13 @@ describe('planAddresses', () => {
     expect(unknown).toEqual([]);
   });
 
-  it('da id novo ao endereco que chega sem um', () => {
+  it('da id novo ao endereço que chega sem um', () => {
     const { addresses } = planAddresses([address()], []);
 
     expect(Types.ObjectId.isValid(String(addresses[0]?._id))).toBe(true);
   });
 
-  it('acusa o id que nao e da conta', () => {
+  it('acusa o id que não e da conta', () => {
     const meu = new Types.ObjectId().toHexString();
     const alheio = new Types.ObjectId().toHexString();
     const { unknown } = planAddresses([address({ id: alheio })], [meu]);
@@ -29,7 +29,7 @@ describe('planAddresses', () => {
     expect(unknown).toEqual([alheio]);
   });
 
-  it('completa com vazio o que o formulario nao preencheu', () => {
+  it('completa com vazio o que o formulário não preencheu', () => {
     const [gravado] = planAddresses([address()], []).addresses;
 
     expect(gravado).toMatchObject({
@@ -42,7 +42,7 @@ describe('planAddresses', () => {
     });
   });
 
-  it('remover um endereco e manda-lo de fora da lista', () => {
+  it('remover um endereço e manda-lo de fora da lista', () => {
     const fica = new Types.ObjectId().toHexString();
     const sai = new Types.ObjectId().toHexString();
     const { addresses } = planAddresses([address({ id: fica })], [fica, sai]);
@@ -53,7 +53,7 @@ describe('planAddresses', () => {
 });
 
 describe('isDefaultAt', () => {
-  it('sem ninguem marcado, o primeiro e o padrao', () => {
+  it('sem ninguém marcado, o primeiro e o padrão', () => {
     const lista = [address(), address({ street: 'Rua B' })];
 
     expect([isDefaultAt(lista, 0), isDefaultAt(lista, 1)]).toEqual([true, false]);
@@ -72,7 +72,7 @@ describe('isDefaultAt', () => {
     expect([isDefaultAt(lista, 0), isDefaultAt(lista, 1)]).toEqual([true, false]);
   });
 
-  it('lista vazia nao tem padrao', () => {
+  it('lista vazia não tem padrão', () => {
     expect(isDefaultAt([], 0)).toBe(false);
   });
 });
@@ -85,7 +85,7 @@ describe('citiesOf', () => {
     expect(citiesOf(lista)).toEqual([cidade]);
   });
 
-  it('nenhum endereco com cidade, nenhuma consulta a fazer', () => {
+  it('nenhum endereço com cidade, nenhuma consulta a fazer', () => {
     expect(citiesOf([address()])).toEqual([]);
   });
 });

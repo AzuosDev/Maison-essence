@@ -24,13 +24,13 @@ export default function SearchPage() {
   return (
     <CatalogView
       title={term === '' ? 'Busca' : `Resultados para "${term}"`}
-      breadcrumb={[{ label: 'Inicio', to: ROUTES.home }, { label: 'Busca' }]}
+      breadcrumb={[{ label: 'Início', to: ROUTES.home }, { label: 'Busca' }]}
       highlight={term}
-      emptyTitle={term === '' ? 'O que voce procura?' : `Nada encontrado para "${term}"`}
+      emptyTitle={term === '' ? 'O que você procura?' : `Nada encontrado para "${term}"`}
       emptyDescription={
         term === ''
-          ? 'Use a lupa no cabecalho para procurar por nome ou marca.'
-          : 'Tente uma palavra mais curta, procure pela marca, ou veja as sugestoes abaixo.'
+          ? 'Use a lupa no cabeçalho para procurar por nome ou marca.'
+          : 'Tente uma palavra mais curta, procure pela marca, ou veja as sugestões abaixo.'
       }
     />
   );

@@ -61,7 +61,7 @@ export function CartSummary({
       {isError && subtotalCents === null ? (
         <div className={styles.failed} role="alert">
           <p className={styles.failedText}>
-            Nao foi possivel calcular o total agora. Os itens continuam guardados.
+            Não foi possível calcular o total agora. Os itens continuam guardados.
           </p>
 
           <Button variant="secondary" block onClick={onRetry}>
@@ -101,15 +101,15 @@ export function CartSummary({
           </dl>
 
           <p className={styles.note}>
-            O frete entra no fechamento do pedido, quando voce escolher a cidade ou a retirada na
+            O frete entra no fechamento do pedido, quando você escolher a cidade ou a retirada na
             loja.
           </p>
 
           {unavailableCount > 0 ? (
             <p className={styles.excluded}>
               {unavailableCount === 1
-                ? '1 item indisponivel nao entrou nesta conta.'
-                : `${String(unavailableCount)} itens indisponiveis nao entraram nesta conta.`}
+                ? '1 item indisponível não entrou nesta conta.'
+                : `${String(unavailableCount)} itens indisponíveis não entraram nesta conta.`}
             </p>
           ) : null}
 

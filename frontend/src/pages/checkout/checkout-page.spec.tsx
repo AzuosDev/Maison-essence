@@ -57,7 +57,7 @@ const CIDADES = [
     feeCents: 1500,
     feeLabel: 'R$ 15,00',
     estimatedDays: 2,
-    estimatedLabel: 'Ate 2 dias uteis',
+    estimatedLabel: 'Até 2 dias úteis',
     freeFromCents: null,
     freeFromLabel: '',
   },
@@ -68,7 +68,7 @@ const CIDADES = [
     feeCents: 2500,
     feeLabel: 'R$ 25,00',
     estimatedDays: 3,
-    estimatedLabel: 'Ate 3 dias uteis',
+    estimatedLabel: 'Até 3 dias úteis',
     freeFromCents: null,
     freeFromLabel: '',
   },
@@ -84,7 +84,7 @@ const CONFIGURACOES = {
   socialLinks: { instagram: '', tiktok: '' },
   pickupEnabled: true,
   pickupAddress: {
-    street: 'Rua Sao Pedro',
+    street: 'Rua São Pedro',
     number: '100',
     complement: '',
     district: 'Centro',
@@ -438,7 +438,7 @@ async function avancar(usuario: ReturnType<typeof userEvent.setup>) {
 
 /* ---- Os criterios de aceite ----------------------------------------------- */
 
-test('escolher retirada some com os campos de endereco e zera a taxa', async () => {
+test('escolher retirada some com os campos de endereço e zera a taxa', async () => {
   const usuario = userEvent.setup();
 
   comUmItem();
@@ -465,7 +465,7 @@ test('escolher retirada some com os campos de endereco e zera a taxa', async () 
   expect(screen.queryByLabelText('Cidade da entrega')).toBeNull();
 
   // O endereco da loja entra no lugar dos campos.
-  expect(screen.getByText(/Rua Sao Pedro/)).toBeTruthy();
+  expect(screen.getByText(/Rua São Pedro/)).toBeTruthy();
 
   // E a taxa sai da conta: o corpo da cotacao vai sem cidade, e o resumo
   // mostra o total sem frete.
@@ -543,7 +543,7 @@ test('trocar a cidade muda a taxa e o total na hora', async () => {
   });
 });
 
-test('recarregar no meio do checkout nao perde nada', async () => {
+test('recarregar no meio do checkout não perde nada', async () => {
   const usuario = userEvent.setup();
 
   comUmItem();
@@ -557,7 +557,7 @@ test('recarregar no meio do checkout nao perde nada', async () => {
   await usuario.selectOptions(await screen.findByLabelText('Cidade da entrega'), 'c-crato');
   await usuario.type(screen.getByLabelText('Rua'), 'Rua das Flores');
   await usuario.type(screen.getByLabelText('Bairro'), 'Centro');
-  await usuario.type(screen.getByLabelText('Ponto de referencia'), 'Perto da praca');
+  await usuario.type(screen.getByLabelText('Ponto de referência'), 'Perto da praça');
 
   /**
    * A recarga.
@@ -594,12 +594,12 @@ test('recarregar no meio do checkout nao perde nada', async () => {
 
   expect(screen.getByLabelText('Rua')).toHaveProperty('value', 'Rua das Flores');
   expect(screen.getByLabelText('Bairro')).toHaveProperty('value', 'Centro');
-  expect(screen.getByLabelText('Ponto de referencia')).toHaveProperty('value', 'Perto da praca');
+  expect(screen.getByLabelText('Ponto de referência')).toHaveProperty('value', 'Perto da praça');
 });
 
 /* ---- Os dois erros que a revisao visual nao pega -------------------------- */
 
-test('duplo clique em finalizar gera um pedido so', async () => {
+test('duplo clique em finalizar gera um pedido só', async () => {
   const usuario = userEvent.setup();
 
   comUmItem();
@@ -627,7 +627,7 @@ test('o 409 abre o modal comparando os dois valores, sem reenviar sozinho', asyn
     jsonResponse(
       {
         statusCode: 409,
-        message: 'O valor do pedido mudou desde que voce montou a sacola.',
+        message: 'O valor do pedido mudou desde que você montou a sacola.',
         error: 'Conflict',
         details: {
           reason: 'total',
@@ -703,14 +703,14 @@ test('a aba do WhatsApp e reservada no clique e recebe a URL do servidor', async
   expect(screen.queryByText('A sacola')).toBeNull();
 });
 
-test('erro na criacao do pedido nao esvazia o carrinho', async () => {
+test('erro na criação do pedido não esvazia o carrinho', async () => {
   const usuario = userEvent.setup();
 
   orderResponse = () =>
     jsonResponse(
       {
         statusCode: 500,
-        message: 'Nao foi possivel registrar o pedido agora.',
+        message: 'Não foi possível registrar o pedido agora.',
         error: 'Internal Server Error',
         timestamp: new Date().toISOString(),
         path: '/orders',
@@ -751,7 +751,7 @@ test('o 429 pede para esperar em vez de oferecer o reenvio na hora', async () =>
     jsonResponse(
       {
         statusCode: 429,
-        message: 'Muitas requisicoes em pouco tempo. Espere um instante e tente de novo.',
+        message: 'Muitas requisições em pouco tempo. Espere um instante e tente de novo.',
         error: 'Too Many Requests',
         timestamp: new Date().toISOString(),
         path: '/orders',
@@ -783,7 +783,7 @@ test('o 409 de estoque tira da sacola o item que acabou', async () => {
     jsonResponse(
       {
         statusCode: 409,
-        message: 'A ultima unidade de um dos itens acabou de ser vendida.',
+        message: 'A última unidade de um dos itens acabou de ser vendida.',
         error: 'Conflict',
         timestamp: new Date().toISOString(),
         path: '/orders',

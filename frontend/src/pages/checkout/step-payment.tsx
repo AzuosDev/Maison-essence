@@ -153,8 +153,8 @@ export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepP
         {cardAvailable ? (
           <Radio
             value={PAYMENT_METHODS.CARD}
-            label="Cartao"
-            description={`Em ate ${String(card.maxInstallments)}x na maquininha`}
+            label="Cartão"
+            description={`Em até ${String(card.maxInstallments)}x na maquininha`}
             card
             className={styles.choice}
           />
@@ -311,8 +311,8 @@ function WhatsappNotice() {
         <p className={styles.noticeTitle}>Nada e cobrado neste site</p>
 
         <p className={styles.noticeText}>
-          Voce nao digita dados de cartao aqui. Ao finalizar, o pedido vai para o WhatsApp da loja,
-          e e por la que o pagamento e combinado — chave PIX ou maquininha na entrega.
+          Você não digita dados de cartão aqui. Ao finalizar, o pedido vai para o WhatsApp da loja,
+          e e por lá que o pagamento e combinado — chave PIX ou maquininha na entrega.
         </p>
       </div>
     </div>

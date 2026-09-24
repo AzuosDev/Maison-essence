@@ -46,7 +46,7 @@ function pagina(items: PublicProduct[], patch: Partial<Paginated<PublicProduct>>
 
 /* ---- Paginacao normal --------------------------------------------------- */
 
-test('as paginas do celular viram uma lista so, na ordem', () => {
+test('as páginas do celular viram uma lista só, na ordem', () => {
   const lista = pagedSlice([
     pagina([produto('1'), produto('2')], { page: 1 }),
     pagina([produto('3')], { page: 2 }),
@@ -55,7 +55,7 @@ test('as paginas do celular viram uma lista so, na ordem', () => {
   expect(lista.products.map((p) => p.id)).toEqual(['1', '2', '3']);
 });
 
-test('as totalizacoes saem da ultima pagina carregada', () => {
+test('as totalizações saem da última página carregada', () => {
   // Se a dona publicar um produto entre um "carregar mais" e o seguinte, o
   // numero mais novo e o mais proximo da verdade.
   const lista = pagedSlice([
@@ -67,14 +67,14 @@ test('as totalizacoes saem da ultima pagina carregada', () => {
   expect(lista.hasMore).toBe(false);
 });
 
-test('sem pagina nenhuma, a lista e vazia e nao quebra', () => {
+test('sem página nenhuma, a lista e vazia e não quebra', () => {
   expect(pagedSlice([]).products).toEqual([]);
   expect(pagedSlice([]).totalItems).toBe(0);
 });
 
 /* ---- O recorte do filtro de desconto ------------------------------------ */
 
-test('a varredura descarta quem nao tem desconto', () => {
+test('a varredura descarta quem não tem desconto', () => {
   const varredura = [
     produto('1', { discountPercent: 30 }),
     produto('2', { discountPercent: 10 }),
@@ -88,7 +88,7 @@ test('a varredura descarta quem nao tem desconto', () => {
   expect(lista.totalItems).toBe(2);
 });
 
-test('a contagem do recorte e a dos descontados, e nao a da varredura', () => {
+test('a contagem do recorte e a dos descontados, e não a da varredura', () => {
   const varredura = [
     ...Array.from({ length: 30 }, (_, i) => produto(`d${String(i)}`, { discountPercent: 20 })),
     ...Array.from({ length: 18 }, (_, i) => produto(`s${String(i)}`)),
@@ -102,7 +102,7 @@ test('a contagem do recorte e a dos descontados, e nao a da varredura', () => {
   expect(lista.hasMore).toBe(true);
 });
 
-test('a segunda pagina do recorte troca os itens no desktop', () => {
+test('a segunda página do recorte troca os itens no desktop', () => {
   const varredura = Array.from({ length: 30 }, (_, i) =>
     produto(String(i), { discountPercent: 20 }),
   );
@@ -114,7 +114,7 @@ test('a segunda pagina do recorte troca os itens no desktop', () => {
   expect(segunda.hasMore).toBe(false);
 });
 
-test('a segunda pagina do recorte acumula no celular', () => {
+test('a segunda página do recorte acumula no celular', () => {
   const varredura = Array.from({ length: 30 }, (_, i) =>
     produto(String(i), { discountPercent: 20 }),
   );
@@ -146,7 +146,7 @@ test('as marcas saem sem repetir, ignorando a caixa, e em ordem', () => {
   expect(marcas).toEqual(['Armaf', 'Lattafa']);
 });
 
-test('o teto do slider e o maior preco da varredura', () => {
+test('o teto do slider e o maior preço da varredura', () => {
   const teto = ceilingOf([
     produto('1', { priceRangeCents: { min: 10_000, max: 10_000 } }),
     produto('2', { priceRangeCents: { min: 20_000, max: 45_000 } }),
@@ -155,6 +155,6 @@ test('o teto do slider e o maior preco da varredura', () => {
   expect(teto).toBe(45_000);
 });
 
-test('catalogo vazio nao produz teto negativo', () => {
+test('catalogo vazio não produz teto negativo', () => {
   expect(ceilingOf([])).toBe(0);
 });

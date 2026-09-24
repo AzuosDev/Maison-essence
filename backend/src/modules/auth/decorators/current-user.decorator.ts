@@ -15,7 +15,7 @@ export const CurrentUser = createParamDecorator(
 
     if (!request.user) {
       // So acontece se alguem usar o decorator numa rota marcada @Public().
-      throw new UnauthorizedException('Autenticacao necessaria.');
+      throw new UnauthorizedException('Autenticação necessária.');
     }
 
     return request.user;

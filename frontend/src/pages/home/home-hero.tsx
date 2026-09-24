@@ -98,7 +98,7 @@ export function HomeHero() {
             type="button"
             className={cx(styles.arrow, styles.arrowNext)}
             onClick={carousel.next}
-            aria-label="Proximo banner"
+            aria-label="Próximo banner"
           >
             <ChevronRightIcon width="18" height="18" />
           </button>
@@ -283,7 +283,7 @@ function HeroFallback({ storeName }: { storeName: string }) {
         <h1 className={styles.title}>Perfumes e velas selecionados</h1>
 
         <p className={styles.subtitle}>
-          Uma selecao curta, escolhida peca a peca. Veja o que esta disponivel agora.
+          Uma seleção curta, escolhida peca a peca. Veja o que esta disponível agora.
         </p>
 
         <ButtonLink to={ROUTES.products} className={styles.action}>

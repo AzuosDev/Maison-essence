@@ -85,7 +85,7 @@ function product(patch: Partial<AdminProduct> = {}): AdminProduct {
 
 /* ---- Faturamento -------------------------------------------------------- */
 
-test('o faturamento conta so a venda fechada', () => {
+test('o faturamento conta só a venda fechada', () => {
   const cents = revenueOf([
     order({ status: ORDER_STATUSES.CONFIRMED, totalCents: 10_000 }),
     order({ status: ORDER_STATUSES.PREPARING, totalCents: 20_000 }),
@@ -99,18 +99,18 @@ test('o faturamento conta so a venda fechada', () => {
   expect(cents).toBe(40_000);
 });
 
-test('o faturacao vazio e zero, e nao um erro', () => {
+test('o faturação vazio e zero, e não um erro', () => {
   expect(revenueOf([]).cents).toBe(0);
 });
 
-test('a soma avisa quando parou na primeira pagina', () => {
+test('a soma avisa quando parou na primeira página', () => {
   expect(revenueOf([order()], true).truncated).toBe(true);
   expect(revenueOf([order()]).truncated).toBe(false);
 });
 
 /* ---- Pedidos de hoje ---------------------------------------------------- */
 
-test('os pedidos de hoje sao os que vieram depois da meia-noite', () => {
+test('os pedidos de hoje são os que vieram depois da meia-noite', () => {
   const since = '2026-09-22T03:00:00.000Z';
 
   const count = countSince(
@@ -127,7 +127,7 @@ test('os pedidos de hoje sao os que vieram depois da meia-noite', () => {
   expect(count).toBe(2);
 });
 
-test('a meia-noite e a do fuso local, e nao a de UTC', () => {
+test('a meia-noite e a do fuso local, e não a de UTC', () => {
   // As 23h de 22/09 no fuso de quem esta olhando: a meia-noite daquele dia
   // precisa ficar antes disso, qualquer que seja o fuso da maquina.
   const now = new Date(2026, 8, 22, 23, 0, 0);
@@ -139,7 +139,7 @@ test('a meia-noite e a do fuso local, e nao a de UTC', () => {
 
 /* ---- Estoque ------------------------------------------------------------ */
 
-test('sem estoque conta so o que esta publicado', () => {
+test('sem estoque conta só o que esta publicado', () => {
   const esgotados = outOfStock([
     product({ id: 'a', inStock: false }),
     product({ id: 'b', inStock: true }),

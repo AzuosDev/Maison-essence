@@ -44,7 +44,7 @@ function abrir() {
   );
 }
 
-test('as tres opcoes sao um grupo de radio, com o sistema marcado de inicio', () => {
+test('as três opções são um grupo de radio, com o sistema marcado de início', () => {
   abrir();
 
   const opcoes = screen.getAllByRole('radio');
@@ -81,7 +81,7 @@ test('voltar para o sistema remove o atributo em vez de escrever a palavra', asy
   expect(document.documentElement.hasAttribute('data-theme')).toBe(false);
 });
 
-test('a escolha sobrevive ao recarregamento, e o sistema nao ocupa a chave', async () => {
+test('a escolha sobrevive ao recarregamento, e o sistema não ocupa a chave', async () => {
   const user = userEvent.setup();
 
   abrir();
@@ -93,7 +93,7 @@ test('a escolha sobrevive ao recarregamento, e o sistema nao ocupa a chave', asy
   expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
 });
 
-test('a escolha guardada ja vem marcada no primeiro render', () => {
+test('a escolha guardada já vem marcada no primeiro render', () => {
   localStorage.setItem(THEME_STORAGE_KEY, 'dark');
 
   abrir();
@@ -103,7 +103,7 @@ test('a escolha guardada ja vem marcada no primeiro render', () => {
 });
 
 /** O rotulo visivel e uma palavra; o grupo precisa dizer do que ele e. */
-test('o grupo tem rotulo visivel', () => {
+test('o grupo tem rótulo visível', () => {
   abrir();
 
   expect(screen.getByRole('group', { name: 'Tema' })).toBeDefined();
@@ -126,7 +126,7 @@ function abrirBotao() {
  * voltar ao que estava sao dois toques. Com quatro ou mais, girar deixa de
  * ser atalho e vira caca.
  */
-test('o botao gira entre os tres modos e volta ao sistema', async () => {
+test('o botão gira entre os três modos e volta ao sistema', async () => {
   const user = userEvent.setup();
 
   abrirBotao();
@@ -150,7 +150,7 @@ test('o botao gira entre os tres modos e volta ao sistema', async () => {
  * E a resposta a objecao de sempre contra um botao que gira: sem dizer para
  * onde vai, o proximo toque e um chute.
  */
-test('o botao anuncia o tema atual e para onde vai', async () => {
+test('o botão anuncia o tema atual e para onde vai', async () => {
   const user = userEvent.setup();
 
   abrirBotao();
@@ -163,7 +163,7 @@ test('o botao anuncia o tema atual e para onde vai', async () => {
 });
 
 /** Os dois controles leem o mesmo estado: trocar num marca no outro. */
-test('o botao e o grupo de radio compartilham a escolha', async () => {
+test('o botão e o grupo de radio compartilham a escolha', async () => {
   const user = userEvent.setup();
 
   render(

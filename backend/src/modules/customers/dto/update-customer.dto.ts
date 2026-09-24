@@ -38,7 +38,7 @@ const toZipCode = ({ value }: { value: unknown }): unknown => {
  */
 export class CustomerAddressDto {
   @IsOptional()
-  @IsMongoId({ message: 'endereco invalido' })
+  @IsMongoId({ message: 'endereço inválido' })
   id?: string;
 
   /** "Casa", "Trabalho". */
@@ -54,7 +54,7 @@ export class CustomerAddressDto {
    * entrega que so falha no fechamento do pedido.
    */
   @IsOptional()
-  @IsMongoId({ message: 'cidade invalida' })
+  @IsMongoId({ message: 'cidade inválida' })
   cityId?: string;
 
   @Transform(trimmed)
@@ -83,7 +83,7 @@ export class CustomerAddressDto {
 
   @IsOptional()
   @Transform(toZipCode)
-  @Matches(/^(?:\d{5}-\d{3})?$/, { message: 'CEP invalido' })
+  @Matches(/^(?:\d{5}-\d{3})?$/, { message: 'CEP inválido' })
   zipCode?: string;
 
   @IsOptional()
@@ -119,7 +119,7 @@ export class UpdateCustomerDto {
 
   @IsOptional()
   @Transform(trimmed)
-  @IsEmail({}, { message: 'informe um e-mail valido' })
+  @IsEmail({}, { message: 'informe um e-mail válido' })
   @MaxLength(160)
   email?: string;
 
@@ -130,7 +130,7 @@ export class UpdateCustomerDto {
   @IsOptional()
   @IsArray()
   @ArrayMaxSize(MAX_ADDRESSES, {
-    message: `a conta guarda no maximo ${MAX_ADDRESSES} enderecos`,
+    message: `a conta guarda no máximo ${MAX_ADDRESSES} enderecos`,
   })
   @ValidateNested({ each: true })
   @Type(() => CustomerAddressDto)

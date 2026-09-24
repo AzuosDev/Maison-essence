@@ -63,7 +63,7 @@ export default function AccountRegisterPage() {
 
   usePageMeta({
     title: 'Criar minha conta — Maison Essence',
-    description: 'Acompanhe seus pedidos e guarde seus enderecos.',
+    description: 'Acompanhe seus pedidos e guarde seus endereços.',
     robots: 'noindex',
   });
 
@@ -109,7 +109,7 @@ export default function AccountRegisterPage() {
         <h1 className={styles.title}>Criar minha conta</h1>
 
         <p className={styles.lead}>
-          Se voce ja comprou aqui com este mesmo telefone, aqueles pedidos aparecem sozinhos na sua
+          Se você já comprou aqui com este mesmo telefone, aqueles pedidos aparecem sozinhos na sua
           lista.
         </p>
 
@@ -143,7 +143,7 @@ export default function AccountRegisterPage() {
             render={({ field }) => (
               <PhoneField
                 label="Celular"
-                hint="O mesmo que voce informa nos pedidos."
+                hint="O mesmo que você informa nos pedidos."
                 value={field.value}
                 onChange={field.onChange}
                 onBlur={field.onBlur}
@@ -178,7 +178,7 @@ export default function AccountRegisterPage() {
         </form>
 
         <p className={styles.alternative}>
-          Ja tem conta?{' '}
+          Já tem conta?{' '}
           <Link
             to={ROUTES.account.login}
             state={from === undefined ? undefined : { from }}
@@ -190,7 +190,7 @@ export default function AccountRegisterPage() {
       </div>
 
       <p className={styles.escape}>
-        Criar conta nao e obrigatorio.{' '}
+        Criar conta não e obrigatório.{' '}
         <Link to={ROUTES.products} className={styles.link}>
           Voltar para a loja
         </Link>

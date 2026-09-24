@@ -46,7 +46,7 @@ function fromPanel(overrides: Partial<StoredProduct> = {}): StoredProduct {
   return {
     name: 'Khamrah Qahwa',
     brand: 'Lattafa',
-    description: 'Cafe, canela e baunilha. Fixacao de um dia inteiro.',
+    description: 'Café, canela e baunilha. Fixação de um dia inteiro.',
     categoryIds: ['64b7f1c2a1b2c3d4e5f6000a'],
     images: ['maison-essence/produtos/khamrah-qahwa-1'],
     tags: ['mais-vendidos'],
@@ -85,11 +85,11 @@ describe('mergeProduct, produto novo', () => {
   });
 });
 
-describe('mergeProduct, o vazio do arquivo nao apaga o banco', () => {
-  it('preserva descricao, fotos e marca quando o arquivo vem vazio', () => {
+describe('mergeProduct, o vazio do arquivo não apaga o banco', () => {
+  it('preserva descrição, fotos e marca quando o arquivo vem vazio', () => {
     const { data } = mergeProduct(fromFile(), fromPanel());
 
-    expect(data.description).toBe('Cafe, canela e baunilha. Fixacao de um dia inteiro.');
+    expect(data.description).toBe('Café, canela e baunilha. Fixação de um dia inteiro.');
     expect(data.images).toEqual(['maison-essence/produtos/khamrah-qahwa-1']);
     expect(data.brand).toBe('Lattafa');
     expect(data.tags).toEqual(['mais-vendidos']);
@@ -101,13 +101,13 @@ describe('mergeProduct, o vazio do arquivo nao apaga o banco', () => {
     expect(data.variants[0]?.stock).toBe(12);
   });
 
-  it('atualiza o preco, que e a razao de a importacao existir', () => {
+  it('atualiza o preço, que e a razão de a importação existir', () => {
     const { data } = mergeProduct(fromFile(), fromPanel());
 
     expect(data.variants[0]?.priceCents).toBe(15_500);
   });
 
-  it('nao zera o preco gravado quando o arquivo traz zero', () => {
+  it('não zera o preço gravado quando o arquivo traz zero', () => {
     // Uma exportacao quebrada, cheia de zeros, nao pode zerar o catalogo. E
     // ninguem vende a R$ 0,00: zero aqui e ausencia, nao preco.
     const { data } = mergeProduct(
@@ -118,7 +118,7 @@ describe('mergeProduct, o vazio do arquivo nao apaga o banco', () => {
     expect(data.variants[0]?.priceCents).toBe(14_900);
   });
 
-  it('nao apaga o preco riscado que o painel cadastrou', () => {
+  it('não apaga o preço riscado que o painel cadastrou', () => {
     const { data } = mergeProduct(
       fromFile(),
       fromPanel({ variants: [storedVariant({ compareAtPriceCents: 19_900 })] }),
@@ -137,15 +137,15 @@ describe('mergeProduct, o vazio do arquivo nao apaga o banco', () => {
     expect(data.description).toBe('Texto novo do fornecedor.');
   });
 
-  it('mantem as categorias gravadas quando o arquivo nao cita nenhuma', () => {
+  it('mantem as categorias gravadas quando o arquivo não cita nenhuma', () => {
     const { data } = mergeProduct(fromFile({ categoryIds: [] }), fromPanel());
 
     expect(data.categoryIds).toEqual(['64b7f1c2a1b2c3d4e5f6000a']);
   });
 });
 
-describe('mergeProduct, as chaves de vitrine sao do painel', () => {
-  it('nao mexe em isActive, isFeatured e isReadyToShip de produto que ja existe', () => {
+describe('mergeProduct, as chaves de vitrine são do painel', () => {
+  it('não mexe em isActive, isFeatured e isReadyToShip de produto que já existe', () => {
     // O produto que a dona destacou na home continua destacado, e o que ela
     // tirou de linha nao volta a vender porque a lista ainda o cita.
     const { data } = mergeProduct(fromFile({ isFeatured: false, isActive: true }), fromPanel());
@@ -153,7 +153,7 @@ describe('mergeProduct, as chaves de vitrine sao do painel', () => {
     expect(data.flags).toBeUndefined();
   });
 
-  it('nao reativa a variante que o painel desativou', () => {
+  it('não reativa a variante que o painel desativou', () => {
     const { data } = mergeProduct(
       fromFile(),
       fromPanel({ variants: [storedVariant({ isActive: false })] }),
@@ -183,7 +183,7 @@ describe('mergeProduct, casamento de variantes pelo SKU', () => {
     expect(data.variants[1]).toMatchObject({ _id: 'outro', sku: 'ME-9999', isActive: false });
   });
 
-  it('nao conta de novo a variante que ja estava desativada', () => {
+  it('não conta de novo a variante que já estava desativada', () => {
     // Sem isso, toda importacao repetiria o mesmo numero de desativadas para
     // sempre e o relatorio deixaria de descrever aquela execucao.
     const { variantsDeactivated } = mergeProduct(
@@ -196,7 +196,7 @@ describe('mergeProduct, casamento de variantes pelo SKU', () => {
     expect(variantsDeactivated).toBe(0);
   });
 
-  it('casa o SKU sem ligar para caixa nem espaco', () => {
+  it('casa o SKU sem ligar para caixa nem espaço', () => {
     const { data, variantsCreated } = mergeProduct(
       fromFile({ variants: [{ sku: ' me-0036 ', priceCents: 15_500 }] }),
       fromPanel(),
@@ -206,7 +206,7 @@ describe('mergeProduct, casamento de variantes pelo SKU', () => {
     expect(data.variants[0]?._id).toBe(VARIANT_ID);
   });
 
-  it('cria a variante que o arquivo trouxe e o banco nao tinha', () => {
+  it('cria a variante que o arquivo trouxe e o banco não tinha', () => {
     const { data, variantsCreated } = mergeProduct(
       fromFile({
         variants: [
@@ -223,15 +223,15 @@ describe('mergeProduct, casamento de variantes pelo SKU', () => {
 });
 
 describe('mergeCategory', () => {
-  it('cria com a posicao e o estado que o arquivo pede', () => {
+  it('cria com a posição e o estado que o arquivo pede', () => {
     const data = mergeCategory(
-      { name: 'Arabes Masculinos', slug: 'arabes-masculinos', order: 1, isActive: true },
+      { name: 'Árabes Masculinos', slug: 'arabes-masculinos', order: 1, isActive: true },
       'pai',
       null,
     );
 
     expect(data).toEqual({
-      name: 'Arabes Masculinos',
+      name: 'Árabes Masculinos',
       slug: 'arabes-masculinos',
       parentId: 'pai',
       order: 1,
@@ -244,13 +244,13 @@ describe('mergeCategory', () => {
     // Reordenar o menu e arrastar categoria por categoria. Uma importacao de
     // preco nao desfaz isso.
     const data = mergeCategory(
-      { name: 'Arabes Masculinos', slug: 'arabes-masculinos', order: 1, isActive: true },
+      { name: 'Árabes Masculinos', slug: 'arabes-masculinos', order: 1, isActive: true },
       'pai',
       { name: 'Masculinos', order: 7, isActive: false, image: 'capa' },
     );
 
     expect(data).toEqual({
-      name: 'Arabes Masculinos',
+      name: 'Árabes Masculinos',
       slug: 'arabes-masculinos',
       parentId: 'pai',
       order: 7,
@@ -261,7 +261,7 @@ describe('mergeCategory', () => {
 });
 
 describe('normalizeSku', () => {
-  it('tira espaco e sobe a caixa', () => {
+  it('tira espaço e sobe a caixa', () => {
     expect(normalizeSku('  me-0036 ')).toBe('ME-0036');
   });
 });

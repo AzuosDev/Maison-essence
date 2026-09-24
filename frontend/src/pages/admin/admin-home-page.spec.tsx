@@ -164,13 +164,13 @@ function abrirPainel() {
   );
 }
 
-test('sem sessao, o painel manda para a entrada', () => {
+test('sem sessão, o painel manda para a entrada', () => {
   abrirPainel();
 
   expect(screen.getByText('Tela de entrada')).toBeDefined();
 });
 
-test('com senha temporaria, o painel manda trocar antes de qualquer coisa', () => {
+test('com senha temporária, o painel manda trocar antes de qualquer coisa', () => {
   const user: AdminUser = {
     id: 'u1',
     name: 'Rayane',
@@ -189,27 +189,27 @@ test('com senha temporaria, o painel manda trocar antes de qualquer coisa', () =
   expect(screen.getByText('Troque a senha')).toBeDefined();
 });
 
-test('a dona ve o menu inteiro, o faturamento e o total do pedido', async () => {
+test('a dona vê o menu inteiro, o faturamento e o total do pedido', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirPainel();
 
-  expect(await screen.findByRole('link', { name: /Faturamento do mes/ })).toBeDefined();
+  expect(await screen.findByRole('link', { name: /Faturamento do mês/ })).toBeDefined();
 
-  const menu = screen.getByRole('navigation', { name: 'Areas do painel' });
+  const menu = screen.getByRole('navigation', { name: 'Áreas do painel' });
 
   expect(within(menu).getByRole('link', { name: 'Produtos' })).toBeDefined();
   expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
 
   // Configuracoes nao: a moldura da loja se acerta uma vez, com quem mantem
   // o sistema, e nao no dia a dia de quem vende.
-  expect(within(menu).queryByRole('link', { name: 'Configuracoes' })).toBeNull();
+  expect(within(menu).queryByRole('link', { name: 'Configurações' })).toBeNull();
 
   // O total do pedido na lista.
   expect(await screen.findByText('R$ 379,80')).toBeDefined();
 });
 
-test('o STAFF nao ve preco em lugar nenhum da abertura', async () => {
+test('o STAFF não vê preço em lugar nenhum da abertura', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrirPainel();
@@ -217,17 +217,17 @@ test('o STAFF nao ve preco em lugar nenhum da abertura', async () => {
   // A lista carrega: e depois dela que a ausencia do valor significa algo.
   expect(await screen.findByText('ME-260922-K4P1')).toBeDefined();
 
-  expect(screen.queryByText(/Faturamento do mes/)).toBeNull();
+  expect(screen.queryByText(/Faturamento do mês/)).toBeNull();
   expect(screen.queryByText('R$ 379,80')).toBeNull();
   expect(screen.queryByText(/Sem estoque/)).toBeNull();
 });
 
-test('o menu do STAFF tem duas areas', () => {
+test('o menu do STAFF tem duas áreas', () => {
   signInAs(USER_ROLES.STAFF);
 
   abrirPainel();
 
-  const menu = screen.getByRole('navigation', { name: 'Areas do painel' });
+  const menu = screen.getByRole('navigation', { name: 'Áreas do painel' });
 
   expect(within(menu).getAllByRole('link')).toHaveLength(2);
   expect(within(menu).getByRole('link', { name: 'Pedidos' })).toBeDefined();
@@ -243,7 +243,7 @@ test('o menu do STAFF tem duas areas', () => {
  * botao faz quando clicado esta coberto em `theme-toggle.spec.tsx`, onde ha
  * provedor de tema em volta.
  */
-test('o tema no painel e um botao, e nao o grupo de tres opcoes', () => {
+test('o tema no painel e um botão, e não o grupo de três opções', () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirPainel();

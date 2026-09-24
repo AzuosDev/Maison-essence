@@ -25,7 +25,7 @@ export type BreadcrumbProps = ComponentPropsWithoutRef<'nav'> & {
 };
 
 export const Breadcrumb = forwardRef<HTMLElement, BreadcrumbProps>(function Breadcrumb(
-  { items, label = 'Voce esta aqui', className, ...props },
+  { items, label = 'Você esta aqui', className, ...props },
   ref,
 ) {
   return (

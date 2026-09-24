@@ -43,7 +43,7 @@ export class UpdateProductDto {
 
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true, message: 'categoria invalida' })
+  @IsMongoId({ each: true, message: 'categoria inválida' })
   categoryIds?: string[];
 
   /** `publicId`s do Cloudinary, so das pastas da loja. Ver o DTO de criacao. */

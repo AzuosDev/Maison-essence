@@ -11,13 +11,13 @@ function snapshot(entries: Record<string, [string, number, number | null]>): Pri
 }
 
 describe('priceChangesBetween', () => {
-  it('nao acha mudanca onde nao houve', () => {
+  it('não acha mudanca onde não houve', () => {
     const before = snapshot({ a: ['ASAD-100', 19_990, null] });
 
     expect(priceChangesBetween(before, before)).toEqual({});
   });
 
-  it('registra o preco de venda com o valor de antes e o de depois', () => {
+  it('registra o preço de venda com o valor de antes e o de depois', () => {
     expect(
       priceChangesBetween(
         snapshot({ a: ['ASAD-100', 19_990, null] }),
@@ -26,7 +26,7 @@ describe('priceChangesBetween', () => {
     ).toEqual({ 'ASAD-100.priceCents': { from: 19_990, to: 17_990 } });
   });
 
-  it('registra tambem o preco riscado, inclusive quando ele nasce ou some', () => {
+  it('registra também o preço riscado, inclusive quando ele nasce ou some', () => {
     expect(
       priceChangesBetween(
         snapshot({ a: ['ASAD-100', 17_990, null] }),
@@ -35,7 +35,7 @@ describe('priceChangesBetween', () => {
     ).toEqual({ 'ASAD-100.compareAtPriceCents': { from: null, to: 24_990 } });
   });
 
-  it('usa o SKU novo como rotulo quando ele tambem mudou no mesmo PATCH', () => {
+  it('usa o SKU novo como rótulo quando ele também mudou no mesmo PATCH', () => {
     // A comparacao e pelo id da variante, entao trocar o SKU nao cria uma
     // variante nova nem esconde a mudanca de preco.
     expect(

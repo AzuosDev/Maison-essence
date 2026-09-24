@@ -215,7 +215,7 @@ export default function CheckoutPage() {
     <Container className={styles.page}>
       <Breadcrumb
         items={[
-          { label: 'Inicio', to: ROUTES.home },
+          { label: 'Início', to: ROUTES.home },
           { label: 'Sacola', to: ROUTES.cart },
           { label: 'Finalizar' },
         ]}

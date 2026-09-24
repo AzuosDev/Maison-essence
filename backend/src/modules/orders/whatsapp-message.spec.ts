@@ -41,7 +41,7 @@ function order(overrides: Partial<WhatsappOrder> = {}): WhatsappOrder {
         complement: 'Apto 2',
         district: 'Centro',
         zipCode: '62000-000',
-        reference: 'perto da praca',
+        reference: 'perto da praça',
       },
       pickupInstructions: '',
     },
@@ -91,14 +91,14 @@ describe('buildWhatsappMessage', () => {
         '*TOTAL: R$ 599,73*',
         '',
         '*PAGAMENTO*',
-        'Cartao em 3x de R$ 199,91 sem juros',
+        'Cartão em 3x de R$ 199,91 sem juros',
         '',
         '*ENTREGA*',
-        'Entrega em Sobral/CE (prazo de 2 dias uteis)',
+        'Entrega em Sobral/CE (prazo de 2 dias úteis)',
         'Rua das Flores, 123 - Apto 2',
         'Bairro: Centro',
         'CEP: 62000-000',
-        'Referencia: perto da praca',
+        'Referência: perto da praça',
         '',
         '*CLIENTE*',
         'Maria Silva',
@@ -118,7 +118,7 @@ describe('buildWhatsappMessage', () => {
     expect(644_70 - 59_97 + 15_00).toBe(599_73);
   });
 
-  it('nao escreve linha de desconto quando nao houve desconto', () => {
+  it('não escreve linha de desconto quando não houve desconto', () => {
     const semDesconto = order({
       items: [
         {
@@ -143,7 +143,7 @@ describe('buildWhatsappMessage', () => {
     expect(buildWhatsappMessage(semDesconto)).not.toContain('Desconto');
   });
 
-  it('avisa a retirada em vez de inventar endereco', () => {
+  it('avisa a retirada em vez de inventar endereço', () => {
     const retirada = order({
       fulfillment: {
         mode: FULFILLMENT_MODES.PICKUP,
@@ -163,13 +163,13 @@ describe('buildWhatsappMessage', () => {
     expect(message).not.toContain('Entrega: ');
   });
 
-  it('escreve a isencao com o motivo', () => {
+  it('escreve a isenção com o motivo', () => {
     const gratis = order({
       fulfillment: { ...order().fulfillment, feeCents: 0, freeReason: 'pedido acima de R$ 150,00' },
       totals: { ...order().totals, deliveryFeeCents: 0, totalCents: 58_473 },
     });
 
-    expect(buildWhatsappMessage(gratis)).toContain('Entrega: gratis (pedido acima de R$ 150,00)');
+    expect(buildWhatsappMessage(gratis)).toContain('Entrega: grátis (pedido acima de R$ 150,00)');
   });
 
   it('mostra o desconto do PIX e o pagamento a vista', () => {
@@ -196,21 +196,21 @@ describe('buildWhatsappMessage', () => {
     });
 
     expect(buildWhatsappMessage(quebrado)).toContain(
-      'Cartao em 3x de R$ 199,90 sem juros (primeira de R$ 199,93)',
+      'Cartão em 3x de R$ 199,90 sem juros (primeira de R$ 199,93)',
     );
   });
 
-  it('diz o total financiado quando ha juros', () => {
+  it('diz o total financiado quando há juros', () => {
     const comJuros = order({
       payment: { ...order().payment, hasInterest: true, financedTotalCents: 62_000 },
     });
 
     expect(buildWhatsappMessage(comJuros)).toContain(
-      'Cartao em 3x de R$ 199,91 com juros (total R$ 620,00)',
+      'Cartão em 3x de R$ 199,91 com juros (total R$ 620,00)',
     );
   });
 
-  it('omite os pedacos do endereco que o cliente nao preencheu', () => {
+  it('omite os pedacos do endereço que o cliente não preencheu', () => {
     const magro = order({
       fulfillment: {
         ...order().fulfillment,
@@ -228,10 +228,10 @@ describe('buildWhatsappMessage', () => {
     const message = buildWhatsappMessage(magro);
 
     expect(message).toContain(
-      'Entrega em Sobral/CE (prazo de 1 dia util)\nRua das Flores\nBairro: Centro\n',
+      'Entrega em Sobral/CE (prazo de 1 dia útil)\nRua das Flores\nBairro: Centro\n',
     );
     expect(message).not.toContain('CEP');
-    expect(message).not.toContain('Referencia');
+    expect(message).not.toContain('Referência');
   });
 });
 
@@ -242,7 +242,7 @@ describe('whatsappUrlOf', () => {
     expect(url).toBe('https://wa.me/5588999999999?text=Linha%201%0ALinha%202');
   });
 
-  it('sem numero cadastrado, nao ha link', () => {
+  it('sem número cadastrado, não há link', () => {
     // Melhor nenhum link do que um `wa.me/` que abre o aplicativo num erro.
     expect(whatsappUrlOf('', 'Pedido')).toBe('');
   });

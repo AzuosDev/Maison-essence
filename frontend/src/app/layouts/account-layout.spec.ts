@@ -29,7 +29,7 @@ function regra(seletor: string): string | null {
   return encontrada?.[1] ?? null;
 }
 
-test('as duas colunas so valem quando ha um menu para por na primeira', () => {
+test('as duas colunas só valem quando há um menu para por na primeira', () => {
   expect(regra('.body:has(> .aside)')).toContain('grid-template-columns: 15rem 1fr');
 });
 
@@ -37,7 +37,7 @@ test('as duas colunas so valem quando ha um menu para por na primeira', () => {
  * O contraponto do caso acima, e o que de fato quebra se alguem desfizer a
  * correcao: `.body` sozinho nao pode voltar a declarar as duas colunas.
  */
-test('o .body sozinho nao declara coluna nenhuma', () => {
+test('o .body sozinho não declara coluna nenhuma', () => {
   const corpo = regra('.body');
 
   expect(corpo).not.toBeNull();

@@ -104,7 +104,7 @@ function OrderRows({
       <table className={styles.table}>
         <thead>
           <tr>
-            <th scope="col">Codigo</th>
+            <th scope="col">Código</th>
             <th scope="col">Cliente</th>
             <th scope="col">Entrega</th>
             {showPayment ? <th scope="col">Pagamento</th> : null}

@@ -9,7 +9,7 @@ export class CreateUploadSignatureDto {
    * pasta real e o servidor, e assim o navegador nao tem como propor uma.
    */
   @IsIn(UPLOAD_FOLDER_KEYS, {
-    message: `pasta invalida: use ${UPLOAD_FOLDER_KEYS.join(', ')}`,
+    message: `pasta inválida: use ${UPLOAD_FOLDER_KEYS.join(', ')}`,
   })
   folder: UploadFolder;
 

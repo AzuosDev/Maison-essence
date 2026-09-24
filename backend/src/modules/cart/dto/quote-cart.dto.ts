@@ -28,13 +28,13 @@ import { MAX_LINE_QUANTITY, MAX_QUOTE_ITEMS } from '../cart.constants.js';
  * pousar nesta API.
  */
 export class QuoteItemDto {
-  @IsMongoId({ message: 'produto invalido' })
+  @IsMongoId({ message: 'produto inválido' })
   productId: string;
 
-  @IsMongoId({ message: 'variante invalida' })
+  @IsMongoId({ message: 'variante inválida' })
   variantId: string;
 
-  @IsInt({ message: 'a quantidade deve ser um numero inteiro' })
+  @IsInt({ message: 'a quantidade deve ser um número inteiro' })
   @Min(1)
   @Max(MAX_LINE_QUANTITY)
   quantity: number;
@@ -42,7 +42,7 @@ export class QuoteItemDto {
 
 /** Como o pedido chega ao cliente. A cidade so existe na entrega. */
 export class QuoteFulfillmentDto {
-  @IsIn(FULFILLMENT_MODE_VALUES, { message: 'modo de entrega invalido' })
+  @IsIn(FULFILLMENT_MODE_VALUES, { message: 'modo de entrega inválido' })
   mode: FulfillmentMode;
 
   /**
@@ -51,13 +51,13 @@ export class QuoteFulfillmentDto {
    * confere o formato.
    */
   @IsOptional()
-  @IsMongoId({ message: 'cidade invalida' })
+  @IsMongoId({ message: 'cidade inválida' })
   cityId?: string;
 }
 
 /** A forma de pagamento escolhida e, no cartao, em quantas vezes. */
 export class QuotePaymentDto {
-  @IsIn(PAYMENT_METHOD_VALUES, { message: 'forma de pagamento invalida' })
+  @IsIn(PAYMENT_METHOD_VALUES, { message: 'forma de pagamento inválida' })
   method: PaymentMethod;
 
   /** Sem parcelamento informado, a cotacao sai a vista. */
@@ -72,7 +72,7 @@ export class QuotePaymentDto {
 export class QuoteCartDto {
   @ArrayNotEmpty({ message: 'a sacola esta vazia' })
   @ArrayMaxSize(MAX_QUOTE_ITEMS, {
-    message: `a cotacao aceita no maximo ${MAX_QUOTE_ITEMS} itens`,
+    message: `a cotação aceita no máximo ${MAX_QUOTE_ITEMS} itens`,
   })
   @ValidateNested({ each: true })
   @Type(() => QuoteItemDto)

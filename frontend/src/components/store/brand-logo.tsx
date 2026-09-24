@@ -47,7 +47,7 @@ export function BrandLogo({
   }
 
   return (
-    <Link to={ROUTES.home} className={classes} aria-label="Maison Essence, pagina inicial">
+    <Link to={ROUTES.home} className={classes} aria-label="Maison Essence, página inicial">
       {content}
     </Link>
   );

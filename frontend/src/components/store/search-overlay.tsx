@@ -124,7 +124,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                 setTerm(event.target.value);
               }}
               placeholder="Buscar perfumes, marcas..."
-              aria-label="O que voce procura?"
+              aria-label="O que você procura?"
               autoComplete="off"
               className={styles.input}
             />
@@ -181,7 +181,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
           {!searching && recent.length === 0 ? (
             <p className={styles.hint}>
-              Digite ao menos {MIN_SEARCH_LENGTH} letras para ver sugestoes.
+              Digite ao menos {MIN_SEARCH_LENGTH} letras para ver sugestões.
             </p>
           ) : null}
 

@@ -16,14 +16,14 @@ test('tem dezesseis caracteres, como a que o backend gera no reset', () => {
   expect(TEMPORARY_PASSWORD_LENGTH).toBeGreaterThanOrEqual(12);
 });
 
-test('nao usa os caracteres que se confundem ao ler em voz alta', () => {
+test('não usa os caracteres que se confundem ao ler em voz alta', () => {
   // I, l, O, 0 e 1. A senha e passada por WhatsApp ou num bilhete.
   const senhas = Array.from({ length: 200 }, () => generateTemporaryPassword()).join('');
 
   expect(senhas).not.toMatch(/[Il0O1]/);
 });
 
-test('so usa letras e numeros', () => {
+test('só usa letras e números', () => {
   expect(generateTemporaryPassword()).toMatch(/^[A-Za-z2-9]+$/);
 });
 
@@ -33,6 +33,6 @@ test('cada chamada devolve uma senha diferente', () => {
   expect(senhas.size).toBe(100);
 });
 
-test('aceita um comprimento maior quando alguem pedir', () => {
+test('aceita um comprimento maior quando alguém pedir', () => {
   expect(generateTemporaryPassword(24)).toHaveLength(24);
 });

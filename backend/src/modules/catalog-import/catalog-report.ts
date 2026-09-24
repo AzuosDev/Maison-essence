@@ -93,16 +93,16 @@ export function formatReport(report: CatalogImportReport): string[] {
   const { categories, products, variants } = report;
   const lines = [
     report.dryRun
-      ? 'Simulacao (--dry-run): nada foi gravado.'
-      : `Importacao concluida em ${seconds(report.durationMs)}.`,
+      ? 'Simulação (--dry-run): nada foi gravado.'
+      : `Importação concluída em ${seconds(report.durationMs)}.`,
     `Categorias  ${categories.created} criadas, ${categories.updated} atualizadas, ` +
       `${categories.failed} com falha`,
     `Produtos    ${products.created} criados, ${products.updated} atualizados, ` +
       `${products.failed} com falha`,
     `Variantes   ${variants.created} criadas, ${variants.deactivated} desativadas`,
     report.transactional
-      ? 'Transacao   tudo dentro de uma so.'
-      : 'Transacao   nao suportada por este cluster; gravado direto.',
+      ? 'Transação   tudo dentro de uma só.'
+      : 'Transação   não suportada por este cluster; gravado direto.',
   ];
 
   if (report.remaining !== undefined && report.remaining > 0) {

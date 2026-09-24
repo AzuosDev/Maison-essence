@@ -27,7 +27,7 @@ export class CreateProductDto {
     typeof value === 'string' ? slugify(value) : value,
   )
   @IsString()
-  @MinLength(1, { message: 'o endereco precisa ter ao menos uma letra ou numero' })
+  @MinLength(1, { message: 'o endereço precisa ter ao menos uma letra ou número' })
   @MaxLength(MAX_SLUG_LENGTH)
   slug?: string;
 
@@ -43,7 +43,7 @@ export class CreateProductDto {
 
   @IsOptional()
   @IsArray()
-  @IsMongoId({ each: true, message: 'categoria invalida' })
+  @IsMongoId({ each: true, message: 'categoria inválida' })
   categoryIds?: string[];
 
   /**

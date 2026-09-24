@@ -37,7 +37,7 @@ export default function AccountOrdersPage() {
 
   usePageMeta({
     title: 'Meus pedidos — Maison Essence',
-    description: 'O historico das suas compras na Maison Essence.',
+    description: 'O histórico das suas compras na Maison Essence.',
     robots: 'noindex',
   });
 
@@ -45,7 +45,7 @@ export default function AccountOrdersPage() {
     return (
       <AccountInvite
         title="Seus pedidos ficam guardados aqui"
-        description="Entre para acompanhar o que voce comprou, repetir um pedido com um toque e guardar seus enderecos de entrega."
+        description="Entre para acompanhar o que você comprou, repetir um pedido com um toque e guardar seus endereços de entrega."
       />
     );
   }
@@ -73,8 +73,8 @@ export default function AccountOrdersPage() {
           title="Nenhum pedido nesta conta ainda"
           description={
             <>
-              Se voce ja comprou aqui, pode ter sido com outro telefone: o pedido fica ligado ao
-              numero informado no fechamento. Fale com a loja pelo WhatsApp que ela ajusta.
+              Se você já comprou aqui, pode ter sido com outro telefone: o pedido fica ligado ao
+              número informado no fechamento. Fale com a loja pelo WhatsApp que ela ajusta.
             </>
           }
           actions={<ButtonLink to={ROUTES.products}>Ver os perfumes</ButtonLink>}

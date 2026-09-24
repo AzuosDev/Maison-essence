@@ -23,7 +23,7 @@ import styles from './newsletter-form.module.css';
 
 const schema = z.object({
   email: z
-    .email('Informe um e-mail valido.')
+    .email('Informe um e-mail válido.')
     .max(120, 'E-mail longo demais.')
     .transform((value) => value.trim().toLowerCase()),
 });
@@ -57,7 +57,7 @@ export function NewsletterForm({ tone = 'dark' }: NewsletterFormProps) {
     try {
       await subscribeToNewsletter(email);
 
-      setStatus('Pronto! Voce vai receber as novidades.');
+      setStatus('Pronto! Você vai receber as novidades.');
       reset();
     } catch (error) {
       setStatus(errorMessage(error));
@@ -71,7 +71,7 @@ export function NewsletterForm({ tone = 'dark' }: NewsletterFormProps) {
       noValidate
     >
       <p className={styles.label}>Receba as novidades</p>
-      <p className={styles.note}>Lancamentos e promocoes, sem excesso.</p>
+      <p className={styles.note}>Lancamentos e promoções, sem excesso.</p>
 
       <div className={styles.row}>
         <Input

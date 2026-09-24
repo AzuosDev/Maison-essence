@@ -15,7 +15,8 @@ test('tira o acento e baixa a caixa', () => {
   expect(foldAccents('Àcqua di Gió')).toBe('acqua di gio');
 });
 
-test('cobre os acentos que aparecem em portugues', () => {
+test('cobre os acentos que aparecem em português', () => {
+  // O lado direito e sem acento de proposito: e o resultado da dobra.
   expect(foldAccents('Ação Coração Único Pêssego Über')).toBe('acao coracao unico pessego uber');
 });
 
@@ -27,7 +28,7 @@ test('mantem o comprimento do texto original', () => {
   expect(foldAccents(original)).toHaveLength(original.length);
 });
 
-test('nao come letra nenhuma no caminho', () => {
+test('não come letra nenhuma no caminho', () => {
   // Uma faixa mal escrita — `[0300-036f]`, sem os escapes de codigo — remove
   // digitos e as letras de "a" a "f". Este e o caso que pega isso.
   expect(foldAccents('Oud 36 Facade')).toBe('oud 36 facade');

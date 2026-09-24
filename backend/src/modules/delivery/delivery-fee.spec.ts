@@ -33,7 +33,7 @@ describe('resolveDeliveryFee', () => {
   });
 
   describe('entrega', () => {
-    it('cobra a taxa da cidade quando nao ha regra nenhuma', () => {
+    it('cobra a taxa da cidade quando não há regra nenhuma', () => {
       const fee = delivery(FORTALEZA, 5000);
 
       expect(fee).toEqual({
@@ -49,18 +49,18 @@ describe('resolveDeliveryFee', () => {
 
       expect(fee.feeCents).toBe(0);
       expect(fee.isFree).toBe(true);
-      expect(fee.freeReason).toBe('Frete gratis para Sobral em pedidos a partir de R$ 150,00.');
+      expect(fee.freeReason).toBe('Frete grátis para Sobral em pedidos a partir de R$ 150,00.');
     });
 
     // O minimo e alcancado, nao ultrapassado: pedido de exatamente R$ 150 em
     // cidade com minimo de R$ 150 tem frete gratis. Quem escreve "a partir de"
     // na tela esta prometendo isso.
-    it('isenta no valor exato do minimo', () => {
+    it('isenta no valor exato do mínimo', () => {
       expect(delivery(SOBRAL, 15_000).isFree).toBe(true);
       expect(delivery(SOBRAL, 14_999).isFree).toBe(false);
     });
 
-    it('diz quanto falta para o frete sair de graca', () => {
+    it('diz quanto falta para o frete sair de graça', () => {
       const fee = delivery(SOBRAL, 12_000);
 
       expect(fee.feeCents).toBe(1000);
@@ -69,11 +69,11 @@ describe('resolveDeliveryFee', () => {
       expect(fee.missingForFreeCents).toBe(3000);
     });
 
-    it('aplica a regra global onde a cidade nao tem a sua', () => {
+    it('aplica a regra global onde a cidade não tem a sua', () => {
       const fee = delivery(FORTALEZA, 30_000, 25_000);
 
       expect(fee.isFree).toBe(true);
-      expect(fee.freeReason).toBe('Frete gratis em pedidos a partir de R$ 250,00.');
+      expect(fee.freeReason).toBe('Frete grátis em pedidos a partir de R$ 250,00.');
     });
 
     it('cobra e conta o que falta pela regra global', () => {
@@ -90,7 +90,7 @@ describe('resolveDeliveryFee', () => {
      * Sem precedencia, toda cidade distante cairia na regra geral e a taxa
      * mais alta que a dona cadastrou para ela nunca seria cobrada.
      */
-    it('a regra da cidade tem precedencia sobre a global, inclusive quando e pior', () => {
+    it('a regra da cidade tem precedência sobre a global, inclusive quando e pior', () => {
       const fee = delivery(SOBRAL, 12_000, 10_000);
 
       expect(fee.isFree).toBe(false);
@@ -98,7 +98,7 @@ describe('resolveDeliveryFee', () => {
       expect(fee.missingForFreeCents).toBe(3000);
     });
 
-    it('cidade com taxa zero e gratuita com motivo proprio', () => {
+    it('cidade com taxa zero e gratuita com motivo próprio', () => {
       const fee = delivery({ name: 'Sobral', feeCents: 0, minOrderForFreeCents: null }, 100);
 
       expect(fee.isFree).toBe(true);
@@ -108,15 +108,15 @@ describe('resolveDeliveryFee', () => {
 });
 
 describe('freeFromCents', () => {
-  it('devolve o minimo da cidade quando ela tem um', () => {
+  it('devolve o mínimo da cidade quando ela tem um', () => {
     expect(freeFromCents(SOBRAL, 25_000)).toBe(15_000);
   });
 
-  it('cai no da loja quando a cidade nao tem', () => {
+  it('cai no da loja quando a cidade não tem', () => {
     expect(freeFromCents(FORTALEZA, 25_000)).toBe(25_000);
   });
 
-  it('devolve null quando nao ha regra dos dois lados', () => {
+  it('devolve null quando não há regra dos dois lados', () => {
     expect(freeFromCents(FORTALEZA, null)).toBeNull();
   });
 });

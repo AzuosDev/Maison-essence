@@ -54,7 +54,7 @@ describe('mergeLines', () => {
     expect(warnings).toHaveLength(1);
   });
 
-  it('nao junta variantes diferentes do mesmo produto', () => {
+  it('não junta variantes diferentes do mesmo produto', () => {
     const { lines, warnings } = mergeLines([line(), line({ variantId: 'v2' })]);
 
     expect(lines).toHaveLength(2);
@@ -73,7 +73,7 @@ describe('mergeLines', () => {
 });
 
 describe('quoteItems', () => {
-  it('usa o preco do catalogo, nao o que veio na linha', () => {
+  it('usa o preço do catalogo, não o que veio na linha', () => {
     // A linha nao tem onde carregar um preco: o tipo so aceita ids e
     // quantidade, e o valor sai da variante.
     const [item] = quoteItems([line({ quantity: 2 })], [product()], []);
@@ -96,7 +96,7 @@ describe('quoteItems', () => {
     expect(quoteItems([line()], [withImage], [])[0]?.image).toBe('frasco');
   });
 
-  it('recusa a linha de produto que nao esta no catalogo', () => {
+  it('recusa a linha de produto que não esta no catalogo', () => {
     const [item] = quoteItems([line({ productId: 'sumiu' })], [], []);
 
     expect(item?.unavailable).toBe(true);
@@ -142,13 +142,13 @@ describe('quoteItems', () => {
     expect(item?.lineTotalCents).toBe(27_000);
   });
 
-  it('nao aplica desconto abaixo do degrau', () => {
+  it('não aplica desconto abaixo do degrau', () => {
     const rules = [rule({ productId: 'p1', minQty: 3, percentOff: 10 })];
 
     expect(quoteItems([line({ quantity: 2 })], [product()], rules)[0]?.discountPercent).toBe(0);
   });
 
-  it('usa o maior desconto aplicavel, sem somar produto e categoria', () => {
+  it('usa o maior desconto aplicável, sem somar produto e categoria', () => {
     const rules = [
       rule({ productId: 'p1', minQty: 3, percentOff: 10 }),
       rule({ categoryId: 'c1', minQty: 3, percentOff: 15 }),
@@ -175,7 +175,7 @@ describe('quoteItems', () => {
     expect(items.map((item) => item.discountPercent)).toEqual([10, 10]);
   });
 
-  it('a linha recusada nao empurra as outras para o degrau seguinte', () => {
+  it('a linha recusada não empurra as outras para o degrau seguinte', () => {
     const duas = product({
       variants: [variant(), variant({ id: 'v2', stock: 0 })],
     });
@@ -197,13 +197,13 @@ describe('lineTotalsOf', () => {
     expect(lineTotalsOf(1_999, 1, 10)).toEqual({ discountCents: 200, lineTotalCents: 1_799 });
   });
 
-  it('sem desconto, e preco vezes quantidade', () => {
+  it('sem desconto, e preço vezes quantidade', () => {
     expect(lineTotalsOf(1_999, 3, 0)).toEqual({ discountCents: 0, lineTotalCents: 5_997 });
   });
 });
 
 describe('sumItems', () => {
-  it('soma so o que esta disponivel', () => {
+  it('soma só o que esta disponível', () => {
     const esgotado = product({ id: 'p2', variants: [variant({ id: 'v9', stock: 0 })] });
     const items = quoteItems(
       [line({ quantity: 2 }), line({ productId: 'p2', variantId: 'v9', quantity: 1 })],

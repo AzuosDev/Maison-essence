@@ -96,7 +96,7 @@ export function planReorder(items: readonly OrderItemView[], quote: CartQuote): 
     if (line === undefined) {
       plan.dropped.push({
         name: item.productName,
-        reason: 'Nao foi possivel conferir este item no catalogo.',
+        reason: 'Não foi possível conferir este item no catalogo.',
       });
 
       continue;

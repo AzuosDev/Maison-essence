@@ -31,7 +31,7 @@ export function MainNav({ categoriesOpen, onToggleCategories, panelId }: MainNav
             end
             className={({ isActive }) => cx(styles.link, isActive && styles.active)}
           >
-            Inicio
+            Início
           </NavLink>
         </li>
 

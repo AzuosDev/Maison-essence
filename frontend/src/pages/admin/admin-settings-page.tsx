@@ -53,7 +53,7 @@ export default function AdminSettingsPage() {
   const role = useAdminRole();
   const { data: settings, isPending, isError, error } = useAdminSettings();
 
-  usePageMeta({ title: 'Configuracoes — Painel', description: 'Acesso restrito.' });
+  usePageMeta({ title: 'Configurações — Painel', description: 'Acesso restrito.' });
 
   // `canSee` e nao um `role === SUPER_ADMIN` escrito aqui: a tabela de areas
   // e a unica fonte da regra, e e ela que o menu tambem consulta. Duas copias
@@ -62,12 +62,12 @@ export default function AdminSettingsPage() {
     return (
       <EmptyState
         as="h1"
-        title="Esta area e de quem mantem o sistema"
-        description="Aqui ficam o nome da loja, o numero para onde vai todo pedido, o carrossel da home e as paginas do rodape — configuracoes que se acertam uma vez, com quem cuida do sistema. Para mudar alguma delas, fale com essa pessoa."
+        title="Esta área e de quem mantem o sistema"
+        description="Aqui ficam o nome da loja, o número para onde vai todo pedido, o carrossel da home e as páginas do rodapé — configurações que se acertam uma vez, com quem cuida do sistema. Para mudar alguma delas, fale com essa pessoa."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />
-            Voltar para o inicio
+            Voltar para o início
           </Link>
         }
       />
@@ -77,11 +77,11 @@ export default function AdminSettingsPage() {
   return (
     <div className={styles.page}>
       <header className={styles.header}>
-        <h1 className={styles.title}>Configuracoes</h1>
+        <h1 className={styles.title}>Configurações</h1>
 
         <p className={styles.subtitle}>
-          O que a loja diz de si: o nome, o contato, o que a home mostra primeiro e as paginas que o
-          rodape lista.
+          O que a loja diz de si: o nome, o contato, o que a home mostra primeiro e as páginas que o
+          rodapé lista.
         </p>
       </header>
 
@@ -141,8 +141,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
         setTouched(false);
         toast({
           variant: 'success',
-          title: 'A loja ja esta assim',
-          description: 'Quem abrir o site agora ve as configuracoes novas.',
+          title: 'A loja já esta assim',
+          description: 'Quem abrir o site agora vê as configurações novas.',
         });
       },
       onError: (cause) => {
@@ -168,7 +168,7 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
                 block
                 required
                 maxLength={SETTINGS_LIMITS.storeName}
-                hint="Aparece no cabecalho, no titulo da aba e na mensagem do pedido."
+                hint="Aparece no cabeçalho, no título da aba e na mensagem do pedido."
                 value={draft.storeName}
                 error={errors.storeName}
                 onChange={(event) => {
@@ -181,7 +181,7 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
                 block
                 inputMode="tel"
                 placeholder="(88) 99999-9999"
-                hint="E para este numero que todo pedido fechado no site e enviado."
+                hint="E para este número que todo pedido fechado no site e enviado."
                 value={draft.whatsapp}
                 error={errors.whatsapp}
                 onChange={(event) => {
@@ -205,11 +205,11 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
               />
 
               <Input
-                label="Horario de atendimento"
+                label="Horário de atendimento"
                 block
                 maxLength={SETTINGS_LIMITS.businessHours}
                 placeholder="Seg a Sex, 9h as 18h"
-                hint="Texto livre, como a cliente le no rodape."
+                hint="Texto livre, como a cliente le no rodapé."
                 value={draft.businessHours}
                 error={errors.businessHours}
                 onChange={(event) => {
@@ -222,8 +222,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
               label="Barra de avisos"
               block
               maxLength={SETTINGS_LIMITS.announcementText}
-              placeholder="Frete gratis acima de R$ 200"
-              hint="A faixa no topo de toda pagina. Em branco, a faixa nao aparece."
+              placeholder="Frete grátis acima de R$ 200"
+              hint="A faixa no topo de toda página. Em branco, a faixa não aparece."
               value={draft.announcementText}
               error={errors.announcementText}
               onChange={(event) => {
@@ -232,13 +232,13 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
             />
 
             <Input
-              label="Frete gratis a partir de"
+              label="Frete grátis a partir de"
               block
               numeric
               inputMode="decimal"
               prefix="R$"
-              placeholder="sem minimo geral"
-              hint="Vale em qualquer cidade. A cidade que tiver regra propria, em Entrega, ignora esta."
+              placeholder="sem mínimo geral"
+              hint="Vale em qualquer cidade. A cidade que tiver regra própria, em Entrega, ignora esta."
               value={draft.freeShippingMin}
               error={errors.freeShippingMin}
               onChange={(event) => {
@@ -264,7 +264,7 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
           </div>
 
           <p className={styles.cardHint}>
-            Com a retirada ligada, o checkout oferece a opcao sem taxa e mostra este endereco depois
+            Com a retirada ligada, o checkout oferece a opção sem taxa e mostra este endereço depois
             que o pedido e fechado.
           </p>
 
@@ -284,7 +284,7 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
               />
 
               <Input
-                label="Numero"
+                label="Número"
                 block
                 maxLength={SETTINGS_LIMITS.number}
                 value={draft.pickupAddress.number}
@@ -358,10 +358,10 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
             </div>
 
             <Input
-              label="Ponto de referencia"
+              label="Ponto de referência"
               block
               maxLength={SETTINGS_LIMITS.reference}
-              placeholder="Em frente a praca"
+              placeholder="Em frente a praça"
               hint="Em cidade pequena vale mais que o CEP."
               value={draft.pickupAddress.reference}
               error={errors.address?.reference}
@@ -371,7 +371,7 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
             />
 
             <Textarea
-              label="Instrucoes para quem vai retirar"
+              label="Instruções para quem vai retirar"
               block
               rows={3}
               maxLength={SETTINGS_LIMITS.pickupInstructions}
@@ -391,8 +391,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
           </h2>
 
           <p className={styles.cardHint}>
-            Viram os icones do rodape. Cole o endereco inteiro ou so o arroba — o site monta o link
-            a partir do que estiver aqui. Em branco, o icone nao aparece.
+            Viram os icones do rodapé. Cole o endereço inteiro ou só o arroba — o site monta o link
+            a partir do que estiver aqui. Em branco, o icone não aparece.
           </p>
 
           <div className={styles.pair}>
@@ -428,8 +428,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
           </h2>
 
           <p className={styles.cardHint}>
-            A primeira coisa que a cliente ve. Arraste para mudar a ordem; o agendamento coloca e
-            tira a arte sozinho, sem ninguem precisar lembrar.
+            A primeira coisa que a cliente vê. Arraste para mudar a ordem; o agendamento coloca e
+            tira a arte sozinho, sem ninguém precisar lembrar.
           </p>
 
           <Warnings warnings={warnings} scope="banners" />
@@ -445,12 +445,12 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
 
         <section className={styles.card} aria-labelledby="secao-paginas">
           <h2 className={styles.cardTitle} id="secao-paginas">
-            Paginas do rodape
+            Páginas do rodapé
           </h2>
 
           <p className={styles.cardHint}>
-            As cinco existem sempre, e o endereco de cada uma nao muda — esses links circulam no
-            WhatsApp. O que se edita e o titulo, o texto e se a pagina esta publicada.
+            As cinco existem sempre, e o endereço de cada uma não muda — esses links circulam no
+            WhatsApp. O que se edita e o título, o texto e se a página esta publicada.
           </p>
 
           <Warnings warnings={warnings} scope="pages" />
@@ -468,8 +468,8 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
       {dirty ? (
         <div className={styles.bar}>
           <p className={styles.barText} aria-live="polite">
-            <strong className={styles.barTitle}>Alteracoes ainda nao salvas.</strong> O site
-            continua como estava ate voce salvar.
+            <strong className={styles.barTitle}>Alterações ainda não salvas.</strong> O site
+            continua como estava até você salvar.
           </p>
 
           <div className={styles.barActions}>

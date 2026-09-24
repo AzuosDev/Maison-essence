@@ -151,7 +151,7 @@ export class CustomerAuthService {
     if (!customer || !customer.isActive) {
       await this.sessions.revokeAllSessions(customerOwner(claimed.ownerId));
 
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     return this.issueSession(customer, context, claimed.tokenId);

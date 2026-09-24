@@ -145,7 +145,7 @@ export default function AdminReadyToShipPage() {
       </header>
 
       <p className={styles.hint}>
-        O que a cliente leva na hora. Estes produtos ganham o selo verde no card e aparecem na secao
+        O que a cliente leva na hora. Estes produtos ganham o selo verde no card e aparecem na seção
         da home — poe-se um produto aqui pelo interruptor "Pronta entrega" do cadastro.
       </p>
 
@@ -187,8 +187,8 @@ export default function AdminReadyToShipPage() {
         <p className={styles.warning}>
           <AlertIcon />
           {hidden.length === 1
-            ? `${hidden[0]?.name ?? ''} esta na prateleira e fora do ar: a caixa esta ai, e a cliente nao consegue comprar.`
-            : `${String(hidden.length)} destes estao na prateleira e fora do ar: as caixas estao ai, e a cliente nao consegue compra-las.`}
+            ? `${hidden[0]?.name ?? ''} esta na prateleira e fora do ar: a caixa esta aí, e a cliente não consegue comprar.`
+            : `${String(hidden.length)} destes estão na prateleira e fora do ar: as caixas estão aí, e a cliente não consegue compra-las.`}
         </p>
       )}
 
@@ -206,7 +206,7 @@ export default function AdminReadyToShipPage() {
                 description={
                   filtered
                     ? 'Mude a categoria ou o que esta na busca.'
-                    : 'Nenhum produto esta marcado como pronta entrega. A marca fica no cadastro do produto, e e ela que poe o selo verde no card e enche a secao da home.'
+                    : 'Nenhum produto esta marcado como pronta entrega. A marca fica no cadastro do produto, e e ela que poe o selo verde no card e enche a seção da home.'
                 }
                 actions={
                   filtered ? (
@@ -257,7 +257,7 @@ export default function AdminReadyToShipPage() {
             onPageChange={(page) => {
               apply({ page });
             }}
-            label="Paginas da pronta entrega"
+            label="Páginas da pronta entrega"
           />
         </>
       )}

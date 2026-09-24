@@ -108,7 +108,7 @@ const CONFIGURACOES = {
   banners: [],
 };
 
-const PAGINAS = [{ slug: 'trocas-e-devolucoes', title: 'Trocas e devolucoes' }];
+const PAGINAS = [{ slug: 'trocas-e-devolucoes', title: 'Trocas e devoluções' }];
 
 const PAGAMENTOS = {
   pix: { keyType: 'phone', hasKey: true, discountPercent: 5 },
@@ -143,7 +143,7 @@ beforeEach(() => {
         return Promise.resolve(
           jsonResponse({
             slug: 'trocas-e-devolucoes',
-            title: 'Trocas e devolucoes',
+            title: 'Trocas e devoluções',
             content: 'Sete dias para devolver.',
           }),
         );
@@ -233,7 +233,7 @@ function precoDestaque(): string {
   return document.querySelector(`.${buyBox.price}`)?.textContent ?? '';
 }
 
-test('trocar de variante atualiza preco, foto, estoque e o endereco', async () => {
+test('trocar de variante atualiza preço, foto, estoque e o endereço', async () => {
   const usuario = userEvent.setup();
   const router = await abrirProduto();
 
@@ -261,7 +261,7 @@ test('trocar de variante atualiza preco, foto, estoque e o endereco', async () =
   expect(router.state.location.search).toBe('?variante=v100');
 });
 
-test('o endereco com variante abre justamente naquela variante', async () => {
+test('o endereço com variante abre justamente naquela variante', async () => {
   await abrirProduto('/produtos/asad-lattafa?variante=v100');
 
   expect(precoDestaque()).toBe('R$ 289,90');
@@ -269,7 +269,7 @@ test('o endereco com variante abre justamente naquela variante', async () => {
   expect(fotoPrincipal().src).toContain('produtos/asad-100');
 });
 
-test('a variante esgotada aparece na lista e nao pode ser escolhida', async () => {
+test('a variante esgotada aparece na lista e não pode ser escolhida', async () => {
   const usuario = userEvent.setup();
   await abrirProduto();
 
@@ -289,7 +289,7 @@ test('a variante esgotada aparece na lista e nao pode ser escolhida', async () =
   expect(radio(/50ml/).checked).toBe(true);
 });
 
-test('a previa compartilhada leva a foto e o preco da variante escolhida', async () => {
+test('a prévia compartilhada leva a foto e o preço da variante escolhida', async () => {
   const usuario = userEvent.setup();
   await abrirProduto();
 
@@ -380,11 +380,11 @@ test('a quantidade para no estoque da variante escolhida', async () => {
   expect(mais.disabled).toBe(false);
 });
 
-test('a aba de trocas mostra o texto da pagina institucional', async () => {
+test('a aba de trocas mostra o texto da página institucional', async () => {
   const usuario = userEvent.setup();
   await abrirProduto();
 
-  await usuario.click(await screen.findByRole('tab', { name: 'Trocas e devolucoes' }));
+  await usuario.click(await screen.findByRole('tab', { name: 'Trocas e devoluções' }));
 
   const painel = await screen.findByRole('tabpanel');
 

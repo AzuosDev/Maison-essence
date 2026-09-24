@@ -26,7 +26,7 @@ import { MAX_BANNER_ORDER } from '../settings.constants.js';
  */
 export class BannerDto {
   @IsOptional()
-  @IsMongoId({ message: 'banner invalido' })
+  @IsMongoId({ message: 'banner inválido' })
   id?: string;
 
   /** `publicId` do Cloudinary. Banner sem arte nao existe: e obrigatorio. */
@@ -78,12 +78,12 @@ export class BannerDto {
    */
   @IsOptional()
   @Type(() => Date)
-  @IsDate({ message: 'data de inicio invalida: use o formato ISO 8601' })
+  @IsDate({ message: 'data de início inválida: use o formato ISO 8601' })
   startsAt?: Date | null;
 
   @IsOptional()
   @Type(() => Date)
-  @IsDate({ message: 'data de fim invalida: use o formato ISO 8601' })
+  @IsDate({ message: 'data de fim inválida: use o formato ISO 8601' })
   endsAt?: Date | null;
 
   /** Desligamento manual, sem perder as datas ja agendadas. */

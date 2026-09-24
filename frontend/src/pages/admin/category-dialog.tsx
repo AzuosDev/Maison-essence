@@ -116,7 +116,7 @@ function CategoryForm({
     <Modal
       open
       onClose={onClose}
-      title={isEdit ? 'Endereco e posicao' : 'Nova categoria'}
+      title={isEdit ? 'Endereço e posição' : 'Nova categoria'}
       description={
         target.mode === 'edit'
           ? target.category.name
@@ -160,13 +160,13 @@ function CategoryForm({
         />
 
         <Input
-          label="Endereco na loja"
+          label="Endereço na loja"
           block
           maxLength={CATEGORY_LIMITS.slug}
           placeholder={isEdit ? undefined : 'sai do nome'}
           hint={
             isEdit
-              ? 'O endereco antigo continua abrindo: a loja redireciona para o novo.'
+              ? 'O endereço antigo continua abrindo: a loja redireciona para o novo.'
               : 'Em branco, o sistema monta a partir do nome.'
           }
           value={slug}
@@ -177,7 +177,7 @@ function CategoryForm({
 
         {locked ? (
           <p className={styles.locked}>
-            Esta categoria tem subcategorias, e uma subcategoria nao pode ter filhos. Para coloca-la
+            Esta categoria tem subcategorias, e uma subcategoria não pode ter filhos. Para coloca-lá
             dentro de outra, mova antes as subcategorias dela.
           </p>
         ) : (

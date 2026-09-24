@@ -27,7 +27,7 @@ function serviceWith(settings: PaymentSettingsDocument): InstallmentService {
 }
 
 describe('InstallmentService', () => {
-  it('nao oferece parcela nenhuma quando a loja nao aceita cartao', async () => {
+  it('não oferece parcela nenhuma quando a loja não aceita cartão', async () => {
     const service = serviceWith(settingsWith({ acceptsCard: false }));
 
     // Lista vazia, e nao uma opcao a vista: quem chama nao precisa perguntar
@@ -35,7 +35,7 @@ describe('InstallmentService', () => {
     await expect(service.buildOptions(50_000)).resolves.toEqual([]);
   });
 
-  it('para no maximo de parcelas configurado', async () => {
+  it('para no máximo de parcelas configurado', async () => {
     const service = serviceWith(settingsWith({ maxInstallments: 6 }));
 
     const options = await service.buildOptions(60_000);
@@ -43,7 +43,7 @@ describe('InstallmentService', () => {
     expect(options.map((option) => option.number)).toEqual([1, 2, 3, 4, 5, 6]);
   });
 
-  it('omite a opcao cuja parcela cai abaixo do minimo', async () => {
+  it('omite a opção cuja parcela cai abaixo do mínimo', async () => {
     const service = serviceWith(settingsWith({ minInstallmentCents: 2_000 }));
 
     const options = await service.buildOptions(10_000);
@@ -53,7 +53,7 @@ describe('InstallmentService', () => {
     expect(options.every((option) => option.installmentCents >= 2_000)).toBe(true);
   });
 
-  it('cobra juros so acima do limite sem juros', async () => {
+  it('cobra juros só acima do limite sem juros', async () => {
     const service = serviceWith(
       settingsWith({ interestFreeUpTo: 3, monthlyInterestPercent: 1.99 }),
     );

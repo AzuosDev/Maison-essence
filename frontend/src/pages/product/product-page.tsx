@@ -57,13 +57,13 @@ function NotFound() {
   return (
     <MessageScreen
       code="404"
-      title="Este produto nao esta mais aqui"
-      description="Ele pode ter saido do catalogo ou o endereco veio com um erro de digitacao. A vitrine continua cheia."
+      title="Este produto não esta mais aqui"
+      description="Ele pode ter saido do catalogo ou o endereço veio com um erro de digitação. A vitrine continua cheia."
       actions={
         <>
           <ButtonLink to={ROUTES.products}>Ver todos os produtos</ButtonLink>
           <ButtonLink to={ROUTES.home} variant="secondary">
-            Voltar ao inicio
+            Voltar ao início
           </ButtonLink>
         </>
       }
@@ -74,8 +74,8 @@ function NotFound() {
 function LoadFailed({ onRetry }: { onRetry: () => void }) {
   return (
     <MessageScreen
-      title="Nao foi possivel carregar este produto"
-      description="A conexao falhou no meio do caminho. O produto continua no catalogo."
+      title="Não foi possível carregar este produto"
+      description="A conexão falhou no meio do caminho. O produto continua no catalogo."
       actions={
         <Button
           onClick={() => {

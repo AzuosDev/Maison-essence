@@ -47,10 +47,10 @@ export const SORT_KEYS = [
 export type SortKey = (typeof SORT_KEYS)[number];
 
 export const SORT_LABELS: Record<SortKey, string> = {
-  relevancia: 'Relevancia',
+  relevancia: 'Relevância',
   novidades: 'Mais recentes',
-  'menor-preco': 'Menor preco',
-  'maior-preco': 'Maior preco',
+  'menor-preco': 'Menor preço',
+  'maior-preco': 'Maior preço',
   desconto: 'Maior desconto',
   nome: 'Nome',
 };

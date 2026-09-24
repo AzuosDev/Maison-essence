@@ -86,7 +86,7 @@ export class AuthController {
     const rawToken = readRefreshToken(request, dto.refreshToken);
 
     if (!rawToken) {
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     const session = await this.auth.refresh(rawToken, requestContext(request));

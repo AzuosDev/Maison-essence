@@ -47,7 +47,7 @@ export function CheckoutSummary({
 
         <div className={styles.failed} role="alert">
           <p className={styles.failedText}>
-            Nao foi possivel calcular o total agora. Seus itens e seus dados continuam guardados.
+            Não foi possível calcular o total agora. Seus itens e seus dados continuam guardados.
           </p>
 
           <Button variant="secondary" block onClick={onRetry}>

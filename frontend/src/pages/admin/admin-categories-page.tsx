@@ -62,12 +62,12 @@ export default function AdminCategoriesPage() {
     return (
       <EmptyState
         as="h1"
-        title="Esta area e de quem administra a loja"
-        description="O menu da vitrine e cadastro. O seu acesso cobre o atendimento: o inicio do painel e os pedidos."
+        title="Esta área e de quem administra a loja"
+        description="O menu da vitrine e cadastro. O seu acesso cobre o atendimento: o início do painel e os pedidos."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />
-            Voltar para o inicio
+            Voltar para o início
           </Link>
         }
       />
@@ -145,7 +145,7 @@ export default function AdminCategoriesPage() {
         <EmptyState
           as="h2"
           title="O menu da loja esta vazio"
-          description="As categorias sao como a cliente encontra o que procura: Masculino, Feminino, Arabes. Crie a primeira e depois arraste para ordenar."
+          description="As categorias são como a cliente encontra o que procura: Masculino, Feminino, Árabes. Crie a primeira e depois arraste para ordenar."
           actions={
             <Button
               type="button"
@@ -206,7 +206,7 @@ export default function AdminCategoriesPage() {
               { id: dialog.category.id, input },
               {
                 onSuccess: saved(input.name ?? dialog.category.name),
-                onError: fail('Nao deu para salvar'),
+                onError: fail('Não deu para salvar'),
               },
             );
 
@@ -215,7 +215,7 @@ export default function AdminCategoriesPage() {
 
           create.mutate(
             { ...input, name: input.name ?? '' },
-            { onSuccess: saved(input.name ?? ''), onError: fail('Nao deu para criar a categoria') },
+            { onSuccess: saved(input.name ?? ''), onError: fail('Não deu para criar a categoria') },
           );
         }}
       />
@@ -234,14 +234,14 @@ export default function AdminCategoriesPage() {
           remove.mutate(deleting.id, {
             onSuccess: () => {
               setDeleting(null);
-              toast({ variant: 'success', title: `${deleting.name} foi excluida` });
+              toast({ variant: 'success', title: `${deleting.name} foi excluída` });
             },
             onError: (cause) => {
               const blocked = blockedBy(cause);
 
               if (blocked === null) {
                 setDeleting(null);
-                fail('A categoria nao foi excluida')(cause);
+                fail('A categoria não foi excluída')(cause);
 
                 return;
               }
@@ -250,7 +250,7 @@ export default function AdminCategoriesPage() {
               // impede, e a oferta de desativar continua a um clique.
               toast({
                 variant: 'danger',
-                title: `${deleting.name} nao esta vazia`,
+                title: `${deleting.name} não esta vazia`,
                 description: errorMessage(cause),
               });
             },
@@ -297,15 +297,15 @@ function DeleteDialog({
       title="Excluir esta categoria?"
       description={
         <>
-          So sai se estiver vazia: sem subcategorias e sem produto ativo dentro dela.
+          Só sai se estiver vazia: sem subcategorias e sem produto ativo dentro dela.
           {category?.isActive === true ? (
             <>
               {' '}
-              Se a ideia e apenas tira-la do menu da loja,{' '}
+              Se a ideia e apenas tira-lá do menu da loja,{' '}
               <button type="button" className={styles.inlineAction} onClick={onDeactivate}>
                 desative
               </button>{' '}
-              em vez de excluir — os produtos continuam onde estao.
+              em vez de excluir — os produtos continuam onde estão.
             </>
           ) : null}
         </>

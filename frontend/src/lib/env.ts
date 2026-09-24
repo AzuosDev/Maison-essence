@@ -18,7 +18,7 @@ import { z } from 'zod';
 const DEV_API_URL = 'http://localhost:3000/api/v1';
 
 const MISSING_CLOUD_NAME =
-  'VITE_CLOUDINARY_CLOUD_NAME nao esta definida: sem ela nenhuma imagem do catalogo carrega.';
+  'VITE_CLOUDINARY_CLOUD_NAME não esta definida: sem ela nenhuma imagem do catalogo carrega.';
 
 const schema = z.object({
   /**
@@ -53,7 +53,7 @@ function readEnv(): Env {
       .map((issue) => `- ${issue.path.join('.')}: ${issue.message}`)
       .join('\n');
 
-    throw new Error(`Configuracao invalida. Confira o .env:\n${problems}`);
+    throw new Error(`Configuração inválida. Confira o .env:\n${problems}`);
   }
 
   return result.data;

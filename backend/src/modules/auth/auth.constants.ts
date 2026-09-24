@@ -54,7 +54,7 @@ export const LOGIN_WINDOW_SECONDS = 15 * 60;
 export const LOGIN_MIN_DURATION_MS = 350;
 
 /** Resposta unica de login invalido: nunca diz o que estava errado. */
-export const INVALID_CREDENTIALS_MESSAGE = 'Credenciais invalidas.';
+export const INVALID_CREDENTIALS_MESSAGE = 'Credenciais inválidas.';
 
 /** Resposta do rate limit: generica, sem contador nem tempo restante. */
 export const TOO_MANY_ATTEMPTS_MESSAGE =
@@ -66,11 +66,11 @@ export const TOO_MANY_ATTEMPTS_MESSAGE =
  * Diz que a area e que nao e dele, e nao que a sessao expirou: o frontend
  * precisa saber que renovar o token nao vai resolver.
  */
-export const ADMIN_ONLY_MESSAGE = 'Esta area e do painel administrativo.';
+export const ADMIN_ONLY_MESSAGE = 'Esta área e do painel administrativo.';
 
 /** Bloqueio das rotas administrativas enquanto a senha temporaria nao troca. */
 export const PASSWORD_CHANGE_REQUIRED_MESSAGE =
-  'Troque a senha temporaria antes de usar o painel.';
+  'Troque a senha temporária antes de usar o painel.';
 
 /**
  * Limite do login no guard global: as mesmas cinco tentativas por quinze

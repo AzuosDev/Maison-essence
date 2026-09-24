@@ -25,7 +25,7 @@ describe('imageUrl', () => {
 });
 
 describe('imageUrls', () => {
-  it('devolve os tres presets de uma vez', () => {
+  it('devolve os três presets de uma vez', () => {
     expect(Object.keys(imageUrls('maison-test', PUBLIC_ID))).toEqual([
       'thumb',
       'card',

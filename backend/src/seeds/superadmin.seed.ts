@@ -28,9 +28,9 @@ await runSeed('seed:superadmin', async (app, logger) => {
 
   if (result.outcome === BOOTSTRAP_OUTCOMES.ALREADY_BOOTSTRAPPED) {
     logger.warn(
-      `Ja existe um SUPER_ADMIN (${result.blockedBy.email}). Nada foi criado. ` +
+      `Já existe um SUPER_ADMIN (${result.blockedBy.email}). Nada foi criado. ` +
         'Para outro administrador, use o painel; para recuperar o acesso, ' +
-        'resete a senha por la.',
+        'resete a senha por lá.',
     );
 
     return;
@@ -38,7 +38,7 @@ await runSeed('seed:superadmin', async (app, logger) => {
 
   logger.log(`SUPER_ADMIN criado: ${result.user.email}`);
   logger.log(
-    'A senha veio da variavel de ambiente e o usuario nasce com troca ' +
-      'obrigatoria: no primeiro acesso o painel so libera PATCH /auth/change-password.',
+    'A senha veio da variável de ambiente e o usuário nasce com troca ' +
+      'obrigatória: no primeiro acesso o painel só libera PATCH /auth/change-password.',
   );
 });

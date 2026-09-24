@@ -191,7 +191,7 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
 
 /* ---- A lista --------------------------------------------------------------- */
 
-test('a dona ve o preco, a categoria e o interruptor', async () => {
+test('a dona vê o preço, a categoria e o interruptor', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir('/admin/produtos');
@@ -206,7 +206,7 @@ test('a dona ve o preco, a categoria e o interruptor', async () => {
   expect(screen.getByRole('switch', { name: 'Publicar Asad' })).toBeDefined();
 });
 
-test('o STAFF le o catalogo sem preco e sem poder mexer', async () => {
+test('o STAFF le o catalogo sem preço e sem poder mexer', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir('/admin/produtos');
@@ -218,20 +218,20 @@ test('o STAFF le o catalogo sem preco e sem poder mexer', async () => {
 
   expect(screen.queryByText('R$ 189,90')).toBeNull();
   expect(screen.queryByRole('link', { name: /Adicionar produto/ })).toBeNull();
-  expect(screen.queryByRole('button', { name: /Acoes de Asad/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /Ações de Asad/ })).toBeNull();
 });
 
-test('o STAFF nao abre o cadastro nem digitando o endereco', async () => {
+test('o STAFF não abre o cadastro nem digitando o endereço', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir('/admin/produtos/p1');
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem administra a loja/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem administra a loja/ }),
   ).toBeDefined();
 });
 
-test('o recorte do endereco vira consulta filtrada', async () => {
+test('o recorte do endereço vira consulta filtrada', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir(`/admin/produtos?status=inactive&categoria=${CATEGORY_ID}`);
@@ -264,14 +264,14 @@ test('o interruptor manda o valor oposto', async () => {
   });
 });
 
-test('excluir pede confirmacao nomeando o produto', async () => {
+test('excluir pede confirmação nomeando o produto', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir('/admin/produtos');
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Asad' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Asad' }));
   await user.click(screen.getByRole('button', { name: /Excluir produto/ }));
 
   const dialog = await screen.findByRole('dialog');
@@ -299,7 +299,7 @@ test('o cadastro novo abre com uma variante e sem nada preenchido', async () => 
   expect(screen.getByRole('textbox', { name: 'Nome da variante 1' })).toBeDefined();
 });
 
-test('salvar sem nome nao chama o servidor', async () => {
+test('salvar sem nome não chama o servidor', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -312,7 +312,7 @@ test('salvar sem nome nao chama o servidor', async () => {
   expect(lastWrite()).toBeUndefined();
 });
 
-test('cadastrar manda o preco em centavos', async () => {
+test('cadastrar manda o preço em centavos', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -321,7 +321,7 @@ test('cadastrar manda o preco em centavos', async () => {
 
   await user.type(await screen.findByRole('textbox', { name: 'Nome' }), 'Asad');
   await user.type(screen.getByRole('textbox', { name: 'Nome da variante 1' }), '100ml');
-  await user.type(screen.getByRole('textbox', { name: 'Preco da variante 1' }), '189,90');
+  await user.type(screen.getByRole('textbox', { name: 'Preço da variante 1' }), '189,90');
 
   await user.click(screen.getByRole('button', { name: 'Cadastrar produto' }));
 
@@ -334,7 +334,7 @@ test('cadastrar manda o preco em centavos', async () => {
   });
 });
 
-test('duplicar a variante copia o preco e limpa o SKU', async () => {
+test('duplicar a variante copia o preço e limpa o SKU', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -347,7 +347,7 @@ test('duplicar a variante copia o preco e limpa o SKU', async () => {
 
   await user.click(screen.getByRole('button', { name: 'Duplicar a variante 1' }));
 
-  const price2 = screen.getByRole('textbox', { name: 'Preco da variante 2' });
+  const price2 = screen.getByRole('textbox', { name: 'Preço da variante 2' });
   const sku2 = screen.getByRole('textbox', { name: 'SKU da variante 2' });
 
   expect((price2 as HTMLInputElement).value).toBe('189,90');
@@ -356,7 +356,7 @@ test('duplicar a variante copia o preco e limpa o SKU', async () => {
   expect((sku2 as HTMLInputElement).value).toBe('');
 });
 
-test('a edicao manda PATCH e nao muda o endereco do produto', async () => {
+test('a edição manda PATCH e não muda o endereço do produto', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);

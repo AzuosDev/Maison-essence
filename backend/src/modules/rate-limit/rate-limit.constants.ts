@@ -2,7 +2,7 @@ import type { RateLimitRule } from './rate-limit.decorator.js';
 
 /** Resposta do limite estourado: generica, sem contador nem tempo restante. */
 export const TOO_MANY_REQUESTS_MESSAGE =
-  'Muitas requisicoes em pouco tempo. Espere um instante e tente de novo.';
+  'Muitas requisições em pouco tempo. Espere um instante e tente de novo.';
 
 /**
  * Teto de qualquer rota aberta que nao declarou regra propria.

@@ -57,7 +57,7 @@ export class UpdateSettingsDto {
   announcementText?: string;
 
   @IsOptional()
-  @IsEmail({}, { message: 'informe um e-mail de contato valido' })
+  @IsEmail({}, { message: 'informe um e-mail de contato válido' })
   @MaxLength(160)
   contactEmail?: string;
 
@@ -92,7 +92,7 @@ export class UpdateSettingsDto {
    * cidade tem precedencia (ver `delivery-fee.ts`).
    */
   @IsOptional()
-  @IsInt({ message: 'o minimo para frete gratis deve ser um inteiro em centavos' })
+  @IsInt({ message: 'o mínimo para frete grátis deve ser um inteiro em centavos' })
   @Min(0)
   @Max(MAX_CENTS)
   freeShippingMinCents?: number | null;

@@ -37,7 +37,7 @@ export default function CartPage() {
 
   usePageMeta({
     title: 'Sua sacola — Maison Essence',
-    description: 'Os itens que voce separou na Maison Essence.',
+    description: 'Os itens que você separou na Maison Essence.',
     robots: 'noindex',
   });
 
@@ -46,7 +46,7 @@ export default function CartPage() {
   return (
     <Container className={styles.page}>
       <Breadcrumb
-        items={[{ label: 'Inicio', to: ROUTES.home }, { label: 'Sacola' }]}
+        items={[{ label: 'Início', to: ROUTES.home }, { label: 'Sacola' }]}
         className={styles.breadcrumb}
       />
 

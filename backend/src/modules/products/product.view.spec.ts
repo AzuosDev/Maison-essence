@@ -26,14 +26,14 @@ describe('discountOf', () => {
     expect(discountOf(8040, 10_000)).toBe(19);
   });
 
-  it('e zero sem preco de comparacao ou com preco de comparacao menor', () => {
+  it('e zero sem preço de comparação ou com preço de comparação menor', () => {
     expect(discountOf(19_990, null)).toBe(0);
     expect(discountOf(19_990, 9990)).toBe(0);
   });
 });
 
 describe('hasVariants', () => {
-  it('e falso no produto simples: variante unica e sem label', () => {
+  it('e falso no produto simples: variante única e sem label', () => {
     expect(hasVariants([variant({ label: '' })])).toBe(false);
   });
 
@@ -47,15 +47,15 @@ describe('hasVariants', () => {
 });
 
 describe('toVariantView', () => {
-  it('marca como indisponivel a variante sem estoque', () => {
+  it('marca como indisponível a variante sem estoque', () => {
     expect(toVariantView(variant({ stock: 0 })).isAvailable).toBe(false);
   });
 
-  it('mantem disponivel a variante sem estoque que aceita encomenda', () => {
+  it('mantem disponível a variante sem estoque que aceita encomenda', () => {
     expect(toVariantView(variant({ stock: 0, allowBackorder: true })).isAvailable).toBe(true);
   });
 
-  it('nao vende variante desativada, nem com estoque', () => {
+  it('não vende variante desativada, nem com estoque', () => {
     expect(toVariantView(variant({ isActive: false, stock: 10 })).isAvailable).toBe(false);
   });
 });

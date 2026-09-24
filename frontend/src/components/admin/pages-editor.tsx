@@ -74,10 +74,10 @@ export function PagesEditor({ pages, errors, onChange }: PagesEditorProps) {
             {open ? (
               <div className={styles.body}>
                 <Input
-                  label="Titulo da pagina"
+                  label="Título da página"
                   block
                   maxLength={SETTINGS_LIMITS.pageTitle}
-                  hint="E o que aparece no rodape e no topo da pagina."
+                  hint="E o que aparece no rodapé e no topo da página."
                   value={page.title}
                   error={pageErrors?.title}
                   onChange={(event) => {
@@ -90,7 +90,7 @@ export function PagesEditor({ pages, errors, onChange }: PagesEditorProps) {
                   block
                   rows={10}
                   maxLength={SETTINGS_LIMITS.pageContent}
-                  hint="Aceita Markdown: ## para titulo, ** ** para negrito, - para lista."
+                  hint="Aceita Markdown: ## para título, ** ** para negrito, - para lista."
                   value={page.content}
                   error={pageErrors?.content}
                   onChange={(event) => {
@@ -109,8 +109,8 @@ export function PagesEditor({ pages, errors, onChange }: PagesEditorProps) {
 
                   <p className={styles.publishHint}>
                     {page.isActive
-                      ? 'O link esta no rodape e o endereco responde.'
-                      : 'Fora do rodape, e o endereco responde que a pagina nao existe.'}
+                      ? 'O link esta no rodapé e o endereço responde.'
+                      : 'Fora do rodapé, e o endereço responde que a página não existe.'}
                   </p>
                 </div>
               </div>
@@ -128,5 +128,5 @@ function summaryOf(page: PageDraft): string {
     return page.isActive ? 'Publicada, sem texto' : 'Sem texto';
   }
 
-  return page.isActive ? 'Publicada' : 'Escrita, nao publicada';
+  return page.isActive ? 'Publicada' : 'Escrita, não publicada';
 }

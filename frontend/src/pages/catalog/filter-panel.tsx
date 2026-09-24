@@ -52,7 +52,7 @@ export function FilterPanel({
   return (
     <div className={cx(styles.panel, className)}>
       <section className={styles.group}>
-        <h3 className={styles.legend}>Faixa de preco</h3>
+        <h3 className={styles.legend}>Faixa de preço</h3>
 
         {facets.isLoading ? (
           <Skeleton height="var(--control-height-small)" />

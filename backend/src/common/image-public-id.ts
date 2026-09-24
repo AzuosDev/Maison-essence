@@ -50,7 +50,7 @@ export const IMAGE_PUBLIC_ID_PATTERN = new RegExp(`^${PUBLIC_ID_BODY}$`);
 export const OPTIONAL_IMAGE_PUBLIC_ID_PATTERN = new RegExp(`^(?:${PUBLIC_ID_BODY})?$`);
 
 export const IMAGE_PUBLIC_ID_MESSAGE =
-  'imagem invalida: use o identificador devolvido pelo upload do painel';
+  'imagem inválida: use o identificador devolvido pelo upload do painel';
 
 export function isImagePublicId(value: unknown): value is string {
   return typeof value === 'string' && IMAGE_PUBLIC_ID_PATTERN.test(value);

@@ -47,10 +47,10 @@ function tree(): AdminCategoryNode[] {
   return [
     node('m', 'Masculino', [
       category({ id: 'm1', name: 'Amadeirado', parentId: 'm' }),
-      category({ id: 'm2', name: 'Citrico', parentId: 'm' }),
+      category({ id: 'm2', name: 'Cítrico', parentId: 'm' }),
     ]),
     node('f', 'Feminino'),
-    node('a', 'Arabes'),
+    node('a', 'Árabes'),
   ];
 }
 
@@ -70,25 +70,25 @@ test('mover um pai leva os filhos junto', () => {
   expect(menuOrder(moved)).toEqual(['f', 'a', 'm', 'm1', 'm2']);
 });
 
-test('mover um filho nao sai do pai dele', () => {
+test('mover um filho não sai do pai dele', () => {
   const moved = moveChild(tree(), 'm', 0, 1);
 
   expect(menuOrder(moved)).toEqual(['m', 'm2', 'm1', 'f', 'a']);
 });
 
-test('mover um filho nao mexe nos outros pais', () => {
+test('mover um filho não mexe nos outros pais', () => {
   const moved = moveChild(tree(), 'm', 0, 1);
 
   expect(moved.map((parent) => parent.id)).toEqual(['m', 'f', 'a']);
 });
 
-test('um movimento impossivel devolve a arvore como esta', () => {
+test('um movimento impossível devolve a arvore como esta', () => {
   expect(menuOrder(moveParent(tree(), 0, 9))).toEqual(menuOrder(tree()));
   expect(menuOrder(moveParent(tree(), -1, 0))).toEqual(menuOrder(tree()));
   expect(menuOrder(moveChild(tree(), 'm', 0, 0))).toEqual(menuOrder(tree()));
 });
 
-test('mover num pai que nao existe nao faz nada', () => {
+test('mover num pai que não existe não faz nada', () => {
   expect(menuOrder(moveChild(tree(), 'inexistente', 0, 1))).toEqual(menuOrder(tree()));
 });
 
@@ -99,13 +99,13 @@ test('a contagem soma pais e filhos', () => {
   expect(countCategories([])).toBe(0);
 });
 
-test('achatar traz os dois niveis', () => {
+test('achatar traz os dois níveis', () => {
   expect(flatten(tree()).map((item) => item.id)).toEqual(['m', 'm1', 'm2', 'f', 'a']);
 });
 
 /* ---- Quem pode ser pai ------------------------------------------------------- */
 
-test('so categorias principais podem ser pai', () => {
+test('só categorias principais podem ser pai', () => {
   // Uma subcategoria nao pode ter filhos: o servidor recusa com
   // `NESTING_TOO_DEEP_MESSAGE`. `m1` e `m2` nao entram na lista.
   expect(parentOptions(tree(), '').map((option) => option.value)).toEqual(['m', 'f', 'a']);
@@ -115,7 +115,7 @@ test('uma categoria nunca aparece como pai de si mesma', () => {
   expect(parentOptions(tree(), 'm').map((option) => option.value)).toEqual(['f', 'a']);
 });
 
-test('quem tem filhos nao pode virar subcategoria', () => {
+test('quem tem filhos não pode virar subcategoria', () => {
   expect(hasChildren(tree(), 'm')).toBe(true);
   expect(hasChildren(tree(), 'f')).toBe(false);
   // Um filho nao esta no primeiro nivel, entao a pergunta nao se aplica a ele.
@@ -125,9 +125,9 @@ test('quem tem filhos nao pode virar subcategoria', () => {
 /* ---- O que impede a exclusao -------------------------------------------------- */
 
 function conflict(details: Record<string, unknown>): ApiError {
-  return new ApiError(409, ['Nao da para excluir.'], '/admin/categories/m', {
+  return new ApiError(409, ['Não da para excluir.'], '/admin/categories/m', {
     statusCode: 409,
-    message: 'Nao da para excluir.',
+    message: 'Não da para excluir.',
     error: 'Conflict',
     details,
     timestamp: '2026-09-23T12:00:00.000Z',
@@ -135,7 +135,7 @@ function conflict(details: Record<string, unknown>): ApiError {
   });
 }
 
-test('o 409 de exclusao devolve as contagens', () => {
+test('o 409 de exclusão devolve as contagens', () => {
   const blocked = blockedBy(
     conflict({ subcategoryCount: 2, productCount: 0, canDeactivate: true }),
   );
@@ -143,12 +143,12 @@ test('o 409 de exclusao devolve as contagens', () => {
   expect(blocked).toEqual({ subcategoryCount: 2, productCount: 0, canDeactivate: true });
 });
 
-test('qualquer outro erro nao vira oferta de desativar', () => {
+test('qualquer outro erro não vira oferta de desativar', () => {
   // Sem rede, sessao expirada, id que nao existe: nenhum deles carrega
   // contagem, e oferecer "desative no lugar" ali seria responder outra coisa.
   expect(blockedBy(new Error('sem rede'))).toBeNull();
   expect(blockedBy(conflict({}))).toBeNull();
   expect(
-    blockedBy(new ApiError(404, ['Categoria nao encontrada.'], '/admin/categories/x', null)),
+    blockedBy(new ApiError(404, ['Categoria não encontrada.'], '/admin/categories/x', null)),
   ).toBeNull();
 });

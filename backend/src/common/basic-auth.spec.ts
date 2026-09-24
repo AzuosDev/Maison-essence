@@ -15,11 +15,11 @@ describe('matchesBasicAuth', () => {
     expect(matchesBasicAuth(header('docs', 'quase-a-senha-certa'), CREDENTIALS)).toBe(false);
   });
 
-  it('recusa o usuario errado', () => {
+  it('recusa o usuário errado', () => {
     expect(matchesBasicAuth(header('outro', CREDENTIALS.password), CREDENTIALS)).toBe(false);
   });
 
-  it('recusa cabecalho ausente, vazio ou de outro esquema', () => {
+  it('recusa cabeçalho ausente, vazio ou de outro esquema', () => {
     expect(matchesBasicAuth(undefined, CREDENTIALS)).toBe(false);
     expect(matchesBasicAuth('Basic', CREDENTIALS)).toBe(false);
     expect(matchesBasicAuth('Bearer abc.def.ghi', CREDENTIALS)).toBe(false);

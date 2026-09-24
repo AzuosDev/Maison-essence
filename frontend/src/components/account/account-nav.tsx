@@ -33,7 +33,7 @@ export function AccountNav() {
   const signOut = useSignOut();
 
   return (
-    <nav className={styles.nav} aria-label="Areas da conta">
+    <nav className={styles.nav} aria-label="Áreas da conta">
       <ul className={styles.list}>
         <li>
           <NavLink to={ROUTES.account.orders} className={itemClass}>
@@ -45,7 +45,7 @@ export function AccountNav() {
         <li>
           <NavLink to={ROUTES.account.addresses} className={itemClass}>
             <PinIcon className={styles.icon} />
-            Enderecos
+            Endereços
           </NavLink>
         </li>
 

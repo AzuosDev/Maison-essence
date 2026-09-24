@@ -67,7 +67,7 @@ export function OneTimeSecret({ secret, label }: OneTimeSecretProps) {
   return (
     <div className={styles.box}>
       <p className={styles.warning}>
-        Anote ou copie agora. Esta senha nao aparece de novo — se ela se perder, o caminho e resetar
+        Anote ou copie agora. Esta senha não aparece de novo — se ela se perder, o caminho e resetar
         a senha outra vez.
       </p>
 
@@ -93,7 +93,7 @@ export function OneTimeSecret({ secret, label }: OneTimeSecretProps) {
       */}
       <output className={styles.status}>
         {state === 'failed'
-          ? 'Nao foi possivel copiar por aqui. Selecione a senha acima e copie a mao.'
+          ? 'Não foi possível copiar por aqui. Selecione a senha acima e copie a mão.'
           : ''}
       </output>
     </div>

@@ -40,7 +40,7 @@ export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
   },
   {
     slug: INSTITUTIONAL_PAGE_SLUGS.RETURNS,
-    title: 'Trocas e devolucoes',
+    title: 'Trocas e devoluções',
     content: '',
     isActive: false,
   },
@@ -52,7 +52,7 @@ export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
   },
   {
     slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
-    title: 'Politica de privacidade',
+    title: 'Política de privacidade',
     content: '',
     isActive: false,
   },

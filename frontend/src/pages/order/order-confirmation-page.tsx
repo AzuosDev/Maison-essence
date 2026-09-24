@@ -84,7 +84,7 @@ function Confirmation({ order }: { order: PlacedOrder }) {
 
         <h1 className={styles.title}>Pedido finalizado</h1>
 
-        <p className={styles.codeLabel}>Codigo do pedido</p>
+        <p className={styles.codeLabel}>Código do pedido</p>
         <p className={cx(styles.code, 'tabular')}>{order.code}</p>
 
         <p className={styles.instruction}>
@@ -96,7 +96,7 @@ function Confirmation({ order }: { order: PlacedOrder }) {
             </>
           ) : (
             <>
-              Guarde este codigo e fale com a loja para combinar o pagamento. Copie a mensagem
+              Guarde este código e fale com a loja para combinar o pagamento. Copie a mensagem
               abaixo: ela tem o seu pedido inteiro, pronta para enviar.
             </>
           )}
@@ -110,8 +110,8 @@ function Confirmation({ order }: { order: PlacedOrder }) {
 
         {hasWhatsapp ? (
           <p className={styles.blocked}>
-            A aba do WhatsApp nao abriu? Use o botao acima — o pedido ja esta registrado, e
-            reenviar nao cria outro.
+            A aba do WhatsApp não abriu? Use o botão acima — o pedido já esta registrado, e
+            reenviar não cria outro.
           </p>
         ) : null}
       </div>
@@ -247,7 +247,7 @@ function ManualCopy({ message }: { message: string }) {
   return (
     <div className={styles.manual}>
       <p className={styles.manualHint}>
-        Seu navegador nao deixou copiar sozinho. O texto esta selecionado abaixo:
+        Seu navegador não deixou copiar sozinho. O texto esta selecionado abaixo:
       </p>
 
       <textarea
@@ -341,9 +341,9 @@ function AccountInvite({ order }: { order: PlacedOrder }) {
       <h2 className={styles.inviteTitle}>Quer acompanhar seus pedidos?</h2>
 
       <p className={styles.inviteText}>
-        Crie uma conta com o mesmo numero deste pedido —{' '}
+        Crie uma conta com o mesmo número deste pedido —{' '}
         <strong className="tabular">{formatPhone(order.customerPhone)}</strong> — e ele aparece
-        la junto com tudo o que voce ja comprou na loja, sem precisar procurar a conversa.
+        lá junto com tudo o que você já comprou na loja, sem precisar procurar a conversa.
       </p>
 
       <ButtonLink variant="secondary" to={ROUTES.account.registerWith(order.customerPhone)}>
@@ -370,8 +370,8 @@ function NotHere({ code }: { code: string }) {
       <h1 className={styles.title}>Pedido {code}</h1>
 
       <p className={styles.instruction}>
-        Este pedido nao esta guardado neste navegador — a confirmacao fica no aparelho em que o
-        pedido foi fechado. Ele continua valendo: mande o codigo acima no WhatsApp da loja e a
+        Este pedido não esta guardado neste navegador — a confirmação fica no aparelho em que o
+        pedido foi fechado. Ele continua valendo: mande o código acima no WhatsApp da loja e a
         dona acha a conversa.
       </p>
 

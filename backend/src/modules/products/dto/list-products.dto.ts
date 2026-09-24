@@ -30,11 +30,11 @@ export class ListProductsDto {
   q?: string;
 
   @IsOptional()
-  @IsMongoId({ message: 'categoria invalida' })
+  @IsMongoId({ message: 'categoria inválida' })
   categoryId?: string;
 
   @IsOptional()
-  @IsIn(PRODUCT_STATUS_FILTERS, { message: 'status invalido' })
+  @IsIn(PRODUCT_STATUS_FILTERS, { message: 'status inválido' })
   status?: ProductStatusFilter;
 
   /**
@@ -46,7 +46,7 @@ export class ListProductsDto {
    */
   @IsOptional()
   @QueryFlag()
-  @IsBoolean({ message: 'filtro de pronta entrega invalido' })
+  @IsBoolean({ message: 'filtro de pronta entrega inválido' })
   readyToShip?: boolean;
 
   // `@Type` porque query string chega como texto e o ValidationPipe nao

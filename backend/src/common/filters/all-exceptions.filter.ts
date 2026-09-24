@@ -20,10 +20,10 @@ type NormalizedError = Pick<
 >;
 
 /** Corpo maior que o teto: a mensagem diz o teto, porque ele e corrigivel. */
-export const BODY_TOO_LARGE_MESSAGE = `O corpo da requisicao passa do limite de ${MAX_BODY_SIZE}.`;
+export const BODY_TOO_LARGE_MESSAGE = `O corpo da requisição passa do limite de ${MAX_BODY_SIZE}.`;
 
 /** Corpo que nem chegou a ser um JSON. */
-export const MALFORMED_BODY_MESSAGE = 'O corpo da requisicao nao e um JSON valido.';
+export const MALFORMED_BODY_MESSAGE = 'O corpo da requisição não e um JSON válido.';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {

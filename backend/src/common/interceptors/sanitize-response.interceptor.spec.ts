@@ -45,14 +45,14 @@ describe('SanitizeResponseInterceptor', () => {
     expect(result).toEqual([{ _id: 'abc', createdAt }]);
   });
 
-  it('usa toJSON quando disponivel', async () => {
+  it('usa toJSON quando disponível', async () => {
     const doc = { toJSON: () => ({ _id: new FakeObjectId('xyz'), passwordHash: 'x' }) };
     const result = await run(doc);
 
     expect(result).toEqual({ _id: 'xyz' });
   });
 
-  it('nao entra em loop com referencia circular', async () => {
+  it('não entra em loop com referência circular', async () => {
     const node: Record<string, unknown> = { name: 'raiz' };
     node.self = node;
 
@@ -64,7 +64,7 @@ describe('SanitizeResponseInterceptor', () => {
    * que o produto anuncia no card e a primeira da escada dele sao a mesma
    * referencia, e as duas precisam chegar inteiras na vitrine.
    */
-  it('mantem a referencia repetida que nao e ciclo', async () => {
+  it('mantem a referência repetida que não e ciclo', async () => {
     const tier = { minQty: 3, percentOff: 10 };
 
     await expect(run({ quantityDiscount: tier, quantityDiscounts: [tier] })).resolves.toEqual({

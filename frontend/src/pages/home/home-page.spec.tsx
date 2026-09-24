@@ -25,9 +25,9 @@ const BANNERS = [
     id: 'b1',
     imageDesktop: 'banners/verao-desktop',
     imageMobile: 'banners/verao-mobile',
-    title: 'Colecao de verao',
-    subtitle: 'Notas citricas para os dias quentes.',
-    buttonLabel: 'Ver a colecao',
+    title: 'Coleção de verão',
+    subtitle: 'Notas cítricas para os dias quentes.',
+    buttonLabel: 'Ver a coleção',
     link: '/produtos',
   },
   {
@@ -240,15 +240,15 @@ function abrirHome() {
 test('o hero mostra o banner cadastrado no painel', async () => {
   abrirHome();
 
-  expect(await screen.findByRole('heading', { name: 'Colecao de verao' })).toBeDefined();
-  expect(screen.getByText('Notas citricas para os dias quentes.')).toBeDefined();
-  expect(screen.getByRole('link', { name: 'Ver a colecao' })).toBeDefined();
+  expect(await screen.findByRole('heading', { name: 'Coleção de verão' })).toBeDefined();
+  expect(screen.getByText('Notas cítricas para os dias quentes.')).toBeDefined();
+  expect(screen.getByRole('link', { name: 'Ver a coleção' })).toBeDefined();
 });
 
 test('a primeira imagem do hero carrega sem lazy e com prioridade', async () => {
   const { container } = abrirHome();
 
-  await screen.findByRole('heading', { name: 'Colecao de verao' });
+  await screen.findByRole('heading', { name: 'Coleção de verão' });
 
   const imagens = [...container.querySelectorAll('picture img')];
 
@@ -259,12 +259,12 @@ test('a primeira imagem do hero carrega sem lazy e com prioridade', async () => 
   expect(imagens[1]?.getAttribute('loading')).toBe('lazy');
 });
 
-test('o indicador troca o banner em exibicao', async () => {
+test('o indicador troca o banner em exibição', async () => {
   const user = userEvent.setup();
 
   abrirHome();
 
-  const primeiro = await screen.findByRole('heading', { name: 'Colecao de verao' });
+  const primeiro = await screen.findByRole('heading', { name: 'Coleção de verão' });
   const slide = primeiro.closest('[aria-roledescription="slide"]');
 
   expect(slide?.getAttribute('aria-hidden')).toBe('false');
@@ -333,7 +333,7 @@ test('o produto de pronta entrega leva o selo verde na prateleira', async () => 
   expect(await within(prontaEntrega).findByText('Pronta entrega')).toBeDefined();
 });
 
-test('prateleira sem produto some da pagina', async () => {
+test('prateleira sem produto some da página', async () => {
   prateleiras['best-sellers'] = [];
 
   abrirHome();
@@ -347,7 +347,7 @@ test('prateleira sem produto some da pagina', async () => {
 
 /* ---- As prateleiras de marca --------------------------------------------- */
 
-test('cada prateleira de marca pede a marca dela, e so ela', async () => {
+test('cada prateleira de marca pede a marca dela, e só ela', async () => {
   abrirHome();
 
   const isabelle = await screen.findByRole('region', { name: 'Isabelle La Belle' });
@@ -436,7 +436,7 @@ function ordemDasSecoes(): string[] {
     .map((titulo) => titulo.textContent?.trim() ?? '');
 }
 
-test('as colecoes entram depois do bloco de marcas, e nao no meio dele', async () => {
+test('as coleções entram depois do bloco de marcas, e não no meio dele', async () => {
   abrirHome();
 
   await screen.findByRole('region', { name: 'Destaques' });
@@ -446,7 +446,7 @@ test('as colecoes entram depois do bloco de marcas, e nao no meio dele', async (
       'Isabelle La Belle',
       'Arabic Collection',
       'Maison Alhambra e Lattafa',
-      'Descubra as colecoes',
+      'Descubra as coleções',
       'Destaques',
       'Pronta entrega',
       'Mais vendidos',
@@ -467,7 +467,7 @@ test('as colecoes entram depois do bloco de marcas, e nao no meio dele', async (
  * dependia so de existir produto, e estas dependem de a marca estar escrita
  * no cadastro como esta em `BRANDS`.
  */
-test('com as tres prateleiras curadas vazias, as marcas sustentam a vitrine', async () => {
+test('com as três prateleiras curadas vazias, as marcas sustentam a vitrine', async () => {
   prateleiras['featured'] = [];
   prateleiras['ready-to-ship'] = [];
   prateleiras['best-sellers'] = [];
@@ -483,7 +483,7 @@ test('com as tres prateleiras curadas vazias, as marcas sustentam a vitrine', as
       'Isabelle La Belle',
       'Arabic Collection',
       'Maison Alhambra e Lattafa',
-      'Descubra as colecoes',
+      'Descubra as coleções',
     ]);
   });
 });
@@ -497,7 +497,7 @@ test('com as tres prateleiras curadas vazias, as marcas sustentam a vitrine', as
  * a abertura da home e a contagem de tons continuou saindo da primeira
  * prateleira: tres antes da faixa em vez de duas, e a terceira caiu em creme.
  */
-test('a prateleira que encosta nas colecoes sai tingida', async () => {
+test('a prateleira que encosta nas coleções sai tingida', async () => {
   abrirHome();
 
   await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
@@ -510,7 +510,7 @@ test('a prateleira que encosta nas colecoes sai tingida', async () => {
 });
 
 /** E a de cima dela, nao: duas de areia seguidas leem como uma fileira so. */
-test('a prateleira anterior a essa nao sai tingida', async () => {
+test('a prateleira anterior a essa não sai tingida', async () => {
   abrirHome();
 
   await screen.findByRole('region', { name: 'Arabic Collection' });
@@ -522,7 +522,7 @@ test('a prateleira anterior a essa nao sai tingida', async () => {
   });
 });
 
-test('sem destaques, o bloco de marcas continua abrindo a pagina', async () => {
+test('sem destaques, o bloco de marcas continua abrindo a página', async () => {
   prateleiras['featured'] = [];
 
   abrirHome();
@@ -534,7 +534,7 @@ test('sem destaques, o bloco de marcas continua abrindo a pagina', async () => {
       'Isabelle La Belle',
       'Arabic Collection',
       'Maison Alhambra e Lattafa',
-      'Descubra as colecoes',
+      'Descubra as coleções',
       'Pronta entrega',
       'Mais vendidos',
     ]);
@@ -553,7 +553,7 @@ test('sem destaques, o bloco de marcas continua abrindo a pagina', async () => {
  * delas vazia: a faixa nao pode subir para o meio do bloco, tem de continuar
  * entrando depois da terceira fileira que de fato aparecer.
  */
-test('com uma marca vazia, as colecoes ainda esperam tres prateleiras', async () => {
+test('com uma marca vazia, as coleções ainda esperam três prateleiras', async () => {
   marcas['Arabic Collection'] = [];
 
   abrirHome();
@@ -565,14 +565,14 @@ test('com uma marca vazia, as colecoes ainda esperam tres prateleiras', async ()
       'Isabelle La Belle',
       'Maison Alhambra e Lattafa',
       'Destaques',
-      'Descubra as colecoes',
+      'Descubra as coleções',
       'Pronta entrega',
       'Mais vendidos',
     ]);
   });
 });
 
-test('com uma prateleira so, as colecoes vem logo depois dela', async () => {
+test('com uma prateleira só, as coleções vem logo depois dela', async () => {
   prateleiras['featured'] = [];
   prateleiras['best-sellers'] = [];
   marcas = {};
@@ -582,7 +582,7 @@ test('com uma prateleira so, as colecoes vem logo depois dela', async () => {
   await screen.findByRole('region', { name: 'Pronta entrega' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual(['Pronta entrega', 'Descubra as colecoes']);
+    expect(ordemDasSecoes()).toEqual(['Pronta entrega', 'Descubra as coleções']);
   });
 });
 
@@ -594,7 +594,7 @@ test('com uma prateleira so, as colecoes vem logo depois dela', async () => {
  * Quem recebe esse tratamento e a primeira secao que sobrou, seja ela qual
  * for — por isso o teste olha a faixa, e nao a prateleira.
  */
-test('sem prateleira nenhuma, as colecoes encostam no banner', async () => {
+test('sem prateleira nenhuma, as coleções encostam no banner', async () => {
   prateleiras['featured'] = [];
   prateleiras['ready-to-ship'] = [];
   prateleiras['best-sellers'] = [];
@@ -602,11 +602,11 @@ test('sem prateleira nenhuma, as colecoes encostam no banner', async () => {
 
   abrirHome();
 
-  await screen.findByRole('region', { name: 'Descubra as colecoes' });
+  await screen.findByRole('region', { name: 'Descubra as coleções' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual(['Descubra as colecoes']);
-    expect(screen.getByRole('region', { name: 'Descubra as colecoes' }).className).toContain(
+    expect(ordemDasSecoes()).toEqual(['Descubra as coleções']);
+    expect(screen.getByRole('region', { name: 'Descubra as coleções' }).className).toContain(
       stripStyles.flush,
     );
   });

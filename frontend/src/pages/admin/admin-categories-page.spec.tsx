@@ -167,13 +167,13 @@ test('desenha o menu com pai, filho e as contagens', async () => {
   expect(screen.getByText(/2 principais e 1 subcategoria/)).toBeDefined();
 });
 
-test('o STAFF nao entra nem digitando o endereco', async () => {
+test('o STAFF não entra nem digitando o endereço', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem administra a loja/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem administra a loja/ }),
   ).toBeDefined();
 });
 
@@ -186,7 +186,7 @@ test('descer um pai manda a lista plana em ordem de menu', async () => {
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Masculino' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Masculino' }));
   await user.click(screen.getByRole('button', { name: 'Descer' }));
 
   await waitFor(() => {
@@ -199,21 +199,21 @@ test('descer um pai manda a lista plana em ordem de menu', async () => {
   });
 });
 
-test('o primeiro pai nao pode subir', async () => {
+test('o primeiro pai não pode subir', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Masculino' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Masculino' }));
 
   expect(screen.getByRole('button', { name: 'Subir' }).hasAttribute('disabled')).toBe(true);
 });
 
 /* ---- Renomear no lugar --------------------------------------------------------- */
 
-test('renomear no lugar manda so o nome', async () => {
+test('renomear no lugar manda só o nome', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -273,7 +273,7 @@ test('a recusa por 409 oferece desativar, e desativar manda isActive false', asy
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Masculino' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Masculino' }));
   await user.click(screen.getByRole('button', { name: 'Excluir' }));
 
   const dialog = await screen.findByRole('dialog');
@@ -291,14 +291,14 @@ test('a recusa por 409 oferece desativar, e desativar manda isActive false', asy
   });
 });
 
-test('excluir de verdade chama DELETE depois da confirmacao', async () => {
+test('excluir de verdade chama DELETE depois da confirmação', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Feminino' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Feminino' }));
   await user.click(screen.getByRole('button', { name: 'Excluir' }));
 
   const dialog = await screen.findByRole('dialog');
@@ -314,14 +314,14 @@ test('excluir de verdade chama DELETE depois da confirmacao', async () => {
 
 /* ---- O dialogo -------------------------------------------------------------------- */
 
-test('adicionar subcategoria ja abre dentro do pai', async () => {
+test('adicionar subcategoria já abre dentro do pai', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Masculino' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Masculino' }));
   await user.click(screen.getByRole('button', { name: 'Adicionar subcategoria' }));
 
   const dialog = await screen.findByRole('dialog');
@@ -330,22 +330,22 @@ test('adicionar subcategoria ja abre dentro do pai', async () => {
   expect((parent as HTMLSelectElement).value).toBe('m');
 });
 
-test('quem ja tem subcategorias nao ve o campo de pai', async () => {
+test('quem já tem subcategorias não vê o campo de pai', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Masculino' }));
-  await user.click(screen.getByRole('button', { name: 'Endereco e posicao' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Masculino' }));
+  await user.click(screen.getByRole('button', { name: 'Endereço e posição' }));
 
   const dialog = await screen.findByRole('dialog');
 
   // Uma subcategoria nao pode ter filhos: mostrar o campo levaria so a um
   // erro do servidor.
   expect(within(dialog).queryByLabelText('Dentro de')).toBeNull();
-  expect(dialog.textContent).toContain('subcategoria nao pode ter filhos');
+  expect(dialog.textContent).toContain('subcategoria não pode ter filhos');
 });
 
 test('criar uma categoria manda nome e pai nulo', async () => {
@@ -359,7 +359,7 @@ test('criar uma categoria manda nome e pai nulo', async () => {
 
   const dialog = await screen.findByRole('dialog');
 
-  await user.type(within(dialog).getByRole('textbox', { name: 'Nome' }), 'Arabes');
+  await user.type(within(dialog).getByRole('textbox', { name: 'Nome' }), 'Árabes');
   await user.click(within(dialog).getByRole('button', { name: 'Criar categoria' }));
 
   await waitFor(() => {
@@ -367,6 +367,6 @@ test('criar uma categoria manda nome e pai nulo', async () => {
 
     expect(write?.method).toBe('POST');
     // Sem endereco: o servidor o gera a partir do nome.
-    expect(JSON.parse(write?.body ?? '{}')).toEqual({ name: 'Arabes', parentId: null });
+    expect(JSON.parse(write?.body ?? '{}')).toEqual({ name: 'Árabes', parentId: null });
   });
 });

@@ -39,7 +39,7 @@ const TRABALHO = {
   ...CASA,
   id: 'a2',
   label: 'Trabalho',
-  street: 'Avenida Leao Sampaio',
+  street: 'Avenida Leão Sampaio',
   number: '900',
   district: 'Lagoa Seca',
   isDefault: false,
@@ -130,28 +130,28 @@ function abrir() {
   );
 }
 
-test('sem sessao, o convite — e nao um redirecionamento', async () => {
+test('sem sessão, o convite — e não um redirecionamento', async () => {
   abrir();
 
-  expect(await screen.findByText('Seus enderecos salvos')).toBeTruthy();
+  expect(await screen.findByText('Seus endereços salvos')).toBeTruthy();
   expect(screen.getByRole('link', { name: 'Voltar para a loja' })).toBeTruthy();
 });
 
-test('o apelido e o titulo, e o padrao aparece marcado', async () => {
+test('o apelido e o título, e o padrão aparece marcado', async () => {
   entrar();
   abrir();
 
   expect(await screen.findByRole('heading', { name: 'Casa' })).toBeTruthy();
   expect(screen.getByRole('heading', { name: 'Trabalho' })).toBeTruthy();
-  expect(screen.getByText('Padrao')).toBeTruthy();
+  expect(screen.getByText('Padrão')).toBeTruthy();
 
   // O endereco que ja e padrao nao oferece o botao de vira-lo padrao: um
   // botao que nao muda nada e uma promessa quebrada.
-  expect(screen.queryByRole('button', { name: 'Usar Casa como endereco padrao' })).toBeNull();
-  expect(screen.getByRole('button', { name: 'Usar Trabalho como endereco padrao' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Usar Casa como endereço padrão' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Usar Trabalho como endereço padrão' })).toBeTruthy();
 });
 
-test('marcar outro como padrao manda a lista inteira, com um marcado so', async () => {
+test('marcar outro como padrão manda a lista inteira, com um marcado só', async () => {
   const usuario = userEvent.setup();
 
   entrar();
@@ -159,7 +159,7 @@ test('marcar outro como padrao manda a lista inteira, com um marcado so', async 
 
   await screen.findByRole('heading', { name: 'Trabalho' });
 
-  await usuario.click(screen.getByRole('button', { name: 'Usar Trabalho como endereco padrao' }));
+  await usuario.click(screen.getByRole('button', { name: 'Usar Trabalho como endereço padrão' }));
 
   await waitFor(() => {
     expect(gravado).not.toBeNull();
@@ -171,7 +171,7 @@ test('marcar outro como padrao manda a lista inteira, com um marcado so', async 
   expect(gravado?.addresses?.find((address) => address.isDefault)?.id).toBe('a2');
 });
 
-test('excluir confirma dentro do cartao, nomeando qual endereco vai sumir', async () => {
+test('excluir confirma dentro do cartão, nomeando qual endereço vai sumir', async () => {
   const usuario = userEvent.setup();
 
   entrar();
@@ -198,7 +198,7 @@ test('excluir confirma dentro do cartao, nomeando qual endereco vai sumir', asyn
   });
 });
 
-test('o endereco novo entra na lista que ja existe, sem apagar os outros', async () => {
+test('o endereço novo entra na lista que já existe, sem apagar os outros', async () => {
   const usuario = userEvent.setup();
 
   entrar();
@@ -206,14 +206,14 @@ test('o endereco novo entra na lista que ja existe, sem apagar os outros', async
 
   await screen.findByRole('heading', { name: 'Casa' });
 
-  await usuario.click(screen.getByRole('button', { name: /Novo endereco/ }));
+  await usuario.click(screen.getByRole('button', { name: /Novo endereço/ }));
 
   const dialogo = await screen.findByRole('dialog');
 
-  await usuario.type(within(dialogo).getByLabelText('Apelido'), 'Casa da minha mae');
-  await usuario.type(within(dialogo).getByLabelText('Rua'), 'Rua Sao Pedro');
+  await usuario.type(within(dialogo).getByLabelText('Apelido'), 'Casa da minha mãe');
+  await usuario.type(within(dialogo).getByLabelText('Rua'), 'Rua São Pedro');
   await usuario.type(within(dialogo).getByLabelText('Bairro'), 'Salesianos');
-  await usuario.click(within(dialogo).getByRole('button', { name: 'Salvar endereco' }));
+  await usuario.click(within(dialogo).getByRole('button', { name: 'Salvar endereço' }));
 
   await waitFor(() => {
     expect(gravado?.addresses).toHaveLength(3);
@@ -222,7 +222,7 @@ test('o endereco novo entra na lista que ja existe, sem apagar os outros', async
   expect(gravado?.addresses?.map((address) => address.label)).toEqual([
     'Casa',
     'Trabalho',
-    'Casa da minha mae',
+    'Casa da minha mãe',
   ]);
 
   // Sem marcar a caixa, o padrao continua sendo quem era.

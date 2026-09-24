@@ -94,7 +94,7 @@ export function validateCity(draft: CityDraft): CityErrors {
   if (fee === null) {
     errors.fee = 'Escreva a taxa, ou 0 se a entrega for gratuita.';
   } else if (fee < 0) {
-    errors.fee = 'A taxa nao pode ser negativa.';
+    errors.fee = 'A taxa não pode ser negativa.';
   } else if (fee > DELIVERY_LIMITS.feeCents) {
     errors.fee = 'Essa taxa passa do limite do sistema.';
   }
@@ -106,7 +106,7 @@ export function validateCity(draft: CityDraft): CityErrors {
     if (!Number.isInteger(days) || days < 0) {
       errors.days = 'Escreva o prazo em dias, ou 0 para o mesmo dia.';
     } else if (days > DELIVERY_LIMITS.estimatedDays) {
-      errors.days = `O prazo maximo e de ${String(DELIVERY_LIMITS.estimatedDays)} dias.`;
+      errors.days = `O prazo máximo e de ${String(DELIVERY_LIMITS.estimatedDays)} dias.`;
     }
   }
 
@@ -114,7 +114,7 @@ export function validateCity(draft: CityDraft): CityErrors {
     const free = centsFromInput(draft.freeFrom);
 
     if (free === null || free < 0) {
-      errors.freeFrom = 'Escreva o valor a partir do qual o frete sai de graca.';
+      errors.freeFrom = 'Escreva o valor a partir do qual o frete sai de graça.';
     } else if (free > DELIVERY_LIMITS.feeCents) {
       errors.freeFrom = 'Esse valor passa do limite do sistema.';
     }
@@ -193,7 +193,7 @@ export function estimatedLabel(days: number): string {
     return 'No mesmo dia';
   }
 
-  return days === 1 ? 'Ate 1 dia util' : `Ate ${String(days)} dias uteis`;
+  return days === 1 ? 'Até 1 dia útil' : `Até ${String(days)} dias úteis`;
 }
 
 function daysOf(draft: CityDraft): number {

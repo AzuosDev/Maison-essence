@@ -225,7 +225,7 @@ function Row({
   const items: RowMenuItem[] = [
     ...extraItems,
     {
-      label: 'Endereco e posicao',
+      label: 'Endereço e posição',
       icon: PencilIcon,
       onSelect: () => {
         onEdit(category);

@@ -19,7 +19,7 @@ import {
 
 const ID = '68d1f2a3c4b5e6f708192a3b';
 
-test('le o recorte que o endereco descreve', () => {
+test('le o recorte que o endereço descreve', () => {
   const filters = readProductFilters(
     new URLSearchParams(`q=asad&categoria=${ID}&status=inactive&page=2`),
   );
@@ -27,11 +27,11 @@ test('le o recorte que o endereco descreve', () => {
   expect(filters).toEqual({ q: 'asad', categoryId: ID, status: 'inactive', page: 2 });
 });
 
-test('endereco vazio e o recorte padrao', () => {
+test('endereço vazio e o recorte padrão', () => {
   expect(readProductFilters(new URLSearchParams())).toEqual(EMPTY_PRODUCT_FILTERS);
 });
 
-test('categoria que nao tem forma de id e ignorada', () => {
+test('categoria que não tem forma de id e ignorada', () => {
   // `@IsMongoId` recusaria com 400, e a lista inteira sumiria por causa de um
   // endereco colado torto.
   expect(readProductFilters(new URLSearchParams('categoria=masculino')).categoryId).toBe('');
@@ -42,23 +42,23 @@ test('status desconhecido volta a ser todos', () => {
   expect(readProductFilters(new URLSearchParams('status=publicado')).status).toBe('all');
 });
 
-test('pagina invalida volta a ser a primeira', () => {
+test('página inválida volta a ser a primeira', () => {
   expect(readProductFilters(new URLSearchParams('page=0')).page).toBe(1);
   expect(readProductFilters(new URLSearchParams('page=abc')).page).toBe(1);
 });
 
-test('o que esta no padrao nao entra no endereco', () => {
+test('o que esta no padrão não entra no endereço', () => {
   expect(productFiltersToSearch(EMPTY_PRODUCT_FILTERS)).toEqual({});
   expect(productFiltersToSearch({ ...EMPTY_PRODUCT_FILTERS, status: 'all', page: 1 })).toEqual({});
 });
 
-test('ida e volta pelo endereco preserva o recorte', () => {
+test('ida e volta pelo endereço preserva o recorte', () => {
   const filters = { q: 'lattafa', categoryId: ID, status: 'active' as const, page: 3 };
 
   expect(readProductFilters(new URLSearchParams(productFiltersToSearch(filters)))).toEqual(filters);
 });
 
-test('campo vazio nao viaja para a API', () => {
+test('campo vazio não viaja para a API', () => {
   const params = productListParams(EMPTY_PRODUCT_FILTERS);
 
   expect(params.q).toBeUndefined();
@@ -73,19 +73,19 @@ test('o recorte cheio chega inteiro na API', () => {
   expect(params).toMatchObject({ q: 'asad', categoryId: ID, status: 'inactive', page: 2 });
 });
 
-test('mudar um filtro devolve a primeira pagina', () => {
+test('mudar um filtro devolve a primeira página', () => {
   const current = { ...EMPTY_PRODUCT_FILTERS, page: 5 };
 
   expect(withProductFilter(current, { status: 'active' }).page).toBe(1);
 });
 
-test('mudar de pagina nao mexe no resto', () => {
+test('mudar de página não mexe no resto', () => {
   const current = { ...EMPTY_PRODUCT_FILTERS, q: 'asad' };
 
   expect(withProductFilter(current, { page: 4 })).toEqual({ ...current, page: 4 });
 });
 
-test('todos nao conta como filtro, e a pagina tambem nao', () => {
+test('todos não conta como filtro, e a página também não', () => {
   expect(activeProductFilterCount({ ...EMPTY_PRODUCT_FILTERS, page: 9 })).toBe(0);
   expect(activeProductFilterCount({ q: 'asad', categoryId: ID, status: 'active', page: 1 })).toBe(
     3,

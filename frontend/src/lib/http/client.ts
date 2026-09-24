@@ -321,7 +321,7 @@ function safeJson(text: string): unknown {
 
 function messagesFrom(body: ApiErrorBody | null, response: Response): string[] {
   if (!body) {
-    return [`A requisicao falhou (${response.status}).`];
+    return [`A requisição falhou (${response.status}).`];
   }
 
   return Array.isArray(body.message) ? body.message : [body.message];

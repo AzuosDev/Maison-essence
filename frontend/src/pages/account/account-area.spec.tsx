@@ -346,7 +346,7 @@ function campo(nome: string): HTMLElement {
   const form = document.querySelector('form');
 
   if (form === null) {
-    throw new Error('nenhum formulario em cena');
+    throw new Error('nenhum formulário em cena');
   }
 
   return within(form).getByLabelText(nome);
@@ -386,7 +386,7 @@ function abrirConta(endereco: string) {
 
 /* ---- Criterio 4: a conta e convite, nunca parede ---------------------------- */
 
-test('sem sessao, os pedidos mostram o convite no mesmo endereco', async () => {
+test('sem sessão, os pedidos mostram o convite no mesmo endereço', async () => {
   const { router } = abrirConta('/conta/pedidos');
 
   expect(await screen.findByText('Seus pedidos ficam guardados aqui')).toBeTruthy();
@@ -397,7 +397,7 @@ test('sem sessao, os pedidos mostram o convite no mesmo endereco', async () => {
   expect(router.state.location.pathname).toBe('/conta/pedidos');
 });
 
-test('o convite mostra a saida para a loja, e nao so as duas portas', () => {
+test('o convite mostra a saída para a loja, e não só as duas portas', () => {
   abrirConta('/conta/pedidos');
 
   const convite = screen.getByRole('region', { name: 'Seus pedidos ficam guardados aqui' });
@@ -406,21 +406,21 @@ test('o convite mostra a saida para a loja, e nao so as duas portas', () => {
   expect(within(convite).getByRole('link', { name: 'Criar minha conta' })).toBeTruthy();
 
   // A linha que separa um convite de uma parede.
-  expect(within(convite).getByText(/Comprar nao exige conta nenhuma/)).toBeTruthy();
+  expect(within(convite).getByText(/Comprar não exige conta nenhuma/)).toBeTruthy();
   expect(within(convite).getByRole('link', { name: 'Voltar para a loja' })).toBeTruthy();
 });
 
-test('sem sessao nao ha menu da conta: tres links que nao levam a lugar nenhum', () => {
+test('sem sessão não há menu da conta: três links que não levam a lugar nenhum', () => {
   abrirConta('/conta/pedidos');
 
-  expect(screen.queryByRole('navigation', { name: 'Areas da conta' })).toBeNull();
+  expect(screen.queryByRole('navigation', { name: 'Áreas da conta' })).toBeNull();
 });
 
-test('com sessao, o menu aparece e a saudacao traz o telefone da conta', async () => {
+test('com sessão, o menu aparece e a saudação traz o telefone da conta', async () => {
   entrarComoCliente();
   abrirConta('/conta/pedidos');
 
-  const menu = screen.getByRole('navigation', { name: 'Areas da conta' });
+  const menu = screen.getByRole('navigation', { name: 'Áreas da conta' });
 
   expect(within(menu).getByRole('link', { name: 'Meus pedidos' })).toBeTruthy();
 
@@ -463,7 +463,7 @@ test('criar conta com o telefone do pedido traz aquele pedido para a lista', asy
   expect(screen.getByText('Entregue')).toBeTruthy();
 });
 
-test('o telefone digitado com o codigo do pais sobe normalizado', async () => {
+test('o telefone digitado com o código do pais sobe normalizado', async () => {
   const usuario = userEvent.setup();
 
   // Quem cola de um contato salvo quase sempre traz o `55` junto. Se ele
@@ -480,7 +480,7 @@ test('o telefone digitado com o codigo do pais sobe normalizado', async () => {
   });
 });
 
-test('entrar volta para a tela que trouxe a pessoa ate aqui', async () => {
+test('entrar volta para a tela que trouxe a pessoa até aqui', async () => {
   const usuario = userEvent.setup();
 
   const { router } = abrirConta('/conta/pedidos');
@@ -537,7 +537,7 @@ test('pedir novamente monta o carrinho e deixa de fora o item que saiu do catalo
 
 /* ---- O detalhe --------------------------------------------------------------- */
 
-test('o detalhe mostra itens, valores, endereco e pagamento', async () => {
+test('o detalhe mostra itens, valores, endereço e pagamento', async () => {
   entrarComoCliente();
   abrirConta('/conta/pedidos/ME-260901-AB12');
 
@@ -554,7 +554,7 @@ test('o detalhe mostra itens, valores, endereco e pagamento', async () => {
   expect(screen.getByText('R$ 394,80')).toBeTruthy();
 });
 
-test('a trilha mostra as datas que o pedido guarda, e nada alem delas', async () => {
+test('a trilha mostra as datas que o pedido guarda, e nada além delas', async () => {
   entrarComoCliente();
   abrirConta('/conta/pedidos/ME-260901-AB12');
 
@@ -568,18 +568,18 @@ test('a trilha mostra as datas que o pedido guarda, e nada alem delas', async ()
   expect(trilha).not.toBeNull();
   expect(within(trilha as HTMLElement).getAllByRole('time')).toHaveLength(2);
   expect(
-    within(trilha as HTMLElement).getByText(/Os passos do meio ficam sem horario/),
+    within(trilha as HTMLElement).getByText(/Os passos do meio ficam sem horário/),
   ).toBeTruthy();
 });
 
-test('o pedido de outra conta nao vira erro generico', async () => {
+test('o pedido de outra conta não vira erro generico', async () => {
   entrarComoCliente();
 
   vi.stubGlobal(
     'fetch',
     vi.fn((url: string) => {
       if (url.includes('/customer/orders/')) {
-        return Promise.resolve(jsonResponse({ message: 'Pedido nao encontrado.' }, 404));
+        return Promise.resolve(jsonResponse({ message: 'Pedido não encontrado.' }, 404));
       }
 
       if (url.includes('/settings')) {
@@ -594,7 +594,7 @@ test('o pedido de outra conta nao vira erro generico', async () => {
 
   // O 404 do servidor quer dizer "nao e desta conta", e nao "quebrou". E o
   // motivo acionavel — o telefone — esta escrito.
-  expect(await screen.findByRole('heading', { name: /nao esta nesta conta/ })).toBeTruthy();
+  expect(await screen.findByRole('heading', { name: /não esta nesta conta/ })).toBeTruthy();
 
   expect(screen.getByText(/ligados ao telefone informado no fechamento/)).toBeTruthy();
 });

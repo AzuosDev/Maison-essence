@@ -29,7 +29,7 @@ function filtros(patch: Partial<CatalogFilters> = {}): CatalogFilters {
 
 /* ---- Ida e volta ------------------------------------------------------- */
 
-test('tres filtros sobrevivem a ida e volta pela URL', () => {
+test('três filtros sobrevivem a ida e volta pela URL', () => {
   const aplicados = filtros({
     brand: 'Lattafa',
     minCents: 10_000,
@@ -48,12 +48,12 @@ test('a URL de um catalogo sem filtro fica limpa', () => {
   expect(searchFromFilters(EMPTY_FILTERS).toString()).toBe('');
 });
 
-test('a pagina 1 nao aparece na URL, e as outras sim', () => {
+test('a página 1 não aparece na URL, e as outras sim', () => {
   expect(searchFromFilters(filtros({ page: 1 })).toString()).toBe('');
   expect(searchFromFilters(filtros({ page: 3 })).toString()).toBe('pagina=3');
 });
 
-test('a busca com filtro tambem volta inteira', () => {
+test('a busca com filtro também volta inteira', () => {
   const busca = filtros({ q: 'oud', brand: 'Lattafa', onSale: true, sort: 'menor-preco' });
 
   expect(filtersFromSearch(searchFromFilters(busca))).toEqual(busca);
@@ -61,7 +61,7 @@ test('a busca com filtro tambem volta inteira', () => {
 
 /* ---- URL estragada ----------------------------------------------------- */
 
-test('valor invalido vira ausencia, e nao erro', () => {
+test('valor inválido vira ausência, e não erro', () => {
   const lixo = new URLSearchParams('min=abc&max=-5&pagina=zero&ordem=preco');
 
   expect(filtersFromSearch(lixo)).toEqual(EMPTY_FILTERS);
@@ -77,7 +77,7 @@ test('faixa invertida e descartada em vez de virar lista vazia', () => {
 
 /* ---- Traducao para a API ----------------------------------------------- */
 
-test('a API recebe os nomes dela, e nenhum em portugues', () => {
+test('a API recebe os nomes dela, e nenhum em português', () => {
   const params = apiParamsFrom(
     filtros({ brand: 'Lattafa', minCents: 10_000, inStock: true, sort: 'menor-preco', page: 2 }),
   );
@@ -92,7 +92,7 @@ test('a API recebe os nomes dela, e nenhum em portugues', () => {
   });
 });
 
-test('bandeira desligada nao viaja', () => {
+test('bandeira desligada não viaja', () => {
   // Para o backend, `readyToShip=false` quer dizer "tanto faz" — mandar o
   // campo a toa so engorda a chave de cache.
   expect(apiParamsFrom(EMPTY_FILTERS)).toEqual({ limit: 24 });
@@ -115,12 +115,12 @@ test('o filtro de desconto vira uma varredura ordenada por desconto', () => {
 
 /* ---- Contagem e limpeza ------------------------------------------------- */
 
-test('a faixa de preco conta como um filtro, com uma ou com duas pontas', () => {
+test('a faixa de preço conta como um filtro, com uma ou com duas pontas', () => {
   expect(countActiveFilters(filtros({ minCents: 10_000 }))).toBe(1);
   expect(countActiveFilters(filtros({ minCents: 10_000, maxCents: 50_000 }))).toBe(1);
 });
 
-test('o que a rota impos nao conta como filtro aplicado', () => {
+test('o que a rota impos não conta como filtro aplicado', () => {
   // Em `/pronta-entrega`, a bandeira e o endereco da pagina: nao ha o que
   // desmarcar, e o botao "limpar filtros (1)" seria uma promessa falsa.
   const emRota = filtros({ readyToShip: true });

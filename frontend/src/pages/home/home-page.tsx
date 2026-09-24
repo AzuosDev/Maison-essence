@@ -164,7 +164,7 @@ export default function HomePage() {
     {
       key: 'brand-arabic',
       title: BRANDS.arabic,
-      description: 'Os arabes em miniatura de 25ml.',
+      description: 'Os árabes em miniatura de 25ml.',
       to: ROUTES.productsByBrand(BRANDS.arabic),
       linkLabel: `Ver tudo de ${BRANDS.arabic}`,
       content: contentOf(arabic),
@@ -194,7 +194,7 @@ export default function HomePage() {
     {
       key: 'featured',
       title: 'Destaques',
-      description: 'A selecao da casa, trocada com frequencia.',
+      description: 'A seleção da casa, trocada com frequência.',
       to: ROUTES.products,
       linkLabel: 'Ver todos os produtos',
       content: contentOf(featured),
@@ -202,7 +202,7 @@ export default function HomePage() {
     {
       key: 'ready-to-ship',
       title: 'Pronta entrega',
-      description: 'Em maos agora: retire em Juazeiro do Norte ou receba primeiro.',
+      description: 'Em mãos agora: retire em Juazeiro do Norte ou receba primeiro.',
       to: ROUTES.readyToShip,
       linkLabel: 'Ver tudo em pronta entrega',
       content: contentOf(readyToShip),
@@ -210,7 +210,7 @@ export default function HomePage() {
     {
       key: 'best-sellers',
       title: 'Mais vendidos',
-      description: 'O que mais saiu nas ultimas semanas.',
+      description: 'O que mais saiu nas últimas semanas.',
       to: ROUTES.products,
       linkLabel: 'Ver todos',
       content: contentOf(bestSellers),

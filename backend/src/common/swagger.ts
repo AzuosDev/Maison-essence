@@ -33,7 +33,7 @@ export interface SwaggerOptions {
 export function setupSwagger(app: INestApplication, options: SwaggerOptions): void {
   if (options.isProduction && !options.credentials) {
     logger.warn(
-      'Documentacao desligada: defina DOCS_USER e DOCS_PASSWORD para publica-la em producao',
+      'Documentação desligada: defina DOCS_USER e DOCS_PASSWORD para publica-lá em produção',
     );
 
     return;
@@ -55,7 +55,7 @@ export function setupSwagger(app: INestApplication, options: SwaggerOptions): vo
           '',
           'As rotas do painel exigem um access token de administrador; as da',
           'conta de cliente exigem um token de cliente, que e emitido com outro',
-          'segredo e nunca serve para o painel. O resto e publico.',
+          'segredo e nunca serve para o painel. O resto e público.',
         ].join('\n'),
       )
       .setVersion(options.version)

@@ -40,19 +40,19 @@ function valoresDoBackend(arquivo: string, constante: string): string[] {
   const bloco = new RegExp(`export const ${constante} = \\{([^}]*)\\}`).exec(fonte);
 
   if (bloco === null) {
-    throw new Error(`${constante} nao foi encontrada em ${arquivo}`);
+    throw new Error(`${constante} não foi encontrada em ${arquivo}`);
   }
 
   return [...(bloco[1] ?? '').matchAll(/'([^']+)'/g)].map((par) => par[1] ?? '');
 }
 
-test('os modos de entrega sao os mesmos que o backend declara', () => {
+test('os modos de entrega são os mesmos que o backend declara', () => {
   expect(Object.values(FULFILLMENT_MODES)).toEqual(
     valoresDoBackend('fulfillment-mode.ts', 'FULFILLMENT_MODES'),
   );
 });
 
-test('as formas de pagamento sao as mesmas que o backend declara', () => {
+test('as formas de pagamento são as mesmas que o backend declara', () => {
   expect(Object.values(PAYMENT_METHODS)).toEqual(
     valoresDoBackend('payment-method.ts', 'PAYMENT_METHODS'),
   );
@@ -65,7 +65,7 @@ test('as formas de pagamento sao as mesmas que o backend declara', () => {
  * `toEqual` que passasse com a ordem trocada esconderia uma troca de
  * significado entre as duas chaves.
  */
-test('as chaves continuam apontando para o valor certo, e nao so para algum', () => {
+test('as chaves continuam apontando para o valor certo, e não só para algum', () => {
   expect(FULFILLMENT_MODES.PICKUP).toBe('pickup');
   expect(FULFILLMENT_MODES.DELIVERY).toBe('delivery');
   expect(PAYMENT_METHODS.PIX).toBe('pix');

@@ -58,7 +58,7 @@ export default function CategoryPage() {
         )
       }
       emptyTitle="Nenhum produto nesta categoria"
-      emptyDescription="Ou os filtros estreitaram demais, ou esta categoria ainda nao tem produto publicado."
+      emptyDescription="Ou os filtros estreitaram demais, ou esta categoria ainda não tem produto publicado."
     />
   );
 }
@@ -83,7 +83,7 @@ function branchFor(tree: CategoryTree[] | undefined, slug: string): CategoryTree
 }
 
 function breadcrumbFor(branch: CategoryTree | null, slug: string, title: string): BreadcrumbItem[] {
-  const trail: BreadcrumbItem[] = [{ label: 'Inicio', to: ROUTES.home }];
+  const trail: BreadcrumbItem[] = [{ label: 'Início', to: ROUTES.home }];
 
   // Numa subcategoria, a mae entra no meio do caminho: "Inicio / Masculino /
   // Amadeirados". Numa categoria raiz, `branch` e a propria pagina e seria

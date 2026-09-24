@@ -30,13 +30,13 @@ describe('resolveRateLimitRule', () => {
     );
   });
 
-  it('rota aberta sem regra herda o teto publico', () => {
+  it('rota aberta sem regra herda o teto público', () => {
     expect(resolveRateLimitRule(reflector, contextWith({ [IS_PUBLIC_KEY]: true }))).toBe(
       PUBLIC_RATE_LIMIT,
     );
   });
 
-  it('rota sem marcacao nenhuma e do painel: nenhuma rota fica sem teto', () => {
+  it('rota sem marcação nenhuma e do painel: nenhuma rota fica sem teto', () => {
     expect(resolveRateLimitRule(reflector, contextWith({}))).toBe(ADMIN_RATE_LIMIT);
   });
 });
@@ -48,7 +48,7 @@ describe('rateLimitKey', () => {
     );
   });
 
-  it('cabe no campo do schema e nao carrega o IP em texto', () => {
+  it('cabe no campo do schema e não carrega o IP em texto', () => {
     const key = rateLimitKey('public', '203.0.113.10');
 
     expect(key).toHaveLength(64);

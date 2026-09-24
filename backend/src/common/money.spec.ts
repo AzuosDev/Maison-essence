@@ -20,7 +20,7 @@ describe('formatCents', () => {
   // O espaco depois do "R$" e um espaco comum, e nao o estreito sem quebra do
   // ICU: este texto vai para a mensagem do WhatsApp, onde um caractere
   // invisivel so aparece quando o cliente reclama.
-  it('usa espaco comum entre o simbolo e o numero', () => {
+  it('usa espaço comum entre o símbolo e o número', () => {
     expect(formatCents(1000).charCodeAt(2)).toBe(32);
   });
 });

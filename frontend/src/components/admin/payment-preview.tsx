@@ -60,9 +60,9 @@ export function PaymentPreview({
   const cut = card === null ? 0 : card.maxInstallments - options.length;
 
   return (
-    <aside className={styles.panel} aria-label="Previa do pagamento">
+    <aside className={styles.panel} aria-label="Prévia do pagamento">
       <div className={styles.head}>
-        <h2 className={styles.title}>O que a cliente ve</h2>
+        <h2 className={styles.title}>O que a cliente vê</h2>
 
         <Input
           label="Num pedido de"
@@ -84,7 +84,7 @@ export function PaymentPreview({
         </h3>
 
         {pix === null ? (
-          <p className={styles.off}>Desligado: a cliente nao ve a opcao de PIX.</p>
+          <p className={styles.off}>Desligado: a cliente não vê a opção de PIX.</p>
         ) : amountCents === null ? (
           <p className={styles.off}>Escreva um valor acima para ver o desconto.</p>
         ) : pix.discountCents === 0 ? (
@@ -100,7 +100,7 @@ export function PaymentPreview({
             </p>
 
             <p className={styles.saving}>
-              {formatCents(pix.discountCents)} de desconto. Nao vale sobre a entrega.
+              {formatCents(pix.discountCents)} de desconto. Não vale sobre a entrega.
             </p>
           </>
         )}
@@ -108,11 +108,11 @@ export function PaymentPreview({
 
       <section className={styles.block} aria-labelledby="preview-card">
         <h3 className={styles.blockTitle} id="preview-card">
-          Cartao
+          Cartão
         </h3>
 
         {card === null ? (
-          <p className={styles.off}>Desligado: o checkout nao oferece parcelamento.</p>
+          <p className={styles.off}>Desligado: o checkout não oferece parcelamento.</p>
         ) : amountCents === null ? (
           <p className={styles.off}>Escreva um valor acima para ver as parcelas.</p>
         ) : (
@@ -140,7 +140,7 @@ export function PaymentPreview({
                 <p className={styles.groupTitle}>
                   Com juros, total mais alto
                   <span className={styles.groupRate}>
-                    {card.monthlyInterestPercent.toLocaleString('pt-BR')}% ao mes
+                    {card.monthlyInterestPercent.toLocaleString('pt-BR')}% ao mês
                   </span>
                 </p>
 
@@ -163,7 +163,7 @@ export function PaymentPreview({
             {cut > 0 ? (
               <p className={styles.note}>
                 Acima de {String(options.length)}x a parcela fica abaixo de{' '}
-                {formatCents(card.minInstallmentCents)}, e a opcao nao aparece.
+                {formatCents(card.minInstallmentCents)}, e a opção não aparece.
               </p>
             ) : null}
           </>

@@ -43,7 +43,7 @@ describe('toPublicVariantView', () => {
    * aberta, e `allowBackorder` e a politica de compra dela com o
    * distribuidor.
    */
-  it('nao entrega sku, isActive nem a politica de encomenda', () => {
+  it('não entrega sku, isActive nem a política de encomenda', () => {
     const view = toPublicVariantView(variant()) as unknown as Record<string, unknown>;
 
     expect(view.sku).toBeUndefined();
@@ -59,7 +59,7 @@ describe('toPublicVariantView', () => {
     expect(view.stock).toBe(0);
   });
 
-  it('nao vende variante esgotada que nao aceita encomenda', () => {
+  it('não vende variante esgotada que não aceita encomenda', () => {
     expect(toPublicVariantView(variant({ stock: 0 })).isAvailable).toBe(false);
   });
 
@@ -89,7 +89,7 @@ describe('toPublicProductView', () => {
     expect(view.priceRangeCents).toEqual({ min: 19_990, max: 19_990 });
   });
 
-  it('vira produto simples quando so sobra uma variante sem label', () => {
+  it('vira produto simples quando só sobra uma variante sem label', () => {
     const view = toPublicProductView(
       product({
         variants: [variant({ label: '' }), variant({ label: '50 ml', isActive: false })],
@@ -100,7 +100,7 @@ describe('toPublicProductView', () => {
     expect(view.hasVariants).toBe(false);
   });
 
-  it('nao esta em estoque quando nenhuma variante a venda esta', () => {
+  it('não esta em estoque quando nenhuma variante a venda esta', () => {
     const view = toPublicProductView(product({ variants: [variant({ stock: 0 })] }), null);
 
     expect(view.inStock).toBe(false);
@@ -126,7 +126,7 @@ describe('toPublicProductView', () => {
     expect(view.quantityDiscount).toEqual({ minQty: 3, percentOff: 10 });
   });
 
-  it('nao entrega campos de gestao da loja', () => {
+  it('não entrega campos de gestão da loja', () => {
     const view = toPublicProductView(product(), null) as unknown as Record<string, unknown>;
 
     expect(view.isActive).toBeUndefined();

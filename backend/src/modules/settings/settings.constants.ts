@@ -12,13 +12,13 @@ export const MAX_BANNER_ORDER = 9999;
 /** Teto do conteudo de uma pagina institucional, igual ao do schema. */
 export const MAX_PAGE_CONTENT_LENGTH = 20_000;
 
-export const PAGE_NOT_FOUND_MESSAGE = 'Pagina nao encontrada.';
+export const PAGE_NOT_FOUND_MESSAGE = 'Página não encontrada.';
 
 export const INVALID_BANNER_WINDOW_MESSAGE =
-  'O periodo de exibicao do banner termina antes de comecar: a data de fim precisa ser posterior a de inicio.';
+  'O período de exibição do banner termina antes de começar: a data de fim precisa ser posterior a de início.';
 
 export function unknownBannersMessage(ids: readonly string[]): string {
-  const alvo = ids.length === 1 ? 'Um banner citado nao existe mais' : 'Banners citados nao existem mais';
+  const alvo = ids.length === 1 ? 'Um banner citado não existe mais' : 'Banners citados não existem mais';
 
   return `${alvo}. Recarregue a pagina de configuracoes e tente de novo.`;
 }

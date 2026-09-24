@@ -55,7 +55,7 @@ export function OrderTimeline({ order }: { order: CustomerOrderDetail }) {
                   <span className={styles.now}>agora</span>
                 ) : (
                   <span className="visually-hidden">
-                    {step.state === 'done' ? 'passo cumprido' : 'ainda nao aconteceu'}
+                    {step.state === 'done' ? 'passo cumprido' : 'ainda não aconteceu'}
                   </span>
                 )}
               </p>
@@ -74,8 +74,8 @@ export function OrderTimeline({ order }: { order: CustomerOrderDetail }) {
 
       {hasUndated ? (
         <p className={styles.note}>
-          O pedido registra a data em que foi feito e a da ultima mudanca. Os passos do meio ficam
-          sem horario.
+          O pedido registra a data em que foi feito e a da última mudanca. Os passos do meio ficam
+          sem horário.
         </p>
       ) : null}
     </div>

@@ -19,7 +19,7 @@ async function bootstrap(): Promise<void> {
   const container = document.getElementById('root');
 
   if (!container) {
-    throw new Error('O elemento #root nao existe no index.html.');
+    throw new Error('O elemento #root não existe no index.html.');
   }
 
   try {
@@ -44,7 +44,7 @@ async function bootstrap(): Promise<void> {
 function renderBootFailure(container: HTMLElement, error: unknown): void {
   const message = error instanceof Error ? error.message : String(error);
 
-  console.error('A aplicacao nao subiu', error);
+  console.error('A aplicação não subiu', error);
 
   container.innerHTML = '';
 
@@ -60,7 +60,7 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
 
   const title = document.createElement('h1');
 
-  title.textContent = 'A loja nao conseguiu iniciar';
+  title.textContent = 'A loja não conseguiu iniciar';
   title.style.cssText = 'font-family:"Cormorant Garamond",Georgia,serif;color:#0E0E0E';
 
   const detail = document.createElement('pre');

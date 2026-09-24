@@ -192,7 +192,7 @@ async function totalExibido(): Promise<string> {
   return within(resumo).getByText(/^R\$/, { selector: 'strong' }).textContent ?? '';
 }
 
-test('editar a quantidade recalcula o total pelo servidor, e nao pelo navegador', async () => {
+test('editar a quantidade recalcula o total pelo servidor, e não pelo navegador', async () => {
   const usuario = userEvent.setup();
 
   comUmItem(1);
@@ -236,7 +236,7 @@ test('editar a quantidade recalcula o total pelo servidor, e nao pelo navegador'
   ]);
 });
 
-test('o debounce junta a rajada de cliques em uma cotacao so', async () => {
+test('o debounce junta a rajada de cliques em uma cotação só', async () => {
   const usuario = userEvent.setup();
 
   comUmItem(1);
@@ -281,7 +281,7 @@ test('fechar e reabrir o navegador mantem os itens', () => {
  * Nao basta a tela mostrar o preco certo: ela nao pode ter deixado um preco
  * para tras. `18990` nao aparece em nada do que foi gravado.
  */
-test('nenhum preco atravessa o localStorage', async () => {
+test('nenhum preço atravessa o localStorage', async () => {
   comUmItem(1);
   abrirSacola();
 
@@ -296,7 +296,7 @@ test('nenhum preco atravessa o localStorage', async () => {
   expect(gravado).not.toContain('Asad');
 });
 
-test('um produto desativado no painel aparece como indisponivel na sacola aberta', async () => {
+test('um produto desativado no painel aparece como indisponível na sacola aberta', async () => {
   const usuario = userEvent.setup();
 
   comUmItem(1);
@@ -353,7 +353,7 @@ test('a sacola vazia oferece o caminho de volta ao catalogo', () => {
   expect(quoteRequests).toHaveLength(0);
 });
 
-test('a sacola fica fora do indice de busca', async () => {
+test('a sacola fica fora do índice de busca', async () => {
   comUmItem(1);
   abrirSacola();
 

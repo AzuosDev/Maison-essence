@@ -103,7 +103,7 @@ function montar(item: PublicProduct) {
   );
 }
 
-test('produto de variante unica vai direto para a sacola', async () => {
+test('produto de variante única vai direto para a sacola', async () => {
   const user = userEvent.setup();
 
   montar(produto());
@@ -115,7 +115,7 @@ test('produto de variante unica vai direto para a sacola', async () => {
   ]);
 });
 
-test('produto de varias variantes abre o seletor antes de adicionar', async () => {
+test('produto de várias variantes abre o seletor antes de adicionar', async () => {
   const user = userEvent.setup();
 
   montar(
@@ -127,7 +127,7 @@ test('produto de varias variantes abre o seletor antes de adicionar', async () =
     }),
   );
 
-  await user.click(screen.getByRole('button', { name: 'Ver opcoes' }));
+  await user.click(screen.getByRole('button', { name: 'Ver opções' }));
 
   const dialogo = await screen.findByRole('dialog');
 
@@ -164,7 +164,7 @@ test('o card precifica pela variante mais barata', () => {
   expect(screen.getByText(/R\$ 180,00 – R\$ 260,00/)).toBeDefined();
 });
 
-test('o preco riscado aparece quando ha compareAtPrice', () => {
+test('o preço riscado aparece quando há compareAtPrice', () => {
   montar(
     produto({
       discountPercent: 25,
@@ -176,7 +176,7 @@ test('o preco riscado aparece quando ha compareAtPrice', () => {
   expect(screen.getByText('-25%')).toBeDefined();
 });
 
-test('o preco riscado some quando o produto tem faixa de preco', () => {
+test('o preço riscado some quando o produto tem faixa de preço', () => {
   montar(
     produto({
       variants: [
@@ -196,7 +196,7 @@ test('produto de pronta entrega leva o selo verde', () => {
   expect(screen.getByText('Pronta entrega')).toBeDefined();
 });
 
-test('produto esgotado mostra o selo e nao deixa adicionar', () => {
+test('produto esgotado mostra o selo e não deixa adicionar', () => {
   montar(
     produto({
       variants: [variante({ stock: 0, isAvailable: false })],

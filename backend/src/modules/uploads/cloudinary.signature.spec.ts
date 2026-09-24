@@ -7,11 +7,11 @@ describe('serializeParams', () => {
     );
   });
 
-  it('deixa de fora valor vazio, que o navegador tambem nao envia', () => {
+  it('deixa de fora valor vazio, que o navegador também não envia', () => {
     expect(serializeParams({ folder: '', timestamp: 1 })).toBe('timestamp=1');
   });
 
-  it('escreve numero como texto', () => {
+  it('escreve número como texto', () => {
     expect(serializeParams({ timestamp: 1758326400 })).toBe('timestamp=1758326400');
   });
 });
@@ -37,7 +37,7 @@ describe('signParams', () => {
     expect(signature).toBe('b99b132e0b3f0e5ae34c3fcf493fac3d468f8e21');
   });
 
-  it('muda quando qualquer parametro muda', () => {
+  it('muda quando qualquer parâmetro muda', () => {
     const base = { public_id: 'maison-essence/products/a', timestamp: 1 };
 
     expect(signParams(base, 'segredo')).not.toBe(

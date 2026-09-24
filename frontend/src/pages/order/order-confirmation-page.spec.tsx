@@ -147,7 +147,7 @@ function comPedidoFechado(): void {
   usePlacedOrders.setState({ orders: [PEDIDO] });
 }
 
-test('mostra o codigo do pedido e a instrucao de conferir o WhatsApp', () => {
+test('mostra o código do pedido e a instrução de conferir o WhatsApp', () => {
   comPedidoFechado();
   abrir();
 
@@ -175,7 +175,7 @@ test('reenviar manda a URL do servidor, sem reescrever a mensagem', async () => 
   expect(decodeURIComponent(enviada.split('?text=')[1] ?? '')).toBe(MENSAGEM);
 });
 
-test('copiar entrega o texto do pedido, e nao a URL codificada', async () => {
+test('copiar entrega o texto do pedido, e não a URL codificada', async () => {
   const usuario = userEvent.setup();
 
   areaQueAceita();
@@ -192,11 +192,11 @@ test('copiar entrega o texto do pedido, e nao a URL codificada', async () => {
   expect(await screen.findByRole('button', { name: /Mensagem copiada/ })).toBeTruthy();
 });
 
-test('sem area de transferencia, o texto aparece selecionado para copiar a mao', async () => {
+test('sem área de transferência, o texto aparece selecionado para copiar a mão', async () => {
   const usuario = userEvent.setup();
 
   // O caso real: HTTP na rede local, WebView de aplicativo, navegador antigo.
-  comAreaDeTransferencia(() => Promise.reject(new Error('sem permissao')));
+  comAreaDeTransferencia(() => Promise.reject(new Error('sem permissão')));
 
   comPedidoFechado();
   abrir();
@@ -208,7 +208,7 @@ test('sem area de transferencia, o texto aparece selecionado para copiar a mao',
   expect(campo).toHaveProperty('value', MENSAGEM);
 });
 
-test('sem sessao, oferece a conta com o telefone do pedido ja no link', () => {
+test('sem sessão, oferece a conta com o telefone do pedido já no link', () => {
   comPedidoFechado();
   abrir();
 
@@ -218,10 +218,10 @@ test('sem sessao, oferece a conta com o telefone do pedido ja no link', () => {
 
   // E explica por que vale a pena, que e o que o cadastro tem de diferente
   // aqui: o pedido de convidado entra na conta pelo telefone.
-  expect(screen.getByText(/aparece la junto com tudo o que voce ja comprou/)).toBeTruthy();
+  expect(screen.getByText(/aparece lá junto com tudo o que você já comprou/)).toBeTruthy();
 });
 
-test('com sessao, mostra o caminho para os pedidos da conta', () => {
+test('com sessão, mostra o caminho para os pedidos da conta', () => {
   comPedidoFechado();
 
   useCustomerSession.getState().signIn(
@@ -246,11 +246,11 @@ test('com sessao, mostra o caminho para os pedidos da conta', () => {
   expect(screen.queryByRole('link', { name: 'Criar minha conta' })).toBeNull();
 });
 
-test('codigo que nao esta neste navegador nao vira erro', () => {
+test('código que não esta neste navegador não vira erro', () => {
   abrir('ME-260922-ZZZZ');
 
   // O codigo continua em cena: e com ele que a loja acha a conversa.
   expect(screen.getByRole('heading', { name: 'Pedido ME-260922-ZZZZ' })).toBeTruthy();
-  expect(screen.getByText(/nao esta guardado neste navegador/)).toBeTruthy();
+  expect(screen.getByText(/não esta guardado neste navegador/)).toBeTruthy();
   expect(screen.getByRole('link', { name: 'Voltar a loja' })).toBeTruthy();
 });

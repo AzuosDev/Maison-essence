@@ -162,7 +162,7 @@ export class CloudinaryService {
 
   private fail(action: string, publicId: string, status: number): never {
     // O corpo do erro do Cloudinary pode trazer detalhe da conta; fica no log.
-    this.logger.error(`Nao foi possivel ${action} ${publicId}: HTTP ${status}`);
+    this.logger.error(`Não foi possível ${action} ${publicId}: HTTP ${status}`);
 
     throw new BadGatewayException(CLOUDINARY_UNREACHABLE_MESSAGE);
   }

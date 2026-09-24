@@ -96,8 +96,8 @@ export function AddressDialog({
     <Modal
       open={open}
       onClose={onClose}
-      title={address === undefined ? 'Novo endereco' : 'Editar endereco'}
-      description="Ele fica guardado na sua conta para os proximos pedidos."
+      title={address === undefined ? 'Novo endereço' : 'Editar endereço'}
+      description="Ele fica guardado na sua conta para os próximos pedidos."
     >
       <form className={styles.form} onSubmit={(event) => void submit(event)} noValidate>
         {error === null || error === undefined ? null : (
@@ -108,7 +108,7 @@ export function AddressDialog({
 
         <Input
           label="Apelido"
-          hint="Casa, Trabalho, Casa da minha mae."
+          hint="Casa, Trabalho, Casa da minha mãe."
           autoComplete="off"
           error={errors.label?.message}
           {...register('label')}
@@ -133,7 +133,7 @@ export function AddressDialog({
           />
 
           <Input
-            label="Numero"
+            label="Número"
             inputMode="numeric"
             autoComplete="off"
             placeholder="s/n"
@@ -161,14 +161,14 @@ export function AddressDialog({
         <Select
           label="Cidade"
           placeholder="Escolher depois"
-          hint="So as cidades que a loja atende. Deixe em branco se a sua nao esta aqui."
+          hint="Só as cidades que a loja atende. Deixe em branco se a sua não esta aqui."
           options={cityOptions}
           error={errors.cityId?.message}
           {...register('cityId')}
         />
 
         <Input
-          label="Ponto de referencia"
+          label="Ponto de referência"
           hint="Perto de que? Ajuda na hora da entrega."
           autoComplete="off"
           error={errors.reference?.message}
@@ -177,10 +177,10 @@ export function AddressDialog({
 
         {isFirst ? (
           <p className={styles.note}>
-            Este e o seu primeiro endereco, entao ele ja entra como padrao.
+            Este e o seu primeiro endereço, então ele já entra como padrão.
           </p>
         ) : (
-          <Checkbox label="Usar como endereco padrao" {...register('isDefault')} />
+          <Checkbox label="Usar como endereço padrão" {...register('isDefault')} />
         )}
 
         <div className={styles.actions}>
@@ -189,7 +189,7 @@ export function AddressDialog({
           </Button>
 
           <Button type="submit" loading={isPending} loadingLabel="Salvando">
-            Salvar endereco
+            Salvar endereço
           </Button>
         </div>
       </form>

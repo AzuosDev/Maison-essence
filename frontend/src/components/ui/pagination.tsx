@@ -25,7 +25,7 @@ export type PaginationProps = Omit<ComponentPropsWithoutRef<'nav'>, 'onChange'> 
 };
 
 export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagination(
-  { page, totalPages, onPageChange, label = 'Paginacao', className, ...props },
+  { page, totalPages, onPageChange, label = 'Paginação', className, ...props },
   ref,
 ) {
   // Uma pagina so nao e paginacao.
@@ -50,7 +50,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
         }}
         disabled={page <= 1}
         className={styles.arrow}
-        aria-label="Pagina anterior"
+        aria-label="Página anterior"
       >
         <span className={cx(styles.chevron, styles.chevronPrev)} aria-hidden="true" />
       </button>
@@ -72,7 +72,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
                   go(item);
                 }}
                 aria-current={item === page ? 'page' : undefined}
-                aria-label={`Pagina ${item}`}
+                aria-label={`Página ${item}`}
                 className={cx(styles.page, item === page && styles.active)}
               >
                 {item}
@@ -94,7 +94,7 @@ export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagi
         }}
         disabled={page >= totalPages}
         className={styles.arrow}
-        aria-label="Proxima pagina"
+        aria-label="Próxima página"
       >
         <span className={cx(styles.chevron, styles.chevronNext)} aria-hidden="true" />
       </button>

@@ -69,7 +69,7 @@ export const itemsSchema = z.object({
     .min(1, 'Sua sacola esta vazia.')
     .refine(
       (items) => items.every((item) => !item.unavailable),
-      'Remova os itens indisponiveis para continuar.',
+      'Remova os itens indisponíveis para continuar.',
     ),
 });
 
@@ -89,10 +89,10 @@ export const itemsSchema = z.object({
  */
 export const addressSchema = z.object({
   street: z.string().trim().min(3, 'Informe a rua.').max(160, 'Rua longa demais.'),
-  number: z.string().trim().max(20, 'Numero longo demais.'),
+  number: z.string().trim().max(20, 'Número longo demais.'),
   complement: z.string().trim().max(80, 'Complemento longo demais.'),
   district: z.string().trim().min(2, 'Informe o bairro.').max(80, 'Bairro longo demais.'),
-  reference: z.string().trim().max(200, 'Ponto de referencia longo demais.'),
+  reference: z.string().trim().max(200, 'Ponto de referência longo demais.'),
 });
 
 /**

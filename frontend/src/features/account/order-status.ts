@@ -37,7 +37,7 @@ export const ORDER_FLOW: readonly OrderStatus[] = [
 ];
 
 const DELIVERY_LABELS: Record<OrderStatus, string> = {
-  [ORDER_STATUSES.PENDING_CONTACT]: 'Aguardando confirmacao',
+  [ORDER_STATUSES.PENDING_CONTACT]: 'Aguardando confirmação',
   [ORDER_STATUSES.CONFIRMED]: 'Confirmado',
   [ORDER_STATUSES.PREPARING]: 'Em preparo',
   [ORDER_STATUSES.SHIPPED]: 'A caminho',
@@ -97,8 +97,8 @@ export interface TimelineStep {
    uma vez — ver o bloco em `checkout.types.ts`. */
 const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = {
   [ORDER_STATUSES.PENDING_CONTACT]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido chegou a loja. A confirmacao vem pelo WhatsApp.',
-    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido chegou a loja. A confirmacao vem pelo WhatsApp.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido chegou a loja. A confirmação vem pelo WhatsApp.',
+    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido chegou a loja. A confirmação vem pelo WhatsApp.',
   },
   [ORDER_STATUSES.CONFIRMED]: {
     [FULFILLMENT_MODES.DELIVERY]: 'A loja confirmou os itens e o valor.',
@@ -109,12 +109,12 @@ const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = 
     [FULFILLMENT_MODES.PICKUP]: 'Seu pedido esta sendo separado e embalado.',
   },
   [ORDER_STATUSES.SHIPPED]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Saiu para o endereco de entrega.',
-    [FULFILLMENT_MODES.PICKUP]: 'Ja pode ser retirado na loja.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Saiu para o endereço de entrega.',
+    [FULFILLMENT_MODES.PICKUP]: 'Já pode ser retirado na loja.',
   },
   [ORDER_STATUSES.DELIVERED]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Entregue. Qualquer coisa, e so chamar no WhatsApp.',
-    [FULFILLMENT_MODES.PICKUP]: 'Retirado. Qualquer coisa, e so chamar no WhatsApp.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Entregue. Qualquer coisa, e só chamar no WhatsApp.',
+    [FULFILLMENT_MODES.PICKUP]: 'Retirado. Qualquer coisa, e só chamar no WhatsApp.',
   },
   [ORDER_STATUSES.CANCELLED]: {
     [FULFILLMENT_MODES.DELIVERY]: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',

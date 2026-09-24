@@ -35,7 +35,7 @@ const phone = z
 const name = z.string().trim().min(2, 'Informe seu nome.').max(120, 'Nome longo demais.');
 
 const email = z
-  .email('Informe um e-mail valido.')
+  .email('Informe um e-mail válido.')
   .max(160, 'E-mail longo demais.')
   .transform((value) => value.trim().toLowerCase());
 
@@ -107,7 +107,7 @@ export const addressSchema = z.object({
   label: z.string().trim().max(40, 'Apelido longo demais.'),
   cityId: z.string(),
   street: z.string().trim().min(3, 'Informe a rua.').max(160, 'Rua longa demais.'),
-  number: z.string().trim().max(20, 'Numero longo demais.'),
+  number: z.string().trim().max(20, 'Número longo demais.'),
   complement: z.string().trim().max(80, 'Complemento longo demais.'),
   district: z.string().trim().min(2, 'Informe o bairro.').max(80, 'Bairro longo demais.'),
   zipCode: z
@@ -117,7 +117,7 @@ export const addressSchema = z.object({
       (value) => value === '' || /^\d{5}-?\d{3}$/.test(value),
       'O CEP tem oito digitos, como 63010-000.',
     ),
-  reference: z.string().trim().max(200, 'Ponto de referencia longo demais.'),
+  reference: z.string().trim().max(200, 'Ponto de referência longo demais.'),
 
   /**
    * "Usar como padrao".

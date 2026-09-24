@@ -7,7 +7,7 @@ import { DEFAULT_PAGE_SIZE, MAX_PAGE_SIZE } from '../orders.constants.js';
 /** A busca da tela de pedidos. Tudo opcional, tudo combinavel. */
 export class ListOrdersDto {
   @IsOptional()
-  @IsIn(ORDER_STATUS_VALUES, { message: 'status invalido' })
+  @IsIn(ORDER_STATUS_VALUES, { message: 'status inválido' })
   status?: OrderStatus;
 
   /**
@@ -17,12 +17,12 @@ export class ListOrdersDto {
    */
   @IsOptional()
   @Type(() => Date)
-  @IsDate({ message: 'data inicial invalida' })
+  @IsDate({ message: 'data inicial inválida' })
   from?: Date;
 
   @IsOptional()
   @Type(() => Date)
-  @IsDate({ message: 'data final invalida' })
+  @IsDate({ message: 'data final inválida' })
   to?: Date;
 
   /**

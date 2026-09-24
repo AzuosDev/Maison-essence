@@ -45,8 +45,8 @@ export function CategoryStrip({ flush = false }: CategoryStripProps) {
     >
       <Container>
         <SectionHeading
-          title="Descubra as colecoes"
-          description="Cada familia olfativa em um lugar so."
+          title="Descubra as coleções"
+          description="Cada família olfativa em um lugar só."
           titleId={titleId}
         />
 

@@ -170,7 +170,7 @@ export class OrderCustomer {
     textProp({
       required: true,
       max: 13,
-      match: [/^\d{10,13}$/, 'o telefone deve ter so digitos, com DDD'],
+      match: [/^\d{10,13}$/, 'o telefone deve ter só digitos, com DDD'],
     }),
   )
   phone: string;

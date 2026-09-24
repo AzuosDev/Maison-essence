@@ -50,7 +50,7 @@ describe('a escolha guardada', () => {
     expect(readStoredMode(armazenamento({ [THEME_STORAGE_KEY]: 'dark' }))).toBe('dark');
   });
 
-  test('valor estranho na chave nao vira tema', () => {
+  test('valor estranho na chave não vira tema', () => {
     expect(readStoredMode(armazenamento({ [THEME_STORAGE_KEY]: 'roxo' }))).toBe('system');
   });
 
@@ -67,13 +67,13 @@ describe('a escolha guardada', () => {
    * nao devolve `null`. Sem a guarda, a loja inteira deixaria de montar por
    * causa da preferencia de tema.
    */
-  test('armazenamento bloqueado nao derruba a leitura nem a escrita', () => {
+  test('armazenamento bloqueado não derruba a leitura nem a escrita', () => {
     expect(() => readStoredMode(bloqueado)).not.toThrow();
     expect(readStoredMode(bloqueado)).toBe(DEFAULT_THEME_MODE);
     expect(() => writeStoredMode(bloqueado, 'dark')).not.toThrow();
   });
 
-  test('sem armazenamento nenhum tambem nao derruba', () => {
+  test('sem armazenamento nenhum também não derruba', () => {
     expect(readStoredMode(undefined)).toBe(DEFAULT_THEME_MODE);
     expect(() => writeStoredMode(undefined, 'dark')).not.toThrow();
   });
@@ -91,7 +91,7 @@ describe('o tema que fica na tela', () => {
   });
 });
 
-test('isThemeMode recusa o que nao e modo', () => {
+test('isThemeMode recusa o que não e modo', () => {
   expect(isThemeMode('dark')).toBe(true);
   expect(isThemeMode('System')).toBe(false);
   expect(isThemeMode(null)).toBe(false);
@@ -121,7 +121,7 @@ describe('o script que roda antes da pintura', () => {
     expect(indexHtml).toContain(`'${THEME_STORAGE_KEY}'`);
   });
 
-  test('escreve o atributo so para os modos explicitos', () => {
+  test('escreve o atributo só para os modos explicitos', () => {
     // `system` nao pode aparecer como valor de `data-theme`: nao ha seletor
     // para essa palavra em `tokens.css`, e a pagina ficaria presa no claro.
     expect(indexHtml).toContain("mode === 'light' || mode === 'dark'");
@@ -134,7 +134,7 @@ describe('o script que roda antes da pintura', () => {
   });
 });
 
-test('todo modo tem rotulo e descricao', async () => {
+test('todo modo tem rótulo e descrição', async () => {
   const { THEME_LABELS, THEME_DESCRIPTIONS } = await import('./theme');
 
   for (const mode of THEME_MODES) {

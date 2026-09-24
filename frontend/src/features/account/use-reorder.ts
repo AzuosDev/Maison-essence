@@ -69,7 +69,7 @@ export function useReorder() {
         // coisa aconteceu: o pedido inteiro saiu do catalogo.
         toast({
           title: 'Nada deste pedido esta a venda agora',
-          description: 'Os itens sairam do catalogo. Veja o que ha de parecido na loja.',
+          description: 'Os itens sairam do catalogo. Veja o que há de parecido na loja.',
           variant: 'danger',
           duration: 8000,
         });

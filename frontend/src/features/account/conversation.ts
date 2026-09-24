@@ -29,7 +29,7 @@ export function conversationUrl(storeNumber: string, code: string): string {
     return '';
   }
 
-  const text = `Ola! Quero falar sobre o pedido ${code}.`;
+  const text = `Olá! Quero falar sobre o pedido ${code}.`;
 
   return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
 }

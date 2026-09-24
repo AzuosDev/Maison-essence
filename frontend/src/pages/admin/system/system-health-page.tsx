@@ -52,12 +52,12 @@ export default function SystemHealthPage() {
     seed.mutate(undefined, {
       onSuccess: () => {
         setConfirmSeed(false);
-        toast({ title: 'Dados de demonstracao criados.', variant: 'success' });
+        toast({ title: 'Dados de demonstração criados.', variant: 'success' });
       },
       onError: (failure) => {
         setConfirmSeed(false);
         toast({
-          title: isMissingRoute(failure) ? 'O seed ainda nao tem rota na API' : 'O seed falhou',
+          title: isMissingRoute(failure) ? 'O seed ainda não tem rota na API' : 'O seed falhou',
           description: isMissingRoute(failure)
             ? 'Rode no terminal, dentro de backend/: npm run seed:demo'
             : errorMessage(failure),
@@ -73,7 +73,7 @@ export default function SystemHealthPage() {
       <section className={styles.block} aria-labelledby="health-status">
         <div className={styles.blockHead}>
           <h2 className={styles.blockTitle} id="health-status">
-            Estado da aplicacao
+            Estado da aplicação
           </h2>
 
           <Button
@@ -96,13 +96,13 @@ export default function SystemHealthPage() {
           // Um health check que nao responde ja e a resposta: a aplicacao
           // nao esta atendendo. A tela diz isso, e nao "erro ao carregar".
           <div className={styles.down} role="alert">
-            <p className={styles.downTitle}>A aplicacao nao respondeu</p>
+            <p className={styles.downTitle}>A aplicação não respondeu</p>
             <p className={styles.downBody}>{errorMessage(health.error)}</p>
           </div>
         ) : (
           <dl className={styles.facts}>
             <div className={styles.fact}>
-              <dt>Aplicacao</dt>
+              <dt>Aplicação</dt>
               <dd>
                 <Badge variant={health.data?.status === 'ok' ? 'success' : 'danger'}>
                   {health.data?.status === 'ok' ? 'no ar' : 'com problema'}
@@ -122,12 +122,12 @@ export default function SystemHealthPage() {
             </div>
 
             <div className={styles.fact}>
-              <dt>Versao</dt>
+              <dt>Versão</dt>
               <dd className={styles.mono}>{health.data?.version ?? '—'}</dd>
             </div>
 
             <div className={styles.fact}>
-              <dt>No ar ha</dt>
+              <dt>No ar há</dt>
               <dd>{formatUptime(health.data?.uptime ?? 0)}</dd>
             </div>
           </dl>
@@ -137,7 +137,7 @@ export default function SystemHealthPage() {
       <section className={styles.block} aria-labelledby="collections">
         <div className={styles.blockHead}>
           <h2 className={styles.blockTitle} id="collections">
-            Documentos por colecao
+            Documentos por coleção
           </h2>
         </div>
 
@@ -148,7 +148,7 @@ export default function SystemHealthPage() {
             <MissingRoute route="GET /admin/system/collections">
               Falta uma rota restrita ao administrador do sistema que devolva{' '}
               <code>{'[{ name, count }]'}</code> — um <code>estimatedDocumentCount()</code> por
-              colecao registrada.
+              coleção registrada.
             </MissingRoute>
           ) : (
             <p className={styles.error} role="alert">
@@ -173,14 +173,14 @@ export default function SystemHealthPage() {
         <section className={styles.block} aria-labelledby="seed">
           <div className={styles.blockHead}>
             <h2 className={styles.blockTitle} id="seed">
-              Dados de demonstracao
+              Dados de demonstração
             </h2>
           </div>
 
           <div className={styles.seed}>
             <p className={styles.seedBody}>
               Popula a loja com categorias, produtos e pedidos de exemplo, para testar o painel com
-              conteudo de verdade. So em desenvolvimento.
+              conteúdo de verdade. Só em desenvolvimento.
             </p>
 
             <Button
@@ -202,7 +202,7 @@ export default function SystemHealthPage() {
           setConfirmSeed(false);
         }}
         onConfirm={runSeed}
-        title="Rodar o seed de demonstracao?"
+        title="Rodar o seed de demonstração?"
         description="Isso escreve no banco que este ambiente esta usando. Confira que e o de desenvolvimento antes de seguir."
         target={apiOrigin()}
         confirmLabel="Rodar o seed"
@@ -219,7 +219,7 @@ const DATABASE_LABELS: Record<DatabaseStatus, string> = {
   connecting: 'conectando',
   disconnecting: 'desconectando',
   disconnected: 'fora do ar',
-  uninitialized: 'nao iniciado',
+  uninitialized: 'não iniciado',
 };
 
 function describeDatabase(status: DatabaseStatus | undefined): string {

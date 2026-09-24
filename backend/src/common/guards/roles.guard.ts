@@ -7,7 +7,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator.js';
 import type { UserRole } from '../enums/user-role.js';
 import { USER_ROLES } from '../enums/user-role.js';
 
-export const FORBIDDEN_ROLE_MESSAGE = 'Seu papel nao permite esta operacao.';
+export const FORBIDDEN_ROLE_MESSAGE = 'Seu papel não permite esta operação.';
 
 /**
  * Autorizacao por papel, global.

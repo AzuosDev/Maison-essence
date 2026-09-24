@@ -67,7 +67,7 @@ export function AccountLayout() {
           <Container>
             {customer === null ? null : (
               <div className={styles.heading}>
-                <p className={styles.greeting}>Ola, {firstName(customer.name)}</p>
+                <p className={styles.greeting}>Olá, {firstName(customer.name)}</p>
                 <p className={styles.subtitle}>
                   Sua conta esta ligada ao telefone {customer.phoneLabel}.
                 </p>

@@ -286,7 +286,7 @@ export class CatalogImportService {
       if (this.outOfTime(options, startedAt)) {
         report.remaining = entries.length - start;
         this.logger.warn(
-          `Tempo esgotado: ${report.remaining} produtos ficaram para a proxima chamada.`,
+          `Tempo esgotado: ${report.remaining} produtos ficaram para a próxima chamada.`,
         );
 
         return;
@@ -314,7 +314,7 @@ export class CatalogImportService {
     if (seen.has(entry.slug)) {
       // Dois produtos com o mesmo endereco: o segundo sobrescreveria o
       // primeiro e a importacao pareceria ter dado certo.
-      throw new CatalogEntryError('Este endereco aparece mais de uma vez no arquivo.');
+      throw new CatalogEntryError('Este endereço aparece mais de uma vez no arquivo.');
     }
 
     seen.add(entry.slug);
@@ -375,7 +375,7 @@ export class CatalogImportService {
 
       return typeof info?.setName === 'string' || info?.msg === 'isdbgrid';
     } catch (error: unknown) {
-      this.logger.warn(`Nao deu para saber se o cluster tem transacao: ${reasonOf(error)}`);
+      this.logger.warn(`Não deu para saber se o cluster tem transação: ${reasonOf(error)}`);
 
       return false;
     }
@@ -450,7 +450,7 @@ function resolveCategories(
     const id = categoryIds.get(slug);
 
     if (id === undefined) {
-      throw new CatalogEntryError(`A categoria ${slug} nao existe.`);
+      throw new CatalogEntryError(`A categoria ${slug} não existe.`);
     }
 
     return id;

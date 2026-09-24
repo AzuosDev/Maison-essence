@@ -65,7 +65,7 @@ test('a primeira sacola deste navegador nunca avisa', () => {
   expect(anotar([item()])).toBe(false);
 });
 
-test('preco diferente depois de dias avisa', () => {
+test('preço diferente depois de dias avisa', () => {
   const agora = Date.now();
 
   anotar([item({ unitPriceCents: 18990 })], agora);
@@ -73,7 +73,7 @@ test('preco diferente depois de dias avisa', () => {
   expect(anotar([item({ unitPriceCents: 21990 })], agora + UMA_HORA_E_MEIA)).toBe(true);
 });
 
-test('o mesmo preco depois de dias nao avisa', () => {
+test('o mesmo preço depois de dias não avisa', () => {
   const agora = Date.now();
 
   anotar([item()], agora);
@@ -98,7 +98,7 @@ test('mudanca recente e anotada em silencio', () => {
  * perfume mudaria a impressao digital da sacola, e "voce adicionou um item"
  * viraria "os precos mudaram".
  */
-test('adicionar um item novo nao e reajuste', () => {
+test('adicionar um item novo não e reajuste', () => {
   const agora = Date.now();
 
   anotar([item()], agora);
@@ -108,7 +108,7 @@ test('adicionar um item novo nao e reajuste', () => {
   expect(anotar(comItemNovo, agora + UMA_HORA_E_MEIA)).toBe(false);
 });
 
-test('remover um item tambem nao e reajuste', () => {
+test('remover um item também não e reajuste', () => {
   const agora = Date.now();
 
   anotar([item(), item({ productId: 'p2', variantId: 'v9' })], agora);
@@ -120,7 +120,7 @@ test('remover um item tambem nao e reajuste', () => {
  * A linha indisponivel volta da cotacao com preco zero. Anotar esse zero
  * faria o produto reativado depois parecer um reajuste.
  */
-test('item indisponivel fica fora da anotacao', () => {
+test('item indisponível fica fora da anotação', () => {
   const agora = Date.now();
 
   anotar([item({ unavailable: true, unitPriceCents: 0 })], agora);
@@ -128,7 +128,7 @@ test('item indisponivel fica fora da anotacao', () => {
   expect(anotar([item({ unitPriceCents: 18990 })], agora + UMA_HORA_E_MEIA)).toBe(false);
 });
 
-test('forgetPrices apaga a anotacao', () => {
+test('forgetPrices apaga a anotação', () => {
   const agora = Date.now();
 
   anotar([item({ unitPriceCents: 18990 })], agora);

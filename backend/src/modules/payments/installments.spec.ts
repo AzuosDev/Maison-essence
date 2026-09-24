@@ -18,7 +18,7 @@ function numbersOf(options: readonly InstallmentOption[]): number[] {
 }
 
 describe('buildInstallmentOptions', () => {
-  it('comeca no pagamento a vista', () => {
+  it('começa no pagamento a vista', () => {
     const [first] = buildInstallmentOptions(100_000, rules());
 
     expect(first).toEqual({
@@ -30,7 +30,7 @@ describe('buildInstallmentOptions', () => {
     });
   });
 
-  it('divide sem juros ate o limite configurado', () => {
+  it('divide sem juros até o limite configurado', () => {
     const options = buildInstallmentOptions(100_000, rules());
     const semJuros = options.filter((option) => !option.hasInterest);
 
@@ -53,7 +53,7 @@ describe('buildInstallmentOptions', () => {
     });
   });
 
-  it('juros zerados nao criam juros acima do limite', () => {
+  it('juros zerados não criam juros acima do limite', () => {
     const options = buildInstallmentOptions(100_000, rules({ monthlyInterestPercent: 0 }));
 
     // Sem taxa, "acima do limite sem juros" nao quer dizer nada: a divisao
@@ -62,19 +62,19 @@ describe('buildInstallmentOptions', () => {
     expect(options.every((option) => option.totalCents === 100_000)).toBe(true);
   });
 
-  describe('parcela minima', () => {
+  describe('parcela mínima', () => {
     /**
      * Criterio de aceite: 12 parcelas no maximo, minimo de R$ 20, total de
      * R$ 100. A sexta parcela cairia abaixo de R$ 20 e por isso nem aparece.
      */
-    it('R$ 100 em ate 12x com minimo de R$ 20 devolve 5 opcoes', () => {
+    it('R$ 100 em até 12x com mínimo de R$ 20 devolve 5 opções', () => {
       const options = buildInstallmentOptions(10_000, rules());
 
       expect(options).toHaveLength(5);
       expect(numbersOf(options)).toEqual([1, 2, 3, 4, 5]);
     });
 
-    it('nenhuma parcela oferecida fica abaixo do minimo', () => {
+    it('nenhuma parcela oferecida fica abaixo do mínimo', () => {
       const options = buildInstallmentOptions(10_000, rules());
 
       expect(options.every((option) => option.installmentCents >= 2000)).toBe(true);
@@ -85,7 +85,7 @@ describe('buildInstallmentOptions', () => {
      * parcela minima e R$ 20 seria recusar a venda — a regra existe para
      * impedir "12x de R$ 1,25", nao compra pequena no cartao.
      */
-    it('mantem o pagamento a vista mesmo abaixo do minimo', () => {
+    it('mantem o pagamento a vista mesmo abaixo do mínimo', () => {
       const options = buildInstallmentOptions(1500, rules());
 
       expect(numbersOf(options)).toEqual([1]);
@@ -94,7 +94,7 @@ describe('buildInstallmentOptions', () => {
   });
 
   describe('arredondamento', () => {
-    it('joga a diferenca na primeira parcela', () => {
+    it('joga a diferença na primeira parcela', () => {
       const [, , tres] = buildInstallmentOptions(10_000, rules());
 
       // R$ 100 em 3x da R$ 33,33, e tres vezes isso sao R$ 99,99. O centavo
@@ -159,7 +159,7 @@ describe('priceTotal', () => {
     expect(doze).toBeGreaterThan(seis);
   });
 
-  it('sem juros, o total financiado e o proprio valor', () => {
+  it('sem juros, o total financiado e o próprio valor', () => {
     expect(priceTotal(100_000, 12, 0)).toBe(100_000);
   });
 });

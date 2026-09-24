@@ -179,7 +179,7 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
 
 /* ---- O recorte ---------------------------------------------------------------- */
 
-test('a consulta sempre pede so a prateleira', async () => {
+test('a consulta sempre pede só a prateleira', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
@@ -224,7 +224,7 @@ test('avisa o que esta na prateleira e fora do ar', async () => {
 
 /* ---- Tirar da prateleira --------------------------------------------------------- */
 
-test('tirar da prateleira manda so a marca, e a linha some', async () => {
+test('tirar da prateleira manda só a marca, e a linha some', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -233,7 +233,7 @@ test('tirar da prateleira manda so a marca, e a linha some', async () => {
 
   await screen.findByRole('link', { name: 'Asad 100ml' });
 
-  await user.click(screen.getByRole('button', { name: 'Acoes de Asad 100ml' }));
+  await user.click(screen.getByRole('button', { name: 'Ações de Asad 100ml' }));
   await user.click(screen.getByRole('button', { name: 'Tirar da pronta entrega' }));
 
   await waitFor(() => {
@@ -258,7 +258,7 @@ test('o aviso oferece o caminho de volta', async () => {
 
   await screen.findByRole('link', { name: 'Asad 100ml' });
 
-  await user.click(screen.getByRole('button', { name: 'Acoes de Asad 100ml' }));
+  await user.click(screen.getByRole('button', { name: 'Ações de Asad 100ml' }));
   await user.click(screen.getByRole('button', { name: 'Tirar da pronta entrega' }));
 
   await user.click(await screen.findByRole('button', { name: 'Desfazer' }));
@@ -270,7 +270,7 @@ test('o aviso oferece o caminho de volta', async () => {
 
 /* ---- O STAFF ---------------------------------------------------------------------- */
 
-test('o STAFF confere a prateleira, e nao mexe nela', async () => {
+test('o STAFF confere a prateleira, e não mexe nela', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
@@ -278,7 +278,7 @@ test('o STAFF confere a prateleira, e nao mexe nela', async () => {
   // A pergunta que ele responde no WhatsApp e "tem para levar hoje?", e ela
   // se responde com a lista.
   expect(await screen.findByRole('link', { name: 'Asad 100ml' })).toBeDefined();
-  expect(screen.queryByRole('button', { name: 'Acoes de Asad 100ml' })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Ações de Asad 100ml' })).toBeNull();
 });
 
 /* ---- A prateleira vazia ------------------------------------------------------------ */

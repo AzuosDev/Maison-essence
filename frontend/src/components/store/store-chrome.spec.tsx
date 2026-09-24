@@ -43,7 +43,7 @@ const SETTINGS = {
 
 const PAGES = [
   { slug: 'quem-somos', title: 'Quem somos' },
-  { slug: 'trocas-e-devolucoes', title: 'Trocas e devolucoes' },
+  { slug: 'trocas-e-devolucoes', title: 'Trocas e devoluções' },
 ];
 
 const CATEGORIES = [
@@ -208,7 +208,7 @@ test('o Escape fecha o painel de categorias', async () => {
   expect(botao.getAttribute('aria-expanded')).toBe('false');
 });
 
-test('o botao do WhatsApp abre a conversa com o numero configurado', async () => {
+test('o botão do WhatsApp abre a conversa com o número configurado', async () => {
   abrirLoja();
 
   const botao = await screen.findByRole('link', { name: 'Falar com a loja no WhatsApp' });
@@ -220,7 +220,7 @@ test('o botao do WhatsApp abre a conversa com o numero configurado', async () =>
   expect(decodeURIComponent(href)).toContain('Vim pelo site');
 });
 
-test('o cabecalho encolhe ao rolar a pagina', async () => {
+test('o cabeçalho encolhe ao rolar a página', async () => {
   abrirLoja();
 
   const cabecalho = await screen.findByRole('banner');
@@ -243,7 +243,7 @@ test('o cabecalho encolhe ao rolar a pagina', async () => {
   });
 });
 
-test('o rodape monta as colunas com o que a API devolveu', async () => {
+test('o rodapé monta as colunas com o que a API devolveu', async () => {
   noDesktop();
   abrirLoja();
 
@@ -268,7 +268,7 @@ test('o rodape monta as colunas com o que a API devolveu', async () => {
  * acessivel — e `hidden`, e nao apenas escondida por CSS, que um leitor de
  * tela anunciaria assim mesmo; aberta, esta.
  */
-test('no celular as colunas do rodape comecam fechadas e abrem no toque', async () => {
+test('no celular as colunas do rodapé começam fechadas e abrem no toque', async () => {
   const user = userEvent.setup();
 
   abrirLoja();
@@ -285,7 +285,7 @@ test('no celular as colunas do rodape comecam fechadas e abrem no toque', async 
   expect(await within(rodape).findByRole('link', { name: 'Quem somos' })).toBeDefined();
 });
 
-test('as configuracoes sao buscadas uma vez so, mesmo com varios componentes lendo', async () => {
+test('as configurações são buscadas uma vez só, mesmo com vários componentes lendo', async () => {
   abrirLoja();
 
   await screen.findByRole('contentinfo');

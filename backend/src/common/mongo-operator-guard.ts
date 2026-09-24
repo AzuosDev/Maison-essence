@@ -14,7 +14,7 @@ import { errorResponseBody } from './error-response.js';
 const MAX_DEPTH = 10;
 
 export const MONGO_OPERATOR_MESSAGE =
-  'O corpo da requisicao tem um campo com nome invalido.';
+  'O corpo da requisição tem um campo com nome inválido.';
 
 /** Diz qual campo reprovou, para o erro de integracao ser corrigivel. */
 export function forbiddenKeyMessage(key: string): string {

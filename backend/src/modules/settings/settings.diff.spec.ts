@@ -1,7 +1,7 @@
 import { MAX_AUDIT_TEXT_LENGTH, diffOf } from './settings.diff.js';
 
 describe('diffOf', () => {
-  it('nao registra nada quando nada mudou', () => {
+  it('não registra nada quando nada mudou', () => {
     const snapshot = { storeName: 'Maison Essence', socialLinks: { instagram: '@maison' } };
 
     expect(diffOf(snapshot, { ...snapshot, socialLinks: { instagram: '@maison' } })).toEqual({});
@@ -41,7 +41,7 @@ describe('diffOf', () => {
     });
   });
 
-  it('desce por campo no banner que ja existia', () => {
+  it('desce por campo no banner que já existia', () => {
     const changes = diffOf(
       { banners: { aaa: { title: 'Natal', order: 0 } } },
       { banners: { aaa: { title: 'Natal', order: 2 } } },
@@ -50,7 +50,7 @@ describe('diffOf', () => {
     expect(changes).toEqual({ 'banners.aaa.order': { from: 0, to: 2 } });
   });
 
-  it('corta texto longo em vez de guardar a pagina inteira no log', () => {
+  it('corta texto longo em vez de guardar a página inteira no log', () => {
     const changes = diffOf({ content: '' }, { content: 'a'.repeat(500) });
     const registrado = changes.content.to as string;
 
@@ -58,7 +58,7 @@ describe('diffOf', () => {
     expect(registrado.length).toBeLessThan(MAX_AUDIT_TEXT_LENGTH + 30);
   });
 
-  it('compara array como valor unico: a ordem faz parte do que mudou', () => {
+  it('compara array como valor único: a ordem faz parte do que mudou', () => {
     expect(diffOf({ tags: ['a', 'b'] }, { tags: ['a', 'b'] })).toEqual({});
     expect(diffOf({ tags: ['a', 'b'] }, { tags: ['b', 'a'] })).toEqual({
       tags: { from: ['a', 'b'], to: ['b', 'a'] },

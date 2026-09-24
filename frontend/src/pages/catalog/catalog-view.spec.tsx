@@ -169,7 +169,7 @@ function listagens(): URLSearchParams[] {
 
 /* ---- A URL e o estado --------------------------------------------------- */
 
-test('tres filtros na URL chegam aplicados na consulta', async () => {
+test('três filtros na URL chegam aplicados na consulta', async () => {
   // E o criterio de "recarregar a pagina mantem tudo": montar com esta URL e
   // exatamente o que o navegador faz numa recarga.
   abrir('/produtos?marca=Lattafa&min=100&estoque=1');
@@ -183,7 +183,7 @@ test('tres filtros na URL chegam aplicados na consulta', async () => {
   expect(pedido?.get('inStock')).toBe('true');
 });
 
-test('nenhum parametro em portugues vaza para a API', () => {
+test('nenhum parâmetro em português vaza para a API', () => {
   // O backend valida com `forbidNonWhitelisted`: um `marca=` no fio nao
   // seria ignorado, seria um 400 e uma vitrine vazia.
   abrir('/produtos?marca=Lattafa&min=100&estoque=1&desconto=1&ordem=nome&pagina=2');
@@ -211,7 +211,7 @@ test('marcar um filtro escreve na URL', async () => {
   });
 });
 
-test('o contador do botao de filtros acompanha o que esta aplicado', async () => {
+test('o contador do botão de filtros acompanha o que esta aplicado', async () => {
   abrir('/produtos?marca=Lattafa&estoque=1');
 
   expect(await screen.findByRole('button', { name: 'Filtros (2)' })).toBeDefined();
@@ -219,7 +219,7 @@ test('o contador do botao de filtros acompanha o que esta aplicado', async () =>
 
 /* ---- O vazio ------------------------------------------------------------ */
 
-test('sem resultados, a tela mostra o vazio desenhado e nao um grid em branco', async () => {
+test('sem resultados, a tela mostra o vazio desenhado e não um grid em branco', async () => {
   paginas = { 1: [] };
   totalItems = 0;
 
@@ -248,7 +248,7 @@ test('limpar filtros devolve o catalogo cheio', async () => {
   });
 });
 
-test('sem filtro nenhum, o vazio nao oferece um botao que nao faria nada', async () => {
+test('sem filtro nenhum, o vazio não oferece um botão que não faria nada', async () => {
   paginas = { 1: [] };
   totalItems = 0;
 
@@ -261,7 +261,7 @@ test('sem filtro nenhum, o vazio nao oferece um botao que nao faria nada', async
 
 /* ---- Paginacao ---------------------------------------------------------- */
 
-test('carregar mais empilha a pagina nova sem tirar a anterior', async () => {
+test('carregar mais empilha a página nova sem tirar a anterior', async () => {
   const user = userEvent.setup();
 
   abrir('/produtos');
@@ -276,7 +276,7 @@ test('carregar mais empilha a pagina nova sem tirar a anterior', async () => {
   expect(screen.getByTestId('url').textContent).toBe('?pagina=2');
 });
 
-test('reabrir na pagina 2 traz as duas paginas empilhadas', async () => {
+test('reabrir na página 2 traz as duas páginas empilhadas', async () => {
   // E o que acontece na volta do produto: a tela remonta com `?pagina=2` e
   // precisa reconstruir a lista inteira, e nao so a segunda pagina.
   abrir('/produtos?pagina=2');
@@ -297,7 +297,7 @@ test('a busca realca o termo no nome do produto', async () => {
   expect(within(nome).getByText('Asad').tagName).toBe('MARK');
 });
 
-test('a busca manda o termo para a API e o mostra no titulo', async () => {
+test('a busca manda o termo para a API e o mostra no título', async () => {
   abrir('/busca?q=oud');
 
   await screen.findByRole('heading', { name: 'Asad' });
@@ -317,7 +317,7 @@ test('a categoria monta o fio de pao, as pilulas e o filtro da rota', async () =
   expect(within(pilulas).getByRole('link', { name: /Tudo em Masculino/ })).toBeDefined();
   expect(within(pilulas).getByRole('link', { name: /Amadeirados/ })).toBeDefined();
 
-  const trilha = screen.getByRole('navigation', { name: 'Voce esta aqui' });
+  const trilha = screen.getByRole('navigation', { name: 'Você esta aqui' });
 
   expect(within(trilha).getByRole('link', { name: 'Masculino' })).toBeDefined();
 
@@ -366,7 +366,7 @@ function noDesktop(): void {
   );
 }
 
-test('no desktop os filtros ficam na coluna, sem botao de gaveta', async () => {
+test('no desktop os filtros ficam na coluna, sem botão de gaveta', async () => {
   noDesktop();
 
   abrir('/produtos');
@@ -375,14 +375,14 @@ test('no desktop os filtros ficam na coluna, sem botao de gaveta', async () => {
   expect(screen.queryByRole('button', { name: /^Filtros/ })).toBeNull();
 });
 
-test('no desktop a paginacao e numerada e troca a pagina em tela', async () => {
+test('no desktop a paginação e numerada e troca a página em tela', async () => {
   const user = userEvent.setup();
 
   noDesktop();
   abrir('/produtos');
 
   await screen.findByRole('heading', { name: 'Asad' });
-  await user.click(screen.getByRole('button', { name: 'Pagina 2' }));
+  await user.click(screen.getByRole('button', { name: 'Página 2' }));
 
   // A pagina 2 substitui a 1, em vez de empilhar como no celular.
   expect(await screen.findByRole('heading', { name: 'Fakhar' })).toBeDefined();

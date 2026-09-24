@@ -178,7 +178,7 @@ function summaryLines(totals: WhatsappTotals, fulfillment: WhatsappFulfillment):
 /** A taxa, ou a isencao com o motivo que a cidade ou a loja deram. */
 function feeLine(totals: WhatsappTotals, fulfillment: WhatsappFulfillment): string {
   return totals.deliveryFeeCents === 0
-    ? `Entrega: gratis${fulfillment.freeReason === '' ? '' : ` (${fulfillment.freeReason})`}`
+    ? `Entrega: grátis${fulfillment.freeReason === '' ? '' : ` (${fulfillment.freeReason})`}`
     : `Entrega: ${formatCents(totals.deliveryFeeCents)}`;
 }
 
@@ -196,7 +196,7 @@ function paymentLine(payment: WhatsappPayment): string {
   }
 
   if (payment.installments <= 1) {
-    return 'Cartao a vista';
+    return 'Cartão a vista';
   }
 
   const interest = payment.hasInterest
@@ -209,7 +209,7 @@ function paymentLine(payment: WhatsappPayment): string {
 
   const valor = formatCents(payment.installmentCents);
 
-  return `Cartao em ${payment.installments}x de ${valor}${interest}${first}`;
+  return `Cartão em ${payment.installments}x de ${valor}${interest}${first}`;
 }
 
 /** Para onde vai, ou o aviso de que o cliente vem buscar. */
@@ -237,7 +237,7 @@ function addressLines(address: WhatsappAddress): string[] {
     [street, address.complement].filter(Boolean).join(' - '),
     ...(address.district === '' ? [] : [`Bairro: ${address.district}`]),
     ...(address.zipCode === '' ? [] : [`CEP: ${address.zipCode}`]),
-    ...(address.reference === '' ? [] : [`Referencia: ${address.reference}`]),
+    ...(address.reference === '' ? [] : [`Referência: ${address.reference}`]),
   ];
 }
 
@@ -247,5 +247,5 @@ function deadline(estimatedDays: number): string {
     return '';
   }
 
-  return estimatedDays === 1 ? ' (prazo de 1 dia util)' : ` (prazo de ${estimatedDays} dias uteis)`;
+  return estimatedDays === 1 ? ' (prazo de 1 dia útil)' : ` (prazo de ${estimatedDays} dias úteis)`;
 }

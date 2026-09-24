@@ -208,7 +208,7 @@ function Totals({ order }: { order: CustomerOrderDetail }) {
       {order.fulfillment.mode === 'delivery' ? (
         <div className={styles.totalRow}>
           <dt>Entrega</dt>
-          <dd>{totals.deliveryFeeCents === 0 ? 'Gratis' : formatCents(totals.deliveryFeeCents)}</dd>
+          <dd>{totals.deliveryFeeCents === 0 ? 'Grátis' : formatCents(totals.deliveryFeeCents)}</dd>
         </div>
       ) : null}
 
@@ -289,15 +289,15 @@ function Fulfillment({ order }: { order: CustomerOrderDetail }) {
           ))}
 
           {address.reference === '' ? null : (
-            <p className={styles.fulfillmentNote}>Referencia: {address.reference}</p>
+            <p className={styles.fulfillmentNote}>Referência: {address.reference}</p>
           )}
         </div>
       )}
 
       {fulfillment.estimatedDays > 0 ? (
         <p className={styles.fulfillmentNote}>
-          Prazo combinado no pedido: ate {fulfillment.estimatedDays}{' '}
-          {fulfillment.estimatedDays === 1 ? 'dia util' : 'dias uteis'}.
+          Prazo combinado no pedido: até {fulfillment.estimatedDays}{' '}
+          {fulfillment.estimatedDays === 1 ? 'dia útil' : 'dias úteis'}.
         </p>
       ) : null}
     </div>
@@ -313,10 +313,10 @@ function describePayment(order: CustomerOrderDetail): string {
   }
 
   if (payment.installments <= 1) {
-    return 'Cartao, a vista';
+    return 'Cartão, a vista';
   }
 
-  return `Cartao em ${payment.installments}x, ${payment.hasInterest ? 'com juros' : 'sem juros'}`;
+  return `Cartão em ${payment.installments}x, ${payment.hasInterest ? 'com juros' : 'sem juros'}`;
 }
 
 /* ---- O pedido que nao esta aqui -------------------------------------------- */
@@ -334,12 +334,12 @@ function OrderNotHere({ code, error }: { code: string; error: unknown }) {
   return (
     <section className={styles.notHere}>
       <h1 className={styles.notHereTitle}>
-        {notFound ? `O pedido ${code} nao esta nesta conta` : 'Nao deu para abrir este pedido'}
+        {notFound ? `O pedido ${code} não esta nesta conta` : 'Não deu para abrir este pedido'}
       </h1>
 
       <p className={styles.notHereText}>
         {notFound
-          ? 'Os pedidos ficam ligados ao telefone informado no fechamento. Se este foi feito com outro numero, fale com a loja pelo WhatsApp que ela ajusta.'
+          ? 'Os pedidos ficam ligados ao telefone informado no fechamento. Se este foi feito com outro número, fale com a loja pelo WhatsApp que ela ajusta.'
           : errorMessage(error)}
       </p>
 

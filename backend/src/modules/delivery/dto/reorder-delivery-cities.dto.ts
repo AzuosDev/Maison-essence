@@ -13,6 +13,6 @@ export class ReorderDeliveryCitiesDto {
   @IsArray()
   @ArrayNotEmpty({ message: 'informe ao menos uma cidade para reordenar' })
   @ArrayMaxSize(MAX_DELIVERY_CITY_ORDER + 1)
-  @IsMongoId({ each: true, message: 'a lista de ordem tem um id invalido' })
+  @IsMongoId({ each: true, message: 'a lista de ordem tem um id inválido' })
   ids: string[];
 }

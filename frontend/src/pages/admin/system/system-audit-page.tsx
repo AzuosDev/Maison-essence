@@ -108,9 +108,9 @@ export default function SystemAuditPage() {
         />
 
         <Select
-          label="Acao"
+          label="Ação"
           block
-          placeholder="Qualquer acao"
+          placeholder="Qualquer ação"
           options={AUDIT_ACTION_OPTIONS}
           value={action}
           onChange={(event) => {
@@ -133,7 +133,7 @@ export default function SystemAuditPage() {
         />
 
         <Input
-          label="Ate"
+          label="Até"
           type="date"
           block
           value={to}
@@ -161,9 +161,9 @@ export default function SystemAuditPage() {
       {isError ? (
         isMissingRoute(error) ? (
           <MissingRoute route="GET /audit">
-            A trilha ja e gravada: o modulo de auditoria tem colecao propria (
-            <code>audit_entries</code>), dois anos de retencao e cinco servicos escrevendo nela.
-            Falta o controlador que a devolva — uma pagina filtrada por <code>actorId</code>,{' '}
+            A trilha já e gravada: o módulo de auditoria tem coleção própria (
+            <code>audit_entries</code>), dois anos de retenção e cinco serviços escrevendo nela.
+            Falta o controlador que a devolva — uma página filtrada por <code>actorId</code>,{' '}
             <code>action</code>, <code>from</code> e <code>to</code>, no mesmo formato das outras
             listas do painel.
           </MissingRoute>
@@ -182,7 +182,7 @@ export default function SystemAuditPage() {
         <EmptyState
           as="h2"
           title="Nada registrado neste recorte"
-          description="Mude a pessoa, a acao ou o periodo. A trilha guarda dois anos."
+          description="Mude a pessoa, a ação ou o período. A trilha guarda dois anos."
         />
       ) : (
         <>
@@ -218,7 +218,7 @@ function AuditRow({ entry }: { entry: AuditEntry }) {
         <div className={styles.entryWhat}>
           <p className={styles.action}>
             {describeAction(entry.action)}
-            {isSensitive(entry.action) ? <Badge variant="gold">atencao</Badge> : null}
+            {isSensitive(entry.action) ? <Badge variant="gold">atenção</Badge> : null}
           </p>
 
           <p className={styles.who}>

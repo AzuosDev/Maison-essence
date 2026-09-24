@@ -77,7 +77,7 @@ const ORDER = {
       complement: '',
       district: 'Centro',
       zipCode: '63010000',
-      reference: 'Perto da praca',
+      reference: 'Perto da praça',
     },
   },
   payment: { method: 'card', installments: 3, hasInterest: false },
@@ -199,17 +199,17 @@ function lastListCall(): string {
 
 /* ---- A lista ------------------------------------------------------------- */
 
-test('a dona ve o total e a forma de pagamento na lista', async () => {
+test('a dona vê o total e a forma de pagamento na lista', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir('/admin/pedidos');
 
   expect(await screen.findByRole('link', { name: 'ME-260922-K4P1' })).toBeDefined();
   expect(screen.getByText('R$ 379,80')).toBeDefined();
-  expect(screen.getByText('Cartao 3x')).toBeDefined();
+  expect(screen.getByText('Cartão 3x')).toBeDefined();
 });
 
-test('o STAFF nao ve o total, mas ve como o cliente vai pagar', async () => {
+test('o STAFF não vê o total, mas vê como o cliente vai pagar', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir('/admin/pedidos');
@@ -220,10 +220,10 @@ test('o STAFF nao ve o total, mas ve como o cliente vai pagar', async () => {
   expect(screen.queryByText('R$ 379,80')).toBeNull();
 
   // A forma de pagamento fica: e o que ele precisa para atender.
-  expect(screen.getByText('Cartao 3x')).toBeDefined();
+  expect(screen.getByText('Cartão 3x')).toBeDefined();
 });
 
-test('o endereco com filtro vira consulta filtrada', async () => {
+test('o endereço com filtro vira consulta filtrada', async () => {
   signInAs(USER_ROLES.OWNER);
 
   // E o link do card "Esperando contato" da abertura do painel.
@@ -256,7 +256,7 @@ test('escolher um status refaz a consulta com ele', async () => {
   });
 });
 
-test('clicar no status que ja esta valendo o desliga', async () => {
+test('clicar no status que já esta valendo o desliga', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -274,7 +274,7 @@ test('clicar no status que ja esta valendo o desliga', async () => {
 
 /* ---- O detalhe ------------------------------------------------------------ */
 
-test('o detalhe mostra o pedido, o endereco e a mensagem enviada', async () => {
+test('o detalhe mostra o pedido, o endereço e a mensagem enviada', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir('/admin/pedidos/o1');
@@ -305,12 +305,12 @@ test('o STAFF abre o pedido sem nenhum valor', async () => {
   expect(screen.queryByRole('heading', { name: 'Valores' })).toBeNull();
 });
 
-test('o seletor de status nao oferece o cancelamento', async () => {
+test('o seletor de status não oferece o cancelamento', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir('/admin/pedidos/o1');
 
-  const select = await screen.findByLabelText('Situacao do pedido');
+  const select = await screen.findByLabelText('Situação do pedido');
   const values = Array.from(select.querySelectorAll('option'), (option) => option.value);
 
   expect(values).toContain('DELIVERED');
@@ -324,7 +324,7 @@ test('mover o status manda o novo valor para o servidor', async () => {
 
   abrir('/admin/pedidos/o1');
 
-  await user.selectOptions(await screen.findByLabelText('Situacao do pedido'), 'CONFIRMED');
+  await user.selectOptions(await screen.findByLabelText('Situação do pedido'), 'CONFIRMED');
 
   await waitFor(() => {
     const patch = calls.find((call) => call.method === 'PATCH');
@@ -334,7 +334,7 @@ test('mover o status manda o novo valor para o servidor', async () => {
   });
 });
 
-test('cancelar pede confirmacao nomeando o pedido antes de qualquer chamada', async () => {
+test('cancelar pede confirmação nomeando o pedido antes de qualquer chamada', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -361,7 +361,7 @@ test('cancelar pede confirmacao nomeando o pedido antes de qualquer chamada', as
   });
 });
 
-test('um pedido cancelado nao oferece mais o seletor nem o botao', async () => {
+test('um pedido cancelado não oferece mais o seletor nem o botão', async () => {
   signInAs(USER_ROLES.OWNER);
 
   vi.stubGlobal(
@@ -380,6 +380,6 @@ test('um pedido cancelado nao oferece mais o seletor nem o botao', async () => {
   abrir('/admin/pedidos/o1');
 
   expect(await screen.findByText(/Pedido cancelado/)).toBeDefined();
-  expect(screen.queryByLabelText('Situacao do pedido')).toBeNull();
+  expect(screen.queryByLabelText('Situação do pedido')).toBeNull();
   expect(screen.queryByRole('button', { name: /Cancelar pedido/ })).toBeNull();
 });

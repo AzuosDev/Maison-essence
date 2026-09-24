@@ -41,7 +41,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   async validate(payload: AccessTokenPayload): Promise<AuthenticatedUser> {
     if (payload.type !== TOKEN_TYPES.ACCESS) {
-      throw new UnauthorizedException('Token invalido.');
+      throw new UnauthorizedException('Token inválido.');
     }
 
     const user = await this.users.findById(payload.sub).exec();
@@ -53,7 +53,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     ) {
       // Usuario removido, desativado ou com as credenciais versionadas depois
       // da emissao: o token e valido na assinatura e invalido no conteudo.
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     return toAuthenticatedUser(user);

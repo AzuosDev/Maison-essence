@@ -38,7 +38,7 @@ function Exemplo({ render: renderDialog }: { render: (props: DialogProps) => Rea
         Abrir
       </button>
 
-      <button type="button">Fora do dialogo</button>
+      <button type="button">Fora do diálogo</button>
 
       {renderDialog({
         open,
@@ -72,7 +72,7 @@ function ModalExemplo() {
   );
 }
 
-test('o foco entra no dialogo quando ele abre', async () => {
+test('o foco entra no diálogo quando ele abre', async () => {
   const user = userEvent.setup();
 
   render(<ModalExemplo />);
@@ -86,7 +86,7 @@ test('o foco entra no dialogo quando ele abre', async () => {
   expect(dialog.contains(document.activeElement)).toBe(true);
 });
 
-test('o Tab circula dentro do dialogo e nao escapa para a pagina', async () => {
+test('o Tab circula dentro do diálogo e não escapa para a página', async () => {
   const user = userEvent.setup();
 
   render(<ModalExemplo />);
@@ -94,7 +94,7 @@ test('o Tab circula dentro do dialogo e nao escapa para a pagina', async () => {
   await user.click(screen.getByRole('button', { name: 'Abrir' }));
 
   const dialog = screen.getByRole('dialog');
-  const fora = screen.getByRole('button', { name: 'Fora do dialogo' });
+  const fora = screen.getByRole('button', { name: 'Fora do diálogo' });
 
   // Uma volta inteira e mais um pouco: em nenhum momento o foco sai.
   // Um Tab de cada vez, de proposito: a posicao seguinte depende de onde o
@@ -115,7 +115,7 @@ test('o Tab circula dentro do dialogo e nao escapa para a pagina', async () => {
   }
 });
 
-test('o Escape fecha o dialogo', async () => {
+test('o Escape fecha o diálogo', async () => {
   const user = userEvent.setup();
 
   render(<ModalExemplo />);
@@ -128,7 +128,7 @@ test('o Escape fecha o dialogo', async () => {
   expect(screen.queryByRole('dialog')).toBeNull();
 });
 
-test('ao fechar, o foco volta para o botao que abriu', async () => {
+test('ao fechar, o foco volta para o botão que abriu', async () => {
   const user = userEvent.setup();
 
   render(<ModalExemplo />);
@@ -141,7 +141,7 @@ test('ao fechar, o foco volta para o botao que abriu', async () => {
   expect(document.activeElement).toBe(gatilho);
 });
 
-test('a gaveta se comporta igual: mesmo hook, mesmas tres obrigacoes', async () => {
+test('a gaveta se comporta igual: mesmo hook, mesmas três obrigações', async () => {
   const user = userEvent.setup();
 
   render(

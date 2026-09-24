@@ -75,7 +75,7 @@ beforeEach(() => {
         enviado.customerLogin = body;
 
         return recusa.has('customer')
-          ? Promise.resolve(jsonResponse({ message: 'nao confere' }, 401))
+          ? Promise.resolve(jsonResponse({ message: 'não confere' }, 401))
           : Promise.resolve(
               jsonResponse({
                 accessToken: 'token',
@@ -91,7 +91,7 @@ beforeEach(() => {
         enviado.staffLogin = body;
 
         return recusa.has('staff')
-          ? Promise.resolve(jsonResponse({ message: 'nao confere' }, 401))
+          ? Promise.resolve(jsonResponse({ message: 'não confere' }, 401))
           : Promise.resolve(
               jsonResponse({
                 accessToken: 'token',
@@ -178,7 +178,7 @@ test('o celular vai para o login do cliente, normalizado', async () => {
   expect(enviado.staffLogin).toBeUndefined();
 });
 
-test('o e-mail vai para o login do painel, e a sessao aberta e a do painel', async () => {
+test('o e-mail vai para o login do painel, e a sessão aberta e a do painel', async () => {
   const usuario = userEvent.setup();
   const { router } = abrirEntrada();
 
@@ -206,7 +206,7 @@ test('o e-mail vai para o login do painel, e a sessao aberta e a do painel', asy
  * Com ela, o backend recusa toda rota administrativa menos a da troca:
  * mandar a pessoa para o painel mostraria erro em cada tela que ela abrisse.
  */
-test('a senha temporaria leva direto para a troca, e nao para o painel', async () => {
+test('a senha temporária leva direto para a troca, e não para o painel', async () => {
   senhaTemporaria = true;
 
   const usuario = userEvent.setup();
@@ -230,7 +230,7 @@ test('quem foi barrado no painel volta para a tela que o barrou', async () => {
   });
 });
 
-test('o cliente volta para a tela que o trouxe ate aqui', async () => {
+test('o cliente volta para a tela que o trouxe até aqui', async () => {
   const usuario = userEvent.setup();
   const { router } = abrirEntrada({ from: '/conta/pedidos/ME-260901-AB12' });
 
@@ -249,7 +249,7 @@ test('o cliente volta para a tela que o trouxe ate aqui', async () => {
  * `/admin`, o guarda o devolveria para ca; a sessao dele, valida, o mandaria
  * de novo para `/admin`. O destino do cliente nunca e o painel.
  */
-test('o cliente que veio do painel nao e devolvido ao painel', async () => {
+test('o cliente que veio do painel não e devolvido ao painel', async () => {
   const usuario = userEvent.setup();
   const { router } = abrirEntrada({ from: '/admin/pedidos' });
 
@@ -269,7 +269,7 @@ test('o cliente que veio do painel nao e devolvido ao painel', async () => {
  * frase, a partir do formato do que esta no campo — uma leitura local, que
  * nao conta nada a quem nao digitou aquilo.
  */
-test('errar o e-mail nao rende conselho sobre DDD', async () => {
+test('errar o e-mail não rende conselho sobre DDD', async () => {
   recusa.add('staff');
 
   const usuario = userEvent.setup();
@@ -279,7 +279,7 @@ test('errar o e-mail nao rende conselho sobre DDD', async () => {
 
   const aviso = await screen.findByRole('alert');
 
-  expect(aviso.textContent).toBe('E-mail ou senha nao conferem.');
+  expect(aviso.textContent).toBe('E-mail ou senha não conferem.');
 });
 
 test('errar o celular rende o conselho sobre DDD', async () => {
@@ -292,7 +292,7 @@ test('errar o celular rende o conselho sobre DDD', async () => {
 
   const aviso = await screen.findByRole('alert');
 
-  expect(aviso.textContent).toContain('Confira o numero com o DDD');
+  expect(aviso.textContent).toContain('Confira o número com o DDD');
 });
 
 /**
@@ -312,13 +312,13 @@ test('errar no celular e depois no e-mail mostra a recusa do e-mail', async () =
   abrirEntrada();
   await entrar(usuario, '88999998888', 'errada');
 
-  expect((await screen.findByRole('alert')).textContent).toContain('Confira o numero com o DDD');
+  expect((await screen.findByRole('alert')).textContent).toContain('Confira o número com o DDD');
 
   await usuario.clear(campo('Celular ou e-mail'));
   await entrar(usuario, 'dona@maisonessence.test', 'errada');
 
   await waitFor(() => {
-    expect(screen.getByRole('alert').textContent).toBe('E-mail ou senha nao conferem.');
+    expect(screen.getByRole('alert').textContent).toBe('E-mail ou senha não conferem.');
   });
 });
 
@@ -332,7 +332,7 @@ test('errar no celular e depois no e-mail mostra a recusa do e-mail', async () =
  * mesmo escrito "celular ou e-mail" logo acima, e quem ia entrar com e-mail
  * parava para perguntar.
  */
-test('o campo nao anuncia so um dos dois formatos', () => {
+test('o campo não anuncia só um dos dois formatos', () => {
   abrirEntrada();
 
   const anuncio = campo('Celular ou e-mail').getAttribute('placeholder') ?? '';
@@ -349,7 +349,7 @@ test('o campo nao anuncia so um dos dois formatos', () => {
  * nem outra. Mandar para o servidor adivinhar so gastaria uma das tentativas
  * que o limite conta.
  */
-test('o que nao e celular nem e-mail nao chega a virar requisicao', async () => {
+test('o que não e celular nem e-mail não chega a virar requisição', async () => {
   const usuario = userEvent.setup();
 
   abrirEntrada();
@@ -365,7 +365,7 @@ test('o que nao e celular nem e-mail nao chega a virar requisicao', async () => 
  * O caso duro e o e-mail que comeca com numeros: ate a arroba, ele e
  * indistinguivel de um telefone.
  */
-test('o e-mail que comeca com numeros nao sai com parenteses dentro', async () => {
+test('o e-mail que começa com números não sai com parenteses dentro', async () => {
   const usuario = userEvent.setup();
 
   abrirEntrada();
@@ -392,7 +392,7 @@ test('o celular digitado atravessa para o cadastro', async () => {
 });
 
 /** Um e-mail, nao: o cadastro do cliente e pelo telefone. */
-test('o e-mail digitado nao atravessa para o cadastro', async () => {
+test('o e-mail digitado não atravessa para o cadastro', async () => {
   const usuario = userEvent.setup();
 
   abrirEntrada();

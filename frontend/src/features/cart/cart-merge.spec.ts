@@ -21,7 +21,7 @@ beforeEach(() => {
   localStorage.clear();
 });
 
-test('a mesma variante soma; variantes diferentes sao linhas diferentes', () => {
+test('a mesma variante soma; variantes diferentes são linhas diferentes', () => {
   const guardada = [linha({ quantity: 2 }), linha({ variantId: 'v100', quantity: 1 })];
   const agora = [linha({ quantity: 3 })];
 
@@ -57,7 +57,7 @@ test('nenhuma das duas sacolas e alterada no lugar', () => {
 
 /* ---- O que vai e volta do armazenamento --------------------------------- */
 
-test('a sacola guardada volta com os tres campos, e so eles', () => {
+test('a sacola guardada volta com os três campos, e só eles', () => {
   writeStashedCart('cliente-1', [linha({ quantity: 2 })]);
 
   expect(readStashedCart('cliente-1')).toEqual([
@@ -65,7 +65,7 @@ test('a sacola guardada volta com os tres campos, e so eles', () => {
   ]);
 });
 
-test('cada cliente tem a sua, e uma nao ve a da outra', () => {
+test('cada cliente tem a sua, e uma não vê a da outra', () => {
   writeStashedCart('cliente-1', [linha()]);
 
   expect(readStashedCart('cliente-2')).toEqual([]);
@@ -78,7 +78,7 @@ test('cada cliente tem a sua, e uma nao ve a da outra', () => {
  * sacolas continuam no navegador de quem comprou antes. O preco de la nao
  * pode atravessar a leitura — ele tem semanas e nao vale nada.
  */
-test('preco vindo de uma sacola antiga e descartado na leitura', () => {
+test('preço vindo de uma sacola antiga e descartado na leitura', () => {
   localStorage.setItem(
     'maison-essence.cart.customer.cliente-1',
     JSON.stringify([{ productId: 'p1', variantId: 'v50', quantity: 1, unitPriceCents: 18990 }]),
@@ -91,12 +91,12 @@ test('preco vindo de uma sacola antiga e descartado na leitura', () => {
 });
 
 test('entrada corrompida vira sacola vazia em vez de quebrar o login', () => {
-  localStorage.setItem('maison-essence.cart.customer.cliente-1', '{nao e json');
+  localStorage.setItem('maison-essence.cart.customer.cliente-1', '{não e json');
 
   expect(readStashedCart('cliente-1')).toEqual([]);
 });
 
-test('linha sem id ou com quantidade invalida e descartada', () => {
+test('linha sem id ou com quantidade inválida e descartada', () => {
   localStorage.setItem(
     'maison-essence.cart.customer.cliente-1',
     JSON.stringify([
@@ -125,7 +125,7 @@ test('clearStashedCart esquece a sacola daquele cliente', () => {
   expect(readStashedCart('cliente-1')).toEqual([]);
 });
 
-test('armazenamento bloqueado nao derruba a escrita', () => {
+test('armazenamento bloqueado não derruba a escrita', () => {
   const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
     throw new Error('QuotaExceededError');
   });

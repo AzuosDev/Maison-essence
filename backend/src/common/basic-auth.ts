@@ -52,7 +52,7 @@ export function basicAuth(credentials: BasicCredentials, realm: string): Request
     // Sem o `WWW-Authenticate` o navegador mostra a pagina de erro em vez de
     // pedir a senha.
     response.setHeader('WWW-Authenticate', `Basic realm="${realm}", charset="UTF-8"`);
-    response.status(401).send('Autenticacao necessaria.');
+    response.status(401).send('Autenticação necessária.');
   };
 }
 

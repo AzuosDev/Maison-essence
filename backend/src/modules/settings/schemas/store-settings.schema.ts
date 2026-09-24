@@ -145,7 +145,7 @@ export class StoreSettings extends SingletonSchema {
       default: '',
       match: [
         /^\d{10,15}$/,
-        'o numero do WhatsApp deve ter so digitos, com pais e DDD, como 5588999999999',
+        'o número do WhatsApp deve ter só digitos, com pais e DDD, como 5588999999999',
       ],
     }),
   )

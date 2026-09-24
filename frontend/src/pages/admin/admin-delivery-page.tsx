@@ -88,12 +88,12 @@ export default function AdminDeliveryPage() {
     return (
       <EmptyState
         as="h1"
-        title="Esta area e de quem administra a loja"
-        description="A tabela de taxas e preco. O seu acesso cobre o atendimento: o inicio do painel e os pedidos — e o pedido ja carrega a taxa que foi combinada."
+        title="Esta área e de quem administra a loja"
+        description="A tabela de taxas e preço. O seu acesso cobre o atendimento: o início do painel e os pedidos — e o pedido já carrega a taxa que foi combinada."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />
-            Voltar para o inicio
+            Voltar para o início
           </Link>
         }
       />
@@ -141,7 +141,7 @@ export default function AdminDeliveryPage() {
         <EmptyState
           as="h2"
           title="Nenhuma cidade cadastrada"
-          description="Sem cidade cadastrada, o checkout so oferece a retirada na loja. Comece pela cidade em que a loja esta — e a de quase todo pedido."
+          description="Sem cidade cadastrada, o checkout só oferece a retirada na loja. Comece pela cidade em que a loja esta — e a de quase todo pedido."
           actions={
             <Button
               type="button"
@@ -156,7 +156,7 @@ export default function AdminDeliveryPage() {
       ) : (
         <>
           <p className={styles.hint}>
-            Cada campo grava ao sair dele — nao ha botao de salvar. Arraste para mudar a ordem em
+            Cada campo grava ao sair dele — não há botão de salvar. Arraste para mudar a ordem em
             que as cidades aparecem no checkout.
           </p>
 
@@ -190,7 +190,7 @@ export default function AdminDeliveryPage() {
                         ? `${saved.name} voltou ao checkout`
                         : `${saved.name} saiu do checkout`,
                       description: saved.isActive
-                        ? 'A cliente ja pode escolher esta cidade.'
+                        ? 'A cliente já pode escolher esta cidade.'
                         : 'A taxa fica guardada para quando voltar a atender.',
                     });
                   },
@@ -217,12 +217,12 @@ export default function AdminDeliveryPage() {
               toast({
                 variant: 'success',
                 title: `${city.name} entrou na lista`,
-                description: 'Ela ja aparece no checkout. Arraste para mudar a posicao.',
+                description: 'Ela já aparece no checkout. Arraste para mudar a posição.',
               });
             },
             // A recusa mais comum e "essa cidade ja esta cadastrada", e a
             // frase do servidor diz o que fazer no lugar.
-            onError: fail('A cidade nao foi cadastrada'),
+            onError: fail('A cidade não foi cadastrada'),
           });
         }}
       />
@@ -244,12 +244,12 @@ export default function AdminDeliveryPage() {
             },
             onError: (cause) => {
               setDeleting(null);
-              fail('A cidade nao foi excluida')(cause);
+              fail('A cidade não foi excluída')(cause);
             },
           });
         }}
         title="Excluir esta cidade?"
-        description="A taxa e o prazo somem junto, e voltar a atender ali exige cadastrar tudo de novo. Se a ideia e parar por um tempo, desligue o interruptor da linha — a cliente deixa de ver a cidade e o cadastro fica guardado. Os pedidos ja fechados nao mudam: eles guardam a taxa que foi combinada."
+        description="A taxa e o prazo somem junto, e voltar a atender ali exige cadastrar tudo de novo. Se a ideia e parar por um tempo, desligue o interruptor da linha — a cliente deixa de ver a cidade e o cadastro fica guardado. Os pedidos já fechados não mudam: eles guardam a taxa que foi combinada."
         target={deleting === null ? '' : `${deleting.name}/${deleting.state}`}
         confirmLabel="Excluir a cidade"
         loading={remove.isPending}
@@ -320,7 +320,7 @@ function NewCityForm({
       open
       onClose={onClose}
       title="Adicionar cidade"
-      description="Ela entra no fim da lista do checkout; arraste depois para mudar a posicao."
+      description="Ela entra no fim da lista do checkout; arraste depois para mudar a posição."
       footer={
         <div className={styles.dialogActions}>
           <Button type="button" variant="secondary" onClick={onClose} disabled={saving}>
@@ -386,7 +386,7 @@ function NewCityForm({
             numeric
             inputMode="numeric"
             suffix="dias"
-            hint="Dias uteis. Zero e no mesmo dia."
+            hint="Dias úteis. Zero e no mesmo dia."
             value={draft.days}
             error={errors.days}
             onChange={(event) => {
@@ -396,13 +396,13 @@ function NewCityForm({
         </div>
 
         <Input
-          label="Frete gratis a partir de"
+          label="Frete grátis a partir de"
           block
           numeric
           inputMode="decimal"
           prefix="R$"
           placeholder="regra da loja"
-          hint="Em branco, esta cidade segue o minimo geral que esta em Configuracoes."
+          hint="Em branco, esta cidade segue o mínimo geral que esta em Configurações."
           value={draft.freeFrom}
           error={errors.freeFrom}
           onChange={(event) => {

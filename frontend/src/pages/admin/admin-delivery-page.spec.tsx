@@ -151,11 +151,11 @@ test('mostra as cidades com taxa, prazo e a frase do checkout', async () => {
 
   // A frase e a mesma que a cliente le: `0` seria "No mesmo dia", e sem isso
   // escrito alguem o cadastra achando que e "sem prazo definido".
-  expect(screen.getByText('Ate 2 dias uteis')).toBeDefined();
-  expect(screen.getByText('Ate 4 dias uteis')).toBeDefined();
+  expect(screen.getByText('Até 2 dias úteis')).toBeDefined();
+  expect(screen.getByText('Até 4 dias úteis')).toBeDefined();
 });
 
-test('a cidade sem regra propria diz que segue a loja', async () => {
+test('a cidade sem regra própria diz que segue a loja', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
@@ -165,19 +165,19 @@ test('a cidade sem regra propria diz que segue a loja', async () => {
   expect(screen.getByText('segue a loja')).toBeDefined();
 });
 
-test('o STAFF nao entra: a tabela de taxas e preco', async () => {
+test('o STAFF não entra: a tabela de taxas e preço', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem administra a loja/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem administra a loja/ }),
   ).toBeDefined();
 });
 
 /* ---- Gravar ao sair do campo -------------------------------------------------- */
 
-test('mudar a taxa e sair do campo manda so a taxa', async () => {
+test('mudar a taxa e sair do campo manda só a taxa', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -199,7 +199,7 @@ test('mudar a taxa e sair do campo manda so a taxa', async () => {
   });
 });
 
-test('sair do campo sem mudar nada nao chama o servidor', async () => {
+test('sair do campo sem mudar nada não chama o servidor', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -216,7 +216,7 @@ test('sair do campo sem mudar nada nao chama o servidor', async () => {
   expect(lastWrite()).toBeUndefined();
 });
 
-test('uma taxa invalida nao viaja', async () => {
+test('uma taxa inválida não viaja', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -232,14 +232,14 @@ test('uma taxa invalida nao viaja', async () => {
   expect(await screen.findByText(/Escreva a taxa/)).toBeDefined();
 });
 
-test('apagar o frete gratis manda null, e nao zero', async () => {
+test('apagar o frete grátis manda null, e não zero', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  const free = await screen.findByRole('textbox', { name: 'Frete gratis de Fortaleza' });
+  const free = await screen.findByRole('textbox', { name: 'Frete grátis de Fortaleza' });
 
   await user.clear(free);
   await user.tab();
@@ -260,7 +260,7 @@ test('descer uma cidade manda a lista na ordem nova', async () => {
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Sobral' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Sobral' }));
   await user.click(screen.getByRole('button', { name: 'Descer' }));
 
   await waitFor(() => {
@@ -273,7 +273,7 @@ test('descer uma cidade manda a lista na ordem nova', async () => {
 
 /* ---- Cadastrar e excluir ---------------------------------------------------------- */
 
-test('cadastrar uma cidade manda taxa em centavos e UF em maiuscula', async () => {
+test('cadastrar uma cidade manda taxa em centavos e UF em maiúscula', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -303,14 +303,14 @@ test('cadastrar uma cidade manda taxa em centavos e UF em maiuscula', async () =
   });
 });
 
-test('excluir explica que desativar guarda a taxa, e pede confirmacao', async () => {
+test('excluir explica que desativar guarda a taxa, e pede confirmação', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  await user.click(await screen.findByRole('button', { name: 'Acoes de Sobral' }));
+  await user.click(await screen.findByRole('button', { name: 'Ações de Sobral' }));
   await user.click(screen.getByRole('button', { name: 'Excluir' }));
 
   const dialog = await screen.findByRole('dialog');

@@ -96,7 +96,7 @@ export function RowMenu({ label, items }: RowMenuProps) {
         className={styles.trigger}
         aria-expanded={open}
         aria-haspopup="true"
-        aria-label={`Acoes de ${label}`}
+        aria-label={`Ações de ${label}`}
         onClick={() => {
           setOpen((value) => !value);
         }}

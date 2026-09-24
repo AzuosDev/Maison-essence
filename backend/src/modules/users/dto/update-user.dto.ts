@@ -15,11 +15,11 @@ export class UpdateUserDto {
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim().toLowerCase() : value,
   )
-  @IsEmail({}, { message: 'e-mail invalido' })
+  @IsEmail({}, { message: 'e-mail inválido' })
   @MaxLength(160)
   email?: string;
 
   @IsOptional()
-  @IsIn(USER_ROLE_VALUES, { message: 'papel invalido' })
+  @IsIn(USER_ROLE_VALUES, { message: 'papel inválido' })
   role?: UserRole;
 }

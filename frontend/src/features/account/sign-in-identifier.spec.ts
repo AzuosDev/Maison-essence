@@ -11,20 +11,20 @@ import { maskIdentifier, resolveIdentifier } from './sign-in-identifier';
 
 /* ---- Quem e quem ----------------------------------------------------------- */
 
-test('onze digitos sao o celular, com ou sem pontuacao', () => {
+test('onze digitos são o celular, com ou sem pontuação', () => {
   expect(resolveIdentifier('88999998888')).toEqual({ kind: 'phone', phone: '88999998888' });
   expect(resolveIdentifier('(88) 99999-8888')).toEqual({ kind: 'phone', phone: '88999998888' });
 });
 
 /** Quem cola de um contato salvo traz o pais junto, e o numero continua valendo. */
-test('o codigo do pais colado junto nao invalida o numero', () => {
+test('o código do pais colado junto não inválida o número', () => {
   expect(resolveIdentifier('+55 (88) 99999-8888')).toEqual({
     kind: 'phone',
     phone: '88999998888',
   });
 });
 
-test('o e-mail entra em minusculas, aparado', () => {
+test('o e-mail entra em minúsculas, aparado', () => {
   expect(resolveIdentifier('  Dona@Loja.COM  ')).toEqual({ kind: 'email', email: 'dona@loja.com' });
 });
 
@@ -36,11 +36,11 @@ test('o e-mail entra em minusculas, aparado', () => {
  * meio: mandar o numero para o login de cliente devolveria "celular ou senha
  * nao conferem" a quem so nao terminou o dominio.
  */
-test('havendo arroba, so resta e-mail — mesmo com onze digitos antes dela', () => {
+test('havendo arroba, só resta e-mail — mesmo com onze digitos antes dela', () => {
   expect(resolveIdentifier('88999998888@')).toBeNull();
 });
 
-test('o que nao e nenhum dos dois nao vira nenhum dos dois', () => {
+test('o que não e nenhum dos dois não vira nenhum dos dois', () => {
   expect(resolveIdentifier('')).toBeNull();
   expect(resolveIdentifier('maria')).toBeNull();
   expect(resolveIdentifier('99999')).toBeNull();
@@ -56,7 +56,7 @@ function digitar(texto: string): string {
   return [...texto].reduce((campo, tecla) => maskIdentifier(campo + tecla), '');
 }
 
-test('o numero ganha parenteses e hifen enquanto e digitado', () => {
+test('o número ganha parenteses e hífen enquanto e digitado', () => {
   expect(digitar('88999998888')).toBe('(88) 99999-8888');
 });
 
@@ -67,11 +67,11 @@ test('o numero ganha parenteses e hifen enquanto e digitado', () => {
  * arroba. Sem desfazer a mascara ali, o campo guardaria `(12) 3456@...` e o
  * e-mail sairia com parenteses dentro.
  */
-test('o e-mail que comeca com numeros perde a mascara na arroba, sem perder digito', () => {
+test('o e-mail que começa com números perde a máscara na arroba, sem perder digito', () => {
   expect(digitar('123456@loja.com')).toBe('123456@loja.com');
 });
 
-test('o hifen de um e-mail nao e confundido com o hifen da mascara', () => {
+test('o hífen de um e-mail não e confundido com o hífen da máscara', () => {
   expect(digitar('maria-silva@loja.com')).toBe('maria-silva@loja.com');
 });
 
@@ -89,6 +89,6 @@ test('treze digitos colados passam inteiros, e ainda resolvem em celular', () =>
   expect(resolveIdentifier(colado)).toEqual({ kind: 'phone', phone: '88999998888' });
 });
 
-test('o que ja esta mascarado continua igual ao passar de novo', () => {
+test('o que já esta mascarado continua igual ao passar de novo', () => {
   expect(maskIdentifier('(88) 99999-8888')).toBe('(88) 99999-8888');
 });

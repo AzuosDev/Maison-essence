@@ -79,12 +79,12 @@ function registerLogging(connection: Connection, logger: Logger): void {
   });
 
   connection.on('disconnected', () => {
-    logger.warn('Conexao com o MongoDB caiu');
+    logger.warn('Conexão com o MongoDB caiu');
   });
 
   connection.on('error', (error: unknown) => {
     logger.error(
-      'Erro na conexao com o MongoDB',
+      'Erro na conexão com o MongoDB',
       error instanceof Error ? error.stack : String(error),
     );
   });

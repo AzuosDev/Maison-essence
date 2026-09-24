@@ -103,7 +103,7 @@ export class TokenService {
     );
 
     if (payload.type !== TOKEN_TYPES.ACCESS) {
-      throw new UnauthorizedException('Token invalido.');
+      throw new UnauthorizedException('Token inválido.');
     }
 
     return payload;
@@ -117,7 +117,7 @@ export class TokenService {
     );
 
     if (payload.type !== TOKEN_TYPES.ACCESS) {
-      throw new UnauthorizedException('Token invalido.');
+      throw new UnauthorizedException('Token inválido.');
     }
 
     return payload;
@@ -134,7 +134,7 @@ export class TokenService {
     );
 
     if (payload.type !== TOKEN_TYPES.REFRESH || !payload.jti) {
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     return payload;
@@ -172,7 +172,7 @@ export class TokenService {
       // Assinatura invalida, audiencia errada, token expirado e token
       // adulterado caem todos aqui, e todos respondem a mesma coisa: nada do
       // que o jsonwebtoken diz no erro interessa a quem chamou.
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
   }
 

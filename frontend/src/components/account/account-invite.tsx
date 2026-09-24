@@ -56,8 +56,8 @@ export function AccountInvite({ title, description }: AccountInviteProps) {
       <p className={styles.description}>{description}</p>
 
       <p className={styles.adoption}>
-        Ja comprou aqui sem conta? Crie a sua com o <strong>mesmo telefone</strong> do pedido e o
-        historico aparece junto.
+        Já comprou aqui sem conta? Crie a sua com o <strong>mesmo telefone</strong> do pedido e o
+        histórico aparece junto.
       </p>
 
       <div className={styles.actions}>
@@ -71,7 +71,7 @@ export function AccountInvite({ title, description }: AccountInviteProps) {
       </div>
 
       <p className={styles.escape}>
-        Comprar nao exige conta nenhuma.{' '}
+        Comprar não exige conta nenhuma.{' '}
         <Link to={ROUTES.products} className={styles.escapeLink}>
           Voltar para a loja
         </Link>

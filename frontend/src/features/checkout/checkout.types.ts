@@ -28,7 +28,7 @@ export const CHECKOUT_STEP_LABELS: Record<CheckoutStep, string> = {
   items: 'Itens',
   fulfillment: 'Entrega',
   payment: 'Pagamento',
-  review: 'Dados e revisao',
+  review: 'Dados e revisão',
 };
 
 /**

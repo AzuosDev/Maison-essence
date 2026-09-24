@@ -16,7 +16,7 @@ async function bootstrap(): Promise<void> {
 
   await app.listen(port);
 
-  Logger.log(`API disponivel em http://localhost:${port}/${GLOBAL_PREFIX}`, 'Bootstrap');
+  Logger.log(`API disponível em http://localhost:${port}/${GLOBAL_PREFIX}`, 'Bootstrap');
 }
 
 void bootstrap().catch((error: unknown) => {

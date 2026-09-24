@@ -119,7 +119,7 @@ export function textProp(options: TextPropOptions): SchemaTypeOptions<string> {
   return {
     type: String,
     trim: true,
-    maxlength: [max, `{PATH} deve ter no maximo ${max} caracteres`],
+    maxlength: [max, `{PATH} deve ter no máximo ${max} caracteres`],
     ...(match ? { match } : {}),
     ...rest,
   };
@@ -144,7 +144,7 @@ export function enumProp<T extends string>(
     type: String,
     enum: {
       values: [...values],
-      message: `{VALUE} nao e um valor valido para {PATH}`,
+      message: `{VALUE} não e um valor válido para {PATH}`,
     },
     ...options,
   };
@@ -181,7 +181,7 @@ export function integerProp(options: IntegerPropOptions = {}): SchemaTypeOptions
 
         return typeof input === 'number' && Number.isInteger(input) && input >= min && input <= max;
       },
-      message: message ?? `{PATH} deve ser um numero inteiro entre ${min} e ${max}`,
+      message: message ?? `{PATH} deve ser um número inteiro entre ${min} e ${max}`,
     },
   };
 }

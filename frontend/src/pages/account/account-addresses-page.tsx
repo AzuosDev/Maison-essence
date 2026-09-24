@@ -61,16 +61,16 @@ export default function AccountAddressesPage() {
   const [editing, setEditing] = useState<AccountAddress | undefined>();
 
   usePageMeta({
-    title: 'Meus enderecos — Maison Essence',
-    description: 'Os enderecos salvos na sua conta.',
+    title: 'Meus endereços — Maison Essence',
+    description: 'Os endereços salvos na sua conta.',
     robots: 'noindex',
   });
 
   if (!signedIn) {
     return (
       <AccountInvite
-        title="Seus enderecos salvos"
-        description="Entre para guardar onde voce recebe os pedidos e nao digitar tudo de novo no proximo fechamento."
+        title="Seus endereços salvos"
+        description="Entre para guardar onde você recebe os pedidos e não digitar tudo de novo no próximo fechamento."
       />
     );
   }
@@ -86,7 +86,7 @@ export default function AccountAddressesPage() {
       setDialogOpen(false);
     } catch (failure) {
       toast({
-        title: 'Nao deu para salvar',
+        title: 'Não deu para salvar',
         description: errorMessage(failure),
         variant: 'danger',
       });
@@ -96,7 +96,7 @@ export default function AccountAddressesPage() {
   const submit = (values: AddressForm, id: string | undefined): void => {
     void commit(
       id === undefined ? addAddress(base, values) : editAddress(base, id, values),
-      id === undefined ? 'Endereco salvo.' : 'Endereco atualizado.',
+      id === undefined ? 'Endereço salvo.' : 'Endereço atualizado.',
     );
   };
 
@@ -117,19 +117,19 @@ export default function AccountAddressesPage() {
   return (
     <section className={styles.page}>
       <div className={styles.head}>
-        <h1 className={styles.title}>Meus enderecos</h1>
+        <h1 className={styles.title}>Meus endereços</h1>
 
         {atLimit || isLoading ? null : (
           <Button type="button" variant="secondary" onClick={openNew}>
             <PlusIcon />
-            Novo endereco
+            Novo endereço
           </Button>
         )}
       </div>
 
       {atLimit ? (
         <p className={styles.limit}>
-          Sua conta ja guarda {MAX_ADDRESSES} enderecos, que e o maximo. Exclua um para adicionar
+          Sua conta já guarda {MAX_ADDRESSES} endereços, que e o máximo. Exclua um para adicionar
           outro.
         </p>
       ) : null}
@@ -143,11 +143,11 @@ export default function AccountAddressesPage() {
         <EmptyState
           as="h2"
           icon={<PinIcon width="24" height="24" />}
-          title="Nenhum endereco salvo"
-          description="Guarde onde voce recebe os pedidos e o proximo fechamento fica mais curto."
+          title="Nenhum endereço salvo"
+          description="Guarde onde você recebe os pedidos e o próximo fechamento fica mais curto."
           actions={
             <Button type="button" onClick={openNew}>
-              Adicionar endereco
+              Adicionar endereço
             </Button>
           }
         />
@@ -161,10 +161,10 @@ export default function AccountAddressesPage() {
               busy={isPending}
               onEdit={openEdit}
               onMakeDefault={(target) => {
-                void commit(makeDefault(base, target.id), 'Endereco padrao atualizado.');
+                void commit(makeDefault(base, target.id), 'Endereço padrão atualizado.');
               }}
               onDelete={(target) => {
-                void commit(removeAddress(base, target.id), 'Endereco excluido.');
+                void commit(removeAddress(base, target.id), 'Endereço excluído.');
               }}
             />
           ))}

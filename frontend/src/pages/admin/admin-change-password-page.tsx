@@ -49,7 +49,7 @@ const MIN_LENGTH = 12;
 
 const schema = z
   .object({
-    currentPassword: z.string().min(1, 'Informe a senha temporaria.'),
+    currentPassword: z.string().min(1, 'Informe a senha temporária.'),
     newPassword: z
       .string()
       .min(MIN_LENGTH, `A senha nova precisa de pelo menos ${MIN_LENGTH} caracteres.`)
@@ -61,7 +61,7 @@ const schema = z
     path: ['confirmation'],
   })
   .refine((values) => values.newPassword !== values.currentPassword, {
-    message: 'A senha nova precisa ser diferente da temporaria.',
+    message: 'A senha nova precisa ser diferente da temporária.',
     path: ['newPassword'],
   });
 
@@ -112,7 +112,7 @@ export default function AdminChangePasswordPage() {
           <h1 className={styles.title}>Crie a sua senha</h1>
 
           <p className={styles.lead}>
-            A senha que voce recebeu e temporaria e serve so para esta tela. Escolha uma sua para
+            A senha que você recebeu e temporária e serve só para esta tela. Escolha uma sua para
             continuar.
           </p>
         </header>
@@ -125,7 +125,7 @@ export default function AdminChangePasswordPage() {
 
         <form className={styles.form} onSubmit={(event) => void submit(event)} noValidate>
           <Input
-            label="Senha temporaria"
+            label="Senha temporária"
             type="password"
             autoComplete="current-password"
             error={errors.currentPassword?.message}
@@ -164,7 +164,7 @@ export default function AdminChangePasswordPage() {
 
 function changeErrorMessage(error: unknown): string {
   if (isApiError(error) && error.status === 401) {
-    return 'A senha temporaria nao confere.';
+    return 'A senha temporária não confere.';
   }
 
   return errorMessage(error);

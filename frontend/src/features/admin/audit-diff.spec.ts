@@ -10,11 +10,11 @@ import { describeAction, describeField, describeValue, diffOf, isSensitive } fro
  * sair iguais do outro lado.
  */
 
-test('a acao conhecida sai por extenso', () => {
+test('a ação conhecida sai por extenso', () => {
   expect(describeAction('order.status_changed')).toBe('Mudou o status de um pedido');
 });
 
-test('a acao desconhecida sai como veio, e nao some', () => {
+test('a ação desconhecida sai como veio, e não some', () => {
   // A trilha guarda dois anos: uma acao criada depois desta versao do painel
   // tem de aparecer, ainda que sem traducao.
   expect(describeAction('estoque.ajustado')).toBe('estoque.ajustado');
@@ -27,23 +27,23 @@ test('recusa de entrada e mexida em dinheiro ganham destaque', () => {
 });
 
 test('o caminho do campo e traduzido segmento a segmento', () => {
-  expect(describeField('pickupAddress')).toBe('Endereco de retirada');
-  expect(describeField('pickupAddress.city')).toBe('Endereco de retirada · city');
+  expect(describeField('pickupAddress')).toBe('Endereço de retirada');
+  expect(describeField('pickupAddress.city')).toBe('Endereço de retirada · city');
 });
 
-test('papel e status de pedido saem com o rotulo que o resto do painel usa', () => {
+test('papel e status de pedido saem com o rótulo que o resto do painel usa', () => {
   expect(describeValue('STAFF')).toBe('Atendimento');
   expect(describeValue('PENDING_CONTACT')).toBe('Aguardando contato');
 });
 
-test('vazio, nulo e booleano viram texto legivel', () => {
+test('vazio, nulo e booleano viram texto legível', () => {
   expect(describeValue(null)).toBe('—');
   expect(describeValue('')).toBe('—');
   expect(describeValue(true)).toBe('sim');
   expect(describeValue(false)).toBe('nao');
 });
 
-test('o diff em ingles do backend vira antes e depois', () => {
+test('o diff em inglês do backend vira antes e depois', () => {
   const lines = diffOf({
     changes: { status: { from: 'PENDING_CONTACT', to: 'CONFIRMED' } },
     details: null,
@@ -54,7 +54,7 @@ test('o diff em ingles do backend vira antes e depois', () => {
   ]);
 });
 
-test('o diff em portugues do registro de usuario vira a mesma coisa', () => {
+test('o diff em português do registro de usuário vira a mesma coisa', () => {
   // `users.service.ts` grava `{ role: { de, para } }` em `details`. As duas
   // formas existem no banco e as duas precisam ser lidas.
   const lines = diffOf({
@@ -67,7 +67,7 @@ test('o diff em portugues do registro de usuario vira a mesma coisa', () => {
   ]);
 });
 
-test('o fato solto nao inventa um valor anterior', () => {
+test('o fato solto não inventa um valor anterior', () => {
   const lines = diffOf({ changes: null, details: { role: 'STAFF' } });
 
   expect(lines).toEqual([{ path: 'role', label: 'Papel', to: 'Atendimento' }]);
@@ -85,7 +85,7 @@ test('o que o servidor apagou continua apagado', () => {
   expect(lines[0]?.to).toBe('[redigido]');
 });
 
-test('uma acao sem diff nenhum devolve lista vazia', () => {
+test('uma ação sem diff nenhum devolve lista vazia', () => {
   // O login e sobre quem agiu: nao ha o que explicar em "entrou no painel".
   expect(diffOf({ changes: null, details: null })).toEqual([]);
 });

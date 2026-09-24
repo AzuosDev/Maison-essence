@@ -117,7 +117,7 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
 }
 
 function previa() {
-  return screen.getByRole('complementary', { name: 'Previa do pagamento' });
+  return screen.getByRole('complementary', { name: 'Prévia do pagamento' });
 }
 
 /* ---- O que a tela mostra ------------------------------------------------------ */
@@ -132,24 +132,24 @@ test('abre com as regras gravadas, e a chave pontuada', async () => {
   // Onze digitos corridos ninguem confere olhando, e conferir e a unica
   // coisa que se faz neste campo.
   expect((key as HTMLInputElement).value).toBe('123.456.789-01');
-  expect((screen.getByRole('textbox', { name: 'Juros ao mes' }) as HTMLInputElement).value).toBe(
+  expect((screen.getByRole('textbox', { name: 'Juros ao mês' }) as HTMLInputElement).value).toBe(
     '1,99',
   );
 });
 
-test('o STAFF nao entra: aqui esta a chave para onde vai o dinheiro', async () => {
+test('o STAFF não entra: aqui esta a chave para onde vai o dinheiro', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta area e de quem administra a loja/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem administra a loja/ }),
   ).toBeDefined();
 });
 
 /* ---- A previa ao vivo ---------------------------------------------------------- */
 
-test('a previa de R$ 300 separa o que tem juros do que nao tem', async () => {
+test('a prévia de R$ 300 separa o que tem juros do que não tem', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
@@ -175,7 +175,7 @@ test('mexer no limite sem juros muda a lista antes de salvar', async () => {
 
   await screen.findByRole('textbox', { name: 'Chave PIX' });
 
-  await user.selectOptions(screen.getByRole('combobox', { name: 'Sem juros ate' }), '3');
+  await user.selectOptions(screen.getByRole('combobox', { name: 'Sem juros até' }), '3');
 
   await waitFor(() => {
     // 4x saiu do grupo sem juros e virou financiado: R$ 300 em 4x a 1,99%.
@@ -186,7 +186,7 @@ test('mexer no limite sem juros muda a lista antes de salvar', async () => {
   expect(lastWrite()).toBeUndefined();
 });
 
-test('a previa do PIX mostra o desconto sobre o valor cheio', async () => {
+test('a prévia do PIX mostra o desconto sobre o valor cheio', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
@@ -199,7 +199,7 @@ test('a previa do PIX mostra o desconto sobre o valor cheio', async () => {
   expect(within(painel).getByText(/R\$ 15,00 de desconto/)).toBeDefined();
 });
 
-test('num pedido pequeno, a parcela minima corta a lista e diz que cortou', async () => {
+test('num pedido pequeno, a parcela mínima corta a lista e diz que cortou', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -221,7 +221,7 @@ test('num pedido pequeno, a parcela minima corta a lista e diz que cortou', asyn
 
 /* ---- A barra de salvar ---------------------------------------------------------- */
 
-test('sem mexer em nada nao ha barra de salvar', async () => {
+test('sem mexer em nada não há barra de salvar', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
@@ -231,14 +231,14 @@ test('sem mexer em nada nao ha barra de salvar', async () => {
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
-test('a barra avisa que a previa ainda nao vale para quem esta comprando', async () => {
+test('a barra avisa que a prévia ainda não vale para quem esta comprando', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  const juros = await screen.findByRole('textbox', { name: 'Juros ao mes' });
+  const juros = await screen.findByRole('textbox', { name: 'Juros ao mês' });
 
   await user.clear(juros);
   await user.type(juros, '2,49');
@@ -246,14 +246,14 @@ test('a barra avisa que a previa ainda nao vale para quem esta comprando', async
   expect(await screen.findByText(/continua vendo as regras antigas/)).toBeDefined();
 });
 
-test('salvar manda so o campo alterado', async () => {
+test('salvar manda só o campo alterado', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
 
   abrir();
 
-  const juros = await screen.findByRole('textbox', { name: 'Juros ao mes' });
+  const juros = await screen.findByRole('textbox', { name: 'Juros ao mês' });
 
   await user.clear(juros);
   await user.type(juros, '2,49');
@@ -275,7 +275,7 @@ test('descartar devolve os campos ao que esta gravado', async () => {
 
   abrir();
 
-  const juros = await screen.findByRole('textbox', { name: 'Juros ao mes' });
+  const juros = await screen.findByRole('textbox', { name: 'Juros ao mês' });
 
   await user.clear(juros);
   await user.type(juros, '9,90');
@@ -287,7 +287,7 @@ test('descartar devolve os campos ao que esta gravado', async () => {
 
 /* ---- A chave PIX ----------------------------------------------------------------- */
 
-test('a chave errada para o tipo escolhido nao viaja', async () => {
+test('a chave errada para o tipo escolhido não viaja', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -304,7 +304,7 @@ test('a chave errada para o tipo escolhido nao viaja', async () => {
   expect(lastWrite()).toBeUndefined();
 });
 
-test('trocar so o tipo manda a chave junto, porque o servidor confere o par', async () => {
+test('trocar só o tipo manda a chave junto, porque o servidor confere o par', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.OWNER);
@@ -335,7 +335,7 @@ test('PIX ligado sem chave avisa, e mesmo assim deixa salvar', async () => {
 
   // O servidor aceita. O que ele nao faz e avisar que o PIX parou de
   // aparecer para a cliente.
-  expect(await screen.findByText(/sem chave cadastrada ele nao aparece/)).toBeDefined();
+  expect(await screen.findByText(/sem chave cadastrada ele não aparece/)).toBeDefined();
   expect(screen.getByRole('button', { name: 'Salvar' })).toBeDefined();
 });
 
@@ -349,7 +349,7 @@ test('desligar as duas formas avisa que a loja ficou sem pagamento', async () =>
   await screen.findByRole('textbox', { name: 'Chave PIX' });
 
   await user.click(screen.getByRole('switch', { name: 'Aceitar PIX' }));
-  await user.click(screen.getByRole('switch', { name: 'Aceitar cartao' }));
+  await user.click(screen.getByRole('switch', { name: 'Aceitar cartão' }));
 
   expect(await screen.findByText(/Nenhuma forma de pagamento esta ligada/)).toBeDefined();
 });

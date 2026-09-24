@@ -56,7 +56,7 @@ export default function AdminHomePage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>{welcome(user?.name)}</h1>
-        <p className={styles.subtitle}>O resumo de hoje e o que precisa de voce.</p>
+        <p className={styles.subtitle}>O resumo de hoje e o que precisa de você.</p>
       </header>
 
       <div className={styles.cards}>
@@ -85,11 +85,11 @@ export default function AdminHomePage() {
 
         {showMoney ? (
           <StatCard
-            label="Faturamento do mes"
+            label="Faturamento do mês"
             value={formatCents(dashboard.monthRevenue.cents)}
             note={
               dashboard.monthRevenue.truncated
-                ? 'No minimo: ha mais pedidos do que coube na soma.'
+                ? 'No mínimo: há mais pedidos do que coube na soma.'
                 : 'Pedidos confirmados em diante.'
             }
             to={ROUTES.admin.orders}
@@ -118,7 +118,7 @@ export default function AdminHomePage() {
       <section className={styles.block} aria-labelledby="recent-orders">
         <div className={styles.blockHead}>
           <h2 className={styles.blockTitle} id="recent-orders">
-            Ultimos pedidos
+            Últimos pedidos
           </h2>
 
           <Link to={ROUTES.admin.orders} className={styles.blockLink}>
@@ -158,7 +158,7 @@ export default function AdminHomePage() {
                 </Link>
 
                 <span className={styles.stockCount}>
-                  {variant.stock === 1 ? 'ultima unidade' : `${String(variant.stock)} unidades`}
+                  {variant.stock === 1 ? 'última unidade' : `${String(variant.stock)} unidades`}
                 </span>
               </li>
             ))}

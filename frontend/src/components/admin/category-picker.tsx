@@ -57,7 +57,7 @@ export function CategoryPicker({ tree, selected, onChange, disabled }: CategoryP
     return (
       <p className={styles.empty}>
         Nenhuma categoria cadastrada ainda. O produto pode ser salvo sem categoria — ele aparece na
-        busca, mas nao nos menus da loja.
+        busca, mas não nos menus da loja.
       </p>
     );
   }

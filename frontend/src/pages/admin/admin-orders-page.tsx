@@ -144,7 +144,7 @@ export default function AdminOrdersPage() {
           />
 
           <Input
-            label="Ate"
+            label="Até"
             type="date"
             block
             value={filters.to}
@@ -181,7 +181,7 @@ export default function AdminOrdersPage() {
                 title={activeCount > 0 ? 'Nenhum pedido neste recorte' : 'Nenhum pedido ainda'}
                 description={
                   activeCount > 0
-                    ? 'Mude o status, o periodo ou o que esta na busca.'
+                    ? 'Mude o status, o período ou o que esta na busca.'
                     : 'Os pedidos fechados pelo site aparecem aqui, do mais novo para o mais antigo.'
                 }
                 actions={
@@ -203,7 +203,7 @@ export default function AdminOrdersPage() {
             onPageChange={(page) => {
               apply({ page });
             }}
-            label="Paginas de pedidos"
+            label="Páginas de pedidos"
           />
         </>
       )}
@@ -250,7 +250,7 @@ function SearchField({ value, onSearch }: { value: string; onSearch: (q: string)
       type="search"
       inputMode="search"
       autoComplete="off"
-      placeholder="Codigo do pedido ou telefone"
+      placeholder="Código do pedido ou telefone"
       prefix={<SearchIcon />}
       value={typed}
       onChange={(event) => {

@@ -41,18 +41,18 @@ function draft(patch: Partial<CityDraft> = {}): CityDraft {
 
 /* ---- Abrir uma cidade salva ------------------------------------------------ */
 
-test('a taxa salva volta como texto editavel', () => {
+test('a taxa salva volta como texto editável', () => {
   expect(draftFromCity(city()).fee).toBe('15,00');
   expect(draftFromCity(city()).days).toBe('2');
 });
 
-test('sem regra propria de frete gratis, o campo fica vazio', () => {
+test('sem regra própria de frete grátis, o campo fica vazio', () => {
   // `0,00` seria "frete gratis em qualquer pedido", que e outra coisa.
   expect(draftFromCity(city({ minOrderForFreeCents: null })).freeFrom).toBe('');
   expect(draftFromCity(city({ minOrderForFreeCents: 15_000 })).freeFrom).toBe('150,00');
 });
 
-test('a cidade nova comeca com um dia de prazo', () => {
+test('a cidade nova começa com um dia de prazo', () => {
   expect(emptyCityDraft().days).toBe('1');
   expect(emptyCityDraft().fee).toBe('');
 });
@@ -63,7 +63,7 @@ test('um rascunho completo passa', () => {
   expect(hasCityErrors(validateCity(draft()))).toBe(false);
 });
 
-test('taxa zero passa; taxa em branco nao', () => {
+test('taxa zero passa; taxa em branco não', () => {
   // Zero e legitimo: e a cidade em que a loja entrega sem cobrar. Em branco
   // nao diz nada, e a cidade nao poderia entrar no checkout.
   expect(hasCityErrors(validateCity(draft({ fee: '0' })))).toBe(false);
@@ -71,7 +71,7 @@ test('taxa zero passa; taxa em branco nao', () => {
 });
 
 test('o estado precisa ser a sigla de duas letras', () => {
-  expect(validateCity(draft({ state: 'Ceara' })).state).toBeDefined();
+  expect(validateCity(draft({ state: 'Ceará' })).state).toBeDefined();
   expect(validateCity(draft({ state: 'C' })).state).toBeDefined();
   expect(validateCity(draft({ state: 'ce' })).state).toBeUndefined();
 });
@@ -86,7 +86,7 @@ test('prazo acima do teto barra', () => {
   expect(validateCity(draft({ days: '-1' })).days).toBeDefined();
 });
 
-test('frete gratis mal escrito barra, mas em branco nao', () => {
+test('frete grátis mal escrito barra, mas em branco não', () => {
   expect(validateCity(draft({ freeFrom: 'cem reais' })).freeFrom).toBeDefined();
   expect(validateCity(draft({ freeFrom: '' })).freeFrom).toBeUndefined();
 });
@@ -99,11 +99,11 @@ test('a taxa digitada vira centavos exatos', () => {
   expect(draftToCreate(draft({ fee: '19,99' })).feeCents).toBe(1999);
 });
 
-test('o estado sai em maiuscula', () => {
+test('o estado sai em maiúscula', () => {
   expect(draftToCreate(draft({ state: 'ce' })).state).toBe('CE');
 });
 
-test('frete gratis em branco vira null, e nao zero', () => {
+test('frete grátis em branco vira null, e não zero', () => {
   // `null` devolve a cidade a regra global da loja; zero daria frete gratis
   // em qualquer pedido, por menor que fosse.
   expect(draftToCreate(draft({ freeFrom: '' })).minOrderForFreeCents).toBeNull();
@@ -112,27 +112,27 @@ test('frete gratis em branco vira null, e nao zero', () => {
 
 /* ---- O diff ------------------------------------------------------------------ */
 
-test('sair do campo sem mudar nada nao gera chamada', () => {
+test('sair do campo sem mudar nada não gera chamada', () => {
   expect(changesOf(draftFromCity(city()), city())).toBeNull();
 });
 
-test('so o campo alterado viaja', () => {
+test('só o campo alterado viaja', () => {
   expect(changesOf(draft({ fee: '18,00' }), city())).toEqual({ feeCents: 1800 });
 });
 
-test('escrever o estado em minuscula nao conta como mudanca', () => {
+test('escrever o estado em minúscula não conta como mudanca', () => {
   // O servidor grava em maiuscula e devolve assim. Sem esta normalizacao, a
   // linha reenviaria o mesmo valor a cada saida de campo, para sempre.
   expect(changesOf(draft({ state: 'ce' }), city({ state: 'CE' }))).toBeNull();
 });
 
-test('apagar o frete gratis manda null de proposito', () => {
+test('apagar o frete grátis manda null de proposito', () => {
   const salva = city({ minOrderForFreeCents: 15_000 });
 
   expect(changesOf(draft({ freeFrom: '' }), salva)).toEqual({ minOrderForFreeCents: null });
 });
 
-test('varios campos mudados viajam juntos', () => {
+test('vários campos mudados viajam juntos', () => {
   expect(changesOf(draft({ fee: '20,00', days: '5' }), city())).toEqual({
     feeCents: 2000,
     estimatedDays: 5,
@@ -145,6 +145,6 @@ test('o prazo vira a mesma frase que a cliente le', () => {
   // Copia fiel de `estimatedLabelOf` do backend: o painel e o checkout
   // precisam escrever igual.
   expect(estimatedLabel(0)).toBe('No mesmo dia');
-  expect(estimatedLabel(1)).toBe('Ate 1 dia util');
-  expect(estimatedLabel(3)).toBe('Ate 3 dias uteis');
+  expect(estimatedLabel(1)).toBe('Até 1 dia útil');
+  expect(estimatedLabel(3)).toBe('Até 3 dias úteis');
 });

@@ -54,7 +54,7 @@ export function DeliveryEstimate() {
 
       {isError ? (
         <p className={styles.note}>
-          Nao foi possivel carregar as taxas agora. Pergunte pelo WhatsApp que a gente responde na
+          Não foi possível carregar as taxas agora. Pergunte pelo WhatsApp que a gente responde na
           hora.
         </p>
       ) : (
@@ -104,7 +104,7 @@ export function DeliveryEstimate() {
         <div className={styles.pickup}>
           <p className={styles.line}>
             <span className={styles.label}>Retirar na loja</span>
-            <strong>Gratis</strong>
+            <strong>Grátis</strong>
           </p>
 
           <address className={styles.address}>

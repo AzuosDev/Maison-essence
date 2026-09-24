@@ -88,7 +88,7 @@ export default function AdminOrderPage() {
     return (
       <EmptyState
         as="h1"
-        title="Este pedido nao abriu"
+        title="Este pedido não abriu"
         description={errorMessage(error)}
         actions={
           <Link to={ROUTES.admin.orders} className={styles.backLink}>
@@ -258,7 +258,7 @@ function QuickActions({ order, isCancelled }: { order: AdminOrder; isCancelled: 
     // selecionavel.
     toast({
       variant: 'danger',
-      title: 'Nao consegui copiar',
+      title: 'Não consegui copiar',
       description: 'Selecione o texto em "Mensagem enviada" e copie pelo teclado.',
     });
   };
@@ -279,7 +279,7 @@ function QuickActions({ order, isCancelled }: { order: AdminOrder; isCancelled: 
           setConfirming(false);
           toast({
             variant: 'danger',
-            title: 'Nao deu para cancelar',
+            title: 'Não deu para cancelar',
             description: errorMessage(error),
           });
         },
@@ -340,7 +340,7 @@ function QuickActions({ order, isCancelled }: { order: AdminOrder; isCancelled: 
         }}
         onConfirm={cancel}
         title="Cancelar este pedido?"
-        description="As unidades voltam para o estoque e o pedido nao pode mais mudar de status. O cliente ve o cancelamento na conta dele."
+        description="As unidades voltam para o estoque e o pedido não pode mais mudar de status. O cliente vê o cancelamento na conta dele."
         target={order.code}
         confirmLabel="Cancelar o pedido"
         loading={setStatus.isPending}
@@ -362,7 +362,7 @@ function StatusPicker({ order, isCancelled }: { order: AdminOrder; isCancelled: 
         {order.stockRestoredAt === null
           ? '.'
           : `, com o estoque devolvido em ${formatDateTime(order.stockRestoredAt)}.`}{' '}
-        Um pedido cancelado nao volta atras — se a venda for retomada, feche um pedido novo.
+        Um pedido cancelado não volta atrás — se a venda for retomada, feche um pedido novo.
       </p>
     );
   }
@@ -375,13 +375,13 @@ function StatusPicker({ order, isCancelled }: { order: AdminOrder; isCancelled: 
           toast({
             variant: 'success',
             title: `${order.code}: ${ORDER_STATUS_LABELS[status]}`,
-            description: 'O cliente ve o novo status na conta dele.',
+            description: 'O cliente vê o novo status na conta dele.',
           });
         },
         onError: (error) => {
           toast({
             variant: 'danger',
-            title: 'O status nao mudou',
+            title: 'O status não mudou',
             description: errorMessage(error),
           });
         },
@@ -392,7 +392,7 @@ function StatusPicker({ order, isCancelled }: { order: AdminOrder; isCancelled: 
   return (
     <>
       <Select
-        label="Situacao do pedido"
+        label="Situação do pedido"
         block
         value={order.status}
         disabled={setStatus.isPending}
@@ -438,8 +438,8 @@ function Fulfillment({ order }: { order: AdminOrder }) {
           label="Prazo"
           value={
             fulfillment.estimatedDays === 1
-              ? '1 dia util'
-              : `${String(fulfillment.estimatedDays)} dias uteis`
+              ? '1 dia útil'
+              : `${String(fulfillment.estimatedDays)} dias úteis`
           }
         />
       ) : null}
@@ -448,12 +448,12 @@ function Fulfillment({ order }: { order: AdminOrder }) {
         // Na retirada nao ha endereco a preencher, e dizer isso e melhor do
         // que deixar a coluna terminar sem explicacao.
         <div className={styles.fact}>
-          <dt>Endereco</dt>
+          <dt>Endereço</dt>
           <dd className={styles.pickup}>A cliente retira na loja.</dd>
         </div>
       ) : (
         <div className={styles.fact}>
-          <dt>Endereco</dt>
+          <dt>Endereço</dt>
           <dd>
             {/*
               Escrito como etiqueta de correspondencia, que e o formato que
@@ -471,7 +471,7 @@ function Fulfillment({ order }: { order: AdminOrder }) {
             </address>
 
             {fulfillment.address.reference === '' ? null : (
-              <p className={styles.reference}>Referencia: {fulfillment.address.reference}</p>
+              <p className={styles.reference}>Referência: {fulfillment.address.reference}</p>
             )}
           </dd>
         </div>
@@ -547,9 +547,9 @@ function Notes({ order }: { order: AdminOrder }) {
   const dirty = draft !== order.notes;
 
   return (
-    <Panel title="Anotacoes internas" note="So a equipe ve. O cliente nunca recebe este texto.">
+    <Panel title="Anotações internas" note="Só a equipe vê. O cliente nunca recebe este texto.">
       <Textarea
-        label="Anotacoes do pedido"
+        label="Anotações do pedido"
         hideLabel
         block
         rows={4}
@@ -585,12 +585,12 @@ function Notes({ order }: { order: AdminOrder }) {
               { id: order.id, notes: draft },
               {
                 onSuccess: () => {
-                  toast({ variant: 'success', title: 'Anotacao salva' });
+                  toast({ variant: 'success', title: 'Anotação salva' });
                 },
                 onError: (error) => {
                   toast({
                     variant: 'danger',
-                    title: 'A anotacao nao foi salva',
+                    title: 'A anotação não foi salva',
                     description: errorMessage(error),
                   });
                 },
@@ -598,7 +598,7 @@ function Notes({ order }: { order: AdminOrder }) {
             );
           }}
         >
-          Salvar anotacao
+          Salvar anotação
         </Button>
       </div>
     </Panel>

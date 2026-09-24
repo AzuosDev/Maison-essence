@@ -69,11 +69,11 @@ export function toPublicDeliveryCityView(
     name: city.name,
     state: city.state,
     feeCents: city.feeCents,
-    feeLabel: city.feeCents === 0 ? 'Gratis' : formatCents(city.feeCents),
+    feeLabel: city.feeCents === 0 ? 'Grátis' : formatCents(city.feeCents),
     estimatedDays: city.estimatedDays,
     estimatedLabel: estimatedLabelOf(city.estimatedDays),
     freeFromCents: freeFrom,
-    freeFromLabel: freeFrom === null ? '' : `Frete gratis a partir de ${formatCents(freeFrom)}`,
+    freeFromLabel: freeFrom === null ? '' : `Frete grátis a partir de ${formatCents(freeFrom)}`,
   };
 }
 
@@ -88,5 +88,5 @@ export function estimatedLabelOf(days: number): string {
     return 'No mesmo dia';
   }
 
-  return days === 1 ? 'Ate 1 dia util' : `Ate ${days} dias uteis`;
+  return days === 1 ? 'Até 1 dia útil' : `Até ${days} dias úteis`;
 }

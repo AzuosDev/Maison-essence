@@ -188,7 +188,7 @@ export function CatalogView({
 
               {list.truncated ? (
                 <p className={styles.note}>
-                  Mostrando as primeiras {list.totalItems} promocoes. Use os filtros para estreitar
+                  Mostrando as primeiras {list.totalItems} promoções. Use os filtros para estreitar
                   a lista.
                 </p>
               ) : null}

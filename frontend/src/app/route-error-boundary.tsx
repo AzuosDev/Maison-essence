@@ -59,7 +59,7 @@ export function RouteErrorBoundary() {
 function describe(error: unknown): { title: string; description: string } {
   if (error instanceof NetworkError) {
     return {
-      title: 'Sem conexao com a loja',
+      title: 'Sem conexão com a loja',
       description: error.message,
     };
   }
@@ -67,13 +67,13 @@ function describe(error: unknown): { title: string; description: string } {
   if (error instanceof ApiError) {
     if (error.isAuthError) {
       return {
-        title: 'Sua sessao expirou',
+        title: 'Sua sessão expirou',
         description: 'Entre de novo para continuar de onde parou.',
       };
     }
 
     return {
-      title: 'Nao foi possivel carregar esta pagina',
+      title: 'Não foi possível carregar esta página',
       description: error.messages[0] ?? 'Tente novamente em instantes.',
     };
   }
@@ -81,7 +81,7 @@ function describe(error: unknown): { title: string; description: string } {
   // Resposta de rota do proprio React Router (`throw new Response(...)`).
   if (isRouteErrorResponse(error)) {
     return {
-      title: 'Nao foi possivel carregar esta pagina',
+      title: 'Não foi possível carregar esta página',
       description: `O servidor respondeu ${error.status}. Tente novamente em instantes.`,
     };
   }

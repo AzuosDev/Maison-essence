@@ -46,13 +46,13 @@ export class CustomerJwtStrategy extends PassportStrategy(
 
   async validate(payload: CustomerAccessTokenPayload): Promise<AuthenticatedCustomer> {
     if (payload.type !== TOKEN_TYPES.ACCESS) {
-      throw new UnauthorizedException('Token invalido.');
+      throw new UnauthorizedException('Token inválido.');
     }
 
     const customer = await this.sessions.loadFromPayload(payload);
 
     if (customer === null) {
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     return customer;

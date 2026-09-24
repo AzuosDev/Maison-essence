@@ -36,7 +36,7 @@ describe('baseSchemaOptions', () => {
     expect(schema.path('updatedAt')).toBeDefined();
   });
 
-  it('aceita sobrescrever opcoes pontuais', () => {
+  it('aceita sobrescrever opções pontuais', () => {
     const custom = new mongoose.Schema({}, baseSchemaOptions({ collection: 'produtos' }));
 
     expect(custom.get('collection')).toBe('produtos');

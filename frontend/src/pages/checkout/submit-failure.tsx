@@ -48,8 +48,8 @@ export function SubmitFailure({ failure, onRetry, isSubmitting }: SubmitFailureP
 
       <p className={styles.reassurance}>
         {limited
-          ? 'Antes de enviar de novo, confira o WhatsApp da loja: se uma das tentativas passou, o pedido ja esta la. Sua sacola continua intacta.'
-          : 'Nenhum pedido foi criado e nada foi cobrado. Sua sacola continua com tudo o que voce escolheu.'}
+          ? 'Antes de enviar de novo, confira o WhatsApp da loja: se uma das tentativas passou, o pedido já esta lá. Sua sacola continua intacta.'
+          : 'Nenhum pedido foi criado e nada foi cobrado. Sua sacola continua com tudo o que você escolheu.'}
       </p>
 
       <Button
@@ -113,7 +113,7 @@ function useCountdown(seconds: number): number {
  * programa e deixa a pessoa sem saber o que fazer a seguir.
  */
 const TITLES: Record<OrderFailure['kind'], string> = {
-  [ORDER_FAILURE_KINDS.OFFLINE]: 'Nao conseguimos falar com o servidor',
+  [ORDER_FAILURE_KINDS.OFFLINE]: 'Não conseguimos falar com o servidor',
   [ORDER_FAILURE_KINDS.RATE_LIMIT]: 'Muitas tentativas seguidas',
-  [ORDER_FAILURE_KINDS.GENERIC]: 'O pedido nao foi enviado',
+  [ORDER_FAILURE_KINDS.GENERIC]: 'O pedido não foi enviado',
 };

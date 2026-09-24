@@ -19,10 +19,10 @@ import {
 } from './uploads.constants.js';
 
 export const FOREIGN_PUBLIC_ID_MESSAGE =
-  'Esta imagem nao esta em nenhuma das pastas da loja e nao pode ser usada.';
+  'Esta imagem não esta em nenhuma das pastas da loja e não pode ser usada.';
 
 export const IMAGE_NOT_UPLOADED_MESSAGE =
-  'Imagem nao encontrada na conta. Envie o arquivo novamente.';
+  'Imagem não encontrada na conta. Envie o arquivo novamente.';
 
 @Injectable()
 export class UploadsService {
@@ -192,7 +192,7 @@ export class UploadsService {
       await this.cloudinary.destroy(asset.publicId);
     } catch (error) {
       // A recusa e o que importa; a sobra na conta e assunto de limpeza.
-      this.logger.warn(`Nao foi possivel apagar ${asset.publicId} recusado: ${String(error)}`);
+      this.logger.warn(`Não foi possível apagar ${asset.publicId} recusado: ${String(error)}`);
     }
 
     throw new UnprocessableEntityException(problem);
@@ -204,7 +204,7 @@ function problemWith(asset: CloudinaryAsset): string | null {
   const format = FORMAT_ALIASES[asset.format] ?? asset.format;
 
   if (!ALLOWED_IMAGE_FORMATS.some((allowed) => allowed === format)) {
-    return `Formato nao aceito: ${asset.format}. Use JPG, PNG ou WebP.`;
+    return `Formato não aceito: ${asset.format}. Use JPG, PNG ou WebP.`;
   }
 
   if (asset.bytes > MAX_UPLOAD_BYTES) {

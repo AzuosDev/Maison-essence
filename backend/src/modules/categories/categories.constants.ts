@@ -15,4 +15,4 @@ export const MAX_CATEGORY_ORDER = 9999;
  */
 export const MAX_PREVIOUS_SLUGS = 10;
 
-export const CATEGORY_NOT_FOUND_MESSAGE = 'Categoria nao encontrada.';
+export const CATEGORY_NOT_FOUND_MESSAGE = 'Categoria não encontrada.';

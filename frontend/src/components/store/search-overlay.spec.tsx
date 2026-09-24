@@ -79,7 +79,7 @@ function chamadasDeBusca(): string[] {
   return mock.mock.calls.map(([url]) => url).filter((url) => url.includes('/products'));
 }
 
-test('abaixo de tres letras nao consulta o servidor', async () => {
+test('abaixo de três letras não consulta o servidor', async () => {
   const user = userEvent.setup();
 
   abrirBusca();
@@ -93,7 +93,7 @@ test('abaixo de tres letras nao consulta o servidor', async () => {
   expect(screen.getByText(/Digite ao menos 3 letras/)).toBeDefined();
 });
 
-test('a partir de tres letras consulta uma vez so, depois que a digitacao para', async () => {
+test('a partir de três letras consulta uma vez só, depois que a digitação para', async () => {
   const user = userEvent.setup();
 
   abrirBusca();
@@ -111,7 +111,7 @@ test('a partir de tres letras consulta uma vez so, depois que a digitacao para',
   expect(await screen.findByRole('link', { name: /Asad Lattafa/ })).toBeDefined();
 });
 
-test('a busca enviada entra no historico local', async () => {
+test('a busca enviada entra no histórico local', async () => {
   const user = userEvent.setup();
 
   const { unmount } = abrirBusca();
@@ -134,7 +134,7 @@ test('a busca enviada entra no historico local', async () => {
   expect(await screen.findByRole('button', { name: 'lattafa' })).toBeDefined();
 });
 
-test('da para esquecer uma busca do historico', async () => {
+test('da para esquecer uma busca do histórico', async () => {
   const user = userEvent.setup();
 
   localStorage.setItem('maison-essence.recent-searches', JSON.stringify(['lattafa', 'vela']));

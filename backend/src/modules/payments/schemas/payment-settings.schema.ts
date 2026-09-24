@@ -80,7 +80,7 @@ PaymentSettingsSchema.pre('validate', function () {
   if (this.interestFreeUpTo > this.maxInstallments) {
     this.invalidate(
       'interestFreeUpTo',
-      'o limite de parcelas sem juros nao pode ser maior que o total de parcelas',
+      'o limite de parcelas sem juros não pode ser maior que o total de parcelas',
     );
   }
 });

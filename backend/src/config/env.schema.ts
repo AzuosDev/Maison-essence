@@ -28,11 +28,11 @@ export const envSchema = z.object({
     .min(1, 'informe ao menos uma origem, separada por virgula')
     .refine(
       (value) => !parseCorsOrigins(value).includes('*'),
-      'curinga nao e aceito: liste as origens uma a uma',
+      'curinga não e aceito: liste as origens uma a uma',
     )
     .refine(
       (value) => parseCorsOrigins(value).every(isOrigin),
-      'cada origem precisa ser um endereco http(s) sem caminho, como https://loja.com.br',
+      'cada origem precisa ser um endereço http(s) sem caminho, como https://loja.com.br',
     ),
   APP_VERSION: z.string().min(1).default(process.env.npm_package_version ?? '0.0.0'),
   MONGODB_URI: z
@@ -40,7 +40,7 @@ export const envSchema = z.object({
     .min(1)
     .refine(
       (uri) => uri.startsWith('mongodb://') || uri.startsWith('mongodb+srv://'),
-      'deve comecar com mongodb:// ou mongodb+srv://',
+      'deve começar com mongodb:// ou mongodb+srv://',
     ),
   // O nome do banco vem sempre daqui, nunca do caminho da URI: o Atlas entrega
   // a string de conexao sem banco e o Mongoose cairia no default "test".
@@ -68,7 +68,7 @@ export const envSchema = z.object({
   // precisa subir sem elas: depois do primeiro acesso elas saem do ambiente,
   // e uma variavel obrigatoria que deve ser removida e uma contradicao.
   BOOTSTRAP_SUPERADMIN_EMAIL: optional(
-    z.email('informe um e-mail valido').transform((email) => email.trim().toLowerCase()),
+    z.email('informe um e-mail válido').transform((email) => email.trim().toLowerCase()),
   ),
   BOOTSTRAP_SUPERADMIN_PASSWORD: optional(
     z.string().min(PASSWORD_MIN_LENGTH, `deve ter ao menos ${PASSWORD_MIN_LENGTH} caracteres`),
@@ -123,10 +123,10 @@ export class EnvValidationError extends Error {
   constructor(issues: readonly string[]) {
     super(
       [
-        'Falha ao validar as variaveis de ambiente:',
+        'Falha ao validar as variáveis de ambiente:',
         ...issues.map((issue) => `  - ${issue}`),
         '',
-        'Confira o arquivo .env.example e defina as variaveis faltantes.',
+        'Confira o arquivo .env.example e defina as variáveis faltantes.',
       ].join('\n'),
     );
     this.name = 'EnvValidationError';
@@ -143,7 +143,7 @@ export function validateEnv(raw: Record<string, unknown>): Env {
         const path = issue.path.join('.') || '(raiz)';
         const isMissing = typeof key === 'string' && raw[key] === undefined;
 
-        return `${path}: ${isMissing ? 'variavel obrigatoria ausente' : issue.message}`;
+        return `${path}: ${isMissing ? 'variável obrigatória ausente' : issue.message}`;
       }),
     );
   }

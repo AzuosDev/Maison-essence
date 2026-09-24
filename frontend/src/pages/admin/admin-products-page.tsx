@@ -129,7 +129,7 @@ export default function AdminProductsPage() {
         />
 
         <fieldset className={styles.statuses}>
-          <legend className="visually-hidden">Filtrar por situacao</legend>
+          <legend className="visually-hidden">Filtrar por situação</legend>
 
           {STATUS_CHIPS.map((chip) => (
             <Chip
@@ -177,7 +177,7 @@ export default function AdminProductsPage() {
                 title={activeCount > 0 ? 'Nenhum produto neste recorte' : 'O catalogo esta vazio'}
                 description={
                   activeCount > 0
-                    ? 'Mude a situacao, a categoria ou o que esta na busca.'
+                    ? 'Mude a situação, a categoria ou o que esta na busca.'
                     : 'Cadastre o primeiro produto e ele aparece na vitrine assim que for publicado.'
                 }
                 actions={
@@ -222,7 +222,7 @@ export default function AdminProductsPage() {
             onPageChange={(page) => {
               apply({ page });
             }}
-            label="Paginas de produtos"
+            label="Páginas de produtos"
           />
         </>
       )}
@@ -239,7 +239,7 @@ export default function AdminProductsPage() {
 
           remove.mutate(deleting.id, {
             onSuccess: () => {
-              toast({ variant: 'success', title: `${deleting.name} foi excluido` });
+              toast({ variant: 'success', title: `${deleting.name} foi excluído` });
               setDeleting(null);
             },
             onError: (cause) => {
@@ -248,7 +248,7 @@ export default function AdminProductsPage() {
               // aqui perderia o numero, que e o que faz a dona entender.
               toast({
                 variant: 'danger',
-                title: 'O produto nao foi excluido',
+                title: 'O produto não foi excluído',
                 description: errorMessage(cause),
               });
               setDeleting(null);
@@ -256,7 +256,7 @@ export default function AdminProductsPage() {
           });
         }}
         title="Excluir este produto?"
-        description="O cadastro sai do painel e da vitrine, e nao volta. Os pedidos ja fechados continuam mostrando o que foi comprado — eles guardam nome e preco proprios."
+        description="O cadastro sai do painel e da vitrine, e não volta. Os pedidos já fechados continuam mostrando o que foi comprado — eles guardam nome e preço próprios."
         target={deleting?.name ?? ''}
         confirmLabel="Excluir o produto"
         loading={remove.isPending}

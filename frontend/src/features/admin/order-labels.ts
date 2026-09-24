@@ -49,7 +49,7 @@ export const FULFILLMENT_LABELS: Record<FulfillmentMode, string> = {
 
 export const PAYMENT_LABELS: Record<PaymentMethod, string> = {
   [PAYMENT_METHODS.PIX]: 'PIX',
-  [PAYMENT_METHODS.CARD]: 'Cartao',
+  [PAYMENT_METHODS.CARD]: 'Cartão',
 };
 
 /**

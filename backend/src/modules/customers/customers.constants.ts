@@ -56,21 +56,21 @@ export const CUSTOMER_REFRESH_RATE_LIMIT: RateLimitRule = {
  * tentando de novo com o mesmo numero.
  */
 export const PHONE_TAKEN_MESSAGE =
-  'Ja existe uma conta com este telefone. Entre com a sua senha.';
+  'Já existe uma conta com este telefone. Entre com a sua senha.';
 
-export const EMAIL_TAKEN_MESSAGE = 'Ja existe uma conta com este e-mail.';
+export const EMAIL_TAKEN_MESSAGE = 'Já existe uma conta com este e-mail.';
 
-export const CUSTOMER_NOT_FOUND_MESSAGE = 'Conta nao encontrada.';
+export const CUSTOMER_NOT_FOUND_MESSAGE = 'Conta não encontrada.';
 
-export const ORDER_NOT_FOUND_MESSAGE = 'Pedido nao encontrado.';
+export const ORDER_NOT_FOUND_MESSAGE = 'Pedido não encontrado.';
 
 /** Endereco salvo apontando para cidade que a loja nao atende. */
 export const UNKNOWN_CITY_MESSAGE =
-  'A loja nao entrega nessa cidade. Escolha uma das cidades atendidas.';
+  'A loja não entrega nessa cidade. Escolha uma das cidades atendidas.';
 
 /** Endereco com `id` que nao esta na conta. */
 export function unknownAddressesMessage(ids: readonly string[]): string {
-  return `Estes enderecos nao sao desta conta: ${ids.join(', ')}.`;
+  return `Estes endereços não são desta conta: ${ids.join(', ')}.`;
 }
 
 export const DEFAULT_ORDERS_PAGE_SIZE = 10;

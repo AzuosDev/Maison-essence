@@ -35,10 +35,10 @@ export default function NotFoundPage() {
   return (
     <MessageScreen
       code="404"
-      title="Esta pagina nao existe"
-      description="O endereco pode ter mudado, ou o produto saiu do catalogo. A vitrine continua logo ali."
+      title="Esta página não existe"
+      description="O endereço pode ter mudado, ou o produto saiu do catalogo. A vitrine continua logo ali."
       actions={<ButtonLink to={ROUTES.home}>Voltar a loja</ButtonLink>}
-      {...(import.meta.env.DEV ? { details: `Endereco pedido: ${pathname}` } : {})}
+      {...(import.meta.env.DEV ? { details: `Endereço pedido: ${pathname}` } : {})}
     />
   );
 }

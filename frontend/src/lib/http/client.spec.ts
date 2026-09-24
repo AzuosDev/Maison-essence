@@ -45,7 +45,7 @@ function jsonResponse(status: number, body: unknown): Response {
   });
 }
 
-test('duas chamadas com 401 compartilham um unico refresh', async () => {
+test('duas chamadas com 401 compartilham um único refresh', async () => {
   const seen: string[] = [];
 
   vi.stubGlobal(
@@ -65,7 +65,7 @@ test('duas chamadas com 401 compartilham um unico refresh', async () => {
         ? jsonResponse(200, { ok: true })
         : jsonResponse(401, {
             statusCode: 401,
-            message: 'Sessao invalida.',
+            message: 'Sessão inválida.',
             error: 'Unauthorized',
           });
     }),
@@ -81,7 +81,7 @@ test('duas chamadas com 401 compartilham um unico refresh', async () => {
   expect(seen).toHaveLength(4);
 });
 
-test('uma chamada que chega depois do refresh nao pede outro', async () => {
+test('uma chamada que chega depois do refresh não pede outro', async () => {
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string, init: RequestInit) => {
@@ -96,7 +96,7 @@ test('uma chamada que chega depois do refresh nao pede outro', async () => {
         ? jsonResponse(200, { ok: true })
         : jsonResponse(401, {
             statusCode: 401,
-            message: 'Sessao invalida.',
+            message: 'Sessão inválida.',
             error: 'Unauthorized',
           });
     }),
@@ -110,7 +110,7 @@ test('uma chamada que chega depois do refresh nao pede outro', async () => {
   expect(refreshCalls).toBe(1);
 });
 
-test('refresh recusado encerra a sessao e o 401 sobe', async () => {
+test('refresh recusado encerra a sessão e o 401 sobe', async () => {
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string) => {
@@ -118,14 +118,14 @@ test('refresh recusado encerra a sessao e o 401 sobe', async () => {
         refreshCalls += 1;
         return jsonResponse(401, {
           statusCode: 401,
-          message: 'Sessao invalida.',
+          message: 'Sessão inválida.',
           error: 'Unauthorized',
         });
       }
 
       return jsonResponse(401, {
         statusCode: 401,
-        message: 'Sessao invalida.',
+        message: 'Sessão inválida.',
         error: 'Unauthorized',
       });
     }),
@@ -137,7 +137,7 @@ test('refresh recusado encerra a sessao e o 401 sobe', async () => {
   expect(tokens).toBeNull();
 });
 
-test('rota publica com 401 nao tenta renovar nada', async () => {
+test('rota publica com 401 não tenta renovar nada', async () => {
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string) => {
@@ -147,7 +147,7 @@ test('rota publica com 401 nao tenta renovar nada', async () => {
 
       return jsonResponse(401, {
         statusCode: 401,
-        message: 'Nao autorizado.',
+        message: 'Não autorizado.',
         error: 'Unauthorized',
       });
     }),

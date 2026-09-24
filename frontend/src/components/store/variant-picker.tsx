@@ -51,7 +51,7 @@ export function VariantPicker({ product, open, onClose }: VariantPickerProps) {
     <Modal
       open={open}
       onClose={onClose}
-      title="Escolha a opcao"
+      title="Escolha a opção"
       footer={
         <>
           <Button variant="ghost" onClick={onClose}>
@@ -82,7 +82,7 @@ export function VariantPicker({ product, open, onClose }: VariantPickerProps) {
       </div>
 
       <RadioGroup
-        legend="Opcoes disponiveis"
+        legend="Opções disponíveis"
         name={`variant-${product.id}`}
         value={selectedId}
         onChange={setSelectedId}

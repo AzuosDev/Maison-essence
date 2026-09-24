@@ -2,8 +2,8 @@ import { estimatedLabelOf } from './delivery-city.view.js';
 
 describe('estimatedLabelOf', () => {
   it('concorda o singular com o plural', () => {
-    expect(estimatedLabelOf(1)).toBe('Ate 1 dia util');
-    expect(estimatedLabelOf(3)).toBe('Ate 3 dias uteis');
+    expect(estimatedLabelOf(1)).toBe('Até 1 dia útil');
+    expect(estimatedLabelOf(3)).toBe('Até 3 dias úteis');
   });
 
   // Prazo zero e a entrega da cidade da loja, feita na moto no mesmo dia: o

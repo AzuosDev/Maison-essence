@@ -113,7 +113,7 @@ export function RelatedProducts({ products }: { products: readonly PublicProduct
       <Container>
         <div className={styles.header}>
           <SectionHeading
-            title="Voce tambem pode gostar"
+            title="Você também pode gostar"
             description="Da mesma categoria, na ordem em que a casa os destaca."
             titleId={titleId}
           />
@@ -171,7 +171,7 @@ function ArrowButton({ direction, disabled, onClick }: ArrowButtonProps) {
       type="button"
       className={cx(styles.arrow, previous ? styles.previous : styles.next)}
       disabled={disabled}
-      aria-label={previous ? 'Ver os produtos anteriores' : 'Ver os proximos produtos'}
+      aria-label={previous ? 'Ver os produtos anteriores' : 'Ver os próximos produtos'}
       onClick={onClick}
     >
       <ChevronDownIcon />

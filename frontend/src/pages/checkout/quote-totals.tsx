@@ -83,7 +83,7 @@ export function QuoteTotals({ quote, totalsResolved, isPending, isFetching }: Qu
 
       {totalsResolved ? null : (
         <p className={styles.note}>
-          O frete entra na conta quando voce escolher entre retirar na loja e receber em casa.
+          O frete entra na conta quando você escolher entre retirar na loja e receber em casa.
         </p>
       )}
 
@@ -135,7 +135,7 @@ function DeliveryLine({
         {isPending ? (
           <Skeleton variant="text" width="5rem" />
         ) : fulfillment.isFree ? (
-          <span className={styles.free}>Gratis</span>
+          <span className={styles.free}>Grátis</span>
         ) : (
           formatCents(quote.deliveryFeeCents)
         )}
@@ -167,7 +167,7 @@ function FreeShippingNote({
 
   return (
     <p className={styles.freeHint}>
-      Faltam <strong className="tabular">{formatCents(missing)}</strong> para o frete gratis nesta
+      Faltam <strong className="tabular">{formatCents(missing)}</strong> para o frete grátis nesta
       cidade.
     </p>
   );

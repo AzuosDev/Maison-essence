@@ -78,12 +78,12 @@ export default function AdminPaymentsPage() {
     return (
       <EmptyState
         as="h1"
-        title="Esta area e de quem administra a loja"
-        description="As regras de pagamento incluem a chave PIX da loja. O seu acesso cobre o atendimento: o inicio do painel e os pedidos — e o pedido ja mostra como cada cliente escolheu pagar."
+        title="Esta área e de quem administra a loja"
+        description="As regras de pagamento incluem a chave PIX da loja. O seu acesso cobre o atendimento: o início do painel e os pedidos — e o pedido já mostra como cada cliente escolheu pagar."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />
-            Voltar para o inicio
+            Voltar para o início
           </Link>
         }
       />
@@ -98,7 +98,7 @@ export default function AdminPaymentsPage() {
         <p className={styles.subtitle}>
           {settings === undefined
             ? 'Como a loja recebe, e o que o checkout anuncia.'
-            : `Alterado pela ultima vez em ${formatDateTime(settings.updatedAt)}.`}
+            : `Alterado pela última vez em ${formatDateTime(settings.updatedAt)}.`}
         </p>
       </header>
 
@@ -158,7 +158,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
         toast({
           variant: 'success',
           title: 'As regras de pagamento valem a partir de agora',
-          description: 'O proximo pedido ja e calculado por elas.',
+          description: 'O próximo pedido já e calculado por elas.',
         });
       },
       onError: (cause) => {
@@ -197,7 +197,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
             </div>
 
             <p className={styles.cardHint}>
-              A chave nunca aparece na vitrine: a cliente so a recebe no fim do pedido, junto do
+              A chave nunca aparece na vitrine: a cliente só a recebe no fim do pedido, junto do
               valor e do nome do titular.
             </p>
 
@@ -232,7 +232,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
                 inputMode="numeric"
                 suffix="%"
                 placeholder="0"
-                hint="So sobre os produtos. A entrega nunca entra no desconto."
+                hint="Só sobre os produtos. A entrega nunca entra no desconto."
                 value={draft.pixDiscount}
                 error={errors.pixDiscount}
                 onChange={(event) => {
@@ -251,11 +251,11 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
           <section className={styles.card} aria-labelledby="secao-cartao">
             <div className={styles.cardHead}>
               <h2 className={styles.cardTitle} id="secao-cartao">
-                Cartao
+                Cartão
               </h2>
 
               <Switch
-                label="Aceitar cartao"
+                label="Aceitar cartão"
                 checked={draft.acceptsCard}
                 onChange={(event) => {
                   set({ acceptsCard: event.target.checked });
@@ -264,14 +264,14 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
             </div>
 
             <p className={styles.cardHint}>
-              A loja nao passa o cartao pelo sistema: estas regras sao a conta que o checkout mostra
-              antes de a cobranca ser combinada.
+              A loja não passa o cartão pelo sistema: estas regras são a conta que o checkout mostra
+              antes de a cobrança ser combinada.
             </p>
 
             <div className={styles.fields}>
               <div className={styles.pair}>
                 <Select
-                  label="Parcelar em ate"
+                  label="Parcelar em até"
                   block
                   options={INSTALLMENT_OPTIONS}
                   value={draft.maxInstallments}
@@ -282,7 +282,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
                 />
 
                 <Select
-                  label="Sem juros ate"
+                  label="Sem juros até"
                   block
                   // As opcoes acima do maximo ficam desabilitadas em vez de
                   // sumirem: some-las faria o campo mudar de tamanho a cada
@@ -298,7 +298,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
 
               <div className={styles.pair}>
                 <Input
-                  label="Juros ao mes"
+                  label="Juros ao mês"
                   block
                   numeric
                   inputMode="decimal"
@@ -313,13 +313,13 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
                 />
 
                 <Input
-                  label="Parcela minima"
+                  label="Parcela mínima"
                   block
                   numeric
                   inputMode="decimal"
                   prefix="R$"
                   placeholder="0,00"
-                  hint="Abaixo disto a opcao nao e oferecida. Zero tira a regra."
+                  hint="Abaixo disto a opção não e oferecida. Zero tira a regra."
                   value={draft.minInstallment}
                   error={errors.minInstallment}
                   onChange={(event) => {
@@ -349,7 +349,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
       {dirty ? (
         <div className={styles.bar}>
           <p className={styles.barText} aria-live="polite">
-            <strong className={styles.barTitle}>Alteracoes ainda nao salvas.</strong> Quem esta
+            <strong className={styles.barTitle}>Alterações ainda não salvas.</strong> Quem esta
             comprando agora continua vendo as regras antigas.
           </p>
 

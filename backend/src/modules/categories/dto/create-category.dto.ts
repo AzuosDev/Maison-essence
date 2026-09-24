@@ -34,13 +34,13 @@ export class CreateCategoryDto {
   @IsOptional()
   @NormalizeSlug()
   @IsString()
-  @MinLength(1, { message: 'o endereco precisa ter ao menos uma letra ou numero' })
+  @MinLength(1, { message: 'o endereço precisa ter ao menos uma letra ou número' })
   @MaxLength(MAX_SLUG_LENGTH)
   slug?: string;
 
   /** `null` (ou ausente) cria uma categoria principal. */
   @IsOptional()
-  @IsMongoId({ message: 'categoria pai invalida' })
+  @IsMongoId({ message: 'categoria pai inválida' })
   parentId?: string | null;
 
   /** `publicId` do Cloudinary, so das pastas da loja. Vazio tira a foto. */

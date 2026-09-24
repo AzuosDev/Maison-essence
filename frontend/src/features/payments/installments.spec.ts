@@ -18,7 +18,7 @@ const CARD: PublicCard = {
   minInstallmentCents: 2000,
 };
 
-test('escolhe o maior numero de parcelas que cabe no minimo', () => {
+test('escolhe o maior número de parcelas que cabe no mínimo', () => {
   // R$ 180 em 6x da R$ 30, acima do minimo de R$ 20.
   expect(bestInterestFreeInstallment(18000, CARD)).toEqual({
     count: 6,
@@ -26,7 +26,7 @@ test('escolhe o maior numero de parcelas que cabe no minimo', () => {
   });
 });
 
-test('desce as parcelas ate respeitar o valor minimo', () => {
+test('desce as parcelas até respeitar o valor mínimo', () => {
   // R$ 75: 6x daria R$ 12,50 e 3x da R$ 25 — o primeiro degrau que passa.
   expect(bestInterestFreeInstallment(7500, CARD)).toEqual({
     count: 3,
@@ -34,7 +34,7 @@ test('desce as parcelas ate respeitar o valor minimo', () => {
   });
 });
 
-test('nao parcela quando nem 2x alcanca o minimo', () => {
+test('não parcela quando nem 2x alcanca o mínimo', () => {
   expect(bestInterestFreeInstallment(3000, CARD)).toBeNull();
 });
 
@@ -46,14 +46,14 @@ test('arredonda para baixo, como o backend', () => {
   expect(bestInterestFreeInstallment(10000, tresVezes)?.installmentCents).toBe(3333);
 });
 
-test('nao passa do teto de parcelas da loja', () => {
+test('não passa do teto de parcelas da loja', () => {
   // Sem juros ate 6x, mas a loja so aceita 3 no total.
   const limitado: PublicCard = { ...CARD, maxInstallments: 3 };
 
   expect(bestInterestFreeInstallment(18000, limitado)?.count).toBe(3);
 });
 
-test('loja que nao parcela nao anuncia parcela', () => {
+test('loja que não parcela não anuncia parcela', () => {
   const avista: PublicCard = { ...CARD, interestFreeUpTo: 1 };
 
   expect(bestInterestFreeInstallment(18000, avista)).toBeNull();
@@ -67,7 +67,7 @@ test('loja que nao parcela nao anuncia parcela', () => {
  * do backend: se um dia divergirem, e porque uma das duas contas mudou.
  */
 
-test('a lista comeca no a vista e vai ate o maximo', () => {
+test('a lista começa no a vista e vai até o máximo', () => {
   const options = buildInstallmentOptions(30000, CARD);
 
   expect(options[0]?.count).toBe(1);
@@ -75,7 +75,7 @@ test('a lista comeca no a vista e vai ate o maximo', () => {
   expect(options).toHaveLength(12);
 });
 
-test('ate o limite sem juros, o total nao muda', () => {
+test('até o limite sem juros, o total não muda', () => {
   const options = buildInstallmentOptions(30000, CARD);
 
   expect(options[2]).toEqual({
@@ -102,7 +102,7 @@ test('acima do limite, a tabela price entra e o total sobe', () => {
   });
 });
 
-test('a soma das parcelas e exatamente o total, em toda opcao', () => {
+test('a soma das parcelas e exatamente o total, em toda opção', () => {
   // E o que a primeira parcela maior existe para garantir. Uma soma que nao
   // fecha vira discussao com o cliente na hora de cobrar.
   for (const option of buildInstallmentOptions(30000, CARD)) {
@@ -112,14 +112,14 @@ test('a soma das parcelas e exatamente o total, em toda opcao', () => {
   }
 });
 
-test('a parcela minima corta as opcoes de baixo, mas nunca o a vista', () => {
+test('a parcela mínima corta as opções de baixo, mas nunca o a vista', () => {
   // R$ 90: em 5x a parcela seria R$ 18, abaixo do minimo de R$ 20.
   const options = buildInstallmentOptions(9000, CARD);
 
   expect(options.map((option) => option.count)).toEqual([1, 2, 3, 4]);
 });
 
-test('o a vista sobrevive a um pedido menor que a parcela minima', () => {
+test('o a vista sobrevive a um pedido menor que a parcela mínima', () => {
   // Recusar R$ 15 no cartao porque o minimo de parcela e R$ 20 seria recusar
   // a venda: a regra existe para impedir "12x de R$ 1,25".
   const options = buildInstallmentOptions(1500, CARD);

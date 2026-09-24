@@ -88,7 +88,7 @@ export function StepReview({
   return (
     <StepCard
       title="Seus dados"
-      description="E por aqui que a loja vai falar com voce para combinar o pagamento."
+      description="E por aqui que a loja vai falar com você para combinar o pagamento."
       focusOnMount={focusOnMount}
       actionLabel="Finalizar pelo WhatsApp"
       onAction={submit}
@@ -196,7 +196,7 @@ function Review({
 
       <Block title={isPickup ? 'Retirada' : 'Entrega'} step={CHECKOUT_STEPS[1]} onGoTo={onGoTo}>
         {isPickup ? (
-          <p className={styles.line}>Voce retira na loja. Sem taxa de entrega.</p>
+          <p className={styles.line}>Você retira na loja. Sem taxa de entrega.</p>
         ) : (
           <>
             <p className={styles.line}>
@@ -211,7 +211,7 @@ function Review({
             </p>
 
             {address.reference === '' ? null : (
-              <p className={styles.hint}>Referencia: {address.reference}</p>
+              <p className={styles.hint}>Referência: {address.reference}</p>
             )}
           </>
         )}
@@ -219,7 +219,7 @@ function Review({
 
       <Block title="Pagamento" step={CHECKOUT_STEPS[2]} onGoTo={onGoTo}>
         <p className={styles.line}>
-          {method === PAYMENT_METHODS.PIX ? 'PIX' : 'Cartao'}
+          {method === PAYMENT_METHODS.PIX ? 'PIX' : 'Cartão'}
 
           {method === PAYMENT_METHODS.CARD && quote?.payment.selected ? (
             <>

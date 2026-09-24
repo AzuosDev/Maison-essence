@@ -76,7 +76,7 @@ function draft(patch: Partial<ProductDraft> = {}): ProductDraft {
 
 /* ---- Abrir um cadastro salvo ---------------------------------------------- */
 
-test('o preco salvo volta como texto editavel', () => {
+test('o preço salvo volta como texto editável', () => {
   const opened = draftFromProduct(product());
 
   expect(opened.variants[0]?.price).toBe('189,90');
@@ -84,7 +84,7 @@ test('o preco salvo volta como texto editavel', () => {
   expect(opened.variants[0]?.stock).toBe('4');
 });
 
-test('sem preco de comparacao o campo fica vazio, e nao zerado', () => {
+test('sem preço de comparação o campo fica vazio, e não zerado', () => {
   // `0,00` seria lido de volta como um desconto de 100%.
   const opened = draftFromProduct(
     product({ variants: [{ ...product().variants[0]!, compareAtPriceCents: null }] }),
@@ -93,7 +93,7 @@ test('sem preco de comparacao o campo fica vazio, e nao zerado', () => {
   expect(opened.variants[0]?.compareAtPrice).toBe('');
 });
 
-test('o cadastro novo ja vem com uma variante', () => {
+test('o cadastro novo já vem com uma variante', () => {
   // Produto sem variante nao existe no dominio: o servidor recusa com 422, e
   // abrir a tabela vazia ensinaria a dona a descobrir isso ao salvar.
   expect(emptyProductDraft().variants).toHaveLength(1);
@@ -123,7 +123,7 @@ test('a chave de linha e sempre nova', () => {
 
 /* ---- As fotos ---------------------------------------------------------------- */
 
-test('definir a capa e levar a foto para a primeira posicao', () => {
+test('definir a capa e levar a foto para a primeira posição', () => {
   // Nao ha campo de capa: a ordem do array e a ordem de exibicao, e a
   // primeira e a capa.
   expect(setCover(['a', 'b', 'c'], 2)).toEqual(['c', 'a', 'b']);
@@ -134,13 +134,13 @@ test('mover a foto reordena sem perder nenhuma', () => {
   expect(moveImage(['a', 'b', 'c'], 2, 0)).toEqual(['c', 'a', 'b']);
 });
 
-test('um movimento impossivel devolve a lista como esta', () => {
+test('um movimento impossível devolve a lista como esta', () => {
   expect(moveImage(['a', 'b'], 0, 5)).toEqual(['a', 'b']);
   expect(moveImage(['a', 'b'], -1, 0)).toEqual(['a', 'b']);
   expect(moveImage(['a', 'b'], 1, 1)).toEqual(['a', 'b']);
 });
 
-test('remover tira so a escolhida', () => {
+test('remover tira só a escolhida', () => {
   expect(removeImage(['a', 'b', 'c'], 1)).toEqual(['a', 'c']);
 });
 
@@ -154,7 +154,7 @@ test('o nome curto demais barra', () => {
   expect(validateDraft(draft({ name: 'A' })).name).toBeDefined();
 });
 
-test('preco em branco barra a variante, e nao o produto', () => {
+test('preço em branco barra a variante, e não o produto', () => {
   const current = draft({ variants: [{ ...newVariant(), price: '' }] });
   const errors = validateDraft(current);
 
@@ -162,7 +162,7 @@ test('preco em branco barra a variante, e nao o produto', () => {
   expect(errors.variant[current.variants[0]!.key]?.price).toBeDefined();
 });
 
-test('o preco de comparacao precisa ser maior que o preco', () => {
+test('o preço de comparação precisa ser maior que o preço', () => {
   // Menor, ele desenharia um desconto negativo no card da vitrine.
   const current = draft({
     variants: [{ ...newVariant(), price: '189,90', compareAtPrice: '99,90' }],
@@ -182,7 +182,7 @@ test('duas variantes com o mesmo nome barram as duas', () => {
   expect(errors.variant[b.key]?.label).toBeDefined();
 });
 
-test('SKU repetido barra, mas dois SKUs em branco nao', () => {
+test('SKU repetido barra, mas dois SKUs em branco não', () => {
   const a = { ...newVariant(), label: '50ml', sku: 'ASA', price: '99,90' };
   const b = { ...newVariant(), label: '100ml', sku: 'asa', price: '189,90' };
 
@@ -209,7 +209,7 @@ test('produto sem nenhuma variante barra', () => {
 
 /* ---- A saida ------------------------------------------------------------------- */
 
-test('o preco digitado vira centavos exatos', () => {
+test('o preço digitado vira centavos exatos', () => {
   // `19.99 * 100` daria `1998.9999...`, e o produto entraria um centavo mais
   // barato. Este caso existe por isso.
   const body = draftToUpdate(draft({ variants: [{ ...newVariant(), price: '19,99' }] }));
@@ -217,13 +217,13 @@ test('o preco digitado vira centavos exatos', () => {
   expect(body.variants?.[0]?.priceCents).toBe(1999);
 });
 
-test('o preco de comparacao em branco vira null, e nao zero', () => {
+test('o preço de comparação em branco vira null, e não zero', () => {
   const body = draftToUpdate(draft({ variants: [{ ...newVariant(), price: '10,00' }] }));
 
   expect(body.variants?.[0]?.compareAtPriceCents).toBeNull();
 });
 
-test('o SKU e o id em branco nao viajam', () => {
+test('o SKU e o id em branco não viajam', () => {
   const body = draftToUpdate(draft({ variants: [{ ...newVariant(), price: '10,00' }] }));
   const variant = body.variants?.[0] ?? {};
 
@@ -233,12 +233,12 @@ test('o SKU e o id em branco nao viajam', () => {
   expect('id' in variant).toBe(false);
 });
 
-test('o endereco so entra na criacao quando foi escrito', () => {
+test('o endereço só entra na criação quando foi escrito', () => {
   expect('slug' in draftToCreate(draft())).toBe(false);
   expect(draftToCreate(draft({ slug: 'asad-elixir' })).slug).toBe('asad-elixir');
 });
 
-test('a edicao nunca manda o endereco', () => {
+test('a edição nunca manda o endereço', () => {
   // O link ja foi para o WhatsApp de alguem: troca-lo e outra operacao.
   expect('slug' in draftToUpdate(draft({ slug: 'asad-elixir' }))).toBe(false);
 });

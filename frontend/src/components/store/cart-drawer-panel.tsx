@@ -149,7 +149,7 @@ function Summary({
   if (isError && subtotalCents === null) {
     return (
       <div className={styles.failed} role="alert">
-        <p className={styles.failedText}>Nao foi possivel calcular o total agora.</p>
+        <p className={styles.failedText}>Não foi possível calcular o total agora.</p>
 
         <button type="button" className={styles.retry} onClick={onRetry}>
           Tentar de novo

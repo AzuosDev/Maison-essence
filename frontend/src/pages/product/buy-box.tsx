@@ -221,7 +221,7 @@ function PriceBlock({
 
       {installment === null ? null : (
         <p className={styles.installment}>
-          ou em ate{' '}
+          ou em até{' '}
           <span className="tabular">
             {formatInstallment(installment.count, installment.installmentCents)}
           </span>{' '}
@@ -236,7 +236,7 @@ function PriceBlock({
       */}
       {card && card.maxInstallments > card.interestFreeUpTo ? (
         <p className={styles.financed}>
-          Em ate {card.maxInstallments}x com juros. As parcelas aparecem no checkout.
+          Em até {card.maxInstallments}x com juros. As parcelas aparecem no checkout.
         </p>
       ) : null}
 
@@ -280,7 +280,7 @@ function StockNote({ variant }: { variant: PublicVariant | null }) {
 
   return (
     <output className={cx(styles.stock, styles.lowStock)}>
-      {variant.stock === 1 ? 'Ultima unidade' : `Restam apenas ${String(variant.stock)} unidades`}
+      {variant.stock === 1 ? 'Última unidade' : `Restam apenas ${String(variant.stock)} unidades`}
     </output>
   );
 }

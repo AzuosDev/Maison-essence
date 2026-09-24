@@ -31,7 +31,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
   override componentDidCatch(error: Error, info: ErrorInfo): void {
     // Sem servico de monitoramento ainda: o console e o que ha. Quando
     // entrar um (Sentry e afins), e esta a linha que vira o envio.
-    console.error('Erro nao tratado na aplicacao', error, info.componentStack);
+    console.error('Erro não tratado na aplicação', error, info.componentStack);
   }
 
   override render(): ReactNode {
@@ -45,7 +45,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
       <MessageScreen
         code="Erro"
         title="Algo deu errado"
-        description="A pagina precisa ser recarregada para continuar."
+        description="A página precisa ser recarregada para continuar."
         actions={
           <Button
             onClick={() => {
@@ -55,7 +55,7 @@ export class AppErrorBoundary extends Component<AppErrorBoundaryProps, AppErrorB
               window.location.reload();
             }}
           >
-            Recarregar a pagina
+            Recarregar a página
           </Button>
         }
         {...(import.meta.env.DEV ? { details: error.stack ?? error.message } : {})}

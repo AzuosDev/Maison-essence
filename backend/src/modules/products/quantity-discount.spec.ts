@@ -9,7 +9,7 @@ function rule(data: Partial<QuantityDiscountRule>): QuantityDiscountRule {
 }
 
 describe('discountLadder', () => {
-  it('pega a regra do proprio produto', () => {
+  it('pega a regra do próprio produto', () => {
     const rules = [rule({ productId: PRODUCT, minQty: 3, percentOff: 10 })];
 
     expect(discountLadder(rules, PRODUCT, [])).toEqual([{ minQty: 3, percentOff: 10 }]);
@@ -21,7 +21,7 @@ describe('discountLadder', () => {
     expect(discountLadder(rules, PRODUCT, [CATEGORY])).toEqual([{ minQty: 2, percentOff: 5 }]);
   });
 
-  it('ignora regra de outro produto e de categoria que nao e dele', () => {
+  it('ignora regra de outro produto e de categoria que não e dele', () => {
     const rules = [
       rule({ productId: 'outro' }),
       rule({ categoryId: 'outra' }),
@@ -51,7 +51,7 @@ describe('discountLadder', () => {
     ]);
   });
 
-  it('descarta degrau que nao melhora o anterior', () => {
+  it('descarta degrau que não melhora o anterior', () => {
     const rules = [
       rule({ productId: PRODUCT, minQty: 3, percentOff: 10 }),
       rule({ categoryId: CATEGORY, minQty: 6, percentOff: 5 }),
@@ -69,7 +69,7 @@ describe('entryTier', () => {
     });
   });
 
-  it('devolve null quando o produto nao tem desconto por quantidade', () => {
+  it('devolve null quando o produto não tem desconto por quantidade', () => {
     expect(entryTier([])).toBeNull();
   });
 });
@@ -94,7 +94,7 @@ describe('tierFor', () => {
     expect(tierFor(LADDER, 99)).toEqual({ minQty: 6, percentOff: 20 });
   });
 
-  it('sem escada, nao ha desconto', () => {
+  it('sem escada, não há desconto', () => {
     expect(tierFor([], 10)).toBeNull();
   });
 });

@@ -29,16 +29,16 @@ import type { ReorderCategoriesDto } from './dto/reorder-categories.dto.js';
 import type { UpdateCategoryDto } from './dto/update-category.dto.js';
 import type { CategoryDocument } from './schemas/category.schema.js';
 
-export const SLUG_TAKEN_MESSAGE = 'Ja existe uma categoria nesse endereco. Escolha outro.';
-export const PARENT_NOT_FOUND_MESSAGE = 'Categoria pai nao encontrada.';
+export const SLUG_TAKEN_MESSAGE = 'Já existe uma categoria nesse endereço. Escolha outro.';
+export const PARENT_NOT_FOUND_MESSAGE = 'Categoria pai não encontrada.';
 export const NESTING_TOO_DEEP_MESSAGE =
-  'Uma subcategoria nao pode ter filhos: escolha uma categoria principal como pai.';
-export const SELF_PARENT_MESSAGE = 'Uma categoria nao pode ser subcategoria de si mesma.';
+  'Uma subcategoria não pode ter filhos: escolha uma categoria principal como pai.';
+export const SELF_PARENT_MESSAGE = 'Uma categoria não pode ser subcategoria de si mesma.';
 export const HAS_CHILDREN_MESSAGE =
-  'Esta categoria tem subcategorias e por isso nao pode virar subcategoria de outra.';
+  'Esta categoria tem subcategorias e por isso não pode virar subcategoria de outra.';
 export const DUPLICATED_IDS_MESSAGE = 'A lista de ordem tem categorias repetidas.';
 export const UNKNOWN_IDS_MESSAGE =
-  'A lista de ordem cita categoria que nao existe. Recarregue a pagina e tente de novo.';
+  'A lista de ordem cita categoria que não existe. Recarregue a página e tente de novo.';
 
 /**
  * O que a busca publica por slug encontrou.
@@ -385,7 +385,7 @@ function subcategoriesMessage(count: number): string {
 function productsMessage(count: number): string {
   const produtos = count === 1 ? '1 produto ativo' : `${count} produtos ativos`;
 
-  return `Esta categoria tem ${produtos} e por isso nao pode ser excluida. Desative a categoria para tira-la do menu sem mexer nos produtos.`;
+  return `Esta categoria tem ${produtos} e por isso não pode ser excluída. Desative a categoria para tira-lá do menu sem mexer nos produtos.`;
 }
 
 function isDuplicateKey(error: unknown): boolean {

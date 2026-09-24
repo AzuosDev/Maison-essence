@@ -33,7 +33,7 @@ function declaracoesDe(trecho: string): string[] {
 function corpoDaRegra(fonte: string, abertura: string): string {
   const inicio = fonte.indexOf(abertura);
 
-  expect(inicio, `nao achei a regra "${abertura}" em tokens.css`).toBeGreaterThan(-1);
+  expect(inicio, `não achei a regra "${abertura}" em tokens.css`).toBeGreaterThan(-1);
 
   let profundidade = 0;
   let posicao = inicio + abertura.length - 1;
@@ -52,7 +52,7 @@ function corpoDaRegra(fonte: string, abertura: string): string {
     }
   }
 
-  throw new Error(`a regra "${abertura}" nao fecha`);
+  throw new Error(`a regra "${abertura}" não fecha`);
 }
 
 test('os dois blocos de tema escuro declaram exatamente a mesma coisa', () => {
@@ -86,7 +86,7 @@ test('os dois blocos escuros declaram color-scheme', () => {
  * a laje para o primeiro plano de novo, o tema escuro ganha um bloco claro
  * de ponta a ponta no pe da pagina.
  */
-test('a laje nao e o primeiro plano', () => {
+test('a laje não e o primeiro plano', () => {
   const claro = corpoDaRegra(css, ':root {');
 
   expect(claro).toMatch(/--slab:\s*#0e0e0e/);

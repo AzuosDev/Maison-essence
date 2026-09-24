@@ -44,7 +44,7 @@ export function UserActions({
   const items: RowMenuItem[] = [
     { label: 'Editar cadastro', icon: PencilIcon, onSelect: onEdit },
     { label: 'Resetar senha', icon: KeyIcon, onSelect: onResetPassword },
-    { label: 'Encerrar todas as sessoes', icon: PowerIcon, onSelect: onRevokeSessions },
+    { label: 'Encerrar todas as sessões', icon: PowerIcon, onSelect: onRevokeSessions },
   ];
 
   if (!isSelf) {

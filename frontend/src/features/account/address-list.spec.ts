@@ -36,7 +36,7 @@ function form(over: Partial<AddressForm> = {}): AddressForm {
   return {
     label: 'Trabalho',
     cityId: '',
-    street: 'Avenida Leao Sampaio',
+    street: 'Avenida Leão Sampaio',
     number: '900',
     complement: '',
     district: 'Lagoa Seca',
@@ -52,7 +52,7 @@ function defaults(list: readonly AddressInput[]): number[] {
   return list.flatMap((address, index) => (address.isDefault ? [index] : []));
 }
 
-test('a cidade ausente nao vira string vazia no corpo', () => {
+test('a cidade ausente não vira string vazia no corpo', () => {
   // `exactOptionalPropertyTypes` a parte, o backend valida `cityId` como
   // ObjectId quando ele esta presente: mandar `''` seria um 400 por um campo
   // que a pessoa deliberadamente deixou em branco.
@@ -62,7 +62,7 @@ test('a cidade ausente nao vira string vazia no corpo', () => {
   expect(toInputs([saved({ cityId: 'c1' })])[0]?.cityId).toBe('c1');
 });
 
-test('o primeiro endereco da conta e padrao mesmo sem a caixa marcada', () => {
+test('o primeiro endereço da conta e padrão mesmo sem a caixa marcada', () => {
   // A caixa nem aparece na tela nesse caso. Uma lista sem padrao faria cada
   // tela decidir sozinha qual usar, e elas decidiriam diferente.
   const list = addAddress([], form({ isDefault: false }));
@@ -71,19 +71,19 @@ test('o primeiro endereco da conta e padrao mesmo sem a caixa marcada', () => {
   expect(defaults(list)).toEqual([0]);
 });
 
-test('endereco novo sem marcar nao rouba o padrao de quem ja tinha', () => {
+test('endereço novo sem marcar não rouba o padrão de quem já tinha', () => {
   const list = addAddress(toInputs([saved({ isDefault: true })]), form());
 
   expect(defaults(list)).toEqual([0]);
 });
 
-test('endereco novo marcado assume, e o antigo perde a marca', () => {
+test('endereço novo marcado assume, e o antigo perde a marca', () => {
   const list = addAddress(toInputs([saved({ isDefault: true })]), form({ isDefault: true }));
 
   expect(defaults(list)).toEqual([1]);
 });
 
-test('marcar um endereco desmarca todos os outros', () => {
+test('marcar um endereço desmarca todos os outros', () => {
   const list = makeDefault(
     toInputs([saved({ id: 'a1', isDefault: true }), saved({ id: 'a2' }), saved({ id: 'a3' })]),
     'a3',
@@ -92,7 +92,7 @@ test('marcar um endereco desmarca todos os outros', () => {
   expect(defaults(list)).toEqual([2]);
 });
 
-test('editar preserva o id, que e o que liga o endereco ao que esta gravado', () => {
+test('editar preserva o id, que e o que liga o endereço ao que esta gravado', () => {
   // Sem o id, o servidor trataria a edicao como um endereco novo e o antigo
   // sumiria — e um pedido que aponta para ele ficaria orfao.
   const list = editAddress(toInputs([saved({ id: 'a1' })]), 'a1', form({ street: 'Rua Nova' }));
@@ -101,7 +101,7 @@ test('editar preserva o id, que e o que liga o endereco ao que esta gravado', ()
   expect(list[0]?.street).toBe('Rua Nova');
 });
 
-test('desmarcar o padrao na edicao promove outro, e nao deixa a lista sem nenhum', () => {
+test('desmarcar o padrão na edição promove outro, e não deixa a lista sem nenhum', () => {
   const list = editAddress(
     toInputs([saved({ id: 'a1', isDefault: true }), saved({ id: 'a2' })]),
     'a1',
@@ -111,7 +111,7 @@ test('desmarcar o padrao na edicao promove outro, e nao deixa a lista sem nenhum
   expect(defaults(list)).toEqual([1]);
 });
 
-test('desmarcar o padrao quando ele e o unico nao tira a marca de ninguem', () => {
+test('desmarcar o padrão quando ele e o único não tira a marca de ninguém', () => {
   const list = editAddress(
     toInputs([saved({ id: 'a1', isDefault: true })]),
     'a1',
@@ -121,7 +121,7 @@ test('desmarcar o padrao quando ele e o unico nao tira a marca de ninguem', () =
   expect(defaults(list)).toEqual([0]);
 });
 
-test('editar um endereco que sumiu entre abrir e salvar nao o ressuscita', () => {
+test('editar um endereço que sumiu entre abrir e salvar não o ressuscita', () => {
   // Outra aba o excluiu. Gravar a lista com ele de volta desfaria uma
   // exclusao que a pessoa fez de proposito.
   const current = toInputs([saved({ id: 'a1', isDefault: true })]);
@@ -130,7 +130,7 @@ test('editar um endereco que sumiu entre abrir e salvar nao o ressuscita', () =>
   expect(list.map((address) => address.id)).toEqual(['a1']);
 });
 
-test('excluir o padrao promove o primeiro que sobrou', () => {
+test('excluir o padrão promove o primeiro que sobrou', () => {
   const list = removeAddress(
     toInputs([saved({ id: 'a1', isDefault: true }), saved({ id: 'a2' }), saved({ id: 'a3' })]),
     'a1',
@@ -140,7 +140,7 @@ test('excluir o padrao promove o primeiro que sobrou', () => {
   expect(defaults(list)).toEqual([0]);
 });
 
-test('excluir quem nao era padrao nao mexe em quem era', () => {
+test('excluir quem não era padrão não mexe em quem era', () => {
   const list = removeAddress(
     toInputs([saved({ id: 'a1' }), saved({ id: 'a2', isDefault: true })]),
     'a1',
@@ -150,11 +150,11 @@ test('excluir quem nao era padrao nao mexe em quem era', () => {
   expect(list[0]?.id).toBe('a2');
 });
 
-test('excluir o ultimo devolve lista vazia, e nao uma lista com um fantasma', () => {
+test('excluir o último devolve lista vazia, e não uma lista com um fantasma', () => {
   expect(removeAddress(toInputs([saved({ id: 'a1', isDefault: true })]), 'a1')).toEqual([]);
 });
 
-test('nenhuma operacao deixa mais de um marcado', () => {
+test('nenhuma operação deixa mais de um marcado', () => {
   // A garantia que o servidor nao precisa desempatar. Duas marcas fariam a
   // lista voltar diferente do que a pessoa acabou de ver.
   const bagunca = toInputs([

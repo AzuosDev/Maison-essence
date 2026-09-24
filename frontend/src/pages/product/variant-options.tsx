@@ -33,7 +33,7 @@ export interface VariantOptionsProps {
 export function VariantOptions({ variants, selectedId, onSelect, name }: VariantOptionsProps) {
   return (
     <fieldset className={styles.group}>
-      <legend className={styles.legend}>Opcoes</legend>
+      <legend className={styles.legend}>Opções</legend>
 
       <div className={styles.options}>
         {variants.map((variant) => (
@@ -54,7 +54,7 @@ export function VariantOptions({ variants, selectedId, onSelect, name }: Variant
             />
 
             <span className={styles.pill}>
-              {variant.label === '' ? 'Padrao' : variant.label}
+              {variant.label === '' ? 'Padrão' : variant.label}
 
               {/* O preco de cada opcao evita o vaivem de clicar numa pilula
                   so para descobrir quanto custa. */}

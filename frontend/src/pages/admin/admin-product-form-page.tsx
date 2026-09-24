@@ -80,12 +80,12 @@ export default function AdminProductFormPage() {
     return (
       <EmptyState
         as="h1"
-        title="Esta area e de quem administra a loja"
-        description="O seu acesso cobre o atendimento: o inicio do painel e os pedidos. Quem cadastra produto responde pelo preco e pelo estoque."
+        title="Esta área e de quem administra a loja"
+        description="O seu acesso cobre o atendimento: o início do painel e os pedidos. Quem cadastra produto responde pelo preço e pelo estoque."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />
-            Voltar para o inicio
+            Voltar para o início
           </Link>
         }
       />
@@ -96,7 +96,7 @@ export default function AdminProductFormPage() {
     return (
       <EmptyState
         as="h1"
-        title="Este produto nao abriu"
+        title="Este produto não abriu"
         description={errorMessage(error)}
         actions={
           <Link to={ROUTES.admin.products} className={styles.backLink}>
@@ -181,8 +181,8 @@ function ProductForm({
             variant: 'success',
             title: isNew ? `${saved.name} foi cadastrado` : `${saved.name} foi salvo`,
             description: saved.isActive
-              ? 'Ja esta no ar na vitrine.'
-              : 'Fica guardado fora do ar ate voce publicar.',
+              ? 'Já esta no ar na vitrine.'
+              : 'Fica guardado fora do ar até você publicar.',
           });
 
           void navigate(ROUTES.admin.products);
@@ -190,7 +190,7 @@ function ProductForm({
         onError: (cause) => {
           toast({
             variant: 'danger',
-            title: 'O cadastro nao foi salvo',
+            title: 'O cadastro não foi salvo',
             description: errorMessage(cause),
           });
         },
@@ -210,7 +210,7 @@ function ProductForm({
 
         {isNew || productSlug === '' ? null : (
           <p className={styles.address}>
-            Endereco na loja: <code>/produtos/{productSlug}</code>
+            Endereço na loja: <code>/produtos/{productSlug}</code>
           </p>
         )}
       </header>
@@ -257,11 +257,11 @@ function ProductForm({
 
           {isNew ? (
             <Input
-              label="Endereco na loja"
+              label="Endereço na loja"
               block
               maxLength={PRODUCT_LIMITS.slug}
               placeholder="sai do nome"
-              hint="So pode ser escolhido agora: depois de publicado, o link ja foi para o WhatsApp de alguem."
+              hint="Só pode ser escolhido agora: depois de publicado, o link já foi para o WhatsApp de alguém."
               value={draft.slug}
               error={shown.slug}
               onChange={(event) => {
@@ -271,12 +271,12 @@ function ProductForm({
           ) : null}
 
           <Textarea
-            label="Descricao"
+            label="Descrição"
             block
             rows={6}
             showCount
             maxLength={PRODUCT_LIMITS.description}
-            hint="Notas, fixacao, para quem e. E o texto da pagina do produto."
+            hint="Notas, fixação, para quem e. E o texto da página do produto."
             value={draft.description}
             error={shown.description}
             onChange={(event) => {
@@ -323,7 +323,7 @@ function ProductForm({
 
         <Section
           title="Variantes"
-          note="O preco, o SKU e o estoque moram aqui. Um produto de frasco unico tem uma variante sem nome."
+          note="O preço, o SKU e o estoque moram aqui. Um produto de frasco único tem uma variante sem nome."
         >
           <VariantsEditor
             variants={draft.variants}
@@ -372,7 +372,7 @@ function ProductForm({
           </div>
         </Section>
 
-        <Section title="Onde aparece" note="Um produto sem categoria so e encontrado pela busca.">
+        <Section title="Onde aparece" note="Um produto sem categoria só e encontrado pela busca.">
           <CategoryPicker
             tree={categories ?? []}
             selected={draft.categoryIds}
@@ -445,21 +445,21 @@ function ProductForm({
 
           remove.mutate(productId, {
             onSuccess: () => {
-              toast({ variant: 'success', title: `${productName} foi excluido` });
+              toast({ variant: 'success', title: `${productName} foi excluído` });
               void navigate(ROUTES.admin.products);
             },
             onError: (cause) => {
               setConfirmingDelete(false);
               toast({
                 variant: 'danger',
-                title: 'O produto nao foi excluido',
+                title: 'O produto não foi excluído',
                 description: errorMessage(cause),
               });
             },
           });
         }}
         title="Excluir este produto?"
-        description="O cadastro sai do painel e da vitrine, e nao volta. Os pedidos ja fechados continuam mostrando o que foi comprado — eles guardam nome e preco proprios."
+        description="O cadastro sai do painel e da vitrine, e não volta. Os pedidos já fechados continuam mostrando o que foi comprado — eles guardam nome e preço próprios."
         target={productName}
         confirmLabel="Excluir o produto"
         loading={remove.isPending}

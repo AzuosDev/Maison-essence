@@ -251,7 +251,7 @@ function buttonLabel(inStock: boolean, isSingle: boolean): string {
 
   // "Ver opcoes", e nao "Escolher opcoes": o card tem 158px de largura no
   // celular, e o rotulo longo ou quebra em duas linhas ou empurra o card.
-  return isSingle ? 'Adicionar' : 'Ver opcoes';
+  return isSingle ? 'Adicionar' : 'Ver opções';
 }
 
 /**
@@ -275,7 +275,7 @@ function InstallmentLine({ priceCents }: { priceCents: number }) {
 
   return option === null ? null : (
     <>
-      em ate{' '}
+      em até{' '}
       <span className="tabular">{formatInstallment(option.count, option.installmentCents)}</span>{' '}
       sem juros
     </>

@@ -36,7 +36,7 @@ export function MissingRoute({ route, children, workaround }: MissingRouteProps)
       <AlertIcon className={styles.icon} />
 
       <div className={styles.text}>
-        <h3 className={styles.title}>Esta rota ainda nao existe na API</h3>
+        <h3 className={styles.title}>Esta rota ainda não existe na API</h3>
 
         <p className={styles.route}>{route}</p>
 

@@ -142,7 +142,7 @@ function comUmItem() {
   });
 }
 
-test('fechada, a gaveta nao desenha nada e nao cota o carrinho', async () => {
+test('fechada, a gaveta não desenha nada e não cota o carrinho', async () => {
   comUmItem();
   montar();
 
@@ -154,7 +154,7 @@ test('fechada, a gaveta nao desenha nada e nao cota o carrinho', async () => {
   });
 });
 
-test('aberta, mostra o item, o subtotal do servidor e as duas saidas', async () => {
+test('aberta, mostra o item, o subtotal do servidor e as duas saídas', async () => {
   comUmItem();
   useCart.setState({ drawerOpen: true });
 
@@ -193,7 +193,7 @@ test('aberta, mostra o item, o subtotal do servidor e as duas saidas', async () 
   ).toBe('/sacola');
 });
 
-test('"continuar comprando" fecha a gaveta e nao esvazia a sacola', async () => {
+test('"continuar comprando" fecha a gaveta e não esvazia a sacola', async () => {
   const usuario = userEvent.setup();
 
   comUmItem();

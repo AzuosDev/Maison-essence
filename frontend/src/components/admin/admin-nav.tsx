@@ -50,14 +50,14 @@ interface NavItem {
 }
 
 const ITEMS: readonly NavItem[] = [
-  { area: 'home', label: 'Inicio', to: ROUTES.admin.root, icon: HomeIcon, end: true },
+  { area: 'home', label: 'Início', to: ROUTES.admin.root, icon: HomeIcon, end: true },
   { area: 'products', label: 'Produtos', to: ROUTES.admin.products, icon: BottleIcon },
   { area: 'categories', label: 'Categorias', to: ROUTES.admin.categories, icon: LayersIcon },
   { area: 'readyToShip', label: 'Pronta entrega', to: ROUTES.admin.readyToShip, icon: TruckIcon },
   { area: 'orders', label: 'Pedidos', to: ROUTES.admin.orders, icon: ReceiptIcon },
   { area: 'delivery', label: 'Entrega', to: ROUTES.admin.delivery, icon: PinIcon },
   { area: 'payments', label: 'Pagamento', to: ROUTES.admin.payments, icon: CardIcon },
-  { area: 'settings', label: 'Configuracoes', to: ROUTES.admin.settings, icon: SlidersIcon },
+  { area: 'settings', label: 'Configurações', to: ROUTES.admin.settings, icon: SlidersIcon },
   {
     area: 'system',
     label: 'Sistema',
@@ -77,7 +77,7 @@ export function AdminNav({ onNavigate }: AdminNavProps) {
   const allowed = new Set(areasFor(role));
 
   return (
-    <nav aria-label="Areas do painel">
+    <nav aria-label="Áreas do painel">
       <ul className={styles.list}>
         {ITEMS.filter((item) => allowed.has(item.area)).map(
           ({ area, label, to, icon: Icon, end, startsGroup }) => (

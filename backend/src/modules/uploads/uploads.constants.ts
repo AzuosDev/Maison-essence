@@ -37,7 +37,7 @@ export type ImagePreset = keyof typeof IMAGE_WIDTHS;
 export const IMAGE_PRESETS = Object.keys(IMAGE_WIDTHS) as ImagePreset[];
 
 export const CLOUDINARY_NOT_CONFIGURED_MESSAGE =
-  'O envio de imagens ainda nao foi configurado. Defina CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET.';
+  'O envio de imagens ainda não foi configurado. Defina CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY e CLOUDINARY_API_SECRET.';
 
 export const CLOUDINARY_UNREACHABLE_MESSAGE =
-  'Nao foi possivel falar com o servico de imagens agora. Tente novamente em instantes.';
+  'Não foi possível falar com o serviço de imagens agora. Tente novamente em instantes.';

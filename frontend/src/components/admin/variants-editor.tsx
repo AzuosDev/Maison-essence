@@ -147,7 +147,7 @@ export function VariantsEditor({
 
       {full ? (
         <p className={styles.hint}>
-          Sao no maximo {PRODUCT_LIMITS.variants} variantes por produto.
+          São no máximo {PRODUCT_LIMITS.variants} variantes por produto.
         </p>
       ) : null}
     </div>
@@ -185,13 +185,13 @@ function VariantRows({
           <tr>
             <th scope="col">Nome</th>
             <th scope="col">SKU</th>
-            <th scope="col">Preco</th>
-            <th scope="col">Preco de</th>
+            <th scope="col">Preço</th>
+            <th scope="col">Preço de</th>
             <th scope="col">Estoque</th>
             <th scope="col">Foto</th>
             <th scope="col">Disponibilidade</th>
             <th scope="col">
-              <span className="visually-hidden">Acoes</span>
+              <span className="visually-hidden">Ações</span>
             </th>
           </tr>
         </thead>
@@ -236,7 +236,7 @@ function VariantRows({
 
                 <td className={styles.priceCell}>
                   <Input
-                    label={`Preco da variante ${String(index + 1)}`}
+                    label={`Preço da variante ${String(index + 1)}`}
                     hideLabel
                     block
                     numeric
@@ -254,7 +254,7 @@ function VariantRows({
 
                 <td className={styles.priceCell}>
                   <Input
-                    label={`Preco de comparacao da variante ${String(index + 1)}`}
+                    label={`Preço de comparação da variante ${String(index + 1)}`}
                     hideLabel
                     block
                     numeric
@@ -382,7 +382,7 @@ function VariantBlocks({
             <Input
               label="Nome"
               block
-              hint="Em branco quando o produto tem um frasco so."
+              hint="Em branco quando o produto tem um frasco só."
               placeholder="100 ml"
               maxLength={PRODUCT_LIMITS.variantLabel}
               value={variant.label}
@@ -395,7 +395,7 @@ function VariantBlocks({
 
             <div className={styles.pair}>
               <Input
-                label="Preco"
+                label="Preço"
                 block
                 numeric
                 inputMode="decimal"
@@ -410,7 +410,7 @@ function VariantBlocks({
               />
 
               <Input
-                label="Preco de"
+                label="Preço de"
                 block
                 numeric
                 inputMode="decimal"

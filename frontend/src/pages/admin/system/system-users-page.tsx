@@ -139,14 +139,14 @@ export default function SystemUsersPage() {
               title: user.isActive
                 ? `${user.name} foi desativado.`
                 : `${user.name} voltou a ter acesso.`,
-              ...(user.isActive ? { description: 'As sessoes abertas dele cairam na hora.' } : {}),
+              ...(user.isActive ? { description: 'As sessões abertas dele cairam na hora.' } : {}),
               variant: 'success',
             });
           },
           onError: (failure) => {
             closeConfirm();
             toast({
-              title: 'Nao deu para mudar o status',
+              title: 'Não deu para mudar o status',
               description: errorMessage(failure),
               variant: 'danger',
             });
@@ -170,7 +170,7 @@ export default function SystemUsersPage() {
         onError: (failure) => {
           closeConfirm();
           toast({
-            title: 'Nao deu para resetar a senha',
+            title: 'Não deu para resetar a senha',
             description: errorMessage(failure),
             variant: 'danger',
           });
@@ -183,7 +183,7 @@ export default function SystemUsersPage() {
     revoke.mutate(user.id, {
       onSuccess: () => {
         closeConfirm();
-        toast({ title: `As sessoes de ${user.name} foram encerradas.`, variant: 'success' });
+        toast({ title: `As sessões de ${user.name} foram encerradas.`, variant: 'success' });
       },
       onError: (failure) => {
         closeConfirm();
@@ -193,10 +193,10 @@ export default function SystemUsersPage() {
         // de novo um caminho que nunca vai responder.
         toast({
           title: isMissingRoute(failure)
-            ? 'Esta acao ainda nao existe na API'
-            : 'Nao deu para encerrar as sessoes',
+            ? 'Esta ação ainda não existe na API'
+            : 'Não deu para encerrar as sessões',
           description: isMissingRoute(failure)
-            ? 'Use "Resetar senha": ela derruba todas as sessoes desta pessoa junto com a troca.'
+            ? 'Use "Resetar senha": ela derruba todas as sessões desta pessoa junto com a troca.'
             : errorMessage(failure),
           variant: 'danger',
           duration: 8000,
@@ -285,10 +285,10 @@ export default function SystemUsersPage() {
         }}
         closeOnOverlayClick={false}
         title={secret?.reason === 'reset' ? 'Senha resetada' : 'Acesso criado'}
-        description="Entregue esta senha para a pessoa. No primeiro login o painel manda troca-la."
+        description="Entregue esta senha para a pessoa. No primeiro login o painel manda troca-lá."
       >
         {secret === null ? null : (
-          <OneTimeSecret secret={secret.password} label={`Senha temporaria de ${secret.email}`} />
+          <OneTimeSecret secret={secret.password} label={`Senha temporária de ${secret.email}`} />
         )}
       </Modal>
     </div>
@@ -321,13 +321,13 @@ function copyFor({ kind, user }: Confirmation): ConfirmCopy {
     return user.isActive
       ? {
           title: 'Desativar este acesso?',
-          description: `${user.name} perde o painel agora: as sessoes abertas caem na proxima acao dele e o login passa a ser recusado. O cadastro continua aqui e pode ser reativado.`,
+          description: `${user.name} perde o painel agora: as sessões abertas caem na próxima ação dele e o login passa a ser recusado. O cadastro continua aqui e pode ser reativado.`,
           confirmLabel: 'Desativar',
           tone: 'danger',
         }
       : {
           title: 'Reativar este acesso?',
-          description: `${user.name} volta a entrar no painel com a senha que ja tinha.`,
+          description: `${user.name} volta a entrar no painel com a senha que já tinha.`,
           confirmLabel: 'Reativar',
           tone: 'neutral',
         };
@@ -336,16 +336,16 @@ function copyFor({ kind, user }: Confirmation): ConfirmCopy {
   if (kind === 'reset') {
     return {
       title: 'Resetar a senha?',
-      description: `A senha atual de ${user.name} para de funcionar, as sessoes abertas caem e o painel gera uma temporaria — que aparece uma vez so, na tela seguinte.`,
+      description: `A senha atual de ${user.name} para de funcionar, as sessões abertas caem e o painel gera uma temporária — que aparece uma vez só, na tela seguinte.`,
       confirmLabel: 'Resetar senha',
       tone: 'danger',
     };
   }
 
   return {
-    title: 'Encerrar todas as sessoes?',
+    title: 'Encerrar todas as sessões?',
     description: `${user.name} cai do painel em todos os aparelhos e precisa entrar de novo. A senha continua a mesma.`,
-    confirmLabel: 'Encerrar sessoes',
+    confirmLabel: 'Encerrar sessões',
     tone: 'danger',
   };
 }

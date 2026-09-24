@@ -22,7 +22,7 @@
  */
 
 export const NEWSLETTER_UNAVAILABLE_MESSAGE =
-  'O cadastro por e-mail ainda nao esta no ar. Fale com a gente pelo WhatsApp para receber as novidades.';
+  'O cadastro por e-mail ainda não esta no ar. Fale com a gente pelo WhatsApp para receber as novidades.';
 
 export class NewsletterUnavailableError extends Error {
   constructor() {

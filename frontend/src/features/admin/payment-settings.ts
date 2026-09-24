@@ -78,7 +78,7 @@ export const PIX_KEY_LABELS: Record<PixKeyType, string> = {
   cnpj: 'CNPJ',
   email: 'E-mail',
   phone: 'Telefone',
-  random: 'Chave aleatoria',
+  random: 'Chave aleatória',
 };
 
 /** O exemplo que fica dentro do campo, por tipo. */
@@ -100,9 +100,9 @@ export const PIX_KEY_PLACEHOLDERS: Record<PixKeyType, string> = {
 export const PIX_KEY_MESSAGES: Record<PixKeyType, string> = {
   cpf: 'A chave PIX do tipo CPF deve ter 11 digitos.',
   cnpj: 'A chave PIX do tipo CNPJ deve ter 14 digitos.',
-  email: 'A chave PIX do tipo e-mail deve ser um endereco valido.',
-  phone: 'A chave PIX do tipo telefone deve ter DDD e numero, como (88) 99999-9999.',
-  random: 'A chave aleatoria e o codigo de 36 caracteres que o banco gera.',
+  email: 'A chave PIX do tipo e-mail deve ser um endereço válido.',
+  phone: 'A chave PIX do tipo telefone deve ter DDD e número, como (88) 99999-9999.',
+  random: 'A chave aleatória e o código de 36 caracteres que o banco gera.',
 };
 
 /** Chave aleatoria: UUID, do jeito que o banco a entrega. */
@@ -245,43 +245,43 @@ export function validatePayment(draft: PaymentDraft): PaymentErrors {
   const discount = integerOf(draft.pixDiscount);
 
   if (discount === null || discount < 0) {
-    errors.pixDiscount = 'Escreva o desconto em porcentagem inteira, ou 0 para nao dar desconto.';
+    errors.pixDiscount = 'Escreva o desconto em porcentagem inteira, ou 0 para não dar desconto.';
   } else if (discount > PAYMENT_LIMITS.pixDiscountPercent) {
-    errors.pixDiscount = `O desconto maximo e de ${String(PAYMENT_LIMITS.pixDiscountPercent)}%.`;
+    errors.pixDiscount = `O desconto máximo e de ${String(PAYMENT_LIMITS.pixDiscountPercent)}%.`;
   }
 
   const max = integerOf(draft.maxInstallments);
 
   if (max === null || max < 1) {
-    errors.maxInstallments = 'Escreva em quantas vezes a loja parcela. Uma, no minimo.';
+    errors.maxInstallments = 'Escreva em quantas vezes a loja parcela. Uma, no mínimo.';
   } else if (max > PAYMENT_LIMITS.installments) {
-    errors.maxInstallments = `Nenhum cartao parcela em mais de ${String(PAYMENT_LIMITS.installments)} vezes.`;
+    errors.maxInstallments = `Nenhum cartão parcela em mais de ${String(PAYMENT_LIMITS.installments)} vezes.`;
   }
 
   const free = integerOf(draft.interestFreeUpTo);
 
   if (free === null || free < 1) {
-    errors.interestFreeUpTo = 'Escreva ate quantas parcelas nao tem juros. Uma, no minimo.';
+    errors.interestFreeUpTo = 'Escreva até quantas parcelas não tem juros. Uma, no mínimo.';
   } else if (free > PAYMENT_LIMITS.installments) {
     errors.interestFreeUpTo = `O limite do sistema e de ${String(PAYMENT_LIMITS.installments)} parcelas.`;
   } else if (max !== null && free > max) {
     // A mesma recusa do schema, antecipada: parcela sem juros alem do maximo
     // de parcelas nao significa nada.
-    errors.interestFreeUpTo = 'Sem juros ate mais parcelas do que a loja aceita parcelar.';
+    errors.interestFreeUpTo = 'Sem juros até mais parcelas do que a loja aceita parcelar.';
   }
 
   const interest = percentFromInput(draft.monthlyInterest);
 
   if (interest === null || interest < 0) {
-    errors.monthlyInterest = 'Escreva os juros ao mes, ou 0 se a loja nao cobra juros.';
+    errors.monthlyInterest = 'Escreva os juros ao mês, ou 0 se a loja não cobra juros.';
   } else if (interest > PAYMENT_LIMITS.monthlyInterestPercent) {
-    errors.monthlyInterest = `Os juros maximos sao de ${String(PAYMENT_LIMITS.monthlyInterestPercent)}% ao mes.`;
+    errors.monthlyInterest = `Os juros máximos são de ${String(PAYMENT_LIMITS.monthlyInterestPercent)}% ao mês.`;
   }
 
   const minimum = centsFromInput(draft.minInstallment);
 
   if (minimum === null || minimum < 0) {
-    errors.minInstallment = 'Escreva a parcela minima, ou 0 se nao houver minimo.';
+    errors.minInstallment = 'Escreva a parcela mínima, ou 0 se não houver mínimo.';
   } else if (minimum > PAYMENT_LIMITS.minInstallmentCents) {
     errors.minInstallment = 'Esse valor passa do limite do sistema.';
   }
@@ -316,7 +316,7 @@ export function warningsOf(draft: PaymentDraft): PaymentWarning[] {
   if (draft.acceptsPix && draft.pixKey.trim() === '') {
     warnings.push({
       scope: 'pix',
-      text: 'O PIX esta ligado, mas sem chave cadastrada ele nao aparece para a cliente.',
+      text: 'O PIX esta ligado, mas sem chave cadastrada ele não aparece para a cliente.',
     });
   }
 
@@ -334,7 +334,7 @@ export function warningsOf(draft: PaymentDraft): PaymentWarning[] {
   ) {
     warnings.push({
       scope: 'card',
-      text: 'Todas as parcelas estao dentro do limite sem juros, entao estes juros nunca sao cobrados.',
+      text: 'Todas as parcelas estão dentro do limite sem juros, então estes juros nunca são cobrados.',
     });
   }
 

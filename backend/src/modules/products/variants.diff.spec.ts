@@ -4,7 +4,7 @@ const CEM_ML = '64b7f1c2a1b2c3d4e5f60001';
 const DECANT = '64b7f1c2a1b2c3d4e5f60002';
 
 describe('planVariants', () => {
-  it('atualiza a que tem id e cria a que nao tem', () => {
+  it('atualiza a que tem id e cria a que não tem', () => {
     const { plans, unknownIds } = planVariants(
       [
         { id: CEM_ML, priceCents: 19_990 },
@@ -31,7 +31,7 @@ describe('planVariants', () => {
     expect(plans.at(-1)).toEqual({ action: 'drop', id: DECANT });
   });
 
-  it('apenas desativa a variante que sumiu da lista mas ja foi vendida', () => {
+  it('apenas desativa a variante que sumiu da lista mas já foi vendida', () => {
     // Apagar quebraria a devolucao de estoque do cancelamento, que procura a
     // variante pelo `items.variantId` do pedido.
     const { plans } = planVariants(
@@ -43,7 +43,7 @@ describe('planVariants', () => {
     expect(plans.at(-1)).toEqual({ action: 'retire', id: DECANT });
   });
 
-  it('denuncia id que nao e do produto em vez de cria-lo', () => {
+  it('denuncia id que não e do produto em vez de cria-lo', () => {
     const intruso = '64b7f1c2a1b2c3d4e5f60999';
 
     const { plans, unknownIds } = planVariants(

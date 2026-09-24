@@ -30,7 +30,7 @@ interface WhatsappButtonProps {
 }
 
 /** O que ja vai escrito na conversa. A dona recebe o contexto junto. */
-const DEFAULT_MESSAGE = 'Ola! Vim pelo site e gostaria de saber mais.';
+const DEFAULT_MESSAGE = 'Olá! Vim pelo site e gostaria de saber mais.';
 
 export function WhatsappButton({ avoidRef }: WhatsappButtonProps) {
   const { settings } = useStoreSettings();

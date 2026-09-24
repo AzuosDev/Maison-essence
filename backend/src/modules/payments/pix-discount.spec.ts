@@ -24,7 +24,7 @@ describe('pixQuoteOf', () => {
     expect(pixQuoteOf(9999, 0, 5).discountCents).toBe(500);
   });
 
-  it('entrega gratis nao muda o desconto', () => {
+  it('entrega grátis não muda o desconto', () => {
     expect(pixQuoteOf(20_000, 0, 10)).toEqual({ discountCents: 2000, totalCents: 18_000 });
   });
 });

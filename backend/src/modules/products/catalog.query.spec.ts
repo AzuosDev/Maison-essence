@@ -18,7 +18,7 @@ function stageNames(stages: readonly object[]): string[] {
 }
 
 describe('catalogFilter', () => {
-  it('so lista produto ativo, e so com variante a venda', () => {
+  it('só lista produto ativo, e só com variante a venda', () => {
     const filter = catalogFilter({});
 
     expect(filter.isActive).toBe(true);
@@ -31,7 +31,7 @@ describe('catalogFilter', () => {
    * porque tem de ser a mesma variante — senao o produto entraria na lista
    * pela variante barata que acabou.
    */
-  it('combina categoria, faixa de preco e estoque numa consulta so', () => {
+  it('combina categoria, faixa de preço e estoque numa consulta só', () => {
     const categoryId = new Types.ObjectId();
     const filter = catalogFilter({
       categoryIds: [categoryId],
@@ -48,7 +48,7 @@ describe('catalogFilter', () => {
     });
   });
 
-  it('aceita so o piso ou so o teto da faixa', () => {
+  it('aceita só o piso ou só o teto da faixa', () => {
     expect(variantMatch(catalogFilter({ minPriceCents: 5000 })).priceCents).toEqual({
       $gte: 5000,
     });
@@ -57,13 +57,13 @@ describe('catalogFilter', () => {
     });
   });
 
-  it('conta encomenda como disponivel', () => {
+  it('conta encomenda como disponível', () => {
     expect(variantMatch(catalogFilter({ inStock: true })).$or).toContainEqual({
       allowBackorder: true,
     });
   });
 
-  it('acha a marca sem depender de maiuscula, e so ela', () => {
+  it('acha a marca sem depender de maiúscula, e só ela', () => {
     const { brand } = catalogFilter({ brand: 'lattafa' });
 
     expect(brand).toBeInstanceOf(RegExp);
@@ -71,14 +71,14 @@ describe('catalogFilter', () => {
     expect('Lattafa Qaed').not.toMatch(brand as RegExp);
   });
 
-  it('nao deixa a marca digitada virar regex', () => {
+  it('não deixa a marca digitada virar regex', () => {
     const { brand } = catalogFilter({ brand: 'A.L' });
 
     expect('AxL').not.toMatch(brand as RegExp);
     expect('A.L').toMatch(brand as RegExp);
   });
 
-  it('bandeira desligada nao filtra nada', () => {
+  it('bandeira desligada não filtra nada', () => {
     const filter = catalogFilter({ featured: false, readyToShip: false });
 
     expect(filter.isFeatured).toBeUndefined();
@@ -90,11 +90,11 @@ describe('catalogFilter', () => {
     expect(catalogFilter({ readyToShip: true }).isReadyToShip).toBe(true);
   });
 
-  it('usa o indice de texto na busca com tres caracteres ou mais', () => {
+  it('usa o índice de texto na busca com três caracteres ou mais', () => {
     expect(catalogFilter({ q: 'asad' }).$text).toEqual({ $search: 'asad' });
   });
 
-  it('cai no regex quando o termo e curto demais para o indice', () => {
+  it('cai no regex quando o termo e curto demais para o índice', () => {
     const filter = catalogFilter({ q: 'as' });
 
     expect(filter.$text).toBeUndefined();
@@ -103,17 +103,17 @@ describe('catalogFilter', () => {
 });
 
 describe('effectiveSort', () => {
-  it('sem pedido: relevancia quando ha busca, novidade quando nao ha', () => {
+  it('sem pedido: relevância quando há busca, novidade quando não há', () => {
     expect(effectiveSort(undefined, true)).toBe('relevance');
     expect(effectiveSort(undefined, false)).toBe('newest');
   });
 
   /** Relevancia sem termo nao ordena nada: todo produto teria a mesma nota. */
-  it('troca relevancia por novidade quando nao ha o que pontuar', () => {
+  it('troca relevância por novidade quando não há o que pontuar', () => {
     expect(effectiveSort('relevance', false)).toBe('newest');
   });
 
-  it('respeita a ordenacao pedida', () => {
+  it('respeita a ordenação pedida', () => {
     for (const sort of ['newest', 'price_asc', 'price_desc', 'discount', 'name'] as PublicSort[]) {
       expect(effectiveSort(sort, true)).toBe(sort);
     }
@@ -121,7 +121,7 @@ describe('effectiveSort', () => {
 });
 
 describe('hasTextScore', () => {
-  it('so ha nota de relevancia quando a busca passou pelo indice', () => {
+  it('só há nota de relevância quando a busca passou pelo índice', () => {
     expect(hasTextScore('asad')).toBe(true);
     expect(hasTextScore('as')).toBe(false);
     expect(hasTextScore('')).toBe(false);
@@ -129,25 +129,25 @@ describe('hasTextScore', () => {
 });
 
 describe('catalogPipeline', () => {
-  it('pagina na ordem pedida e descarta a descricao', () => {
+  it('página na ordem pedida e descarta a descrição', () => {
     const stages = catalogPipeline({}, 'newest', false, 24, 24);
 
     expect(stageNames(stages)).toEqual(['$match', '$sort', '$skip', '$limit', '$unset']);
     expect(stages.at(-1)).toEqual({ $unset: ['description'] });
   });
 
-  it('desempata pelo _id, para a pagina 2 nao repetir a 1', () => {
+  it('desempata pelo _id, para a página 2 não repetir a 1', () => {
     const [, sort] = catalogPipeline({}, 'newest', false, 0, 24) as unknown as Record<string, any>[];
 
     expect(Object.keys(sort.$sort).at(-1)).toBe('_id');
   });
 
-  it('calcula preco e desconto so quando a ordenacao precisa', () => {
+  it('calcula preço e desconto só quando a ordenação precisa', () => {
     expect(stageNames(catalogPipeline({}, 'price_asc', false, 0, 24))).toContain('$addFields');
     expect(stageNames(catalogPipeline({}, 'newest', false, 0, 24))).not.toContain('$addFields');
   });
 
-  it('ordena por preco pelo menor preco entre as variantes a venda', () => {
+  it('ordena por preço pelo menor preço entre as variantes a venda', () => {
     const stages = catalogPipeline({}, 'price_asc', false, 0, 24) as unknown as Record<string, any>[];
     const [sort] = stages.filter((stage) => '$sort' in stage);
 
@@ -157,7 +157,7 @@ describe('catalogPipeline', () => {
     );
   });
 
-  it('pontua a relevancia so quando a busca usou o indice de texto', () => {
+  it('pontua a relevância só quando a busca usou o índice de texto', () => {
     const withText = catalogPipeline({}, 'relevance', true, 0, 24) as unknown as Record<string, any>[];
     const withoutText = catalogPipeline({}, 'relevance', false, 0, 24) as unknown as Record<string, any>[];
 
@@ -165,7 +165,7 @@ describe('catalogPipeline', () => {
     expect(stageNames(withoutText)).not.toContain('$addFields');
   });
 
-  it('limpa os campos de ordenacao antes de devolver', () => {
+  it('limpa os campos de ordenação antes de devolver', () => {
     const stages = catalogPipeline({}, 'discount', false, 0, 24) as unknown as Record<string, any>[];
 
     expect(stages.at(-1)?.$unset).toEqual([
@@ -178,7 +178,7 @@ describe('catalogPipeline', () => {
 });
 
 describe('catalogCollation', () => {
-  it('ordena nome pelas regras do portugues, e so nome', () => {
+  it('ordena nome pelas regras do português, e só nome', () => {
     expect(catalogCollation('name')).toEqual({ locale: 'pt', strength: 1 });
     expect(catalogCollation('newest')).toBeUndefined();
   });

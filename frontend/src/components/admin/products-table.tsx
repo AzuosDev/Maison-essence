@@ -124,14 +124,14 @@ function ProductRows({
             </th>
             <th scope="col">Produto</th>
             <th scope="col">Categorias</th>
-            {showPrices ? <th scope="col">Preco</th> : null}
+            {showPrices ? <th scope="col">Preço</th> : null}
             <th scope="col" className={styles.numeric}>
               Estoque
             </th>
             <th scope="col">Publicado</th>
             {canEdit ? (
               <th scope="col">
-                <span className="visually-hidden">Acoes</span>
+                <span className="visually-hidden">Ações</span>
               </th>
             ) : null}
           </tr>

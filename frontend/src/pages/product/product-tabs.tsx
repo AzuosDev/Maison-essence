@@ -72,7 +72,7 @@ export function ProductTabs({ product }: { product: PublicProductDetail }) {
   if (product.description.trim() !== '') {
     tabs.push({
       value: 'descricao',
-      label: 'Descricao',
+      label: 'Descrição',
       content: <Markdown text={product.description} headingLevel={3} className={styles.prose} />,
     });
   }

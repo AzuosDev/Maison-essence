@@ -50,7 +50,7 @@ export function UsersTable(props: UsersTableProps) {
     return (
       <EmptyState
         as="h3"
-        title="Nenhum usuario encontrado"
+        title="Nenhum usuário encontrado"
         description="Nenhuma conta casa com o que esta filtrado. Limpe a busca para ver todas."
       />
     );
@@ -69,7 +69,7 @@ function StatusBadge({ user }: { user: SystemUser }) {
   // Senha temporaria pendente e um terceiro estado, e nao um detalhe do
   // "ativo": a conta existe, mas ninguem entrou nela ainda.
   if (user.mustChangePassword) {
-    return <Badge variant="gold">Senha temporaria</Badge>;
+    return <Badge variant="gold">Senha temporária</Badge>;
   }
 
   return <Badge variant="success">Ativo</Badge>;
@@ -98,9 +98,9 @@ function UserRows({
             <th scope="col">E-mail</th>
             <th scope="col">Papel</th>
             <th scope="col">Status</th>
-            <th scope="col">Ultimo acesso</th>
+            <th scope="col">Último acesso</th>
             <th scope="col">
-              <span className="visually-hidden">Acoes</span>
+              <span className="visually-hidden">Ações</span>
             </th>
           </tr>
         </thead>
@@ -110,7 +110,7 @@ function UserRows({
             <tr key={user.id}>
               <th scope="row" className={styles.name}>
                 {user.name}
-                {user.id === currentUserId ? <span className={styles.you}>voce</span> : null}
+                {user.id === currentUserId ? <span className={styles.you}>você</span> : null}
               </th>
 
               <td className={styles.email}>{user.email}</td>
@@ -168,7 +168,7 @@ function UserCards({
             <div className={styles.cardWho}>
               <p className={styles.cardName}>
                 {user.name}
-                {user.id === currentUserId ? <span className={styles.you}>voce</span> : null}
+                {user.id === currentUserId ? <span className={styles.you}>você</span> : null}
               </p>
 
               <p className={styles.cardEmail}>{user.email}</p>
@@ -207,7 +207,7 @@ function UserCards({
             </div>
 
             <div className={styles.cardWide}>
-              <dt>Ultimo acesso</dt>
+              <dt>Último acesso</dt>
               <dd>{lastAccess(user)}</dd>
             </div>
           </dl>

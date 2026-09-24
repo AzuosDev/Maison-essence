@@ -12,6 +12,6 @@ export class ReorderCategoriesDto {
   @IsArray()
   @ArrayNotEmpty({ message: 'informe ao menos uma categoria para reordenar' })
   @ArrayMaxSize(MAX_CATEGORY_ORDER + 1)
-  @IsMongoId({ each: true, message: 'a lista de ordem tem um id invalido' })
+  @IsMongoId({ each: true, message: 'a lista de ordem tem um id inválido' })
   ids: string[];
 }

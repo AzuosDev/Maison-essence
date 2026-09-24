@@ -77,7 +77,7 @@ export function ReorderNotice({ plan, onDismiss }: ReorderNoticeProps) {
 
       {plan.dropped.length === 0 ? null : (
         <div className={styles.group}>
-          <h3 className={styles.groupTitle}>Nao entraram na sacola</h3>
+          <h3 className={styles.groupTitle}>Não entraram na sacola</h3>
 
           <ul className={styles.list}>
             {plan.dropped.map((item) => (

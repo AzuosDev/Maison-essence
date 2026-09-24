@@ -81,7 +81,7 @@ export default function AccountLoginPage() {
 
   usePageMeta({
     title: 'Entrar — Maison Essence',
-    description: 'Acompanhe seus pedidos e guarde seus enderecos.',
+    description: 'Acompanhe seus pedidos e guarde seus endereços.',
     robots: 'noindex',
   });
 
@@ -168,7 +168,7 @@ export default function AccountLoginPage() {
       <div className={styles.card}>
         <h1 className={styles.title}>Entrar</h1>
         <p className={styles.lead}>
-          Use o celular que voce informa nos pedidos, ou o e-mail do seu acesso.
+          Use o celular que você informa nos pedidos, ou o e-mail do seu acesso.
         </p>
 
         {failure === null || failure === undefined ? null : (
@@ -207,7 +207,7 @@ export default function AccountLoginPage() {
         </form>
 
         <p className={styles.alternative}>
-          Ainda nao tem conta?{' '}
+          Ainda não tem conta?{' '}
           <Link
             to={registerPath}
             state={from === undefined ? undefined : { from }}
@@ -219,7 +219,7 @@ export default function AccountLoginPage() {
       </div>
 
       <p className={styles.escape}>
-        Nao precisa entrar para comprar.{' '}
+        Não precisa entrar para comprar.{' '}
         <Link to={ROUTES.products} className={styles.link}>
           Voltar para a loja
         </Link>
@@ -278,8 +278,8 @@ function signInErrorMessage(error: unknown, identity: SignInIdentity | null): st
   if (isApiError(error)) {
     if (error.status === 401) {
       return identity?.kind === 'email'
-        ? 'E-mail ou senha nao conferem.'
-        : 'Celular ou senha nao conferem. Confira o numero com o DDD.';
+        ? 'E-mail ou senha não conferem.'
+        : 'Celular ou senha não conferem. Confira o número com o DDD.';
     }
 
     if (error.status === 429) {

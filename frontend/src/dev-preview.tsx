@@ -45,7 +45,7 @@ interface Seed {
 const SEEDS: Seed[] = [
   { name: 'Oud Royale Intense', brand: 'Maison Essence', price: 38900, compareAt: 45900, ready: true, variants: ['50 ml', '100 ml'] },
   { name: 'Baunilha Absoluta', brand: 'Maison Essence', price: 27900, ready: true },
-  { name: 'Ambar & Sandalo', brand: 'Lattafa', price: 19900, compareAt: 24900, qty: { minQty: 3, percentOff: 12 } },
+  { name: 'Âmbar & Sandalo', brand: 'Lattafa', price: 19900, compareAt: 24900, qty: { minQty: 3, percentOff: 12 } },
   { name: 'Vela Fig de Provence', brand: 'Maison Essence', price: 14900, ready: true },
   { name: 'Rose Damascena Eau de Parfum', brand: 'Armaf', price: 32900, variants: ['30 ml', '75 ml'] },
   { name: 'Musk Blanc', brand: 'Swiss Arabian', price: 21900, out: true },
@@ -69,7 +69,7 @@ function slugify(value: string): string {
 function makeProduct(seed: Seed, index: number) {
   const slug = slugify(seed.name);
   const images = [PHOTOS[index % PHOTOS.length]!, PHOTOS[(index + 3) % PHOTOS.length]!];
-  const labels = seed.variants ?? ['Unico'];
+  const labels = seed.variants ?? ['Único'];
 
   const variants: Variant[] = labels.map((label, position) => ({
     id: `${slug}-v${position}`,
@@ -113,7 +113,7 @@ const PRODUCTS = SEEDS.map(makeProduct);
 const CATEGORIES = [
   { name: 'Perfumes Masculinos', photo: PHOTOS[0]!, count: 24 },
   { name: 'Perfumes Femininos', photo: PHOTOS[1]!, count: 31 },
-  { name: 'Arabes', photo: PHOTOS[4]!, count: 18 },
+  { name: 'Árabes', photo: PHOTOS[4]!, count: 18 },
   { name: 'Velas Aromaticas', photo: PHOTOS[3]!, count: 12 },
   { name: 'Difusores', photo: PHOTOS[5]!, count: 9 },
   { name: 'Kits e Presentes', photo: PHOTOS[6]!, count: 7 },
@@ -129,16 +129,16 @@ const CATEGORIES = [
 const PAGES = [
   { slug: 'quem-somos', title: 'Quem somos' },
   { slug: 'como-comprar', title: 'Como comprar' },
-  { slug: 'trocas-e-devolucoes', title: 'Trocas e devolucoes' },
+  { slug: 'trocas-e-devolucoes', title: 'Trocas e devoluções' },
   { slug: 'perguntas-frequentes', title: 'Perguntas frequentes' },
-  { slug: 'politica-de-privacidade', title: 'Politica de privacidade' },
+  { slug: 'politica-de-privacidade', title: 'Política de privacidade' },
 ];
 
 const SETTINGS = {
   storeName: 'Maison Essence',
   whatsappNumber: '5588999998888',
   whatsappLink: 'https://wa.me/5588999998888',
-  announcementText: 'Frete fixo para o Cariri · Retirada em Juazeiro do Norte · Parcelamos no cartao',
+  announcementText: 'Frete fixo para o Cariri · Retirada em Juazeiro do Norte · Parcelamos no cartão',
   contactEmail: 'contato@maisonessence.com.br',
   businessHours: 'Segunda a sabado, das 9h as 18h',
   socialLinks: {
@@ -147,7 +147,7 @@ const SETTINGS = {
   },
   pickupEnabled: true,
   pickupAddress: {
-    street: 'Rua Sao Pedro',
+    street: 'Rua São Pedro',
     number: '120',
     complement: '',
     district: 'Centro',
@@ -156,16 +156,16 @@ const SETTINGS = {
     zipCode: '63010-000',
     reference: '',
   },
-  pickupInstructions: 'Combine o horario pelo WhatsApp.',
+  pickupInstructions: 'Combine o horário pelo WhatsApp.',
   freeShippingMinCents: 29900,
   banners: [
     {
       id: 'b1',
       imageDesktop: PHOTOS[4]!,
       imageMobile: PHOTOS[4]!,
-      title: 'A colecao de inverno chegou',
-      subtitle: 'Ambares, madeiras e baunilhas selecionados peca a peca.',
-      buttonLabel: 'Ver a colecao',
+      title: 'A coleção de inverno chegou',
+      subtitle: 'Âmbares, madeiras e baunilhas selecionados peca a peca.',
+      buttonLabel: 'Ver a coleção',
       link: '/produtos',
     },
     {
@@ -202,7 +202,7 @@ function detail(slug: string) {
   return {
     ...product,
     description:
-      'Notas de topo de bergamota e cardamomo, coracao de rosa damascena e fundo de oud, ambar e baunilha. Fixacao de 8 a 12 horas na pele, com sillage moderado.\n\nFrasco lacrado, original, conferido antes de sair da loja.',
+      'Notas de topo de bergamota e cardamomo, coração de rosa damascena e fundo de oud, âmbar e baunilha. Fixação de 8 a 12 horas na pele, com sillage moderado.\n\nFrasco lacrado, original, conferido antes de sair da loja.',
     categories: [{ id: CATEGORIES[0]!.id, name: CATEGORIES[0]!.name, slug: CATEGORIES[0]!.slug }],
     quantityDiscounts: [
       { minQty: 2, percentOff: 8 },
@@ -264,7 +264,7 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Res
 
   if (body === null) {
     return new Response(
-      JSON.stringify({ statusCode: 404, message: 'Nao encontrado', error: 'Not Found', timestamp: '', path }),
+      JSON.stringify({ statusCode: 404, message: 'Não encontrado', error: 'Not Found', timestamp: '', path }),
       { status: 404, headers: { 'content-type': 'application/json' } },
     );
   }

@@ -52,7 +52,7 @@ const SECTIONS = [
   ['tokens', 'Tokens'],
   ['tipografia', 'Tipografia'],
   ['button', 'Button'],
-  ['formulario', 'Formulario'],
+  ['formulario', 'Formulário'],
   ['badge-chip', 'Badge e Chip'],
   ['card', 'Card'],
   ['dialogos', 'Modal e Drawer'],
@@ -63,16 +63,16 @@ const SECTIONS = [
 ] as const;
 
 const COLORS = [
-  ['--ink', 'Header, botao primario, texto forte'],
+  ['--ink', 'Header, botão primário, texto forte'],
   ['--ink-soft', 'Texto de corpo'],
-  ['--muted', 'Texto secundario, placeholder'],
+  ['--muted', 'Texto secundário, placeholder'],
   ['--cream', 'Fundo geral da loja'],
-  ['--sand', 'Secoes alternadas, chips'],
+  ['--sand', 'Seções alternadas, chips'],
   ['--surface', 'Cards, inputs, paineis'],
   ['--gold', 'Filete do logo, detalhes, hover'],
   ['--gold-deep', 'Dourado sobre creme, foco'],
   ['--line', 'Bordas de 1px'],
-  ['--success', 'Pronta entrega, confirmacao'],
+  ['--success', 'Pronta entrega, confirmação'],
   ['--danger', 'Esgotado, erros'],
   ['--admin-bg', 'Fundo do painel'],
 ] as const;
@@ -94,7 +94,7 @@ const CIDADES = [
   { value: 'juazeiro', label: 'Juazeiro do Norte' },
   { value: 'crato', label: 'Crato' },
   { value: 'barbalha', label: 'Barbalha' },
-  { value: 'missao', label: 'Missao Velha', disabled: true },
+  { value: 'missao', label: 'Missão Velha', disabled: true },
 ];
 
 export default function StyleguidePage() {
@@ -104,10 +104,10 @@ export default function StyleguidePage() {
         <Container>
           <h1 className={styles.title}>Design system</h1>
           <p className={styles.subtitle}>
-            Os primitivos da Maison Essence, em todos os estados. Visivel so em desenvolvimento.
+            Os primitivos da Maison Essence, em todos os estados. Visível só em desenvolvimento.
           </p>
 
-          <nav className={styles.toc} aria-label="Secoes">
+          <nav className={styles.toc} aria-label="Seções">
             {SECTIONS.map(([id, label]) => (
               <a key={id} href={`#${id}`} className={styles.tocLink}>
                 {label}
@@ -185,7 +185,7 @@ function TokensSection() {
       </div>
 
       <div className={styles.samples}>
-        <Sample label="Escala de espaco (4 a 96)">
+        <Sample label="Escala de espaço (4 a 96)">
           <div className={styles.spaces}>
             {SPACES.map((space) => (
               <div key={space} className={styles.space}>
@@ -237,7 +237,7 @@ function TokensSection() {
               Navegue por Tab: sobre o preto o anel troca para --gold
             </p>
             <div className={styles.row}>
-              <Button>Primario</Button>
+              <Button>Primário</Button>
               <Button variant="ghost" style={{ color: 'var(--sand)' }}>
                 Fantasma
               </Button>
@@ -256,7 +256,7 @@ function TypographySection() {
     <Section
       id="tipografia"
       title="Tipografia"
-      note="Cormorant Garamond nos titulos, Jost no corpo. Preco sempre em Jost 600 tabular."
+      note="Cormorant Garamond nos títulos, Jost no corpo. Preço sempre em Jost 600 tabular."
     >
       <div className={styles.scale}>
         {TYPE_SCALE.map(([token, size]) => (
@@ -280,12 +280,12 @@ function TypographySection() {
       <div className={styles.samples}>
         <Sample label="Corpo em Jost">
           <p style={{ lineHeight: 'var(--leading-body)' }}>
-            Perfume amadeirado com notas de baunilha e ambar. O texto de corpo usa Jost 400 com
+            Perfume amadeirado com notas de baunilha e âmbar. O texto de corpo usa Jost 400 com
             entrelinha de 1.6 — a medida que sustenta um paragrafo longo sem cansar.
           </p>
         </Sample>
 
-        <Sample label="Preco, tabular">
+        <Sample label="Preço, tabular">
           <p
             className="tabular"
             style={{
@@ -312,7 +312,7 @@ function ButtonSection() {
     <Section
       id="button"
       title="Button"
-      note="Quatro variantes. O estado carregando desabilita o botao junto: um envio que aceita o segundo clique cria o segundo pedido."
+      note="Quatro variantes. O estado carregando desabilita o botão junto: um envio que aceita o segundo clique cria o segundo pedido."
     >
       <div className={styles.samples}>
         <Sample label="Variantes">
@@ -376,8 +376,8 @@ function FormSection() {
   return (
     <Section
       id="formulario"
-      title="Formulario"
-      note="Rotulo, ajuda e erro sao props do proprio campo: nao ha como usa-los e esquecer o htmlFor ou o aria-describedby."
+      title="Formulário"
+      note="Rótulo, ajuda e erro são props do próprio campo: não há como usa-los e esquecer o htmlFor ou o aria-describedby."
     >
       <div className={styles.samples}>
         <Sample label="Input">
@@ -387,12 +387,12 @@ function FormSection() {
             hint="E por ele que a gente responde no WhatsApp."
             placeholder="(88) 99999-9999"
           />
-          <Input label="E-mail" error="Informe um e-mail valido." defaultValue="cliente@" />
+          <Input label="E-mail" error="Informe um e-mail válido." defaultValue="cliente@" />
           <Input label="Cupom" disabled defaultValue="PRIMEIRACOMPRA" />
         </Sample>
 
         <Sample label="Input com adorno">
-          <Input label="Preco" numeric prefix="R$" defaultValue="189,90" />
+          <Input label="Preço" numeric prefix="R$" defaultValue="189,90" />
           <Input label="Desconto" numeric suffix="%" defaultValue="15" />
           <Input label="Buscar" hideLabel placeholder="Buscar perfume..." type="search" />
         </Sample>
@@ -414,7 +414,7 @@ function FormSection() {
 
         <Sample label="Textarea">
           <Textarea
-            label="Observacao do pedido"
+            label="Observação do pedido"
             value={observacao}
             onChange={(event) => {
               setObservacao(event.target.value);
@@ -428,15 +428,15 @@ function FormSection() {
 
         <Sample label="Checkbox">
           <Checkbox
-            label="Aceito os termos de troca e devolucao"
+            label="Aceito os termos de troca e devolução"
             checked={aceite}
             onChange={(event) => {
               setAceite(event.target.checked);
             }}
           />
-          <Checkbox label="Quero receber novidades" hint="No maximo um recado por mes." />
+          <Checkbox label="Quero receber novidades" hint="No máximo um recado por mês." />
           <Checkbox label="Selecionar todos os produtos" indeterminate readOnly checked={false} />
-          <Checkbox label="Opcao indisponivel" disabled />
+          <Checkbox label="Opção indisponível" disabled />
           <Checkbox label="Preciso concordar" error="E preciso aceitar para continuar." />
         </Sample>
 
@@ -448,8 +448,8 @@ function FormSection() {
             onChange={setPagamento}
           >
             <Radio value="pix" label="PIX" description="5% de desconto, a vista." />
-            <Radio value="card" label="Cartao" description="Em ate 12x." />
-            <Radio value="BOLETO" label="Boleto" disabled description="Indisponivel." />
+            <Radio value="card" label="Cartão" description="Em até 12x." />
+            <Radio value="BOLETO" label="Boleto" disabled description="Indisponível." />
           </RadioGroup>
 
           <RadioGroup legend="Entrega" name="entrega" horizontal defaultValue="">
@@ -471,7 +471,7 @@ function BadgeChipSection() {
     <Section
       id="badge-chip"
       title="Badge e Chip"
-      note="O selo nunca depende so da cor: cada um tem texto, e o texto diz o que a cor sugere."
+      note="O selo nunca depende só da cor: cada um tem texto, e o texto diz o que a cor sugere."
     >
       <div className={styles.samples}>
         <Sample label="Badge">
@@ -479,7 +479,7 @@ function BadgeChipSection() {
             <Badge variant="danger">Esgotado</Badge>
             <Badge variant="ink">-33%</Badge>
             <Badge variant="success">Pronta entrega</Badge>
-            <Badge variant="gold">Selecao da casa</Badge>
+            <Badge variant="gold">Seleção da casa</Badge>
             <Badge variant="muted" numeric>
               12 pedidos
             </Badge>
@@ -505,7 +505,7 @@ function BadgeChipSection() {
                 {label as string}
               </Chip>
             ))}
-            <Chip disabled>Indisponivel</Chip>
+            <Chip disabled>Indisponível</Chip>
           </div>
         </Sample>
       </div>
@@ -520,7 +520,7 @@ function CardSection() {
     <Section
       id="card"
       title="Card"
-      note="A mesma superficie serve ao card de produto e ao passo do checkout: titulo de 18px, campos empilhados, botao largo embaixo."
+      note="A mesma superficie serve ao card de produto e ao passo do checkout: título de 18px, campos empilhados, botão largo embaixo."
     >
       <div className={styles.samples}>
         <Sample label="Passo do checkout">
@@ -539,7 +539,7 @@ function CardSection() {
           </Card>
         </Sample>
 
-        <Sample label="Cartao clicavel e cartao simples">
+        <Sample label="Cartão clicável e cartão simples">
           <Card interactive padded>
             <p style={{ fontWeight: 'var(--weight-semibold)', color: 'var(--ink)' }}>
               Passe o mouse: sobe 2px
@@ -551,7 +551,7 @@ function CardSection() {
             <p style={{ fontWeight: 'var(--weight-semibold)', color: 'var(--ink)' }}>
               Com sombra em repouso
             </p>
-            <p className={styles.sectionNote}>A sombra unica do design system.</p>
+            <p className={styles.sectionNote}>A sombra única do design system.</p>
           </Card>
         </Sample>
       </div>
@@ -571,7 +571,7 @@ function DialogSection() {
     <Section
       id="dialogos"
       title="Modal e Drawer"
-      note="Abra pelo teclado e confira: o foco entra no dialogo, o Tab circula dentro dele, o Escape fecha e o foco volta para o botao que abriu."
+      note="Abra pelo teclado e confira: o foco entra no diálogo, o Tab circula dentro dele, o Escape fecha e o foco volta para o botão que abriu."
     >
       <div className={styles.samples}>
         <Sample label="Modal">
@@ -589,7 +589,7 @@ function DialogSection() {
                 setConfirm(true);
               }}
             >
-              Confirmar exclusao
+              Confirmar exclusão
             </Button>
           </div>
 
@@ -599,7 +599,7 @@ function DialogSection() {
               setModal(false);
             }}
             title="Escolha a variante"
-            description="Cada tamanho tem preco e estoque proprios."
+            description="Cada tamanho tem preço e estoque próprios."
             footer={
               <>
                 <Button
@@ -635,7 +635,7 @@ function DialogSection() {
               setConfirm(false);
             }}
             title="Excluir este produto?"
-            description="A acao nao pode ser desfeita."
+            description="A ação não pode ser desfeita."
             footer={
               <>
                 <Button
@@ -658,7 +658,7 @@ function DialogSection() {
             }
           >
             <p>
-              O produto sai do catalogo na hora. Os pedidos ja feitos continuam com o nome e o preco
+              O produto sai do catalogo na hora. Os pedidos já feitos continuam com o nome e o preço
               de quando foram fechados.
             </p>
           </Modal>
@@ -735,7 +735,7 @@ function FeedbackSection() {
     <Section
       id="feedback"
       title="Skeleton, Spinner e Toast"
-      note="O esqueleto e aria-hidden — vinte retangulos cinza nao sao informacao. Quem anuncia o carregamento e o Spinner."
+      note="O esqueleto e aria-hidden — vinte retangulos cinza não são informação. Quem anuncia o carregamento e o Spinner."
     >
       <div className={styles.samples}>
         <Sample label="Skeleton">
@@ -766,7 +766,7 @@ function FeedbackSection() {
             />
             <Toast
               variant="danger"
-              title="Nao foi possivel salvar"
+              title="Não foi possível salvar"
               description="Tente novamente em instantes."
             />
           </div>
@@ -800,8 +800,8 @@ function FeedbackSection() {
               onClick={() => {
                 toast({
                   variant: 'danger',
-                  title: 'Nao foi possivel salvar',
-                  description: 'Confira sua conexao.',
+                  title: 'Não foi possível salvar',
+                  description: 'Confira sua conexão.',
                 });
               }}
             >
@@ -826,40 +826,40 @@ function NavigationSection() {
       <div className={`${styles.samples} ${styles.wide}`}>
         <Sample label="Tabs" wide>
           <Tabs defaultValue="descricao">
-            <TabList aria-label="Informacoes do produto">
-              <Tab value="descricao">Descricao</Tab>
+            <TabList aria-label="Informações do produto">
+              <Tab value="descricao">Descrição</Tab>
               <Tab value="notas">Notas olfativas</Tab>
               <Tab value="entrega">Entrega</Tab>
               <Tab value="indisponivel" disabled>
-                Avaliacoes
+                Avaliações
               </Tab>
             </TabList>
 
             <TabPanel value="descricao">
-              Perfume amadeirado de longa fixacao, com abertura citrica e fundo de baunilha.
+              Perfume amadeirado de longa fixação, com abertura cítrica e fundo de baunilha.
             </TabPanel>
-            <TabPanel value="notas">Bergamota, ambar, baunilha e cedro.</TabPanel>
+            <TabPanel value="notas">Bergamota, âmbar, baunilha e cedro.</TabPanel>
             <TabPanel value="entrega">
               Entrega com taxa fixa nas cidades atendidas, ou retirada na loja.
             </TabPanel>
-            <TabPanel value="indisponivel">Ainda nao ha avaliacoes.</TabPanel>
+            <TabPanel value="indisponivel">Ainda não há avaliações.</TabPanel>
           </Tabs>
         </Sample>
 
         <Sample label="Accordion" wide>
           <Accordion defaultOpen={['entrega']}>
             <AccordionItem value="entrega" title="Como funciona a entrega?">
-              Taxa fixa por cidade atendida, definida no painel. Fora delas, so retirada na loja.
+              Taxa fixa por cidade atendida, definida no painel. Fora delas, só retirada na loja.
             </AccordionItem>
             <AccordionItem value="pagamento" title="Quais formas de pagamento?">
-              PIX, com desconto a vista, e cartao em ate doze vezes. O pagamento e combinado pelo
-              WhatsApp — nenhum dado de cartao passa pelo site.
+              PIX, com desconto a vista, e cartão em até doze vezes. O pagamento e combinado pelo
+              WhatsApp — nenhum dado de cartão passa pelo site.
             </AccordionItem>
             <AccordionItem value="troca" title="Posso trocar?">
-              Perfume lacrado pode ser trocado em ate sete dias.
+              Perfume lacrado pode ser trocado em até sete dias.
             </AccordionItem>
             <AccordionItem value="fechado" title="Item desabilitado" disabled>
-              Este item nao abre.
+              Este item não abre.
             </AccordionItem>
           </Accordion>
         </Sample>
@@ -877,13 +877,13 @@ function PathSection() {
     <Section
       id="caminho"
       title="Breadcrumb e Pagination"
-      note="No celular os numeros da paginacao somem e ficam as setas com o resumo: doze alvos de toque lado a lado ficam menores que o dedo."
+      note="No celular os números da paginação somem e ficam as setas com o resumo: doze alvos de toque lado a lado ficam menores que o dedo."
     >
       <div className={styles.samples}>
         <Sample label="Breadcrumb" wide>
           <Breadcrumb
             items={[
-              { label: 'Inicio', to: '/' },
+              { label: 'Início', to: '/' },
               { label: 'Masculino', to: '/' },
               { label: 'Asad Lattafa 100ml' },
             ]}
@@ -892,7 +892,7 @@ function PathSection() {
 
         <Sample label="Pagination" wide>
           <Pagination page={page} totalPages={12} onPageChange={setPage} />
-          <p className={styles.sectionNote}>Pagina atual: {page}</p>
+          <p className={styles.sectionNote}>Página atual: {page}</p>
         </Sample>
       </div>
     </Section>
@@ -906,14 +906,14 @@ function EmptySection() {
     <Section
       id="vazio"
       title="EmptyState"
-      note="Nunca e so 'nada encontrado': diz o que aconteceu e oferece a saida."
+      note="Nunca e só 'nada encontrado': diz o que aconteceu e oferece a saída."
     >
       <div className={styles.samples}>
         <Sample label="Busca sem resultado">
           <EmptyState
             icon="◇"
             title="Nenhum perfume encontrado"
-            description="Nao achamos nada para essa busca. Talvez em outra categoria?"
+            description="Não achamos nada para essa busca. Talvez em outra categoria?"
             actions={<Button variant="secondary">Ver todos os perfumes</Button>}
           />
         </Sample>
@@ -922,7 +922,7 @@ function EmptySection() {
           <EmptyState
             compact
             title="Sua sacola esta vazia"
-            description="Os perfumes que voce escolher aparecem aqui."
+            description="Os perfumes que você escolher aparecem aqui."
             actions={<Button size="small">Ver a vitrine</Button>}
           />
         </Sample>

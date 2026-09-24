@@ -35,7 +35,7 @@ function user(role: UserRole): AuthenticatedUser {
 }
 
 describe('RolesGuard', () => {
-  it('rota sem @Roles exige apenas autenticacao', () => {
+  it('rota sem @Roles exige apenas autenticação', () => {
     expect(buildGuard(undefined).canActivate(buildContext(user(USER_ROLES.STAFF)))).toBe(true);
   });
 
@@ -59,7 +59,7 @@ describe('RolesGuard', () => {
     );
   });
 
-  it('recusa quando nao ha usuario: rota com @Roles e @Public e configuracao errada', () => {
+  it('recusa quando não há usuário: rota com @Roles e @Public e configuração errada', () => {
     const guard = buildGuard([...MANAGES_STORE]);
 
     expect(() => guard.canActivate(buildContext())).toThrow(ForbiddenException);

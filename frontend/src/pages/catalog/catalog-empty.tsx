@@ -66,7 +66,7 @@ export function CatalogEmpty({ title, description, onClear }: CatalogEmptyProps)
       {isPending || suggestions.length > 0 ? (
         <section className={styles.suggestions} aria-labelledby="catalogo-sugestoes">
           <h3 className={styles.suggestionsTitle} id="catalogo-sugestoes">
-            Talvez voce goste
+            Talvez você goste
           </h3>
 
           <ProductGrid

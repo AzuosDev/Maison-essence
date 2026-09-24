@@ -32,10 +32,10 @@ import type { UserView } from './user.view.js';
 
 const DUPLICATE_KEY = 11000;
 
-export const EMAIL_TAKEN_MESSAGE = 'Ja existe um usuario com esse e-mail.';
-export const SELF_DEACTIVATION_MESSAGE = 'Voce nao pode desativar a si mesmo.';
+export const EMAIL_TAKEN_MESSAGE = 'Já existe um usuário com esse e-mail.';
+export const SELF_DEACTIVATION_MESSAGE = 'Você não pode desativar a si mesmo.';
 export const LAST_SUPER_ADMIN_MESSAGE =
-  'Este e o ultimo SUPER_ADMIN ativo: promova outro antes de mexer neste.';
+  'Este e o último SUPER_ADMIN ativo: promova outro antes de mexer neste.';
 
 /** Senha temporaria devolvida uma unica vez, na resposta do reset. */
 export interface PasswordResetResult {

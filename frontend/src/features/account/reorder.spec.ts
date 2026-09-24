@@ -75,7 +75,7 @@ function quote(items: QuoteLine[]): CartQuote {
   };
 }
 
-test('as linhas do pedido viram o corpo da cotacao, sem preco', () => {
+test('as linhas do pedido viram o corpo da cotação, sem preço', () => {
   // Preco nenhum atravessa: quem diz quanto custa hoje e o servidor, e um
   // valor de meses atras na sacola seria um numero que ninguem vai cobrar.
   expect(reorderItems([item(), item({ productId: 'p2', quantity: 1 })])).toEqual([
@@ -93,7 +93,7 @@ test('o item que continua a venda entra com a quantidade do pedido', () => {
   expect(plan.dropped).toEqual([]);
 });
 
-test('a dica vem da cotacao, porque so ela tem o slug', () => {
+test('a dica vem da cotação, porque só ela tem o slug', () => {
   // O pedido guarda nome e foto, mas nao o endereco do produto. Sem o slug,
   // a gaveta da sacola desenharia o item sem link para a pagina dele.
   const plan = planReorder([item()], quote([line()]));
@@ -106,7 +106,7 @@ test('a dica vem da cotacao, porque so ela tem o slug', () => {
   });
 });
 
-test('o produto que saiu do catalogo nao entra, e o aviso diz qual foi', () => {
+test('o produto que saiu do catalogo não entra, e o aviso diz qual foi', () => {
   const plan = planReorder(
     [item()],
     quote([
@@ -137,15 +137,15 @@ test('o motivo e a frase do servidor, sem reescrita', () => {
       line({
         availableStock: 0,
         unavailable: true,
-        unavailableReason: 'Essa opcao nao esta mais a venda.',
+        unavailableReason: 'Essa opção não esta mais a venda.',
       }),
     ]),
   );
 
-  expect(plan.dropped[0]?.reason).toBe('Essa opcao nao esta mais a venda.');
+  expect(plan.dropped[0]?.reason).toBe('Essa opção não esta mais a venda.');
 });
 
-test('estoque menor que o pedido entra com o que resta, e nao e descartado', () => {
+test('estoque menor que o pedido entra com o que resta, e não e descartado', () => {
   // O caso que separa este planejador de um `filter`: o item **nao** saiu de
   // linha. Joga-lo fora obrigaria a cliente a procurar o perfume no catalogo
   // e adicionar a mao o que ja estava ali.
@@ -169,7 +169,7 @@ test('estoque menor que o pedido entra com o que resta, e nao e descartado', () 
   expect(plan.adjusted[0]?.requested).toBe(3);
 });
 
-test('o que decide entre acabou e diminuiu e o estoque, nao o texto', () => {
+test('o que decide entre acabou e diminuiu e o estoque, não o texto', () => {
   // Produto fora do catalogo e opcao desativada chegam sempre com estoque
   // zero — nem variante existe para consultar. Ler a frase para decidir
   // amarraria o planejador a redacao do backend.
@@ -182,7 +182,7 @@ test('o que decide entre acabou e diminuiu e o estoque, nao o texto', () => {
   expect(semEstoque.adjusted).toEqual([]);
 });
 
-test('pedido misto separa os tres montes de uma vez', () => {
+test('pedido misto separa os três montes de uma vez', () => {
   const plan = planReorder(
     [
       item({ productId: 'p1', productName: 'Asad' }),
@@ -227,7 +227,7 @@ test('pedido inteiro fora do catalogo produz um plano vazio', () => {
   expect(isEmptyPlan(plan)).toBe(true);
 });
 
-test('linha pedida que nao volta na cotacao fica de fora com uma frase honesta', () => {
+test('linha pedida que não volta na cotação fica de fora com uma frase honesta', () => {
   // Nao deveria acontecer — o servidor devolve todas as linhas, inclusive as
   // indisponiveis. Se acontecer, o item nao entra no escuro.
   const plan = planReorder([item()], quote([]));

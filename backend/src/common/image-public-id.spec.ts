@@ -7,7 +7,7 @@ describe('isImagePublicId', () => {
     expect(isImagePublicId('maison-essence/banners/natal-2026-7f0c')).toBe(true);
   });
 
-  it('recusa pasta que nao e da loja', () => {
+  it('recusa pasta que não e da loja', () => {
     expect(isImagePublicId('maison-essence/recibos/nota-1')).toBe(false);
     expect(isImagePublicId('outra-conta/products/asad')).toBe(false);
   });

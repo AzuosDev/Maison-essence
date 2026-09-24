@@ -38,7 +38,7 @@ describe('TokenService', () => {
   const jwt = new JwtService();
   const tokens = new TokenService(jwt, buildConfig());
 
-  it('assina o access token com sub, email, papel e versao da credencial', async () => {
+  it('assina o access token com sub, email, papel e versão da credencial', async () => {
     const user = buildUser();
     const token = await tokens.signAccessToken(user);
     const payload = await tokens.verifyAccessToken(token);
@@ -68,7 +68,7 @@ describe('TokenService', () => {
     });
   });
 
-  it('nao aceita refresh token no lugar do access token', async () => {
+  it('não aceita refresh token no lugar do access token', async () => {
     const refresh = await tokens.signRefreshToken(
       new Types.ObjectId().toHexString(),
       new Types.ObjectId().toHexString(),

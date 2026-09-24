@@ -120,7 +120,7 @@ export class AuthService {
     if (!user || !user.isActive) {
       await this.sessions.revokeAllSessions(adminOwner(claimed.ownerId));
 
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     return this.issueSession(user, context.userAgent, claimed.tokenId);
@@ -169,7 +169,7 @@ export class AuthService {
     const stored = await this.users.findById(userId).select('+passwordHash').exec();
 
     if (!stored) {
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     const matches = await this.passwords.verify(stored.passwordHash, dto.currentPassword);
@@ -194,7 +194,7 @@ export class AuthService {
       .exec();
 
     if (!updated) {
-      throw new UnauthorizedException('Sessao invalida.');
+      throw new UnauthorizedException('Sessão inválida.');
     }
 
     await this.sessions.revokeRefreshTokens(adminOwner(userId));
@@ -213,7 +213,7 @@ export class AuthService {
     const owner = adminOwner(new Types.ObjectId(userId));
     const revoked = await this.sessions.revokeAllSessions(owner);
 
-    this.logger.log(`Logout global do usuario ${userId}: ${revoked} sessoes revogadas`);
+    this.logger.log(`Logout global do usuário ${userId}: ${revoked} sessões revogadas`);
   }
 
   private async issueSession(

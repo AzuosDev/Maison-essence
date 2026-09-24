@@ -5,10 +5,10 @@ import { USER_ROLES } from '../../common/enums/user-role.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import type { User } from './schemas/user.schema.js';
 
-export const USER_NOT_FOUND_MESSAGE = 'Usuario nao encontrado.';
-export const OUT_OF_REACH_MESSAGE = 'Voce so pode gerenciar usuarios STAFF.';
-export const ROLE_NOT_ALLOWED_MESSAGE = 'Voce so pode atribuir o papel STAFF.';
-export const OWN_ROLE_MESSAGE = 'Nao e possivel mudar o proprio papel.';
+export const USER_NOT_FOUND_MESSAGE = 'Usuário não encontrado.';
+export const OUT_OF_REACH_MESSAGE = 'Você só pode gerenciar usuários STAFF.';
+export const ROLE_NOT_ALLOWED_MESSAGE = 'Você só pode atribuir o papel STAFF.';
+export const OWN_ROLE_MESSAGE = 'Não e possível mudar o próprio papel.';
 
 /** Alvo minimo para as decisoes de acesso: papel e identidade. */
 export interface UserTarget {

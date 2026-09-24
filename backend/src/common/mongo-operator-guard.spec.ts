@@ -1,7 +1,7 @@
 import { findForbiddenKey } from './mongo-operator-guard.js';
 
 describe('findForbiddenKey', () => {
-  it('deixa passar o corpo que so tem campos normais', () => {
+  it('deixa passar o corpo que só tem campos normais', () => {
     expect(
       findForbiddenKey({
         name: 'Asad',
@@ -29,7 +29,7 @@ describe('findForbiddenKey', () => {
     expect(findForbiddenKey({ 'role.0': 'SUPER_ADMIN' })).toBe('role.0');
   });
 
-  it('nao se perde em corpo fundo demais: para no teto e nao estoura a pilha', () => {
+  it('não se perde em corpo fundo demais: para no teto e não estoura a pilha', () => {
     const deep: Record<string, unknown> = {};
     let cursor = deep;
 
@@ -43,7 +43,7 @@ describe('findForbiddenKey', () => {
     expect(findForbiddenKey(deep)).toBeNull();
   });
 
-  it('nao opina sobre corpo ausente ou primitivo', () => {
+  it('não opina sobre corpo ausente ou primitivo', () => {
     expect(findForbiddenKey(undefined)).toBeNull();
     expect(findForbiddenKey('texto')).toBeNull();
     expect(findForbiddenKey(null)).toBeNull();

@@ -153,9 +153,9 @@ export interface SettingsWarning {
 export const PAGE_LABELS: Record<InstitutionalPageSlug, string> = {
   [INSTITUTIONAL_PAGE_SLUGS.ABOUT]: 'Quem somos',
   [INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY]: 'Como comprar',
-  [INSTITUTIONAL_PAGE_SLUGS.RETURNS]: 'Trocas e devolucoes',
+  [INSTITUTIONAL_PAGE_SLUGS.RETURNS]: 'Trocas e devoluções',
   [INSTITUTIONAL_PAGE_SLUGS.FAQ]: 'Perguntas frequentes',
-  [INSTITUTIONAL_PAGE_SLUGS.PRIVACY]: 'Politica de privacidade',
+  [INSTITUTIONAL_PAGE_SLUGS.PRIVACY]: 'Política de privacidade',
 };
 
 export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
@@ -297,7 +297,7 @@ const MIN_WHATSAPP_DIGITS = 12;
 const MAX_WHATSAPP_DIGITS = 15;
 
 export const WHATSAPP_MESSAGE =
-  'Escreva o numero com DDD, como (88) 99999-9999. Ele e o destino de todo pedido da loja.';
+  'Escreva o número com DDD, como (88) 99999-9999. Ele e o destino de todo pedido da loja.';
 
 /**
  * O numero em formato internacional, ou `null` quando nao e um telefone.
@@ -390,11 +390,11 @@ export function validateSettings(
   const email = draft.contactEmail.trim();
 
   if (email !== '' && !EMAIL.test(email)) {
-    errors.contactEmail = 'Escreva um e-mail valido.';
+    errors.contactEmail = 'Escreva um e-mail válido.';
   } else if (email === '' && settings.contactEmail !== '') {
     // O servidor valida o campo como e-mail, e texto vazio nao passa por ali.
     // Melhor dizer isso do que devolver um 400 sem explicacao.
-    errors.contactEmail = 'O e-mail nao pode ser apagado por aqui — escreva outro no lugar.';
+    errors.contactEmail = 'O e-mail não pode ser apagado por aqui — escreva outro no lugar.';
   }
 
   if (draft.announcementText.length > SETTINGS_LIMITS.announcementText) {
@@ -402,16 +402,16 @@ export function validateSettings(
   }
 
   if (draft.businessHours.length > SETTINGS_LIMITS.businessHours) {
-    errors.businessHours = 'Esse texto e longo demais para o rodape.';
+    errors.businessHours = 'Esse texto e longo demais para o rodapé.';
   }
 
   if (draft.pickupInstructions.length > SETTINGS_LIMITS.pickupInstructions) {
-    errors.pickupInstructions = 'Essas instrucoes sao longas demais.';
+    errors.pickupInstructions = 'Essas instruções são longas demais.';
   }
 
   for (const rede of ['instagram', 'tiktok'] as const) {
     if (draft[rede].length > SETTINGS_LIMITS.socialLink) {
-      errors[rede] = 'Esse endereco e longo demais.';
+      errors[rede] = 'Esse endereço e longo demais.';
     }
   }
 
@@ -419,7 +419,7 @@ export function validateSettings(
     const free = centsFromInput(draft.freeShippingMin);
 
     if (free === null || free < 0) {
-      errors.freeShippingMin = 'Escreva o valor a partir do qual o frete sai de graca.';
+      errors.freeShippingMin = 'Escreva o valor a partir do qual o frete sai de graça.';
     } else if (free > SETTINGS_LIMITS.freeShippingMinCents) {
       errors.freeShippingMin = 'Esse valor passa do limite do sistema.';
     }
@@ -496,7 +496,7 @@ function validateBanners(banners: readonly BannerDraft[]): Record<string, Banner
     }
 
     if (banner.title.length > SETTINGS_LIMITS.bannerTitle) {
-      errors.title = 'O titulo e longo demais para caber na arte.';
+      errors.title = 'O título e longo demais para caber na arte.';
     }
 
     if (banner.subtitle.length > SETTINGS_LIMITS.bannerSubtitle) {
@@ -504,11 +504,11 @@ function validateBanners(banners: readonly BannerDraft[]): Record<string, Banner
     }
 
     if (banner.buttonLabel.length > SETTINGS_LIMITS.bannerButtonLabel) {
-      errors.buttonLabel = 'O texto do botao e longo demais.';
+      errors.buttonLabel = 'O texto do botão e longo demais.';
     }
 
     if (banner.link.length > SETTINGS_LIMITS.bannerLink) {
-      errors.link = 'Esse endereco e longo demais.';
+      errors.link = 'Esse endereço e longo demais.';
     }
 
     // Um banner que termina antes de comecar nunca apareceria, e a tela
@@ -519,7 +519,7 @@ function validateBanners(banners: readonly BannerDraft[]): Record<string, Banner
       new Date(dayEndISO(banner.endsOn)).getTime() <=
         new Date(dayStartISO(banner.startsOn)).getTime()
     ) {
-      errors.window = 'O ultimo dia vem antes do primeiro.';
+      errors.window = 'O último dia vem antes do primeiro.';
     }
 
     if (Object.keys(errors).length > 0) {
@@ -540,9 +540,9 @@ function validatePages(
     const title = page.title.trim();
 
     if (title.length < 2) {
-      errors.title = 'Escreva o titulo da pagina.';
+      errors.title = 'Escreva o título da página.';
     } else if (title.length > SETTINGS_LIMITS.pageTitle) {
-      errors.title = 'O titulo e longo demais.';
+      errors.title = 'O título e longo demais.';
     }
 
     if (page.content.length > SETTINGS_LIMITS.pageContent) {
@@ -574,14 +574,14 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
   if (draft.whatsapp.trim() === '') {
     warnings.push({
       scope: 'store',
-      text: 'Sem numero de WhatsApp, o pedido fechado no site nao tem para onde ser enviado.',
+      text: 'Sem número de WhatsApp, o pedido fechado no site não tem para onde ser enviado.',
     });
   }
 
   if (draft.pickupEnabled && draft.pickupAddress.street.trim() === '') {
     warnings.push({
       scope: 'pickup',
-      text: 'A retirada esta ligada e sem endereco: a cliente escolhe retirar e nao ve onde.',
+      text: 'A retirada esta ligada e sem endereço: a cliente escolhe retirar e não vê onde.',
     });
   }
 
@@ -592,8 +592,8 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
       scope: 'banners',
       text:
         semArte === 1
-          ? 'Um banner nao tem arte de celular e vai usar a de computador, que costuma cortar mal no retrato.'
-          : `${String(semArte)} banners nao tem arte de celular e vao usar a de computador, que costuma cortar mal no retrato.`,
+          ? 'Um banner não tem arte de celular e vai usar a de computador, que costuma cortar mal no retrato.'
+          : `${String(semArte)} banners não tem arte de celular e vao usar a de computador, que costuma cortar mal no retrato.`,
     });
   }
 
@@ -602,7 +602,7 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
   if (vazias.length > 0) {
     warnings.push({
       scope: 'pages',
-      text: `${vazias.map((page) => PAGE_LABELS[page.slug]).join(', ')}: publicada sem texto, o link do rodape abre uma pagina em branco.`,
+      text: `${vazias.map((page) => PAGE_LABELS[page.slug]).join(', ')}: publicada sem texto, o link do rodapé abre uma página em branco.`,
     });
   }
 

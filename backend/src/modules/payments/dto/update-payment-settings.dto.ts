@@ -38,7 +38,7 @@ export class UpdatePaymentSettingsDto {
   pixKey?: string;
 
   @IsOptional()
-  @IsIn(PIX_KEY_TYPE_VALUES, { message: 'tipo de chave PIX invalido' })
+  @IsIn(PIX_KEY_TYPE_VALUES, { message: 'tipo de chave PIX inválido' })
   pixKeyType?: PixKeyType;
 
   /** Desconto sobre o subtotal de produtos. Nunca sobre a entrega. */
@@ -74,14 +74,14 @@ export class UpdatePaymentSettingsDto {
    * maquininha cobra, e arredondar para 2% muda a ultima parcela.
    */
   @IsOptional()
-  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'os juros ao mes aceitam ate duas casas' })
+  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'os juros ao mês aceitam até duas casas' })
   @Min(0)
   @Max(MAX_MONTHLY_INTEREST_PERCENT)
   monthlyInterestPercent?: number;
 
   /** Abaixo disto a opcao de parcelamento nao e oferecida. */
   @IsOptional()
-  @IsInt({ message: 'a parcela minima deve ser um inteiro em centavos' })
+  @IsInt({ message: 'a parcela mínima deve ser um inteiro em centavos' })
   @Min(0)
   @Max(MAX_CENTS)
   minInstallmentCents?: number;

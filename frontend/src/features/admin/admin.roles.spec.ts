@@ -19,11 +19,11 @@ import {
  * quem so deveria atender.
  */
 
-test('o STAFF alcanca o inicio e os pedidos, e mais nada', () => {
+test('o STAFF alcanca o início e os pedidos, e mais nada', () => {
   expect(areasFor(USER_ROLES.STAFF)).toEqual(['home', 'orders']);
 });
 
-test('o gerente alcanca a loja, menos configuracoes e sistema', () => {
+test('o gerente alcanca a loja, menos configurações e sistema', () => {
   // As duas que sobram sao as que nao pertencem ao dia de vender: a area de
   // sistema e a moldura da loja, que se acerta uma vez na implantacao.
   expect(areasFor(USER_ROLES.OWNER)).toEqual(
@@ -31,7 +31,7 @@ test('o gerente alcanca a loja, menos configuracoes e sistema', () => {
   );
 });
 
-test('so o administrador do sistema alcanca todas as areas', () => {
+test('só o administrador do sistema alcanca todas as áreas', () => {
   expect(areasFor(USER_ROLES.SUPER_ADMIN)).toEqual([...ADMIN_AREAS]);
 });
 
@@ -42,13 +42,13 @@ test('sem papel nenhum, nada se abre', () => {
   expect(canSee(undefined, 'home')).toBe(false);
 });
 
-test('o STAFF nao ve preco', () => {
+test('o STAFF não vê preço', () => {
   expect(canSeePrices(USER_ROLES.STAFF)).toBe(false);
   expect(canSeePrices(USER_ROLES.OWNER)).toBe(true);
   expect(canSeePrices(USER_ROLES.SUPER_ADMIN)).toBe(true);
 });
 
-test('o STAFF nao escreve no catalogo, e o gerente escreve', () => {
+test('o STAFF não escreve no catalogo, e o gerente escreve', () => {
   // `canManageStore` continua valendo para catalogo, entrega e pagamento — o
   // que saiu dele foram as configuracoes, que agora passam por `canSee`.
   expect(canManageStore(USER_ROLES.STAFF)).toBe(false);
@@ -71,14 +71,14 @@ test('o catalogo e a entrega ficam fechados para o STAFF', () => {
  * a criacao de usuarios nas maos de quem nao deve te-la.
  */
 
-test('o item Sistema so existe para o administrador do sistema', () => {
+test('o item Sistema só existe para o administrador do sistema', () => {
   expect(canSee(USER_ROLES.SUPER_ADMIN, 'system')).toBe(true);
   expect(canSee(USER_ROLES.OWNER, 'system')).toBe(false);
   expect(canSee(USER_ROLES.STAFF, 'system')).toBe(false);
   expect(canSee(undefined, 'system')).toBe(false);
 });
 
-test('Configuracoes so existe para o administrador do sistema', () => {
+test('Configurações só existe para o administrador do sistema', () => {
   // Nao e area de atendimento nem de operacao: o numero para onde vai todo
   // pedido e o carrossel da home nao se mudam no dia a dia de vender.
   expect(canSee(USER_ROLES.SUPER_ADMIN, 'settings')).toBe(true);
@@ -93,7 +93,7 @@ test('o menu do gerente termina em Pagamento', () => {
   expect(areas.at(-1)).toBe('payments');
 });
 
-test('canManageSystem responde o mesmo que a area', () => {
+test('canManageSystem responde o mesmo que a área', () => {
   expect(canManageSystem(USER_ROLES.SUPER_ADMIN)).toBe(true);
   expect(canManageSystem(USER_ROLES.OWNER)).toBe(false);
   expect(canManageSystem(USER_ROLES.STAFF)).toBe(false);

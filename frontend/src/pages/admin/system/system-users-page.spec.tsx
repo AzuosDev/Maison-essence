@@ -147,49 +147,49 @@ function abrirSistema() {
 
 /* ---- O recorte por papel -------------------------------------------------- */
 
-test('o OWNER que digita a URL recebe a tela de acesso negado, e nao um erro', async () => {
+test('o OWNER que digita a URL recebe a tela de acesso negado, e não um erro', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirSistema();
 
-  expect(await screen.findByText(/Esta area e do administrador do sistema/)).toBeDefined();
+  expect(await screen.findByText(/Esta área e do administrador do sistema/)).toBeDefined();
 
   // A tabela de usuarios nao chega a existir.
   expect(screen.queryByRole('table')).toBeNull();
 
   // E o caminho de volta esta na tela: ela nao e um beco sem saida.
-  expect(screen.getByRole('link', { name: /Voltar para o inicio/ })).toBeDefined();
+  expect(screen.getByRole('link', { name: /Voltar para o início/ })).toBeDefined();
 });
 
-test('o OWNER nao ve Sistema nem Configuracoes na sidebar', () => {
+test('o OWNER não vê Sistema nem Configurações na sidebar', () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirSistema();
 
-  const menu = screen.getByRole('navigation', { name: 'Areas do painel' });
+  const menu = screen.getByRole('navigation', { name: 'Áreas do painel' });
 
   expect(within(menu).queryByRole('link', { name: 'Sistema' })).toBeNull();
-  expect(within(menu).queryByRole('link', { name: 'Configuracoes' })).toBeNull();
+  expect(within(menu).queryByRole('link', { name: 'Configurações' })).toBeNull();
 
   // O que ele opera continua ali: o menu nao encolheu por acidente.
   expect(within(menu).getByRole('link', { name: 'Pedidos' })).toBeDefined();
   expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
 });
 
-test('o STAFF tambem nao entra', async () => {
+test('o STAFF também não entra', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrirSistema();
 
-  expect(await screen.findByText(/Esta area e do administrador do sistema/)).toBeDefined();
+  expect(await screen.findByText(/Esta área e do administrador do sistema/)).toBeDefined();
 });
 
-test('o administrador do sistema ve o item e a lista', async () => {
+test('o administrador do sistema vê o item e a lista', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrirSistema();
 
-  const menu = screen.getByRole('navigation', { name: 'Areas do painel' });
+  const menu = screen.getByRole('navigation', { name: 'Áreas do painel' });
 
   expect(within(menu).getByRole('link', { name: 'Sistema' })).toBeDefined();
   expect(await screen.findByText('bianca@maisonessence.test')).toBeDefined();
@@ -197,7 +197,7 @@ test('o administrador do sistema ve o item e a lista', async () => {
 
 /* ---- A lista -------------------------------------------------------------- */
 
-test('quem nunca entrou aparece assim, e nao com um traco', async () => {
+test('quem nunca entrou aparece assim, e não com um traco', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrirSistema();
@@ -205,7 +205,7 @@ test('quem nunca entrou aparece assim, e nao com um traco', async () => {
   // Conta criada e nunca usada: a senha entregue talvez ainda esteja num
   // bilhete, e e isso que a coluna precisa dizer.
   expect(await screen.findByText('nunca entrou')).toBeDefined();
-  expect(screen.getByText('Senha temporaria')).toBeDefined();
+  expect(screen.getByText('Senha temporária')).toBeDefined();
 });
 
 test('a busca filtra por nome e por e-mail, sem ir ao servidor', async () => {
@@ -225,7 +225,7 @@ test('a busca filtra por nome e por e-mail, sem ir ao servidor', async () => {
 
 /* ---- A confirmacao -------------------------------------------------------- */
 
-test('desativar pede confirmacao e mostra o e-mail do alvo', async () => {
+test('desativar pede confirmação e mostra o e-mail do alvo', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
@@ -234,7 +234,7 @@ test('desativar pede confirmacao e mostra o e-mail do alvo', async () => {
 
   await screen.findByText('bianca@maisonessence.test');
 
-  await user.click(screen.getByRole('button', { name: 'Acoes de Bianca Lima' }));
+  await user.click(screen.getByRole('button', { name: 'Ações de Bianca Lima' }));
   await user.click(screen.getByRole('button', { name: 'Desativar' }));
 
   const dialog = await screen.findByRole('dialog');
@@ -246,7 +246,7 @@ test('desativar pede confirmacao e mostra o e-mail do alvo', async () => {
   expect(within(dialog).getByText('bianca@maisonessence.test')).toBeDefined();
 });
 
-test('a propria conta nao oferece a opcao de se desativar', async () => {
+test('a própria conta não oferece a opção de se desativar', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);
@@ -255,7 +255,7 @@ test('a propria conta nao oferece a opcao de se desativar', async () => {
 
   await screen.findByText('rayane@maisonessence.test');
 
-  await user.click(screen.getByRole('button', { name: 'Acoes de Rayane Souza' }));
+  await user.click(screen.getByRole('button', { name: 'Ações de Rayane Souza' }));
 
   expect(screen.queryByRole('button', { name: 'Desativar' })).toBeNull();
   expect(screen.getByRole('button', { name: /Resetar senha/ })).toBeDefined();
@@ -280,7 +280,7 @@ test('criar um acesso mostra a senha uma vez, e e a mesma que foi enviada', asyn
 
   expect(await screen.findByText('Acesso criado')).toBeDefined();
 
-  const shown = screen.getByLabelText(/Senha temporaria de nova@maisonessence.test/);
+  const shown = screen.getByLabelText(/Senha temporária de nova@maisonessence.test/);
 
   // A senha que a tela mostra e exatamente a que o servidor recebeu: se
   // fossem duas, a pessoa receberia uma senha que nao entra.
@@ -292,10 +292,10 @@ test('criar um acesso mostra a senha uma vez, e e a mesma que foi enviada', asyn
   expect(shown.textContent).toHaveLength(16);
 
   // E o aviso de que ela nao volta.
-  expect(screen.getByText(/nao aparece de novo/)).toBeDefined();
+  expect(screen.getByText(/não aparece de novo/)).toBeDefined();
 });
 
-test('fechar o dialogo apaga a senha da tela para sempre', async () => {
+test('fechar o diálogo apaga a senha da tela para sempre', async () => {
   const user = userEvent.setup();
 
   signInAs(USER_ROLES.SUPER_ADMIN);

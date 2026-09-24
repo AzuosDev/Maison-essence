@@ -45,14 +45,14 @@ export class ListPublicProductsDto {
   // vitrine e um slider que ja trabalha com o mesmo numero do card.
   @IsOptional()
   @Type(() => Number)
-  @IsInt({ message: 'preco minimo invalido' })
+  @IsInt({ message: 'preço mínimo inválido' })
   @Min(0)
   @Max(MAX_CENTS)
   minPrice?: number;
 
   @IsOptional()
   @Type(() => Number)
-  @IsInt({ message: 'preco maximo invalido' })
+  @IsInt({ message: 'preço máximo inválido' })
   @Min(0)
   @Max(MAX_CENTS)
   maxPrice?: number;
@@ -74,7 +74,7 @@ export class ListPublicProductsDto {
 
   /** Sem `sort`, a vitrine ordena por relevancia se ha busca e por novidade se nao ha. */
   @IsOptional()
-  @IsIn(PUBLIC_SORTS, { message: 'ordenacao invalida' })
+  @IsIn(PUBLIC_SORTS, { message: 'ordenação inválida' })
   sort?: PublicSort;
 
   @IsOptional()
@@ -88,7 +88,7 @@ export class ListPublicProductsDto {
   @IsInt()
   @Min(1)
   @Max(MAX_PUBLIC_PAGE_SIZE, {
-    message: `a vitrine devolve no maximo ${MAX_PUBLIC_PAGE_SIZE} produtos por pagina`,
+    message: `a vitrine devolve no máximo ${MAX_PUBLIC_PAGE_SIZE} produtos por página`,
   })
   limit?: number = PUBLIC_PAGE_SIZE;
 }
