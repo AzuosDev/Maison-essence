@@ -9,7 +9,7 @@ import {
   useIsSignedIn,
   useMustChangePassword,
 } from '@/features/admin';
-import { ThemeToggle } from '@/features/theme';
+import { ThemeIconButton } from '@/features/theme';
 import { cx } from '@/lib/cx';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { ROUTES } from '../routes';
@@ -78,16 +78,7 @@ export function AdminLayout() {
 
           <AdminNav />
 
-          {/*
-            O tema tambem se troca daqui.
-
-            O controle da loja mora no rodape, e o painel nao tem rodape: sem
-            este, a dona teria de sair do painel, achar o rodape da loja e
-            voltar. Sao o mesmo estado — trocar aqui muda a marcacao la.
-          */}
-          <ThemeToggle className={styles.theme} />
-
-          <SignOutButton onSignOut={signOut} />
+          <Footer onSignOut={signOut} />
         </aside>
       ) : null}
 
@@ -133,9 +124,7 @@ export function AdminLayout() {
         >
           <AdminNav onNavigate={closeMenu} />
 
-          <ThemeToggle className={styles.theme} />
-
-          <SignOutButton onSignOut={signOut} />
+          <Footer onSignOut={signOut} />
         </Drawer>
       )}
     </div>
@@ -152,17 +141,38 @@ function Brand() {
 }
 
 /**
- * Sair.
+ * O pe da coluna: sair, e o tema.
  *
- * No pe da coluna, longe dos itens do menu: e a unica acao da moldura que
- * nao leva a lugar nenhum, e um clique errado nela custa um login inteiro no
- * meio do atendimento.
+ * ## Sair
+ *
+ * Longe dos itens do menu: e a unica acao da moldura que nao leva a lugar
+ * nenhum, e um clique errado nela custa um login inteiro no meio do
+ * atendimento.
+ *
+ * ## O tema
+ *
+ * Tambem se troca daqui. O controle da loja mora no rodape, e o painel nao
+ * tem rodape: sem este, quem opera teria de sair do painel, achar o rodape da
+ * loja e voltar. Sao o mesmo estado — trocar aqui muda a marcacao la.
+ *
+ * Aqui e um icone, e no rodape da loja sao tres segmentos, porque a coluna
+ * tem 15rem: a pilula de "Sistema Claro Escuro" nao cabia nela, e o que
+ * sobrava era uma barra de rolagem horizontal debaixo do menu. O icone tambem
+ * diz melhor o que este lugar e — no pe da coluna moram as duas coisas que
+ * nao sao a loja, e nenhuma delas merece o peso de um bloco com titulo.
+ *
+ * O par divide a linha: o rotulo a esquerda, onde comeca todo item do menu, e
+ * o alvo de 44px encostado na direita.
  */
-function SignOutButton({ onSignOut }: { onSignOut: () => void }) {
+function Footer({ onSignOut }: { onSignOut: () => void }) {
   return (
-    <button type="button" className={styles.signOut} onClick={onSignOut}>
-      <SignOutIcon className={styles.signOutIcon} />
-      Sair
-    </button>
+    <div className={styles.footer}>
+      <button type="button" className={styles.signOut} onClick={onSignOut}>
+        <SignOutIcon className={styles.signOutIcon} />
+        Sair
+      </button>
+
+      <ThemeIconButton className={styles.theme} />
+    </div>
   );
 }

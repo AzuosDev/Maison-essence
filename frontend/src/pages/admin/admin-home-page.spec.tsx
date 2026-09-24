@@ -234,6 +234,25 @@ test('o menu do STAFF tem duas areas', () => {
   expect(within(menu).queryByRole('link', { name: 'Produtos' })).toBeNull();
 });
 
+/**
+ * O tema, no pe da coluna, em um alvo so.
+ *
+ * O caso e negativo de proposito: o que se cobra aqui e que a pilula de tres
+ * segmentos **nao** voltou para a coluna de 15rem, onde ela passava da
+ * largura e punha uma barra de rolagem horizontal debaixo do menu. O que o
+ * botao faz quando clicado esta coberto em `theme-toggle.spec.tsx`, onde ha
+ * provedor de tema em volta.
+ */
+test('o tema no painel e um botao, e nao o grupo de tres opcoes', () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrirPainel();
+
+  expect(screen.getByRole('button', { name: /^Tema: / })).toBeDefined();
+  expect(screen.queryByRole('group', { name: 'Tema' })).toBeNull();
+  expect(screen.queryByRole('radio')).toBeNull();
+});
+
 test('o pedido esperando contato acende o card de alerta', async () => {
   signInAs(USER_ROLES.OWNER);
 

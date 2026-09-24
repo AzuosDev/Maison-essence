@@ -83,31 +83,44 @@
   color: var(--gold);
 }
 
-/* ---- Sair --------------------------------------------------------------- */
+/* ---- O pe: sair e o tema ------------------------------------------------- */
 
 /*
- * Empurrado para o pe da coluna pelo `margin-top: auto`, e nao por um bloco
- * vazio de altura fixa: a coluna cresce com o numero de itens do menu, que
- * muda com o papel de quem entrou.
- */
-/*
- * O controle de tema, no pe da coluna.
+ * Os dois na mesma linha, empurrados para o pe da coluna pelo
+ * `margin-top: auto`, e nao por um bloco vazio de altura fixa: a coluna
+ * cresce com o numero de itens do menu, que muda com o papel de quem entrou.
  *
- * Herda o `margin-top: auto` que era do "Sair": o par inteiro e que desce
- * para o pe, e quem empurra tem de ser o primeiro dos dois. Com o `auto` nos
- * dois, o vao livre se dividiria entre eles e os dois parariam no meio da
- * coluna.
- *
- * O recuo lateral alinha a pilula com o texto dos itens do menu, que tem o
- * filete de `--admin-item-border` a esquerda.
+ * O `auto` mora aqui, e nao nos dois filhos: com um em cada, o vao livre se
+ * dividiria entre eles e os dois parariam no meio da coluna.
  */
-.theme {
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
   margin-top: auto;
-  padding-inline: var(--space-12);
 }
 
-.theme + .signOut {
-  margin-top: var(--space-16);
+/*
+ * O botao de tema, encostado na direita.
+ *
+ * O componente vem pintado para o cabecalho da loja, que e claro: `--ink` ali
+ * e quase preto e sumiria contra esta coluna. Aqui ele recebe a aparencia do
+ * "Sair" ao lado — mesmo cinza parado, mesmo realce, mesmo chanfro de 4px —
+ * para que os dois leiam como um par, e nao como um botao e um enfeite.
+ *
+ * Sao variaveis do proprio componente (ver `theme-icon-button.module.css`), e
+ * nao regras daqui por cima das de la: duas classes com a mesma
+ * especificidade decidiriam no empate pela ordem em que o bundler junta os
+ * arquivos, que ninguem controla.
+ */
+.theme {
+  margin-left: auto;
+
+  --theme-button-ink: var(--muted);
+  --theme-button-hover-bg: var(--admin-item-active);
+  --theme-button-hover-ink: var(--slab-ink);
+  --theme-button-radius: var(--radius-chip);
 }
 
 .signOut {
@@ -115,7 +128,6 @@
   align-items: center;
   gap: var(--space-12);
 
-  margin-top: auto;
   margin-left: var(--admin-item-border);
 
   min-height: 2.75rem;

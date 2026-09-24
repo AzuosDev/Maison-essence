@@ -21,10 +21,10 @@ import {
 /**
  * O tema, vivo.
  *
- * Contexto e nao um hook solto por um motivo: o controle no rodape e o
- * controle na sidebar do painel precisam mostrar a mesma opcao marcada. Com
- * um hook por componente, cada um teria o proprio estado e os dois sairiam do
- * ar assim que alguem trocasse o tema por um deles.
+ * Contexto e nao um hook solto por um motivo: os tres segmentos no rodape da
+ * loja e o botao no pe da coluna do painel precisam mostrar a mesma escolha.
+ * Com um hook por componente, cada um teria o proprio estado e os dois
+ * sairiam do ar assim que alguem trocasse o tema por um deles.
  */
 
 interface ThemeContextValue {
@@ -82,9 +82,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
    * o segmento marcado pularia debaixo do olho de quem esta olhando para
    * ele.
    */
-  const [mode, setModeState] = useState<ThemeMode>(() =>
-    readStoredMode(safeStorage()),
-  );
+  const [mode, setModeState] = useState<ThemeMode>(() => readStoredMode(safeStorage()));
 
   const systemPrefersDark = useSystemPrefersDark();
   const resolved = resolveTheme(mode, systemPrefersDark);

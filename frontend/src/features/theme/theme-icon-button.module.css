@@ -1,18 +1,36 @@
 /*
- * O botao de tema do cabecalho.
+ * O botao de tema.
  *
  * Repete a caixa dos botoes de icone da loja — 44px de alvo, pilula, dourado
  * no hover — em vez de importar `icon-button.module.css`: aquele arquivo e de
  * `components/store`, e neste projeto `features` nao importa de `components`
  * (a direcao e a inversa, ver `theme-icons.tsx`). Quem usa este botao passa a
- * classe do cabecalho por cima para o que e posicao.
+ * classe do lugar por cima para o que e posicao.
  *
  * As medidas sao as mesmas de la de proposito. Se aquelas mudarem, estas
- * precisam mudar junto — o botao fica encostado nos outros tres e um alvo de
- * tamanho diferente no meio da fileira aparece.
+ * precisam mudar junto — no cabecalho o botao fica encostado nos outros tres,
+ * e um alvo de tamanho diferente no meio da fileira aparece.
+ *
+ * ## Por que as cores sao variaveis
+ *
+ * O padrao e o do cabecalho da loja, que e claro. O mesmo botao mora no pe da
+ * coluna do painel, que e preta nos dois temas: `--ink` ali seria tinta preta
+ * sobre fundo preto. Em vez de uma regra `:hover` de fora brigando por
+ * especificidade com a daqui, quem coloca o botao troca as variaveis —
+ * mesmo arranjo do `--toggle-ink` em `theme-toggle.module.css`.
+ *
+ * O canto esta entre elas pelo mesmo motivo de vizinhanca: a pilula e a forma
+ * de toda acao clicavel da loja, e a coluna do painel nao tem nenhuma — os
+ * itens de menu e o "Sair" sao chanfros de 4px. Um circulo ali seria a unica
+ * coisa redonda da coluna, e leria como peca emprestada da loja.
  */
 
 .button {
+  --theme-button-ink: var(--ink);
+  --theme-button-hover-bg: var(--gold-wash);
+  --theme-button-hover-ink: var(--gold-deep);
+  --theme-button-radius: var(--radius-pill);
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -27,8 +45,8 @@
   border: none;
   cursor: pointer;
 
-  color: var(--ink);
-  border-radius: var(--radius-pill);
+  color: var(--theme-button-ink);
+  border-radius: var(--theme-button-radius);
 
   transition:
     background-color var(--transition),
@@ -36,8 +54,8 @@
 }
 
 .button:hover {
-  background-color: var(--gold-wash);
-  color: var(--gold-deep);
+  background-color: var(--theme-button-hover-bg);
+  color: var(--theme-button-hover-ink);
 }
 
 .button:focus-visible {

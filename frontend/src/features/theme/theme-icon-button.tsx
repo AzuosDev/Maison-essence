@@ -18,14 +18,17 @@ function nextMode(current: ThemeMode): ThemeMode {
 }
 
 /**
- * O tema no cabecalho, ao lado da sacola.
+ * O tema em um alvo so: o cabecalho da loja e o pe da coluna do painel.
  *
  * ## Por que aqui ele gira, e no rodape sao tres botoes
  *
- * Sao dois lugares e dois momentos. No cabecalho o espaco e de um alvo de
- * 44px ao lado da sacola — nao cabem tres rotulos, e nem deveriam: quem
- * clica aqui ja sabe o que quer e quer um toque. No rodape ha largura para
- * as tres opcoes a vista, e e la que alguem **descobre** que ha uma escolha.
+ * Sao dois momentos diferentes. O rodape da loja tem largura para as tres
+ * opcoes a vista, e e la que alguem **descobre** que ha uma escolha. Nos dois
+ * lugares deste botao nao cabem tres rotulos, e nem deveriam: no cabecalho o
+ * espaco e de um alvo de 44px ao lado da sacola, e na coluna do painel a
+ * pilula de tres segmentos passava dos 15rem da coluna e punha uma barra de
+ * rolagem horizontal debaixo do menu. Quem clica nos dois ja sabe o que quer
+ * e quer um toque — no painel, ainda por cima, e a mesma pessoa todo dia.
  *
  * A objecao conhecida a um botao que gira e nao dizer para onde vai. Aqui
  * ela esta respondida de duas formas: o `title` e o nome acessivel dizem o
