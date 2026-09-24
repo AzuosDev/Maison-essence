@@ -45,6 +45,7 @@ export {
 } from './admin-icons';
 
 export { AdminNav, type AdminNavProps } from './admin-nav';
+export { BannerEditor, type BannerEditorProps } from './banner-editor';
 export { CategoryPicker, type CategoryPickerProps } from './category-picker';
 export { CategoryTree, type CategoryTreeProps } from './category-tree';
 export { DeliveryTable, type DeliveryTableProps } from './delivery-table';
@@ -53,6 +54,7 @@ export { ImageManager, type ImageManagerProps } from './image-manager';
 export { MissingRoute, type MissingRouteProps } from './missing-route';
 export { OneTimeSecret, type OneTimeSecretProps } from './one-time-secret';
 export { OrderItems, type OrderItemsProps } from './order-items';
+export { PagesEditor, type PagesEditorProps } from './pages-editor';
 export { RowMenu, type RowMenuItem, type RowMenuProps } from './row-menu';
 export { PaymentPreview, type PaymentPreviewProps } from './payment-preview';
 export { OrdersTable, type OrdersTableProps } from './orders-table';

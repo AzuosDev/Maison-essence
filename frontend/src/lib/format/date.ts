@@ -103,3 +103,31 @@ function toDate(value: DateInput): Date | null {
 
   return Number.isNaN(date.getTime()) ? null : date;
 }
+
+/**
+ * O valor de um `<input type="date">` a partir de uma data ISO.
+ *
+ * A volta de `dayStartISO`, e existe pelo mesmo motivo que ele: `toISOString`
+ * devolve UTC, e um banner agendado para as 21h de 22/09 em Fortaleza sairia
+ * do campo como 23/09. O que o campo precisa e do dia **local**, e e o que as
+ * tres partes montadas a mao devolvem.
+ *
+ * Texto vazio quando a data nao e valida — inclusive para `null`, que e o que
+ * o servidor manda quando nao ha agendamento.
+ */
+export function dateInputValue(value: DateInput | null): string {
+  if (value === null) {
+    return '';
+  }
+
+  const date = toDate(value);
+
+  if (!date) {
+    return '';
+  }
+
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${String(date.getFullYear())}-${month}-${day}`;
+}

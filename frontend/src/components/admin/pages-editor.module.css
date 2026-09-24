@@ -1,0 +1,135 @@
+/*
+ * As paginas institucionais.
+ *
+ * Uma lista de cinco linhas que se abrem. Fechadas, cada uma cabe numa linha
+ * e responde a pergunta que traz a dona aqui: o que falta escrever. Aberta, e
+ * um formulario inteiro.
+ */
+
+.list {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--surface);
+  transition: border-color var(--transition);
+}
+
+.opened {
+  border-color: var(--gold);
+}
+
+.heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  width: 100%;
+  min-height: 3.25rem;
+  padding: var(--space-8) var(--space-12);
+
+  background: none;
+  border: none;
+  border-radius: var(--radius-card);
+
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.trigger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+/* A seta gira ao abrir: e o unico movimento da lista, e diz de onde o
+   conteudo saiu. */
+.chevron {
+  flex: none;
+
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted);
+  transition: transform var(--transition);
+}
+
+.opened .chevron {
+  transform: rotate(90deg);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+/* "Publicada, sem texto" e o estado que se quer enxergar de longe; o cinza
+   e o mesmo do resto dos rotulos, e a frase e que carrega o sentido. */
+.state {
+  flex: none;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  text-align: right;
+}
+
+.body {
+  display: grid;
+  gap: var(--space-16);
+
+  padding: var(--space-4) var(--space-12) var(--space-16);
+}
+
+/*
+ * O interruptor, depois do texto.
+ *
+ * A ordem e a da decisao: escreve-se e depois publica-se. A frase ao lado
+ * muda com o estado porque "publicada" e "despublicada" tem consequencias
+ * diferentes no rodape, e nenhuma delas e obvia olhando o interruptor.
+ */
+.publish {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+
+  padding-top: var(--space-4);
+  border-top: var(--border);
+}
+
+.publishHint {
+  flex: 1 1 14rem;
+  margin: 0;
+  padding-top: var(--space-8);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+@media (min-width: 48rem) {
+  .trigger {
+    padding-inline: var(--space-16);
+  }
+
+  .body {
+    padding: var(--space-4) var(--space-16) var(--space-16);
+  }
+}

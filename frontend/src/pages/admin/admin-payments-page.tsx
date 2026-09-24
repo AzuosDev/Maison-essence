@@ -17,7 +17,7 @@ import {
   PIX_KEY_LABELS,
   PIX_KEY_PLACEHOLDERS,
   canManageStore,
-  draftFromSettings,
+  draftFromPaymentSettings,
   hasPaymentErrors,
   isPaymentDirty,
   paymentChangesOf,
@@ -27,7 +27,7 @@ import {
   useAdminRole,
   useSavePaymentSettings,
   validatePayment,
-  warningsOf,
+  paymentWarningsOf,
   type AdminPaymentSettings,
   type PaymentDraft,
   type PaymentWarning,
@@ -127,14 +127,14 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
   const { toast } = useToast();
   const save = useSavePaymentSettings();
 
-  const [draft, setDraft] = useState<PaymentDraft>(() => draftFromSettings(settings));
+  const [draft, setDraft] = useState<PaymentDraft>(() => draftFromPaymentSettings(settings));
   const [touched, setTouched] = useState(false);
   const [amount, setAmount] = useState(DEFAULT_PREVIEW_AMOUNT);
 
   const errors = touched ? validatePayment(draft) : {};
   const changes = paymentChangesOf(draft, settings);
   const dirty = isPaymentDirty(draft, settings);
-  const warnings = warningsOf(draft);
+  const warnings = paymentWarningsOf(draft);
   const amountCents = centsFromInput(amount);
 
   const set = (patch: Partial<PaymentDraft>): void => {
@@ -153,7 +153,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
         // O servidor devolve a chave normalizada — `+5588...` onde foi
         // digitado `(88) 9...`. Reabrir o rascunho com a resposta e o que faz
         // o campo mostrar o que esta gravado, e nao o que foi enviado.
-        setDraft(draftFromSettings(saved));
+        setDraft(draftFromPaymentSettings(saved));
         setTouched(false);
         toast({
           variant: 'success',
@@ -359,7 +359,7 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
               variant="secondary"
               disabled={save.isPending}
               onClick={() => {
-                setDraft(draftFromSettings(settings));
+                setDraft(draftFromPaymentSettings(settings));
                 setTouched(false);
               }}
             >

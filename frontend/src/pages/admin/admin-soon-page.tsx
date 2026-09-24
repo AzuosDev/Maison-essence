@@ -25,7 +25,6 @@ export default function AdminSoonPage() {
 function areaLabel(pathname: string): string {
   const labels: Record<string, string> = {
     'pronta-entrega': 'Pronta entrega',
-    configuracoes: 'Configuracoes',
   };
 
   const last = pathname.split('/').findLast((part) => part !== '') ?? '';

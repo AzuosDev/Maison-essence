@@ -12,6 +12,7 @@
  */
 
 import type { PixKeyType } from '@/features/payments';
+import type { InstitutionalPageSlug } from '@/features/settings';
 
 /* ---- Paginacao ---------------------------------------------------------- */
 
@@ -531,4 +532,163 @@ export const PAYMENT_LIMITS = {
   pixKeyLength: 140,
   /** `MAX_CENTS`. */
   minInstallmentCents: 99_999_999,
+} as const;
+
+/* ---- Configuracoes da loja ------------------------------------------------ */
+
+/** O endereco da retirada na loja. */
+export interface AdminPickupAddress {
+  street: string;
+  number: string;
+  complement: string;
+  district: string;
+  city: string;
+  /** Sigla de duas letras, gravada em maiuscula. */
+  state: string;
+  zipCode: string;
+  /** Ponto de referencia. Em cidade pequena vale mais que o CEP. */
+  reference: string;
+}
+
+export interface AdminSocialLinks {
+  instagram: string;
+  tiktok: string;
+}
+
+/**
+ * Um banner do carrossel, como o painel o ve.
+ *
+ * As datas e o `isActive` sao dois desligamentos diferentes, e os dois
+ * existem: a janela agenda a estreia e a retirada, o interruptor tira do ar
+ * agora sem perder as datas que ja foram escolhidas.
+ */
+export interface AdminBanner {
+  id: string;
+  /** `publicId` do Cloudinary. Banner sem arte nao existe. */
+  imageDesktop: string;
+  /** Vazio faz a home cair na arte de desktop. */
+  imageMobile: string;
+  title: string;
+  subtitle: string;
+  buttonLabel: string;
+  link: string;
+  order: number;
+  /** ISO. `null` e "desde sempre". */
+  startsAt: string | null;
+  /** ISO. `null` e "ate segunda ordem". O instante em que o banner **sai**. */
+  endsAt: string | null;
+  isActive: boolean;
+}
+
+/** Uma pagina institucional. O slug e fixo; some dele so titulo e conteudo. */
+export interface AdminInstitutionalPage {
+  slug: InstitutionalPageSlug;
+  title: string;
+  /** Markdown, do jeito que foi escrito. Quem renderiza e o site. */
+  content: string;
+  isActive: boolean;
+}
+
+/** As configuracoes como so o painel as ve: inclusive o que nao esta no ar. */
+export interface AdminStoreSettings {
+  storeName: string;
+  /** So digitos, com codigo do pais: `5588999999999`. */
+  whatsappNumber: string;
+  announcementText: string;
+  contactEmail: string;
+  businessHours: string;
+  pickupEnabled: boolean;
+  pickupAddress: AdminPickupAddress;
+  pickupInstructions: string;
+  socialLinks: AdminSocialLinks;
+  /** Minimo para frete gratis em qualquer cidade. `null` desliga a regra. */
+  freeShippingMinCents: number | null;
+  banners: AdminBanner[];
+  /** As cinco, sempre, mesmo as que ninguem escreveu ainda. */
+  institutionalPages: AdminInstitutionalPage[];
+  updatedAt: string;
+}
+
+/**
+ * Um banner no corpo do `PATCH`.
+ *
+ * `id` presente identifica banner que ja existe; ausente, o servidor cria.
+ * Manter o `id` e o que preserva a identidade da arte entre gravacoes — e e
+ * por ele que o servidor sabe que a imagem ainda esta em uso.
+ */
+export interface BannerInput {
+  id?: string;
+  imageDesktop: string;
+  imageMobile?: string;
+  title?: string;
+  subtitle?: string;
+  buttonLabel?: string;
+  link?: string;
+  order?: number;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  isActive?: boolean;
+}
+
+/** Uma pagina no corpo do `PATCH`. So o slug e obrigatorio. */
+export interface InstitutionalPageInput {
+  slug: InstitutionalPageSlug;
+  title?: string;
+  content?: string;
+  isActive?: boolean;
+}
+
+/**
+ * Edicao das configuracoes. Campo omitido fica como esta.
+ *
+ * Tres comportamentos convivem neste corpo, e a diferenca e do servidor:
+ *
+ * - campo simples substitui o gravado;
+ * - `pickupAddress` e `socialLinks` fundem campo a campo — corrigir o numero
+ *   da casa nao pode apagar o ponto de referencia;
+ * - `banners` substitui o array inteiro, porque e uma lista ordenavel e o que
+ *   sumiu dela foi removido de proposito;
+ * - `institutionalPages` atualiza por `slug`, e a pagina que nao vier fica
+ *   como esta.
+ */
+export interface UpdateStoreSettingsInput {
+  storeName?: string;
+  whatsappNumber?: string;
+  announcementText?: string;
+  contactEmail?: string;
+  businessHours?: string;
+  pickupEnabled?: boolean;
+  pickupAddress?: Partial<AdminPickupAddress>;
+  pickupInstructions?: string;
+  socialLinks?: Partial<AdminSocialLinks>;
+  freeShippingMinCents?: number | null;
+  banners?: BannerInput[];
+  institutionalPages?: InstitutionalPageInput[];
+}
+
+/** Os limites que o servidor impoe as configuracoes. */
+export const SETTINGS_LIMITS = {
+  storeName: 80,
+  announcementText: 200,
+  contactEmail: 160,
+  businessHours: 200,
+  pickupInstructions: 500,
+  socialLink: 200,
+  /** `MAX_BANNERS`: limite de tela — carrossel maior ninguem ve ate o fim. */
+  banners: 12,
+  bannerTitle: 120,
+  bannerSubtitle: 200,
+  bannerButtonLabel: 40,
+  bannerLink: 300,
+  pageTitle: 120,
+  /** `MAX_PAGE_CONTENT_LENGTH`. */
+  pageContent: 20_000,
+  street: 160,
+  number: 20,
+  complement: 80,
+  district: 80,
+  city: 120,
+  reference: 200,
+  /** `MAX_CENTS`. */
+  freeShippingMinCents: 99_999_999,
 } as const;

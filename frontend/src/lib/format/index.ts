@@ -16,6 +16,7 @@ export {
 } from './currency';
 export { formatPhone, maskPhone, normalizePhone, whatsappNumber } from './phone';
 export {
+  dateInputValue,
   dayEndISO,
   dayStartISO,
   formatDate,

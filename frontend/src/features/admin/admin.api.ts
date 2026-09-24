@@ -9,6 +9,7 @@ import type {
   AdminPage,
   AdminPaymentSettings,
   AdminProduct,
+  AdminStoreSettings,
   CreateCategoryInput,
   CreateDeliveryCityInput,
   CreateProductInput,
@@ -17,6 +18,7 @@ import type {
   UpdateDeliveryCityInput,
   UpdatePaymentSettingsInput,
   UpdateProductInput,
+  UpdateStoreSettingsInput,
 } from './admin.types';
 
 /**
@@ -340,6 +342,39 @@ export function updatePaymentSettings(
   signal?: AbortSignal,
 ): Promise<AdminPaymentSettings> {
   return api.patch<AdminPaymentSettings>('/admin/payment-settings', input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/* ---- Configuracoes da loja ------------------------------------------------ */
+
+/**
+ * As configuracoes inteiras, inclusive o que nao esta no ar.
+ *
+ * `MANAGES_STORE` inclusive na leitura. O nome carrega o `admin` porque a
+ * loja tem a sua propria `fetchSettings`, que devolve o subconjunto publico —
+ * sem banner agendado, sem pagina despublicada.
+ */
+export function fetchAdminSettings(signal?: AbortSignal): Promise<AdminStoreSettings> {
+  return api.get<AdminStoreSettings>('/admin/settings', {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Grava as configuracoes.
+ *
+ * Documento unico, sem `:id`. A resposta vem normalizada pelo servidor — o
+ * WhatsApp so com digitos, a sigla do estado em maiuscula, o e-mail em
+ * minuscula — e e ela que entra no cache, e nao o que foi enviado.
+ */
+export function updateSettings(
+  input: UpdateStoreSettingsInput,
+  signal?: AbortSignal,
+): Promise<AdminStoreSettings> {
+  return api.patch<AdminStoreSettings>('/admin/settings', input, {
     scope: SESSION_SCOPES.ADMIN,
     ...(signal ? { signal } : {}),
   });

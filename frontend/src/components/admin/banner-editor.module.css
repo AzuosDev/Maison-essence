@@ -1,0 +1,307 @@
+/*
+ * O carrossel da home.
+ *
+ * Cada banner e um bloco com a arte a esquerda e os textos a direita — a
+ * mesma leitura que a home faz, para que a decisao "esse titulo cabe nessa
+ * imagem?" possa ser tomada aqui, sem abrir o site.
+ *
+ * No celular a arte vai para cima dos campos, porque 320px de imagem e
+ * 320px de formulario nao convivem em 360px de tela.
+ */
+
+.editor {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--surface);
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+/*
+ * Onde o banner vai cair: a regua de insercao no topo do alvo, como na arvore
+ * de categorias e na tabela de entrega. O fundo dourado diz qual linha, a
+ * regua diz de que lado. E informacao do arraste, nao decoracao da linha.
+ */
+.dropTarget {
+  background-color: var(--gold-wash);
+  box-shadow: inset 0 2px 0 var(--gold-deep);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-12);
+}
+
+/* ---- O cabecalho da linha ------------------------------------------------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.grip {
+  flex: none;
+
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--muted);
+  cursor: grab;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * O estado do banner, escrito.
+ *
+ * Quatro estados que se confundem: "no ar", "agendado", "encerrado" e
+ * "desligado". A palavra carrega a informacao e a cor so reforca — um
+ * quadradinho colorido sozinho exigiria uma legenda que nao cabe na linha.
+ */
+.status {
+  flex: none;
+
+  padding: 0.125rem var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.live {
+  background-color: var(--success-wash);
+  color: var(--success);
+}
+
+.scheduled {
+  background-color: var(--gold-wash);
+  color: var(--gold-deep);
+}
+
+.expired,
+.off {
+  background-color: var(--bg-alt);
+  color: var(--ink-soft);
+}
+
+/* ---- O corpo ---------------------------------------------------------------- */
+
+.body {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.arts {
+  display: grid;
+  gap: var(--space-8);
+  align-content: start;
+}
+
+/*
+ * A arte de computador, no formato em que a home a mostra.
+ *
+ * `object-fit: cover` porque a proporcao enviada nem sempre e a do banner, e
+ * o que interessa aqui e reconhecer a imagem — o corte fiel quem faz e a
+ * home.
+ */
+.art {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+
+  border-radius: var(--radius-chip);
+  background-color: var(--bg-alt);
+}
+
+/*
+ * O lugar da arte de celular, enquanto ela nao existe.
+ *
+ * Um alvo do tamanho do que vai entrar, e nao um botao de texto: a forma
+ * retrato ao lado da paisagem e o que explica, sem uma frase, por que sao
+ * duas artes.
+ */
+.mobileSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+
+  width: 100%;
+  min-height: 3rem;
+  padding: var(--space-8);
+
+  background-color: transparent;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-chip);
+
+  font-family: inherit;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: var(--transition);
+  transition-property: border-color, color;
+}
+
+.mobileSlot svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.mobileSlot:hover:not(:disabled) {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.mobileSlot:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.mobileSlot:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.mobileArt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.portrait {
+  flex: none;
+
+  width: 3rem;
+  height: 5.25rem;
+  object-fit: cover;
+
+  border-radius: var(--radius-chip);
+  background-color: var(--bg-alt);
+}
+
+.linkButton {
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  font-family: inherit;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  color: var(--danger);
+}
+
+.linkButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-12);
+  min-width: 0;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: var(--space-12);
+}
+
+.fieldError {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--danger);
+}
+
+/* ---- O rodape do editor ------------------------------------------------------ */
+
+.empty,
+.room {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.empty {
+  padding: var(--space-16);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.room {
+  flex: 1 1 16rem;
+}
+
+.uploadError {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  color: var(--danger);
+}
+
+/* A arte ao lado dos campos quando ha largura para as duas colunas. */
+@media (min-width: 48rem) {
+  .row {
+    padding: var(--space-16);
+  }
+
+  .body {
+    grid-template-columns: 16rem minmax(0, 1fr);
+  }
+}

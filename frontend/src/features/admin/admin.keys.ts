@@ -70,6 +70,14 @@ export const adminKeys = {
    */
   paymentSettings: () => [...adminKeys.all, 'payment-settings'] as const,
 
+  /**
+   * As configuracoes da loja.
+   *
+   * Documento unico. Carrega os banners agendados e as paginas
+   * despublicadas — tudo o que a loja aberta nao ve.
+   */
+  settings: () => [...adminKeys.all, 'settings'] as const,
+
   /** Os numeros da abertura do painel. */
   dashboard: () => [...adminKeys.all, 'dashboard'] as const,
 

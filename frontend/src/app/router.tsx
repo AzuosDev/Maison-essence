@@ -268,10 +268,16 @@ const adminRoutes: RouteObject = {
           ErrorBoundary: RouteErrorBoundary,
         },
 
-        // O que o menu ja lista e cuja tela entra nos proximos passos.
-        // Existe agora para que um item do menu nunca jogue a dona para fora
-        // do painel, na tela de 404 da loja.
-        ...adminSoonRoutes(['pronta-entrega', 'configuracoes']),
+        {
+          path: 'configuracoes',
+          lazy: page(() => import('@/pages/admin/admin-settings-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
+        // O que o menu ja lista e cuja tela entra no proximo passo. Existe
+        // agora para que um item do menu nunca jogue a dona para fora do
+        // painel, na tela de 404 da loja.
+        ...adminSoonRoutes(['pronta-entrega']),
 
         // A area de sistema, do SUPER_ADMIN. Fica dentro da moldura do
         // painel — e nao num grupo proprio — porque quem chega aqui sem o
