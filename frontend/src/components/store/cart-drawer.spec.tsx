@@ -61,7 +61,7 @@ const COTACAO = {
     },
   ],
   fulfillment: {
-    mode: 'PICKUP',
+    mode: 'pickup',
     cityId: null,
     cityName: '',
     state: '',
@@ -72,7 +72,7 @@ const COTACAO = {
     freeReason: 'Retirada na loja',
     missingForFreeCents: null,
   },
-  payment: { method: 'CARD', installments: 1, selected: null },
+  payment: { method: 'card', installments: 1, selected: null },
   subtotalCents: 37980,
   discountTotalCents: 0,
   deliveryFeeCents: 0,

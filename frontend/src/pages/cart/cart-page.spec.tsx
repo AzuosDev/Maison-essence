@@ -80,7 +80,7 @@ function cotacao(items: Record<string, unknown>[], totals: Record<string, unknow
   return {
     items,
     fulfillment: {
-      mode: 'PICKUP',
+      mode: 'pickup',
       cityId: null,
       cityName: '',
       state: '',
@@ -91,7 +91,7 @@ function cotacao(items: Record<string, unknown>[], totals: Record<string, unknow
       freeReason: 'Retirada na loja',
       missingForFreeCents: null,
     },
-    payment: { method: 'CARD', installments: 1, selected: null },
+    payment: { method: 'card', installments: 1, selected: null },
     subtotalCents,
     discountTotalCents: 0,
     deliveryFeeCents: 0,

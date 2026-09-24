@@ -138,7 +138,7 @@ function itemCotado(overrides: Record<string, unknown> = {}) {
  */
 function cotacao(options: {
   items?: Record<string, unknown>[];
-  mode?: 'DELIVERY' | 'PICKUP';
+  mode?: 'delivery' | 'pickup';
   cityId?: string | null;
   cityName?: string;
   feeCents?: number;
@@ -151,18 +151,18 @@ function cotacao(options: {
   return {
     items,
     fulfillment: {
-      mode: options.mode ?? 'PICKUP',
+      mode: options.mode ?? 'pickup',
       cityId: options.cityId ?? null,
       cityName: options.cityName ?? '',
       state: options.cityName === undefined ? '' : 'CE',
       estimatedDays: 2,
-      requiresAddress: (options.mode ?? 'PICKUP') === 'DELIVERY',
+      requiresAddress: (options.mode ?? 'pickup') === 'delivery',
       feeCents: options.feeCents ?? 0,
       isFree: (options.feeCents ?? 0) === 0,
       freeReason: (options.feeCents ?? 0) === 0 ? 'Retirada na loja' : '',
       missingForFreeCents: null,
     },
-    payment: { method: 'CARD', installments: 1, selected: null },
+    payment: { method: 'card', installments: 1, selected: null },
     subtotalCents: 18990,
     discountTotalCents: 0,
     deliveryFeeCents: options.feeCents ?? 0,
@@ -222,14 +222,14 @@ function pedidoCriado() {
         email: '',
       },
       fulfillment: {
-        mode: 'PICKUP',
+        mode: 'pickup',
         cityId: null,
         cityName: '',
         state: '',
         estimatedDays: 0,
         address: null,
       },
-      payment: { method: 'PIX', installments: 1, hasInterest: false },
+      payment: { method: 'pix', installments: 1, hasInterest: false },
       totals: {
         subtotalCents: 18990,
         discountTotalCents: 0,
@@ -444,9 +444,9 @@ test('escolher retirada some com os campos de endereco e zera a taxa', async () 
   comUmItem();
 
   quoteFor = (body) =>
-    body.fulfillment.mode === 'PICKUP'
-      ? cotacao({ mode: 'PICKUP', totalCents: 18990 })
-      : cotacao({ mode: 'DELIVERY', cityId: 'c-crato', feeCents: 2500, totalCents: 21490 });
+    body.fulfillment.mode === 'pickup'
+      ? cotacao({ mode: 'pickup', totalCents: 18990 })
+      : cotacao({ mode: 'delivery', cityId: 'c-crato', feeCents: 2500, totalCents: 21490 });
 
   abrirCheckout();
 
@@ -470,7 +470,7 @@ test('escolher retirada some com os campos de endereco e zera a taxa', async () 
   // E a taxa sai da conta: o corpo da cotacao vai sem cidade, e o resumo
   // mostra o total sem frete.
   await waitFor(() => {
-    expect(quoteRequests.at(-1)?.fulfillment).toEqual({ mode: 'PICKUP' });
+    expect(quoteRequests.at(-1)?.fulfillment).toEqual({ mode: 'pickup' });
   });
 
   await waitFor(() => {
@@ -491,20 +491,20 @@ test('trocar a cidade muda a taxa e o total na hora', async () => {
    * mostraria R$ 204,90 e R$ 214,90 — e o caso falharia.
    */
   quoteFor = (body) => {
-    if (body.fulfillment.mode !== 'DELIVERY') {
-      return cotacao({ mode: 'PICKUP', totalCents: 18990 });
+    if (body.fulfillment.mode !== 'delivery') {
+      return cotacao({ mode: 'pickup', totalCents: 18990 });
     }
 
     return body.fulfillment.cityId === 'c-juazeiro'
       ? cotacao({
-          mode: 'DELIVERY',
+          mode: 'delivery',
           cityId: 'c-juazeiro',
           cityName: 'Juazeiro do Norte',
           feeCents: 1500,
           totalCents: 30000,
         })
       : cotacao({
-          mode: 'DELIVERY',
+          mode: 'delivery',
           cityId: 'c-crato',
           cityName: 'Crato',
           feeCents: 2500,
@@ -538,7 +538,7 @@ test('trocar a cidade muda a taxa e o total na hora', async () => {
 
   // E a conta foi refeita pelo servidor, com a cidade nova no corpo.
   expect(quoteRequests.at(-1)?.fulfillment).toEqual({
-    mode: 'DELIVERY',
+    mode: 'delivery',
     cityId: 'c-crato',
   });
 });
@@ -631,7 +631,7 @@ test('o 409 abre o modal comparando os dois valores, sem reenviar sozinho', asyn
         error: 'Conflict',
         details: {
           reason: 'total',
-          quote: cotacao({ mode: 'PICKUP', totalCents: 21990 }),
+          quote: cotacao({ mode: 'pickup', totalCents: 21990 }),
         },
         timestamp: new Date().toISOString(),
         path: '/orders',
@@ -790,7 +790,7 @@ test('o 409 de estoque tira da sacola o item que acabou', async () => {
         details: {
           reason: 'stock',
           quote: cotacao({
-            mode: 'PICKUP',
+            mode: 'pickup',
             totalCents: 0,
             items: [
               itemCotado({

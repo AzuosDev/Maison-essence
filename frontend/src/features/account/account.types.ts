@@ -29,7 +29,7 @@ export interface CustomerOrderSummary {
   customerName: string;
   phone: string;
   phoneLabel: string;
-  mode: 'DELIVERY' | 'PICKUP';
+  mode: 'delivery' | 'pickup';
   /** Quantas unidades, somando as linhas. Nao e o numero de linhas. */
   itemCount: number;
   totalCents: number;

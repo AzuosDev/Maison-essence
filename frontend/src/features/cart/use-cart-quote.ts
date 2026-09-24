@@ -81,7 +81,7 @@ export function useCartQuote(): CartQuoteView {
     () =>
       settled.length === 0 || fulfillment === null
         ? null
-        : { items: settled, fulfillment, payment: { method: 'CARD', installments: 1 } },
+        : { items: settled, fulfillment, payment: { method: 'card', installments: 1 } },
     [settled, fulfillment],
   );
 
@@ -145,10 +145,10 @@ function useQuoteFulfillment(): QuoteInput['fulfillment'] | null {
 
   return useMemo(() => {
     if (pickupEnabled) {
-      return { mode: 'PICKUP' };
+      return { mode: 'pickup' };
     }
 
-    return firstCityId === null ? null : { mode: 'DELIVERY', cityId: firstCityId };
+    return firstCityId === null ? null : { mode: 'delivery', cityId: firstCityId };
   }, [pickupEnabled, firstCityId]);
 }
 
@@ -221,8 +221,8 @@ export function usePriceNotice(quote: CartQuote | undefined): {
 /** A sacola vazia nunca e cotada; este corpo so existe para o tipo fechar. */
 const EMPTY_INPUT: QuoteInput = {
   items: [],
-  fulfillment: { mode: 'PICKUP' },
-  payment: { method: 'CARD', installments: 1 },
+  fulfillment: { mode: 'pickup' },
+  payment: { method: 'card', installments: 1 },
 };
 
 function split(items: readonly QuoteLine[]): { available: QuoteLine[]; unavailable: QuoteLine[] } {

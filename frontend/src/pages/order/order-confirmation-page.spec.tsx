@@ -46,7 +46,7 @@ const PEDIDO: PlacedOrder = {
   whatsappMessage: MENSAGEM,
   customerName: 'Maria Silva',
   customerPhone: '88999998888',
-  mode: 'PICKUP',
+  mode: 'pickup',
   cityName: '',
   itemCount: 1,
   totalCents: 18990,

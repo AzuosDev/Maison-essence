@@ -1,7 +1,4 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ROUTES } from '@/app/routes';
-import { useToast } from '@/components/ui';
 import { useCart } from '@/features/cart';
 import type { PublicProduct, PublicVariant } from '@/features/catalog';
 
@@ -9,10 +6,28 @@ import type { PublicProduct, PublicVariant } from '@/features/catalog';
  * Por em uma linha na sacola, do jeito certo, em um lugar so.
  *
  * O card, o seletor rapido e a pagina do produto adicionam o mesmo item, e as
- * tres coisas que acontecem no clique precisam acontecer juntas: a linha
- * entra, a gaveta abre e o aviso aparece. Espalhar isso pelos tres chamadores
- * significaria, mais cedo ou mais tarde, um lugar da loja em que adicionar
- * nao abre a gaveta.
+ * duas coisas que acontecem no clique precisam acontecer juntas: a linha
+ * entra e a gaveta abre. Espalhar isso pelos tres chamadores significaria,
+ * mais cedo ou mais tarde, um lugar da loja em que adicionar nao abre a
+ * gaveta.
+ *
+ * ## Por que nao ha aviso passageiro aqui
+ *
+ * Havia, e ele dizia "Adicionado a sacola" com um atalho "Ver a sacola" —
+ * exatamente o que a gaveta que acabou de abrir ja mostra, com o item, a
+ * miniatura e o subtotal. Dois avisos do mesmo fato, e o de baixo por cima do
+ * outro: o `--z-toast` e maior que o `--z-drawer`, e no celular o aviso
+ * ocupa a largura inteira do rodape — bem onde ficam "Finalizar compra",
+ * "Continuar comprando" e "Ver a sacola inteira". A confirmacao tapava os
+ * botoes que ela mandava usar.
+ *
+ * Para quem ouve a pagina tambem nao se perdeu nada: a gaveta e um
+ * `role="dialog"` com `aria-modal` e titulo, e abri-la ja anuncia "Sua
+ * sacola".
+ *
+ * O `ToastProvider` continua de pe para o resto da loja — o que ele avisa sao
+ * as coisas que nao tem tela propria: falha ao salvar, pedido enviado, senha
+ * trocada.
  *
  * ## O que vai para a sacola, e o que vai junto
  *
@@ -34,12 +49,6 @@ import type { PublicProduct, PublicVariant } from '@/features/catalog';
 export function useAddToCart() {
   const addLine = useCart((state) => state.addLine);
   const openDrawer = useCart((state) => state.openDrawer);
-  const closeDrawer = useCart((state) => state.closeDrawer);
-  const { toast } = useToast();
-
-  // O `ToastProvider` esta por fora do router, entao quem navega a partir do
-  // aviso e este hook — que roda dentro dele. Ver a nota em `toast.tsx`.
-  const navigate = useNavigate();
 
   return useCallback(
     (product: PublicProduct, variant: PublicVariant, quantity = 1) => {
@@ -54,23 +63,7 @@ export function useAddToCart() {
       );
 
       openDrawer();
-
-      toast({
-        title: 'Adicionado a sacola',
-        description: variant.label === '' ? product.name : `${product.name} · ${variant.label}`,
-        variant: 'success',
-        action: {
-          label: 'Ver a sacola',
-          onSelect: () => {
-            // A gaveta fecha antes de navegar: chegar na pagina da sacola
-            // com a gaveta da sacola aberta por cima e a mesma lista duas
-            // vezes, uma escondendo a outra.
-            closeDrawer();
-            void navigate(ROUTES.cart);
-          },
-        },
-      });
     },
-    [addLine, openDrawer, closeDrawer, navigate, toast],
+    [addLine, openDrawer],
   );
 }

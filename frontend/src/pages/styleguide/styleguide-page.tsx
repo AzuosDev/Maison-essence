@@ -369,7 +369,7 @@ function ButtonSection() {
 
 function FormSection() {
   const [cidade, setCidade] = useState('');
-  const [pagamento, setPagamento] = useState('PIX');
+  const [pagamento, setPagamento] = useState('pix');
   const [aceite, setAceite] = useState(false);
   const [observacao, setObservacao] = useState('Entregar depois das 18h.');
 
@@ -447,14 +447,14 @@ function FormSection() {
             value={pagamento}
             onChange={setPagamento}
           >
-            <Radio value="PIX" label="PIX" description="5% de desconto, a vista." />
-            <Radio value="CARD" label="Cartao" description="Em ate 12x." />
+            <Radio value="pix" label="PIX" description="5% de desconto, a vista." />
+            <Radio value="card" label="Cartao" description="Em ate 12x." />
             <Radio value="BOLETO" label="Boleto" disabled description="Indisponivel." />
           </RadioGroup>
 
           <RadioGroup legend="Entrega" name="entrega" horizontal defaultValue="">
-            <Radio value="DELIVERY" label="Entregar" />
-            <Radio value="PICKUP" label="Retirar na loja" />
+            <Radio value="delivery" label="Entregar" />
+            <Radio value="pickup" label="Retirar na loja" />
           </RadioGroup>
         </Sample>
       </div>

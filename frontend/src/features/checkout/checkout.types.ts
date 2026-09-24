@@ -31,16 +31,31 @@ export const CHECKOUT_STEP_LABELS: Record<CheckoutStep, string> = {
   review: 'Dados e revisao',
 };
 
+/**
+ * Os dois enums que viajam no fio.
+ *
+ * **Os valores sao minusculos porque e assim que o servidor os escreve** —
+ * `common/enums/fulfillment-mode.ts` e `payment-method.ts` no backend. A
+ * chave em maiuscula e conforto de quem le o codigo daqui; o que sai no
+ * corpo do `POST /cart/quote` e o valor.
+ *
+ * Nao e detalhe de estilo. O `@IsIn` do DTO compara a string inteira, e
+ * `'PICKUP'` volta 400 com "modo de entrega invalido" — a sacola perde o
+ * total e o checkout nao fecha. Os pedidos ja gravados no banco tambem
+ * guardam a forma minuscula, entao e este lado que se ajusta, nunca o outro.
+ *
+ * `wire-contract.spec.ts` compara estes valores com o arquivo do backend.
+ */
 export const FULFILLMENT_MODES = {
-  DELIVERY: 'DELIVERY',
-  PICKUP: 'PICKUP',
+  DELIVERY: 'delivery',
+  PICKUP: 'pickup',
 } as const;
 
 export type FulfillmentMode = (typeof FULFILLMENT_MODES)[keyof typeof FULFILLMENT_MODES];
 
 export const PAYMENT_METHODS = {
-  PIX: 'PIX',
-  CARD: 'CARD',
+  PIX: 'pix',
+  CARD: 'card',
 } as const;
 
 export type PaymentMethod = (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS];

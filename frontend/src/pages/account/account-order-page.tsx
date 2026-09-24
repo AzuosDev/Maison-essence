@@ -157,7 +157,7 @@ export default function AccountOrderPage() {
 
           <section className={styles.block} aria-labelledby="order-fulfillment-title">
             <h2 id="order-fulfillment-title" className={styles.blockTitle}>
-              {order.fulfillment.mode === 'PICKUP' ? 'Retirada' : 'Entrega'}
+              {order.fulfillment.mode === 'pickup' ? 'Retirada' : 'Entrega'}
             </h2>
 
             <Fulfillment order={order} />
@@ -205,7 +205,7 @@ function Totals({ order }: { order: CustomerOrderDetail }) {
         </div>
       ) : null}
 
-      {order.fulfillment.mode === 'DELIVERY' ? (
+      {order.fulfillment.mode === 'delivery' ? (
         <div className={styles.totalRow}>
           <dt>Entrega</dt>
           <dd>{totals.deliveryFeeCents === 0 ? 'Gratis' : formatCents(totals.deliveryFeeCents)}</dd>
@@ -241,7 +241,7 @@ function Fulfillment({ order }: { order: CustomerOrderDetail }) {
   const { settings } = useStoreSettings();
   const { fulfillment } = order;
 
-  if (fulfillment.mode === 'PICKUP') {
+  if (fulfillment.mode === 'pickup') {
     const pickup = settings?.pickupAddress ?? null;
 
     return (
@@ -308,7 +308,7 @@ function Fulfillment({ order }: { order: CustomerOrderDetail }) {
 function describePayment(order: CustomerOrderDetail): string {
   const { payment } = order;
 
-  if (payment.method === 'PIX') {
+  if (payment.method === 'pix') {
     return 'PIX';
   }
 

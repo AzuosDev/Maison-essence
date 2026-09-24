@@ -49,8 +49,8 @@ export function useReorder() {
     mutationFn: async (items: readonly OrderItemView[]): Promise<ReorderPlan> => {
       const quote = await fetchCartQuote({
         items: reorderItems(items),
-        fulfillment: { mode: 'PICKUP' },
-        payment: { method: 'PIX' },
+        fulfillment: { mode: 'pickup' },
+        payment: { method: 'pix' },
       });
 
       return planReorder(items, quote);

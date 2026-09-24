@@ -1,4 +1,9 @@
-import { ORDER_STATUSES, type FulfillmentMode, type OrderStatus } from '@/features/checkout';
+import {
+  FULFILLMENT_MODES,
+  ORDER_STATUSES,
+  type FulfillmentMode,
+  type OrderStatus,
+} from '@/features/checkout';
 
 /**
  * O pedido escrito para quem comprou.
@@ -47,7 +52,7 @@ const PICKUP_LABELS: Record<OrderStatus, string> = {
 };
 
 export function statusLabel(status: OrderStatus, mode: FulfillmentMode): string {
-  return mode === 'PICKUP' ? PICKUP_LABELS[status] : DELIVERY_LABELS[status];
+  return mode === 'pickup' ? PICKUP_LABELS[status] : DELIVERY_LABELS[status];
 }
 
 /**
@@ -87,30 +92,33 @@ export interface TimelineStep {
   at: string | null;
 }
 
-const STEP_DESCRIPTIONS: Record<OrderStatus, Record<'DELIVERY' | 'PICKUP', string>> = {
+/* As chaves saem de `FULFILLMENT_MODES`, e nao escritas a mao: sao valores
+   de fio, e escreve-los aqui foi como a tela e o servidor se desencontraram
+   uma vez — ver o bloco em `checkout.types.ts`. */
+const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = {
   [ORDER_STATUSES.PENDING_CONTACT]: {
-    DELIVERY: 'Seu pedido chegou a loja. A confirmacao vem pelo WhatsApp.',
-    PICKUP: 'Seu pedido chegou a loja. A confirmacao vem pelo WhatsApp.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido chegou a loja. A confirmacao vem pelo WhatsApp.',
+    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido chegou a loja. A confirmacao vem pelo WhatsApp.',
   },
   [ORDER_STATUSES.CONFIRMED]: {
-    DELIVERY: 'A loja confirmou os itens e o valor.',
-    PICKUP: 'A loja confirmou os itens e o valor.',
+    [FULFILLMENT_MODES.DELIVERY]: 'A loja confirmou os itens e o valor.',
+    [FULFILLMENT_MODES.PICKUP]: 'A loja confirmou os itens e o valor.',
   },
   [ORDER_STATUSES.PREPARING]: {
-    DELIVERY: 'Seu pedido esta sendo separado e embalado.',
-    PICKUP: 'Seu pedido esta sendo separado e embalado.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido esta sendo separado e embalado.',
+    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido esta sendo separado e embalado.',
   },
   [ORDER_STATUSES.SHIPPED]: {
-    DELIVERY: 'Saiu para o endereco de entrega.',
-    PICKUP: 'Ja pode ser retirado na loja.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Saiu para o endereco de entrega.',
+    [FULFILLMENT_MODES.PICKUP]: 'Ja pode ser retirado na loja.',
   },
   [ORDER_STATUSES.DELIVERED]: {
-    DELIVERY: 'Entregue. Qualquer coisa, e so chamar no WhatsApp.',
-    PICKUP: 'Retirado. Qualquer coisa, e so chamar no WhatsApp.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Entregue. Qualquer coisa, e so chamar no WhatsApp.',
+    [FULFILLMENT_MODES.PICKUP]: 'Retirado. Qualquer coisa, e so chamar no WhatsApp.',
   },
   [ORDER_STATUSES.CANCELLED]: {
-    DELIVERY: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',
-    PICKUP: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',
+    [FULFILLMENT_MODES.PICKUP]: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',
   },
 };
 

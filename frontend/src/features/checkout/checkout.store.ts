@@ -204,5 +204,5 @@ export function checkoutStep(state: CheckoutState): CheckoutStep {
 
 /** O endereco sera pedido: so na entrega. */
 export function needsAddress(state: CheckoutState): boolean {
-  return state.mode === 'DELIVERY';
+  return state.mode === 'delivery';
 }

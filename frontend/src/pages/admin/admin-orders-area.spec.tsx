@@ -33,8 +33,8 @@ const SUMMARY = {
   customerName: 'Rayane Alves',
   phone: '88999998888',
   phoneLabel: '(88) 99999-8888',
-  mode: 'DELIVERY',
-  payment: { method: 'CARD', installments: 3, hasInterest: false },
+  mode: 'delivery',
+  payment: { method: 'card', installments: 3, hasInterest: false },
   itemCount: 2,
   totalCents: 37_980,
   createdAt: '2026-09-22T12:00:00.000Z',
@@ -66,7 +66,7 @@ const ORDER = {
     email: '',
   },
   fulfillment: {
-    mode: 'DELIVERY',
+    mode: 'delivery',
     cityId: 'c1',
     cityName: 'Juazeiro do Norte',
     state: 'CE',
@@ -80,7 +80,7 @@ const ORDER = {
       reference: 'Perto da praca',
     },
   },
-  payment: { method: 'CARD', installments: 3, hasInterest: false },
+  payment: { method: 'card', installments: 3, hasInterest: false },
   totals: {
     subtotalCents: 37_980,
     discountTotalCents: 0,

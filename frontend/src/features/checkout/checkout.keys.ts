@@ -31,12 +31,12 @@ export interface QuoteInput {
   items: QuoteItem[];
   fulfillment: {
     /** Entrega na cidade atendida ou retirada na loja. */
-    mode: 'DELIVERY' | 'PICKUP';
+    mode: 'delivery' | 'pickup';
     /** Obrigatorio na entrega, ausente na retirada. */
     cityId?: string;
   };
   payment: {
-    method: 'PIX' | 'CARD';
+    method: 'pix' | 'card';
     /** So no cartao. */
     installments?: number;
   };

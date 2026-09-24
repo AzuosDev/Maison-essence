@@ -44,7 +44,7 @@ export interface QuoteLine {
 
 /** A entrega resolvida: taxa, motivo da isencao e quanto falta para ela. */
 export interface QuoteFulfillment {
-  mode: 'DELIVERY' | 'PICKUP';
+  mode: 'delivery' | 'pickup';
   cityId: string | null;
   cityName: string;
   state: string;
@@ -67,7 +67,7 @@ export interface InstallmentOption {
 }
 
 export interface QuotePayment {
-  method: 'PIX' | 'CARD';
+  method: 'pix' | 'card';
   installments: number;
   selected: InstallmentOption | null;
 }

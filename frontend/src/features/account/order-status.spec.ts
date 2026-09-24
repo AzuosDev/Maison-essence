@@ -18,25 +18,25 @@ import { orderTimeline, statusLabel, statusTone } from './order-status';
 const CRIADO = '2026-09-01T12:00:00.000Z';
 const MUDOU = '2026-09-22T09:30:00.000Z';
 
-function trilha(status: (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES], mode = 'DELIVERY') {
+function trilha(status: (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES], mode = 'delivery') {
   return orderTimeline({
     status,
     createdAt: CRIADO,
     updatedAt: MUDOU,
-    mode: mode as 'DELIVERY' | 'PICKUP',
+    mode: mode as 'delivery' | 'pickup',
   });
 }
 
 test('o mesmo status muda de palavra conforme entrega ou retirada', () => {
-  expect(statusLabel(ORDER_STATUSES.SHIPPED, 'DELIVERY')).toBe('A caminho');
-  expect(statusLabel(ORDER_STATUSES.SHIPPED, 'PICKUP')).toBe('Pronto para retirada');
-  expect(statusLabel(ORDER_STATUSES.DELIVERED, 'PICKUP')).toBe('Retirado');
+  expect(statusLabel(ORDER_STATUSES.SHIPPED, 'delivery')).toBe('A caminho');
+  expect(statusLabel(ORDER_STATUSES.SHIPPED, 'pickup')).toBe('Pronto para retirada');
+  expect(statusLabel(ORDER_STATUSES.DELIVERED, 'pickup')).toBe('Retirado');
 });
 
 test('o status que espera a loja nao diz ao cliente que ele tem de ligar', () => {
   // O painel chama de "Aguardando contato", que e uma tarefa da dona. Aqui a
   // mesma palavra faria a cliente achar que o proximo passo e dela.
-  expect(statusLabel(ORDER_STATUSES.PENDING_CONTACT, 'DELIVERY')).toBe('Aguardando confirmacao');
+  expect(statusLabel(ORDER_STATUSES.PENDING_CONTACT, 'delivery')).toBe('Aguardando confirmacao');
 });
 
 test('os tons dizem o mesmo que as palavras', () => {
@@ -96,7 +96,7 @@ test('o cancelamento mostra so o que aconteceu, e nao a fila com um X no fim', (
 
 test('cada passo explica o que significa, e a explicacao muda com o modo', () => {
   const entrega = trilha(ORDER_STATUSES.SHIPPED);
-  const retirada = trilha(ORDER_STATUSES.SHIPPED, 'PICKUP');
+  const retirada = trilha(ORDER_STATUSES.SHIPPED, 'pickup');
 
   expect(entrega[3]?.description).toContain('endereco de entrega');
   expect(retirada[3]?.description).toContain('retirado na loja');

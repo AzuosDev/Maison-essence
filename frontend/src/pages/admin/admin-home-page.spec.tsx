@@ -28,7 +28,7 @@ const ORDERS = {
       customerName: 'Rayane Alves',
       phone: '88999998888',
       phoneLabel: '(88) 99999-8888',
-      mode: 'DELIVERY',
+      mode: 'delivery',
       itemCount: 2,
       totalCents: 37_980,
       createdAt: '2026-09-22T12:00:00.000Z',

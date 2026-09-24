@@ -58,11 +58,13 @@ export const SOLD_ORDER_STATUSES: readonly OrderStatus[] = [
   ORDER_STATUSES.DELIVERED,
 ];
 
-export const FULFILLMENT_MODES = { DELIVERY: 'DELIVERY', PICKUP: 'PICKUP' } as const;
+/* Minusculos: e a forma que o servidor grava e aceita. Ver o bloco em
+   `features/checkout/checkout.types.ts`, que declara os mesmos dois. */
+export const FULFILLMENT_MODES = { DELIVERY: 'delivery', PICKUP: 'pickup' } as const;
 
 export type FulfillmentMode = (typeof FULFILLMENT_MODES)[keyof typeof FULFILLMENT_MODES];
 
-export const PAYMENT_METHODS = { PIX: 'PIX', CARD: 'CARD' } as const;
+export const PAYMENT_METHODS = { PIX: 'pix', CARD: 'card' } as const;
 
 export type PaymentMethod = (typeof PAYMENT_METHODS)[keyof typeof PAYMENT_METHODS];
 
