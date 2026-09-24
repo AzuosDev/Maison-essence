@@ -1,16 +1,56 @@
-import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
+import { inspect } from 'node:util';
 import type { IncomingMessage, ServerResponse } from 'node:http';
-import { AppModule } from '../src/app.module.js';
-import { configureApp } from '../src/bootstrap.js';
+import type { Express } from 'express';
 
-// Reaproveitado entre invocacoes da mesma instancia serverless: so o primeiro
+// Reaproveitado entre invocações da mesma instância serverless: só o primeiro
 // request paga o custo de subir o Nest.
-let serverPromise: Promise<express.Express> | undefined;
+let serverPromise: Promise<Express> | undefined;
 
-async function createServer(): Promise<express.Express> {
+/**
+ * Importa um módulo dizendo qual era, quando ele não carrega.
+ *
+ * Os imports desta função são dinâmicos de propósito. No topo do arquivo eles
+ * rodam antes de o handler existir, e um erro ali — um binário nativo que não
+ * veio no pacote da função, um caminho que a Vercel resolveu diferente do
+ * `tsc` — derruba o carregamento do módulo. A plataforma responde a página
+ * genérica (`FUNCTION_INVOCATION_FAILED`) e o `try` lá embaixo nunca chega a
+ * rodar, porque o arquivo inteiro falhou antes.
+ *
+ * Trazidos para dentro de uma função, eles falham no lugar onde já existe
+ * quem os pegue. O nome vem junto porque `ERR_MODULE_NOT_FOUND` sem ele diz
+ * que algo faltou, mas não o quê.
+ */
+async function carregar<T>(nome: string, importar: () => Promise<T>): Promise<T> {
+  try {
+    return await importar();
+  } catch (error: unknown) {
+    throw new Error(`não consegui carregar ${nome}`, { cause: error });
+  }
+}
+
+async function createServer(): Promise<Express> {
+  // A ordem importa: `reflect-metadata` instala o que os decorators do Nest
+  // leem, e precisa estar de pé antes do primeiro `@Module` ser avaliado.
+  await carregar('reflect-metadata', () => import('reflect-metadata'));
+
+  const { NestFactory } = await carregar('@nestjs/core', () => import('@nestjs/core'));
+  const { ExpressAdapter } = await carregar(
+    '@nestjs/platform-express',
+    () => import('@nestjs/platform-express'),
+  );
+  const { default: express } = await carregar('express', () => import('express'));
+
+  // Este puxa a aplicação inteira, e com ela todo módulo nativo que algum
+  // pacote carregue só de ser lido — o binário do argon2, entre eles.
+  const { AppModule } = await carregar(
+    '../src/app.module.js',
+    () => import('../src/app.module.js'),
+  );
+  const { configureApp } = await carregar(
+    '../src/bootstrap.js',
+    () => import('../src/bootstrap.js'),
+  );
+
   const expressApp = express();
   const app = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
@@ -20,10 +60,10 @@ async function createServer(): Promise<express.Express> {
   return expressApp;
 }
 
-function getServer(): Promise<express.Express> {
+function getServer(): Promise<Express> {
   if (!serverPromise) {
     serverPromise = createServer().catch((error: unknown) => {
-      // Permite que a proxima invocacao tente subir de novo.
+      // Permite que a próxima invocação tente subir de novo.
       serverPromise = undefined;
       throw error;
     });
@@ -32,44 +72,67 @@ function getServer(): Promise<express.Express> {
   return serverPromise;
 }
 
+/** O erro e a cadeia de causas dele, em texto. */
+function relatorio(error: unknown): string {
+  const linhas: string[] = [];
+  let atual: unknown = error;
+  let nivel = 0;
+
+  while (atual !== undefined && atual !== null && nivel < 6) {
+    if (!(atual instanceof Error)) {
+      // `inspect` e não `String`: o que chega aqui pode ser um objeto
+      // qualquer, e `[object Object]` não diagnostica nada.
+      const valor = inspect(atual, { depth: 2 });
+
+      linhas.push(nivel === 0 ? valor : `causado por: ${valor}`);
+
+      break;
+    }
+
+    const codigo = (atual as { code?: unknown }).code;
+    const titulo = `${atual.name}: ${atual.message}`;
+
+    linhas.push(
+      nivel === 0 ? titulo : `causado por ${titulo}`,
+      codigo === undefined ? '' : `código: ${inspect(codigo)}`,
+      atual.stack ?? '(sem pilha)',
+      '',
+    );
+
+    atual = (atual as { cause?: unknown }).cause;
+    nivel += 1;
+  }
+
+  return linhas.join('\n');
+}
+
 /**
- * TEMPORARIO — diagnostico do boot na Vercel.
+ * TEMPORÁRIO — diagnóstico do boot na Vercel.
  *
- * Quando o Nest nao sobe, a plataforma responde uma pagina generica
- * (`FUNCTION_INVOCATION_FAILED`) e o motivo fica so no log de runtime. Este
- * bloco devolve o motivo no corpo da resposta, para achar a causa sem
- * depender do painel.
+ * Quando o Nest não sobe, a plataforma responde uma página genérica e o motivo
+ * fica só no log de runtime. Este bloco devolve o motivo no corpo da resposta,
+ * para achar a causa sem depender do painel.
  *
- * Mostra `name`, `message` e a pilha — e nada do ambiente. Ainda assim **sai
- * daqui assim que a API subir**: a pilha diz caminhos de arquivo e versoes de
- * pacote, que nao tem por que ficar publicos.
+ * Mostra `name`, `message`, o código e a pilha — e nada do ambiente. Ainda
+ * assim **sai daqui assim que a API subir**: a pilha diz caminhos de arquivo e
+ * versões de pacote, que não têm por que ficar públicos.
  *
- * Sem interruptor de ambiente de proposito: uma variavel a mais custaria mais
- * um ciclo de deploy para descobrir o que ja podia ser lido no proximo. So
- * responde quando o boot falha — com a API de pe, este caminho nao roda.
+ * Sem interruptor de ambiente de propósito: uma variável a mais custaria mais
+ * um ciclo de deploy para descobrir o que já podia ser lido no próximo. Só
+ * responde quando o boot falha — com a API de pé, este caminho não roda.
  */
 export default async function handler(
   req: IncomingMessage,
   res: ServerResponse,
 ): Promise<void> {
-  let server: express.Express;
+  let server: Express;
 
   try {
     server = await getServer();
   } catch (error: unknown) {
-    const erro = error instanceof Error ? error : new Error(String(error));
-
     res.statusCode = 500;
     res.setHeader('content-type', 'text/plain; charset=utf-8');
-    res.end(
-      [
-        `${erro.name}: ${erro.message}`,
-        '',
-        erro.stack ?? '(sem pilha)',
-        '',
-        `causa: ${String((erro as { cause?: unknown }).cause ?? '(nenhuma)')}`,
-      ].join('\n'),
-    );
+    res.end(relatorio(error));
 
     return;
   }
