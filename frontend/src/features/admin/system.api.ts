@@ -24,11 +24,11 @@ import type { AdminPage } from './admin.types';
  *
  * ## O que ainda não existe
  *
- * Três chamadas daqui apontam para rotas que o backend **não publica**:
- * `listAudit`, `listCollections` e `runDemoSeed` — e `revokeSessions`, que e
- * a quarta. Os caminhos escolhidos são os naturais para cada uma, e as telas
- * que as usam tratam o `404` com uma mensagem que nomeia a rota que falta,
- * em vez de mostrar "algo deu errado".
+ * Duas chamadas daqui apontam para rotas que o backend **não publica**:
+ * `listAudit` e `runDemoSeed` — e `revokeSessions`, que e a terceira. Os
+ * caminhos escolhidos são os naturais para cada uma, e as telas que as usam
+ * tratam o `404` com uma mensagem que nomeia a rota que falta, em vez de
+ * mostrar "algo deu errado".
  *
  * Elas ficam aqui, e não comentadas ou ausentes, por um motivo prático: no
  * dia em que o backend publicar qualquer uma delas, a tela correspondente
@@ -170,9 +170,10 @@ export function fetchHealth(signal?: AbortSignal): Promise<HealthStatus> {
 /**
  * Quantos documentos há em cada coleção.
  *
- * **A rota não existe no backend.** Falta um `GET /admin/system/collections`
- * restrito ao SUPER_ADMIN, devolvendo `[{ name, count }]` — um
- * `db.collection(name).estimatedDocumentCount()` por coleção registrada.
+ * `GET /admin/system/collections`, restrito ao SUPER_ADMIN: um
+ * `estimatedDocumentCount()` por coleção que os módulos registraram, em ordem
+ * alfabética. Coleção registrada e ainda sem documento nenhum vem com zero, e
+ * não ausente — numa loja recém-instalada e isso que a tela precisa mostrar.
  */
 export function listCollections(signal?: AbortSignal): Promise<CollectionCount[]> {
   return api.get<CollectionCount[]>('/admin/system/collections', {

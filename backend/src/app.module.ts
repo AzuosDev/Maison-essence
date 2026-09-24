@@ -18,6 +18,7 @@ import { PaymentsModule } from './modules/payments/payments.module.js';
 import { ProductsModule } from './modules/products/products.module.js';
 import { RateLimitModule } from './modules/rate-limit/rate-limit.module.js';
 import { SettingsModule } from './modules/settings/settings.module.js';
+import { SystemModule } from './modules/system/system.module.js';
 import { UploadsModule } from './modules/uploads/uploads.module.js';
 import { UsersModule } from './modules/users/users.module.js';
 
@@ -33,6 +34,7 @@ import { UsersModule } from './modules/users/users.module.js';
     HealthModule,
     AuthModule,
     UsersModule,
+    SystemModule,
     CategoriesModule,
     ProductsModule,
     CatalogImportModule,

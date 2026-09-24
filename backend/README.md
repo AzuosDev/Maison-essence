@@ -738,11 +738,12 @@ lembrando que `SUPER_ADMIN` passa em todas (ver "Papeis e permissoes").
 | `PATCH /users/:id` | OWNER | Nome, e-mail e papel |
 | `PATCH /users/:id/status` | OWNER | Ativa ou desativa; desativar derruba as sessoes |
 | `POST /users/:id/reset-password` | OWNER | Nova senha temporaria |
+| `GET /admin/system/collections` | SUPER_ADMIN | Documentos por colecao registrada |
 
 ### Colecao para o Postman e o Insomnia
 
 [`docs/maison-essence.postman_collection.json`](docs/maison-essence.postman_collection.json)
-traz as 61 rotas acima com exemplos preenchidos. O formato e o do Postman
+traz as 62 rotas acima com exemplos preenchidos. O formato e o do Postman
 (schema v2.1), que o Insomnia importa direto em **Import > File**.
 
 O login do painel e o do cliente guardam os tokens nas variaveis da colecao,
