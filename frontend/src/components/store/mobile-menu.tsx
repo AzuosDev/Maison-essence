@@ -3,6 +3,7 @@ import { ROUTES } from '@/app/routes';
 import { Accordion, AccordionItem, Drawer, Skeleton } from '@/components/ui';
 import { useCategoryTree } from '@/features/catalog';
 import { useStoreSettings } from '@/features/settings';
+import { ThemeToggle } from '@/features/theme';
 import { InstagramIcon, SearchIcon, TiktokIcon } from './icons';
 import styles from './mobile-menu.module.css';
 
@@ -158,6 +159,17 @@ export function MobileMenu({ open, onClose, onOpenSearch }: MobileMenuProps) {
               ) : null}
             </div>
           ) : null}
+
+          {/*
+            O tema, aqui e no rodapé.
+
+            Na barra do celular não cabe: depois da assinatura há largura para
+            dois alvos, e são a busca e a sacola. A gaveta e o lugar natural
+            do que sai de lá — e onde a conta já estava. Em segmentos, e não
+            no botão que alterna do cabeçalho: quem abre a gaveta esta
+            procurando, não repetindo um toque que já conhece.
+          */}
+          <ThemeToggle tone="page" className={styles.theme} />
         </div>
       </div>
     </Drawer>

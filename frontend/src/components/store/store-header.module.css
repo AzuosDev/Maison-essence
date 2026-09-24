@@ -35,10 +35,19 @@
 .bar {
   display: grid;
 
-  /* Três colunas com as laterais de mesma largura: e o que mantem a
-     assinatura no centro otico da tela, e não no centro do que sobrou entre
-     os dois lados. */
-  grid-template-columns: 1fr auto 1fr;
+  /*
+   * Três colunas com as laterais de mesma largura: e o que mantem a
+   * assinatura no centro otico da tela, e não no centro do que sobrou entre
+   * os dois lados.
+   *
+   * `minmax(0, ...)` nas três, e não `1fr auto 1fr` cru. O mínimo automatico
+   * de uma coluna de grade e o conteúdo dela, e a assinatura não quebra
+   * linha: numa tela de 390px a coluna do meio recusava encolher, passava por
+   * cima da fileira de ícones e "MAISON ESSENCE" era impresso em cima da
+   * lupa e da sacola. Com o mínimo em zero, quem não cabe encolhe — e o
+   * tamanho da assinatura, logo abaixo, garante que ela sempre caiba.
+   */
+  grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
   align-items: center;
   gap: var(--space-8);
 
@@ -86,6 +95,16 @@
  */
 .logo {
   min-width: 0;
+
+  /*
+   * Centrada na coluna, e não encostada no comeco dela.
+   *
+   * A assinatura e uma caixa do tamanho do conteúdo, e conteúdo mais estreito
+   * que a coluna encosta na borda esquerda. Passa despercebido enquanto o
+   * nome preenche a largura inteira — e aparece no instante em que ele sai,
+   * com o monograma sozinho a 70px do centro da tela.
+   */
+  justify-self: center;
 }
 
 .scrolled .logo {
@@ -96,6 +115,79 @@
   flex-direction: row;
   align-items: center;
   gap: var(--space-12);
+}
+
+/*
+ * No celular a assinatura acompanha a largura da tela.
+ *
+ * A barra e uma conta fechada: 16px de recuo de cada lado, um hamburguer de
+ * 44px a esquerda, lupa e sacola a direita, e o que sobra no meio e da
+ * assinatura. Em 320px sobram 136px; em 430px, 246px. Um corpo fixo serve a
+ * um desses dois e atropela o outro — era o que acontecia, e o nome da loja
+ * saia impresso por cima dos ícones.
+ *
+ * O `clamp` resolve os dois com uma linha: piso de 10px, que e o que cabe no
+ * menor celular que ainda se vende, teto no corpo de repouso, e no meio um
+ * valor que cresce com a viewport. O espacamento entre as letras fecha
+ * junto, de 0.28em para 0.16em — em caixa alta ele responde por quase
+ * metade da largura da palavra, e encolher só o corpo deixaria a assinatura
+ * larga e miuda ao mesmo tempo.
+ */
+@media (max-width: 63.99rem) {
+  /*
+   * As laterais valem a fileira de ícones; o meio fica com o resto.
+   *
+   * Com as três colunas flexíveis, o que cede primeiro e sempre a errada: a
+   * coluna do meio pede o tamanho do nome inteiro, as duas laterais rachavam
+   * o que sobrava em partes iguais e a da direita ficava com 79px para dois
+   * alvos de 44px — os ícones e que passavam a invadir a assinatura. Fixar a
+   * lateral em 5.75rem (dois alvos mais o vão entre eles) inverte a ordem:
+   * ninguém espreme o dedo, e quem se ajusta a tela e a assinatura, que e a
+   * peca que sabe encolher.
+   */
+  .bar {
+    grid-template-columns: 5.75rem minmax(0, 1fr) 5.75rem;
+  }
+
+  .logo {
+    --wordmark-text: clamp(0.625rem, 3vw, var(--text-18));
+    --wordmark-tracking: 0.16em;
+
+    max-width: 100%;
+  }
+
+  /*
+   * No celular mais estreito a assinatura quebra em duas linhas.
+   *
+   * Em 320px a coluna do meio tem 88px, e "MAISON ESSENCE" em caixa alta não
+   * cabe numa linha por nenhum corpo que ainda se leia. Empilhada sob o
+   * monograma — MAISON sobre ESSENCE — ela cabe com folga e continua sendo a
+   * mesma assinatura: e a forma de repouso da marca, que já nasce em coluna.
+   *
+   * A quebra acontece só onde precisa. De 360px para cima o corpo fluido
+   * mantem o nome numa linha, e nada disso aparece.
+   */
+  .logo [data-part='wordmark'] {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  /*
+   * Ao rolar, a assinatura se reduz ao monograma.
+   *
+   * Deitada, ela pede o monograma mais o nome mais o vão entre os dois, e
+   * isso não cabe na barra compacta de um celular estreito por nenhum corpo
+   * de fonte que ainda se leia. Entre espremer o nome até 7px e mostrar a
+   * marca, a marca: e o mesmo desenho que a moldura dourada carrega na
+   * etiqueta, no vidro e no rodapé.
+   *
+   * O nome não se perde. Ele esta no alto de toda página antes de qualquer
+   * rolagem, esta na gaveta, esta no rodapé — e continua no `aria-label` do
+   * link, que e o que um leitor de tela anuncia aqui de qualquer forma.
+   */
+  .scrolled .logo [data-part='wordmark'] {
+    display: none;
+  }
 }
 
 /* ---- A busca em forma de campo ---------------------------------------- */
@@ -163,14 +255,26 @@
   }
 }
 
-/* O atalho da conta sai no celular: o menu lateral já o traz, e três ícones
-   lado a lado numa barra de 390px não deixam espaço para a assinatura. */
-.accountLink {
+/*
+ * Dois ícones no celular, quatro no desktop.
+ *
+ * A conta e o tema saem da barra estreita, e os dois pelo mesmo motivo: a
+ * largura de um celular paga dois alvos de 44px depois da assinatura, e o
+ * terceiro sai de onde não tem — de cima do nome da loja. O que fica e o que
+ * pertence a compra: procurar e a sacola.
+ *
+ * Nenhum dos dois some de verdade. A conta esta na gaveta desde sempre; o
+ * tema entrou nela junto com esta regra, e continua também no rodapé, em
+ * segmentos, que e onde se descobre que há uma escolha.
+ */
+.accountLink,
+.themeButton {
   display: none;
 }
 
 @media (min-width: 64rem) {
-  .accountLink {
+  .accountLink,
+  .themeButton {
     display: inline-flex;
   }
 }

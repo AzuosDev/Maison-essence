@@ -12,6 +12,16 @@
   --monogram-text: var(--text-16);
   --wordmark-text: var(--text-18);
 
+  /*
+   * O espacamento entre as letras também e variável, e não só o corpo.
+   *
+   * Em caixa alta ele e metade da largura da assinatura: "MAISON ESSENCE"
+   * são catorze letras, e a 0.28em cada uma carrega quase um terco de si
+   * mesma em ar. Quem precisa encolher a assinatura numa barra estreita
+   * precisa dos dois números, não de um.
+   */
+  --wordmark-tracking: var(--tracking-logo);
+
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -23,42 +33,6 @@
      animar largura, altura e corpo de fonte remede a página a cada quadro.
      A troca e instantanea, como a do cabeçalho que a contem. */
   transition: color var(--transition);
-}
-
-/* Encolhido: o cabeçalho passa esta classe ao rolar a página. */
-/*
- * A assinatura deitada: monograma ao lado do nome.
- *
- * E a do cabeçalho, onde só há uma faixa de altura para trabalhar. A empilhada
- * fica para o rodapé e para o bloco da marca, que tem espaço para ela respirar.
- */
-.compact {
-  --monogram-size: 2rem;
-  --monogram-text: var(--text-14);
-  --wordmark-text: var(--text-16);
-
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-12);
-}
-
-/*
- * No celular, "MAISON ESSENCE" em caixa alta com 0.28em de espacamento não
- * cabe entre o menu e os dois ícones. A assinatura encolhe — e fecha o
- * espacamento junto, que e o que de fato ocupa a largura — em vez de sumir:
- * o nome da loja no alto da tela e o que diz ao cliente onde ele esta.
- */
-@media (max-width: 30rem) {
-  .compact {
-    --wordmark-text: var(--text-12);
-
-    gap: var(--space-8);
-  }
-
-  .compact .wordmark {
-    letter-spacing: 0.16em;
-    text-indent: 0.16em;
-  }
 }
 
 .monogram {
@@ -89,8 +63,10 @@
   font-weight: var(--weight-regular);
   line-height: 1;
   text-transform: uppercase;
-  letter-spacing: var(--tracking-logo);
-  text-indent: var(--tracking-logo);
+  letter-spacing: var(--wordmark-tracking);
+
+  /* O espacamento sobra depois da última letra; o recuo devolve o centro. */
+  text-indent: var(--wordmark-tracking);
   white-space: nowrap;
 }
 

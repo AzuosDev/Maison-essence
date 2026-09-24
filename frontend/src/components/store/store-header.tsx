@@ -153,14 +153,18 @@ export function StoreHeader() {
             <CartButton />
 
             {/*
-              Depois da sacola, e não antes.
+              Depois da sacola, e não antes — e só onde há barra para ele.
 
               A sacola e o fim da fileira por ser o destino da compra — e o
               alvo que a mão procura sem olhar, no canto. O tema entra a
               direita dela como o que e: uma preferência, no lugar de menor
               transito da barra.
+
+              No celular ele nem entra: a barra paga dois alvos depois da
+              assinatura, e o terceiro sairia de cima do nome da loja. Lá a
+              preferência mora na gaveta e no rodapé.
             */}
-            <ThemeIconButton />
+            <ThemeIconButton className={styles.themeButton} />
           </div>
         </Container>
 

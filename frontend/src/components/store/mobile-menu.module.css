@@ -165,3 +165,14 @@
   color: var(--gold-deep);
   border-color: var(--gold);
 }
+
+/*
+ * O tema, no pé da gaveta.
+ *
+ * Depois do institucional e das redes de propósito: e a ultima coisa que
+ * alguém vem procurar aqui, e o que se procura de verdade — categoria e
+ * busca — fica no alto, sem rolar.
+ */
+.theme {
+  margin-top: var(--space-24);
+}
