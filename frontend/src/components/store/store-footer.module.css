@@ -30,13 +30,13 @@
    *
    * No claro a laje preta contra o creme da 18:1 e se separa sozinha — o
    * comentário acima vale inteiro. No escuro não há esse luxo: a laje
-   * (#16130e) contra o fundo (#0b0b0b) da 1,06:1, e o rodapé simplesmente
+   * (#151515) contra o fundo (#0b0b0b) da 1,08:1, e o rodapé simplesmente
    * deixa de ser um bloco. Não há como ir mais escuro que a página, então
    * quem marca a emenda e a linha.
    *
    * `--line` faz o trabalho nos dois sem nenhuma condicional: no claro ele e
    * #e3dacd contra o creme logo acima, quase invisível, que e o que se quer
-   * ali; no escuro e #2e2a24 contra o quase preto, um fio discreto mas
+   * ali; no escuro e #2a2a2a contra o quase preto, um fio discreto mas
    * presente.
    */
   border-top: 1px solid var(--line);

@@ -58,7 +58,7 @@ export const DARK_MEDIA_QUERY = '(prefers-color-scheme: dark)';
  */
 export const THEME_COLORS: Record<ThemeMode, string> = {
   light: '#0e0e0e',
-  dark: '#16130e',
+  dark: '#151515',
 };
 
 export function isThemeMode(value: unknown): value is ThemeMode {

@@ -35,6 +35,8 @@
 
 /* A assinatura: o logotipo em versão empilhada, sem link. */
 .signature {
+  --monogram-size: 5rem;
+
   margin-bottom: var(--space-8);
 }
 

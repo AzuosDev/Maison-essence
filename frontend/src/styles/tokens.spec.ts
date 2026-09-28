@@ -95,7 +95,7 @@ test('a laje não e o primeiro plano', () => {
   const escuro = corpoDaRegra(css, ":root[data-theme='dark'] {");
 
   // No escuro a laje e um degrau acima do fundo (#0b0b0b), e não o claro.
-  expect(escuro).toMatch(/--slab:\s*#16130e/);
+  expect(escuro).toMatch(/--slab:\s*#151515/);
 });
 
 /**

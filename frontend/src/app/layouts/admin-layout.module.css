@@ -32,7 +32,7 @@
 
   /* Mesmo filete do rodapé da loja, pelo mesmo motivo: no tema claro a
      coluna preta contra o conteúdo quase branco se separa sozinha, e no
-     escuro a coluna (#16130e) e o conteúdo (#0f0f14) são vizinhos de
+     escuro a coluna (#151515) e o conteúdo (#0f0f14) são vizinhos de
      luminosidade. Sem a linha, as duas viram uma mancha só. */
   border-right: 1px solid var(--line);
 }

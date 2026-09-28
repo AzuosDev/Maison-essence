@@ -31,8 +31,8 @@
   --bg: #faf7f2;
   --bg-alt: #f1e9dd;
   --surface: #ffffff;
-  --gold: #c0a062;
-  --gold-deep: #9c7c3c;
+  --gold: #c39540;
+  --gold-deep: #9e6917;
   --line: #e3dacd;
   --success: #2e7d5b;
   --danger: #b3261e;
@@ -67,8 +67,8 @@
    *   --success     4.68:1  qualquer texto
    *   --danger      6.12:1  qualquer texto
    *   --muted       3.44:1  SÓ texto >=18px, ou grafico
-   *   --gold-deep   3.66:1  SÓ texto >=18px, ou grafico
-   *   --gold        2.33:1  NUNCA texto. Só preenchimento, filete e borda.
+   *   --gold-deep   4.38:1  SÓ texto >=18px, ou grafico
+   *   --gold        2.55:1  NUNCA texto. Só preenchimento, filete e borda.
    *
    * Sobre o preto a conta e outra e se inverte: ali `--muted` da 5.25:1 e e o
    * cinza legitimo do rodapé. O que não pode e o de 12px sobre o creme.
@@ -108,7 +108,7 @@
      pelo canto do olho que não esta na loja. */
   --admin-bg: #f6f5fb;
   --admin-sidebar: var(--slab);
-  --admin-active: rgb(192 160 98 / 0.14);
+  --admin-active: rgb(195 149 64 / 0.14);
   --admin-item-active: var(--admin-active);
   --admin-item-border: 3px;
 
@@ -322,19 +322,19 @@
     --ink-soft: #cfc9be;
     --muted: #8a8578;
     --bg: #0b0b0b;
-    --bg-alt: #16130e;
-    --surface: #141210;
-    --gold: #c0a062;
-    --gold-deep: #d9be7e;
-    --line: #2e2a24;
+    --bg-alt: #151515;
+    --surface: #131313;
+    --gold: #c39540;
+    --gold-deep: #dab369;
+    --line: #2a2a2a;
     --success: #4caf82;
     --danger: #e5695f;
 
-    --slab: #16130e;
+    --slab: #151515;
     --slab-ink: #f2efe9;
 
     --admin-bg: #0f0f14;
-    --admin-active: rgb(192 160 98 / 0.18);
+    --admin-active: rgb(195 149 64 / 0.18);
 
     --shadow:
       0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.45);
@@ -351,19 +351,19 @@
   --ink-soft: #cfc9be;
   --muted: #8a8578;
   --bg: #0b0b0b;
-  --bg-alt: #16130e;
-  --surface: #141210;
-  --gold: #c0a062;
-  --gold-deep: #d9be7e;
-  --line: #2e2a24;
+  --bg-alt: #151515;
+  --surface: #131313;
+  --gold: #c39540;
+  --gold-deep: #dab369;
+  --line: #2a2a2a;
   --success: #4caf82;
   --danger: #e5695f;
 
-  --slab: #16130e;
+  --slab: #151515;
   --slab-ink: #f2efe9;
 
   --admin-bg: #0f0f14;
-  --admin-active: rgb(192 160 98 / 0.18);
+  --admin-active: rgb(195 149 64 / 0.18);
 
   --shadow:
     0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.45);

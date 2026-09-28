@@ -108,8 +108,7 @@
 }
 
 .scrolled .logo {
-  --monogram-size: 1.75rem;
-  --monogram-text: var(--text-12);
+  --monogram-size: 2.5rem;
   --wordmark-text: var(--text-14);
 
   flex-direction: row;
@@ -178,7 +177,7 @@
    * Deitada, ela pede o monograma mais o nome mais o vão entre os dois, e
    * isso não cabe na barra compacta de um celular estreito por nenhum corpo
    * de fonte que ainda se leia. Entre espremer o nome até 7px e mostrar a
-   * marca, a marca: e o mesmo desenho que a moldura dourada carrega na
+   * marca, a marca: e o mesmo monograma dourado que aparece na
    * etiqueta, no vidro e no rodapé.
    *
    * O nome não se perde. Ele esta no alto de toda página antes de qualquer

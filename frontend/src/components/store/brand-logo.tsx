@@ -4,11 +4,16 @@ import { cx } from '@/lib/cx';
 import styles from './brand-logo.module.css';
 
 /**
- * A marca: monograma ME em moldura dourada sobre o nome em caixa alta.
+ * A marca: o monograma ME dourado da logo sobre o nome em caixa alta.
  *
- * O `aria-label` carrega o nome inteiro e o monograma fica `aria-hidden`:
- * sem isso, um leitor de tela anuncia "M E Maison Essence" — o monograma e
- * as mesmas duas letras do nome, desenhadas.
+ * O monograma e a arte da logo recortada em PNG transparente
+ * (`public/brand/monogram.png`), e não texto: o M e o E entrelacados com a
+ * estrela não se desenham com fonte nenhuma. A logo inteira, com o nome e o
+ * filete, esta ao lado em `public/brand/logo.png`.
+ *
+ * A imagem tem `alt` vazio: o nome já esta escrito ao lado, e o `aria-label`
+ * do link carrega o nome inteiro. Descrever o monograma faria o leitor de
+ * tela anunciar a marca duas vezes.
  *
  * Nasce empilhada, que e a forma de repouso da marca. Deitar a assinatura,
  * encolher o monograma ou fechar o espacamento das letras e trabalho de quem
@@ -37,9 +42,15 @@ export function BrandLogo({ inverted = false, asLink = true, className }: BrandL
         ele. Atributo, e nao uma classe exportada: classe se copia para outro
         lugar por engano, `data-part` diz o que a peca e.
       */}
-      <span className={styles.monogram} data-part="monogram" aria-hidden="true">
-        ME
-      </span>
+      <img
+        className={styles.monogram}
+        data-part="monogram"
+        src="/brand/monogram.png"
+        alt=""
+        width={313}
+        height={320}
+        decoding="async"
+      />
       <span className={styles.wordmark} data-part="wordmark">
         Maison Essence
       </span>
