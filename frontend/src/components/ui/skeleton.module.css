@@ -5,9 +5,14 @@
  * empurra o grid inteiro; um retângulo do tamanho certo, já no lugar, faz o
  * conteúdo só ganhar cor.
  *
- * O brilho que atravessa e um gradiente animado em `background-position`, e
- * não um elemento extra deslizando: um pseudo-elemento em movimento dentro
- * de vinte cards e vinte camadas para o navegador compor.
+ * O brilho que atravessa e um pseudo-elemento deslizando com `transform`, e
+ * não um gradiente animado em `background-position`. Já foi o gradiente, pela
+ * conta de que cada pseudo-elemento em movimento e uma camada a mais para
+ * compor. A conta errava o lado caro: `background-position` não roda na GPU,
+ * e a home carrega mais de trezentos esqueletos de uma vez — trezentos
+ * retângulos repintados na CPU a cada quadro, enquanto o celular ainda
+ * monta a página. O Lighthouse media isso como tempo de bloqueio. Camada a
+ * mais a GPU compõe sem esforço; repintura ela não faz.
  */
 
 .skeleton {
@@ -15,9 +20,16 @@
   overflow: hidden;
 
   background-color: var(--sand);
-  background-image: linear-gradient(90deg, var(--sand) 0%, var(--surface) 50%, var(--sand) 100%);
-  background-size: 200% 100%;
   border-radius: var(--radius-chip);
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+
+  background-image: linear-gradient(90deg, transparent 0%, var(--surface) 50%, transparent 100%);
+  transform: translateX(-100%);
 
   animation: sheen 1400ms linear infinite;
 }
@@ -56,10 +68,10 @@
 
 @keyframes sheen {
   from {
-    background-position: 200% 0;
+    transform: translateX(-100%);
   }
 
   to {
-    background-position: -200% 0;
+    transform: translateX(100%);
   }
 }

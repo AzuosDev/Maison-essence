@@ -45,7 +45,7 @@ const SPEED = 60;
 const INITIAL_LAP = { copies: 1, seconds: 0 };
 
 export function AnnouncementBar() {
-  const { settings } = useStoreSettings();
+  const { settings, isLoading } = useStoreSettings();
   const text = settings?.announcementText.trim();
 
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -127,8 +127,13 @@ export function AnnouncementBar() {
     };
   }, [measure, text]);
 
+  // Enquanto as configurações não chegam, a faixa já ocupa o lugar dela,
+  // vazia. Sem isso ela aparecia do nada um instante depois da primeira
+  // pintura e empurrava a página inteira 36px para baixo — era a maior parte
+  // do CLS da home. Se a loja não tiver aviso, a faixa some quando a resposta
+  // chega: um salto só para quem não usa a faixa, em vez de um para todos.
   if (!text) {
-    return null;
+    return isLoading ? <div className={styles.bar} aria-hidden="true" /> : null;
   }
 
   return (
