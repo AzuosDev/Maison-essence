@@ -35,15 +35,18 @@
 }
 
 /*
- * A arte da logo. So a altura e fixada; a largura sai da proporção do
- * arquivo (313x320), para o M e o E não se deformarem quando o cabeçalho
+ * A arte da logo. A altura e a medida; a largura sai dela pela proporção do
+ * arquivo (188x192), para o M e o E não se deformarem quando o cabeçalho
  * encolhe.
  */
 .monogram {
   display: block;
   flex: none;
 
-  width: auto;
+  /* A largura em conta, e não `auto`: com `auto` ela só se resolve quando a
+     imagem chega, e até lá a assinatura não sabe a própria largura e a
+     página pula. 188/192 e a proporção do arquivo. */
+  width: calc(var(--monogram-size) * 188 / 192);
   height: var(--monogram-size);
 }
 

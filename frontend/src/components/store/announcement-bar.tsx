@@ -88,8 +88,17 @@ export function AnnouncementBar() {
   //
   // `useLayoutEffect` e não `useEffect`: a conta precisa estar feita antes da
   // pintura, senão a fita aparece curta por um quadro e se estica na cara de
-  // quem esta olhando. `ResizeObserver` existe em todo navegador que a loja
-  // atende, mas não no jsdom dos testes; a guarda e para ele.
+  // quem esta olhando.
+  //
+  // A primeira medida e do observador, e não uma chamada direta aqui. Todo
+  // `observe` dispara uma vez de saída, depois do layout e antes da pintura
+  // do mesmo quadro: a fita continua certa no primeiro quadro, e a medida sai
+  // com o layout pronto. Chamada daqui, ela lia `getBoundingClientRect` com a
+  // barra recém-montada e obrigava o navegador a calcular a página inteira
+  // fora de hora (o "reflow forçado" do Lighthouse).
+  //
+  // `ResizeObserver` existe em todo navegador que a loja atende, mas não no
+  // jsdom dos testes; ali a medida e direta.
   useLayoutEffect(() => {
     const viewport = viewportRef.current;
     const copy = copyRef.current;
@@ -102,9 +111,9 @@ export function AnnouncementBar() {
       return;
     }
 
-    measure();
-
     if (typeof ResizeObserver === 'undefined') {
+      measure();
+
       return;
     }
 

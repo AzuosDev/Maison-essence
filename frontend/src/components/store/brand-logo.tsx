@@ -6,8 +6,8 @@ import styles from './brand-logo.module.css';
 /**
  * A marca: o monograma ME dourado da logo sobre o nome em caixa alta.
  *
- * O monograma e a arte da logo recortada em PNG transparente
- * (`public/brand/monogram.png`), e não texto: o M e o E entrelacados com a
+ * O monograma e a arte da logo recortada em WebP transparente
+ * (`public/brand/monogram.webp`), e não texto: o M e o E entrelacados com a
  * estrela não se desenham com fonte nenhuma. A logo inteira, com o nome e o
  * filete, esta ao lado em `public/brand/logo.png`.
  *
@@ -45,10 +45,10 @@ export function BrandLogo({ inverted = false, asLink = true, className }: BrandL
       <img
         className={styles.monogram}
         data-part="monogram"
-        src="/brand/monogram.png"
+        src="/brand/monogram.webp"
         alt=""
-        width={313}
-        height={320}
+        width={188}
+        height={192}
         decoding="async"
       />
       <span className={styles.wordmark} data-part="wordmark">

@@ -1,5 +1,21 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+/*
+ * As duas familias do design system, servidas pelo proprio site.
+ *
+ * Vinham do Google Fonts, e o `<link>` de la bloqueava a primeira pintura:
+ * o navegador abria conexao com dois dominios de fora antes de desenhar
+ * qualquer coisa, perto de um segundo num celular. Daqui elas entram no CSS
+ * do proprio bundle, pelo mesmo dominio e com `font-display: swap`.
+ *
+ * So o subconjunto latino e so os pesos que os tokens usam: 400 e 600 da
+ * serifada, 400, 500 e 600 da Jost. O latino cobre os acentos do portugues.
+ */
+import '@fontsource/cormorant-garamond/latin-400.css';
+import '@fontsource/cormorant-garamond/latin-600.css';
+import '@fontsource/jost/latin-400.css';
+import '@fontsource/jost/latin-500.css';
+import '@fontsource/jost/latin-600.css';
 import './styles/global.css';
 
 /**

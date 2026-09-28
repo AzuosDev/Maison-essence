@@ -33,8 +33,16 @@
   text-align: center;
 }
 
-/* A assinatura: o logotipo em versão empilhada, sem link. */
-.signature {
+/*
+ * A assinatura: o logotipo em versão empilhada, sem link.
+ *
+ * Presa a `.statement`, e não solta, por causa do `--monogram-size`: o
+ * `BrandLogo` define a mesma variável em `.logo`, no mesmo elemento e com a
+ * mesma força. Empatadas, vence a folha que carregar por último, e o Vite
+ * carrega as folhas em pedaços: o monograma nascia com 48px e saltava para
+ * 80px quando a da home chegava, empurrando a página.
+ */
+.statement .signature {
   --monogram-size: 5rem;
 
   margin-bottom: var(--space-8);

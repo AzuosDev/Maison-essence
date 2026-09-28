@@ -113,16 +113,37 @@ export function ProductShelf({
     });
   }, []);
 
-  // A primeira medida, e a de toda vez que a caixa muda de largura — girar o
-  // celular, arrastar a janela. Sem ela, com poucos produtos a fileira cabe
-  // inteira na tela e a seta da direita ficaria acesa sem ter para onde ir.
+  // Uma lista nova muda o `scrollWidth` sem mudar a caixa da fileira, e o
+  // observador abaixo não dispararia sozinho: quem ele observa e o elemento,
+  // e ele continua do mesmo tamanho com dois ou com doze cards dentro.
+  const count = products?.length ?? 0;
+
+  // A primeira medida, a de toda lista nova e a de toda vez que a caixa muda
+  // de largura — girar o celular, arrastar a janela. Sem ela, com poucos
+  // produtos a fileira cabe inteira na tela e a seta da direita ficaria acesa
+  // sem ter para onde ir.
+  //
+  // A lista nova entra pelo `count` nas dependências: o observador e
+  // recriado, e todo `observe` dispara uma vez de saída. Medir direto aqui
+  // daria o mesmo número, mas lendo `scrollWidth` com o layout ainda sujo dos
+  // cards que acabaram de entrar — o navegador calcula a página inteira fora
+  // de hora (o "reflow forçado" do Lighthouse). No callback do observador o
+  // layout já esta pronto.
   //
   // `ResizeObserver` existe em todo navegador que a loja atende, mas não no
-  // jsdom dos testes; a guarda e para ele.
+  // jsdom dos testes; ali a medida e direta.
   useEffect(() => {
     const track = trackRef.current;
 
-    if (track === null || typeof ResizeObserver === 'undefined') {
+    if (track === null) {
+      return;
+    }
+
+    if (typeof ResizeObserver === 'undefined') {
+      if (count > 0) {
+        measure();
+      }
+
       return;
     }
 
@@ -133,17 +154,6 @@ export function ProductShelf({
     return () => {
       observer.disconnect();
     };
-  }, [measure]);
-
-  // Uma lista nova muda o `scrollWidth` sem mudar a caixa da fileira, e o
-  // observador acima não dispara: quem ele observa e o elemento, e ele
-  // continua do mesmo tamanho com dois ou com doze cards dentro.
-  const count = products?.length ?? 0;
-
-  useEffect(() => {
-    if (count > 0) {
-      measure();
-    }
   }, [measure, count]);
 
   const scrollBy = (direction: 1 | -1): void => {
