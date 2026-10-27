@@ -98,6 +98,40 @@
   margin-top: var(--space-24);
 }
 
+/*
+ * A prateleira empilhada, para a fileira do meio da home.
+ *
+ * As mesmas duas contagens do trilho — duas colunas no celular, quatro a
+ * partir de 768px —, pelo mesmo motivo e nos mesmos respiros: as duas formas
+ * precisam entregar cartões da mesma medida, senão a mesma loja mostra o
+ * mesmo produto em dois tamanhos na mesma rolagem.
+ *
+ * Aqui a medida vem de `1fr` e não de `calc()`: a grade já desconta os vãos
+ * sozinha. `minmax(0, 1fr)` e não `1fr` porque sem o mínimo zerado um nome de
+ * produto sem espaço estoura a coluna e entorta a grade inteira.
+ */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-24) var(--space-16);
+
+  padding: 0;
+  margin-top: var(--space-24);
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .grid {
+    gap: var(--space-32) var(--space-24);
+  }
+}
+
+@media (min-width: 48rem) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
 .track {
   display: flex;
   gap: var(--space-16);
@@ -140,17 +174,24 @@
 }
 
 /*
- * A largura do card no celular: 58%, e não 44%.
+ * Dois cards no celular, quatro a partir de 768px — a contagem da referência.
  *
- * Com 44% o card tinha 158px, e nele nem "R$ 389,00 – R$ 479,00" nem "em até
- * 6x de R$ 64,83 sem juros" cabiam numa linha. Quebravam em duas — mas só nos
- * cards que tinham faixa de preço ou parcelamento, e como a fileira iguala a
- * altura de todos, os demais ganhavam um vão de vinte e poucos pixels acima
- * do botão. A fileira inteira ficava irregular por causa de duas linhas de
- * texto.
+ * A medida e calculada, e não uma porcentagem redonda: `calc((100% - vãos) /
+ * n)` desconta os `gap` antes de dividir, então n cards e n-1 vãos ocupam a
+ * largura exata do trilho. Com porcentagem solta — os 58% / 30% / 23% / 18.4%
+ * que estavam aqui — a conta não fecha com o vão e o último card da tela nasce
+ * cortado por alguns pixels, que e o que faz uma fileira parecer desalinhada
+ * sem que se saiba por quê.
  *
- * Com 58% o card tem 208px, as duas linhas cabem, e a fileira mostra um card
- * e meio — o que continua dizendo que há mais coisa a direita.
+ * Dois no celular, e não um e meio: com 58% o card media 208px e meio card
+ * sobrava na beirada anunciando que havia mais a direita. O par cheio troca
+ * esse anúncio por densidade — duas fotos lado a lado na primeira tela do
+ * telefone, que e de onde vem o público desta loja. Quem rola continua
+ * encontrando o resto, e as setas do desktop seguem dizendo o mesmo.
+ *
+ * O card não fica apertado em nenhum dos dois: 2 colunas num 390px dão 171px,
+ * e 4 colunas no container de 1280 dão 290px — mais largo que os 227px que a
+ * quinta coluna do arranjo anterior deixava para o nome do produto.
  */
 .item {
   /*
@@ -173,22 +214,33 @@
    * hoje". Fileira curta não liga as setas e não corta card na beirada, o
    * que a distingue de uma fileira que ficou pela metade.
    */
-  flex: 0 0 58%;
+  flex: 0 0 calc((100% - var(--space-16)) / 2);
   scroll-snap-align: start;
 
   /* Sem isto, `min-width: auto` deixa o conteúdo mais teimoso que a base:
-     basta um rótulo comprido dentro do card para ele estourar os 58% e sair
+     basta um rótulo comprido dentro do card para ele estourar a medida e sair
      mais largo que os vizinhos. */
   min-width: 0;
 }
 
+/* O vão cresce de 16 para 24: a medida do card precisa descontar o novo vão,
+   senão os dois cards somados passam a largura do trilho e o segundo nasce
+   cortado. */
 @media (min-width: 40rem) {
   .track {
     gap: var(--space-24);
   }
 
   .item {
-    flex-basis: 30%;
+    flex-basis: calc((100% - var(--space-24)) / 2);
+  }
+}
+
+/* Quatro colunas, no mesmo respiro em que a referência passa de `grid-2` para
+   `grid-md-4`. Três vãos entre quatro cards. */
+@media (min-width: 48rem) {
+  .item {
+    flex-basis: calc((100% - 3 * var(--space-24)) / 4);
   }
 }
 
@@ -202,10 +254,6 @@
   .flush {
     padding-top: var(--space-24);
   }
-
-  .item {
-    flex-basis: 23%;
-  }
 }
 
 @media (min-width: 80rem) {
@@ -218,10 +266,6 @@
       var(--gutter),
       calc((100vw - var(--container-max)) / 2 + var(--gutter))
     );
-  }
-
-  .item {
-    flex-basis: 18.4%;
   }
 }
 

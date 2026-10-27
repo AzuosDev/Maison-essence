@@ -356,8 +356,9 @@ do container). `@media` não lê `var()`, então os respiros são rem escritos e
 cada arquivo — não há token de breakpoint.
 
 O container tem **1280px** de largura útil, centrado, com o gutter do token por
-dentro. Cabe a grade de cinco colunas da vitrine sem espremer o cartão: a quinta
-coluna fica com 227px e o nome em duas linhas ainda cabe.
+dentro. Cabe a grade de quatro colunas da vitrine com folga: cada coluna fica
+com 290px, mais larga que os 227px que a quinta coluna do arranjo anterior
+deixava para o nome do produto.
 
 O cabeçalho é `sticky` (não `fixed`, para ocupar espaço no fluxo e dispensar
 `padding-top` compensatório) e encolhe ao rolar — 5rem em repouso, 3.75rem
@@ -389,9 +390,18 @@ senão o encaixe do `scroll-snap` ignora o respiro e a fileira nasce rolada.
 **A Regra do Cartão de Medida Única.** O cartão tem a mesma medida em toda a
 página: `flex: 0 0 X`, nunca `flex-grow`. Três coisas disputam a linha e só duas
 cabem — medida única, fileira na régua, nenhum vão no fim quando a prateleira é
-curta. As duas primeiras ganham. Larguras: 58% no celular (208px, onde "R$
-389,00 – R$ 479,00" cabe numa linha), 30% a partir de 640px, 23% a partir de
-1024px, 18.4% a partir de 1280px.
+curta. As duas primeiras ganham.
+
+**Duas colunas no celular, quatro a partir de 768px**, e a medida é calculada,
+não uma porcentagem redonda: `calc((100% - vãos) / n)` desconta os `gap` antes
+de dividir, então n cartões e n-1 vãos ocupam a largura exata do trilho. Com
+porcentagem solta — os 58% / 30% / 23% / 18.4% que estavam aqui — a conta não
+fecha com o vão e o último cartão da tela nasce cortado por alguns pixels, que
+é o que faz uma fileira parecer desalinhada sem que se saiba por quê.
+
+A contagem vale para as duas formas de prateleira, e é por isso que a grade
+empilhada usa os mesmos dois respiros: a mesma loja não pode mostrar o mesmo
+cartão em dois tamanhos na mesma rolagem.
 
 **A Regra do Trilho Contêiner.** Todo trilho que rola na horizontal leva
 `position: relative`. Sem bloco contêiner, um descendente absoluto — e
