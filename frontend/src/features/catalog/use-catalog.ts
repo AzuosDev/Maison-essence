@@ -7,6 +7,7 @@ import {
   fetchCategoryTree,
   fetchLatest,
   fetchProduct,
+  fetchSaleShelf,
   fetchShelf,
   fetchSuggestions,
   type ShelfName,
@@ -111,6 +112,21 @@ export function useLatest(limit?: number) {
   return useQuery<PublicProduct[]>({
     queryKey: catalogKeys.shelf('latest', limit),
     queryFn: ({ signal }) => fetchLatest(limit, signal),
+    staleTime: SHELF_STALE_TIME_MS,
+  });
+}
+
+/**
+ * A prateleira de promoções.
+ *
+ * Mesma política das outras. O corte de quem tem desconto acontece dentro de
+ * `fetchSaleShelf`, e não aqui: assim o que o cache guarda já e a prateleira
+ * pronta, e não uma lista que precisa ser filtrada de novo a cada render.
+ */
+export function useSaleShelf(limit?: number) {
+  return useQuery<PublicProduct[]>({
+    queryKey: catalogKeys.shelf('sale', limit),
+    queryFn: ({ signal }) => fetchSaleShelf(limit, signal),
     staleTime: SHELF_STALE_TIME_MS,
   });
 }

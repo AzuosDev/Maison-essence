@@ -1,6 +1,7 @@
 export {
   BRAND_SHELF_LIMIT,
   LATEST_SHELF_LIMIT,
+  SALE_SHELF_LIMIT,
   SUGGESTION_LIMIT,
   fetchBrandShelf,
   fetchCategory,
@@ -8,6 +9,7 @@ export {
   fetchLatest,
   fetchProduct,
   fetchProducts,
+  fetchSaleShelf,
   fetchShelf,
   fetchSuggestions,
   type ShelfName,
@@ -98,6 +100,7 @@ export {
   useLatest,
   usePrefetchProduct,
   useProduct,
+  useSaleShelf,
   useSearchSuggestions,
   useShelf,
 } from './use-catalog';

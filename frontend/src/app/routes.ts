@@ -59,6 +59,15 @@ export const ROUTES = {
    */
   productsByBrand: (brand: string) => `/produtos?marca=${encodeURIComponent(brand)}`,
 
+  /**
+   * A vitrine já filtrada pelo que esta com desconto.
+   *
+   * Mesma regra do filtro de marca: `desconto` e o nome que a vitrine lê da
+   * URL (ver `KEYS` em `catalog.filters`), e não o nome do campo no estado.
+   * E o destino do "ver todas as promoções" da home.
+   */
+  productsOnSale: '/produtos?desconto=1',
+
   category: (slug: string) => `/categorias/${slug}`,
 
   /** A busca, com o termo em `?q=`. */

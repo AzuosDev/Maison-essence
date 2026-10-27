@@ -58,8 +58,10 @@ export const catalogKeys = {
    * e o endereço, e a política: as quatro são listas curtas da home, com o
    * mesmo frescor, e quem inválida "as prateleiras" tem de pegar as quatro.
    */
-  shelf: (name: 'featured' | 'ready-to-ship' | 'best-sellers' | 'latest', limit?: number) =>
-    [...catalogKeys.all, 'shelf', name, limit ?? null] as const,
+  shelf: (
+    name: 'featured' | 'ready-to-ship' | 'best-sellers' | 'latest' | 'sale',
+    limit?: number,
+  ) => [...catalogKeys.all, 'shelf', name, limit ?? null] as const,
 
   /**
    * Uma prateleira de marca, por marca.
