@@ -160,6 +160,9 @@ export class SettingsService {
       'pickupEnabled',
       'pickupInstructions',
       'freeShippingMinCents',
+      // O id do perfume da vez chega como texto e o Mongoose o converte na
+      // gravação, como em qualquer referência.
+      'featuredPerfumeProductId',
     ] as const;
 
     for (const field of scalars) {
@@ -269,6 +272,9 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
     pickupEnabled: settings.pickupEnabled,
     pickupInstructions: settings.pickupInstructions,
     freeShippingMinCents: settings.freeShippingMinCents,
+    // Texto, e não `ObjectId`: dois ids iguais são objetos diferentes, e o
+    // diff registraria alteração onde não houve.
+    featuredPerfumeProductId: settings.featuredPerfumeProductId?.toHexString() ?? null,
     pickupAddress: {
       street: pickupAddress.street,
       number: pickupAddress.number,

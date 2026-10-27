@@ -89,6 +89,11 @@ export interface SettingsView {
   socialLinks: SocialLinksView;
   /** Mínimo para frete grátis em qualquer cidade. `null` desliga a regra. */
   freeShippingMinCents: number | null;
+  /**
+   * O produto da seção "O perfume da vez". `null` deixa a escolha no
+   * primeiro destaque, que e o padrão da loja.
+   */
+  featuredPerfumeProductId: string | null;
   banners: BannerView[];
   institutionalPages: PageView[];
   updatedAt: Date;
@@ -136,6 +141,7 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     pickupInstructions: settings.pickupInstructions,
     socialLinks: toSocialLinksView(settings.socialLinks),
     freeShippingMinCents: settings.freeShippingMinCents,
+    featuredPerfumeProductId: settings.featuredPerfumeProductId?.toHexString() ?? null,
     // Ordenados como a home os exibe, para a tela do painel bater com o site.
     banners: [...settings.banners]
       .sort((first, second) => first.order - second.order)

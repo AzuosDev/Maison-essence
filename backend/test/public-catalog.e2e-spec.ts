@@ -14,6 +14,7 @@ import {
   PAYMENT_METHODS,
   Product,
   QuantityDiscount,
+  StoreSettings,
   type OrderStatus,
 } from '../src/schemas.js';
 
@@ -33,6 +34,7 @@ describe('catalogo publico (e2e)', () => {
   let categories: Model<Category>;
   let discounts: Model<QuantityDiscount>;
   let orders: Model<Order>;
+  let store: Model<StoreSettings>;
   let seeded: Seeded;
 
   beforeAll(async () => {
@@ -47,6 +49,7 @@ describe('catalogo publico (e2e)', () => {
     categories = app.get<Model<Category>>(getModelToken(Category.name));
     discounts = app.get<Model<QuantityDiscount>>(getModelToken(QuantityDiscount.name));
     orders = app.get<Model<Order>>(getModelToken(Order.name));
+    store = app.get<Model<StoreSettings>>(getModelToken(StoreSettings.name));
 
     // `autoIndex` so vale em desenvolvimento: sem isso a busca por relevancia
     // nao acha o indice de texto. Em producao quem os cria e o seed.
@@ -67,6 +70,7 @@ describe('catalogo publico (e2e)', () => {
       categories.deleteMany({}),
       discounts.deleteMany({}),
       orders.deleteMany({}),
+      store.deleteMany({}),
     ]);
   });
 
@@ -531,6 +535,59 @@ describe('catalogo publico (e2e)', () => {
 
     it('endereco que nao existe responde 404', async () => {
       await request(server).get(`${API}/products/nao-existe`).expect(404);
+    });
+  });
+
+  describe('o perfume da vez', () => {
+    const perfume = (): request.Test =>
+      request(server).get(`${API}/products/perfume-of-the-week`);
+
+    it('sem escolha, e o primeiro destaque, com descricao e relacionados', async () => {
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('asad-lattafa');
+      expect(body.description).toContain('Amadeirado');
+      expect(Array.isArray(body.related)).toBe(true);
+    });
+
+    it('a escolha da dona vence o destaque', async () => {
+      const vela = (await products.findOne({ slug: 'vela-lavanda' }).exec())!._id;
+
+      await store.create({ featuredPerfumeProductId: vela });
+
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('vela-lavanda');
+    });
+
+    /** Escolha que envelheceu nao apaga o bloco de venda que fecha a home. */
+    it('escolha que saiu do ar cai no destaque', async () => {
+      const fora = (await products.findOne({ slug: 'fora-de-linha' }).exec())!._id;
+
+      await store.create({ featuredPerfumeProductId: fora });
+
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('asad-lattafa');
+    });
+
+    it('sem escolha e sem destaque, a secao nao existe', async () => {
+      await products.updateMany({}, { $set: { isFeatured: false } }).exec();
+
+      await perfume().expect(404);
+    });
+
+    it('a rota de nome fixo nao e confundida com um slug de produto', async () => {
+      await products.create({
+        name: 'Perfume of the week',
+        slug: 'perfume-of-the-week',
+        brand: 'Maison',
+        variants: [{ sku: 'POTW-01', priceCents: 1000, stock: 1 }],
+      });
+
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('asad-lattafa');
     });
   });
 

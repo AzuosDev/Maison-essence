@@ -1,10 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Model, Types } from 'mongoose';
+import type { Model, QueryFilter, Types } from 'mongoose';
 import type { Paginated } from '../../common/pagination.js';
 import { paginate, skipFor } from '../../common/pagination.js';
 import { slugify } from '../../database/slug.js';
-import { Category, Order, Product, QuantityDiscount, SOLD_ORDER_STATUSES } from '../../schemas.js';
+import {
+  Category,
+  Order,
+  Product,
+  QuantityDiscount,
+  SOLD_ORDER_STATUSES,
+  StoreSettings,
+} from '../../schemas.js';
+import type { StoreSettingsModel } from '../../schemas.js';
 import { CATEGORY_NOT_FOUND_MESSAGE } from '../categories/categories.constants.js';
 import {
   catalogCollation,
@@ -64,6 +72,7 @@ export class PublicCatalogService {
     @InjectModel(Category.name) private readonly categories: Model<Category>,
     @InjectModel(QuantityDiscount.name) private readonly discounts: Model<QuantityDiscount>,
     @InjectModel(Order.name) private readonly orders: Model<Order>,
+    @InjectModel(StoreSettings.name) private readonly settings: StoreSettingsModel,
   ) {}
 
   /**
@@ -150,24 +159,89 @@ export class PublicCatalogService {
   /**
    * A página do produto: ele, as categorias dele e até oito relacionados.
    *
-   * Produto inativo e produto que ficou sem nenhuma variante a venda dao 404
-   * iguais. O segundo caso não e detalhe: sem variante ativa não há preço nem
-   * botão de comprar, e a página só serviria para frustrar quem clicou.
+   * Produto inativo e produto sem variante a venda dao 404 iguais — ver
+   * `sellable`, que e onde essa regra mora.
    */
   async findBySlug(slug: string): Promise<PublicProductDetailView> {
-    const product = await this.products
-      .findOne({
-        slug: slugify(slug),
-        isActive: true,
-        variants: { $elemMatch: { isActive: true } },
-      })
-      .lean<LeanProductFull | null>()
-      .exec();
+    const product = await this.sellable({ slug: slugify(slug) });
 
     if (!product) {
       throw new NotFoundException(PRODUCT_NOT_FOUND_MESSAGE);
     }
 
+    return this.detailOf(product);
+  }
+
+  /**
+   * O perfume da vez: o bloco grande que fecha a home.
+   *
+   * ## Quem escolhe
+   *
+   * A dona, apontando o produto em Ajustes. Antes deste campo a seção era o
+   * primeiro destaque marcado, e trocar o perfume da vez obrigava a desmarcar
+   * o destaque dos outros — uma decisão sobre a home que só se tomava mexendo
+   * no cadastro de vários produtos.
+   *
+   * ## Por que a resposta vem inteira, e não só o id
+   *
+   * Porque o bloco tem foto grande, descrição, a escada de desconto e um
+   * botão de comprar: e a página do produto em miniatura. Devolver o produto
+   * montado aqui economiza uma ida ao servidor na home — e a seção, que e a
+   * última da página, era justamente a que fazia duas.
+   *
+   * ## Quando a escolha não vale
+   *
+   * Produto que saiu do ar, perdeu a última variante a venda ou foi excluído
+   * cai no primeiro destaque, o critério antigo. Escolha que envelheceu não
+   * apaga o bloco de venda que fecha a vitrine; sem destaque nenhum, aí sim a
+   * seção não existe — e o 404 e o que o frontend lê para não desenha-lá.
+   */
+  async perfumeOfTheWeek(): Promise<PublicProductDetailView> {
+    const { featuredPerfumeProductId } = await this.settings.getOrCreate();
+    const chosen =
+      featuredPerfumeProductId === null
+        ? null
+        : await this.sellable({ _id: featuredPerfumeProductId });
+    const product = chosen ?? (await this.newestFeatured());
+
+    if (!product) {
+      throw new NotFoundException(PRODUCT_NOT_FOUND_MESSAGE);
+    }
+
+    return this.detailOf(product);
+  }
+
+  /**
+   * O produto inteiro, com descrição, se ele estiver a venda agora.
+   *
+   * Produto inativo e produto que ficou sem nenhuma variante a venda somem
+   * iguais. O segundo caso não e detalhe: sem variante ativa não há preço nem
+   * botão de comprar, e a página só serviria para frustrar quem clicou.
+   */
+  private sellable(where: QueryFilter<Product>): Promise<LeanProductFull | null> {
+    return this.products
+      .findOne({ ...where, isActive: true, variants: { $elemMatch: { isActive: true } } })
+      .lean<LeanProductFull | null>()
+      .exec();
+  }
+
+  /**
+   * O primeiro destaque da vitrine.
+   *
+   * E a mesma ordem da prateleira de destaques — o mais novo primeiro —,
+   * porque era dali que o perfume da vez saia antes de a dona poder escolher,
+   * e continua sendo o padrão de quem não escolheu.
+   */
+  private newestFeatured(): Promise<LeanProductFull | null> {
+    return this.products
+      .findOne(catalogFilter({ featured: true }))
+      .sort({ createdAt: -1, _id: -1 })
+      .lean<LeanProductFull | null>()
+      .exec();
+  }
+
+  /** A página do produto montada: as categorias dele, os relacionados e a escada. */
+  private async detailOf(product: LeanProductFull): Promise<PublicProductDetailView> {
     const [categories, related] = await Promise.all([
       this.categories
         .find({ _id: { $in: product.categoryIds }, isActive: true })

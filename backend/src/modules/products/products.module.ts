@@ -9,6 +9,8 @@ import {
   ProductSchema,
   QuantityDiscount,
   QuantityDiscountSchema,
+  StoreSettings,
+  StoreSettingsSchema,
 } from '../../schemas.js';
 import { ProductsController } from './products.controller.js';
 import { ProductsService } from './products.service.js';
@@ -24,9 +26,14 @@ import { PublicProductsController } from './public-products.controller.js';
  * que e a prateleira de mais vendidos.
  *
  * `Category` entra para resolver o filtro por slug da vitrine, e
- * `QuantityDiscount` para o card anunciar o desconto progressivo. O módulo de
- * categorias registra `Product` pelo mesmo tipo de motivo; `forFeature`
- * repetido e idempotente.
+ * `QuantityDiscount` para o card anunciar o desconto progressivo.
+ *
+ * `StoreSettings` entra por uma pergunta só: qual produto a dona escolheu
+ * para "O perfume da vez". E o model, e não o `SettingsService`, porque o que
+ * se lê e um id — montar o produto a partir dele e trabalho da vitrine, e
+ * importar o módulo de configurações inteiro para ler um campo acopla os dois
+ * domínios sem precisar. O módulo de categorias registra `Product` pelo mesmo
+ * tipo de motivo; `forFeature` repetido e idempotente.
  */
 @Module({
   imports: [
@@ -35,6 +42,7 @@ import { PublicProductsController } from './public-products.controller.js';
       { name: Order.name, schema: OrderSchema },
       { name: Category.name, schema: CategorySchema },
       { name: QuantityDiscount.name, schema: QuantityDiscountSchema },
+      { name: StoreSettings.name, schema: StoreSettingsSchema },
     ]),
   ],
   controllers: [ProductsController, PublicProductsController],
