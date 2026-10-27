@@ -1,7 +1,7 @@
 /*
  * O rodapé da loja.
  *
- * Preto, com quatro colunas. A ordem no markup e a ordem em que fazem
+ * Laje dourada, com quatro colunas. A ordem no markup e a ordem em que fazem
  * sentido lidas de cima para baixo — institucional, categorias, contato,
  * redes —, então o empilhamento do celular não precisa de reordenação
  * nenhuma.
@@ -18,26 +18,72 @@
  *
  * Com 96px, e a última prateleira em areia logo acima, sobrava uma faixa de
  * creme entre as duas que se lia como buraco: nem parte da vitrine, nem parte
- * do rodapé. O preto já separa o suficiente por conta própria.
+ * do rodapé. A laje já separa o suficiente por conta própria.
  */
 .footer {
+  /*
+   * A laje dourada — decisão da dona em 27/10/2026.
+   *
+   * E a única laje da loja que não e preta: a barra de avisos e a faixa de
+   * navegação continuam como estavam. O par `--slab`/`--slab-ink` troca de
+   * lado aqui, e e essa troca que faz o rodapé inteiro acompanhar sem nenhuma
+   * outra regra — o título da coluna, o acordeão do celular, a linha legal e
+   * o seletor de tema já liam os dois. `--slab-muted` vem junto de graça,
+   * porque ele e derivado deles (ver `tokens.css`): dourado misturado com
+   * tinta a 70% da 4.8:1, que e texto de 12px legível.
+   *
+   * A tinta e a do par da laje (`--slab-gold-ink`) e não `--ink`, que inverte
+   * com o tema: a laje não inverte, e no escuro `--ink` quase branco sobre
+   * este dourado daria 2:1.
+   *
+   * O dourado deixa de poder ser realce — dourado sobre dourado não se vê —,
+   * e quem assume o papel e `--slab-accent`: o hover dos links, o ícone do
+   * selo de confiança, o anel de foco, o estado ligado do seletor de tema e o
+   * hover do botão da newsletter saem dele. Token próprio em vez de
+   * redefinir `--gold` aqui dentro porque o monograma da marca e arte
+   * dourada e continua dourado: o que muda e a cor de ação, não a marca.
+   */
+  --slab: var(--slab-gold);
+  --slab-ink: var(--slab-gold-ink);
+  --slab-accent: var(--slab-gold-ink);
+
+  /*
+   * O secundário precisa ser redeclarado aqui, e não herdado.
+   *
+   * `--slab-muted` e um `color-mix` dos outros dois, mas variável resolve no
+   * elemento que a **declara**: declarada em `:root`, ela já chega ao rodapé
+   * como o cinza claro da laje preta — branco a 70% — e foi exatamente isso
+   * que a primeira versão desta laje mostrou, com os links lavados sobre o
+   * dourado. A conta e a mesma, refeita com o par de cá.
+   */
+  --slab-muted: color-mix(in srgb, var(--slab-gold-ink) 70%, var(--slab-gold));
+
+  /*
+   * A ação também deixa de ser dourada.
+   *
+   * O botão primário da loja e dourado por regra — "o que e dourado se
+   * clica" —, e sobre esta laje ele seria dourado sobre dourado: 1.3:1 de
+   * superfície contra superfície, uma pílula que só se adivinha. Dentro do
+   * rodapé a ação inverte: fundo de tinta, rótulo dourado, 9.6:1. O `:hover`
+   * clareia a tinta na direção do próprio rótulo, que e o único jeito de ele
+   * ser visível num botão que já e o mais escuro da faixa.
+   */
+  --gold: var(--slab-gold-ink);
+  --on-gold: var(--slab-gold);
+  --gold-press: color-mix(in srgb, var(--slab-gold-ink) 82%, var(--slab-gold));
+
   margin-top: var(--space-48);
   background-color: var(--slab);
   color: var(--slab-ink);
 
   /*
-   * O filete que só aparece no tema escuro.
+   * O filete da emenda.
    *
-   * No claro a laje preta contra o creme da 18:1 e se separa sozinha — o
-   * comentário acima vale inteiro. No escuro não há esse luxo: a laje
-   * (#151515) contra o fundo (#0b0b0b) da 1,08:1, e o rodapé simplesmente
-   * deixa de ser um bloco. Não há como ir mais escuro que a página, então
-   * quem marca a emenda e a linha.
-   *
-   * `--line` faz o trabalho nos dois sem nenhuma condicional: no claro ele e
-   * #e3dacd contra o creme logo acima, quase invisível, que e o que se quer
-   * ali; no escuro e #2a2a2a contra o quase preto, um fio discreto mas
-   * presente.
+   * Com a laje dourada ele e quase dispensável no tema claro — o dourado
+   * contra o creme já se separa —, mas continua pelo tema escuro: ali a
+   * emenda entre o quase preto da página e a laje e justamente o lugar onde o
+   * olho precisa de um limite desenhado, e `--line` (#2a2a2a) resolve os dois
+   * casos sem nenhuma condicional.
    */
   border-top: 1px solid var(--line);
 }
@@ -209,7 +255,7 @@
 }
 
 .link:hover {
-  color: var(--gold);
+  color: var(--slab-accent);
 }
 
 .text {
@@ -264,8 +310,8 @@
 }
 
 .socialLink:hover {
-  color: var(--gold);
-  border-color: var(--gold);
+  color: var(--slab-accent);
+  border-color: var(--slab-accent);
 }
 
 /* ---- Linha final -------------------------------------------------------- */
@@ -321,7 +367,8 @@
   }
 }
 
-/* O anel de foco dourado claro sobre o preto do rodapé. */
+/* O anel de foco sobre a laje: a tinta, que da 9.6:1 contra o dourado. O
+   dourado da marca daria 2.4:1 e desapareceria no próprio fundo. */
 .footer {
-  --focus-color: var(--gold);
+  --focus-color: var(--slab-accent);
 }

@@ -1,6 +1,6 @@
 ---
 name: Maison Essence
-description: A loja popular brasileira de perfume importado, executada com acabamento de catálogo — branco dominante, laje preta, dourado só na ação.
+description: A loja popular brasileira de perfume importado, executada com acabamento de catálogo — branco dominante, laje preta no topo, rodapé em laje dourada, dourado só na ação.
 colors:
   ink: "#121212"
   ink-soft: "#4a4a4a"
@@ -18,6 +18,8 @@ colors:
   slab: "#121212"
   slab-ink: "#ffffff"
   slab-muted: "color-mix(in srgb, #ffffff 70%, #121212)"
+  slab-gold: "#d8b367"
+  slab-gold-ink: "#121212"
   overlay: "rgb(10 10 10 / 0.52)"
   whatsapp: "#25d366"
 typography:
@@ -247,7 +249,11 @@ branco que é chão, com verde e vermelho reservados ao tamanho de um selo.
 - **Filete** (`line`): a única separação horizontal da vitrine, 1px.
 - **Laje** (`slab`) / **Tinta da Laje** (`slab-ink`) / **Apagado da Laje**
   (`slab-muted`): o par próprio dos blocos escuros — barra de avisos, barra do
-  menu, rodapé, faixa de desconto progressivo na quina da foto.
+  menu, faixa de desconto progressivo na quina da foto.
+- **Laje Dourada** (`slab-gold`) / **Tinta dela** (`slab-gold-ink`): a laje do
+  rodapé, escolhida pela dona em 27/10/2026. Única laje clara da loja, e a
+  única em que o dourado deixa de ser a cor de ação — ver *A Regra da Laje
+  Dourada*.
 - **Véu** (`overlay`): atrás do modal e da gaveta. Sempre escuro, nos dois
   temas; o que muda é a força.
 
@@ -270,6 +276,17 @@ escuro, 2.4:1.
 por cima: `ink` é primeiro plano e inverte, e o rodapé sairia claro no pé de
 uma página escura. Texto secundário sobre a laje é `slab-muted` e nunca
 `muted` — aquele cinza é calibrado contra o branco e dá 3.3:1 contra o preto.
+
+**A Regra da Laje Dourada.** O rodapé redeclara `slab`, `slab-ink`,
+`slab-muted` e o trio do botão (`gold`, `on-gold`, `gold-press`) no próprio
+bloco, e publica `slab-accent` para quem desenha sobre ele — hover de link,
+ícone de selo, anel de foco, chip ligado do seletor de tema e o nome da
+assinatura. Três consequências que não são opcionais: a tinta é
+`slab-gold-ink` e não `ink`, que inverteria no tema escuro; `slab-muted`
+precisa ser recalculado dentro do bloco, porque variável resolve onde é
+declarada e a herdada de `:root` chega como o cinza da laje preta; e a ação
+inverte para fundo de tinta com rótulo dourado, já que dourado sobre dourado
+dá 1.3:1 de superfície.
 
 **A Regra do Hexadecimal Proibido.** Nenhum CSS Module da vitrine escreve uma
 cor nova. Cor com transparência se escreve com `color-mix` sobre o token, e não

@@ -138,6 +138,35 @@
   --slab-ink: #ffffff;
 
   /*
+   * A laje dourada do rodapé.
+   *
+   * Escolha da dona em 27/10/2026: o rodapé deixou de ser a laje preta e
+   * passou a ser esta cor. Entra como token ao lado do par de cima, e não
+   * como hexadecimal dentro de uma folha de componente, porque e uma cor de
+   * superfície da loja — e porque a loja continua tendo laje preta: a barra
+   * de avisos e a faixa de navegação são as mesmas.
+   *
+   * Sobre ela o par inverte de papel: o texto passa a ser `--ink` (9.6:1
+   * contra este dourado) e o realce deixa de poder ser dourado. Quem faz a
+   * troca e o próprio rodapé, redeclarando `--slab` e `--slab-ink` no bloco
+   * dele — ver `store-footer.module.css`.
+   *
+   * Vale igual nos dois temas, como `--gold`: e cor de marca, não de fundo de
+   * página. Por isso esta declarada fora dos blocos de tema.
+   */
+  --slab-gold: #d8b367;
+
+  /*
+   * A tinta que vai sobre a laje dourada, e o realce dela.
+   *
+   * Valor fixo, e não `var(--ink)`: `--ink` inverte com o tema, e no escuro
+   * ele e quase branco — sobre este dourado daria 2:1 e o rodapé inteiro
+   * ficaria ilegível para quem usa tema escuro. A laje não inverte, então a
+   * tinta dela também não pode inverter.
+   */
+  --slab-gold-ink: #121212;
+
+  /*
    * O texto secundário **sobre a laje**: a nota do selo de confiança, o
    * horário de atendimento, a linha de direitos autorais.
    *

@@ -82,13 +82,20 @@
   white-space: nowrap;
 }
 
-/* No rodapé e na gaveta, sobre fundo escuro. */
+/*
+ * Sobre a laje — hoje, o rodapé.
+ *
+ * As duas cores saem da própria laje em vez de serem o creme e o dourado
+ * escritos aqui. E o que faz a assinatura acompanhar a laje em que ela cair:
+ * na laje preta o nome continua dourado, como na logo; na laje dourada do
+ * rodapé ele vira tinta, porque dourado sobre dourado da 2.4:1 e o nome e
+ * texto, não enfeite. Sobre o creme da página ele nunca e dourado, pela mesma
+ * conta — e por isso `.inverted` existe.
+ */
 .inverted {
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
-/* Sobre o escuro o nome fica dourado, como na logo. No claro não: o dourado
-   da 2.55:1 sobre o creme e o nome e texto. */
 .inverted .wordmark {
-  color: var(--gold);
+  color: var(--slab-accent, var(--gold));
 }

@@ -30,7 +30,9 @@
 
   --toggle-ink: var(--slab-ink);
   --toggle-line: color-mix(in srgb, var(--slab-ink) 25%, transparent);
-  --toggle-active-bg: color-mix(in srgb, var(--gold) 18%, transparent);
+  /* O chip ligado sai do realce da laje: sobre a laje dourada do rodapé um
+     véu de dourado a 18% não se distingue do fundo. */
+  --toggle-active-bg: color-mix(in srgb, var(--slab-accent, var(--gold)) 18%, transparent);
   --toggle-active-ink: var(--slab-ink);
   --toggle-hover-bg: color-mix(in srgb, var(--slab-ink) 10%, transparent);
 }

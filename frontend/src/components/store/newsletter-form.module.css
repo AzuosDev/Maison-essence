@@ -4,8 +4,8 @@
  * Empilhado no celular e em linha a partir de 640px — o campo e o botão lado
  * a lado só cabem quando há largura para o botão não espremer o e-mail.
  *
- * As cores saem por variável porque o formulário aparece em dois fundos: o
- * rodapé preto e a faixa clara da home. Quem troca e a classe `.light`, e o
+ * As cores saem por variável porque o formulário aparece em dois fundos: a
+ * laje do rodapé e a faixa clara da home. Quem troca e a classe `.light`, e o
  * primitivo `Input` continua sendo o mesmo componente — ele lê `--surface`,
  * `--line`, `--ink` e `--muted`, e e só isso que muda de um tom para o outro.
  */
@@ -14,10 +14,16 @@
   --news-title: var(--slab-ink);
   --news-note: color-mix(in srgb, var(--slab-ink) 72%, transparent);
   --news-field-surface: transparent;
-  --news-field-line: color-mix(in srgb, var(--slab-ink) 25%, transparent);
+  /* 60%, e não 25%: a moldura de um campo e elemento gráfico e precisa de
+     3:1 contra o fundo. Sobre a laje dourada, um quarto de tinta da 1.6:1 e
+     45% ainda da 2.4:1 — a borda existia no código e não na tela. Com 60% ela
+     chega a 3.8:1 e o campo volta a ter contorno. */
+  --news-field-line: color-mix(in srgb, var(--slab-ink) 60%, transparent);
   --news-field-ink: var(--slab-ink);
-  --news-field-muted: color-mix(in srgb, var(--slab-ink) 60%, transparent);
-  --news-field-focus: var(--gold);
+  /* 72%: e texto de campo, e texto de campo pede 4.5:1. Sobre a laje dourada
+     60% de tinta da 3.8:1 e 72% da 5.2:1. */
+  --news-field-muted: color-mix(in srgb, var(--slab-ink) 72%, transparent);
+  --news-field-focus: var(--slab-accent, var(--gold));
 
   /*
    * O botão também inverte com o tom, e isso não era opcional: o primário
@@ -81,6 +87,13 @@
   --line: var(--news-field-line);
   --ink: var(--news-field-ink);
   --muted: var(--news-field-muted);
+  /*
+   * `--ink-soft` junto de `--muted`: o campo primitivo pinta o
+   * `::placeholder` e a borda de `:hover` com ele, e ele inverte com o tema.
+   * Sobre a laje, que não inverte, o "seu@email.com" saia quase branco no tema
+   * escuro — e o lugar onde se digita e o que pedia mais clareza da faixa.
+   */
+  --ink-soft: var(--news-field-muted);
   --focus-color: var(--news-field-focus);
 }
 
