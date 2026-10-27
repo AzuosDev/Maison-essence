@@ -21,10 +21,21 @@
    */
   --wordmark-tracking: var(--tracking-logo);
 
+  /*
+   * Empilhada ou deitada, e com quanto respiro no meio.
+   *
+   * Nasce empilhada, que e a forma de repouso da marca. O cabeçalho a deita
+   * no desktop, onde a assinatura divide a banda com a busca e a altura vale
+   * mais que a simetria — e faz isso trocando esta variável, sem conhecer o
+   * nome de nenhuma classe daqui.
+   */
+  --logo-direction: column;
+  --logo-gap: var(--space-8);
+
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: var(--logo-direction);
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--logo-gap);
 
   color: var(--ink);
 
@@ -50,10 +61,18 @@
   height: var(--monogram-size);
 }
 
+/*
+ * O nome, na serifada da marca.
+ *
+ * `--font-brand`, e não `--font-display`: a loja inteira passou a falar numa
+ * grotesca, e a serifada sobrou para esta linha — que e logotipo, não
+ * tipografia de interface. O token tem nome próprio exatamente para que essa
+ * fronteira seja visível de quem lê o CSS.
+ */
 .wordmark {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--wordmark-text);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: var(--wordmark-tracking);

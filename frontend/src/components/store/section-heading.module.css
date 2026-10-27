@@ -1,57 +1,44 @@
 /*
- * O cabeçalho de seção da vitrine.
+ * O cabeçalho de uma seção da loja.
  *
- * Serifada em caixa alta, grande, centralizada. A caixa alta e o que da a uma
- * palavra sozinha — "DESTAQUES" — peso suficiente para dividir a página; em
- * caixa baixa ela precisaria de um risco, de uma linha de apoio ou de um fundo
- * para marcar que uma seção nova começou.
+ * Alinhado a esquerda, sem filete e sem enfeite acima. O título carrega o
+ * próprio peso: numa página que empilha cinco seções, cinco filetes dourados
+ * centralizados viram cinco enfeites competindo com cinco fileiras de
+ * produto — e nenhum deles diz nada que o nome da seção já não diga.
  *
- * O espacamento entre letras não e enfeite: em caixa alta as letras encostam
- * uma na outra e a palavra vira um bloco macico.
+ * A linha de apoio fica embaixo, no mesmo eixo. Ela e opcional: "Mais
+ * vendidos" não precisa de explicação, e escrever uma só para preencher a
+ * forma e como a página ganha ruído.
  */
 
 .heading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-12);
-  text-align: center;
+  /* A caixa não se estica: ela vive numa linha flex ao lado do atalho "ver
+     todos", e sem isto empurraria o atalho para fora do container. */
+  min-width: 0;
 }
 
 .title {
-  font-family: var(--font-display);
-  font-size: var(--text-28);
-  font-weight: var(--weight-regular);
-  line-height: var(--leading-tight);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-title);
-
-  /* O espacamento sobra depois da última letra e desloca a palavra para a
-     esquerda do centro. O recuo de uma unidade devolve o equilibrio. */
-  text-indent: var(--tracking-title);
-  text-transform: uppercase;
-  text-wrap: balance;
+  line-height: 1.2;
   color: var(--ink);
-}
-
-.description {
-  max-width: 52ch;
-  font-size: var(--text-14);
-  line-height: var(--leading-body);
-  color: var(--ink-soft);
 }
 
 @media (min-width: 48rem) {
   .title {
-    font-size: var(--text-36);
+    font-size: var(--text-28);
   }
 }
 
-@media (min-width: 64rem) {
-  .title {
-    font-size: var(--text-48);
-  }
+.description {
+  margin-top: var(--space-4);
 
-  .description {
-    font-size: var(--text-16);
-  }
+  /* A medida curta e de propósito: esta linha e uma legenda, não um
+     parágrafo. Passando de uns 60 caracteres ela deixa de ser lida de
+     relance, que e a única leitura que ela recebe numa vitrine. */
+  max-width: 48ch;
+
+  font-size: var(--text-14);
+  color: var(--muted);
 }

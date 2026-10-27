@@ -1,108 +1,102 @@
 /*
- * O menu principal, na mesma linha do logotipo.
+ * O menu, dentro da faixa preta do cabeçalho.
  *
- * Some no celular — lá quem navega e o menu lateral, que cabe o catálogo
- * inteiro sem espremer nada.
+ * Só existe a partir de 1024px — quem decide isso e o `.navRow` do
+ * cabeçalho, que não desenha a faixa abaixo disso. Aqui dentro a conta e só
+ * a do item: alvo alto o bastante para o cursor, marca de ativo em dourado,
+ * e nenhuma borda.
  */
 
 .nav {
-  display: none;
-}
-
-@media (min-width: 64rem) {
-  .nav {
-    display: flex;
-
-    /* Toma a sobra entre o logotipo e as ações, e centra os itens nela: o
-       menu fica no meio da barra sem depender da largura dos dois lados. */
-    flex: 1;
-    justify-content: center;
-    min-width: 0;
-  }
+  width: 100%;
 }
 
 .list {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-32);
-  padding: 0;
-  margin: 0;
-  list-style: none;
+  align-items: stretch;
+  gap: var(--space-4);
 }
 
 .item {
-  position: relative;
+  display: flex;
 }
 
 /*
- * O item do menu.
+ * O item.
  *
- * Alto o bastante para ser um alvo de mouse confortável — o `padding-block`
- * ocupa a altura inteira da barra, então o clique pega a faixa toda e não só
- * as doze letras.
+ * A marca de "estou aqui" e um filete dourado colado no pé da faixa, e não
+ * uma troca de cor: sobre preto, branco e dourado tem contraste parecido, e
+ * trocar um pelo outro não se lê de relance. O filete se lê.
+ *
+ * Ele existe sempre, transparente, e só muda de cor — assim o item não ganha
+ * altura ao ficar ativo e a fileira inteira não se mexe.
  */
 .link {
   display: inline-flex;
   align-items: center;
   gap: var(--space-4);
-  padding-block: var(--space-16);
 
-  font-family: var(--font-body);
+  min-height: var(--nav-height);
+  padding-inline: var(--space-12);
+
   font-size: var(--text-12);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--ink-soft);
+  color: var(--slab-ink);
 
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: color var(--transition);
+  border-bottom: 2px solid transparent;
+
+  transition:
+    color var(--transition),
+    background-color var(--transition),
+    border-color var(--transition);
 }
 
 .link:hover {
-  /* O risco dourado embaixo e que marca o hover. A cor do texto fica no
-     preto: o dourado escuro reprova em 12px sobre o branco. */
-  color: var(--ink);
-}
-
-/*
- * O risco dourado embaixo do item.
- *
- * Cresce do centro para as pontas em vez de aparecer inteiro: e o único
- * movimento do cabeçalho, e um risco que surge de um golpe parece falha de
- * renderização. `scaleX` e não `width` porque só a transformação roda fora da
- * thread de layout — com `width`, o menu inteiro e remedido a cada quadro.
- */
-.link::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0.75rem;
-  left: 0;
-
-  height: 1px;
-  background-color: var(--gold-deep);
-
-  transform: scaleX(0);
-  transition: transform var(--duration) var(--ease);
-}
-
-.link:hover::after {
-  transform: scaleX(1);
+  background-color: rgb(255 255 255 / 0.08);
 }
 
 .active,
-.open {
-  color: var(--ink);
-  font-weight: var(--weight-semibold);
+.link[aria-expanded='true'] {
+  border-bottom-color: var(--gold);
 }
 
-.active::after,
-.open::after {
-  transform: scaleX(1);
+/* O anel de foco sobre a laje vem do `.on-dark` do contexto, que troca a cor
+   do anel por `--gold`. A faixa não e `on-dark` por acaso: ver o cabeçalho. */
+.link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: -2px;
+}
+
+/*
+ * "Categorias" abre a loja inteira, e por isso entra com mais peso que os
+ * vizinhos — e e o primeiro da fileira, como em toda loja que organiza o
+ * catálogo em arvore.
+ */
+.categories {
+  font-weight: var(--weight-semibold);
+  background-color: rgb(255 255 255 / 0.08);
+}
+
+/*
+ * As institucionais só aparecem onde a faixa tem largura de sobra.
+ *
+ * Entre 1024 e 1280px a fileira já carrega Categorias, Produtos e Pronta
+ * Entrega; somar cinco títulos escritos pela dona — que podem ser curtos ou
+ * longos, porque e campo livre no painel — estouraria a barra para fora da
+ * tela. Abaixo de 1280px elas continuam a um toque de distancia, no rodapé e
+ * na gaveta.
+ */
+.institutional {
+  display: none;
+}
+
+@media (min-width: 80rem) {
+  .institutional {
+    display: flex;
+  }
 }
 
 .chevron {

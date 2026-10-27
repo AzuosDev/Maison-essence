@@ -1,16 +1,13 @@
 /*
- * O cabeçalho da loja: duas bandas.
+ * O cabeçalho da loja: banda da marca em cima, faixa preta do menu embaixo.
  *
- * Em cima, sobre a areia da marca: busca a esquerda, assinatura no centro,
- * conta e sacola a direita. Embaixo, sobre o branco: o menu do catálogo.
+ * A banda e uma grade de áreas nomeadas, e e ela que faz o mesmo markup ter
+ * dois arranjos:
  *
- * A separação existe porque as duas linhas respondem a perguntas diferentes.
- * A de cima e "onde estou e o que já escolhi"; a de baixo e "o que você tem".
- * Misturadas numa faixa só, a assinatura disputa espaço com sete categorias e
- * perde — e o menu fica espremido entre o logotipo e os ícones.
+ *   celular    menu · marca · ações          desktop   marca · busca · ações
+ *              busca ———————————
  *
- * Ao rolar, a banda de cima encolhe. O menu fica: antes ele sumia junto, e o
- * cliente perdia a navegação no momento exato em que começa a procurar.
+ * Um elemento só para a busca, em dois lugares. Ver o comentário no TSX.
  */
 
 .header {
@@ -18,234 +15,52 @@
   top: 0;
   z-index: var(--z-header);
 
-  /* A areia e o fundo da banda de cima; a de baixo pinta o próprio branco.
-     São as duas únicas faixas da loja que não são creme, e e o contraste
-     entre elas que marca a divisão sem precisar de uma linha. */
-  background-color: var(--sand);
+  background-color: var(--surface);
   border-bottom: var(--border);
-  transition: box-shadow var(--transition);
 }
 
-.scrolled {
-  box-shadow: var(--shadow);
-}
-
-/* ---- A banda da marca ------------------------------------------------- */
+/* ---- A banda da marca --------------------------------------------------- */
 
 .bar {
   display: grid;
-
-  /*
-   * Três colunas com as laterais de mesma largura: e o que mantem a
-   * assinatura no centro otico da tela, e não no centro do que sobrou entre
-   * os dois lados.
-   *
-   * `minmax(0, ...)` nas três, e não `1fr auto 1fr` cru. O mínimo automatico
-   * de uma coluna de grade e o conteúdo dela, e a assinatura não quebra
-   * linha: numa tela de 390px a coluna do meio recusava encolher, passava por
-   * cima da fileira de ícones e "MAISON ESSENCE" era impresso em cima da
-   * lupa e da sacola. Com o mínimo em zero, quem não cabe encolhe — e o
-   * tamanho da assinatura, logo abaixo, garante que ela sempre caiba.
-   */
-  grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+  grid-template-areas:
+    'menu logo actions'
+    'search search search';
+  grid-template-columns: auto 1fr auto;
   align-items: center;
-  gap: var(--space-8);
+  column-gap: var(--space-8);
+  row-gap: var(--space-8);
+
+  padding-block: var(--space-12);
 
   /*
-   * A altura troca de um valor para o outro, sem transição.
+   * A banda encolhe ao rolar, e a troca e instantanea — sem transição.
    *
-   * O cabeçalho e `sticky`, ou seja, esta no fluxo: animar a altura dele
-   * remede a página inteira a cada quadro da animação — onze reflows para
-   * economizar 24px. Num celular modesto isso e exatamente o tipo de coisa
-   * que faz a rolagem engasgar.
+   * Havia uma, de `padding`, e ela era exatamente o tipo de animação que
+   * custa caro e rende pouco: `padding` e propriedade de layout, e o
+   * cabeçalho esta em `sticky`, ou seja, dentro do fluxo. Anima-lo obrigava
+   * o navegador a recalcular a posição da página inteira a cada quadro
+   * durante 180ms, justamente enquanto a pessoa esta rolando — que e o pior
+   * momento possível para um recálculo.
    *
-   * O que fica animado e a sombra, que e composta pela GPU e não toca no
-   * layout. Ela e suficiente: o olho lê "o cabeçalho descolou da página", que
-   * e a informação que a compactação quer dar.
+   * E a mesma decisão que a assinatura já tinha tomado: as medidas dela
+   * trocam de uma vez, sem transição (ver `brand-logo.module.css`). Agora a
+   * barra e o logo encolhem juntos, no mesmo quadro.
    */
-  height: var(--header-height);
 }
 
 .scrolled .bar {
-  height: var(--header-height-compact);
-}
-
-.left {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--space-8);
-  min-width: 0;
-}
-
-.right {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-4);
-  min-width: 0;
+  padding-block: var(--space-8);
 }
 
 /*
- * A assinatura empilhada, como no repouso da marca.
- *
- * Ao rolar, ela deita e encolhe junto com a banda. Os três números vem do
- * próprio `BrandLogo`, que os expoe como variáveis justamente para o
- * cabeçalho poder reger o tamanho sem reimplementar o desenho.
+ * O hamburguer. Só no celular: a partir de 1024px o menu inteiro esta na
+ * faixa preta logo abaixo, e um terceiro caminho para a mesma navegação só
+ * acrescentaria ruído.
  */
-.logo {
-  min-width: 0;
-
-  /*
-   * Centrada na coluna, e não encostada no comeco dela.
-   *
-   * A assinatura e uma caixa do tamanho do conteúdo, e conteúdo mais estreito
-   * que a coluna encosta na borda esquerda. Passa despercebido enquanto o
-   * nome preenche a largura inteira — e aparece no instante em que ele sai,
-   * com o monograma sozinho a 70px do centro da tela.
-   */
-  justify-self: center;
-}
-
-.scrolled .logo {
-  --monogram-size: 2.5rem;
-  --wordmark-text: var(--text-14);
-
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-12);
-}
-
-/*
- * No celular a assinatura acompanha a largura da tela.
- *
- * A barra e uma conta fechada: 16px de recuo de cada lado, um hamburguer de
- * 44px a esquerda, lupa e sacola a direita, e o que sobra no meio e da
- * assinatura. Em 320px sobram 136px; em 430px, 246px. Um corpo fixo serve a
- * um desses dois e atropela o outro — era o que acontecia, e o nome da loja
- * saia impresso por cima dos ícones.
- *
- * O `clamp` resolve os dois com uma linha: piso de 10px, que e o que cabe no
- * menor celular que ainda se vende, teto no corpo de repouso, e no meio um
- * valor que cresce com a viewport. O espacamento entre as letras fecha
- * junto, de 0.28em para 0.16em — em caixa alta ele responde por quase
- * metade da largura da palavra, e encolher só o corpo deixaria a assinatura
- * larga e miuda ao mesmo tempo.
- */
-@media (max-width: 63.99rem) {
-  /*
-   * As laterais valem a fileira de ícones; o meio fica com o resto.
-   *
-   * Com as três colunas flexíveis, o que cede primeiro e sempre a errada: a
-   * coluna do meio pede o tamanho do nome inteiro, as duas laterais rachavam
-   * o que sobrava em partes iguais e a da direita ficava com 79px para dois
-   * alvos de 44px — os ícones e que passavam a invadir a assinatura. Fixar a
-   * lateral em 5.75rem (dois alvos mais o vão entre eles) inverte a ordem:
-   * ninguém espreme o dedo, e quem se ajusta a tela e a assinatura, que e a
-   * peca que sabe encolher.
-   */
-  .bar {
-    grid-template-columns: 5.75rem minmax(0, 1fr) 5.75rem;
-  }
-
-  .logo {
-    --wordmark-text: clamp(0.625rem, 3vw, var(--text-18));
-    --wordmark-tracking: 0.16em;
-
-    max-width: 100%;
-  }
-
-  /*
-   * No celular mais estreito a assinatura quebra em duas linhas.
-   *
-   * Em 320px a coluna do meio tem 88px, e "MAISON ESSENCE" em caixa alta não
-   * cabe numa linha por nenhum corpo que ainda se leia. Empilhada sob o
-   * monograma — MAISON sobre ESSENCE — ela cabe com folga e continua sendo a
-   * mesma assinatura: e a forma de repouso da marca, que já nasce em coluna.
-   *
-   * A quebra acontece só onde precisa. De 360px para cima o corpo fluido
-   * mantem o nome numa linha, e nada disso aparece.
-   */
-  .logo [data-part='wordmark'] {
-    white-space: normal;
-    text-wrap: balance;
-  }
-
-  /*
-   * Ao rolar, a assinatura se reduz ao monograma.
-   *
-   * Deitada, ela pede o monograma mais o nome mais o vão entre os dois, e
-   * isso não cabe na barra compacta de um celular estreito por nenhum corpo
-   * de fonte que ainda se leia. Entre espremer o nome até 7px e mostrar a
-   * marca, a marca: e o mesmo monograma dourado que aparece na
-   * etiqueta, no vidro e no rodapé.
-   *
-   * O nome não se perde. Ele esta no alto de toda página antes de qualquer
-   * rolagem, esta na gaveta, esta no rodapé — e continua no `aria-label` do
-   * link, que e o que um leitor de tela anuncia aqui de qualquer forma.
-   */
-  .scrolled .logo [data-part='wordmark'] {
-    display: none;
-  }
-}
-
-/* ---- A busca em forma de campo ---------------------------------------- */
-
-/*
- * Só no desktop. No celular quem abre a busca e a lupa do canto direito: um
- * campo de 200px ali dentro deixaria a assinatura sem lugar.
- */
-.searchField {
-  display: none;
-}
-
-@media (min-width: 64rem) {
-  .searchField {
-    display: flex;
-    align-items: center;
-    gap: var(--space-8);
-
-    width: 100%;
-    max-width: 18rem;
-    height: var(--control-height-small);
-    padding-inline: var(--space-16);
-
-    font-size: var(--text-14);
-    color: var(--ink-soft);
-    text-align: left;
-
-    background-color: var(--cream);
-    border: var(--border);
-    border-radius: var(--radius-pill);
-    cursor: pointer;
-    transition:
-      border-color var(--transition),
-      color var(--transition);
-  }
-
-  .searchField:hover {
-    border-color: var(--gold-deep);
-    color: var(--ink-soft);
-  }
-}
-
-.searchLabel {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* A lupa do canto direito e a contraparte: existe onde o campo não cabe. */
-@media (min-width: 64rem) {
-  .searchButton {
-    display: none;
-  }
-}
-
-/* ---- O menu lateral e a conta ----------------------------------------- */
-
 .menuButton {
-  display: inline-flex;
+  grid-area: menu;
+  margin-inline-start: calc(var(--space-8) * -1);
 }
 
 @media (min-width: 64rem) {
@@ -254,32 +69,217 @@
   }
 }
 
+/* ---- A assinatura ------------------------------------------------------- */
+
+.logo {
+  grid-area: logo;
+  justify-self: center;
+
+  /* As medidas da assinatura são variáveis locais do próprio componente; o
+     cabeçalho só as rege daqui. */
+  --logo-gap: var(--space-4);
+  --monogram-size: 2rem;
+  --wordmark-text: var(--text-14);
+}
+
+@media (min-width: 64rem) {
+  .logo {
+    justify-self: start;
+
+    /* No desktop a assinatura deita: monograma e nome lado a lado, que e o
+       que libera a largura do meio para a busca. */
+    --logo-direction: row;
+    --logo-gap: var(--space-12);
+    --monogram-size: 2.5rem;
+    --wordmark-text: var(--text-18);
+  }
+
+  .scrolled .logo {
+    --monogram-size: 2rem;
+    --wordmark-text: var(--text-16);
+  }
+}
+
+/* ---- A busca ------------------------------------------------------------ */
+
+.searchField {
+  grid-area: search;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  width: 100%;
+  height: var(--control-height);
+  padding-inline-start: var(--space-16);
+
+  /* O botão da lupa encosta na borda direita do campo: o padding da direita
+     e zero e quem ocupa o canto e o quadrado dourado. */
+  padding-inline-end: 0;
+
+  font-size: var(--text-14);
+  text-align: start;
+  color: var(--muted);
+
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-button);
+
+  transition:
+    border-color var(--transition),
+    box-shadow var(--transition);
+}
+
+.searchField:hover {
+  border-color: var(--muted);
+}
+
+/* O campo e um botão, então o foco cai nele inteiro. O anel segue o anel da
+   loja, e não um contorno próprio. */
+.searchField:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.searchLabel {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /*
- * Dois ícones no celular, quatro no desktop.
+ * O quadrado dourado da lupa.
  *
- * A conta e o tema saem da barra estreita, e os dois pelo mesmo motivo: a
- * largura de um celular paga dois alvos de 44px depois da assinatura, e o
- * terceiro sai de onde não tem — de cima do nome da loja. O que fica e o que
- * pertence a compra: procurar e a sacola.
- *
- * Nenhum dos dois some de verdade. A conta esta na gaveta desde sempre; o
- * tema entrou nela junto com esta regra, e continua também no rodapé, em
- * segmentos, que e onde se descobre que há uma escolha.
+ * E a única coisa dourada do cabeçalho, e isso e a regra da loja inteira: o
+ * que e dourado se clica. Ele mora dentro do botão — não e um segundo alvo —
+ * e por isso e `aria-hidden`: quem ouve a página já recebeu o rótulo do
+ * botão que o contém.
  */
-.accountLink,
-.themeButton {
+.searchSubmit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex: none;
+  width: 3rem;
+  align-self: stretch;
+
+  color: var(--on-gold);
+  background-color: var(--gold);
+
+  /* O canto interno acompanha o do campo, menos a borda de 1px — senão
+     sobra um fio claro entre o dourado e o contorno. */
+  border-start-end-radius: calc(var(--radius-button) - 1px);
+  border-end-end-radius: calc(var(--radius-button) - 1px);
+
+  transition: background-color var(--transition);
+}
+
+.searchField:hover .searchSubmit {
+  background-color: var(--gold-press);
+}
+
+@media (min-width: 64rem) {
+  .bar {
+    grid-template-areas: 'logo search actions';
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: var(--space-32);
+    row-gap: 0;
+  }
+
+  .searchField {
+    /* O campo nunca atravessa a tela inteira num monitor largo: acima de
+       uns 640px de largura ele deixa de parecer um campo e passa a parecer
+       uma faixa. */
+    max-width: 34rem;
+    justify-self: center;
+  }
+}
+
+/* ---- As ações ----------------------------------------------------------- */
+
+.right {
+  grid-area: actions;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  margin-inline-end: calc(var(--space-8) * -1);
+}
+
+.accountLink {
+  gap: var(--space-8);
+  width: auto;
+  min-width: 2.75rem;
+  padding-inline: var(--space-8);
+  border-radius: var(--radius-button);
+}
+
+/*
+ * "Entrar / ou cadastre-se" ao lado do boneco.
+ *
+ * Duas linhas curtas em 12px, e não uma só: "Entrar ou cadastre-se" numa
+ * linha empurrava a sacola para fora da banda em 1024px, que e exatamente a
+ * largura em que o rótulo aparece.
+ */
+.accountLabel {
   display: none;
 }
 
 @media (min-width: 64rem) {
-  .accountLink,
+  .accountLabel {
+    display: block;
+    line-height: 1.25;
+    text-align: start;
+  }
+}
+
+.accountLine {
+  display: block;
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.accountNote {
+  display: block;
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+.accountLink:hover .accountLine,
+.accountLink:hover .accountNote {
+  color: inherit;
+}
+
+/*
+ * O tema fica depois da sacola, e so onde ha barra para ele.
+ *
+ * No celular a banda ja paga dois alvos depois da assinatura, e o terceiro
+ * sairia de cima do nome da loja. La a preferencia mora na gaveta e no
+ * rodape.
+ */
+.themeButton {
+  display: none;
+}
+
+@media (min-width: 48rem) {
   .themeButton {
     display: inline-flex;
   }
 }
 
-/* ---- A banda do menu -------------------------------------------------- */
+/* ---- A faixa preta do menu ---------------------------------------------- */
 
+/*
+ * A faixa fica, e não encolhe junto com a banda: a navegação some justamente
+ * na hora em que o cliente começa a procurar outra coisa.
+ *
+ * No celular ela não existe — o caminho ali e a gaveta, e uma segunda fileira
+ * preta comeria a primeira tela inteira num aparelho de 390px.
+ */
 .navRow {
   display: none;
 }
@@ -287,12 +287,12 @@
 @media (min-width: 64rem) {
   .navRow {
     display: block;
-    border-top: var(--border);
-    background-color: var(--surface);
+    background-color: var(--slab);
   }
 
   .navInner {
     display: flex;
-    justify-content: center;
+    align-items: center;
+    min-height: var(--nav-height);
   }
 }
