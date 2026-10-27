@@ -338,7 +338,7 @@ test('quem já tem subcategorias não vê o campo de pai', async () => {
   abrir();
 
   await user.click(await screen.findByRole('button', { name: 'Ações de Masculino' }));
-  await user.click(screen.getByRole('button', { name: 'Endereço e posição' }));
+  await user.click(screen.getByRole('button', { name: 'Editar categoria' }));
 
   const dialog = await screen.findByRole('dialog');
 
