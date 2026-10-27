@@ -2,8 +2,8 @@
  * Os selos de confiança.
  *
  * Empilhados no celular, em fila a partir de 768px. Não são decoração: são
- * as três perguntas que travam a compra numa loja pequena — chega até mim?
- * meus dados estão seguros? da para parcelar?
+ * as quatro perguntas que travam a compra numa loja pequena — chega até mim?
+ * tem agora? da para parcelar? meus dados estão seguros?
  *
  * As quatro cores saem por variável para que a mesma faixa sirva ao rodapé
  * preto e a home creme. Quem troca e a classe `.light`, e nada além das
@@ -12,7 +12,7 @@
 
 .badges {
   --badge-title: var(--slab-ink);
-  --badge-note: var(--muted);
+  --badge-note: var(--slab-muted);
   --badge-icon: var(--gold);
   /* O dourado a 40%, como no rodapé original: moldura que sugere, não cerca. */
   --badge-icon-line: rgb(195 149 64 / 0.4);
@@ -40,7 +40,7 @@
 
 @media (min-width: 48rem) {
   .badges {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-32);
   }
 }
@@ -74,4 +74,17 @@
 .note {
   font-size: var(--text-12);
   color: var(--badge-note);
+}
+
+/*
+ * Quatro em linha só a partir de 1024px.
+ *
+ * Em 768px, quatro colunas davam 170px para cada selo, e a nota de duas
+ * linhas virava quatro. Duas por duas, no tablet; quatro em fila, no
+ * desktop.
+ */
+@media (min-width: 64rem) {
+  .badges {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
