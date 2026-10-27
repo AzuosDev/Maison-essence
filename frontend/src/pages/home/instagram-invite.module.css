@@ -1,0 +1,88 @@
+/*
+ * A faixa do Instagram.
+ *
+ * Uma linha só: ícone, texto, link. Ela fecha a vitrine e precede o rodapé,
+ * então e deliberadamente baixa — uma seção alta aqui adiaria o rodapé, que
+ * e onde estão a newsletter, o contato e as páginas institucionais.
+ */
+
+.invite {
+  padding-block: var(--space-32);
+  border-top: var(--border);
+}
+
+.inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+
+  width: 3rem;
+  height: 3rem;
+
+  color: var(--gold-deep);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-pill);
+}
+
+.text {
+  /* Cresce e pode encolher: e o que empurra o link para a borda direita no
+     desktop e o deixa quebrar para baixo no celular. */
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--text-18);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--ink);
+}
+
+.note {
+  margin-top: var(--space-4);
+  max-width: 54ch;
+
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+/*
+ * O perfil, em forma de alvo.
+ *
+ * Contornado e não dourado cheio: o dourado preenchido desta loja e a ação
+ * de compra, e mandar o cliente para fora do site com o mesmo botão que põe
+ * na sacola seria dar o mesmo peso a duas coisas muito diferentes.
+ */
+.action {
+  display: inline-flex;
+  align-items: center;
+
+  flex: none;
+  min-height: var(--control-height);
+  padding-inline: var(--space-24);
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  color: var(--ink);
+
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.action:hover {
+  background-color: var(--ink);
+  color: var(--bg);
+}

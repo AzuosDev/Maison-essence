@@ -6,18 +6,18 @@ import { MemoryRouter } from 'react-router-dom';
 import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import { ToastProvider } from '@/components/ui';
 import { StoreSettingsProvider } from '@/features/settings';
-import shelfStyles from '@/components/store/product-shelf.module.css';
-import stripStyles from './category-strip.module.css';
 import HomePage from './home-page';
 
 /**
  * A home contra a API.
  *
- * O `fetch` e trocado por um duble que responde as seis rotas da página. E o
- * que permite verificar o que só se vê com dado de verdade: que o hero mostra
- * o banner cadastrado — o critério de "trocar um banner muda a home sem
- * redeploy" —, que cada prateleira consome a rota dela, e que uma prateleira
- * vazia desaparece em vez de anunciar que a loja não tem produto.
+ * O `fetch` e trocado por um duble que responde as rotas da página. E o que
+ * permite verificar o que só se vê com dado de verdade: que o hero mostra o
+ * banner cadastrado — o critério de "trocar um banner muda a home sem
+ * redeploy" —, que cada uma das três fileiras consome a rota dela, que a
+ * fileira vazia cede a vaga para a candidata seguinte, e que as seções que
+ * dependem de dado opcional (marcas, cartazes, Instagram, o perfume da vez)
+ * desaparecem em vez de desenhar uma caixa vazia.
  */
 
 const BANNERS = [
@@ -56,9 +56,24 @@ const SETTINGS = {
   banners: BANNERS,
 };
 
+/** As duas tem foto: e o que os cartazes de coleção exigem para existir. */
 const CATEGORIES = [
-  { id: 'c1', name: 'Masculino', slug: 'masculino', image: '', productCount: 24, children: [] },
-  { id: 'c2', name: 'Velas', slug: 'velas', image: '', productCount: 6, children: [] },
+  {
+    id: 'c1',
+    name: 'Masculino',
+    slug: 'masculino',
+    image: 'categorias/masculino',
+    productCount: 24,
+    children: [],
+  },
+  {
+    id: 'c2',
+    name: 'Velas',
+    slug: 'velas',
+    image: 'categorias/velas',
+    productCount: 6,
+    children: [],
+  },
 ];
 
 function produto(id: string, name: string, extras: Record<string, unknown> = {}) {
@@ -94,27 +109,24 @@ function produto(id: string, name: string, extras: Record<string, unknown> = {})
   };
 }
 
-/** O que cada rota responde. Um caso pode trocar uma entrada antes de montar. */
+/** O que cada rota de prateleira responde. Um caso troca uma entrada antes de montar. */
 let prateleiras: Record<string, unknown[]>;
 
 /**
- * O que `GET /products?brand=...` devolve, por marca.
+ * O que `GET /products` devolve.
  *
- * Por marca, e não uma resposta só para `/products`: o que separa as três
- * fileiras de marca e justamente o filtro, e com uma resposta única um erro
- * que fizesse a home pedir a marca errada — ou não pedir marca nenhuma —
- * passaria batido, porque as três apareceriam cheias do mesmo jeito.
+ * Duas prateleiras passam por aqui — promoções (`sort=discount`) e novidades
+ * (`sort=newest`) —, e a lista traz de propósito um produto com desconto e um
+ * sem: e o que prova que o corte de "só promoções" acontece.
  */
-let marcas: Record<string, unknown[]>;
+let listagem: unknown[];
 
-/** Marcas cuja consulta responde 500. Vazio, menos onde um caso pede. */
-let marcasQuebradas: Set<string>;
+/** O produto inteiro de `GET /products/:slug`, com descrição e escada. */
+let detalhe: Record<string, unknown>;
+
+let configuracoes: Record<string, unknown>;
+let categorias: unknown[];
 let chamadas: string[];
-
-/** A marca pedida numa URL de listagem, ou `null` quando não há filtro. */
-function marcaDe(url: string): string | null {
-  return new URL(url, 'http://local.test').searchParams.get('brand');
-}
 
 function jsonResponse(body: unknown): Response {
   return new Response(JSON.stringify(body), {
@@ -125,6 +137,8 @@ function jsonResponse(body: unknown): Response {
 
 beforeEach(() => {
   chamadas = [];
+  configuracoes = SETTINGS;
+  categorias = CATEGORIES;
 
   prateleiras = {
     featured: [produto('1', 'Asad', { isFeatured: true })],
@@ -132,14 +146,38 @@ beforeEach(() => {
     'best-sellers': [produto('3', 'Fakhar')],
   };
 
-  marcas = {
-    'Isabelle La Belle': [produto('5', 'Body Splash Yara', { brand: 'Isabelle La Belle' })],
-    'Arabic Collection': [produto('6', 'Asad 25ml', { brand: 'Arabic Collection' })],
-    'Maison Alhambra': [produto('7', 'Body Mist Chants', { brand: 'Maison Alhambra' })],
-    Lattafa: [produto('8', 'Desodorante Mayar', { brand: 'Lattafa' })],
-  };
+  listagem = [
+    produto('4', 'Khamrah', {
+      brand: 'Armaf',
+      discountPercent: 20,
+      variants: [
+        {
+          id: '4-v1',
+          label: '',
+          priceCents: 14400,
+          compareAtPriceCents: 18000,
+          discountPercent: 20,
+          stock: 2,
+          isAvailable: true,
+          onDemand: false,
+          image: '',
+        },
+      ],
+      priceRangeCents: { min: 14400, max: 14400 },
+    }),
+    produto('3', 'Fakhar'),
+  ];
 
-  marcasQuebradas = new Set();
+  detalhe = {
+    ...produto('1', 'Asad', { isFeatured: true }),
+    description: 'Notas de açafrão, couro e baunilha. Fixação longa.',
+    categories: [],
+    quantityDiscounts: [
+      { minQty: 3, percentOff: 10 },
+      { minQty: 6, percentOff: 15 },
+    ],
+    related: [],
+  };
 
   // O jsdom não implementa `matchMedia`, e o carrossel o consulta para saber
   // se pode girar sozinho. Sem o duble, o hero quebra no primeiro render.
@@ -163,48 +201,30 @@ beforeEach(() => {
         }
       }
 
-      // As prateleiras de marca, antes da listagem geral: as duas batem em
-      // `/products`, e o que as separa e o filtro.
-      const marca = url.includes('/products') ? marcaDe(url) : null;
-
-      if (marca !== null && marcasQuebradas.has(marca)) {
-        return Promise.resolve(
-          new Response(JSON.stringify({ message: 'Falhou' }), {
-            status: 500,
-            headers: { 'content-type': 'application/json' },
-          }),
-        );
-      }
-
-      if (marca !== null) {
+      // A listagem, antes do produto por slug: as duas batem em `/products`, e
+      // o que as separa e a query string.
+      if (url.includes('/products?') || (url.split('?')[0] ?? '').endsWith('/products')) {
         return Promise.resolve(
           jsonResponse({
-            items: marcas[marca] ?? [],
+            items: listagem,
             page: 1,
             totalPages: 1,
-            totalItems: marcas[marca]?.length ?? 0,
+            totalItems: listagem.length,
+            hasMore: false,
           }),
         );
       }
 
-      /*
-       * A listagem sem filtro, que nenhuma prateleira da home consome hoje.
-       *
-       * Fica respondendo vazio, e não removida: e a rota que sustentava
-       * "Novidades" antes de ela sair da home, e uma prateleira nova que
-       * volte a usar `GET /products` sem filtro precisa ver uma resposta
-       * valida aqui em vez de cair no `[]` genérico do fim.
-       */
-      if (url.includes('/products')) {
-        return Promise.resolve(jsonResponse({ items: [], page: 1, totalPages: 1, totalItems: 0 }));
+      if (url.includes('/products/')) {
+        return Promise.resolve(jsonResponse(detalhe));
       }
 
       if (url.includes('/settings')) {
-        return Promise.resolve(jsonResponse(SETTINGS));
+        return Promise.resolve(jsonResponse(configuracoes));
       }
 
       if (url.includes('/categories')) {
-        return Promise.resolve(jsonResponse(CATEGORIES));
+        return Promise.resolve(jsonResponse(categorias));
       }
 
       if (url.includes('/payment-settings')) {
@@ -236,6 +256,8 @@ function abrirHome() {
     </QueryClientProvider>,
   );
 }
+
+/* ---- O hero --------------------------------------------------------------- */
 
 test('o hero mostra o banner cadastrado no painel', async () => {
   abrirHome();
@@ -301,28 +323,86 @@ test('as setas do teclado andam pelo carrossel', async () => {
   });
 });
 
-test('a faixa de categorias mostra as categorias principais', async () => {
+/* ---- A fileira de categorias --------------------------------------------- */
+
+test('a fileira de categorias leva as categorias principais', async () => {
   abrirHome();
 
-  expect(await screen.findByRole('link', { name: /Masculino/ })).toBeDefined();
-  expect(screen.getByRole('link', { name: /Velas/ })).toBeDefined();
+  expect(await screen.findByRole('link', { name: 'Masculino' })).toBeDefined();
+  expect(screen.getByRole('link', { name: 'Velas' })).toBeDefined();
 });
+
+/* ---- As tres fileiras ----------------------------------------------------- */
 
 test('cada prateleira consome a rota dela', async () => {
   abrirHome();
 
-  const destaques = await screen.findByRole('region', { name: 'Destaques' });
+  const maisVendidos = await screen.findByRole('region', { name: 'Mais vendidos' });
+  const promocoes = screen.getByRole('region', { name: 'Aproveite as promoções' });
   const prontaEntrega = screen.getByRole('region', { name: 'Pronta entrega' });
-  const maisVendidos = screen.getByRole('region', { name: 'Mais vendidos' });
 
   // `findBy`: a prateleira aparece com os esqueletos e só depois troca pelos
   // produtos — que e exatamente o que o critério de "nenhum salto de layout"
   // pede. Um `getBy` aqui olharia para o esqueleto.
-  expect(await within(destaques).findByRole('heading', { name: 'Asad' })).toBeDefined();
-  expect(await within(prontaEntrega).findByRole('heading', { name: 'Yara' })).toBeDefined();
   expect(await within(maisVendidos).findByRole('heading', { name: 'Fakhar' })).toBeDefined();
+  expect(await within(promocoes).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
+  expect(await within(prontaEntrega).findByRole('heading', { name: 'Yara' })).toBeDefined();
 
   expect(chamadas.some((url) => url.includes('/products/best-sellers'))).toBe(true);
+  expect(chamadas.some((url) => url.includes('sort=discount'))).toBe(true);
+  expect(chamadas.some((url) => url.includes('/products/ready-to-ship'))).toBe(true);
+});
+
+/**
+ * Tres, e nao quatro.
+ *
+ * E a decisao da dona, e e o unico numero que a pagina nao negocia: as
+ * candidatas sao cinco justamente para que sempre existam tres com produto.
+ */
+test('a home mostra tres fileiras, mesmo tendo cinco candidatas com produto', async () => {
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Mais vendidos' });
+
+  await waitFor(() => {
+    expect(screen.queryByRole('region', { name: 'A seleção da casa' })).toBeNull();
+  });
+
+  expect(screen.queryByRole('region', { name: 'Novidades' })).toBeNull();
+});
+
+test('prateleira sem produto some, e a candidata seguinte assume a vaga', async () => {
+  prateleiras['best-sellers'] = [];
+
+  abrirHome();
+
+  // Com "mais vendidos" vazia, a terceira vaga passa a ser da selecao da casa.
+  const selecao = await screen.findByRole('region', { name: 'A seleção da casa' });
+
+  expect(await within(selecao).findByRole('heading', { name: 'Asad' })).toBeDefined();
+
+  await waitFor(() => {
+    expect(screen.queryByRole('region', { name: 'Mais vendidos' })).toBeNull();
+  });
+});
+
+/**
+ * A rede de seguranca da pagina.
+ *
+ * Loja recem-cadastrada: nenhum pedido no historico, nenhum desconto, nada
+ * marcado como pronta entrega e nenhum destaque. Antes, a home abria no
+ * banner e ia direto para o rodape.
+ */
+test('com as quatro primeiras candidatas vazias, novidades sustenta a vitrine', async () => {
+  prateleiras['best-sellers'] = [];
+  prateleiras['ready-to-ship'] = [];
+  prateleiras.featured = [];
+
+  abrirHome();
+
+  const novidades = await screen.findByRole('region', { name: 'Novidades' });
+
+  expect(await within(novidades).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
 });
 
 test('o produto de pronta entrega leva o selo verde na prateleira', async () => {
@@ -333,281 +413,131 @@ test('o produto de pronta entrega leva o selo verde na prateleira', async () => 
   expect(await within(prontaEntrega).findByText('Pronta entrega')).toBeDefined();
 });
 
-test('prateleira sem produto some da página', async () => {
-  prateleiras['best-sellers'] = [];
-
-  abrirHome();
-
-  await screen.findByRole('region', { name: 'Destaques' });
-
-  await waitFor(() => {
-    expect(screen.queryByRole('region', { name: 'Mais vendidos' })).toBeNull();
-  });
-});
-
-/* ---- As prateleiras de marca --------------------------------------------- */
-
-test('cada prateleira de marca pede a marca dela, e só ela', async () => {
-  abrirHome();
-
-  const isabelle = await screen.findByRole('region', { name: 'Isabelle La Belle' });
-  const arabic = await screen.findByRole('region', { name: 'Arabic Collection' });
-
-  expect(await within(isabelle).findByRole('heading', { name: 'Body Splash Yara' })).toBeDefined();
-  expect(await within(arabic).findByRole('heading', { name: 'Asad 25ml' })).toBeDefined();
-
-  const pedidas = chamadas.map(marcaDe).filter((marca) => marca !== null);
-
-  expect(pedidas).toContain('Isabelle La Belle');
-  expect(pedidas).toContain('Arabic Collection');
-});
-
 /**
- * A fileira de duas marcas mostra as duas.
+ * A prateleira de promocoes corta o que veio sem desconto.
  *
- * E o motivo de as listas serem intercaladas e não emendadas: com a emenda,
- * as cinco vagas sairiam todas da primeira marca assim que ela tivesse cinco
- * produtos, e Lattafa nunca apareceria na prateleira que leva o nome dela.
+ * Nao ha filtro de desconto na API: a vitrine pede a lista ordenada por
+ * desconto e corta no cliente. Sem o corte, "Aproveite as promocoes" sairia
+ * cheia de produto a preco cheio — a pior mentira que uma loja pode contar
+ * numa fileira.
  */
-test('a prateleira combinada traz produto das duas marcas', async () => {
+test('as promoções só mostram produto com desconto', async () => {
   abrirHome();
 
-  const combinada = await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
+  const promocoes = await screen.findByRole('region', { name: 'Aproveite as promoções' });
 
-  expect(await within(combinada).findByRole('heading', { name: 'Body Mist Chants' })).toBeDefined();
-  expect(
-    await within(combinada).findByRole('heading', { name: 'Desodorante Mayar' }),
-  ).toBeDefined();
-});
+  expect(await within(promocoes).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
 
-/**
- * Uma marca fora do ar não leva a prateleira junto.
- *
- * A fileira combinada e duas consultas; se bastasse uma falhar para ela
- * sumir, a loja perderia a seção inteira — e a marca que respondeu bem — sem
- * nenhum aviso.
- */
-test('com uma das duas marcas em erro, a prateleira combinada continua', async () => {
-  marcasQuebradas.add('Maison Alhambra');
-
-  abrirHome();
-
-  const combinada = await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
-
-  expect(
-    await within(combinada).findByRole('heading', { name: 'Desodorante Mayar' }),
-  ).toBeDefined();
-});
-
-test('marca sem produto nenhum some da home, como as outras prateleiras', async () => {
-  marcas['Arabic Collection'] = [];
-
-  abrirHome();
-
-  await screen.findByRole('region', { name: 'Isabelle La Belle' });
-
+  // `Fakhar` vem na mesma resposta da listagem, com desconto zero.
   await waitFor(() => {
-    expect(screen.queryByRole('region', { name: 'Arabic Collection' })).toBeNull();
+    expect(within(promocoes).queryByRole('heading', { name: 'Fakhar' })).toBeNull();
   });
 });
 
-/* ---- A ordem das seções -------------------------------------------------- */
+/* ---- A faixa de marcas ---------------------------------------------------- */
 
-/**
- * Os títulos de seção da página, na ordem em que estão no documento.
- *
- * Lê o DOM de uma vez, e não seção por seção com `getByRole`: a lista de
- * prateleiras se refaz quando as consultas respondem — uma que volta vazia
- * some, e o que vem depois dela e remontado —, e uma referência guardada
- * antes disso aponta para um no que já saiu da árvore. Comparar posições
- * entre um no solto e um no vivo não da erro: da uma resposta que o navegador
- * escolhe, e o teste passaria ou falharia por motivo nenhum.
- *
- * Pelos `<h2>`, e não pelas regiões: o hero e uma região também — um
- * carrossel com rótulo —, e uma lista de regiões mistura a moldura da página
- * com o conteúdo dela. O que este teste guarda e a ordem em que o cliente lê
- * os nomes das seções, e essa ordem são os títulos. A assinatura da marca não
- * tem título e por isso não aparece aqui; a posição dela esta garantida por
- * andar dentro de `Collections`.
- */
-function ordemDasSecoes(): string[] {
-  return screen
-    .getAllByRole('heading', { level: 2 })
-    .map((titulo) => titulo.textContent?.trim() ?? '');
-}
-
-test('as coleções entram depois do bloco de marcas, e não no meio dele', async () => {
+test('a faixa de marcas lista as marcas das fileiras, sem consulta nova', async () => {
   abrirHome();
 
-  await screen.findByRole('region', { name: 'Destaques' });
+  const marcas = await screen.findByRole('region', { name: 'Nossas marcas' });
+
+  expect(await within(marcas).findByRole('link', { name: 'Lattafa' })).toBeDefined();
+  expect(within(marcas).getByRole('link', { name: 'Armaf' })).toBeDefined();
+
+  // Nenhuma chamada carrega o catalogo inteiro so para descobrir as marcas.
+  expect(chamadas.some((url) => url.includes('limit=100'))).toBe(false);
+});
+
+test('cada marca leva para a vitrine filtrada por ela', async () => {
+  abrirHome();
+
+  const marcas = await screen.findByRole('region', { name: 'Nossas marcas' });
+  const lattafa = await within(marcas).findByRole('link', { name: 'Lattafa' });
+
+  expect(lattafa.getAttribute('href')).toBe('/produtos?marca=Lattafa');
+});
+
+/* ---- O perfume da vez ----------------------------------------------------- */
+
+test('o perfume da vez e o primeiro destaque, com a descrição do cadastro', async () => {
+  abrirHome();
+
+  const bloco = await screen.findByRole('region', { name: 'O perfume da vez' });
+
+  expect(await within(bloco).findByRole('heading', { name: 'Asad' })).toBeDefined();
+  expect(within(bloco).getByText(/Notas de açafrão/)).toBeDefined();
+
+  // A descricao so existe em `GET /products/:slug`, e a consulta usa a mesma
+  // chave que a pagina do produto vai pedir no clique.
+  expect(chamadas.some((url) => url.includes('/products/asad'))).toBe(true);
+});
+
+test('a escada de desconto do destaque aparece inteira', async () => {
+  abrirHome();
+
+  const bloco = await screen.findByRole('region', { name: 'O perfume da vez' });
+
+  expect(await within(bloco).findByText('Leve 3')).toBeDefined();
+  expect(within(bloco).getByText('Leve 6')).toBeDefined();
+});
+
+test('sem destaque marcado, o perfume da vez não aparece', async () => {
+  prateleiras.featured = [];
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Mais vendidos' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual([
-      'Isabelle La Belle',
-      'Arabic Collection',
-      'Maison Alhambra e Lattafa',
-      'Descubra as coleções',
-      'Destaques',
-      'Pronta entrega',
-      'Mais vendidos',
-    ]);
+    expect(screen.queryByRole('region', { name: 'O perfume da vez' })).toBeNull();
   });
 });
 
-/**
- * A rede de segurança da vitrine.
- *
- * Destaque e pronta entrega saem de marcação no painel, e mais vendidos sai
- * do histórico de pedidos: as três respondem vazio numa loja que acabou de
- * subir o catálogo, que foi o estado em que esta home chegou a produção. As
- * de marca saem do catálogo filtrado — se há produto da marca cadastrado,
- * elas tem o que mostrar, e a home nunca abre sem um perfume na tela.
- *
- * Era o papel de "Novidades", que saiu da home. A troca tem um custo: aquela
- * dependia só de existir produto, e estas dependem de a marca estar escrita
- * no cadastro como esta em `BRANDS`.
- */
-test('com as três prateleiras curadas vazias, as marcas sustentam a vitrine', async () => {
-  prateleiras['featured'] = [];
-  prateleiras['ready-to-ship'] = [];
-  prateleiras['best-sellers'] = [];
+/* ---- O Instagram ---------------------------------------------------------- */
 
+test('sem perfil cadastrado, a faixa do Instagram não existe', async () => {
   abrirHome();
 
-  const isabelle = await screen.findByRole('region', { name: 'Isabelle La Belle' });
-
-  expect(await within(isabelle).findByRole('heading', { name: 'Body Splash Yara' })).toBeDefined();
+  await screen.findByRole('region', { name: 'Mais vendidos' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual([
-      'Isabelle La Belle',
-      'Arabic Collection',
-      'Maison Alhambra e Lattafa',
-      'Descubra as coleções',
-    ]);
+    expect(screen.queryByRole('region', { name: 'Acompanhe no Instagram' })).toBeNull();
   });
 });
 
-/**
- * A fileira encostada na faixa de coleções sai em areia.
- *
- * A faixa não tem fundo próprio: ela e o creme da página. Uma prateleira em
- * creme logo acima dela encosta sem mudanca de tom, e a vitrine passa a
- * parecer parte da faixa. Foi o que aconteceu quando o bloco de marcas virou
- * a abertura da home e a contagem de tons continuou saindo da primeira
- * prateleira: três antes da faixa em vez de duas, e a terceira caiu em creme.
- */
-test('a prateleira que encosta nas coleções sai tingida', async () => {
+test('o perfil cadastrado vira link, venha como vier', async () => {
+  configuracoes = { ...SETTINGS, socialLinks: { instagram: '@maisonessence', tiktok: '' } };
+
   abrirHome();
 
-  await screen.findByRole('region', { name: 'Maison Alhambra e Lattafa' });
+  const faixa = await screen.findByRole('region', { name: 'Acompanhe no Instagram' });
+  const link = within(faixa).getByRole('link', { name: '@maisonessence' });
 
-  await waitFor(() => {
-    const ultimaAntesDaFaixa = screen.getByRole('region', { name: 'Maison Alhambra e Lattafa' });
-
-    expect(ultimaAntesDaFaixa.className).toContain(shelfStyles.tinted);
-  });
+  expect(link.getAttribute('href')).toBe('https://instagram.com/maisonessence');
+  expect(link.getAttribute('rel')).toBe('noopener noreferrer');
 });
 
-/** E a de cima dela, não: duas de areia seguidas leem como uma fileira só. */
-test('a prateleira anterior a essa não sai tingida', async () => {
+/* ---- Os cartazes de colecao ----------------------------------------------- */
+
+test('os cartazes trazem as duas maiores categorias com foto', async () => {
   abrirHome();
 
-  await screen.findByRole('region', { name: 'Arabic Collection' });
+  const colecoes = await screen.findByRole('region', { name: 'Coleções' });
+  const links = within(colecoes).getAllByRole('link');
 
-  await waitFor(() => {
-    expect(screen.getByRole('region', { name: 'Arabic Collection' }).className).not.toContain(
-      shelfStyles.tinted,
-    );
-  });
+  expect(links).toHaveLength(2);
+  expect(links[0]?.getAttribute('href')).toBe('/categorias/masculino');
+  expect(links[1]?.getAttribute('href')).toBe('/categorias/velas');
 });
 
-test('sem destaques, o bloco de marcas continua abrindo a página', async () => {
-  prateleiras['featured'] = [];
+test('sem duas categorias com foto, a faixa de cartazes some', async () => {
+  categorias = CATEGORIES.map((categoria) => Object.assign({}, categoria, { image: '' }));
 
   abrirHome();
 
-  await screen.findByRole('region', { name: 'Pronta entrega' });
+  await screen.findByRole('region', { name: 'Mais vendidos' });
 
   await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual([
-      'Isabelle La Belle',
-      'Arabic Collection',
-      'Maison Alhambra e Lattafa',
-      'Descubra as coleções',
-      'Pronta entrega',
-      'Mais vendidos',
-    ]);
-  });
-});
-
-/**
- * A regressão que motivou o arranjo dinâmico.
- *
- * Com as posições escritas a mão, uma prateleira que sai vazia empurra a
- * faixa de coleções para cima e ela aparece antes do que deveria — foi assim
- * que uma loja sem destaque marcado chegou a abrir no banner e ir direto para
- * uma tela de navegação, sem um perfume no meio.
- *
- * Agora quem abre a página são as três de marca, então o caso a guardar e uma
- * delas vazia: a faixa não pode subir para o meio do bloco, tem de continuar
- * entrando depois da terceira fileira que de fato aparecer.
- */
-test('com uma marca vazia, as coleções ainda esperam três prateleiras', async () => {
-  marcas['Arabic Collection'] = [];
-
-  abrirHome();
-
-  await screen.findByRole('region', { name: 'Isabelle La Belle' });
-
-  await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual([
-      'Isabelle La Belle',
-      'Maison Alhambra e Lattafa',
-      'Destaques',
-      'Descubra as coleções',
-      'Pronta entrega',
-      'Mais vendidos',
-    ]);
-  });
-});
-
-test('com uma prateleira só, as coleções vem logo depois dela', async () => {
-  prateleiras['featured'] = [];
-  prateleiras['best-sellers'] = [];
-  marcas = {};
-
-  abrirHome();
-
-  await screen.findByRole('region', { name: 'Pronta entrega' });
-
-  await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual(['Pronta entrega', 'Descubra as coleções']);
-  });
-});
-
-/**
- * Sem prateleira nenhuma, quem encosta no banner são as coleções.
- *
- * O respiro de cima existe para separar duas seções de mesmo tom; contra a
- * foto escura do banner ele só empurra o conteúdo para fora da primeira tela.
- * Quem recebe esse tratamento e a primeira seção que sobrou, seja ela qual
- * for — por isso o teste olha a faixa, e não a prateleira.
- */
-test('sem prateleira nenhuma, as coleções encostam no banner', async () => {
-  prateleiras['featured'] = [];
-  prateleiras['ready-to-ship'] = [];
-  prateleiras['best-sellers'] = [];
-  marcas = {};
-
-  abrirHome();
-
-  await screen.findByRole('region', { name: 'Descubra as coleções' });
-
-  await waitFor(() => {
-    expect(ordemDasSecoes()).toEqual(['Descubra as coleções']);
-    expect(screen.getByRole('region', { name: 'Descubra as coleções' }).className).toContain(
-      stripStyles.flush,
-    );
+    expect(screen.queryByRole('region', { name: 'Coleções' })).toBeNull();
   });
 });

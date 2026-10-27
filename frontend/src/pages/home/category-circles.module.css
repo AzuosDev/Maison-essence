@@ -1,0 +1,176 @@
+/*
+ * A fileira de categorias em círculo.
+ *
+ * No celular ela rola e sangra até a borda; no desktop ela cabe inteira e se
+ * distribui. O mesmo markup nos dois, e quem decide e a largura.
+ */
+
+.strip {
+  padding-block: var(--space-32);
+  border-bottom: var(--border);
+}
+
+/* O container não limita a fileira no celular: ela precisa sangrar para o
+   último círculo aparecer cortado e dizer que há mais. O recuo volta como
+   respiro interno da própria lista. */
+.inner {
+  padding-inline: 0;
+}
+
+.list {
+  display: flex;
+  gap: var(--space-16);
+
+  padding-inline: var(--gutter);
+  margin: 0;
+  list-style: none;
+
+  /* O trilho que rola precisa ser bloco contêiner: sem `position`, um
+     descendente absoluto — e `.visually-hidden` e um — toma o ICB como
+     referência, escapa deste clip e estica a página inteira na horizontal.
+     Ver a nota em `typography.css`. */
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: var(--gutter);
+
+  /* A barra de rolagem some: a fileira já se anuncia pelo círculo cortado na
+     beirada. */
+  scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+  display: none;
+}
+
+.item {
+  flex: none;
+  scroll-snap-align: start;
+  width: 5.5rem;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+
+  color: var(--ink);
+}
+
+.link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-card);
+}
+
+/*
+ * O círculo.
+ *
+ * ## O fio de contorno não e enfeite
+ *
+ * Em repouso o círculo tem um fio de 1px da cor das bordas da loja. Sem ele,
+ * a categoria cuja foto for clara nas beiradas — e metade da fotografia de
+ * produto e clara nas beiradas, porque quase toda foto de catálogo e feita
+ * em fundo branco — some dentro do branco da página e vira um buraco na
+ * fileira. Com o fio, o círculo existe mesmo quando a foto não aparece.
+ *
+ * No hover o fio engrossa e fica dourado: o mesmo contorno, um degrau acima.
+ * Acender um anel que não existia antes faria o círculo parecer mudar de
+ * tamanho.
+ *
+ * `box-shadow` em vez de `border` porque sombra não ocupa espaço: com borda,
+ * passar de 1px para 2px somaria dois pixels ao diâmetro e a fileira inteira
+ * se mexeria a cada passagem do cursor.
+ */
+.circle {
+  position: relative;
+  display: block;
+  width: 5.5rem;
+  height: 5.5rem;
+  overflow: hidden;
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 1px var(--line);
+
+  transition: box-shadow var(--transition);
+}
+
+.link:hover .circle {
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+/* A foto entra por cima da inicial, e não no lugar dela: as duas ocupam o
+   mesmo círculo, e enquanto a foto não decodifica quem aparece e a letra. */
+.image {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * A inicial: o fundo do círculo, e não a alternativa da foto.
+ *
+ * Ela esta sempre no DOM — categoria sem foto cadastrada, foto que falhou e
+ * foto que ainda vem terminam todas aqui, e nas três o círculo mostra uma
+ * letra dourada em vez de um disco branco. Ver a explicação no TSX.
+ */
+.initial {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: var(--text-28);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  color: var(--gold-deep);
+}
+
+.name {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 1.3;
+  text-align: center;
+
+  /* Duas linhas no máximo: "Hidratante corporal feminino" em três linhas
+     desalinharia a fileira inteira. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+@media (min-width: 64rem) {
+  .strip {
+    padding-block: var(--space-48);
+  }
+
+  .inner {
+    padding-inline: var(--gutter);
+  }
+
+  .list {
+    /* Cabe inteira: a rolagem para de existir e os círculos se espalham pela
+       largura útil. */
+    justify-content: space-between;
+    padding-inline: 0;
+    overflow-x: visible;
+  }
+
+  .item,
+  .circle {
+    width: 6.5rem;
+  }
+
+  .circle {
+    height: 6.5rem;
+  }
+}

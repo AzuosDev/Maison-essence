@@ -1,0 +1,144 @@
+/*
+ * Os dois cartazes de coleção.
+ *
+ * Duas colunas iguais no desktop, empilhadas no celular. A proporção e fixa
+ * nos dois casos — e o que impede a faixa de mudar de altura quando a foto
+ * chega.
+ */
+
+.posters {
+  padding-block: var(--space-32);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-16);
+}
+
+@media (min-width: 64rem) {
+  .posters {
+    padding-block: var(--space-48);
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-24);
+  }
+}
+
+.poster {
+  position: relative;
+  display: block;
+  overflow: hidden;
+
+  /* 8:5 no celular e 16:9 no desktop seria uma troca de proporção no meio da
+     página. Uma só, e larga: cartaz e paisagem. */
+  aspect-ratio: 16 / 9;
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+  color: var(--slab-ink);
+}
+
+.poster:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* `picture` nasce inline, e o `height: 100%` da foto resolveria contra uma
+   altura automática — ou seja, contra nada. Ver a explicação longa em
+   `featured-perfume.module.css`. */
+.poster picture {
+  display: block;
+  height: 100%;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  transition: transform calc(var(--duration) * 4) var(--ease);
+}
+
+.poster:hover .image {
+  transform: scale(1.03);
+}
+
+/*
+ * O véu.
+ *
+ * Um degrade do pe para o meio, e não um preto por cima da foto inteira: o
+ * texto precisa de contraste onde ele esta, e a foto precisa continuar
+ * visível onde ele não esta. A parada em 55% e o que mantém o topo do cartaz
+ * intacto.
+ */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10 10 10 / 0.78) 0%,
+    rgb(10 10 10 / 0.45) 32%,
+    transparent 62%
+  );
+}
+
+.caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+
+  padding: var(--space-16);
+}
+
+.name {
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  line-height: 1.15;
+}
+
+.count {
+  font-size: var(--text-12);
+
+  /* Branco a 78%, e não um cinza da paleta: sobre foto, qualquer cinza fixo
+     ou some no claro ou suja o escuro. */
+  color: rgb(255 255 255 / 0.78);
+}
+
+/*
+ * O convite.
+ *
+ * Dourado e sublinhado, porque sobre uma foto o sublinhado e o que diz
+ * "clicável" antes da cor. Ele não e um botão: o alvo e o cartaz inteiro, e
+ * desenhar uma caixa aqui prometeria um segundo alvo dentro do primeiro.
+ */
+.action {
+  margin-top: var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--gold);
+
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+  text-decoration-thickness: 1px;
+}
+
+@media (min-width: 48rem) {
+  .caption {
+    padding: var(--space-24);
+  }
+
+  .name {
+    font-size: var(--text-28);
+  }
+}
