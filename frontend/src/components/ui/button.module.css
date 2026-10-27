@@ -1,9 +1,9 @@
 /*
  * O botão do design system.
  *
- * Altura de 48px, caixa alta e `letter-spacing` de .08em vem da
- * especificação e valem para todas as variantes: o que muda entre elas e o
- * preenchimento, nunca a forma.
+ * Altura de 48px, caixa alta e o `letter-spacing` do token valem para
+ * todas as variantes: o que muda entre elas e o preenchimento, nunca a
+ * forma.
  */
 
 .button {
@@ -45,16 +45,45 @@
   opacity: 0.5;
 }
 
+/*
+ * O primário desabilitado não e um dourado desbotado.
+ *
+ * Com `opacity`, o botão de "Esgotado" saia dourado claro no meio de uma
+ * fileira de botões dourados — a mesma cor, só que mais fraca, que e
+ * exatamente o que o olho lê como "clicável, só que longe". Cinza, ele sai
+ * da categoria das ações e vira o que e: um aviso ocupando o lugar do botão
+ * para que a fileira não mude de altura.
+ *
+ * `opacity: 1` de volta porque o cinza já carrega a mensagem, e um cinza
+ * pela metade sobre branco cai abaixo do contraste mínimo.
+ */
+.primary:disabled {
+  background-color: var(--bg-alt);
+  color: var(--muted);
+  opacity: 1;
+}
+
 /* ---- Variantes ------------------------------------------------------- */
 
+/*
+ * O botão primário e dourado.
+ *
+ * E a regra da loja inteira: o que e dourado se clica. O dourado da marca
+ * com a tinta por cima da 6.9:1 — mais do que o preto cheio dava com o creme
+ * — e, ao contrário do preto, ele não compete com a foto do produto numa
+ * fileira de cinco cartões.
+ *
+ * O anel de foco troca para a tinta: o anel dourado padrão sumiria dentro do
+ * próprio botão.
+ */
 .primary {
-  background-color: var(--ink);
-  color: var(--cream);
-  --focus-color: var(--gold);
+  background-color: var(--gold);
+  color: var(--on-gold);
+  --focus-color: var(--on-gold);
 }
 
 .primary:hover:not(:disabled) {
-  background-color: var(--gold-deep);
+  background-color: var(--gold-press);
 }
 
 .secondary {

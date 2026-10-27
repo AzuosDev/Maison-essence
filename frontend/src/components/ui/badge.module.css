@@ -45,7 +45,7 @@
 /* Destaque, novidade, seleção da casa. */
 .gold {
   background-color: var(--gold);
-  color: var(--ink);
+  color: var(--on-gold);
 }
 
 /* Contagem e rótulo de apoio no painel, onde o selo cheio pesaria demais. */
