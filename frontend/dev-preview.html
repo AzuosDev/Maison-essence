@@ -11,15 +11,29 @@
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- As duas familias do design system. `preconnect` antes do stylesheet
-         porque a fonte vem de outro dominio: sem ele, o navegador so abre a
-         conexao depois de ler o <link>, e o titulo pisca na fonte do sistema. -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Jost:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
+    <!-- As fontes vem do proprio bundle, como em producao: `main.tsx` importa
+         os arquivos do @fontsource. Nao ha <link> para o Google aqui de
+         proposito — uma bancada que baixa fonte de outro dominio mede uma
+         pagina que a loja nao publica. -->
+
+    <!-- O mesmo arranque de tema do `index.html`. Sem ele a bancada so
+         obedece ao `prefers-color-scheme` do sistema, e a captura sai no tema
+         da maquina de quem rodou em vez do tema que se quis revisar. -->
+    <script>
+      (function () {
+        try {
+          var mode = localStorage.getItem('maison.theme');
+
+          if (mode !== 'light' && mode !== 'dark') {
+            mode = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+
+          document.documentElement.setAttribute('data-theme', mode);
+        } catch (error) {
+          /* Armazenamento bloqueado: fica o tema do sistema, pela @media. */
+        }
+      })();
+    </script>
 
     <title>Maison Essence</title>
   </head>

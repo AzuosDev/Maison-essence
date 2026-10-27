@@ -109,6 +109,12 @@ for (const target of targets) {
 
     await call('Page.enable');
     await call('Runtime.enable');
+
+    // O tema da captura, e nao o tema da maquina. `PREVIEW_THEME=dark` troca.
+    await call('Emulation.setEmulatedMedia', {
+      features: [{ name: 'prefers-color-scheme', value: process.env.PREVIEW_THEME ?? 'light' }],
+    });
+
     await call('Emulation.setDeviceMetricsOverride', {
       width: view.width,
       height: view.height,
@@ -128,15 +134,60 @@ for (const target of targets) {
       awaitPromise: true,
     });
 
+    // O botao do React Query Devtools sai da captura. Ele so existe em
+    // desenvolvimento, mas fica fixo no canto inferior esquerdo e aparece em
+    // toda fatia — ja chegou a cobrir o preco de um cartao numa revisao.
+    await call('Runtime.evaluate', {
+      expression: "document.querySelector('.tsqd-parent-container')?.remove()",
+    });
+
     const probe = await call('Runtime.evaluate', {
       expression: `(() => {
         const doc = document.documentElement;
+
+        /*
+         * O que conta como transbordo.
+         *
+         * Nao e "elemento a direita da borda da tela": metade da vitrine e
+         * carrossel, e card de carrossel mora a direita da borda de
+         * proposito. O defeito e a pagina inteira rolar na horizontal — e
+         * quem causa isso e o elemento que nenhum ancestral corta.
+         *
+         * A excecao que custou uma revisao: um absoluto sem ancestral
+         * posicionado toma o bloco conteiner da pagina, e os overflow hidden
+         * do caminho nao valem para ele. Foi assim que um span de leitor de
+         * tela dentro de uma faixa que rola esticou o html em 862px sem que
+         * nada aparecesse fora do lugar.
+         *
+         * Elemento fixo nunca entra: ele nao faz parte da regiao rolavel.
+         */
+        const clipado = (el) => {
+          let posicao = getComputedStyle(el).position;
+          if (posicao === 'fixed') return true;
+
+          let ancestral = el.parentElement;
+          while (ancestral) {
+            const estilo = getComputedStyle(ancestral);
+            const ehConteiner = estilo.position !== 'static' || estilo.transform !== 'none';
+            const escapa = posicao === 'absolute' && !ehConteiner;
+
+            if (!escapa) {
+              if (estilo.overflowX !== 'visible') return true;
+              if (posicao === 'absolute') posicao = 'static';
+            }
+
+            ancestral = ancestral.parentElement;
+          }
+
+          return false;
+        };
+
         const overflow = [...document.querySelectorAll('body *')]
           .filter((el) => {
             const box = el.getBoundingClientRect();
-            return box.width > 0 && box.right > doc.clientWidth + 1;
+            return box.width > 0 && box.right > doc.clientWidth + 1 && !clipado(el);
           })
-          .slice(0, 8)
+          .slice(0, 12)
           .map((el) => el.tagName.toLowerCase() + '.' + (el.className.toString().split(' ')[0] || '?') + ' right=' + Math.round(el.getBoundingClientRect().right));
         const small = [...document.querySelectorAll('a,button,input,select')]
           .filter((el) => {

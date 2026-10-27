@@ -17,6 +17,7 @@ const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
 const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
 const call = (m, p) => send(m, p, sessionId);
 await call('Page.enable'); await call('Runtime.enable');
+await call('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-color-scheme', value: process.env.PREVIEW_THEME ?? 'light' }] });
 await call('Emulation.setDeviceMetricsOverride', { width: Number(process.argv[4] ?? 1440), height: 900, deviceScaleFactor: 1, mobile: false });
 await call('Page.navigate', { url: `http://localhost:5199/dev-preview.html#${process.argv[2]}` });
 await sleep(4000);

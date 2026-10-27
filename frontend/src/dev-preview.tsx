@@ -140,7 +140,7 @@ const SETTINGS = {
   whatsappLink: 'https://wa.me/5588999998888',
   announcementText: 'Frete fixo para o Cariri · Retirada em Juazeiro do Norte · Parcelamos no cartão',
   contactEmail: 'contato@maisonessence.com.br',
-  businessHours: 'Segunda a sabado, das 9h as 18h',
+  businessHours: 'Segunda a sábado, das 9h às 18h',
   socialLinks: {
     instagram: 'https://instagram.com/maisonessence',
     tiktok: 'https://tiktok.com/@maisonessence',
