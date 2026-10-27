@@ -16,7 +16,7 @@ import { InstagramInvite } from './instagram-invite';
  * ## A ordem das seções
  *
  * Banner, categorias em círculo, fileira, marcas, cartazes de coleção,
- * fileira, selos de confiança, fileira, o perfume da vez, Instagram.
+ * fileira, selos de confiança, fileira, Instagram, o perfume da vez.
  *
  * E o arranjo que a dona escolheu, e ele não e arbitrário: e a ordem que
  * quase toda loja brasileira de perfume importado usa, e portanto a ordem
@@ -24,6 +24,13 @@ import { InstagramInvite } from './instagram-invite';
  * fileiras de produto sempre entra uma seção de outra natureza — marcas,
  * cartazes, selos —, porque três fileiras seguidas viram uma só, longa, e o
  * olho para de distinguir onde uma acaba.
+ *
+ * A ordem foi conferida contra a referência em 27/10/2026, seção por seção,
+ * pela posição de cada bloco no documento dela. Duas trocas sairam daquela
+ * conferência: os cartazes subiram para junto das marcas, entre a primeira e
+ * a segunda fileira, e os selos de confiança desceram para depois da segunda
+ * — antes eles fechavam a última, onde repetiam de perto a faixa do rodapé.
+ * O Instagram passou a vir antes do perfume da vez pelo mesmo motivo.
  *
  * ## Três fileiras, e quais
  *
@@ -82,15 +89,17 @@ export default function HomePage() {
   /**
    * As cinco candidatas, em ordem de prioridade.
    *
-   * As três primeiras são a vitrine que a dona quer: o que mais vende, o que
-   * esta em promoção, o que sai hoje. As duas últimas são rede de segurança,
-   * e existem por um caso real: uma loja que acabou de subir o catálogo não
-   * tem histórico de pedido, não tem desconto cadastrado e não tem nada
-   * marcado como pronta entrega — as três primeiras respondem vazio e a home
-   * abriria no banner e iria direto para o rodapé.
+   * As três primeiras são a vitrine que a dona quer, e são as mesmas três da
+   * referência: o que mais vende, o que esta em promoção, o que acabou de
+   * chegar. As duas últimas são rede de segurança para a loja que ainda não
+   * tem o que mostrar nas três de cima.
    *
-   * "Novidades" fecha a lista porque e a única que não depende de marcação
-   * nenhuma: ela tem produto no minuto em que o catálogo tem.
+   * "Compre também" e a terceira, e não "Pronta entrega", porque e a única
+   * que não depende de marcação nenhuma: ela tem produto no minuto em que o
+   * catálogo tem, enquanto as outras duas dependem de alguém ter marcado
+   * destaque ou pronta entrega no painel. Pronta entrega não sumiu da loja —
+   * tem rota própria, selo no card e uma linha na faixa de confiança logo
+   * acima desta fileira.
    */
   const slots: Shelf[] = [
     {
@@ -110,6 +119,14 @@ export default function HomePage() {
       content: contentOf(sale),
     },
     {
+      key: 'latest',
+      title: 'Compre também',
+      description: 'O que acabou de chegar na loja.',
+      to: ROUTES.products,
+      linkLabel: 'Ver todos os produtos',
+      content: contentOf(latest),
+    },
+    {
       key: 'ready-to-ship',
       title: 'Pronta entrega',
       description: 'Em mãos agora: retire em Juazeiro do Norte ou receba primeiro.',
@@ -124,14 +141,6 @@ export default function HomePage() {
       to: ROUTES.products,
       linkLabel: 'Ver todos os produtos',
       content: contentOf(featured),
-    },
-    {
-      key: 'latest',
-      title: 'Novidades',
-      description: 'O que acabou de chegar.',
-      to: ROUTES.products,
-      linkLabel: 'Ver todos os produtos',
-      content: contentOf(latest),
     },
   ];
 
@@ -153,8 +162,18 @@ export default function HomePage() {
    * cair no mesmo lugar da página em qualquer caso.
    */
   const between = [
-    <BrandRow key="brands" products={shown} />,
-    <CollectionPosters key="posters" />,
+    <Fragment key="brands">
+      {/*
+        Marcas e cartazes andam juntos, na mesma vaga.
+
+        E o par da referência: a faixa de nomes diz de quem e o catálogo, e os
+        cartazes logo abaixo dão para onde ir. Separados — cartazes uma
+        fileira adiante, como estavam —, a faixa de marcas ficava sozinha
+        entre duas prateleiras, baixa demais para separar uma da outra.
+      */}
+      <BrandRow products={shown} />
+      <CollectionPosters />
+    </Fragment>,
     <Fragment key="trust">
       {/*
         A faixa da home e a do rodapé não dizem a mesma coisa.
@@ -188,6 +207,17 @@ export default function HomePage() {
             isError={shelf.content.isError}
             to={shelf.to}
             linkLabel={shelf.linkLabel}
+            /*
+              A do meio empilha; as outras duas rolam.
+
+              Por posição, e não por prateleira — qual fileira ocupa a vaga do
+              meio depende do que a loja tem cadastrado, e o ritmo da página
+              precisa ser o mesmo em qualquer caso. Com as três rolando, a
+              home pedia o mesmo gesto três vezes e a do meio sumia entre as
+              vizinhas; com a do meio aberta, a página tem um começo, um lugar
+              onde para, e um fim.
+            */
+            layout={index === 1 ? 'grid' : 'carousel'}
           />
 
           {between[index] ?? null}
@@ -202,19 +232,32 @@ export default function HomePage() {
       */}
       {shelves.length === 0 ? <CollectionPosters /> : null}
 
-      <FeaturedPerfume />
-
       {/*
-        A faixa do Instagram fecha a página e encosta no rodapé de propósito.
+        O Instagram vem antes do perfume da vez, como na referência.
 
-        Havia um espacador de 64px aqui, para a faixa não encostar na laje
-        preta. Somado ao respiro que a própria faixa já tem embaixo, isso
-        dava quase cem pixels de branco entre a última linha de conteúdo e o
-        rodapé — e o rodapé desta loja não e um rodapé qualquer: ele tem a
-        newsletter, o contato e as páginas institucionais. Empurrá-lo para
-        longe com um vazio e empurrar o que a pessoa desceu para encontrar.
+        Os dois fecham a página, e a ordem entre eles decide com o que a
+        pessoa sai: com um convite para seguir, ou com um produto e um botão
+        de comprar. A loja vive de pedido fechado no site — então quem fala
+        por último e o produto.
+
+        A faixa do Instagram tambem e a transição certa para ele: ela e larga,
+        escura e sem preço, e separa a última fileira do bloco de venda sem
+        parecer mais uma prateleira.
       */}
       <InstagramInvite />
+
+      {/*
+        E o perfume da vez encosta no rodapé de propósito.
+
+        Havia um espacador de 64px antes da última seção, para ela não
+        encostar na laje preta. Somado ao respiro que a própria seção já tem
+        embaixo, isso dava quase cem pixels de branco entre a última linha de
+        conteúdo e o rodapé — e o rodapé desta loja não e um rodapé qualquer:
+        ele tem a newsletter, o contato e as páginas institucionais.
+        Empurrá-lo para longe com um vazio e empurrar o que a pessoa desceu
+        para encontrar.
+      */}
+      <FeaturedPerfume />
     </>
   );
 }

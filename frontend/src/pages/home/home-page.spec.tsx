@@ -339,18 +339,37 @@ test('cada prateleira consome a rota dela', async () => {
 
   const maisVendidos = await screen.findByRole('region', { name: 'Mais vendidos' });
   const promocoes = screen.getByRole('region', { name: 'Aproveite as promoções' });
-  const prontaEntrega = screen.getByRole('region', { name: 'Pronta entrega' });
+  const compreTambem = screen.getByRole('region', { name: 'Compre também' });
 
   // `findBy`: a prateleira aparece com os esqueletos e só depois troca pelos
   // produtos — que e exatamente o que o critério de "nenhum salto de layout"
   // pede. Um `getBy` aqui olharia para o esqueleto.
   expect(await within(maisVendidos).findByRole('heading', { name: 'Fakhar' })).toBeDefined();
   expect(await within(promocoes).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
-  expect(await within(prontaEntrega).findByRole('heading', { name: 'Yara' })).toBeDefined();
+  expect(await within(compreTambem).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
 
   expect(chamadas.some((url) => url.includes('/products/best-sellers'))).toBe(true);
   expect(chamadas.some((url) => url.includes('sort=discount'))).toBe(true);
-  expect(chamadas.some((url) => url.includes('/products/ready-to-ship'))).toBe(true);
+  expect(chamadas.some((url) => url.includes('sort=newest'))).toBe(true);
+});
+
+/**
+ * A do meio empilha, as outras duas rolam.
+ *
+ * E o ritmo da referência, e ele e por posição e não por prateleira: qual
+ * fileira cai na vaga do meio depende do que a loja tem cadastrado. O trilho
+ * se reconhece pelo `aria-label` das setas, que a grade não desenha.
+ */
+test('a fileira do meio e grade, e as outras duas rolam', async () => {
+  abrirHome();
+
+  const maisVendidos = await screen.findByRole('region', { name: 'Mais vendidos' });
+  const promocoes = screen.getByRole('region', { name: 'Aproveite as promoções' });
+  const compreTambem = screen.getByRole('region', { name: 'Compre também' });
+
+  expect(maisVendidos.querySelector('[aria-hidden="true"] button')).not.toBeNull();
+  expect(promocoes.querySelector('[aria-hidden="true"] button')).toBeNull();
+  expect(compreTambem.querySelector('[aria-hidden="true"] button')).not.toBeNull();
 });
 
 /**
@@ -368,7 +387,7 @@ test('a home mostra tres fileiras, mesmo tendo cinco candidatas com produto', as
     expect(screen.queryByRole('region', { name: 'A seleção da casa' })).toBeNull();
   });
 
-  expect(screen.queryByRole('region', { name: 'Novidades' })).toBeNull();
+  expect(screen.queryByRole('region', { name: 'Pronta entrega' })).toBeNull();
 });
 
 test('prateleira sem produto some, e a candidata seguinte assume a vaga', async () => {
@@ -376,10 +395,10 @@ test('prateleira sem produto some, e a candidata seguinte assume a vaga', async 
 
   abrirHome();
 
-  // Com "mais vendidos" vazia, a terceira vaga passa a ser da selecao da casa.
-  const selecao = await screen.findByRole('region', { name: 'A seleção da casa' });
+  // Com "mais vendidos" vazia, a terceira vaga passa a ser da pronta entrega.
+  const prontaEntrega = await screen.findByRole('region', { name: 'Pronta entrega' });
 
-  expect(await within(selecao).findByRole('heading', { name: 'Asad' })).toBeDefined();
+  expect(await within(prontaEntrega).findByRole('heading', { name: 'Yara' })).toBeDefined();
 
   await waitFor(() => {
     expect(screen.queryByRole('region', { name: 'Mais vendidos' })).toBeNull();
@@ -393,24 +412,40 @@ test('prateleira sem produto some, e a candidata seguinte assume a vaga', async 
  * marcado como pronta entrega e nenhum destaque. Antes, a home abria no
  * banner e ia direto para o rodape.
  */
-test('com as quatro primeiras candidatas vazias, novidades sustenta a vitrine', async () => {
+test('com as outras quatro candidatas vazias, "compre também" sustenta a vitrine', async () => {
   prateleiras['best-sellers'] = [];
   prateleiras['ready-to-ship'] = [];
   prateleiras.featured = [];
 
+  // Sem nenhum desconto cadastrado, a prateleira de promoções corta tudo e
+  // tambem desaparece. Sobra a única que não depende de marcação nenhuma.
+  listagem = [produto('3', 'Fakhar')];
+
   abrirHome();
 
-  const novidades = await screen.findByRole('region', { name: 'Novidades' });
+  const compreTambem = await screen.findByRole('region', { name: 'Compre também' });
 
-  expect(await within(novidades).findByRole('heading', { name: 'Khamrah' })).toBeDefined();
+  expect(await within(compreTambem).findByRole('heading', { name: 'Fakhar' })).toBeDefined();
+
+  await waitFor(() => {
+    expect(screen.queryByRole('region', { name: 'Aproveite as promoções' })).toBeNull();
+  });
 });
 
 test('o produto de pronta entrega leva o selo verde na prateleira', async () => {
+  // "Pronta entrega" não e mais uma das três fileiras padrão: ela e a quarta
+  // candidata, e assume a vaga quando "mais vendidos" não tem o que mostrar.
+  prateleiras['best-sellers'] = [];
+
   abrirHome();
 
   const prontaEntrega = await screen.findByRole('region', { name: 'Pronta entrega' });
 
-  expect(await within(prontaEntrega).findByText('Pronta entrega')).toBeDefined();
+  // O card, e não a seção: o título dela tambem diz "Pronta entrega", e uma
+  // busca pelo texto solto dentro da seção acerta os dois.
+  const card = await within(prontaEntrega).findByRole('article');
+
+  expect(within(card).getByText('Pronta entrega')).toBeDefined();
 });
 
 /**
