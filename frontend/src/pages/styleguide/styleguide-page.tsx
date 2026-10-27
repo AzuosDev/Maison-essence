@@ -63,14 +63,18 @@ const SECTIONS = [
 ] as const;
 
 const COLORS = [
-  ['--ink', 'Header, botão primário, texto forte'],
+  ['--ink', 'Título, nome e preço do produto'],
   ['--ink-soft', 'Texto de corpo'],
-  ['--muted', 'Texto secundário, placeholder'],
-  ['--cream', 'Fundo geral da loja'],
-  ['--sand', 'Seções alternadas, chips'],
+  ['--muted', 'Texto secundário — só sobre o branco'],
+  ['--bg', 'Fundo geral da loja'],
+  ['--bg-alt', 'Seções alternadas, chips, foto do card'],
   ['--surface', 'Cards, inputs, paineis'],
-  ['--gold', 'Filete do logo, detalhes, hover'],
-  ['--gold-deep', 'Dourado sobre creme, foco'],
+  ['--gold', 'A ação: botão, lupa, filete do item ativo'],
+  ['--gold-press', 'O dourado pressionado, no hover do botão'],
+  ['--on-gold', 'O que vai por cima do dourado. Não inverte'],
+  ['--gold-deep', 'O dourado quando vira texto ("20% OFF")'],
+  ['--slab', 'Barra de avisos, menu, rodapé'],
+  ['--slab-muted', 'Texto secundário sobre a laje'],
   ['--line', 'Bordas de 1px'],
   ['--success', 'Pronta entrega, confirmação'],
   ['--danger', 'Esgotado, erros'],
@@ -256,7 +260,7 @@ function TypographySection() {
     <Section
       id="tipografia"
       title="Tipografia"
-      note="Cormorant Garamond nos títulos, Jost no corpo. Preço sempre em Jost 600 tabular."
+      note="Onest em tudo que e interface — o que separa título de texto e peso, não família. A serifada da marca (Cormorant) só aparece na assinatura e na faixa de marcas. Preço sempre em 700 tabular."
     >
       <div className={styles.scale}>
         {TYPE_SCALE.map(([token, size]) => (
@@ -278,10 +282,16 @@ function TypographySection() {
       </div>
 
       <div className={styles.samples}>
-        <Sample label="Corpo em Jost">
+        <Sample label="Corpo">
           <p style={{ lineHeight: 'var(--leading-body)' }}>
-            Perfume amadeirado com notas de baunilha e âmbar. O texto de corpo usa Jost 400 com
+            Perfume amadeirado com notas de baunilha e âmbar. O texto de corpo usa Onest 400 com
             entrelinha de 1.6 — a medida que sustenta um parágrafo longo sem cansar.
+          </p>
+        </Sample>
+
+        <Sample label="Assinatura da marca">
+          <p style={{ fontFamily: 'var(--font-brand)', fontSize: 'var(--text-22)' }}>
+            Maison Essence
           </p>
         </Sample>
 
@@ -384,7 +394,7 @@ function FormSection() {
           <Input label="Nome completo" placeholder="Como no documento" />
           <Input
             label="Celular"
-            hint="E por ele que a gente responde no WhatsApp."
+            hint="É por ele que a gente responde no WhatsApp."
             placeholder="(88) 99999-9999"
           />
           <Input label="E-mail" error="Informe um e-mail válido." defaultValue="cliente@" />
@@ -437,7 +447,7 @@ function FormSection() {
           <Checkbox label="Quero receber novidades" hint="No máximo um recado por mês." />
           <Checkbox label="Selecionar todos os produtos" indeterminate readOnly checked={false} />
           <Checkbox label="Opção indisponível" disabled />
-          <Checkbox label="Preciso concordar" error="E preciso aceitar para continuar." />
+          <Checkbox label="Preciso concordar" error="É preciso aceitar para continuar." />
         </Sample>
 
         <Sample label="Radio">
@@ -527,7 +537,7 @@ function CardSection() {
           <Card>
             <CardHeader
               title="Dados de contato"
-              subtitle="E por aqui que a gente confirma o pedido."
+              subtitle="É por aqui que a gente confirma o pedido."
             />
             <CardBody>
               <Input label="Nome" placeholder="Seu nome" />

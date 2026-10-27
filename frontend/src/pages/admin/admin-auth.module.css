@@ -45,7 +45,7 @@
 .brand {
   margin: 0;
 
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-14);
   text-transform: uppercase;
   letter-spacing: var(--tracking-logo);

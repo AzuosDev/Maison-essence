@@ -31,7 +31,7 @@
   align-items: center;
   gap: var(--space-4);
 
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-22);
   font-weight: var(--weight-semibold);
   text-transform: uppercase;
@@ -72,7 +72,7 @@
 }
 
 .footerBrand {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--text-18);
   text-transform: uppercase;
   letter-spacing: var(--tracking-logo);
@@ -82,5 +82,5 @@
 
 .footerNote {
   font-size: var(--text-12);
-  color: var(--muted);
+  color: var(--slab-muted);
 }

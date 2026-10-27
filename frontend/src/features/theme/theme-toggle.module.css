@@ -62,7 +62,16 @@
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+
+  /*
+   * O cinza do rótulo depende do fundo em que o seletor caiu.
+   *
+   * O padrão serve a página branca. No rodapé, que e a laje preta, `--muted`
+   * da 3.3:1 e some — quem coloca o seletor ali passa `--toggle-legend-ink`
+   * com o cinza da laje. E o mesmo arranjo das outras variáveis deste
+   * componente: quem posiciona rege, o componente não conhece o contexto.
+   */
+  color: var(--toggle-legend-ink, var(--muted));
 }
 
 .options {

@@ -2,16 +2,23 @@
  * Os tokens da Maison Essence.
  *
  * Esta e a única definição de cor, fonte, espaço, raio, sombra e duração da
- * loja. Componente nenhum escreve `#0E0E0E` ou `24px` direto: escreve
+ * loja. Componente nenhum escreve `#121212` ou `24px` direto: escreve
  * `var(--ink)` e `var(--space-24)`. A regra não e estética — e o que permite
- * ajustar o creme do fundo em um lugar só, em vez de cacar o hexadecimal em
+ * ajustar o branco do fundo em um lugar só, em vez de cacar o hexadecimal em
  * quarenta arquivos de CSS Module.
  *
- * Os valores vem do design system extraido do mockup e não devem ser
- * reinventados por tela nenhuma. Os poucos tokens que não estão na
- * especificação — o véu do modal, a base do skeleton — são derivados dos que
- * estão, e a derivação esta escrita ao lado de cada um: nenhuma cor nova
- * entrou no sistema.
+ * ## O que mudou, e por que
+ *
+ * A loja nasceu creme com serifada dourada: uma maison de perfume, bonita e
+ * calada. Quem compra aqui chega do Instagram querendo saber preço, parcela e
+ * se tem pronta entrega — e aquele mundo não tinha onde pôr essas três
+ * coisas sem estragar o próprio silêncio.
+ *
+ * O fundo agora e branco, a tinta e quase preta e o dourado da marca ficou
+ * sendo **a cor da ação**: o que e dourado nesta loja se clica ou se ganha.
+ * Nada mais e dourado — nem título, nem filete decorativo, nem borda de
+ * cartão. E a convenção da categoria, escolhida de propósito, e executada com
+ * rigor: a vitrine toda se lê de relance, e o olho sabe onde apertar.
  */
 
 :root {
@@ -25,17 +32,41 @@
    */
   color-scheme: light;
 
-  --ink: #0e0e0e;
-  --ink-soft: #3a3a3a;
-  --muted: #8a8578;
-  --bg: #faf7f2;
-  --bg-alt: #f1e9dd;
+  --ink: #121212;
+  --ink-soft: #4a4a4a;
+  --muted: #6b6660;
+  --bg: #ffffff;
+  --bg-alt: #f7f5f1;
   --surface: #ffffff;
   --gold: #c39540;
   --gold-deep: #9e6917;
-  --line: #e3dacd;
+  --line: #e6e2da;
   --success: #2e7d5b;
   --danger: #b3261e;
+
+  /*
+   * O dourado pressionado.
+   *
+   * O botão primário e preenchido de `--gold`, e um botão preenchido precisa
+   * de um segundo tom para o hover e para o clique — clarear não serve, o
+   * dourado já e claro. Nasce aqui, e não de um `filter: brightness()` no
+   * componente, porque o tema escuro vai querer outro valor.
+   */
+  --gold-press: #a97c2b;
+
+  /*
+   * A tinta **sobre o dourado**: o rótulo do botão primário, o desenho da
+   * lupa no quadrado da busca, o texto do selo dourado.
+   *
+   * Valor literal, e fora dos blocos de tema, porque ele não pode inverter.
+   * `--ink` inverte: no tema escuro ele vira quase branco, e o botão
+   * primário saia com texto claro sobre dourado — 2.4:1, ilegível. O
+   * dourado da marca não muda com o tema, então o que vai por cima dele
+   * também não pode mudar.
+   *
+   * 6.9:1 sobre `--gold` e 5.0:1 sobre `--gold-press`.
+   */
+  --on-gold: #121212;
 
   /*
    * Os nomes antigos das duas cores de fundo, agora apelidos.
@@ -49,8 +80,9 @@
    * `--bg`, `--cream` acompanha sozinho. E o que faz o tema inteiro virar sem
    * que nenhum componente saiba que existe tema.
    *
-   * Em código novo, prefira `--bg` e `--bg-alt`: "creme" e o nome de uma cor,
-   * e no escuro o valor e quase preto.
+   * Em código novo, prefira `--bg` e `--bg-alt`. Os apelidos mentem duas
+   * vezes agora: no claro o fundo e branco, não creme, e no escuro e quase
+   * preto.
    */
   --cream: var(--bg);
   --sand: var(--bg-alt);
@@ -58,24 +90,26 @@
   /*
    * ---- Onde cada cor pode ser texto -----------------------------------
    *
-   * Os números são o contraste sobre o creme, que e o fundo da loja. A regra
+   * Os números são o contraste sobre o branco, que e o fundo da loja. A regra
    * da WCAG e 4.5:1 para texto normal e 3:1 para texto grande (>=18px) e para
    * elemento grafico — ícone, filete, borda.
    *
-   *   --ink        18.06:1  qualquer texto
-   *   --ink-soft   10.64:1  qualquer texto
-   *   --success     4.68:1  qualquer texto
-   *   --danger      6.12:1  qualquer texto
-   *   --muted       3.44:1  SÓ texto >=18px, ou grafico
-   *   --gold-deep   4.38:1  SÓ texto >=18px, ou grafico
-   *   --gold        2.55:1  NUNCA texto. Só preenchimento, filete e borda.
+   *   --ink        17.4:1  qualquer texto
+   *   --ink-soft    8.9:1  qualquer texto
+   *   --muted       5.7:1  qualquer texto
+   *   --success     4.9:1  qualquer texto
+   *   --danger      6.4:1  qualquer texto
+   *   --gold-deep   4.7:1  qualquer texto
+   *   --gold        2.4:1  NUNCA texto. Só preenchimento, filete e borda.
    *
-   * Sobre o preto a conta e outra e se inverte: ali `--muted` da 5.25:1 e e o
-   * cinza legitimo do rodapé. O que não pode e o de 12px sobre o creme.
+   * `--muted` subiu de 3.44:1 para 5.7:1 na troca do creme pelo branco, e foi
+   * de propósito: a vitrine ficou cheia de rótulo de 12px — "12x de", "em
+   * estoque", a marca acima do nome — e o cinza antigo obrigava cada um deles
+   * a virar `--ink-soft`, o que achatava a hierarquia inteira. Agora o cinza
+   * e legítimo em qualquer corpo.
    *
-   * Na prática: rótulo de 12px pede `--ink-soft`, não `--muted`. A hierarquia
-   * entre um rótulo e um título se faz com corpo, peso e caixa — não apagando
-   * a cor até o texto sair do alcance de quem lê.
+   * O dourado continua proibido como texto. Onde a loja precisa escrever em
+   * dourado — o "-20%" ao lado do preço — quem entra e `--gold-deep`.
    */
 
   /* O verde oficial do WhatsApp, no botão flutuante. Não e token de marca:
@@ -85,24 +119,40 @@
   /*
    * ---- A laje ----------------------------------------------------------
    *
-   * O bloco escuro que corta a página: o rodapé, a barra de avisos, a
-   * assinatura da marca, a sidebar do painel e a tela de entrada dele.
+   * O bloco escuro que corta a página: a barra de avisos, a barra do menu, o
+   * rodapé, a sidebar do painel e a tela de entrada dele.
    *
-   * Par próprio, e não `--ink` com `--cream` em cima, por causa do tema
-   * escuro. `--ink` e primeiro plano e inverte: no escuro ele fica claro, e
-   * quem pintasse o rodapé com ele teria uma laje **clara** de ponta a ponta
-   * no pé de uma página escura — que e exatamente o brilho que quem escolhe
-   * tema escuro esta tentando evitar. A laje escurece nos dois temas; o que
-   * muda e a relação com a página: no claro ela e o preto contra o creme, no
-   * escuro e um degrau acima do fundo, para continuar sendo um bloco e não
-   * sumir dentro dele.
+   * Par próprio, e não `--ink` com `--bg` em cima, por causa do tema escuro.
+   * `--ink` e primeiro plano e inverte: no escuro ele fica claro, e quem
+   * pintasse o rodapé com ele teria uma laje **clara** de ponta a ponta no pé
+   * de uma página escura — que e exatamente o brilho que quem escolhe tema
+   * escuro esta tentando evitar. A laje escurece nos dois temas; o que muda e
+   * a relação com a página: no claro ela e o preto contra o branco, no escuro
+   * e um degrau acima do fundo, para continuar sendo um bloco e não sumir
+   * dentro dele.
    *
-   * Não confunda com o botão primário, o selo e o chip selecionado: aqueles
-   * são pequenos, continuam em `--ink`/`--cream` e invertem de propósito —
-   * botão claro sobre página escura e o que se espera ali.
+   * Não confunda com o botão primário e o selo de desconto: aqueles são
+   * pequenos, são dourados, e não invertem com tema nenhum.
    */
-  --slab: #0e0e0e;
-  --slab-ink: #faf7f2;
+  --slab: #121212;
+  --slab-ink: #ffffff;
+
+  /*
+   * O texto secundário **sobre a laje**: a nota do selo de confiança, o
+   * horário de atendimento, a linha de direitos autorais.
+   *
+   * `--muted` não serve aqui, e a conta explica por quê: ele e um cinza
+   * escolhido para ter 5.7:1 contra o branco da página, e esse mesmo cinza
+   * contra o preto da laje da 3.3:1 — abaixo do mínimo para texto de 12px.
+   * Toda vez que alguém escreveu `--muted` dentro do rodapé, escreveu um
+   * texto que não se lê.
+   *
+   * Declarado uma vez, fora dos dois blocos de tema, porque ele e derivado:
+   * `color-mix` resolve na hora do uso, então ele acompanha a laje sozinho
+   * nos dois temas. Opaco, e não `--slab-ink` com transparência, para não
+   * depender do que estiver pintado atrás.
+   */
+  --slab-muted: color-mix(in srgb, var(--slab-ink) 70%, var(--slab));
 
   /* Painel administrativo. Fundo próprio, frio, para que o operador saiba
      pelo canto do olho que não esta na loja. */
@@ -131,7 +181,7 @@
    * porque meio preto sobre uma página que já e quase preta não separa plano
    * nenhum (ver o bloco escuro).
    */
-  --overlay: rgb(14 14 14 / 0.5);
+  --overlay: rgb(10 10 10 / 0.52);
 
   /* Realce de linha, item de lista sob o cursor: o dourado quase apagado. */
   --gold-wash: color-mix(in srgb, var(--gold) 12%, transparent);
@@ -142,19 +192,36 @@
 
   /* ---- Tipografia ----------------------------------------------------- */
 
-  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
-  --font-body: 'Jost', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /*
+   * Uma família para a interface inteira.
+   *
+   * Onest: grotesca de numeral alto e aberto, com `tabular-nums` de verdade —
+   * que e o que uma loja de preço precisa antes de precisar de personalidade.
+   * Título de seção, nome de produto, preço, botão, menu e formulário saem
+   * todos dela, variando só por peso e corpo.
+   *
+   * `--font-display` continua existindo e aponta para a mesma pilha: dezenas
+   * de folhas já o escrevem, e o que mudou não foi o papel do token — foi a
+   * decisão de que o display desta loja e a mesma grotesca, em 600 e 700.
+   */
+  --font-body: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-body);
+
+  /*
+   * A serifada sobrou para um uso só: a assinatura "Maison Essence" ao lado
+   * do monograma. E marca, não tipografia de interface — e por isso tem token
+   * próprio, com nome do que e. Quem a escrever em qualquer outro lugar esta
+   * reabrindo a discussão que esta loja já fechou.
+   */
+  --font-brand: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
 
   /* Identificador que se lê caractere a caractere: e-mail em confirmação de
      ação destrutiva, senha temporária, id de requisição na auditoria. A pilha
-     do sistema, sem webfont: são trechos curtos e raros, e baixar uma quarta
+     do sistema, sem webfont: são trechos curtos e raros, e baixar uma terceira
      fonte para eles custaria mais do que rende. */
   --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Escala 64/48/36/28/22/18/16/14/12.
-     O 64 entrou com a vitrine nova: título de seção e do banner em caixa
-     alta precisam de um degrau acima do 48, senão a página inteira fala no
-     mesmo tom e nada e destaque de nada. */
+  /* Escala 64/48/36/28/22/18/16/14/12. */
   --text-64: 4rem;
   --text-48: 3rem;
   --text-36: 2.25rem;
@@ -171,17 +238,29 @@
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
+  --weight-bold: 700;
 
-  /* O logotipo e os botões em caixa alta. Dois valores, não um: o logo
-     respira muito mais que o botão. */
-  --tracking-logo: 0.28em;
-  --tracking-button: 0.08em;
+  /* O logotipo em caixa alta, que respira muito. */
+  --tracking-logo: 0.24em;
 
-  /* Título de seção em caixa alta na serifada. A caixa alta fecha o espaço
-     entre as letras por conta própria; sem abrir de volta, "DESTAQUES" vira
-     um bloco macico. Fica entre o botão e o logotipo porque o título e
-     grande — quanto maior o corpo, menos espacamento ele pede. */
-  --tracking-title: 0.12em;
+  /*
+   * Botão e rótulo em caixa alta.
+   *
+   * 0.02em, e não os 0.08em de antes: a Onest já nasce com o espacamento
+   * aberto, e a caixa alta dela não fecha como a de uma serifada. Com 0.08em,
+   * "ADICIONAR A SACOLA" não cabia no botão do celular.
+   */
+  --tracking-button: 0.02em;
+
+  /*
+   * Título de seção.
+   *
+   * Negativo, e não positivo. Os títulos desta vitrine são grandes e em
+   * grotesca pesada — e tipo grande pede espacamento **mais fechado**, não
+   * mais aberto. O valor antigo (+0.12em) existia para a caixa alta da
+   * serifada, que não esta mais aqui.
+   */
+  --tracking-title: -0.015em;
 
   /* ---- Espaço --------------------------------------------------------- */
 
@@ -198,29 +277,34 @@
   /* ---- Forma ---------------------------------------------------------- */
 
   --radius-chip: 4px;
-  --radius-card: 12px;
-  --radius-modal: 16px;
+  --radius-card: 8px;
+  --radius-modal: 12px;
   --radius-pill: 999px;
 
   /*
-   * A forma de toda ação clicável: a pílula.
+   * A forma de toda ação clicável.
    *
-   * E o que separa, a um relance, o que se clica do que só se lê. O cartão de
-   * produto e a foto são retos, com o canto do `--radius-card`; botão, chip de
-   * filtro e campo de busca são redondos. Com os dois no mesmo raio, a vitrine
-   * vira uma sequência de retângulos iguais e o cliente precisa ler cada um
-   * para descobrir onde clicar.
+   * Deixou de ser pílula. A pílula era a assinatura do mundo anterior, e numa
+   * grade onde cada cartão termina num botão dourado de largura total, oito
+   * pílulas seguidas desenhavam oito comprimidos na vitrine. O canto de 8px e
+   * o mesmo do cartão e o mesmo do campo: a fileira inteira passa a ter uma
+   * língua só.
    *
-   * Token próprio, e não `--radius-pill` escrito direto no botão, porque e uma
-   * decisão de linguagem: se um dia a loja voltar ao canto reto, muda aqui.
+   * Token próprio, e não `--radius-card` escrito direto no botão, porque e uma
+   * decisão de linguagem: se um dia a loja voltar a pílula, muda aqui.
    */
-  --radius-button: var(--radius-pill);
+  --radius-button: 8px;
 
   --border: 1px solid var(--line);
 
-  /* Uma sombra só, e discreta. Sombra colorida não existe neste projeto, e
-     modal e gaveta usam a mesma: o que separa os planos ali e o véu. */
-  --shadow: 0 1px 2px rgb(14 14 14 / 0.04), 0 8px 24px rgb(14 14 14 / 0.06);
+  /*
+   * Uma sombra só, e discreta — e ela não cai em cartão de produto.
+   *
+   * A vitrine separa cartão de cartão por filete e por espaço, que e como
+   * catálogo impresso faz. A sombra existe para o que de fato flutua: gaveta,
+   * modal, menu suspenso, painel de categorias.
+   */
+  --shadow: 0 1px 2px rgb(18 18 18 / 0.05), 0 10px 30px rgb(18 18 18 / 0.08);
 
   /* ---- Foco -----------------------------------------------------------
      O anel dourado de 2px, em um lugar só. Sobre fundo escuro, o contexto
@@ -233,10 +317,26 @@
 
   /* ---- Layout --------------------------------------------------------- */
 
-  /* Largura útil. Subiu de 1280 para caber a grade de cinco colunas da
-     vitrine sem espremer o card: abaixo disso a quinta coluna fica estreita
-     demais para o nome do produto em duas linhas. */
-  --container-max: 1360px;
+  /*
+   * Largura útil: 1280px.
+   *
+   * Cabe a grade de cinco colunas da vitrine sem espremer o card — a quinta
+   * coluna fica com 227px, e o nome do produto em duas linhas ainda cabe.
+   *
+   * Eram 1360px, e os 80px que sobram de cada lado não são sobra. Num
+   * monitor de 1440 a margem antiga tinha 40px, e o botão flutuante do
+   * WhatsApp — fixo a 24px da borda, com 56px de diâmetro — avançava 40px
+   * por cima da última coluna: ele cobria o canto do "Adicionar" do quinto
+   * card e o fim do rótulo da última categoria. Com 1280 o corredor do
+   * flutuante cabe inteiro na margem, e a vitrine para de ter um alvo
+   * clicável embaixo de outro.
+   *
+   * Em janela mais estreita que 1440 a margem volta a encurtar e o
+   * flutuante volta a encostar na borda do conteúdo. Para esse caso a cura
+   * não e largura, e o recolhimento na rolagem — está em
+   * `whatsapp-button.tsx`.
+   */
+  --container-max: 1280px;
   --gutter: var(--space-16);
 
   /*
@@ -250,8 +350,11 @@
    * `scroll-padding` das ancoras precisa da altura do que de fato cobre o
    * conteúdo depois que a página rola.
    */
-  --header-height: 5.5rem;
-  --header-height-compact: 4rem;
+  --header-height: 5rem;
+  --header-height-compact: 3.75rem;
+
+  /** A barra preta do menu, abaixo do cabeçalho, no desktop. */
+  --nav-height: 2.75rem;
 
   /** A barra de avisos, que rola junto com a página e não gruda. */
   --announcement-height: 2.25rem;
@@ -318,26 +421,26 @@
   :root:not([data-theme='light']) {
     color-scheme: dark;
 
-    --ink: #f2efe9;
-    --ink-soft: #cfc9be;
-    --muted: #8a8578;
-    --bg: #0b0b0b;
-    --bg-alt: #151515;
-    --surface: #131313;
+    --ink: #f4f2ee;
+    --ink-soft: #c9c5be;
+    --muted: #97928a;
+    --bg: #0d0d0d;
+    --bg-alt: #161616;
+    --surface: #141414;
     --gold: #c39540;
-    --gold-deep: #dab369;
-    --line: #2a2a2a;
+    --gold-deep: #d9b166;
+    --gold-press: #d9b166;
+    --line: #2b2b2b;
     --success: #4caf82;
     --danger: #e5695f;
 
-    --slab: #151515;
-    --slab-ink: #f2efe9;
+    --slab: #161616;
+    --slab-ink: #f4f2ee;
 
     --admin-bg: #0f0f14;
     --admin-active: rgb(195 149 64 / 0.18);
 
-    --shadow:
-      0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.45);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 30px rgb(0 0 0 / 0.45);
 
     --overlay: rgb(0 0 0 / 0.66);
     --gold-wash: color-mix(in srgb, var(--gold) 18%, transparent);
@@ -347,34 +450,34 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --ink: #f2efe9;
-  --ink-soft: #cfc9be;
-  --muted: #8a8578;
-  --bg: #0b0b0b;
-  --bg-alt: #151515;
-  --surface: #131313;
+  --ink: #f4f2ee;
+  --ink-soft: #c9c5be;
+  --muted: #97928a;
+  --bg: #0d0d0d;
+  --bg-alt: #161616;
+  --surface: #141414;
   --gold: #c39540;
-  --gold-deep: #dab369;
-  --line: #2a2a2a;
+  --gold-deep: #d9b166;
+  --gold-press: #d9b166;
+  --line: #2b2b2b;
   --success: #4caf82;
   --danger: #e5695f;
 
-  --slab: #151515;
-  --slab-ink: #f2efe9;
+  --slab: #161616;
+  --slab-ink: #f4f2ee;
 
   --admin-bg: #0f0f14;
   --admin-active: rgb(195 149 64 / 0.18);
 
-  --shadow:
-    0 1px 2px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.45);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.5), 0 10px 30px rgb(0 0 0 / 0.45);
 
   --overlay: rgb(0 0 0 / 0.66);
   --gold-wash: color-mix(in srgb, var(--gold) 18%, transparent);
 }
 
 /*
- * Contexto escuro: a laje da marca, a sidebar do painel, o painel sobre a
- * foto do banner.
+ * Contexto escuro: a laje da marca, a barra do menu, a sidebar do painel, o
+ * painel sobre a foto do banner.
  *
  * Sobre a laje, `--gold-deep` some. A classe troca só a cor do anel de
  * foco — o token continua sendo um — e quem a aplica e o componente que
