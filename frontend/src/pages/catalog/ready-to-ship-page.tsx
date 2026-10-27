@@ -13,7 +13,7 @@ export default function ReadyToShipPage() {
   return (
     <CatalogView
       title="Pronta entrega"
-      description="O que esta em mãos e sai hoje, sem esperar encomenda."
+      description="O que está em mãos e sai hoje, sem esperar encomenda."
       breadcrumb={[{ label: 'Início', to: ROUTES.home }, { label: 'Pronta entrega' }]}
       context={{ readyToShip: true }}
       emptyTitle="Nada em pronta entrega agora"

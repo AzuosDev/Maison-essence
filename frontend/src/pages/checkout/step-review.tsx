@@ -88,7 +88,7 @@ export function StepReview({
   return (
     <StepCard
       title="Seus dados"
-      description="E por aqui que a loja vai falar com você para combinar o pagamento."
+      description="É por aqui que a loja vai falar com você para combinar o pagamento."
       focusOnMount={focusOnMount}
       actionLabel="Finalizar pelo WhatsApp"
       onAction={submit}

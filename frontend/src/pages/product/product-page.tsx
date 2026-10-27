@@ -57,7 +57,7 @@ function NotFound() {
   return (
     <MessageScreen
       code="404"
-      title="Este produto não esta mais aqui"
+      title="Este produto não está mais aqui"
       description="Ele pode ter saido do catálogo ou o endereço veio com um erro de digitação. A vitrine continua cheia."
       actions={
         <>

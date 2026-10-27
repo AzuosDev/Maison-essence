@@ -24,7 +24,7 @@ import styles from './cart-empty.module.css';
  * com `aria-hidden` porque o título abaixo dela já diz o que ela mostra.
  */
 export function CartEmpty({
-  title = 'Sua sacola esta vazia',
+  title = 'Sua sacola está vazia',
   description = 'Os perfumes que você escolher aparecem aqui — e ficam guardados mesmo se você fechar o navegador.',
   compact = false,
   onNavigate,

@@ -68,7 +68,7 @@ export function useReorder() {
         // ela já estava, o que leria como "não aconteceu nada" — e alguma
         // coisa aconteceu: o pedido inteiro saiu do catálogo.
         toast({
-          title: 'Nada deste pedido esta a venda agora',
+          title: 'Nada deste pedido está à venda agora',
           description: 'Os itens saíram do catálogo. Veja o que há de parecido na loja.',
           variant: 'danger',
           duration: 8000,

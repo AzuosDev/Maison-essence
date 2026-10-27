@@ -119,7 +119,7 @@ export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepP
   return (
     <StepCard
       title="Pagamento"
-      description="Escolha a forma. O valor e combinado depois, pelo WhatsApp."
+      description="Escolha a forma. O valor é combinado depois, pelo WhatsApp."
       focusOnMount={focusOnMount}
       actionLabel="Continuar"
       onAction={submit}
@@ -308,7 +308,7 @@ function WhatsappNotice() {
       <WhatsappIcon className={styles.noticeIcon} width={24} height={24} />
 
       <div>
-        <p className={styles.noticeTitle}>Nada e cobrado neste site</p>
+        <p className={styles.noticeTitle}>Nada é cobrado neste site</p>
 
         <p className={styles.noticeText}>
           Você não digita dados de cartão aqui. Ao finalizar, o pedido vai para o WhatsApp da loja,

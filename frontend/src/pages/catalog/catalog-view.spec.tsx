@@ -317,7 +317,7 @@ test('a categoria monta o fio de pão, as pílulas e o filtro da rota', async ()
   expect(within(pilulas).getByRole('link', { name: /Tudo em Masculino/ })).toBeDefined();
   expect(within(pilulas).getByRole('link', { name: /Amadeirados/ })).toBeDefined();
 
-  const trilha = screen.getByRole('navigation', { name: 'Você esta aqui' });
+  const trilha = screen.getByRole('navigation', { name: 'Você está aqui' });
 
   expect(within(trilha).getByRole('link', { name: 'Masculino' })).toBeDefined();
 

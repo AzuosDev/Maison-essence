@@ -237,7 +237,7 @@ export function StepFulfillment({
             <Input
               label="Ponto de referência"
               value={address.reference}
-              hint="Perto de que? E o que mais ajuda a achar a sua casa."
+              hint="Perto de que? É o que mais ajuda a achar a sua casa."
               error={errors['address.reference']}
               className={styles.wide}
               onChange={(event) => { setAddressField('reference', event.target.value); }}

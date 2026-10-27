@@ -105,16 +105,16 @@ const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = 
     [FULFILLMENT_MODES.PICKUP]: 'A loja confirmou os itens e o valor.',
   },
   [ORDER_STATUSES.PREPARING]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido esta sendo separado e embalado.',
-    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido esta sendo separado e embalado.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido está sendo separado e embalado.',
+    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido está sendo separado e embalado.',
   },
   [ORDER_STATUSES.SHIPPED]: {
     [FULFILLMENT_MODES.DELIVERY]: 'Saiu para o endereço de entrega.',
     [FULFILLMENT_MODES.PICKUP]: 'Já pode ser retirado na loja.',
   },
   [ORDER_STATUSES.DELIVERED]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Entregue. Qualquer coisa, e só chamar no WhatsApp.',
-    [FULFILLMENT_MODES.PICKUP]: 'Retirado. Qualquer coisa, e só chamar no WhatsApp.',
+    [FULFILLMENT_MODES.DELIVERY]: 'Entregue. Qualquer coisa, é só chamar no WhatsApp.',
+    [FULFILLMENT_MODES.PICKUP]: 'Retirado. Qualquer coisa, é só chamar no WhatsApp.',
   },
   [ORDER_STATUSES.CANCELLED]: {
     [FULFILLMENT_MODES.DELIVERY]: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',

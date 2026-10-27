@@ -60,7 +60,7 @@ export default function AccountOrderPage() {
   if (!signedIn) {
     return (
       <AccountInvite
-        title="Este pedido esta na sua conta"
+        title="Este pedido está na sua conta"
         description={`Entre para ver os itens, os valores e o andamento do pedido ${code}.`}
       />
     );
