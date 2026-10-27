@@ -363,7 +363,12 @@ describe('catalogo publico (e2e)', () => {
         'asad-lattafa',
       ]);
       expect(prontos.body).toHaveLength(1);
-      expect(vendidos.body).toEqual([]);
+      // Mais vendidos completa as vagas com o catalogo e por isso nao vem
+      // mais vazia: o que se cobra aqui e que o desativado nao entre nela,
+      // nem pelo ranking nem pelo complemento.
+      expect(vendidos.body.map((item: { slug: string }) => item.slug)).not.toContain(
+        'fora-de-linha',
+      );
       await request(server).get(`${API}/products/fora-de-linha`).expect(404);
     });
   });
@@ -400,10 +405,32 @@ describe('catalogo publico (e2e)', () => {
 
       const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
 
-      expect(body.map((item: { slug: string }) => item.slug)).toEqual([
+      // As duas primeiras sao o ranking. O que vem atras e complemento do
+      // catalogo, para a fileira nao chegar pela metade na home.
+      expect(body.slice(0, 2).map((item: { slug: string }) => item.slug)).toEqual([
         'asad-lattafa',
         'vela-lavanda',
       ]);
+    });
+
+    it('sem venda nenhuma, completa com destaque e depois com o catalogo antigo', async () => {
+      const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
+
+      // Destaque na frente; atras dele, do mais antigo para o mais novo, para
+      // a fileira nao repetir os cards de "Compre tambem", que e o contrario.
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual([
+        'asad-lattafa',
+        'qaed-al-fursan',
+        'vela-lavanda',
+      ]);
+    });
+
+    it('o complemento respeita o limite pedido', async () => {
+      const { body } = await request(server)
+        .get(`${API}/products/best-sellers?limit=2`)
+        .expect(200);
+
+      expect(body).toHaveLength(2);
     });
 
     /** Pedido que ainda nao virou conversa no WhatsApp nao e venda. */
@@ -415,7 +442,10 @@ describe('catalogo publico (e2e)', () => {
 
       const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
 
-      expect(body).toEqual([]);
+      // Sem venda, a prateleira e so complemento — e complemento comeca pelo
+      // destaque. Se as 100 unidades nao vendidas da vela contassem, ela
+      // estaria na frente do Asad.
+      expect(body[0].slug).toBe('asad-lattafa');
     });
 
     it('respeita o limite pedido', async () => {
