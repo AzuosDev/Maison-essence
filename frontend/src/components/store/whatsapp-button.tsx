@@ -35,6 +35,7 @@ const DEFAULT_MESSAGE = 'Olá! Vim pelo site e gostaria de saber mais.';
 export function WhatsappButton({ avoidRef }: WhatsappButtonProps) {
   const { settings } = useStoreSettings();
   const raised = useIsVisible(avoidRef);
+  const retreated = useScrollRetreat();
 
   if (!settings?.whatsappLink) {
     return null;
@@ -49,12 +50,82 @@ export function WhatsappButton({ avoidRef }: WhatsappButtonProps) {
       // `noopener` não e formalidade: sem ele, a aba aberta consegue mexer na
       // página de origem por `window.opener`.
       rel="noreferrer noopener"
-      className={cx(styles.button, raised && styles.raised)}
+      className={cx(styles.button, raised && styles.raised, retreated && styles.retreated)}
       aria-label="Falar com a loja no WhatsApp"
+      // Recolhido, ele sai da ordem do Tab junto: um alvo invisível fora da
+      // tela que ainda recebe foco faz o teclado pular para o nada.
+      tabIndex={retreated ? -1 : undefined}
     >
       <WhatsappIcon />
     </a>
   );
+}
+
+/**
+ * O botão se recolhe enquanto a página desce, e volta quando ela para.
+ *
+ * Ele e fixo no canto inferior direito, e numa vitrine de celular aquele
+ * canto e onde mora o preço do segundo card de cada fileira. O círculo verde
+ * cobria o preço exatamente enquanto a pessoa rolava procurando preço.
+ *
+ * A regra tem uma assimetria de propósito: **descer** esconde, mas
+ * **subir** e **parar** trazem de volta. Descer e ler; parar e decidir, e e
+ * na hora de decidir que alguém pergunta alguma coisa. O botão nunca fica
+ * escondido por mais de meio segundo depois que a rolagem termina.
+ *
+ * A posição e lida dentro de um `requestAnimationFrame` e o estado só muda
+ * nas travessias, não a cada pixel: o componente renderiza duas vezes por
+ * gesto de rolagem, e não duzentas.
+ */
+const RETREAT_THRESHOLD_PX = 10;
+const RETURN_DELAY_MS = 500;
+
+function useScrollRetreat(): boolean {
+  const [retreated, setRetreated] = useState(false);
+
+  useEffect(() => {
+    let last = window.scrollY;
+    let ticking = false;
+    let idle: ReturnType<typeof setTimeout> | undefined;
+
+    const measure = (): void => {
+      ticking = false;
+
+      const current = window.scrollY;
+      const delta = current - last;
+
+      if (Math.abs(delta) < RETREAT_THRESHOLD_PX) {
+        return;
+      }
+
+      last = current;
+
+      // Perto do topo ele nunca se recolhe: ali não há fileira passando por
+      // baixo dele, e o botão sumindo logo na abertura parece defeito.
+      setRetreated(delta > 0 && current > 200);
+    };
+
+    const onScroll = (): void => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(measure);
+      }
+
+      clearTimeout(idle);
+      idle = setTimeout(() => {
+        setRetreated(false);
+      }, RETURN_DELAY_MS);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      clearTimeout(idle);
+    };
+  }, []);
+
+  return retreated;
 }
 
 /**

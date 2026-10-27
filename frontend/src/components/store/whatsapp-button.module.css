@@ -56,3 +56,30 @@
 .raised:hover {
   transform: translateY(calc(var(--space-64) * -1)) scale(1.05);
 }
+
+/*
+ * Recolhido: o botao sai pela direita enquanto a pagina desce.
+ *
+ * Ele e fixo no canto inferior direito, e no celular aquele canto e onde
+ * mora o preco do segundo cartao de cada fileira — o circulo verde cobria o
+ * preco exatamente enquanto a pessoa rolava procurando preco. A regra de
+ * quando ele volta esta em `whatsapp-button.tsx`.
+ *
+ * `translateX` de 150% e nao `display: none`: a saida e a volta sao
+ * animadas, rodam no compositor e nao mexem no layout de nada. O
+ * `pointer-events` evita que um botao fora da tela continue capturando
+ * clique na beirada direita.
+ *
+ * O `.raised` ganha a regra composta porque as duas transformacoes convivem:
+ * recolhido junto ao rodape, ele precisa sair para o lado **e** continuar
+ * levantado.
+ */
+.retreated {
+  transform: translateX(150%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.raised.retreated {
+  transform: translateY(calc(var(--space-64) * -1)) translateX(150%);
+}
