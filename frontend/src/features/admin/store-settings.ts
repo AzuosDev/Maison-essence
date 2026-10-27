@@ -104,6 +104,14 @@ export interface SettingsDraft {
   tiktok: string;
   /** `150,00`. Vazio desliga o mínimo geral da loja. */
   freeShippingMin: string;
+  /**
+   * O produto do "perfume da vez" da home. `null` e "não escolhi", e a seção
+   * volta a mostrar o último destaque marcado.
+   *
+   * Guarda o id, e não o produto: o nome e a foto que a tela exibe saem de
+   * uma consulta por id, e o rascunho não precisa envelhecer com eles.
+   */
+  featuredPerfumeProductId: string | null;
   banners: BannerDraft[];
   pages: PageDraft[];
 }
@@ -174,6 +182,7 @@ export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
     // seria frete grátis em qualquer pedido.
     freeShippingMin:
       settings.freeShippingMinCents === null ? '' : centsToInput(settings.freeShippingMinCents),
+    featuredPerfumeProductId: settings.featuredPerfumeProductId,
     banners: settings.banners.map(draftFromBanner),
     pages: settings.institutionalPages.map(draftFromPage),
   };
@@ -682,6 +691,12 @@ export function changesOf(
 
   if (free !== settings.freeShippingMinCents) {
     changes.freeShippingMinCents = free;
+  }
+
+  // `null` viaja: e ele que devolve o perfume da vez ao último destaque, e
+  // omitir o campo deixaria a escolha antiga gravada para sempre.
+  if (draft.featuredPerfumeProductId !== base.featuredPerfumeProductId) {
+    changes.featuredPerfumeProductId = draft.featuredPerfumeProductId;
   }
 
   // O carrossel vai inteiro ou não vai: o array substitui o gravado, e o que

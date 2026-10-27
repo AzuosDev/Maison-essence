@@ -181,6 +181,24 @@ export function fetchProduct(slug: string, signal?: AbortSignal): Promise<Public
 }
 
 /**
+ * O perfume da vez: o produto que fecha a home, escolhido pela dona no painel.
+ *
+ * Devolve o produto **inteiro**, no mesmo formato da página dele: a seção tem
+ * foto grande, descrição, a escada de desconto e um botão de comprar. Quem
+ * resolve qual produto e — a escolha de Ajustes, ou o primeiro destaque
+ * quando ela não escolheu — e o servidor, numa consulta só.
+ *
+ * `404` quer dizer que a loja não tem o que pôr ali: nem escolha nem destaque
+ * marcado. E a resposta certa, e a seção some da página.
+ */
+export function fetchPerfumeOfTheWeek(signal?: AbortSignal): Promise<PublicProductDetail> {
+  return api.get<PublicProductDetail>('/products/perfume-of-the-week', {
+    scope: null,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
  * Uma categoria pelo endereço, com as subcategorias dela.
  *
  * E o que o cabeçalho da listagem precisa: o nome para o título, a contagem

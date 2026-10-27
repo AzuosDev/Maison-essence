@@ -65,6 +65,7 @@ function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
     pickupInstructions: 'Toque a campainha.',
     socialLinks: { instagram: '@maisonessence', tiktok: '' },
     freeShippingMinCents: 20_000,
+    featuredPerfumeProductId: null,
     banners: [BANNER],
     institutionalPages: [
       { slug: 'quem-somos', title: 'Quem somos', content: 'Texto', isActive: true },

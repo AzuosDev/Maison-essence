@@ -6,6 +6,7 @@ import {
   fetchCategory,
   fetchCategoryTree,
   fetchLatest,
+  fetchPerfumeOfTheWeek,
   fetchProduct,
   fetchSaleShelf,
   fetchShelf,
@@ -266,6 +267,26 @@ export function useProduct(slug: string) {
     queryFn: ({ signal }) => fetchProduct(slug, signal),
     enabled: slug !== '',
     staleTime: PRODUCT_STALE_TIME_MS,
+  });
+}
+
+/**
+ * O perfume da vez, para a seção que fecha a home.
+ *
+ * Uma consulta, e não duas: a rota devolve o produto montado como a página
+ * dele, com a descrição que o bloco precisa. O frescor e o das prateleiras —
+ * a dona troca o perfume da vez em Ajustes e a home muda no minuto seguinte,
+ * sem redeploy.
+ *
+ * O `404` de "a loja não tem o que mostrar ali" não e tentado de novo: a
+ * política do `QueryClient` já não repete `404`, e quem lê o erro e a seção,
+ * que simplesmente não se desenha.
+ */
+export function usePerfumeOfTheWeek() {
+  return useQuery<PublicProductDetail>({
+    queryKey: catalogKeys.perfumeOfTheWeek(),
+    queryFn: ({ signal }) => fetchPerfumeOfTheWeek(signal),
+    staleTime: SHELF_STALE_TIME_MS,
   });
 }
 

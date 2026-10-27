@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
-import { AlertIcon, ArrowLeftIcon, BannerEditor, PagesEditor } from '@/components/admin';
+import {
+  AlertIcon,
+  ArrowLeftIcon,
+  BannerEditor,
+  PagesEditor,
+  PerfumePicker,
+} from '@/components/admin';
 import { Button, EmptyState, Input, Skeleton, Switch, Textarea, useToast } from '@/components/ui';
 import {
   SETTINGS_LIMITS,
@@ -439,6 +445,32 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
             errors={errors.banners}
             onChange={(banners) => {
               set({ banners });
+            }}
+          />
+        </section>
+
+        {/*
+          O perfume da vez vem depois do carrossel, e não junto dos textos da
+          loja.
+
+          Os dois são a home: o carrossel abre a página e este bloco a fecha.
+          Lidos em sequencia, eles são o que a dona de fato vem conferir aqui
+          — "o que a cliente vê primeiro e com o que ela sai".
+        */}
+        <section className={styles.card} aria-labelledby="secao-perfume">
+          <h2 className={styles.cardTitle} id="secao-perfume">
+            O perfume da vez
+          </h2>
+
+          <p className={styles.cardHint}>
+            O bloco grande que fecha a home, com foto, descrição e botão de comprar. Escolha o
+            produto aqui; sem escolha, a home mostra o último que você marcou como destaque.
+          </p>
+
+          <PerfumePicker
+            productId={draft.featuredPerfumeProductId}
+            onChange={(featuredPerfumeProductId) => {
+              set({ featuredPerfumeProductId });
             }}
           />
         </section>

@@ -44,6 +44,7 @@ const SETTINGS = {
   pickupInstructions: 'Toque a campainha.',
   socialLinks: { instagram: '@maisonessence', tiktok: '' },
   freeShippingMinCents: 20_000,
+  featuredPerfumeProductId: null,
   banners: [
     {
       id: 'b1',
@@ -87,6 +88,59 @@ const SETTINGS = {
   ],
   updatedAt: '2026-09-01T12:00:00.000Z',
 };
+
+/**
+ * O catálogo que a busca do "perfume da vez" encontra.
+ *
+ * Dois produtos e o bastante: um para escolher e outro para provar que a
+ * lista não escolhe sozinha.
+ */
+const PRODUCTS = [
+  {
+    id: 'p1',
+    name: 'Asad Lattafa',
+    slug: 'asad-lattafa',
+    description: '',
+    brand: 'Lattafa',
+    categoryIds: [],
+    images: ['produtos/asad'],
+    coverImage: 'produtos/asad',
+    variants: [],
+    hasVariants: false,
+    priceRangeCents: { min: 19_990, max: 19_990 },
+    discountPercent: 0,
+    inStock: true,
+    totalStock: 5,
+    isActive: true,
+    isFeatured: true,
+    isReadyToShip: true,
+    tags: [],
+    createdAt: '2026-09-01T12:00:00.000Z',
+    updatedAt: '2026-09-01T12:00:00.000Z',
+  },
+  {
+    id: 'p2',
+    name: 'Yara Lattafa',
+    slug: 'yara-lattafa',
+    description: '',
+    brand: 'Lattafa',
+    categoryIds: [],
+    images: ['produtos/yara'],
+    coverImage: 'produtos/yara',
+    variants: [],
+    hasVariants: false,
+    priceRangeCents: { min: 17_990, max: 17_990 },
+    discountPercent: 0,
+    inStock: true,
+    totalStock: 2,
+    isActive: true,
+    isFeatured: false,
+    isReadyToShip: false,
+    tags: [],
+    createdAt: '2026-09-02T12:00:00.000Z',
+    updatedAt: '2026-09-02T12:00:00.000Z',
+  },
+];
 
 let calls: { url: string; method: string; body: string }[] = [];
 
@@ -150,6 +204,21 @@ beforeEach(() => {
       calls.push({ url, method, body: typeof init?.body === 'string' ? init.body : '' });
 
       if (method === 'GET') {
+        // A busca do perfume da vez bate em `/admin/products`, e não nas
+        // configurações: sem este desvio, a tela receberia o documento da loja
+        // no lugar de uma página de produtos.
+        if (url.includes('/admin/products')) {
+          return Promise.resolve(
+            jsonResponse({
+              items: PRODUCTS,
+              page: 1,
+              totalPages: 1,
+              totalItems: PRODUCTS.length,
+              hasMore: false,
+            }),
+          );
+        }
+
         return Promise.resolve(jsonResponse(SETTINGS));
       }
 
@@ -308,6 +377,42 @@ test('apagar o frete grátis geral manda null, e não zero', async () => {
   await waitFor(() => {
     expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ freeShippingMinCents: null });
   });
+});
+
+/* ---- O perfume da vez --------------------------------------------------------- */
+
+test('escolher o perfume da vez manda o id do produto, e só ele', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  const busca = await screen.findByRole('searchbox', { name: 'Trocar por outro produto' });
+
+  await user.type(busca, 'asad');
+
+  // O campo consulta na pausa da digitação: o botão aparece quando a resposta
+  // chega, e e por ele que o teste espera. O prazo e maior que o padrão de um
+  // segundo porque são três esperas em fila — digitação, pausa e consulta.
+  await user.click(
+    await screen.findByRole('button', { name: /Escolher Asad Lattafa/ }, { timeout: 3000 }),
+  );
+  await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ featuredPerfumeProductId: 'p1' });
+  });
+});
+
+test('sem escolha, a tela diz o que a home esta mostrando no lugar', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  expect(
+    await screen.findByText(/a home mostra o último produto marcado como destaque/),
+  ).toBeDefined();
 });
 
 test('descartar devolve os campos ao que esta gravado', async () => {

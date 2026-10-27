@@ -5,8 +5,7 @@ import {
   compareAtCents,
   displayVariant,
   soleVariant,
-  useProduct,
-  useShelf,
+  usePerfumeOfTheWeek,
   type PublicProductDetail,
 } from '@/features/catalog';
 import { bestInterestFreeInstallment, usePaymentSettings } from '@/features/payments';
@@ -20,37 +19,31 @@ import styles from './featured-perfume.module.css';
  *
  * ## Quem escolhe
  *
- * A dona, pelo painel. E o **primeiro produto marcado como destaque** — a
- * mesma marcação que alimenta a prateleira "Destaques" —, e isso e de
- * propósito: a loja já tem um lugar onde ela diz "este aqui", e criar um
- * segundo campo só para esta seção seria pedir que ela mantivesse duas
- * listas sincronizadas para sempre.
+ * A dona, apontando o produto em **Ajustes › O perfume da vez**. E uma
+ * escolha de uma linha, na mesma tela onde ela monta o carrossel da home —
+ * porque e uma decisão sobre a home, e não sobre o cadastro do produto.
  *
- * Sem nenhum destaque marcado, a seção não existe. Ela não cai para "o mais
- * caro" nem para "o primeiro do catálogo": este bloco e uma recomendação da
- * casa, e uma recomendação escolhida por um critério automático não e uma
- * recomendação.
+ * Enquanto ela não escolhe, vale o critério antigo: o último produto marcado
+ * como destaque. Sem destaque nenhum a seção não existe — a rota responde
+ * `404` e este componente devolve `null`. Ela não cai para "o mais caro" nem
+ * para "o primeiro do catálogo": este bloco e uma recomendação da casa, e uma
+ * recomendação escolhida por um critério automático não e uma recomendação.
  *
- * ## Duas consultas, e por quê
+ * ## Uma consulta
  *
- * A prateleira devolve o produto no formato do card — sem descrição. O texto
- * que faz este bloco valer a pena (as notas, a fixação, para quem e) só vem
- * em `GET /products/:slug`. A segunda consulta usa exatamente a chave que a
- * página do produto vai pedir no clique, então ela não e desperdício: e a
- * prebusca da próxima tela.
+ * `GET /products/perfume-of-the-week` devolve o produto montado como a página
+ * dele — com a descrição, que e o texto que faz este bloco valer a pena.
+ * Antes eram duas: a prateleira de destaques para descobrir o slug e a página
+ * do produto para ter a descrição. A escolha explícita tirou a primeira.
  */
 export function FeaturedPerfume() {
-  const featured = useShelf('featured');
-  const first = featured.data?.[0];
-  const slug = first?.slug ?? '';
+  const { data: product, isLoading, isError } = usePerfumeOfTheWeek();
 
-  const { data: product, isLoading } = useProduct(slug);
-
-  if (featured.isError || (!featured.isLoading && first === undefined)) {
+  if (isError) {
     return null;
   }
 
-  if (featured.isLoading || isLoading || product === undefined) {
+  if (isLoading || product === undefined) {
     return <FeaturedSkeleton />;
   }
 

@@ -124,6 +124,14 @@ let listagem: unknown[];
 /** O produto inteiro de `GET /products/:slug`, com descrição e escada. */
 let detalhe: Record<string, unknown>;
 
+/**
+ * O que `GET /products/perfume-of-the-week` responde.
+ *
+ * `null` e a loja sem nada para pôr ali — sem escolha em Ajustes e sem
+ * destaque marcado —, que no servidor e um `404`.
+ */
+let perfumeDaVez: Record<string, unknown> | null;
+
 let configuracoes: Record<string, unknown>;
 let categorias: unknown[];
 let chamadas: string[];
@@ -179,6 +187,8 @@ beforeEach(() => {
     related: [],
   };
 
+  perfumeDaVez = detalhe;
+
   // O jsdom não implementa `matchMedia`, e o carrossel o consulta para saber
   // se pode girar sozinho. Sem o duble, o hero quebra no primeiro render.
   vi.stubGlobal(
@@ -194,6 +204,19 @@ beforeEach(() => {
     'fetch',
     vi.fn((url: string) => {
       chamadas.push(url);
+
+      // Antes das prateleiras e antes do produto por slug: e uma rota de nome
+      // fixo que responde um produto, e não uma lista.
+      if (url.includes('/products/perfume-of-the-week')) {
+        return Promise.resolve(
+          perfumeDaVez === null
+            ? new Response(JSON.stringify({ message: 'Produto não encontrado.' }), {
+                status: 404,
+                headers: { 'content-type': 'application/json' },
+              })
+            : jsonResponse(perfumeDaVez),
+        );
+      }
 
       for (const [nome, itens] of Object.entries(prateleiras)) {
         if (url.includes(`/products/${nome}`)) {
@@ -494,7 +517,7 @@ test('cada marca leva para a vitrine filtrada por ela', async () => {
 
 /* ---- O perfume da vez ----------------------------------------------------- */
 
-test('o perfume da vez e o primeiro destaque, com a descrição do cadastro', async () => {
+test('o perfume da vez vem da rota propria, com a descrição do cadastro', async () => {
   abrirHome();
 
   const bloco = await screen.findByRole('region', { name: 'O perfume da vez' });
@@ -502,9 +525,11 @@ test('o perfume da vez e o primeiro destaque, com a descrição do cadastro', as
   expect(await within(bloco).findByRole('heading', { name: 'Asad' })).toBeDefined();
   expect(within(bloco).getByText(/Notas de açafrão/)).toBeDefined();
 
-  // A descricao so existe em `GET /products/:slug`, e a consulta usa a mesma
-  // chave que a pagina do produto vai pedir no clique.
-  expect(chamadas.some((url) => url.includes('/products/asad'))).toBe(true);
+  // Uma consulta so: a rota devolve o produto montado como a pagina dele, com
+  // a descricao que o bloco precisa. Quem escolhe o produto e a dona, em
+  // Ajustes — a secao nao depende mais da prateleira de destaques.
+  expect(chamadas.some((url) => url.includes('/products/perfume-of-the-week'))).toBe(true);
+  expect(chamadas.some((url) => url.includes('/products/asad'))).toBe(false);
 });
 
 test('a escada de desconto do destaque aparece inteira', async () => {
@@ -516,8 +541,8 @@ test('a escada de desconto do destaque aparece inteira', async () => {
   expect(within(bloco).getByText('Leve 6')).toBeDefined();
 });
 
-test('sem destaque marcado, o perfume da vez não aparece', async () => {
-  prateleiras.featured = [];
+test('sem escolha e sem destaque, o perfume da vez não aparece', async () => {
+  perfumeDaVez = null;
 
   abrirHome();
 

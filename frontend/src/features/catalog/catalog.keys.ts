@@ -37,6 +37,16 @@ export const catalogKeys = {
   productList: (params: ProductListParams = {}) => [...catalogKeys.products(), params] as const,
   product: (slug: string) => [...catalogKeys.products(), 'detail', slug] as const,
 
+  /**
+   * O perfume da vez.
+   *
+   * Fora da família `shelf` de propósito: não e uma lista curta da home, e um
+   * produto só, e não muda com parâmetro nenhum — quem o escolhe e a dona, em
+   * Ajustes. Fica debaixo de `products` porque e isso que ele e: um produto,
+   * e quem inválida o catálogo tem de pegar ele junto.
+   */
+  perfumeOfTheWeek: () => [...catalogKeys.products(), 'perfume-of-the-week'] as const,
+
   /** As sugestões da caixa de busca, por termo já normalizado. */
   suggestions: (term: string) => [...catalogKeys.all, 'suggestions', term] as const,
 

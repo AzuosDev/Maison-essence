@@ -1,0 +1,151 @@
+/*
+ * O perfume da vez.
+ *
+ * Duas linhas de lista com a mesma anatomia: miniatura, nome com a marca
+ * embaixo, e a ação no fim. A de cima e a escolha que esta no ar; as de baixo
+ * são as candidatas da busca. Mesma anatomia de propósito — trocar o perfume
+ * da vez e ler duas linhas iguais e preferir uma.
+ */
+
+.picker {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/* ---- A escolha que esta no ar ---------------------------------------------- */
+
+.chosen,
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  padding: var(--space-8);
+
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--surface);
+}
+
+/* A linha no ar se distingue pela moldura dourada, não por um segundo nível
+   de elevação: a tela inteira e plana. */
+.chosen {
+  border-color: var(--gold);
+  background-color: var(--gold-wash);
+}
+
+.thumb {
+  flex: none;
+
+  display: block;
+  width: 3.5rem;
+  height: 3.5rem;
+
+  object-fit: cover;
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+
+  display: grid;
+  gap: 0.125rem;
+}
+
+.name {
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+
+  /* Nome longo corta no fim da linha em vez de empurrar o botão para fora. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand {
+  font-size: var(--text-12);
+  line-height: var(--leading-tight);
+  color: var(--ink-soft);
+}
+
+.clear {
+  flex: none;
+}
+
+/* ---- Os estados sem produto ------------------------------------------------ */
+
+/*
+ * Sem escolha, e o produto que saiu do cadastro.
+ *
+ * Texto corrido e não um bloco vazio com uma ilustração: as duas frases dizem
+ * o que a home esta mostrando agora, que e a única pergunta que se faz aqui.
+ */
+.unset,
+.gone {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.gone {
+  flex: 1;
+}
+
+/* Mesma faixa de aviso da tela de configurações: o que o servidor aceita e
+   que muda o site sem dizer nada. */
+.warning {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--gold-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.warning svg {
+  flex: none;
+
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.125rem;
+
+  color: var(--gold-deep);
+}
+
+/* ---- Os resultados da busca ------------------------------------------------ */
+
+.results {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* "na home" no lugar do botão: a linha que já esta escolhida não se escolhe
+   de novo, e sumir com ela faria a lista mudar de tamanho sem motivo. */
+.current {
+  flex: none;
+
+  padding: 0 var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
