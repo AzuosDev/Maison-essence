@@ -67,9 +67,9 @@ export function soleVariant(product: PublicProduct): PublicVariant | null {
   return product.variants.length === 1 ? (product.variants[0] ?? null) : null;
 }
 
-/** "Leve 3 e ganhe 10%", ou `null` quando o produto não tem escada. */
+/** "Leve 3: -10%", ou `null` quando o produto não tem escada. */
 export function quantityDiscountLabel(product: PublicProduct): string | null {
   const tier = product.quantityDiscount;
 
-  return tier ? `Leve ${tier.minQty} e ganhe ${tier.percentOff}%` : null;
+  return tier ? `Leve ${tier.minQty}: -${tier.percentOff}%` : null;
 }

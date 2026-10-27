@@ -7,9 +7,20 @@
  * um card do vizinho e o espaço entre eles e o canto arredondado da própria
  * imagem.
  *
- * Tudo centralizado. E a leitura que a foto já pede: ela e quadrada e o
- * produto esta no meio dela, então o nome alinhado a esquerda ficaria
- * pendurado fora do eixo do frasco.
+ * ## Alinhado a esquerda, e nao centralizado
+ *
+ * O cartao e uma ficha comercial: marca, nome, preco de antes, preco de
+ * agora, parcela, acao. Seis linhas de comprimento diferente centralizadas
+ * viram um losango, e o olho perde a coluna por onde descer. Alinhadas a
+ * esquerda, as seis compartilham uma margem so e a fileira inteira se le
+ * em diagonal, de cima para baixo e da esquerda para a direita.
+ *
+ * ## A altura e igual porque o preco esta colado embaixo
+ *
+ * `.pricing` leva `margin-top: auto`. O nome de um produto ocupa uma linha e
+ * o do vizinho ocupa duas; sem isso, preco, parcela e botao parariam em tres
+ * alturas diferentes na mesma fileira — e e esse desalinhamento, mais do que
+ * qualquer escolha de cor, que faz uma vitrine parecer montada as pressas.
  */
 
 .card {
@@ -30,7 +41,7 @@
   aspect-ratio: 1 / 1;
   overflow: hidden;
 
-  background-color: var(--sand);
+  background-color: var(--bg-alt);
   border-radius: var(--radius-card);
 }
 
@@ -60,9 +71,8 @@
 /*
  * A segunda foto, por cima da primeira.
  *
- * Empilhada com `position: absolute` e revelada por opacidade: as duas já
- * estão no lugar, então a troca não remede nada e não pisca. Sem a segunda
- * foto o elemento não existe, e o card fica só com o avanco de cima.
+ * Nasce transparente e no lugar certo — e não deslocada —, então a troca e
+ * um fundido limpo. Produto sem segunda foto não tem este elemento no DOM.
  */
 .imageHover {
   position: absolute;
@@ -77,197 +87,211 @@
   opacity: 1;
 }
 
-/* Esgotado sai da cor: a foto continua visível, mas para de disputar atenção
-   com o que ainda da para comprar. */
+/* Produto esgotado: a foto perde a cor, e o selo vermelho diz o resto. */
 .soldOut {
-  filter: grayscale(0.55);
-  opacity: 0.85;
+  filter: grayscale(1);
+  opacity: 0.6;
 }
 
 .badges {
   position: absolute;
-  top: var(--space-12);
-  left: var(--space-12);
-  z-index: 1;
+  top: var(--space-8);
+  left: var(--space-8);
 
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-4);
-
-  pointer-events: none;
 }
 
-/* ---- O texto ---------------------------------------------------------- */
+/* ---- O texto ----------------------------------------------------------- */
 
 .body {
   display: flex;
-  flex: 1;
   flex-direction: column;
-  align-items: center;
+  flex: 1;
   gap: var(--space-4);
 
-  padding-top: var(--space-16);
-  text-align: center;
+  padding-top: var(--space-12);
 }
 
 /*
- * As alturas minimas espalhadas por este bloco não são enfeite.
+ * A faixa do desconto progressivo, na quina da foto.
  *
- * Sem elas, um card sem marca cadastrada, sem parcelamento ou sem promoção
- * fica mais curto que o vizinho, e a linha de botões da grade vira uma
- * escada. Com elas, a linha fecha reta, tenha o produto todos os dados ou
- * nenhum.
+ * Preta e em caixa alta: e a unica regiao densa do cartao, e e a informacao
+ * que muda o tamanho do pedido.
+ *
+ * Absoluta dentro da foto, e nao no fluxo do texto — ver a explicacao no
+ * TSX. Largura do conteudo, nao do cartao: uma faixa de ponta a ponta leria
+ * como legenda da imagem, e esta e uma etiqueta colada no produto.
+ *
+ * ## Colada na quina, e nao flutuando a 8px dela
+ *
+ * Ela nasceu com 8px de folga nos dois lados, e sobre foto escura funcionava.
+ * Sobre recorte de fundo branco — metade do catalogo de perfume e feita em
+ * fundo branco — o retangulo preto ficava parado no meio do vazio, sem
+ * nenhuma borda de foto em que se assentar, e lia como adesivo largado.
+ * Encostada na quina de baixo ela toma a propria moldura como apoio: o canto
+ * de baixo repete o raio do cartao, o de cima arredonda como chip, e os
+ * outros dois ficam retos. Vale para qualquer foto, clara ou escura.
+ *
+ * ## Uma linha, sempre
+ *
+ * `white-space: nowrap`, e o rotulo e curto de proposito — "Leve 3: -12%", e
+ * nao "Leve 3 e ganhe 12%". No cartao de 208px do celular o rotulo longo
+ * quebrava em duas linhas dentro da imagem e passava a ocupar dois tercos da
+ * largura do cartao: a etiqueta virava cartaz e cobria o produto que ela
+ * anuncia.
  */
-.brand {
-  width: 100%;
-  min-height: calc(var(--text-12) * var(--leading-body));
+.promo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+
+  max-width: 100%;
+  padding: 0.25rem var(--space-8);
 
   font-size: var(--text-12);
-  line-height: var(--leading-body);
+  font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-button);
+  line-height: 1.3;
   text-transform: uppercase;
-  color: var(--ink-soft);
-
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--slab-ink);
+
+  background-color: var(--slab);
+  border-radius: 0 var(--radius-chip) 0 var(--radius-card);
+}
+
+/* A marca, acima do nome. Herda a forma de `.meta-label`; daqui sai so o que
+   e do cartao. */
+.brand {
+  line-height: 1.3;
 }
 
 .nameRow {
-  width: 100%;
-  min-height: calc(var(--text-16) * 1.35 * 2);
+  margin: 0;
 }
 
 /*
- * O nome em caixa alta, na serifada.
+ * O nome, em duas linhas no máximo.
  *
- * A caixa alta e o que a vitrine de perfume usa — ela achata a diferença
- * entre "Oud Royale Intense" e "Vela Fig de Provence" e faz a grade inteira
- * bater na mesma linha. A serifada e o que mantem a voz da casa dentro dessa
- * forma: em caixa alta, com peso 600, a Cormorant fica firme o bastante para
- * 16px sem virar filete.
+ * O `min-height` de duas linhas e o que mantém a fileira alinhada mesmo
+ * quando um produto tem nome curto e o vizinho tem nome longo. Sem ele, o
+ * bloco de preco de um subiria duas dezenas de pixels em relacao ao outro.
  */
 .name {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  line-clamp: 2;
   overflow: hidden;
 
-  font-family: var(--font-display);
-  font-size: var(--text-16);
-  font-weight: var(--weight-semibold);
+  min-height: calc(2 * 1.35em);
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
   line-height: 1.35;
-  letter-spacing: var(--tracking-button);
-  text-transform: uppercase;
+  letter-spacing: 0;
   color: var(--ink);
 }
 
 /*
- * O nome e link, e o hover se anuncia pelo risco — não pela cor.
+ * O nome não se estica por cima do cartão inteiro.
  *
- * O dourado escuro tem 3.66:1 sobre o creme: passa como filete, reprova como
- * texto de 16px. Então ele vai para o risco, que e grafico, e o nome fica no
- * preto da marca nos dois estados.
+ * Um `::after` absoluto sobre toda a ficha e o truque comum para "o cartão
+ * todo e clicável" — e ele cobriria o botão de comprar, que mora dentro do
+ * mesmo cartão. Aqui são dois alvos declarados: a foto leva ao produto, o
+ * botão põe na sacola.
  */
-.nameLink {
-  color: inherit;
-  text-decoration: none;
-  text-decoration-color: var(--gold-deep);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.25em;
+.nameLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
 }
 
-.nameLink:hover {
-  text-decoration: underline;
+/* ---- O bloco comercial ------------------------------------------------- */
+
+.pricing {
+  /* O que iguala a altura dos cartões da fileira. Ver o cabeçalho do
+     arquivo. */
+  margin-top: auto;
+  padding-top: var(--space-8);
 }
 
+/*
+ * Os precos, com a linha do riscado sempre reservada.
+ *
+ * `min-height` de duas linhas — 0.9rem do "de R$", o vao de 4px e 1.35rem do
+ * preco de agora — mais `align-content: flex-end`, que encosta o conteudo no
+ * pe da caixa reservada. Com isso o preco cai na mesma altura em todos os
+ * cartoes, tenha o produto desconto ou nao.
+ *
+ * Na prateleira o `margin-top: auto` do `.pricing` ja alinhava o botao e o
+ * desalinho passava sem ser visto. Na grade do catalogo, onde cada linha tem
+ * altura propria, o cartao sem riscado subia o preco uma linha em relacao aos
+ * vizinhos — e numa fileira de quatro precos isso e a primeira coisa que se
+ * ve.
+ */
 .prices {
-  width: 100%;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: center;
-  gap: var(--space-8);
+  align-content: flex-end;
+  gap: var(--space-4) var(--space-8);
 
-  min-height: calc(var(--text-18) * var(--leading-tight));
-  margin-top: var(--space-4);
+  min-height: 2.5rem;
 }
 
-/* O preço antigo e informação, e não enfeite: quem compara os dois números
-   precisa ler os dois. O que o apaga e o risco e o corpo menor, não a cor. */
+/* O preço de antes, numa linha própria acima do de agora: ao lado, os dois
+   números competem e o olho lê o riscado primeiro. */
 .compareAt {
-  font-size: var(--text-14);
-  color: var(--ink-soft);
+  flex-basis: 100%;
+
+  font-size: var(--text-12);
+  line-height: 1.2;
+  color: var(--muted);
   text-decoration: line-through;
-  text-decoration-color: var(--ink-soft);
 }
 
 .price {
   font-size: var(--text-18);
-  font-weight: var(--weight-medium);
-  line-height: var(--leading-tight);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
   color: var(--ink);
 }
 
-.installment {
-  width: 100%;
-  min-height: calc(var(--text-12) * var(--leading-body));
+/*
+ * "20% OFF", em dourado, ao lado do preço.
+ *
+ * `--gold-deep` e não `--gold`: aqui o dourado e texto de 12px, e o dourado
+ * da marca da 2.4:1 sobre o branco. O escuro da 4.7:1 e e a mesma cor da
+ * família.
+ */
+.off {
   font-size: var(--text-12);
-  line-height: var(--leading-body);
-  color: var(--ink-soft);
-}
-
-.promo {
-  width: 100%;
-  min-height: calc(var(--text-12) * var(--leading-body));
-
-  font-size: var(--text-12);
-  font-weight: var(--weight-medium);
-  line-height: var(--leading-body);
-  letter-spacing: var(--tracking-button);
-  text-transform: uppercase;
-
-  /* Preto, e não dourado: o dourado escuro reprova em 12px sobre o creme. O
-     que destaca esta linha e a caixa alta e o peso — e ela e a única do card
-     que tem os dois. */
-  color: var(--ink);
-}
-
-/* `margin-top: auto` empurra a ação para o fim do card: e o que alinha os
-   botões da grade, por mais que os nomes tenham alturas diferentes. */
-.action {
-  width: 100%;
-  margin-top: auto;
-  padding-top: var(--space-16);
-}
-
-/* ---- O esqueleto ------------------------------------------------------ */
-
-.mediaGhost {
-  width: 100%;
-  height: 100%;
-  border-radius: 0;
-}
-
-.nameGhost {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-8);
-  width: 100%;
-}
-
-.actionGhost {
-  height: var(--control-height);
-  border-radius: var(--radius-pill);
-}
-
-/* O trecho que casou com a busca, dentro do nome. */
-.name mark {
-  background-color: var(--gold-wash);
-  color: inherit;
   font-weight: var(--weight-semibold);
+  line-height: 1.2;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+/*
+ * A parcela.
+ *
+ * A altura fica reservada mesmo vazia: `GET /payment-settings` responde
+ * depois do produto, e sem o `min-height` o botão de todos os cards saltaria
+ * para baixo quando as regras chegassem.
+ */
+.installment {
+  min-height: 1.125rem;
+
+  font-size: var(--text-12);
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.action {
+  margin-top: var(--space-12);
 }

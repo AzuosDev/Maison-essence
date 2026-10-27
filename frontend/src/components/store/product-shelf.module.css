@@ -38,25 +38,44 @@
 }
 
 /*
- * O atalho para a seção inteira, embaixo do título.
+ * O título a esquerda, o atalho no canto oposto.
+ *
+ * A linha de base e a mesma para os dois: o atalho não e um subtítulo, e um
+ * segundo caminho de mesma importância — "ver tudo isso" ao lado de "isto
+ * aqui". `flex-end` nos alinha pelo pe, que e o que faz o 12px do atalho
+ * parecer assentado na mesma linha do título de 28px em vez de flutuar no
+ * meio dele.
+ *
+ * No celular o atalho cai para baixo do título: ao lado, com 390px de tela,
+ * ou o título quebra em três linhas ou o atalho vira duas.
+ */
+.heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-8) var(--space-24);
+}
+
+/*
+ * O atalho para a seção inteira.
  *
  * Sublinhado desde o repouso: aqui ele não esta dentro de um parágrafo, onde
- * a cor bastaria para diferencia-lo do texto em volta — esta solto no meio de
- * uma faixa de respiro, e sem o risco não se lê como link.
+ * a cor bastaria para diferencia-lo do texto em volta — esta solto numa faixa
+ * de respiro, e sem o risco não se lê como link.
  */
 .headingLink {
-  display: block;
-  width: fit-content;
-  margin: var(--space-12) auto 0;
+  flex: none;
 
   font-size: var(--text-12);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--ink-soft);
 
   text-decoration: underline;
-  text-decoration-color: var(--gold-deep);
+  text-decoration-color: var(--gold);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.4em;
   transition:
@@ -90,6 +109,11 @@
   margin: 0;
   list-style: none;
 
+  /* O trilho que rola precisa ser bloco contêiner: sem `position`, um
+     descendente absoluto — e `.visually-hidden` e um — toma o ICB como
+     referência, escapa deste clip e estica a página inteira na horizontal.
+     Ver a nota em `typography.css`. */
+  position: relative;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
@@ -129,11 +153,31 @@
  * e meio — o que continua dizendo que há mais coisa a direita.
  */
 .item {
+  /*
+   * Nunca cresce, nunca encolhe.
+   *
+   * Três coisas disputam esta linha, e só duas cabem: o card ter a mesma
+   * medida em todas as prateleiras, a fileira começar na mesma vertical do
+   * título, e não sobrar vão no fim quando a prateleira e curta.
+   *
+   * As duas primeiras ganham. `flex-grow: 1` foi a primeira tentativa: os
+   * quatro cards da prateleira de promoções esticavam e preenchiam a
+   * fileira, mas passavam a medir 310px entre vizinhas de 250px — a mesma
+   * página mostrava o mesmo cartão em duas medidas. Centralizar o trilho foi
+   * a segunda: devolvia a medida, mas punha a fileira do meio começando
+   * 120px para dentro, única em toda a página fora da régua da esquerda.
+   *
+   * Sobra o vão. Ele aparece pouco: `fetchSaleShelf` pede dezesseis e mostra
+   * oito, então só uma loja com menos de cinco produtos em promoção vê a
+   * fileira curta — e nela o vão e a forma honesta de "e só isto que tem
+   * hoje". Fileira curta não liga as setas e não corta card na beirada, o
+   * que a distingue de uma fileira que ficou pela metade.
+   */
   flex: 0 0 58%;
   scroll-snap-align: start;
 
   /* Sem isto, `min-width: auto` deixa o conteúdo mais teimoso que a base:
-     basta um rótulo comprido dentro do card para ele estourar os 44% e sair
+     basta um rótulo comprido dentro do card para ele estourar os 58% e sair
      mais largo que os vizinhos. */
   min-width: 0;
 }
@@ -169,8 +213,11 @@
     /* No desktop a fileira volta a alinhar com o container em vez de sangrar
        a tela inteira: em monitor largo, o card começando a 16px da borda
        esquerda deixaria o título centralizado longe de tudo. */
-    padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2));
-    scroll-padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2));
+    padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2 + var(--gutter)));
+    scroll-padding-inline: max(
+      var(--gutter),
+      calc((100vw - var(--container-max)) / 2 + var(--gutter))
+    );
   }
 
   .item {
@@ -244,10 +291,10 @@
 
 @media (min-width: 80rem) {
   .arrow:last-child {
-    right: max(var(--space-8), calc((100vw - var(--container-max)) / 2 - 3.5rem));
+    right: max(var(--space-8), calc((100vw - var(--container-max)) / 2 + var(--gutter) - 1.375rem));
   }
 
   .arrowPrevious {
-    left: max(var(--space-8), calc((100vw - var(--container-max)) / 2 - 3.5rem));
+    left: max(var(--space-8), calc((100vw - var(--container-max)) / 2 + var(--gutter) - 1.375rem));
   }
 }

@@ -176,12 +176,12 @@ export function ProductShelf({
       aria-busy={isLoading || undefined}
       className={cx(styles.shelf, flush && styles.flush, tinted && styles.tinted, className)}
     >
-      <Container>
+      <Container className={styles.heading}>
         <SectionHeading title={title} description={description} titleId={titleId} />
 
-        {/* O atalho fica logo abaixo do título, e não no fim da fileira: no
-            fim, ele só aparece para quem rolou a prateleira inteira — ou
-            seja, para quem menos precisa dele. */}
+        {/* O atalho fica na mesma linha do título, no canto oposto, e não no
+            fim da fileira: no fim, ele só aparece para quem rolou a
+            prateleira inteira — ou seja, para quem menos precisa dele. */}
         {to ? (
           <Link to={to} className={styles.headingLink}>
             {linkLabel}
