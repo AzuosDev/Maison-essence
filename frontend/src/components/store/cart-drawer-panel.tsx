@@ -7,6 +7,7 @@ import { formatCents } from '@/lib/format';
 import { CartEmpty } from './cart-empty';
 import { CartLineRow } from './cart-line-row';
 import { CartNotices } from './cart-notices';
+import { CartRewards } from './cart-rewards';
 import styles from './cart-drawer.module.css';
 
 /**
@@ -162,6 +163,11 @@ function Summary({
     // `aria-busy` enquanto o servidor recalcula: quem ouve a página fica
     // sabendo que o número em tela ainda vai mudar.
     <div className={cx(styles.summary, isFetching && styles.recalculating)} aria-busy={isFetching}>
+      {/* Acima do subtotal, e não abaixo: quem olha a sacola lê de cima para
+          baixo e para no total. Embaixo dele, a régua seria lida depois da
+          decisão que ela existe para mudar. */}
+      <CartRewards subtotalCents={subtotalCents} />
+
       {discountCents > 0 ? (
         <p className={styles.line}>
           <span>Desconto por quantidade</span>

@@ -21,3 +21,29 @@ export const LEGAL = {
   /** `00.000.000/0001-00`. Vazio esconde a linha. */
   cnpj: '',
 } as const;
+
+/**
+ * O brinde por valor de compra.
+ *
+ * ## Atenção: isto não vem da API, e por isso nasce desligado
+ *
+ * A loja dá brinde a partir de um valor — e uma regra de negócio real, dita
+ * pela dona. O que não existe ainda e o campo: `StoreSettings` não tem
+ * `giftMinCents` nem `giftLabel`, e `POST /cart/quote` não sabe desta regra.
+ *
+ * Então ela mora aqui, nas mesmas condições do CNPJ acima: a régua da sacola
+ * só desenha o degrau do brinde quando os dois campos estiverem preenchidos,
+ * e eles nascem vazios. Uma promessa de brinde na tela que o pedido não
+ * cumpre e pior do que nenhuma promessa.
+ *
+ * **Enquanto for constante, mudar o valor exige deploy.** Quando o backend
+ * ganhar os campos, este objeto sai e a régua passa a ler de `settings`, do
+ * mesmo jeito que já lê `freeShippingMinCents` — a troca e de uma linha no
+ * `CartRewards`.
+ */
+export const GIFT = {
+  /** Valor mínimo em centavos. `0` desliga o degrau. */
+  minCents: 0,
+  /** O que o cliente ganha, em uma linha. Vazio desliga o degrau. */
+  label: '',
+} as const;
