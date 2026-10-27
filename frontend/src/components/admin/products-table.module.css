@@ -58,6 +58,36 @@
   text-align: right;
 }
 
+/* ---- A seleção ----------------------------------------------------------- */
+
+/*
+ * A coluna de marcar: estreita como a da foto, e com a caixa colada na
+ * esquerda. `width: 1px` com conteúdo de largura fixa encolhe a coluna até o
+ * conteúdo e devolve o resto para o nome.
+ */
+.selectCell {
+  width: 1px;
+  padding-right: 0;
+}
+
+/*
+ * A linha marcada.
+ *
+ * Véu dourado, o mesmo tom do item ativo do menu lateral: aqui ele quer dizer
+ * a mesma coisa — "e esta que o próximo comando pega". Precisa do seletor
+ * inteiro para vencer o `:hover` da linha, que tem especificidade maior; e o
+ * `:hover` da marcada escurece um grau, para a linha sob o cursor continuar
+ * se distinguindo das outras marcadas.
+ */
+.table tbody tr.marked,
+.table tbody tr.marked:hover {
+  background-color: var(--gold-wash);
+}
+
+.table tbody tr.marked:hover {
+  background-color: color-mix(in srgb, var(--gold) 20%, transparent);
+}
+
 /* ---- A foto -------------------------------------------------------------- */
 
 /* `width: 1px` com o conteúdo de largura fixa: a coluna encolhe até a foto e
@@ -198,6 +228,29 @@
   background-color: var(--surface);
   border: var(--border);
   border-radius: var(--radius-card);
+}
+
+/*
+ * O cartão com a caixa de marcar ganha uma coluna na frente.
+ *
+ * Classe a mais, e não uma coluna `auto` sempre presente: sem a caixa, a
+ * coluna vazia empurraria a foto para dentro em toda a lista — e a maioria
+ * das telas que usa este cartão não seleciona nada.
+ */
+.cardSelectable {
+  grid-template-columns: auto 3.5rem minmax(0, 1fr) auto;
+}
+
+/* O mesmo véu da linha marcada, com a moldura dourada que o cartão tem e a
+   linha não: no celular não há vizinhas lado a lado para comparar. */
+.card.marked {
+  background-color: var(--gold-wash);
+  border-color: var(--gold);
+}
+
+/* A caixa alinha com a foto, e não com o topo do cartão. */
+.cardSelect {
+  align-self: center;
 }
 
 .cardBody {

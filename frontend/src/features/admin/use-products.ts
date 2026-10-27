@@ -108,6 +108,91 @@ export function useSetProductStatus(params: AdminProductListParams) {
   });
 }
 
+/** Quantos gravaram e quantos recusaram, na publicação em lote. */
+export interface BulkStatusResult {
+  done: number;
+  failed: number;
+}
+
+/**
+ * Publica e despublica a seleção inteira de uma vez.
+ *
+ * ## A cena de uso
+ *
+ * A remessa chegou e doze produtos saem do ar juntos, ou a promoção começou e
+ * oito entram. Virar interruptor por interruptor funciona para dois; para
+ * doze, e a tela que vira a tarefa.
+ *
+ * ## Por que são N chamadas, e não uma
+ *
+ * Porque o servidor não tem rota de lote, e criar uma só para esta tela
+ * custaria mais do que ela resolve: a seleção vive dentro de uma página da
+ * listagem — vinte linhas —, e vinte `PATCH` em paralelo chegam praticamente
+ * juntos. No dia em que a tela selecionar o catálogo inteiro, aí a rota se
+ * justifica.
+ *
+ * ## Falha parcial não e falha
+ *
+ * `allSettled`, e não `all`: quando onze gravam e um recusa, a tela precisa
+ * dizer isso — e não desfazer os onze. Por isso a mutação não rejeita; ela
+ * **devolve a conta**, e quem a lê escreve o aviso. O retrato otimista some
+ * sozinho na invalidação do fim, que e quem traz a lista como o servidor a
+ * conhece.
+ */
+export function useSetProductsStatus(params: AdminProductListParams) {
+  const client = useQueryClient();
+  const key = adminKeys.productList(params);
+
+  return useMutation({
+    mutationFn: async ({
+      ids,
+      isActive,
+    }: {
+      ids: readonly string[];
+      isActive: boolean;
+    }): Promise<BulkStatusResult> => {
+      const settled = await Promise.allSettled(
+        ids.map((id) => updateProductStatus(id, isActive)),
+      );
+      const done = settled.filter((result) => result.status === 'fulfilled').length;
+
+      return { done, failed: settled.length - done };
+    },
+
+    onMutate: async ({ ids, isActive }) => {
+      await client.cancelQueries({ queryKey: key });
+
+      const previous = client.getQueryData<AdminPage<AdminProduct>>(key);
+      const chosen = new Set(ids);
+
+      client.setQueryData<AdminPage<AdminProduct>>(key, (current) =>
+        current === undefined
+          ? current
+          : {
+              ...current,
+              items: current.items.map((product) =>
+                chosen.has(product.id) ? { ...product, isActive } : product,
+              ),
+            },
+      );
+
+      return { previous };
+    },
+
+    // So chega aqui se a própria montagem do lote quebrar — as recusas de
+    // produto viram número no resultado, não erro da mutação.
+    onError: (_error, _variables, context) => {
+      if (context?.previous !== undefined) {
+        client.setQueryData(key, context.previous);
+      }
+    },
+
+    onSettled: () => {
+      void client.invalidateQueries({ queryKey: adminKeys.products() });
+    },
+  });
+}
+
 /**
  * O que salvar: um cadastro novo ou a edição de um que existe.
  *

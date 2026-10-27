@@ -21,11 +21,20 @@ export type CheckboxProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'cl
    * `indeterminate` no HTML —, por isso ela e aplicada por efeito.
    */
   indeterminate?: boolean;
+  /**
+   * Mantem o rótulo só para o leitor de tela, como no `Input`.
+   *
+   * Existe para a caixa que mora numa tabela: na coluna de seleção o nome do
+   * produto já esta na linha, e repeti-lo ao lado da caixa escreveria a lista
+   * inteira duas vezes. O rótulo continua no HTML — e ele que diz **qual**
+   * linha a caixa marca.
+   */
+  hideLabel?: boolean | undefined;
   className?: string | undefined;
 };
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { label, hint, error, indeterminate = false, className, id, disabled, ...props },
+  { label, hint, error, indeterminate = false, hideLabel = false, className, id, disabled, ...props },
   ref,
 ) {
   const wiring = useFieldWiring(id, { hint, error });
@@ -62,7 +71,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         />
 
         <span className={styles.box} aria-hidden="true" />
-        <span className={styles.label}>{label}</span>
+        <span className={hideLabel ? 'visually-hidden' : styles.label}>{label}</span>
       </label>
 
       {hint && !error ? (

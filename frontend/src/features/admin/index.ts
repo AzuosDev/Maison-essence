@@ -194,7 +194,9 @@ export {
   useProducts,
   useSaveProduct,
   useSetProductStatus,
+  useSetProductsStatus,
   useSetReadyToShip,
+  type BulkStatusResult,
   type SaveProductInput,
 } from './use-products';
 
