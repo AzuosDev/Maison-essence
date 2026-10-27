@@ -19,7 +19,7 @@ import {
 } from '@/features/catalog';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { CatalogEmpty } from './catalog-empty';
-import { CatalogHeader } from './catalog-header';
+import { CatalogHeader, countLabel } from './catalog-header';
 import { FilterPanel } from './filter-panel';
 import { useCatalogFilters } from './use-catalog-filters';
 import styles from './catalog-view.module.css';
@@ -124,11 +124,26 @@ export function CatalogView({
         totalItems={list.totalItems}
         isLoading={list.isLoading}
         isTitleLoading={isTitleLoading}
+        hideCount={isDesktop}
       />
 
       {chips}
 
       <div className={styles.toolbar}>
+        {/* No desktop a contagem mora aqui, do lado oposto ao seletor de
+            ordem: a barra tinha um controle numa ponta e um vazio de
+            novecentos pixels na outra. No celular quem ocupa este lugar e o
+            botão de filtros, e a contagem continua embaixo do título. */}
+        {isDesktop ? (
+          <p className={styles.count} aria-live="polite">
+            {list.isLoading || list.totalItems === undefined ? (
+              <span aria-hidden="true">—</span>
+            ) : (
+              countLabel(list.totalItems)
+            )}
+          </p>
+        ) : null}
+
         {isDesktop ? null : (
           // Tamanho normal, e não `small`: e um botão que só existe no
           // celular, onde 36px de altura ficam abaixo do alvo de toque — e
