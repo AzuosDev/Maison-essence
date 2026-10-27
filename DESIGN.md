@@ -22,19 +22,19 @@ colors:
   whatsapp: "#25d366"
 typography:
   display:
-    fontFamily: "Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Readex Pro, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "2.25rem"
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: "-0.015em"
   headline:
-    fontFamily: "Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Readex Pro, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.75rem"
     fontWeight: 600
     lineHeight: 1.2
     letterSpacing: "-0.015em"
   title:
-    fontFamily: "Onest, system-ui, -apple-system, Segoe UI, sans-serif"
+    fontFamily: "Readex Pro, Onest, system-ui, -apple-system, Segoe UI, sans-serif"
     fontSize: "1.375rem"
     fontWeight: 600
     lineHeight: 1.2
@@ -194,7 +194,8 @@ registrada da dona.
 - Branco dominante como chão; areia clara só para separar seções.
 - Laje preta em três lugares fixos: avisos, menu, rodapé.
 - Dourado é ação, nunca decoração nem título.
-- Uma grotesca (Onest) para toda a interface; a serifada é só a assinatura.
+- Readex Pro no corpo grande, Onest em tudo que se lê de perto; a serifada é
+  só a assinatura.
 - Cartão sem moldura: o que separa é o espaço e o canto da própria foto.
 - Régua única à esquerda — todo conteúdo da página começa na mesma vertical.
 - Altura de cartão igual em toda fileira, por reserva de linha e não por sorte.
@@ -278,14 +279,24 @@ acompanha o tema escuro.
 ## Typography
 
 **Fonte de Interface:** Onest (com `system-ui`, `-apple-system`, `Segoe UI`)
+**Fonte de Display:** Readex Pro (com Onest e a pilha do sistema atrás)
 **Fonte da Marca:** Cormorant Garamond (com Georgia, Times New Roman)
 **Fonte Mono:** pilha do sistema (`ui-monospace`, SFMono-Regular, Menlo,
 Consolas), só para identificador que se lê caractere a caractere
 
-**Caráter:** Uma grotesca de numeral alto e aberto, com `tabular-nums` de
-verdade — que é o que uma loja de preço precisa antes de precisar de
-personalidade. O que separa título de texto é peso e corpo, não família. A
-serifada sobrou para uma linha só: a assinatura da marca.
+**Caráter:** Duas grotescas com trabalhos separados. Onest é a de numeral alto
+e aberto, com `tabular-nums` de verdade — que é o que uma loja de preço precisa
+antes de precisar de personalidade — e desenha tudo que se lê de perto. Readex
+Pro é mais larga e mais arredondada, e entra só no corpo grande: é ela que
+separa "o que a seção se chama" de "o que está à venda". A serifada sobrou para
+uma linha só: a assinatura da marca.
+
+As três são auto-hospedadas pelo `@fontsource` e importadas em `main.tsx`, e
+saem no próprio bundle. Não há `<link>` para o Google em lugar nenhum, e isso é
+decisão, não esquecimento: fonte de outro domínio é uma conexão a mais antes da
+primeira pintura, e uma dependência de terceiro no caminho crítico de uma loja
+que vende pelo celular. Só os pesos que o sistema escreve são importados —
+Onest 400/500/600/700, Readex Pro 400/600, Cormorant Garamond 600.
 
 Escala: 64 / 48 / 36 / 28 / 22 / 18 / 16 / 14 / 12.
 
@@ -308,12 +319,19 @@ Escala: 64 / 48 / 36 / 28 / 22 / 18 / 16 / 14 / 12.
 
 ### Named Rules
 
-**A Regra das Duas Vozes.** Onest desenha tudo que é interface — título, nome
-de produto, preço, botão, menu, formulário. Cormorant Garamond existe para a
-assinatura "Maison Essence". Quem a escrever em qualquer outro lugar está
-reabrindo uma discussão que esta loja já fechou: os nomes dos fabricantes na
-faixa da home saíram da serifada de propósito, porque emprestá-la fazia oito
-marcas de terceiros falarem com a voz da casa.
+**A Regra das Três Vozes.** Cada família tem um trabalho, e nenhuma faz o da
+outra. **Readex Pro** fala no corpo grande: `h1`, `h2`, `h3`, título de seção,
+nome do produto na página dele. **Onest** fala em tudo que se lê de perto —
+nome de produto no cartão, preço, parcela, rótulo, botão, menu, formulário,
+texto corrido. **Cormorant Garamond** existe para a assinatura "Maison
+Essence", e quem a escrever em qualquer outro lugar está reabrindo uma
+discussão que esta loja já fechou: os nomes dos fabricantes na faixa da home
+saíram da serifada de propósito, porque emprestá-la fazia oito marcas de
+terceiros falarem com a voz da casa.
+
+O corte entre as duas grotescas é por corpo, não por papel: a Readex não desce
+para 14px, onde a diferença entre as duas desaparece e ela viraria a Onest com
+outro nome.
 
 **A Regra do Rótulo Que Rotula.** O rótulo em caixa alta nomeia um dado —
 "LATTAFA" sobre o nome do perfume é a marca. Nunca acima de um título de seção:
@@ -575,6 +593,12 @@ de uma vez, e `background-position` repinta na CPU a cada quadro.
 - **Don't** pendurar uma linha curta em caixa alta sobre um título de seção para
   anunciá-lo.
 - **Don't** escrever em Cormorant Garamond fora da assinatura "Maison Essence".
+- **Don't** descer Readex Pro para corpo pequeno: abaixo de 18px ela e a Onest
+  são a mesma fonte com nomes diferentes.
+- **Don't** declarar uma família num token sem importar o peso dela em
+  `main.tsx`: o token resolve calado para o fallback do sistema.
+- **Don't** trocar o `@fontsource` por `<link>` do Google — a bancada de
+  captura e a produção medem a mesma página de propósito.
 - **Don't** usar pílula em botão.
 - **Don't** cobrir o cartão inteiro com um alvo clicável absoluto — a foto leva
   ao produto, o botão põe na sacola.

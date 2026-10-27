@@ -193,19 +193,31 @@
   /* ---- Tipografia ----------------------------------------------------- */
 
   /*
-   * Uma família para a interface inteira.
+   * Duas grotescas: uma que lê, uma que anuncia.
    *
-   * Onest: grotesca de numeral alto e aberto, com `tabular-nums` de verdade —
-   * que e o que uma loja de preço precisa antes de precisar de personalidade.
-   * Título de seção, nome de produto, preço, botão, menu e formulário saem
-   * todos dela, variando só por peso e corpo.
+   * Onest desenha tudo que se lê de perto — nome de produto, preço, parcela,
+   * botão, menu, formulário. Numeral alto e aberto, com `tabular-nums` de
+   * verdade, que e o que uma loja de preço precisa antes de precisar de
+   * personalidade.
    *
-   * `--font-display` continua existindo e aponta para a mesma pilha: dezenas
-   * de folhas já o escrevem, e o que mudou não foi o papel do token — foi a
-   * decisão de que o display desta loja e a mesma grotesca, em 600 e 700.
+   * Readex Pro entra só no display: título de seção, `h1` de catálogo, nome
+   * do produto na página dele. E mais larga e mais arredondada que a Onest, e
+   * e isso que a torna útil aqui — em 28px e 64px a diferença entre as duas
+   * aparece, e e ela que separa "o que a seção se chama" de "o que esta a
+   * venda". Em 14px as duas seriam a mesma fonte com nomes diferentes, e por
+   * isso a Readex não desce para o corpo.
+   *
+   * O par e o da referência que a dona escolheu. As duas vem auto-hospedadas
+   * pelo `@fontsource`, importadas em `main.tsx` — não há `<link>` para o
+   * Google em lugar nenhum, e isso e decisão: fonte de outro domínio e uma
+   * conexão a mais antes da primeira pintura.
+   *
+   * Quem acrescentar um peso aqui precisa importar o arquivo dele lá. Sem o
+   * import, o token resolve calado para o fallback do sistema e a troca não
+   * aparece em erro nenhum — só na tela.
    */
   --font-body: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display: var(--font-body);
+  --font-display: 'Readex Pro', 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /*
    * A serifada sobrou para um uso só: a assinatura "Maison Essence" ao lado

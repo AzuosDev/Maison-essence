@@ -23,6 +23,8 @@ import '@fontsource/onest/latin-400.css';
 import '@fontsource/onest/latin-500.css';
 import '@fontsource/onest/latin-600.css';
 import '@fontsource/onest/latin-700.css';
+import '@fontsource/readex-pro/latin-400.css';
+import '@fontsource/readex-pro/latin-600.css';
 import '@fontsource/cormorant-garamond/latin-600.css';
 import './styles/global.css';
 

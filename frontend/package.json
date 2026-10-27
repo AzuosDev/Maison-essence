@@ -21,6 +21,7 @@
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/onest": "^5.3.1",
+    "@fontsource/readex-pro": "^5.3.0",
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.90.2",
     "react": "^18.3.1",
