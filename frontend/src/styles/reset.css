@@ -69,10 +69,34 @@ a {
   text-decoration: none;
 }
 
+/*
+ * Listas sem marcador.
+ *
+ * Duas regras, e a segunda existe porque a primeira cobria menos do que
+ * parecia. `ul[role='list']` e a receita conhecida — ela devolve ao Safari a
+ * semântica que `list-style: none` tira dele —, mas depende de alguém lembrar
+ * do atributo em cada componente. O menu da conta não lembrou, e os pontinhos
+ * apareceram no desktop: no celular a fila rolável os recortava, e o defeito
+ * só existia em uma das duas formas do mesmo componente.
+ *
+ * Por isso a segunda regra: toda lista **com classe** e lista desenhada por
+ * nós, e lista desenhada por nós não tem marcador — são navegações, grades de
+ * cartão e tabelas que viraram blocos no celular. A lista sem classe fica
+ * intacta, e ela e a que vem do texto das páginas institucionais, onde o
+ * marcador e justamente o que se quer.
+ *
+ * O `role="list"` continua valendo a pena onde a lista e mesmo uma lista para
+ * quem ouve. Ele deixou de ser o que segura o visual.
+ */
 ul[role='list'],
 ol[role='list'] {
   list-style: none;
   padding: 0;
+}
+
+ul[class],
+ol[class] {
+  list-style: none;
 }
 
 /* Quebra palavra longa em vez de estourar o container. */
