@@ -1,0 +1,127 @@
+/*
+ * A voz do texto que a dona escreve no painel.
+ *
+ * Mora com o renderizador, e não com a tela que o chama, porque duas telas
+ * mostram o mesmo texto: as abas da página do produto e a página
+ * institucional. Uma política de trocas com duas caras lê como dois textos
+ * diferentes, e um ajuste de vírgula no painel deixaria de aparecer igual nos
+ * dois lugares. Quem usa decide a medida e a largura; o resto e daqui.
+ *
+ * Tudo em token. Nenhuma cor nova nasce neste arquivo.
+ */
+
+.prose {
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+.prose > * + * {
+  margin-top: var(--space-16);
+}
+
+/*
+ * Mais espaço acima de um título do que abaixo: e o que faz o título
+ * pertencer ao texto que vem depois dele, e não ao que ficou para trás.
+ */
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: var(--space-32);
+
+  font-family: var(--font-display);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/*
+ * Um degrau por nível, e cada um menor que o título que o contem.
+ *
+ * O `h2` fica em 22 e não cresce no desktop: na página institucional o `h1`
+ * vai a 36 ali, e dois títulos de corpo parecido empilhados não dizem qual e
+ * a página e qual e a seção. Todo texto da loja abre com `#`, então esse par
+ * aparece em toda visita.
+ */
+.prose h2 {
+  font-size: var(--text-22);
+}
+
+.prose h3 {
+  font-size: var(--text-18);
+}
+
+.prose h4 {
+  font-size: var(--text-16);
+  font-weight: var(--weight-semibold);
+}
+
+/*
+ * Quando o texto começa em `h3`, e não em `h2`.
+ *
+ * E o caso das abas do produto, onde o `h1` e o nome do produto. O tamanho
+ * do título não e do tag, e da posição dele no texto: o primeiro nível do que
+ * a dona escreveu vale 22 em qualquer tela, o segundo vale 18. Sem este
+ * bloco, a mesma seção lê como título de página aqui e como subtítulo ali, e
+ * o leitor de tela continuaria certo enquanto o olho se perdia.
+ */
+.fromHeading3 h3 {
+  font-size: var(--text-22);
+}
+
+.fromHeading3 h4 {
+  font-size: var(--text-18);
+  font-weight: var(--weight-semibold);
+}
+
+.prose h5,
+.prose h6 {
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: var(--space-24);
+}
+
+.prose li + li {
+  margin-top: var(--space-8);
+}
+
+/*
+ * O marcador no dourado da marca.
+ *
+ * `::marker` aceita cor, e e o jeito de pintar a bolinha sem trocar a lista
+ * por um `<div>` com pseudo-elemento — a lista continua sendo uma lista para
+ * quem usa leitor de tela.
+ */
+.prose li::marker {
+  color: var(--gold-deep);
+}
+
+/*
+ * O link com sublinhado afastado da letra.
+ *
+ * O padrão do navegador corta o descendente do "g" e do "p"; dois pixels de
+ * folga e a diferença entre um link que parece desenhado e um que parece
+ * herdado.
+ */
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition: text-decoration-color var(--transition);
+}
+
+.prose a:hover {
+  text-decoration-color: var(--gold-deep);
+}

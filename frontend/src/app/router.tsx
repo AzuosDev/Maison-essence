@@ -108,11 +108,15 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
-    // Os endereços que a moldura já aponta e cujas telas entram nos próximos
-    // passos. Existem agora para que nenhum link do cabeçalho ou do rodapé
-    // caia num 404 — o placeholder e o mesmo módulo para todos, e cada rota
-    // troca a sua entrada quando a tela dela chegar.
-    ...soonRoutes(['/institucional/:slug']),
+    // As páginas institucionais, pelo endereço que o rodapé e o menu apontam:
+    // quem somos, modo de uso, trocas e devoluções, perguntas frequentes. O
+    // slug e fixo no backend e o texto vem do painel, então uma rota só serve
+    // todas elas.
+    {
+      path: '/institucional/:slug',
+      lazy: page(() => import('@/pages/institutional/institutional-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
 
     {
       // O curinga fica no grupo da loja de propósito: e ele que pega
@@ -125,13 +129,6 @@ const storeRoutes: RouteObject = {
   ],
 };
 
-function soonRoutes(paths: readonly string[]): RouteObject[] {
-  return paths.map((path) => ({
-    path,
-    lazy: page(() => import('@/pages/soon/soon-page')),
-    ErrorBoundary: RouteErrorBoundary,
-  }));
-}
 
 const accountRoutes: RouteObject = {
   path: ROUTE_GROUPS.account,

@@ -1,0 +1,199 @@
+/*
+ * A página institucional.
+ *
+ * Uma coluna de leitura na régua da esquerda e um índice discreto na direita.
+ * Nada de cartão em volta do texto: a vitrine separa por filete e por espaço,
+ * e uma moldura em volta de três parágrafos só anunciaria que eles estão
+ * dentro de uma caixa.
+ */
+
+.page {
+  padding-block: var(--space-24) var(--space-64);
+}
+
+.crumbs {
+  margin-bottom: var(--space-16);
+}
+
+.layout {
+  display: grid;
+  gap: var(--space-48);
+}
+
+.article {
+  min-width: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+  color: var(--ink);
+}
+
+/*
+ * A medida da coluna: 68 caracteres, o mesmo das abas do produto.
+ *
+ * Linha de cem caracteres faz o olho perder o começo da próxima, e uma
+ * política de trocas mal lida vira uma conversa no WhatsApp. O desenho do
+ * texto em si — título, lista, link — vem do renderizador do Markdown.
+ */
+.text,
+.waiting,
+.empty {
+  max-width: 68ch;
+  margin-top: var(--space-24);
+}
+
+/*
+ * A chegada do texto.
+ *
+ * O único movimento desta tela, e ele existe porque a troca esqueleto →
+ * texto e o momento em que ela acontece. Oito pixels e um fundido, a partir
+ * de um estado que já seria visível sem a animação: quem pediu menos
+ * movimento no sistema recebe o texto parado, pelo corte global do
+ * `reset.css`.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .text {
+    animation: chegada 240ms var(--ease);
+  }
+}
+
+@keyframes chegada {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* A página publicada antes de ter texto. O painel avisa a dona disso; aqui o
+   que não pode acontecer e a pessoa encontrar um título solto no vazio. */
+.empty {
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+/*
+ * O fecho: a dúvida que o texto não resolveu.
+ *
+ * Filete em cima, e não cartão: e o fim do documento, não um bloco de
+ * destaque. Só aparece quando a loja tem WhatsApp cadastrado — prometer
+ * atendimento sem canal seria pior do que não prometer nada.
+ */
+.help {
+  max-width: 68ch;
+  margin-top: var(--space-48);
+  padding-top: var(--space-24);
+  border-top: var(--border);
+}
+
+.helpText {
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--muted);
+}
+
+.helpLink {
+  display: inline-block;
+  margin-top: var(--space-8);
+
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--gold);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+
+  transition: text-decoration-color var(--transition);
+}
+
+.helpLink:hover {
+  text-decoration-color: var(--gold-deep);
+}
+
+/*
+ * O índice das outras páginas.
+ *
+ * No celular ele vem depois do texto, separado por filete: e saída, e quem
+ * está lendo chegou aqui de propósito. No desktop vira a coluna da direita e
+ * acompanha a rolagem, porque um texto de cinco seções deixaria o índice para
+ * trás no primeiro terço da página.
+ */
+.side {
+  min-width: 0;
+  padding-top: var(--space-24);
+  border-top: var(--border);
+}
+
+.sideTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
+  color: var(--ink);
+}
+
+/*
+ * Sem marcador e sem o recuo que o navegador da a toda `<ul>`: este índice
+ * começa na mesma vertical do título dele e do texto ao lado, que e a régua
+ * da esquerda da loja inteira. A lista continua sendo uma lista para quem
+ * usa leitor de tela.
+ */
+.sideList {
+  display: grid;
+  gap: var(--space-12);
+  margin-top: var(--space-16);
+  padding-left: 0;
+
+  list-style: none;
+}
+
+.sideLink {
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+
+  transition: color var(--transition);
+}
+
+.sideLink:hover {
+  color: var(--gold-deep);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+@media (min-width: 64rem) {
+  .page {
+    padding-block: var(--space-32) var(--space-96);
+  }
+
+  /*
+   * A primeira coluna para na medida do texto, e não na largura que sobra:
+   * com `1fr` o índice ia parar a trezentos pixels do último parágrafo, e o
+   * respiro de 64px que esta escrito aqui nunca governava a distância que se
+   * via na tela.
+   */
+  .layout {
+    grid-template-columns: minmax(0, 68ch) 15rem;
+    justify-content: start;
+    gap: var(--space-64);
+    align-items: start;
+  }
+
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .side {
+    position: sticky;
+    top: calc(var(--header-height-compact) + var(--space-24));
+
+    padding-top: 0;
+    border-top: none;
+  }
+}
