@@ -9,7 +9,7 @@ import { MAX_PAGE_CONTENT_LENGTH } from '../settings.constants.js';
  * Diferente dos banners, aqui o array não substitui nada: cada item e
  * encontrado pelo `slug` e atualizado no lugar, e a página que não vier no
  * array fica como esta. O slug e a identidade publica da página e não se
- * cria nem se apaga pelo painel — as cinco sempre existem.
+ * cria nem se apaga pelo painel — as seis sempre existem.
  */
 export class InstitutionalPageDto {
   @IsIn(INSTITUTIONAL_PAGE_SLUG_VALUES, {

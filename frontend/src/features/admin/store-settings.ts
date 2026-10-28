@@ -161,6 +161,7 @@ export interface SettingsWarning {
 export const PAGE_LABELS: Record<InstitutionalPageSlug, string> = {
   [INSTITUTIONAL_PAGE_SLUGS.ABOUT]: 'Quem somos',
   [INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY]: 'Como comprar',
+  [INSTITUTIONAL_PAGE_SLUGS.USAGE]: 'Modo de uso',
   [INSTITUTIONAL_PAGE_SLUGS.RETURNS]: 'Trocas e devoluções',
   [INSTITUTIONAL_PAGE_SLUGS.FAQ]: 'Perguntas frequentes',
   [INSTITUTIONAL_PAGE_SLUGS.PRIVACY]: 'Política de privacidade',

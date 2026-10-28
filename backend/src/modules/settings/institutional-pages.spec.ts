@@ -7,11 +7,32 @@ import {
 } from './institutional-pages.js';
 
 describe('mergeInstitutionalPages', () => {
-  it('devolve as cinco páginas mesmo com o banco vazio', () => {
+  it('devolve as seis páginas mesmo com o banco vazio', () => {
     const merged = mergeInstitutionalPages([]);
 
-    expect(merged).toHaveLength(5);
-    expect(merged.every((page) => page.content === '' && !page.isActive)).toBe(true);
+    expect(merged).toHaveLength(6);
+  });
+
+  it('entrega escritas e publicadas as páginas que já vem com texto', () => {
+    const escritas = mergeInstitutionalPages([]).filter((page) => page.content !== '');
+
+    expect(escritas.map((page) => page.slug)).toEqual([
+      INSTITUTIONAL_PAGE_SLUGS.ABOUT,
+      INSTITUTIONAL_PAGE_SLUGS.USAGE,
+      INSTITUTIONAL_PAGE_SLUGS.RETURNS,
+      INSTITUTIONAL_PAGE_SLUGS.FAQ,
+    ]);
+    expect(escritas.every((page) => page.isActive)).toBe(true);
+  });
+
+  it('deixa vazia e despublicada a página que ninguém escreveu ainda', () => {
+    const vazias = mergeInstitutionalPages([]).filter((page) => page.content === '');
+
+    expect(vazias.map((page) => page.slug)).toEqual([
+      INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
+      INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+    ]);
+    expect(vazias.every((page) => !page.isActive)).toBe(true);
   });
 
   it('mantem sempre a mesma ordem, independente da ordem gravada', () => {

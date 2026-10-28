@@ -24,8 +24,9 @@ import styles from './main-nav.module.css';
  *
  * Elas vem de `GET /pages`, pelo contexto que a moldura já busca: a dona
  * publica uma página nova no painel e ela entra no menu sozinha. A lista não
- * tem teto: são cinco endereços fixos (ver `INSTITUTIONAL_PAGE_SLUGS`), e com
- * as quatro primeiras a faixa ainda não enche numa tela de 1024px.
+ * tem teto: são seis endereços fixos (ver `INSTITUTIONAL_PAGE_SLUGS`), e com
+ * as quatro que a loja já publica a faixa ainda não enche numa tela de
+ * 1024px.
  */
 interface MainNavProps {
   /** O painel de categorias esta aberto? */

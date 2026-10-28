@@ -33,7 +33,7 @@ import { SocialLinksDto } from './social-links.dto.js';
  *   só o que a dona mexeu;
  * - `banners`: substituição do array inteiro, porque e uma lista ordenável —
  *   o que sumiu dela foi removido de propósito;
- * - `institutionalPages`: atualização por `slug`, porque as cinco páginas
+ * - `institutionalPages`: atualização por `slug`, porque as seis páginas
  *   existem sempre e cada uma e editada na sua própria tela.
  */
 export class UpdateSettingsDto {

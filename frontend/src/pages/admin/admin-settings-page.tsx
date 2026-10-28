@@ -503,7 +503,7 @@ function SettingsForm({
               </h2>
 
               <p className={styles.cardHint}>
-                As cinco existem sempre, e o endereço de cada uma não muda — esses links circulam no
+                As seis existem sempre, e o endereço de cada uma não muda — esses links circulam no
                 WhatsApp. O que se edita e o título, o texto e se a página esta publicada.
               </p>
 

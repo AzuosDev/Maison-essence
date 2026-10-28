@@ -14,7 +14,7 @@ import type { PublicPageSummary, PublicPageView } from './settings.view.js';
  * um terceiro. Por isso o slug vem de uma lista fechada e a dona edita só o
  * título e o texto.
  *
- * Mesmo cache das configurações: são os mesmos cinco campos de texto, mudam
+ * Mesmo cache das configurações: são os mesmos campos de texto, mudam
  * na mesma frequência, e a listagem daqui monta o rodapé de toda página.
  */
 @Public()

@@ -171,7 +171,7 @@ export function toPublicSettingsView(
   };
 }
 
-/** As cinco páginas, com o que estiver gravado por cima dos padrões. */
+/** As seis páginas, com o que estiver gravado por cima dos padrões. */
 export function toPageViews(settings: StoreSettingsDocument): PageView[] {
   return mergeInstitutionalPages(settings.institutionalPages.map(toEditablePage));
 }

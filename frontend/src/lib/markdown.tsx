@@ -1,4 +1,6 @@
 import { createElement, Fragment, type ReactNode } from 'react';
+import { cx } from '@/lib/cx';
+import styles from './markdown.module.css';
 
 /**
  * O Markdown que a dona escreve no painel, desenhado como React.
@@ -26,6 +28,17 @@ import { createElement, Fragment, type ReactNode } from 'react';
  * Quebra de linha simples vira `<br>`, e não espaço como manda o Markdown
  * canônico: quem escreve um endereço ou um horário de atendimento no painel
  * aperta Enter esperando ver a linha quebrada.
+ *
+ * ## A aparência vem junto
+ *
+ * O desenho do texto — tamanho de título, marcador dourado, sublinhado do
+ * link — esta em `markdown.module.css` e e aplicado aqui, e não pela tela
+ * que chama. O `headingLevel` entra junto como classe: o primeiro nível do
+ * texto tem o mesmo corpo na página e na aba, e o que muda entre as duas e
+ * só em que tag ele sai. As abas do produto e a página institucional mostram o mesmo
+ * texto do painel, e ele não pode ter duas caras. O `className` de quem
+ * chama entra por cima e decide o que e da tela: a medida da coluna e a
+ * posição no layout.
  */
 
 export interface MarkdownProps {
@@ -49,7 +62,11 @@ export function Markdown({ text, headingLevel = 3, className }: MarkdownProps) {
     return null;
   }
 
-  return <div className={className}>{blocks.map((block, index) => renderBlock(block, index, headingLevel))}</div>;
+  return (
+    <div className={cx(styles.prose, headingLevel === 3 && styles.fromHeading3, className)}>
+      {blocks.map((block, index) => renderBlock(block, index, headingLevel))}
+    </div>
+  );
 }
 
 /* ---- Os blocos ---------------------------------------------------------- */

@@ -4,9 +4,17 @@
  */
 export const INSTITUTIONAL_PAGE_SLUGS = {
   ABOUT: 'quem-somos',
+  HOW_TO_BUY: 'como-comprar',
+  /**
+   * Como usar e guardar o perfume.
+   *
+   * Tem endereço próprio porque e a dúvida de dois momentos diferentes: a aba
+   * da página do produto, de quem ainda esta decidindo, e o link do rodapé,
+   * de quem já recebeu o frasco em casa.
+   */
+  USAGE: 'modo-de-uso',
   RETURNS: 'trocas-e-devolucoes',
   FAQ: 'perguntas-frequentes',
-  HOW_TO_BUY: 'como-comprar',
   PRIVACY: 'politica-de-privacidade',
 } as const;
 

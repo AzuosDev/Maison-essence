@@ -61,6 +61,8 @@ export const INSTITUTIONAL_PAGE_SLUGS = {
   RETURNS: 'trocas-e-devolucoes',
   FAQ: 'perguntas-frequentes',
   HOW_TO_BUY: 'como-comprar',
+  /** Como usar e guardar o perfume. E a aba do meio da página do produto. */
+  USAGE: 'modo-de-uso',
   PRIVACY: 'politica-de-privacidade',
 } as const;
 

@@ -23,11 +23,23 @@ export interface InstitutionalPageQuery {
   page: PublicPage | undefined;
   /** A página esta publicada — a aba tem por que existir. */
   exists: boolean;
+  /**
+   * A listagem ainda não respondeu: ninguém sabe se a página existe.
+   *
+   * Uma aba ausente não custa nada e some sozinha quando a listagem chega,
+   * mas uma página aberta pelo endereço precisa deste campo para não dizer
+   * "esta página não existe" no primeiro quadro de toda visita.
+   */
+  isUnknown: boolean;
   isLoading: boolean;
+  /** A página existe e a busca dela falhou — rede, 500, timeout. */
+  isError: boolean;
+  /** Tenta de novo. Para o botão da tela de falha. */
+  retry: () => void;
 }
 
 export function useInstitutionalPage(slug: string): InstitutionalPageQuery {
-  const { pages } = useStoreSettings();
+  const { pages, arePagesLoading } = useStoreSettings();
   const exists = pages.some((page) => page.slug === slug);
 
   const query = useQuery<PublicPage>({
@@ -37,5 +49,14 @@ export function useInstitutionalPage(slug: string): InstitutionalPageQuery {
     staleTime: STALE_TIME_MS,
   });
 
-  return { page: query.data, exists, isLoading: exists && query.isPending };
+  return {
+    page: query.data,
+    exists,
+    isUnknown: arePagesLoading,
+    isLoading: exists && query.isPending,
+    isError: query.isError,
+    retry: () => {
+      void query.refetch();
+    },
+  };
 }

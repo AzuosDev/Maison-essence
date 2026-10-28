@@ -7,18 +7,19 @@ import { ChevronRightIcon } from './admin-icons';
 import styles from './pages-editor.module.css';
 
 /**
- * As cinco páginas institucionais.
+ * As seis páginas institucionais.
  *
- * ## Por que as cinco aparecem sempre
+ * ## Por que as seis aparecem sempre
  *
  * Mesmo as que ninguém escreveu. A lista e fechada — o endereço de cada uma
  * já circula no rodapé e em conversa de WhatsApp, e não se cria nem se apaga
- * página por aqui — então mostrar as cinco e o que responde "o que falta
- * escrever?", que e a pergunta que traz a dona a esta tela.
+ * página por aqui — então mostrar as seis e o que responde "o que falta
+ * escrever?", que e a pergunta que traz a dona a esta tela. Quatro delas já
+ * sobem escritas, com o texto da loja; as outras duas esperam por ela.
  *
  * ## Uma de cada vez
  *
- * Cinco caixas de texto abertas transformariam a tela de configurações numa
+ * Seis caixas de texto abertas transformariam a tela de configurações numa
  * rolagem de três metros. Abre-se a que se vai escrever; as outras mostram o
  * essencial numa linha — se estão publicadas e se tem texto.
  *

@@ -36,16 +36,12 @@ import styles from './product-tabs.module.css';
  *
  * ## O modo de uso
  *
- * O backend tem hoje cinco endereços institucionais fixos, e `modo-de-uso`
- * não esta entre eles. A aba pergunta por ele mesmo assim e cai em
- * `como-comprar` enquanto ele não existir: e a página que responde a dúvida
- * do mesmo momento — o cliente decidiu e quer saber como isso vira pedido.
- * No dia em que `modo-de-uso` for publicado, a aba passa a mostra-lo sem
- * nenhuma linha nova aqui.
+ * `modo-de-uso` e uma das páginas fixas do backend e sobe publicada, com o
+ * texto que a loja escreveu. A aba segue preferindo-a e caindo em
+ * `como-comprar` quando ela não esta no ar — a dona pode despublica-la no
+ * painel —, porque e a página que responde a dúvida do mesmo momento: o
+ * cliente decidiu e quer saber como isso vira pedido.
  */
-
-/** O endereço que a aba prefere, quando a loja o publicar. */
-const USAGE_SLUG = 'modo-de-uso';
 
 interface TabDefinition {
   value: string;
@@ -58,12 +54,14 @@ export function ProductTabs({ product }: { product: PublicProductDetail }) {
 
   // Três consultas em ordem fixa: hook não pode nascer dentro de condição, e
   // as que apontam para página não publicada já vem desligadas de dentro.
-  const usage = useInstitutionalPage(USAGE_SLUG);
+  const usage = useInstitutionalPage(INSTITUTIONAL_PAGE_SLUGS.USAGE);
   const howToBuy = useInstitutionalPage(INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY);
   const returns = useInstitutionalPage(INSTITUTIONAL_PAGE_SLUGS.RETURNS);
 
   const instructions = usage.exists ? usage : howToBuy;
-  const instructionsSlug = usage.exists ? USAGE_SLUG : INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY;
+  const instructionsSlug = usage.exists
+    ? INSTITUTIONAL_PAGE_SLUGS.USAGE
+    : INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY;
 
   const [chosen, setChosen] = useState('');
 

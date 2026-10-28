@@ -142,25 +142,34 @@ describe('configuracoes da loja (e2e)', () => {
       await expect(settings.countDocuments({})).resolves.toBe(1);
     });
 
-    it('lista as cinco paginas mesmo antes de alguem escreve-las', async () => {
+    it('lista as seis paginas mesmo antes de alguem escreve-las', async () => {
       const owner = await signedInOwner();
 
       const response = await adminSettings(owner).expect(200);
       const pages = response.body.institutionalPages as {
         slug: string;
+        content: string;
         isActive: boolean;
       }[];
 
       expect(pages.map((page) => page.slug)).toEqual([
         INSTITUTIONAL_PAGE_SLUGS.ABOUT,
         INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
+        INSTITUTIONAL_PAGE_SLUGS.USAGE,
         INSTITUTIONAL_PAGE_SLUGS.RETURNS,
         INSTITUTIONAL_PAGE_SLUGS.FAQ,
         INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
       ]);
-      // Nascem despublicadas: link de rodape que abre em branco e pior que a
-      // ausencia do link.
-      expect(pages.every((page) => !page.isActive)).toBe(true);
+      // As duas que ninguem escreveu nascem despublicadas: link de rodape que
+      // abre em branco e pior que a ausencia do link. As outras quatro sobem
+      // com o texto da loja (ver `DEFAULT_INSTITUTIONAL_PAGES`).
+      const vazias = pages.filter((page) => page.content === '');
+
+      expect(vazias.map((page) => page.slug)).toEqual([
+        INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
+        INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+      ]);
+      expect(vazias.every((page) => !page.isActive)).toBe(true);
     });
   });
 
@@ -525,10 +534,49 @@ describe('configuracoes da loja (e2e)', () => {
       }).expect(200);
     }
 
+    /**
+     * Despublica o texto de fabrica das outras tres paginas escritas.
+     *
+     * A loja recem-instalada ja responde com quatro paginas no ar (ver
+     * `DEFAULT_INSTITUTIONAL_PAGES`). Quem quer olhar uma pagina sozinha na
+     * listagem tira as outras do ar primeiro, do mesmo jeito que a dona
+     * faria no painel.
+     */
+    async function hideShippedPages(admin: Session): Promise<void> {
+      await patch(admin, {
+        institutionalPages: [
+          { slug: INSTITUTIONAL_PAGE_SLUGS.USAGE, isActive: false },
+          { slug: INSTITUTIONAL_PAGE_SLUGS.RETURNS, isActive: false },
+          { slug: INSTITUTIONAL_PAGE_SLUGS.FAQ, isActive: false },
+        ],
+      }).expect(200);
+    }
+
+    it('ja nasce com as paginas que a loja tem texto para dizer', async () => {
+      const response = await request(server).get(`${API}/pages`).expect(200);
+
+      expect(response.body.map((page: { slug: string }) => page.slug)).toEqual([
+        INSTITUTIONAL_PAGE_SLUGS.ABOUT,
+        INSTITUTIONAL_PAGE_SLUGS.USAGE,
+        INSTITUTIONAL_PAGE_SLUGS.RETURNS,
+        INSTITUTIONAL_PAGE_SLUGS.FAQ,
+      ]);
+    });
+
+    it('entrega o texto de fabrica sem o painel ter tocado na pagina', async () => {
+      const response = await request(server)
+        .get(`${API}/pages/${INSTITUTIONAL_PAGE_SLUGS.USAGE}`)
+        .expect(200);
+
+      expect(response.body.title).toBe('Modo de uso');
+      expect(response.body.content).toContain('Como armazenar o perfume');
+    });
+
     it('lista so as publicadas, com titulo e endereco', async () => {
       const admin = await signedInAdmin();
 
       await publishAbout(admin);
+      await hideShippedPages(admin);
 
       const response = await request(server).get(`${API}/pages`).expect(200);
 
@@ -629,7 +677,7 @@ describe('configuracoes da loja (e2e)', () => {
       const response = await adminSettings(owner).expect(200);
 
       expect(response.body.banners).toHaveLength(1);
-      expect(response.body.institutionalPages).toHaveLength(5);
+      expect(response.body.institutionalPages).toHaveLength(6);
     });
 
     it.each([

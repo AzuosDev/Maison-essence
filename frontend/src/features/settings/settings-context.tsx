@@ -30,6 +30,16 @@ interface StoreSettingsContextValue {
   settings: PublicSettings | undefined;
   pages: PublicPageSummary[];
   isLoading: boolean;
+  /**
+   * A listagem de páginas ainda não respondeu.
+   *
+   * Separado de `isLoading` porque responde outra pergunta. A moldura da loja
+   * desenha com o que tem e não espera por nada; quem precisa deste campo e
+   * quem abre uma página institucional pelo endereço: lista vazia significa
+   * "nenhuma publicada" depois da resposta e "ainda não sei" antes dela, e
+   * tratar as duas igual faria a página piscar "não existe" antes de abrir.
+   */
+  arePagesLoading: boolean;
 }
 
 const StoreSettingsContext = createContext<StoreSettingsContextValue | null>(null);
@@ -52,8 +62,9 @@ export function StoreSettingsProvider({ children }: { children: ReactNode }) {
       settings: settings.data,
       pages: pages.data ?? [],
       isLoading: settings.isLoading,
+      arePagesLoading: pages.isLoading,
     }),
-    [settings.data, settings.isLoading, pages.data],
+    [settings.data, settings.isLoading, pages.data, pages.isLoading],
   );
 
   return <StoreSettingsContext.Provider value={value}>{children}</StoreSettingsContext.Provider>;
