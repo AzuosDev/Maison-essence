@@ -8,14 +8,24 @@ import { createRoot } from 'react-dom/client';
  * qualquer coisa, perto de um segundo num celular. Daqui elas entram no CSS
  * do proprio bundle, pelo mesmo dominio e com `font-display: swap`.
  *
- * So o subconjunto latino e so os pesos que os tokens usam: 400 e 600 da
- * serifada, 400, 500 e 600 da Jost. O latino cobre os acentos do portugues.
+ * **Onest e a voz da loja** — titulo de secao, nome de produto, preco, botao,
+ * menu, formulario. Quatro pesos, porque a vitrine usa os quatro: 400 no
+ * corpo, 500 no rotulo, 600 no nome e no titulo, 700 no preco e no selo.
+ *
+ * A **Cormorant** sobrou para um uso so, a assinatura da marca ao lado do
+ * monograma, e por isso baixa um peso unico. Ela nao titula mais nada: numa
+ * loja que precisa dizer preco, condicao e disponibilidade, a serifada de
+ * alto contraste atrapalhava a leitura rapida que a vitrine pede.
+ *
+ * So o subconjunto latino: ele cobre os acentos do portugues.
  */
-import '@fontsource/cormorant-garamond/latin-400.css';
+import '@fontsource/onest/latin-400.css';
+import '@fontsource/onest/latin-500.css';
+import '@fontsource/onest/latin-600.css';
+import '@fontsource/onest/latin-700.css';
+import '@fontsource/readex-pro/latin-400.css';
+import '@fontsource/readex-pro/latin-600.css';
 import '@fontsource/cormorant-garamond/latin-600.css';
-import '@fontsource/jost/latin-400.css';
-import '@fontsource/jost/latin-500.css';
-import '@fontsource/jost/latin-600.css';
 import './styles/global.css';
 
 /**
@@ -70,14 +80,14 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
     'max-width:48rem',
     'margin:4rem auto',
     'padding:0 1rem',
-    'font-family:Jost,system-ui,sans-serif',
-    'color:#3A3A3A',
+    'font-family:Onest,system-ui,sans-serif',
+    'color:#4A4A4A',
   ].join(';');
 
   const title = document.createElement('h1');
 
   title.textContent = 'A loja não conseguiu iniciar';
-  title.style.cssText = 'font-family:"Cormorant Garamond",Georgia,serif;color:#0E0E0E';
+  title.style.cssText = 'font-family:"Cormorant Garamond",Georgia,serif;color:#121212';
 
   const detail = document.createElement('pre');
 
@@ -87,7 +97,7 @@ function renderBootFailure(container: HTMLElement, error: unknown): void {
   detail.style.cssText = [
     'margin-top:1rem',
     'padding:1rem',
-    'background:#F1E9DD',
+    'background:#F3F0EA',
     'border-radius:4px',
     'white-space:pre-wrap',
     'font-size:.875rem',

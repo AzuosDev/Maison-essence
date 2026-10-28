@@ -49,7 +49,15 @@
   line-height: var(--leading-tight);
 }
 
+/*
+ * O texto sob o titulo.
+ *
+ * `display: block` porque a mesma classe veste um `<output>` nas telas de
+ * senha — e o elemento que anuncia sozinho a confirmação a quem usa leitor de
+ * tela —, e `<output>` nasce em linha.
+ */
 .lead {
+  display: block;
   margin-top: var(--space-8);
   font-size: var(--text-14);
   line-height: var(--leading-body);

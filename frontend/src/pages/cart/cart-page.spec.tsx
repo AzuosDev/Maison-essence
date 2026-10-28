@@ -344,7 +344,7 @@ test('um produto desativado no painel aparece como indisponível na sacola abert
 test('a sacola vazia oferece o caminho de volta ao catálogo', () => {
   abrirSacola();
 
-  expect(screen.getByText('Sua sacola esta vazia')).toBeTruthy();
+  expect(screen.getByText('Sua sacola está vazia')).toBeTruthy();
   expect(screen.getByRole('link', { name: 'Ver os perfumes' }).getAttribute('href')).toBe(
     '/produtos',
   );

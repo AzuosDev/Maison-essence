@@ -31,6 +31,7 @@ describe('products (e2e)', () => {
   let audit: Model<AuditEntry>;
   let passwordHash: string;
   let owner: { Authorization: string };
+  let admin: { Authorization: string };
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -53,6 +54,7 @@ describe('products (e2e)', () => {
     await products.createIndexes();
 
     owner = await signIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
+    admin = await signIn(USER_ROLES.SUPER_ADMIN, 'dev@maisonessence.com');
   });
 
   afterAll(async () => {
@@ -188,7 +190,7 @@ describe('products (e2e)', () => {
         .expect(422);
 
       expect(String(response.body.message)).toContain(
-        'preco de comparacao precisa ser maior',
+        'preço de comparação precisa ser maior',
       );
     });
 
@@ -479,7 +481,7 @@ describe('products (e2e)', () => {
 
       await request(server)
         .delete(`${API}/admin/products/${created.id}`)
-        .set(owner)
+        .set(admin)
         .expect(204);
 
       expect(await products.countDocuments()).toBe(0);
@@ -492,7 +494,7 @@ describe('products (e2e)', () => {
 
       const response = await request(server)
         .delete(`${API}/admin/products/${created.id}`)
-        .set(owner)
+        .set(admin)
         .expect(409);
 
       expect(response.body.details).toMatchObject({ orderCount: 1, canDeactivate: true });
@@ -502,8 +504,47 @@ describe('products (e2e)', () => {
     it('responde 404 para id que nao existe', async () => {
       await request(server)
         .delete(`${API}/admin/products/64b7f1c2a1b2c3d4e5f60718`)
-        .set(owner)
+        .set(admin)
         .expect(404);
+    });
+
+    /**
+     * O gerente nao apaga: ele despublica.
+     *
+     * O teste confere as duas metades da regra numa sequencia, porque e a
+     * sequencia que importa — a recusa so e aceitavel porque o caminho
+     * reversivel esta aberto ao lado dela. Checar o 403 sozinho provaria
+     * que a loja trancou, nao que ela continua operavel.
+     */
+    it('recusa o gerente, que tira da vitrine pelo status', async () => {
+      const created = await create({ name: 'Asad' });
+
+      await request(server)
+        .delete(`${API}/admin/products/${created.id}`)
+        .set(owner)
+        .expect(403);
+
+      expect(await products.countDocuments()).toBe(1);
+
+      const response = await request(server)
+        .patch(`${API}/admin/products/${created.id}/status`)
+        .set(owner)
+        .send({ isActive: false })
+        .expect(200);
+
+      expect(response.body.isActive).toBe(false);
+    });
+
+    it('recusa o STAFF, que nem le o cadastro para editar', async () => {
+      const created = await create({ name: 'Asad' });
+      const staff = await signIn(USER_ROLES.STAFF, 'vendedora@maisonessence.com');
+
+      await request(server)
+        .delete(`${API}/admin/products/${created.id}`)
+        .set(staff)
+        .expect(403);
+
+      expect(await products.countDocuments()).toBe(1);
     });
   });
 });

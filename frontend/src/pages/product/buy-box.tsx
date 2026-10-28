@@ -209,7 +209,10 @@ function PriceBlock({
 
         <span className={cx(styles.price, 'tabular')}>{formatCents(totalCents)}</span>
 
-        {discountPercent > 0 ? <Badge variant="ink">-{discountPercent}%</Badge> : null}
+        {/* A mesma forma do cartão da vitrine: dourado, ao lado do preço. O
+            cliente acabou de ver "20% OFF" na fileira e clicou justamente
+            nisso; trocar a forma aqui faria parecer outro desconto. */}
+        {discountPercent > 0 ? <span className={styles.off}>{discountPercent}% OFF</span> : null}
       </p>
 
       {quantity > 1 ? (
@@ -271,7 +274,9 @@ function StockNote({ variant }: { variant: PublicVariant | null }) {
   }
 
   if (variant.onDemand) {
-    return <output className={styles.stock}>Sob encomenda. Combinamos o prazo pelo WhatsApp.</output>;
+    return (
+      <output className={styles.stock}>Sob encomenda. Combinamos o prazo pelo WhatsApp.</output>
+    );
   }
 
   if (!isLowStock(variant)) {

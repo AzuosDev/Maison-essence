@@ -20,10 +20,30 @@ interface ProductShelfProps {
   tinted?: boolean;
   /** Sem respiro em cima: a prateleira encosta no que vem antes dela. */
   flush?: boolean;
+  /**
+   * Fileira que rola, ou grade que empilha.
+   *
+   * O padrão e a fileira. `grid` existe para uma prateleira só da home — a do
+   * meio —, e o motivo e de ritmo, não de preferência: três trilhos iguais
+   * seguidos fazem a página inteira pedir o mesmo gesto, e o do meio para de
+   * ser notado. Empilhado, ele mostra as oito promoções de uma vez, sem
+   * exigir que ninguém arraste para descobrir que existem.
+   */
+  layout?: 'carousel' | 'grid';
   className?: string | undefined;
 }
 
 const DEFAULT_SKELETON_COUNT = 8;
+
+/**
+ * O `sizes` da prateleira: dois cards no celular, quatro a partir de 768px.
+ *
+ * Não e o `DEFAULT_SIZES` do card porque aquele descreve a grade da listagem,
+ * que divide a largura com a barra de filtros. Aqui a fileira usa a tela
+ * inteira até 1280px, e a partir dali para de crescer junto com ela — por
+ * isso o último degrau desce de 25vw para 23vw em vez de subir.
+ */
+const SHELF_SIZES = '(min-width: 80rem) 23vw, (min-width: 48rem) 25vw, 50vw';
 
 /**
  * O que a prateleira precisa saber para decidir se existe.
@@ -86,6 +106,7 @@ export function ProductShelf({
   skeletonCount = DEFAULT_SKELETON_COUNT,
   tinted = false,
   flush = false,
+  layout = 'carousel',
   className,
 }: ProductShelfProps) {
   const titleId = useId();
@@ -176,12 +197,12 @@ export function ProductShelf({
       aria-busy={isLoading || undefined}
       className={cx(styles.shelf, flush && styles.flush, tinted && styles.tinted, className)}
     >
-      <Container>
+      <Container className={styles.heading}>
         <SectionHeading title={title} description={description} titleId={titleId} />
 
-        {/* O atalho fica logo abaixo do título, e não no fim da fileira: no
-            fim, ele só aparece para quem rolou a prateleira inteira — ou
-            seja, para quem menos precisa dele. */}
+        {/* O atalho fica na mesma linha do título, no canto oposto, e não no
+            fim da fileira: no fim, ele só aparece para quem rolou a
+            prateleira inteira — ou seja, para quem menos precisa dele. */}
         {to ? (
           <Link to={to} className={styles.headingLink}>
             {linkLabel}
@@ -190,62 +211,88 @@ export function ProductShelf({
       </Container>
 
       {/*
-        A fileira sangra até a borda da tela de proposito. O `Container` para
-        no título: se ele envolvesse a fileira também, o card da ponta
-        terminaria no limite do container e daria a impressão de que a
-        prateleira acaba ali. Sangrando, o card sai pela beirada e diz que há
-        mais coisa a direita sem precisar de nenhuma legenda.
+        Empilhada, a prateleira volta para dentro do `Container`.
+
+        A grade não sangra: card cortado na beirada e a promessa de que há
+        mais coisa a direita, e aqui não há — o que cabia já esta todo em
+        tela, em duas linhas. Sangrar seria mentir sobre um gesto que esta
+        grade não aceita.
       */}
-      <div className={styles.viewport}>
-        <ul ref={trackRef} className={styles.track} onScroll={measure}>
-          {isLoading
-            ? Array.from({ length: skeletonCount }, (_, index) => (
-                <li key={index} className={styles.item}>
-                  <ProductCardSkeleton />
-                </li>
-              ))
-            : products?.map((product) => (
-                <li key={product.id} className={styles.item}>
-                  <ProductCard product={product} />
-                </li>
-              ))}
-        </ul>
+      {layout === 'grid' ? (
+        <Container>
+          <ul className={styles.grid}>
+            {isLoading
+              ? Array.from({ length: skeletonCount }, (_, index) => (
+                  <li key={index}>
+                    <ProductCardSkeleton />
+                  </li>
+                ))
+              : products?.map((product) => (
+                  <li key={product.id}>
+                    <ProductCard product={product} sizes={SHELF_SIZES} />
+                  </li>
+                ))}
+          </ul>
+        </Container>
+      ) : (
+        /*
+          A fileira sangra até a borda da tela de proposito. O `Container` para
+          no título: se ele envolvesse a fileira também, o card da ponta
+          terminaria no limite do container e daria a impressão de que a
+          prateleira acaba ali. Sangrando, o card sai pela beirada e diz que há
+          mais coisa a direita sem precisar de nenhuma legenda.
+        */
+        <div className={styles.viewport}>
+          <ul ref={trackRef} className={styles.track} onScroll={measure}>
+            {isLoading
+              ? Array.from({ length: skeletonCount }, (_, index) => (
+                  <li key={index} className={styles.item}>
+                    <ProductCardSkeleton />
+                  </li>
+                ))
+              : products?.map((product) => (
+                  <li key={product.id} className={styles.item}>
+                    <ProductCard product={product} sizes={SHELF_SIZES} />
+                  </li>
+                ))}
+          </ul>
 
-        {/*
-          As setas só existem onde há mouse. No toque, arrastar e o gesto
-          nativo — e duas setas sobre a fileira comeriam a largura de meio card
-          numa tela de 390px.
+          {/*
+            As setas só existem onde há mouse. No toque, arrastar e o gesto
+            nativo — e duas setas sobre a fileira comeriam a largura de meio
+            card numa tela de 390px.
 
-          `aria-hidden` porque elas não acrescentam nada a quem não usa mouse:
-          os links dos produtos já estão todos na ordem do Tab, e o navegador
-          rola a fileira sozinho para revelar o que recebeu foco.
-        */}
-        <div className={styles.arrows} aria-hidden="true">
-          <button
-            type="button"
-            className={cx(styles.arrow, styles.arrowPrevious)}
-            disabled={reach.start}
-            tabIndex={-1}
-            onClick={() => {
-              scrollBy(-1);
-            }}
-          >
-            <ArrowGlyph />
-          </button>
+            `aria-hidden` porque elas não acrescentam nada a quem não usa
+            mouse: os links dos produtos já estão todos na ordem do Tab, e o
+            navegador rola a fileira sozinho para revelar o que recebeu foco.
+          */}
+          <div className={styles.arrows} aria-hidden="true">
+            <button
+              type="button"
+              className={cx(styles.arrow, styles.arrowPrevious)}
+              disabled={reach.start}
+              tabIndex={-1}
+              onClick={() => {
+                scrollBy(-1);
+              }}
+            >
+              <ArrowGlyph />
+            </button>
 
-          <button
-            type="button"
-            className={styles.arrow}
-            disabled={reach.end}
-            tabIndex={-1}
-            onClick={() => {
-              scrollBy(1);
-            }}
-          >
-            <ArrowGlyph />
-          </button>
+            <button
+              type="button"
+              className={styles.arrow}
+              disabled={reach.end}
+              tabIndex={-1}
+              onClick={() => {
+                scrollBy(1);
+              }}
+            >
+              <ArrowGlyph />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

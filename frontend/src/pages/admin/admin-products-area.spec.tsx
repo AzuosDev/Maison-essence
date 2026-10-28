@@ -22,6 +22,10 @@ import AdminProductsPage from './admin-products-page';
  *   preços em centavos;
  * - **duplicar uma variante** copia o trabalho sem copiar o SKU;
  * - **excluir pede confirmação nomeando o produto**.
+ *
+ * E o que a seleção em lote prometeu: marcar linha, mandar o comando uma vez
+ * e o painel gravar produto por produto; o recorte novo chegar sem marcação
+ * velha; e o STAFF não ver caixa nenhuma para marcar.
  */
 
 const CATEGORY_ID = '68d1f2a3c4b5e6f708192a3b';
@@ -80,7 +84,22 @@ const PRODUCT = {
   updatedAt: '2026-09-01T12:00:00.000Z',
 };
 
+/** O segundo produto. So os casos de lote precisam dele: com um so na lista,
+    "marcar dois e mandar" não tem o que provar. */
+const OTHER = {
+  ...PRODUCT,
+  id: 'p2',
+  name: 'Yara',
+  slug: 'yara',
+  variants: [{ ...PRODUCT.variants[0]!, id: 'v2', sku: 'YAR-100' }],
+};
+
 const LIST = { items: [PRODUCT], page: 1, totalPages: 1, totalItems: 1, hasMore: false };
+
+const PAIR = { items: [PRODUCT, OTHER], page: 1, totalPages: 1, totalItems: 2, hasMore: false };
+
+/** O que a listagem responde neste caso. Os de lote trocam por `PAIR`. */
+let list: typeof LIST = LIST;
 
 /** As chamadas que saíram, para os casos que perguntam o que foi pedido. */
 let calls: { url: string; method: string; body: string }[] = [];
@@ -94,6 +113,7 @@ function jsonResponse(body: unknown, status = 200): Response {
 
 beforeEach(() => {
   calls = [];
+  list = LIST;
 
   // Sem `matchMedia` o jsdom desenha tudo como celular, e e na largura de
   // desktop que a tabela tem colunas — e nas colunas que a ausência do preço
@@ -130,7 +150,7 @@ beforeEach(() => {
         return Promise.resolve(jsonResponse(PRODUCT));
       }
 
-      return Promise.resolve(jsonResponse(LIST));
+      return Promise.resolve(jsonResponse(list));
     }),
   );
 });
@@ -264,10 +284,89 @@ test('o interruptor manda o valor oposto', async () => {
   });
 });
 
+/* ---- A seleção em lote ----------------------------------------------------- */
+
+test('marcar duas linhas e tirar do ar grava os dois', async () => {
+  const user = userEvent.setup();
+
+  list = PAIR;
+  signInAs(USER_ROLES.OWNER);
+
+  abrir('/admin/produtos');
+
+  await user.click(await screen.findByRole('checkbox', { name: 'Selecionar Asad' }));
+  await user.click(screen.getByRole('checkbox', { name: 'Selecionar Yara' }));
+
+  expect(screen.getByText('2 produtos selecionados')).toBeDefined();
+
+  await user.click(screen.getByRole('button', { name: 'Tirar do ar' }));
+
+  await waitFor(() => {
+    const written = calls.filter((call) => call.method === 'PATCH');
+
+    // Uma chamada por produto: o servidor não tem rota de lote, e a tela não
+    // finge que tem.
+    expect(written.map((call) => call.url.includes('/admin/products/p1/status'))).toContain(true);
+    expect(written.map((call) => call.url.includes('/admin/products/p2/status'))).toContain(true);
+    expect(written.every((call) => call.body.includes('false'))).toBe(true);
+  });
+
+  // A barra some com a seleção, que o lote consumiu.
+  await waitFor(() => {
+    expect(screen.queryByText('2 produtos selecionados')).toBeNull();
+  });
+});
+
+test('o cabeçalho marca a página inteira', async () => {
+  const user = userEvent.setup();
+
+  list = PAIR;
+  signInAs(USER_ROLES.OWNER);
+
+  abrir('/admin/produtos');
+
+  await user.click(
+    await screen.findByRole('checkbox', { name: 'Selecionar os produtos desta página' }),
+  );
+
+  expect(screen.getByText('2 produtos selecionados')).toBeDefined();
+});
+
+test('trocar o recorte esvazia a seleção', async () => {
+  const user = userEvent.setup();
+
+  list = PAIR;
+  signInAs(USER_ROLES.OWNER);
+
+  abrir('/admin/produtos');
+
+  await user.click(await screen.findByRole('checkbox', { name: 'Selecionar Asad' }));
+  expect(screen.getByText('1 produto selecionado')).toBeDefined();
+
+  await user.click(screen.getByRole('button', { name: 'Fora do ar' }));
+
+  // Marcar na busca por "Asad" e mandar depois de trocar o filtro seria agir
+  // no que não esta mais na tela.
+  await waitFor(() => {
+    expect(screen.queryByText('1 produto selecionado')).toBeNull();
+  });
+});
+
+test('o STAFF não vê caixa de seleção', async () => {
+  list = PAIR;
+  signInAs(USER_ROLES.STAFF);
+
+  abrir('/admin/produtos');
+
+  await screen.findByRole('link', { name: 'Asad' });
+
+  expect(screen.queryByRole('checkbox', { name: /Selecionar/ })).toBeNull();
+});
+
 test('excluir pede confirmação nomeando o produto', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir('/admin/produtos');
 
@@ -284,6 +383,23 @@ test('excluir pede confirmação nomeando o produto', async () => {
   await waitFor(() => {
     expect(calls.some((call) => call.method === 'DELETE')).toBe(true);
   });
+});
+
+test('o gerente não acha o que excluir, e acha o que despublicar', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir('/admin/produtos');
+
+  await user.click(await screen.findByRole('button', { name: 'Ações de Asad' }));
+
+  expect(screen.queryByRole('button', { name: /Excluir produto/ })).toBeNull();
+
+  // O menu continua com o que ele faz, e o interruptor que despublica — o
+  // caminho que resolve o mesmo caso e desfaz — continua na linha.
+  expect(screen.getByRole('link', { name: 'Editar cadastro' })).toBeDefined();
+  expect(screen.getByRole('switch', { name: 'Publicar Asad' })).toBeDefined();
 });
 
 /* ---- O cadastro -------------------------------------------------------------- */

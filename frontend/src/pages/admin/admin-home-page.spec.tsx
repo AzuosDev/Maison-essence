@@ -189,7 +189,7 @@ test('com senha temporária, o painel manda trocar antes de qualquer coisa', () 
   expect(screen.getByText('Troque a senha')).toBeDefined();
 });
 
-test('a dona vê o menu inteiro, o faturamento e o total do pedido', async () => {
+test('o gerente vê o menu da loja, o faturamento e o total do pedido', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirPainel();
@@ -201,9 +201,13 @@ test('a dona vê o menu inteiro, o faturamento e o total do pedido', async () =>
   expect(within(menu).getByRole('link', { name: 'Produtos' })).toBeDefined();
   expect(within(menu).getByRole('link', { name: 'Pagamento' })).toBeDefined();
 
-  // Configurações não: a moldura da loja se acerta uma vez, com quem mantem
-  // o sistema, e não no dia a dia de quem vende.
-  expect(within(menu).queryByRole('link', { name: 'Configurações' })).toBeNull();
+  // Configurações entra: e lá que ele corrige o horário de atendimento e a
+  // barra de avisos. O que naquela tela não e dele e recortado por campo,
+  // dentro dela.
+  expect(within(menu).getByRole('link', { name: 'Configurações' })).toBeDefined();
+
+  // Sistema não: usuários, auditoria e saúde são de quem mantem o painel.
+  expect(within(menu).queryByRole('link', { name: 'Sistema' })).toBeNull();
 
   // O total do pedido na lista.
   expect(await screen.findByText('R$ 379,80')).toBeDefined();

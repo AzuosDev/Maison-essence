@@ -1,10 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import type { Model, Types } from 'mongoose';
+import type { Model, QueryFilter, Types } from 'mongoose';
 import type { Paginated } from '../../common/pagination.js';
 import { paginate, skipFor } from '../../common/pagination.js';
 import { slugify } from '../../database/slug.js';
-import { Category, Order, Product, QuantityDiscount, SOLD_ORDER_STATUSES } from '../../schemas.js';
+import {
+  Category,
+  Order,
+  Product,
+  QuantityDiscount,
+  SOLD_ORDER_STATUSES,
+  StoreSettings,
+} from '../../schemas.js';
+import type { StoreSettingsModel } from '../../schemas.js';
 import { CATEGORY_NOT_FOUND_MESSAGE } from '../categories/categories.constants.js';
 import {
   catalogCollation,
@@ -38,8 +46,9 @@ const CARD_FIELDS = '-description';
  * Quantas posições do ranking buscar para cada vaga da prateleira.
  *
  * O ranking sai dos pedidos, que continuam citando produto desativado ou
- * excluído da loja. Buscar com folga evita que a prateleira de mais vendidos
- * chegue pela metade a home por causa de dois produtos que saíram de linha.
+ * excluído da loja. Buscar com folga evita que dois produtos fora de linha
+ * custem a prateleira duas vagas de venda real — vagas que o complemento do
+ * catálogo preencheria com produto que ainda não vendeu nada.
  */
 const RANKING_SLACK = 3;
 
@@ -63,6 +72,7 @@ export class PublicCatalogService {
     @InjectModel(Category.name) private readonly categories: Model<Category>,
     @InjectModel(QuantityDiscount.name) private readonly discounts: Model<QuantityDiscount>,
     @InjectModel(Order.name) private readonly orders: Model<Order>,
+    @InjectModel(StoreSettings.name) private readonly settings: StoreSettingsModel,
   ) {}
 
   /**
@@ -122,63 +132,116 @@ export class PublicCatalogService {
    * A soma e de unidades e não de pedidos: dez frascos em uma compra só pesam
    * dez. O ranking sai dos pedidos e a vitrine sai do catálogo, então produto
    * desativado desaparece da prateleira sem sumir do histórico.
+   *
+   * ## A prateleira não chega pela metade
+   *
+   * O ranking manda enquanto tem o que mandar, e as vagas que sobram são
+   * completadas com o catálogo: destaque primeiro, depois o mais novo — o
+   * mesmo critério dos relacionados da página do produto. Loja que ainda não
+   * vendeu não tem ranking nenhum, e sem o complemento a primeira fileira da
+   * home — a que a cliente vê antes de qualquer outra — simplesmente não
+   * existia no dia da inauguração.
+   *
+   * O complemento entra atrás, nunca na frente: a primeira posição e de quem
+   * vendeu de verdade, e cada venda nova empurra para fora da prateleira um
+   * produto que estava ali só para preencher, sem ninguém mexer em nada.
    */
   async bestSellers(limit = SHELF_SIZE): Promise<PublicProductView[]> {
-    const ranking = await this.orders
-      .aggregate<SoldRow>([
-        { $match: { status: { $in: [...SOLD_ORDER_STATUSES] } } },
-        { $unwind: '$items' },
-        { $group: { _id: '$items.productId', sold: { $sum: '$items.quantity' } } },
-        { $sort: { sold: -1, _id: -1 } },
-        { $limit: limit * RANKING_SLACK },
-      ])
-      .exec();
+    const sold = await this.ranked(limit);
 
-    if (ranking.length === 0) {
-      return [];
+    if (sold.length >= limit) {
+      return this.toCards(sold);
     }
 
-    const found = await this.products
-      .find({
-        _id: { $in: ranking.map((row) => row._id) },
-        isActive: true,
-        variants: { $elemMatch: { isActive: true } },
-      })
-      .select(CARD_FIELDS)
-      .lean<LeanProduct[]>()
-      .exec();
-    const byId = new Map(found.map((product) => [product._id.toHexString(), product]));
-    // A ordem e a do ranking, não a do `$in`: o Mongo devolve na ordem que
-    // achar melhor, e aqui a ordem e o conteúdo da prateleira.
-    const ordered = ranking
-      .map((row) => byId.get(row._id.toHexString()))
-      .filter((product): product is LeanProduct => product !== undefined)
-      .slice(0, limit);
-
-    return this.toCards(ordered);
+    return this.toCards([...sold, ...(await this.fill(limit - sold.length, sold))]);
   }
 
   /**
    * A página do produto: ele, as categorias dele e até oito relacionados.
    *
-   * Produto inativo e produto que ficou sem nenhuma variante a venda dao 404
-   * iguais. O segundo caso não e detalhe: sem variante ativa não há preço nem
-   * botão de comprar, e a página só serviria para frustrar quem clicou.
+   * Produto inativo e produto sem variante a venda dao 404 iguais — ver
+   * `sellable`, que e onde essa regra mora.
    */
   async findBySlug(slug: string): Promise<PublicProductDetailView> {
-    const product = await this.products
-      .findOne({
-        slug: slugify(slug),
-        isActive: true,
-        variants: { $elemMatch: { isActive: true } },
-      })
-      .lean<LeanProductFull | null>()
-      .exec();
+    const product = await this.sellable({ slug: slugify(slug) });
 
     if (!product) {
       throw new NotFoundException(PRODUCT_NOT_FOUND_MESSAGE);
     }
 
+    return this.detailOf(product);
+  }
+
+  /**
+   * O perfume da vez: o bloco grande que fecha a home.
+   *
+   * ## Quem escolhe
+   *
+   * A dona, apontando o produto em Ajustes. Antes deste campo a seção era o
+   * primeiro destaque marcado, e trocar o perfume da vez obrigava a desmarcar
+   * o destaque dos outros — uma decisão sobre a home que só se tomava mexendo
+   * no cadastro de vários produtos.
+   *
+   * ## Por que a resposta vem inteira, e não só o id
+   *
+   * Porque o bloco tem foto grande, descrição, a escada de desconto e um
+   * botão de comprar: e a página do produto em miniatura. Devolver o produto
+   * montado aqui economiza uma ida ao servidor na home — e a seção, que e a
+   * última da página, era justamente a que fazia duas.
+   *
+   * ## Quando a escolha não vale
+   *
+   * Produto que saiu do ar, perdeu a última variante a venda ou foi excluído
+   * cai no primeiro destaque, o critério antigo. Escolha que envelheceu não
+   * apaga o bloco de venda que fecha a vitrine; sem destaque nenhum, aí sim a
+   * seção não existe — e o 404 e o que o frontend lê para não desenha-lá.
+   */
+  async perfumeOfTheWeek(): Promise<PublicProductDetailView> {
+    const { featuredPerfumeProductId } = await this.settings.getOrCreate();
+    const chosen =
+      featuredPerfumeProductId === null
+        ? null
+        : await this.sellable({ _id: featuredPerfumeProductId });
+    const product = chosen ?? (await this.newestFeatured());
+
+    if (!product) {
+      throw new NotFoundException(PRODUCT_NOT_FOUND_MESSAGE);
+    }
+
+    return this.detailOf(product);
+  }
+
+  /**
+   * O produto inteiro, com descrição, se ele estiver a venda agora.
+   *
+   * Produto inativo e produto que ficou sem nenhuma variante a venda somem
+   * iguais. O segundo caso não e detalhe: sem variante ativa não há preço nem
+   * botão de comprar, e a página só serviria para frustrar quem clicou.
+   */
+  private sellable(where: QueryFilter<Product>): Promise<LeanProductFull | null> {
+    return this.products
+      .findOne({ ...where, isActive: true, variants: { $elemMatch: { isActive: true } } })
+      .lean<LeanProductFull | null>()
+      .exec();
+  }
+
+  /**
+   * O primeiro destaque da vitrine.
+   *
+   * E a mesma ordem da prateleira de destaques — o mais novo primeiro —,
+   * porque era dali que o perfume da vez saia antes de a dona poder escolher,
+   * e continua sendo o padrão de quem não escolheu.
+   */
+  private newestFeatured(): Promise<LeanProductFull | null> {
+    return this.products
+      .findOne(catalogFilter({ featured: true }))
+      .sort({ createdAt: -1, _id: -1 })
+      .lean<LeanProductFull | null>()
+      .exec();
+  }
+
+  /** A página do produto montada: as categorias dele, os relacionados e a escada. */
+  private async detailOf(product: LeanProductFull): Promise<PublicProductDetailView> {
     const [categories, related] = await Promise.all([
       this.categories
         .find({ _id: { $in: product.categoryIds }, isActive: true })
@@ -204,6 +267,79 @@ export class PublicCatalogService {
       .exec();
 
     return this.toCards(found);
+  }
+
+  /**
+   * O ranking de vendas já virado em produto, na ordem que a prateleira usa.
+   *
+   * Pede mais posições do que as vagas — `RANKING_SLACK` — porque o ranking
+   * cita produto que saiu de linha, e quem não esta mais a venda cai na
+   * consulta do catálogo logo depois.
+   */
+  private async ranked(limit: number): Promise<LeanProduct[]> {
+    const ranking = await this.orders
+      .aggregate<SoldRow>([
+        { $match: { status: { $in: [...SOLD_ORDER_STATUSES] } } },
+        { $unwind: '$items' },
+        { $group: { _id: '$items.productId', sold: { $sum: '$items.quantity' } } },
+        { $sort: { sold: -1, _id: -1 } },
+        { $limit: limit * RANKING_SLACK },
+      ])
+      .exec();
+
+    if (ranking.length === 0) {
+      return [];
+    }
+
+    const found = await this.products
+      .find({
+        _id: { $in: ranking.map((row) => row._id) },
+        isActive: true,
+        variants: { $elemMatch: { isActive: true } },
+      })
+      .select(CARD_FIELDS)
+      .lean<LeanProduct[]>()
+      .exec();
+    const byId = new Map(found.map((product) => [product._id.toHexString(), product]));
+
+    // A ordem e a do ranking, não a do `$in`: o Mongo devolve na ordem que
+    // achar melhor, e aqui a ordem e o conteúdo da prateleira.
+    return ranking
+      .map((row) => byId.get(row._id.toHexString()))
+      .filter((product): product is LeanProduct => product !== undefined)
+      .slice(0, limit);
+  }
+
+  /**
+   * O que completa as vagas que o ranking não preencheu.
+   *
+   * Destaque primeiro: e a marcação pela qual a dona já disse quais produtos
+   * valem uma vaga na home, e numa loja sem venda e a única curadoria que
+   * existe. Depois dele, o catálogo do mais antigo para o mais novo — e aqui
+   * a ordem e invertida de propósito.
+   *
+   * Duas razoes para o mais antigo. A primeira e a página: "Compre também" e
+   * a fileira do que acabou de chegar, e e vizinha desta — completar mais
+   * vendidos com o mais novo faria a home mostrar os mesmos oito cards duas
+   * vezes, com dois títulos diferentes. A segunda e o que a seção promete:
+   * mais vendido e produto estabelecido, que esta na loja há tempo e continua
+   * saindo, não o lançamento de ontem.
+   *
+   * O filtro e o da vitrine: produto fora do ar e produto sem variante a
+   * venda não entram nem para preencher. E o `_id` fecha a ordem, como em
+   * toda ordenação da vitrine — dois produtos cadastrados no mesmo segundo,
+   * que e o que acontece numa importação de catálogo, trocariam de lugar
+   * entre uma resposta e a seguinte, e a prateleira pareceria se embaralhar
+   * sozinha.
+   */
+  private fill(missing: number, shown: readonly LeanProduct[]): Promise<LeanProduct[]> {
+    return this.products
+      .find({ ...catalogFilter({}), _id: { $nin: shown.map((product) => product._id) } })
+      .sort({ isFeatured: -1, createdAt: 1, _id: 1 })
+      .limit(missing)
+      .select(CARD_FIELDS)
+      .lean<LeanProduct[]>()
+      .exec();
   }
 
   /**

@@ -5,6 +5,7 @@ import { ArrowLeftIcon, ConfirmDialog, DeliveryTable, PlusIcon } from '@/compone
 import { Button, EmptyState, Input, Modal, Skeleton, useToast } from '@/components/ui';
 import {
   DELIVERY_LIMITS,
+  canDeleteForever,
   canManageStore,
   cityDraftToCreate,
   emptyCityDraft,
@@ -44,13 +45,17 @@ import styles from './admin-delivery-page.module.css';
  * ## Desativar e o caminho normal de parar de atender
  *
  * Excluir apaga o cadastro e obriga a recadastrar tudo se a loja voltar a
- * atender ali. Desativar tira a cidade do checkout na hora e guarda a taxa. O
- * servidor aceita os dois; a tela deixa claro qual e qual.
+ * atender ali. Desativar tira a cidade do checkout na hora e guarda a taxa.
+ *
+ * Para o gerente da loja esse e o unico caminho: excluir e do administrador, e
+ * o item nem aparece no menu da linha. Cadastrar cidade, mexer na taxa, no
+ * prazo e no frete gratis continuam na mao dele — o que saiu foi a tecla que
+ * nao tem volta.
  *
  * ## O que o STAFF vê
  *
- * Nada. A tabela de taxas e preço, e preço e da dona — o backend recusa
- * inclusive a leitura.
+ * Nada. A tabela de taxas e preço, e preço e de quem administra a loja — o
+ * backend recusa inclusive a leitura.
  */
 export default function AdminDeliveryPage() {
   const role = useAdminRole();
@@ -198,7 +203,7 @@ export default function AdminDeliveryPage() {
                 },
               );
             }}
-            onDelete={setDeleting}
+            {...(canDeleteForever(role) ? { onDelete: setDeleting } : {})}
           />
         </>
       )}

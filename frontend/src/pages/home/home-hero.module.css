@@ -197,16 +197,17 @@
 }
 
 /*
- * O botão do banner: creme cheio sobre a foto.
+ * O botão do banner e o mesmo botão dourado do resto da loja.
  *
- * O contornado que estava aqui antes dependia da foto atrás dele para ter
- * contraste — sobre uma área clara da arte, o contorno creme sumia. O botão
- * cheio traz o próprio fundo.
+ * Nada de troca de cor aqui. A regra da vitrine e que o dourado preenchido e
+ * a ação, e o banner e a ação mais importante da primeira tela — ele precisa
+ * se parecer com o botão que o cliente vai apertar dez vezes mais abaixo,
+ * não com um terceiro tipo de botão que só existe sobre foto.
+ *
+ * O dourado cheio também resolve o problema que o contornado tinha aqui:
+ * sobre uma área clara da arte, o contorno sumia. Este traz o próprio fundo.
  */
 .action {
-  --ink: var(--light);
-  --cream: var(--dark);
-
   margin-top: var(--space-8);
   pointer-events: auto;
 }

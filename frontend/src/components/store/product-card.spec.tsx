@@ -141,9 +141,7 @@ test('produto de várias variantes abre o seletor antes de adicionar', async () 
   // opção — como o nome e a foto — vive na dica em memória, fora do
   // `localStorage`. Conferir os dois lados e o que garante que a variante
   // certa foi escolhida *e* que a linha continua sem nada além dos ids.
-  expect(useCart.getState().lines).toEqual([
-    { productId: 'p1', variantId: 'v100', quantity: 1 },
-  ]);
+  expect(useCart.getState().lines).toEqual([{ productId: 'p1', variantId: 'v100', quantity: 1 }]);
 
   expect(useCart.getState().hints['p1:v100']).toEqual(
     expect.objectContaining({ variantLabel: '100ml', name: 'Asad' }),
@@ -173,7 +171,10 @@ test('o preço riscado aparece quando há compareAtPrice', () => {
   );
 
   expect(screen.getByText(/R\$ 240,00/)).toBeDefined();
-  expect(screen.getByText('-25%')).toBeDefined();
+
+  // Ao lado do preço, e não num selo sobre a foto: e ali que esta o olho de
+  // quem compara dois cartoes da mesma fileira.
+  expect(screen.getByText('25% OFF')).toBeDefined();
 });
 
 test('o preço riscado some quando o produto tem faixa de preço', () => {
@@ -211,7 +212,7 @@ test('produto esgotado mostra o selo e não deixa adicionar', () => {
 test('a chamada de desconto progressivo aparece quando o produto tem regra', () => {
   montar(produto({ quantityDiscount: { minQty: 3, percentOff: 10 } }));
 
-  expect(screen.getByText('Leve 3 e ganhe 10%')).toBeDefined();
+  expect(screen.getByText('Leve 3: -10%')).toBeDefined();
 });
 
 test('a linha de parcelamento usa as regras que a loja cadastrou', async () => {

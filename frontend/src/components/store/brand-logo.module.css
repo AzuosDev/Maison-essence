@@ -21,10 +21,21 @@
    */
   --wordmark-tracking: var(--tracking-logo);
 
+  /*
+   * Empilhada ou deitada, e com quanto respiro no meio.
+   *
+   * Nasce empilhada, que e a forma de repouso da marca. O cabeçalho a deita
+   * no desktop, onde a assinatura divide a banda com a busca e a altura vale
+   * mais que a simetria — e faz isso trocando esta variável, sem conhecer o
+   * nome de nenhuma classe daqui.
+   */
+  --logo-direction: column;
+  --logo-gap: var(--space-8);
+
   display: inline-flex;
-  flex-direction: column;
+  flex-direction: var(--logo-direction);
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--logo-gap);
 
   color: var(--ink);
 
@@ -50,10 +61,18 @@
   height: var(--monogram-size);
 }
 
+/*
+ * O nome, na serifada da marca.
+ *
+ * `--font-brand`, e não `--font-display`: a loja inteira passou a falar numa
+ * grotesca, e a serifada sobrou para esta linha — que e logotipo, não
+ * tipografia de interface. O token tem nome próprio exatamente para que essa
+ * fronteira seja visível de quem lê o CSS.
+ */
 .wordmark {
-  font-family: var(--font-display);
+  font-family: var(--font-brand);
   font-size: var(--wordmark-text);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
   line-height: 1;
   text-transform: uppercase;
   letter-spacing: var(--wordmark-tracking);
@@ -63,13 +82,20 @@
   white-space: nowrap;
 }
 
-/* No rodapé e na gaveta, sobre fundo escuro. */
+/*
+ * Sobre a laje — hoje, o rodapé.
+ *
+ * As duas cores saem da própria laje em vez de serem o creme e o dourado
+ * escritos aqui. E o que faz a assinatura acompanhar a laje em que ela cair:
+ * na laje preta o nome continua dourado, como na logo; na laje dourada do
+ * rodapé ele vira tinta, porque dourado sobre dourado da 2.4:1 e o nome e
+ * texto, não enfeite. Sobre o creme da página ele nunca e dourado, pela mesma
+ * conta — e por isso `.inverted` existe.
+ */
 .inverted {
-  color: var(--cream);
+  color: var(--slab-ink);
 }
 
-/* Sobre o escuro o nome fica dourado, como na logo. No claro não: o dourado
-   da 2.55:1 sobre o creme e o nome e texto. */
 .inverted .wordmark {
-  color: var(--gold);
+  color: var(--slab-accent, var(--gold));
 }

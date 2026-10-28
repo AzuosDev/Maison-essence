@@ -63,7 +63,14 @@ export interface CategoryTreeProps {
   onAddChild: (parent: AdminCategoryNode) => void;
   /** Abre o diálogo de endereço e categoria pai. */
   onEdit: (category: AdminCategory) => void;
-  onDelete: (category: AdminCategory) => void;
+  /**
+   * Ausente: o menu da linha não desenha o item "Excluir".
+   *
+   * E assim que o recorte por papel chega aqui — a árvore não pergunta quem
+   * esta logada, ela desenha o que recebeu. Quem decide e a tela, com
+   * `canDeleteForever`.
+   */
+  onDelete?: ((category: AdminCategory) => void) | undefined;
   /** Uma reordenação em voo: o arraste para até a resposta chegar. */
   isReordering?: boolean;
 }
@@ -200,7 +207,7 @@ interface RowProps {
   onRename: (category: AdminCategory, name: string) => void;
   onToggleActive: (category: AdminCategory) => void;
   onEdit: (category: AdminCategory) => void;
-  onDelete: (category: AdminCategory) => void;
+  onDelete: ((category: AdminCategory) => void) | undefined;
   extraItems: RowMenuItem[];
 }
 
@@ -225,7 +232,7 @@ function Row({
   const items: RowMenuItem[] = [
     ...extraItems,
     {
-      label: 'Endereço e posição',
+      label: 'Editar categoria',
       icon: PencilIcon,
       onSelect: () => {
         onEdit(category);
@@ -247,15 +254,19 @@ function Row({
         onMove(position + 1);
       },
     },
-    {
-      label: 'Excluir',
-      icon: TrashIcon,
-      tone: 'danger',
-      separated: true,
-      onSelect: () => {
-        onDelete(category);
-      },
-    },
+    ...(onDelete === undefined
+      ? []
+      : [
+          {
+            label: 'Excluir',
+            icon: TrashIcon,
+            tone: 'danger' as const,
+            separated: true,
+            onSelect: () => {
+              onDelete(category);
+            },
+          },
+        ]),
   ];
 
   return (

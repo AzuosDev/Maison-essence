@@ -161,6 +161,21 @@ const accountRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
+    // A recuperação de senha, nas mesmas condições: duas páginas da loja,
+    // sem guarda nenhum. A segunda e o destino do link do e-mail, e por isso
+    // precisa abrir para quem não tem sessão — e justamente quem não
+    // consegue abrir uma.
+    {
+      path: 'senha/esqueci',
+      lazy: page(() => import('@/pages/account/account-forgot-password-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+    {
+      path: 'senha/nova',
+      lazy: page(() => import('@/pages/account/account-new-password-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
     {
       path: 'pedidos',
       lazy: page(() => import('@/pages/account/account-orders-page')),

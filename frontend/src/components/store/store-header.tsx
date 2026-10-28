@@ -93,61 +93,66 @@ export function StoreHeader() {
     <>
       <header ref={headerRef} className={cx(styles.header, scrolled && styles.scrolled)}>
         <Container className={styles.bar}>
-          <div className={styles.left}>
-            <button
-              type="button"
-              className={cx(iconStyles.button, styles.menuButton)}
-              onClick={() => {
-                setMenuOpen(true);
-              }}
-              aria-label="Abrir o menu"
-            >
-              <MenuIcon />
-            </button>
-
-            {/*
-              A busca aberta, em forma de campo, e não escondida atrás de uma
-              lupa. Num catalogo de perfume o nome e a porta de entrada — o
-              cliente chega sabendo o que quer — e um campo visível convida a
-              digitar de um jeito que um icone de 20px não convida.
-
-              E um botão, e não um `<input>`: quem digita precisa das sugestões,
-              do histórico e do Escape, e tudo isso já existe pronto na
-              sobreposição de busca. Um segundo campo aqui seria uma segunda
-              implementação da mesma coisa, com metade dos recursos.
-            */}
-            <button
-              type="button"
-              className={styles.searchField}
-              onClick={() => {
-                setSearchOpen(true);
-              }}
-            >
-              <SearchIcon width="18" height="18" />
-              <span className={styles.searchLabel}>O que você procura?</span>
-            </button>
-          </div>
+          <button
+            type="button"
+            className={cx(iconStyles.button, styles.menuButton)}
+            onClick={() => {
+              setMenuOpen(true);
+            }}
+            aria-label="Abrir o menu"
+          >
+            <MenuIcon />
+          </button>
 
           <BrandLogo className={styles.logo} />
 
-          <div className={styles.right}>
-            <button
-              type="button"
-              className={cx(iconStyles.button, styles.searchButton)}
-              onClick={() => {
-                setSearchOpen(true);
-              }}
-              aria-label="Buscar produtos"
-            >
-              <SearchIcon />
-            </button>
+          {/*
+            A busca aberta, em forma de campo largo, e não escondida atrás de
+            uma lupa. Num catalogo de perfume o nome e a porta de entrada — o
+            cliente chega sabendo o que quer — e um campo que atravessa o
+            cabeçalho convida a digitar de um jeito que um icone de 20px não
+            convida.
 
+            E um botão, e não um `<input>`: quem digita precisa das sugestões,
+            do histórico e do Escape, e tudo isso já existe pronto na
+            sobreposição de busca. Um segundo campo aqui seria uma segunda
+            implementação da mesma coisa, com metade dos recursos.
+
+            **Um elemento só, em dois lugares.** No celular ele cai numa
+            segunda fileira, de ponta a ponta, e no desktop ele fica no meio
+            da banda — e quem muda isso e a área da grade, no CSS. Dois
+            botões no markup seriam dois alvos para o teclado e duas
+            implementações para manter.
+          */}
+          <button
+            type="button"
+            className={styles.searchField}
+            onClick={() => {
+              setSearchOpen(true);
+            }}
+          >
+            <span className={styles.searchLabel}>O que você procura?</span>
+
+            <span className={styles.searchSubmit} aria-hidden="true">
+              <SearchIcon width="18" height="18" />
+            </span>
+          </button>
+
+          <div className={styles.right}>
             <Link
               to={ROUTES.account.root}
               className={cx(iconStyles.button, styles.accountLink)}
               aria-label="Minha conta"
             >
               <UserIcon />
+
+              {/* O rótulo so aparece onde ha largura para ele. No celular a
+                  conta e o icone, e o `aria-label` acima continua dizendo o
+                  nome inteiro para quem ouve. */}
+              <span className={styles.accountLabel}>
+                <span className={styles.accountLine}>Entrar</span>
+                <span className={styles.accountNote}>ou cadastre-se</span>
+              </span>
             </Link>
 
             <CartButton />
@@ -175,7 +180,7 @@ export function StoreHeader() {
           navegação desaparecia justamente na hora em que o cliente começa a
           procurar outra coisa. O que encolhe ao rolar e só a banda de cima.
         */}
-        <div className={styles.navRow}>
+        <div className={cx(styles.navRow, 'on-dark')}>
           <Container className={styles.navInner}>
             <MainNav
               categoriesOpen={categoriesOpen}

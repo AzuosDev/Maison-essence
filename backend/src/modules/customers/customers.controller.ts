@@ -21,16 +21,24 @@ import type { AuthenticatedCustomer } from './customer-auth.types.js';
 import { readCustomerRefreshToken, setCustomerCookies } from './customer.cookies.js';
 import type { CustomerSession, CustomerView } from './customer.view.js';
 import {
+  CUSTOMER_CHANGE_PASSWORD_RATE_LIMIT,
+  CUSTOMER_FORGOT_PASSWORD_RATE_LIMIT,
   CUSTOMER_LOGIN_RATE_LIMIT,
   CUSTOMER_REFRESH_RATE_LIMIT,
   CUSTOMER_REGISTER_RATE_LIMIT,
+  CUSTOMER_RESET_PASSWORD_RATE_LIMIT,
 } from './customers.constants.js';
 import { CustomerAuth } from './decorators/customer-auth.decorator.js';
 import { CurrentCustomer } from './decorators/current-customer.decorator.js';
+import { ChangeCustomerPasswordDto } from './dto/change-customer-password.dto.js';
+import { ForgotPasswordDto } from './dto/forgot-password.dto.js';
 import { LoginCustomerDto } from './dto/login-customer.dto.js';
 import { RefreshCustomerDto } from './dto/refresh-customer.dto.js';
 import { RegisterCustomerDto } from './dto/register-customer.dto.js';
+import { ResetPasswordDto } from './dto/reset-password.dto.js';
 import { UpdateCustomerDto } from './dto/update-customer.dto.js';
+import { PasswordResetService } from './password-reset.service.js';
+import type { ForgotPasswordResult } from './password-reset.service.js';
 
 /**
  * A conta do cliente da loja.
@@ -50,6 +58,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto.js';
 export class CustomersController {
   constructor(
     private readonly customers: CustomerAuthService,
+    private readonly resets: PasswordResetService,
     private readonly config: ConfigService<Env, true>,
   ) {}
 
@@ -127,6 +136,60 @@ export class CustomersController {
     @Body() dto: UpdateCustomerDto,
   ): Promise<CustomerView> {
     return this.customers.update(customer.id, dto);
+  }
+
+  /**
+   * Troca a senha de quem esta dentro.
+   *
+   * Responde com sessão nova, e não 204, porque a troca sobe o
+   * `credentialVersion` — o access token que acabou de ser usado para chegar
+   * aqui morre junto com os outros. Sem o par novo na resposta, a pessoa
+   * trocaria a senha e seria deslogada no clique seguinte.
+   */
+  @CustomerAuth()
+  @RateLimit(CUSTOMER_CHANGE_PASSWORD_RATE_LIMIT)
+  @Patch('me/password')
+  async changePassword(
+    @CurrentCustomer() customer: AuthenticatedCustomer,
+    @Body() dto: ChangeCustomerPasswordDto,
+    @Req() request: Request,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<CustomerSession> {
+    const session = await this.customers.changePassword(customer.id, dto, context(request));
+
+    setCustomerCookies(response, session, this.isDevelopment);
+
+    return session;
+  }
+
+  /**
+   * "Esqueci minha senha": manda o link para o e-mail da conta.
+   *
+   * Publica e sempre 200, com o mesmo texto para conta que existe e conta que
+   * não existe. Ver `PasswordResetService`: a rota não pode virar um jeito de
+   * descobrir quem compra nesta loja.
+   */
+  @Public()
+  @RateLimit(CUSTOMER_FORGOT_PASSWORD_RATE_LIMIT)
+  @Post('password/forgot')
+  @HttpCode(HttpStatus.OK)
+  forgotPassword(@Body() dto: ForgotPasswordDto): Promise<ForgotPasswordResult> {
+    return this.resets.request(dto);
+  }
+
+  /**
+   * Grava a senha nova apresentando o token do e-mail.
+   *
+   * 204 e sem sessão de propósito: quem chega aqui apresentou um link de
+   * e-mail, não uma senha. A pessoa cai na tela de entrar e usa a que acabou
+   * de criar — e e nesse login que a conta volta a ser dela.
+   */
+  @Public()
+  @RateLimit(CUSTOMER_RESET_PASSWORD_RATE_LIMIT)
+  @Post('password/reset')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  resetPassword(@Body() dto: ResetPasswordDto): Promise<void> {
+    return this.resets.reset(dto);
   }
 
   private get isDevelopment(): boolean {

@@ -84,14 +84,90 @@ export type RegisterForm = z.input<typeof registerSchema>;
 /**
  * Os dados de contato.
  *
- * Sem telefone e sem senha, e a ausência e do contrato: `PATCH /customer/me`
- * não aceita nenhum dos dois. O telefone e a chave que liga a conta aos
- * pedidos, e trocar senha e outro fluxo, com a senha atual e queda de
- * sessão.
+ * Sem telefone, e a ausência e do contrato: `PATCH /customer/me` não o
+ * aceita, porque ele e a chave que liga a conta aos pedidos — inclusive aos
+ * feitos como convidado.
+ *
+ * `currentPassword` não e um dado de contato: e a confirmação que o servidor
+ * passou a exigir quando o **e-mail** muda, desde que ele também abre a
+ * conta. Fica aqui porque o formulário e um só, e a tela a pede no momento em
+ * que vê o e-mail mudar.
  */
-export const profileSchema = z.object({ name, email });
+export const profileSchema = z.object({
+  name,
+  email,
+  currentPassword: z.string().max(128, 'Senha longa demais.').optional(),
+});
 
 export type ProfileForm = z.input<typeof profileSchema>;
+
+/**
+ * A senha nova, em qualquer um dos dois caminhos.
+ *
+ * O mínimo e o do servidor, campo por campo, e a igualdade e o ponto: uma
+ * senha de sete caracteres aceita aqui seria recusada lá, depois de a pessoa
+ * ter digitado duas vezes no teclado do celular.
+ */
+const newPassword = z
+  .string()
+  .min(PASSWORD_MIN_LENGTH, `A senha precisa de ao menos ${PASSWORD_MIN_LENGTH} caracteres.`)
+  .max(128, 'Senha longa demais.');
+
+/**
+ * Trocar a senha estando dentro.
+ *
+ * A confirmação não existe no servidor — e campo de tela, e e o que impede a
+ * pessoa de gravar um erro de digitação e ficar trancada do lado de fora da
+ * própria conta. Ela e conferida contra a senha nova, e não contra a atual.
+ */
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Informe sua senha atual.'),
+    newPassword,
+    confirmation: z.string().min(1, 'Repita a senha nova.'),
+  })
+  .refine((form) => form.newPassword === form.confirmation, {
+    path: ['confirmation'],
+    message: 'As duas senhas precisam ser iguais.',
+  })
+  .refine((form) => form.newPassword !== form.currentPassword, {
+    path: ['newPassword'],
+    message: 'A nova senha precisa ser diferente da atual.',
+  });
+
+export type ChangePasswordForm = z.input<typeof changePasswordSchema>;
+
+/** "Esqueci minha senha": o mesmo campo da entrada. */
+export const forgotPasswordSchema = z.object({
+  identifier: z
+    .string()
+    .trim()
+    .min(1, 'Informe seu celular ou e-mail.')
+    .refine(
+      (value) => resolveIdentifier(value) !== null,
+      'Informe um celular com DDD, como (88) 99999-9999, ou um e-mail.',
+    ),
+});
+
+export type ForgotPasswordForm = z.input<typeof forgotPasswordSchema>;
+
+/**
+ * A senha nova, criada pelo link do e-mail.
+ *
+ * Sem senha atual: quem chega aqui não a sabe — e por isso que esta aqui. O
+ * que prova a identidade e o token da URL, e ele não e campo de formulário.
+ */
+export const newPasswordSchema = z
+  .object({
+    password: newPassword,
+    confirmation: z.string().min(1, 'Repita a senha nova.'),
+  })
+  .refine((form) => form.password === form.confirmation, {
+    path: ['confirmation'],
+    message: 'As duas senhas precisam ser iguais.',
+  });
+
+export type NewPasswordForm = z.input<typeof newPasswordSchema>;
 
 /**
  * O endereço salvo.

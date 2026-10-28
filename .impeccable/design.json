@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-27T00:00:00.000Z",
+  "title": "Design System: Maison Essence",
+  "extensions": {
+    "colorMeta": {
+      "gold": {
+        "role": "primary",
+        "displayName": "Dourado da Marca",
+        "canonical": "#c39540",
+        "note": "Tirado da logo. 2.4:1 sobre o branco: preenchimento, filete e borda, nunca texto.",
+        "tonalRamp": ["#2a1f0b", "#4a3714", "#6b4f1d", "#8c6827", "#ad8232", "#c39540", "#d9b472", "#f0dfb9"]
+      },
+      "gold-press": {
+        "role": "primary",
+        "displayName": "Dourado Pressionado",
+        "canonical": "#a97c2b",
+        "tonalRamp": ["#241a09", "#402e10", "#5c4318", "#78581f", "#946d27", "#a97c2b", "#cfa75f", "#ecd9ab"]
+      },
+      "gold-deep": {
+        "role": "primary",
+        "displayName": "Dourado Escurecido",
+        "canonical": "#9e6917",
+        "note": "O dourado quando vira texto ou traco fino. 4.7:1 sobre o branco.",
+        "tonalRamp": ["#1f1405", "#3a260a", "#55370f", "#704814", "#8a5913", "#9e6917", "#c79a52", "#e8d2a4"]
+      },
+      "on-gold": {
+        "role": "primary",
+        "displayName": "Tinta Sobre Ouro",
+        "canonical": "#121212",
+        "note": "Valor literal, fora dos blocos de tema: nunca inverte. 6.9:1 sobre --gold, 5.0:1 sobre --gold-press."
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "#121212",
+        "tonalRamp": ["#000000", "#121212", "#262626", "#3d3d3d", "#5c5c5c", "#8a8a8a", "#c2c2c2", "#f0f0f0"]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Tinta Suave",
+        "canonical": "#4a4a4a",
+        "tonalRamp": ["#0d0d0d", "#1f1f1f", "#333333", "#4a4a4a", "#6b6b6b", "#949494", "#c4c4c4", "#efefef"]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Cinza Legitimo",
+        "canonical": "#6b6660",
+        "note": "5.7:1 sobre o branco. Legitimo em qualquer corpo de texto da pagina — mas nunca sobre a laje.",
+        "tonalRamp": ["#17150f", "#2c2923", "#423e37", "#57534b", "#6b6660", "#938d85", "#c0bbb3", "#efedea"]
+      },
+      "bg": {
+        "role": "neutral",
+        "displayName": "Branco da Pagina",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#1a1a1a", "#333333", "#4d4d4d", "#737373", "#a6a6a6", "#d4d4d4", "#f2f2f2", "#ffffff"]
+      },
+      "bg-alt": {
+        "role": "neutral",
+        "displayName": "Areia",
+        "canonical": "#f7f5f1",
+        "tonalRamp": ["#1b1a17", "#33312c", "#4d4a43", "#736f65", "#a6a197", "#d2cec5", "#eceae4", "#f7f5f1"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Branco de Superficie",
+        "canonical": "#ffffff"
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Filete",
+        "canonical": "#e6e2da",
+        "tonalRamp": ["#1a1813", "#332f27", "#4d483c", "#736d5c", "#a69f8c", "#cdc7ba", "#e6e2da", "#f6f4f0"]
+      },
+      "slab": {
+        "role": "neutral",
+        "displayName": "Laje",
+        "canonical": "#121212",
+        "note": "Par proprio com --slab-ink. Nao e --ink: a laje escurece nos dois temas."
+      },
+      "slab-ink": {
+        "role": "neutral",
+        "displayName": "Tinta da Laje",
+        "canonical": "#ffffff"
+      },
+      "slab-muted": {
+        "role": "neutral",
+        "displayName": "Apagado da Laje",
+        "canonical": "color-mix(in srgb, var(--slab-ink) 70%, var(--slab))",
+        "note": "Derivado por color-mix para acompanhar a laje nos dois temas. --muted sobre a laje da 3.3:1 e reprova."
+      },
+      "overlay": {
+        "role": "neutral",
+        "displayName": "Veu",
+        "canonical": "rgb(10 10 10 / 0.52)",
+        "note": "Sempre escuro nos dois temas; no escuro vai a 0.66."
+      },
+      "success": {
+        "role": "secondary",
+        "displayName": "Verde da Promessa",
+        "canonical": "#2e7d5b",
+        "tonalRamp": ["#071a12", "#0e3123", "#164b36", "#1f6549", "#2e7d5b", "#4ca47c", "#89c8ab", "#d3ece0"]
+      },
+      "danger": {
+        "role": "secondary",
+        "displayName": "Vermelho do Impedimento",
+        "canonical": "#b3261e",
+        "tonalRamp": ["#210705", "#3d0d0a", "#5c1410", "#7d1b16", "#9c211b", "#b3261e", "#d9736c", "#f6d8d6"]
+      },
+      "whatsapp": {
+        "role": "tertiary",
+        "displayName": "Verde do Canal",
+        "canonical": "#25d366",
+        "note": "Cor do canal, nao da marca. Muda se o canal mudar.",
+        "tonalRamp": ["#04290f", "#07471b", "#0a6527", "#0e8434", "#14a443", "#25d366", "#6fe79a", "#c7f7d9"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "h1 — titulo de catalogo e nome do produto na pagina de produto." },
+      "headline": { "displayName": "Headline", "purpose": "h2 e titulo de secao da vitrine: Mais vendidos, Aproveite nossas promocoes." },
+      "title": { "displayName": "Title", "purpose": "h3, legenda do cartaz de colecao, titulo de bloco." },
+      "body": { "displayName": "Body", "purpose": "Texto corrido. Legenda de secao em 14px, no maximo 48ch." },
+      "price": { "displayName": "Price", "purpose": "O preco de agora. Sempre com tabular-nums pela utilitaria global .tabular." },
+      "label": { "displayName": "Label", "purpose": "Marca acima do nome, rotulo de botao e de aba, link da barra preta, faixa de desconto. Nunca acima de um titulo de secao." },
+      "brand": { "displayName": "Brand", "purpose": "A assinatura MAISON ESSENCE ao lado do monograma, e so ela." }
+    },
+    "shadows": [
+      {
+        "name": "shadow",
+        "value": "0 1px 2px rgb(18 18 18 / 0.05), 0 10px 30px rgb(18 18 18 / 0.08)",
+        "purpose": "A unica sombra do sistema, para o que de fato flutua: gaveta, modal, menu suspenso, painel de categorias, seta da prateleira, botao do WhatsApp. Nunca em cartao de produto."
+      },
+      {
+        "name": "shadow-dark",
+        "value": "0 1px 2px rgb(0 0 0 / 0.5), 0 10px 30px rgb(0 0 0 / 0.45)",
+        "purpose": "A mesma sombra no tema escuro."
+      }
+    ],
+    "motion": [
+      { "name": "duration", "value": "180ms", "purpose": "Duracao unica do sistema." },
+      { "name": "ease", "value": "ease-out", "purpose": "Curva unica do sistema." },
+      { "name": "transition", "value": "180ms ease-out", "purpose": "Atalho para o caso comum: cor, borda, opacidade, transform." },
+      { "name": "media-zoom", "value": "calc(180ms * 3) ease-out", "purpose": "O avanco de 4% da foto do cartao no hover. Nao e duracao nova: e a do sistema multiplicada." },
+      { "name": "media-crossfade", "value": "calc(180ms * 2) ease-out", "purpose": "O fundido para a segunda foto do cartao." },
+      { "name": "skeleton-sheen", "value": "1400ms linear infinite", "purpose": "O brilho que atravessa o esqueleto, deslizando com transform para compor na GPU." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px", "note": "40rem — celular grande, duas colunas; cartao da prateleira vai a 30%." },
+      { "name": "md", "value": "768px", "note": "48rem — o gutter passa de 16px para 24px; escala de titulo sobe." },
+      { "name": "lg", "value": "1024px", "note": "64rem — a barra preta do menu aparece; cartao a 23%; setas da prateleira." },
+      { "name": "xl", "value": "1280px", "note": "80rem — largura maxima do container; a prateleira volta a regua; cartao a 18.4%." }
+    ],
+    "layout": [
+      { "name": "container-max", "value": "1280px", "purpose": "Largura util. Os 80px de margem em 1440 sao o corredor do flutuante do WhatsApp." },
+      { "name": "gutter", "value": "1rem / 1.5rem a partir de 768px", "purpose": "Respiro lateral do container." },
+      { "name": "shelf-rail", "value": "max(var(--gutter), calc((100vw - var(--container-max)) / 2 + var(--gutter)))", "purpose": "A regua da esquerda para trilho que sangra. O + gutter e o que poe o primeiro cartao na vertical do titulo." },
+      { "name": "header-height", "value": "5rem / 3.75rem encolhido", "purpose": "Token porque o scroll-padding das ancoras precisa da mesma medida." },
+      { "name": "nav-height", "value": "2.75rem", "purpose": "A barra preta do menu, so a partir de 1024px." },
+      { "name": "announcement-height", "value": "2.25rem", "purpose": "A barra de avisos, que rola junto com a pagina." },
+      { "name": "control-height", "value": "3rem / 2.25rem pequeno", "purpose": "Altura de botao e de campo, para alinharem na mesma linha." }
+    ],
+    "focus": [
+      { "name": "focus-ring", "value": "2px solid var(--gold-deep)", "purpose": "Anel de foco em :focus-visible, offset de 2px, declarado uma vez no reset. Sobre fundo escuro a classe .on-dark troca para --gold; sobre o botao dourado o proprio botao troca para --on-gold." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Botao primario",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "A acao da loja: adicionar a sacola, ver a colecao, finalizar. Dourado cheio com a tinta por cima.",
+      "html": "<button class=\"ds-btn-primary\">Adicionar a sacola</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 3rem; padding: 0 24px; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.875rem; font-weight: 600; line-height: 1; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; color: var(--on-gold, #121212); background-color: var(--gold, #c39540); border: 1px solid transparent; border-radius: 8px; cursor: pointer; transition: background-color 180ms ease-out, color 180ms ease-out; } .ds-btn-primary:hover { background-color: var(--gold-press, #a97c2b); } .ds-btn-primary:focus-visible { outline: 2px solid var(--on-gold, #121212); outline-offset: 2px; } .ds-btn-primary:disabled { background-color: var(--bg-alt, #f7f5f1); color: var(--muted, #6b6660); opacity: 1; cursor: not-allowed; }"
+    },
+    {
+      "name": "Botao secundario",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Acao de apoio. Contornado em tinta; no hover inverte para tinta cheia.",
+      "html": "<button class=\"ds-btn-secondary\">Ver todos</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: 0 24px; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.875rem; font-weight: 600; line-height: 1; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink, #121212); background-color: transparent; border: 1px solid var(--ink, #121212); border-radius: 8px; cursor: pointer; transition: background-color 180ms ease-out, color 180ms ease-out; } .ds-btn-secondary:hover { background-color: var(--ink, #121212); color: var(--bg, #ffffff); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--gold-deep, #9e6917); outline-offset: 2px; }"
+    },
+    {
+      "name": "Botao fantasma",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acao terciaria — cancelar, voltar. Sem caixa, caixa baixa, 36px.",
+      "html": "<button class=\"ds-btn-ghost\">Cancelar</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; justify-content: center; min-height: 2.25rem; padding: 0 12px; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.875rem; font-weight: 500; line-height: 1; color: var(--ink-soft, #4a4a4a); background-color: transparent; border: 1px solid transparent; border-radius: 8px; cursor: pointer; transition: background-color 180ms ease-out, color 180ms ease-out; } .ds-btn-ghost:hover { background-color: color-mix(in srgb, var(--gold, #c39540) 12%, transparent); color: var(--gold-deep, #9e6917); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--gold-deep, #9e6917); outline-offset: 2px; }"
+    },
+    {
+      "name": "Campo de busca",
+      "kind": "input",
+      "refersTo": "search-field",
+      "description": "A acao primaria da dobra. Campo branco de ponta a ponta com o quadrado dourado da lupa encostado na borda direita.",
+      "html": "<div class=\"ds-search\"><input class=\"ds-search-input\" type=\"search\" placeholder=\"O que voce procura?\" aria-label=\"Buscar produtos\" /><button class=\"ds-search-submit\" aria-label=\"Buscar\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"><circle cx=\"11\" cy=\"11\" r=\"7\"/><path d=\"m20 20-3.5-3.5\"/></svg></button></div>",
+      "css": ".ds-search { display: flex; align-items: center; height: 3rem; padding-inline-start: 16px; background-color: var(--surface, #ffffff); border: 1px solid var(--line, #e6e2da); border-radius: 8px; transition: border-color 180ms ease-out; } .ds-search:hover { border-color: var(--muted, #6b6660); } .ds-search:focus-within { border-color: var(--gold-deep, #9e6917); } .ds-search-input { flex: 1; min-width: 0; height: 100%; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.875rem; color: var(--ink, #121212); background: none; border: 0; outline: none; } .ds-search-input::placeholder { color: var(--muted, #6b6660); } .ds-search-submit { display: flex; align-items: center; justify-content: center; flex: none; width: 3rem; height: 3rem; color: var(--on-gold, #121212); background-color: var(--gold, #c39540); border: 0; border-start-end-radius: 7px; border-end-end-radius: 7px; cursor: pointer; transition: background-color 180ms ease-out; } .ds-search:hover .ds-search-submit { background-color: var(--gold-press, #a97c2b); } .ds-search-submit:focus-visible { outline: 2px solid var(--on-gold, #121212); outline-offset: -4px; }"
+    },
+    {
+      "name": "Selo",
+      "kind": "chip",
+      "refersTo": "badge-ink",
+      "description": "Os selos do cartao. A cor carrega o significado: tinta e informacao, verde e promessa, vermelho e impedimento, dourado e selecao da casa.",
+      "html": "<span class=\"ds-badge ds-badge-ink\">-33%</span> <span class=\"ds-badge ds-badge-success\">Pronta entrega</span> <span class=\"ds-badge ds-badge-danger\">Esgotado</span> <span class=\"ds-badge ds-badge-gold\">Destaque</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.75rem; font-weight: 600; line-height: 1.2; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; border-radius: 999px; } .ds-badge-ink { background-color: var(--ink, #121212); color: var(--bg, #ffffff); } .ds-badge-success { background-color: var(--success, #2e7d5b); color: var(--bg, #ffffff); } .ds-badge-danger { background-color: var(--danger, #b3261e); color: var(--bg, #ffffff); } .ds-badge-gold { background-color: var(--gold, #c39540); color: var(--on-gold, #121212); }"
+    },
+    {
+      "name": "Cartao de produto",
+      "kind": "card",
+      "refersTo": "card-promo-flag",
+      "description": "Sem moldura: nem borda, nem fundo, nem canto em volta do conjunto. Foto quadrada, seis linhas a esquerda, preco ancorado pelo pe e botao colado embaixo.",
+      "html": "<article class=\"ds-card\"><a class=\"ds-card-media\" href=\"#\"><img class=\"ds-card-image\" src=\"data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Crect width='400' height='400' fill='%23f7f5f1'/%3E%3C/svg%3E\" alt=\"\" /><span class=\"ds-card-badges\"><span class=\"ds-badge ds-badge-success\">Pronta entrega</span></span><span class=\"ds-card-promo\">Leve 3: -12%</span></a><div class=\"ds-card-body\"><span class=\"ds-card-brand\">Lattafa</span><h3 class=\"ds-card-name\"><a class=\"ds-card-name-link\" href=\"#\">Asad Eau de Parfum 100ml</a></h3><div class=\"ds-card-pricing\"><div class=\"ds-card-prices\"><span class=\"ds-card-compare\">R$ 419,00</span><span class=\"ds-card-price\">R$ 359,00</span><span class=\"ds-card-off\">14% OFF</span></div><p class=\"ds-card-installment\">em ate 6x de R$ 59,83 sem juros</p><button class=\"ds-btn-primary ds-card-action\">Adicionar a sacola</button></div></div></article>",
+      "css": ".ds-card { display: flex; flex-direction: column; height: 100%; font-family: var(--font-body, 'Onest', system-ui, sans-serif); } .ds-card-media { position: relative; display: block; aspect-ratio: 1 / 1; overflow: hidden; background-color: var(--bg-alt, #f7f5f1); border-radius: 8px; } .ds-card-image { width: 100%; height: 100%; object-fit: cover; transition: transform 540ms ease-out; } .ds-card:hover .ds-card-image { transform: scale(1.04); } .ds-card-badges { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; } .ds-card-promo { position: absolute; bottom: 0; left: 0; max-width: 100%; padding: 0.25rem 8px; font-size: 0.75rem; font-weight: 600; line-height: 1.3; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; color: var(--slab-ink, #ffffff); background-color: var(--slab, #121212); border-radius: 0 4px 0 8px; } .ds-card-body { display: flex; flex-direction: column; flex: 1; gap: 4px; padding-top: 12px; } .ds-card-brand { font-size: 0.75rem; font-weight: 500; line-height: 1.3; letter-spacing: 0.02em; text-transform: uppercase; color: var(--muted, #6b6660); } .ds-card-name { margin: 0; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; min-height: calc(2 * 1.35em); font-size: 0.875rem; font-weight: 500; line-height: 1.35; letter-spacing: 0; color: var(--ink, #121212); } .ds-card-name-link { color: inherit; text-decoration: none; } .ds-card-name-link:focus-visible { outline: 2px solid var(--gold-deep, #9e6917); outline-offset: 2px; border-radius: 4px; } .ds-card-pricing { margin-top: auto; padding-top: 8px; } .ds-card-prices { display: flex; flex-wrap: wrap; align-items: baseline; align-content: flex-end; gap: 4px 8px; min-height: 2.5rem; font-variant-numeric: tabular-nums; } .ds-card-compare { flex-basis: 100%; font-size: 0.75rem; line-height: 1.2; color: var(--muted, #6b6660); text-decoration: line-through; } .ds-card-price { font-size: 1.125rem; font-weight: 700; line-height: 1.2; color: var(--ink, #121212); } .ds-card-off { font-size: 0.75rem; font-weight: 600; line-height: 1.2; color: var(--gold-deep, #9e6917); white-space: nowrap; } .ds-card-installment { min-height: 1.125rem; margin: 0; font-size: 0.75rem; line-height: 1.5; color: var(--muted, #6b6660); } .ds-card-action { margin-top: 12px; display: flex; width: 100%; white-space: normal; }"
+    },
+    {
+      "name": "Barra preta de navegacao",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "A laje do menu, abaixo do cabecalho, so a partir de 1024px. O item ativo ganha filete dourado de 2px embaixo.",
+      "html": "<nav class=\"ds-nav\"><ul class=\"ds-nav-list\"><li><a class=\"ds-nav-link ds-nav-active\" href=\"#\">Categorias</a></li><li><a class=\"ds-nav-link\" href=\"#\">Produtos</a></li><li><a class=\"ds-nav-link\" href=\"#\">Pronta entrega</a></li><li><a class=\"ds-nav-link\" href=\"#\">Como comprar</a></li></ul></nav>",
+      "css": ".ds-nav { background-color: var(--slab, #121212); } .ds-nav-list { display: flex; align-items: stretch; margin: 0; padding: 0; list-style: none; } .ds-nav-link { display: inline-flex; align-items: center; min-height: 2.75rem; padding-inline: 12px; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; text-decoration: none; color: var(--slab-ink, #ffffff); border-bottom: 2px solid transparent; transition: background-color 180ms ease-out, border-color 180ms ease-out; } .ds-nav-link:hover { background-color: rgb(255 255 255 / 0.08); } .ds-nav-active { border-bottom-color: var(--gold, #c39540); background-color: rgb(255 255 255 / 0.08); } .ds-nav-link:focus-visible { outline: 2px solid var(--gold, #c39540); outline-offset: -4px; }"
+    },
+    {
+      "name": "Abas",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Descricao e detalhes na pagina do produto. A ativa e marcada por filete de 2px embaixo, nunca por caixa cheia.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab\" role=\"tab\" aria-selected=\"true\">Descricao</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Como usar</button><button class=\"ds-tab\" role=\"tab\" aria-selected=\"false\">Entrega</button></div>",
+      "css": ".ds-tabs { position: relative; display: flex; gap: 24px; border-bottom: 1px solid var(--line, #e6e2da); overflow-x: auto; scrollbar-width: none; } .ds-tabs::-webkit-scrollbar { display: none; } .ds-tab { position: relative; flex: none; padding: 12px 0; font-family: var(--font-body, 'Onest', system-ui, sans-serif); font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; text-transform: uppercase; white-space: nowrap; color: var(--ink-soft, #4a4a4a); background: none; border: none; cursor: pointer; transition: color 180ms ease-out; } .ds-tab:hover { color: var(--ink, #121212); } .ds-tab[aria-selected='true'] { color: var(--ink, #121212); font-weight: 600; } .ds-tab::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background-color: transparent; transition: background-color 180ms ease-out; } .ds-tab[aria-selected='true']::after { background-color: var(--gold-deep, #9e6917); } .ds-tab:focus-visible { outline: 2px solid var(--gold-deep, #9e6917); outline-offset: 2px; }"
+    },
+    {
+      "name": "Circulo de categoria",
+      "kind": "custom",
+      "refersTo": "container",
+      "description": "A fileira de categorias logo abaixo do banner: foto em circulo, ou a inicial em dourado escurecido sobre areia quando a categoria nao tem foto.",
+      "html": "<a class=\"ds-cat\" href=\"#\"><span class=\"ds-cat-circle\"><span class=\"ds-cat-initial\">P</span></span><span class=\"ds-cat-name\">Perfumes Femininos</span></a>",
+      "css": ".ds-cat { display: inline-flex; flex-direction: column; align-items: center; gap: 8px; width: 6.5rem; text-align: center; text-decoration: none; color: var(--ink, #121212); font-family: var(--font-body, 'Onest', system-ui, sans-serif); } .ds-cat-circle { position: relative; display: flex; align-items: center; justify-content: center; width: 6rem; height: 6rem; overflow: hidden; background-color: var(--bg-alt, #f7f5f1); border-radius: 999px; transition: transform 180ms ease-out; } .ds-cat:hover .ds-cat-circle { transform: translateY(-2px); } .ds-cat-initial { font-size: 1.75rem; font-weight: 600; color: var(--gold-deep, #9e6917); } .ds-cat-name { font-size: 0.75rem; line-height: 1.3; } .ds-cat:focus-visible { outline: 2px solid var(--gold-deep, #9e6917); outline-offset: 2px; border-radius: 8px; }"
+    },
+    {
+      "name": "Botao flutuante do WhatsApp",
+      "kind": "custom",
+      "refersTo": "container",
+      "description": "Circulo de 56px no verde do canal, 24px da borda no desktop — a medida que define a margem de 80px do container.",
+      "html": "<a class=\"ds-wa\" href=\"#\" aria-label=\"Falar no WhatsApp\"><svg width=\"28\" height=\"28\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M12.04 2a9.9 9.9 0 0 0-8.5 14.95L2 22l5.2-1.5A9.9 9.9 0 1 0 12.04 2Zm0 1.8a8.1 8.1 0 1 1-4.1 15.08l-.3-.17-3.08.89.9-3-.2-.31A8.1 8.1 0 0 1 12.04 3.8Zm4.5 10.3c-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06a6.6 6.6 0 0 1-3.3-2.88c-.25-.43.25-.4.71-1.32.08-.16.04-.3-.02-.42-.06-.12-.54-1.3-.74-1.78-.2-.47-.4-.4-.54-.41h-.46c-.16 0-.42.06-.64.3-.22.24-.84.82-.84 2s.86 2.32.98 2.48c.12.16 1.7 2.6 4.12 3.64 1.54.66 2.14.72 2.9.6.47-.07 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28Z\"/></svg></a>",
+      "css": ".ds-wa { position: relative; display: flex; align-items: center; justify-content: center; width: 3.5rem; height: 3.5rem; color: var(--bg, #ffffff); background-color: var(--whatsapp, #25d366); border-radius: 999px; box-shadow: 0 1px 2px rgb(18 18 18 / 0.05), 0 10px 30px rgb(18 18 18 / 0.08); transition: transform 180ms ease-out, opacity 180ms ease-out; } .ds-wa:hover { transform: scale(1.05); } .ds-wa:focus-visible { outline: 2px solid var(--ink, #121212); outline-offset: 2px; }"
+    },
+    {
+      "name": "Esqueleto",
+      "kind": "custom",
+      "refersTo": "container",
+      "description": "A forma do conteudo antes dele chegar. O brilho desliza com transform, nao com background-position.",
+      "html": "<div class=\"ds-skel ds-skel-image\"></div><div class=\"ds-skel ds-skel-text\"></div><div class=\"ds-skel ds-skel-text ds-skel-last\"></div>",
+      "css": ".ds-skel { position: relative; overflow: hidden; background-color: var(--bg-alt, #f7f5f1); border-radius: 4px; margin-bottom: 8px; } .ds-skel::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(90deg, transparent 0%, var(--surface, #ffffff) 50%, transparent 100%); transform: translateX(-100%); animation: ds-sheen 1400ms linear infinite; } .ds-skel-image { width: 100%; aspect-ratio: 3 / 4; border-radius: 8px; } .ds-skel-text { height: 1rem; } .ds-skel-last { width: 60%; } @keyframes ds-sheen { to { transform: translateX(100%); } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A Vitrine de Rua, Bem Impressa",
+    "overview": "É a loja popular brasileira de perfume importado — o arranjo que a cliente já percorre de olhos fechados: faixa de avisos preta rolando, busca larga com botão dourado, barra preta de navegação, banner, categorias em círculo, três fileiras de produto. O que separa esta loja das vizinhas do segmento não é a forma, é o acabamento: grade sem buraco, cartão de altura única, selo legível, foto sobre branco, nenhuma região morta. A convenção é escolha explícita da dona e compromisso permanente; o trabalho visual executa essa convenção com rigor, sem ironia e sem contrabandear um mundo próprio por cima dela.\n\nA página é branca de ponta a ponta. Areia clara separa seções que seriam vizinhas de mesmo tom; tinta quase preta corta a página em três lugares e só três — avisos, menu, rodapé. O dourado da marca é a única cor de ação: botão de comprar, quadrado da lupa, filete do item ativo, preenchimento da régua de benefícios. Nada mais é dourado — nem título, nem filete decorativo, nem borda de cartão. Verde e vermelho entram em dose de selo, nunca de superfície.\n\nA densidade é comercial e deliberada: seis linhas por cartão (marca, nome, preço de antes, preço de agora, parcela, ação), todas alinhadas à esquerda, todas na mesma régua vertical da página. A separação é por filete de 1px e por tom de fundo, como catálogo impresso faz — não por sombra, não por moldura, não por gradiente decorativo. A loja anterior era creme com serifada dourada fina, muito ar e quase nenhuma informação comercial; esse mundo está recusado por decisão registrada da dona.",
+    "keyCharacteristics": [
+      "Branco dominante como chão; areia clara só para separar seções.",
+      "Laje preta em três lugares fixos: avisos, menu, rodapé.",
+      "Dourado é ação, nunca decoração nem título.",
+      "Uma grotesca (Onest) para toda a interface; a serifada é só a assinatura.",
+      "Cartão sem moldura: o que separa é o espaço e o canto da própria foto.",
+      "Régua única à esquerda — todo conteúdo da página começa na mesma vertical.",
+      "Altura de cartão igual em toda fileira, por reserva de linha e não por sorte.",
+      "Uma sombra só, e ela não cai em cartão de produto."
+    ],
+    "rules": [
+      { "name": "A Regra do Ouro Clicável", "body": "O que é dourado nesta loja se clica ou se ganha. Título, filete decorativo e borda de cartão não são dourados. Auditoria de uma frase: aponte qualquer elemento dourado da tela e diga o que acontece ao clicar nele — se a resposta for \"nada\", ele está errado.", "section": "colors" },
+      { "name": "A Regra do Dourado Que Não É Texto", "body": "`gold` nunca pinta texto: 2.4:1 sobre o branco. Onde a loja precisa escrever em dourado, quem entra é `gold-deep`.", "section": "colors" },
+      { "name": "A Regra do Literal Sobre Ouro", "body": "`on-gold` é valor literal e fica fora dos blocos de tema. O dourado da marca não muda com o tema, então o que vai por cima dele também não pode mudar — `ink` ali daria texto claro sobre dourado no escuro, 2.4:1.", "section": "colors" },
+      { "name": "A Regra da Laje", "body": "Bloco escuro é `slab` + `slab-ink`, nunca `ink` com `bg` por cima: `ink` é primeiro plano e inverte, e o rodapé sairia claro no pé de uma página escura. Texto secundário sobre a laje é `slab-muted` e nunca `muted` — aquele cinza é calibrado contra o branco e dá 3.3:1 contra o preto.", "section": "colors" },
+      { "name": "A Regra do Hexadecimal Proibido", "body": "Nenhum CSS Module da vitrine escreve uma cor nova. Cor com transparência se escreve com `color-mix` sobre o token, e não com o hexadecimal dele repetido dentro de um `rgb()`: o valor escrito à mão não acompanha o tema escuro.", "section": "colors" },
+      { "name": "A Regra das Duas Vozes", "body": "Onest desenha tudo que é interface — título, nome de produto, preço, botão, menu, formulário. Cormorant Garamond existe para a assinatura \"Maison Essence\". Quem a escrever em qualquer outro lugar está reabrindo uma discussão que esta loja já fechou: os nomes dos fabricantes na faixa da home saíram da serifada de propósito, porque emprestá-la fazia oito marcas de terceiros falarem com a voz da casa.", "section": "typography" },
+      { "name": "A Regra do Rótulo Que Rotula", "body": "O rótulo em caixa alta nomeia um dado — \"LATTAFA\" sobre o nome do perfume é a marca. Nunca acima de um título de seção: uma linha curta em caixa alta pendurada sobre um `h2` para anunciá-lo é decoração, e o título já carrega o próprio peso.", "section": "typography" },
+      { "name": "A Regra do Numeral Fixo", "body": "Todo número de dinheiro leva `.tabular`. Sem `tabular-nums` o `1` é mais estreito que o `8` e os preços dançam verticalmente na grade.", "section": "typography" },
+      { "name": "A Regra do Espacejamento Negativo", "body": "Título de seção é grande e em grotesca pesada, e tipo grande pede espacejamento mais fechado (-0.015em), não mais aberto. O positivo que existia servia à caixa alta de uma serifada que não está mais aqui.", "section": "typography" },
+      { "name": "A Regra do Corredor", "body": "`container-max` é 1280px, e os 80px que sobram de cada lado em 1440 não são sobra: são exatamente o corredor do botão flutuante do WhatsApp — 24px de borda mais 56px de diâmetro. Com os 1360px anteriores a margem tinha 40px e o círculo verde avançava por cima da última coluna, cobrindo o canto do \"Adicionar\" do quinto cartão. Alargar o container reabre esse defeito.", "section": "layout" },
+      { "name": "A Regra da Régua da Esquerda", "body": "Todo conteúdo da página começa na mesma vertical. Prateleira que sangra até a borda da tela recupera a régua no desktop com `padding-inline: max(var(--gutter), calc((100vw - var(--container-max)) / 2 + var(--gutter)))` — e o `+ gutter` não é detalhe, é o que faz o primeiro cartão nascer na vertical do título. O `scroll-padding-inline` acompanha o mesmo valor, senão o encaixe do `scroll-snap` ignora o respiro e a fileira nasce rolada.", "section": "layout" },
+      { "name": "A Regra do Cartão de Medida Única", "body": "O cartão tem a mesma medida em toda a página: `flex: 0 0 X`, nunca `flex-grow`. Três coisas disputam a linha e só duas cabem — medida única, fileira na régua, nenhum vão no fim quando a prateleira é curta. As duas primeiras ganham. Larguras: 58% no celular, 30% a partir de 640px, 23% a partir de 1024px, 18.4% a partir de 1280px.", "section": "layout" },
+      { "name": "A Regra do Trilho Contêiner", "body": "Todo trilho que rola na horizontal leva `position: relative`. Sem bloco contêiner, um descendente absoluto — e `.visually-hidden` é um — toma o ICB como referência, escapa do `overflow: hidden` e estica a página inteira: um \"De \" de preço riscado no sexto cartão já deu 862px de rolagem horizontal ao documento.", "section": "layout" },
+      { "name": "A Regra do Pé do Preço", "body": "O bloco de preços reserva a linha do riscado (`min-height: 2.5rem`) e ancora o conteúdo pelo pé (`align-content: flex-end`), para que o preço caia na mesma altura em toda a fileira, tenha o produto desconto ou não. A parcela também tem altura reservada porque as regras de pagamento chegam depois do produto.", "section": "layout" },
+      { "name": "A Regra do Plano", "body": "Superfície de conteúdo é plana. Sombra só em elemento que sai do fluxo e paira sobre a página. Não existe sombra colorida e não existe segundo nível de elevação.", "section": "elevation" },
+      { "name": "A Regra do Gradiente de Serviço", "body": "Não há gradiente decorativo: nenhuma superfície, botão, cartão ou faixa tem gradiente de fundo. Gradiente aparece em dois usos funcionais, e só neles — o véu (`scrim`) que garante contraste do texto sobre foto de banner e de cartaz, e o brilho que atravessa o esqueleto de carregamento. Fora disso, cor chapada.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do tirar toda cor, tipo, espaço, raio, sombra e duração de `frontend/src/styles/tokens.css`. Cor com transparência se escreve com `color-mix` sobre o token.",
+      "Do usar `gold` só onde se clica ou se ganha, `gold-deep` quando o dourado precisa virar texto ou traço fino, e `on-gold` no que vai por cima do dourado.",
+      "Do pintar bloco escuro com `slab` + `slab-ink`, e texto secundário sobre ele com `slab-muted`.",
+      "Do começar todo conteúdo na mesma vertical, inclusive o primeiro cartão de uma prateleira que sangra — `max(var(--gutter), calc((100vw - var(--container-max)) / 2 + var(--gutter)))`, com o `scroll-padding-inline` igual.",
+      "Do fixar a medida do cartão com `flex: 0 0 X` e `min-width: 0`.",
+      "Do reservar a linha que pode faltar — preço riscado, parcela, nome de duas linhas — para que a fileira tenha uma altura só.",
+      "Do pôr `position: relative` em todo trilho que rola na horizontal.",
+      "Do separar por filete de 1px e por tom de fundo.",
+      "Do escrever número de dinheiro com `.tabular`.",
+      "Do manter o anel de foco dourado de 2px em tudo, trocando só a cor sobre fundo escuro ou sobre o dourado."
+    ],
+    "donts": [
+      "Don't escrever cor nova num CSS Module — hexadecimal ou `rgb()` literal que não seja derivação declarada de um token.",
+      "Don't usar `gold` como texto (2.4:1) nem `muted` sobre a laje (3.3:1).",
+      "Don't inverter `on-gold` com o tema, nem pintar laje com `ink`.",
+      "Don't pôr gradiente decorativo, sombra colorida ou segundo nível de elevação em superfície nenhuma.",
+      "Don't pôr sombra, borda ou fundo próprio em cartão de produto.",
+      "Don't deixar cartão esticar com `flex-grow` nem centralizar o trilho para fechar o vão de uma fileira curta — as duas coisas quebram a medida única ou a régua da esquerda.",
+      "Don't alargar `container-max` além de 1280px: aquela margem é o corredor do botão flutuante.",
+      "Don't pendurar uma linha curta em caixa alta sobre um título de seção para anunciá-lo.",
+      "Don't escrever em Cormorant Garamond fora da assinatura \"Maison Essence\".",
+      "Don't usar pílula em botão.",
+      "Don't cobrir o cartão inteiro com um alvo clicável absoluto — a foto leva ao produto, o botão põe na sacola."
+    ],
+    "residuals": [
+      "Brinde por valor de compra: mecânica real sem campo na API, vive como constante declarada vazia e escondida enquanto vazia.",
+      "Corredor do flutuante entre ~1300px e 1440px: o botão cobre até 56px da borda direita do conteúdo; quem resolve é o recolhimento na rolagem.",
+      "Cartão de faixa de preço em duas linhas: nele o que alinha com os vizinhos é o pé do bloco, não o número.",
+      "Vão no fim da prateleira curta: consequência aceita da medida única e da régua da esquerda."
+    ]
+  }
+}

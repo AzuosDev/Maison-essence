@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, Input, Modal, Select } from '@/components/ui';
 import {
   CATEGORY_LIMITS,
+  UPLOAD_FOLDERS,
   hasChildren,
   parentOptions,
+  useImageUpload,
   type AdminCategory,
   type AdminCategoryNode,
   type UpdateCategoryInput,
 } from '@/features/admin';
+import { imageUrl } from '@/lib/cloudinary';
 import styles from './category-dialog.module.css';
 
 /**
@@ -88,7 +91,11 @@ function CategoryForm({
   const [parentId, setParentId] = useState(
     target.mode === 'edit' ? (target.category.parentId ?? '') : (target.parentId ?? ''),
   );
+  const [image, setImage] = useState(isEdit ? target.category.image : '');
   const [touched, setTouched] = useState(false);
+
+  const upload = useImageUpload(UPLOAD_FOLDERS.categories);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const currentId = target.mode === 'edit' ? target.category.id : '';
   const locked = isEdit && hasChildren(tree, currentId);
@@ -109,6 +116,15 @@ function CategoryForm({
       // Na edição, vazio significaria apagar o endereço — então ele só viaja
       // quando há texto.
       ...(slug.trim() === '' ? {} : { slug: slug.trim() }),
+      /*
+       * A foto e o contrário do endereço: na edição ela viaja mesmo vazia.
+       *
+       * E assim que "Remover" funciona — o campo vazio e a instrução de
+       * apagar, e omiti-lo deixaria a foto antiga no cadastro. Na criação,
+       * vazia e omitida: o servidor já guarda `''` por padrão, e mandar o
+       * campo só para repetir o padrão dele não diz nada.
+       */
+      ...(isEdit || image !== '' ? { image } : {}),
     });
   };
 
@@ -116,7 +132,7 @@ function CategoryForm({
     <Modal
       open
       onClose={onClose}
-      title={isEdit ? 'Endereço e posição' : 'Nova categoria'}
+      title={isEdit ? 'Editar categoria' : 'Nova categoria'}
       description={
         target.mode === 'edit'
           ? target.category.name
@@ -158,6 +174,107 @@ function CategoryForm({
             }
           }}
         />
+
+        {/*
+          A foto da categoria.
+
+          A fileira de círculos da home e a segunda ação da primeira tela, e
+          sem foto cadastrada cada círculo mostra só a inicial do nome — sete
+          discos de areia com uma letra dentro, que e o que a loja esta
+          mostrando hoje. O campo existia na API desde sempre e não tinha
+          onde ser preenchido: este e o lugar.
+
+          A prévia e redonda de propósito. A loja recorta num círculo, e um
+          retângulo aqui deixaria a dona aprovar um enquadramento que a
+          vitrine vai cortar. Ela mostra a inicial por baixo, como a home faz,
+          para que o estado "sem foto" tenha a mesma cara nos dois lados.
+        */}
+        <div className={styles.photo}>
+          <span className={styles.photoLabel}>Foto</span>
+
+          <div className={styles.photoRow}>
+            <span className={styles.preview}>
+              <span className={styles.previewInitial} aria-hidden="true">
+                {name.trim().slice(0, 1).toUpperCase()}
+              </span>
+
+              {image === '' ? null : (
+                <img
+                  src={imageUrl(image, 'thumb')}
+                  alt=""
+                  className={styles.previewImage}
+                  width={96}
+                  height={96}
+                  decoding="async"
+                />
+              )}
+            </span>
+
+            <div className={styles.photoActions}>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="visually-hidden"
+                onChange={(event) => {
+                  const [file] = event.target.files ?? [];
+
+                  if (file !== undefined) {
+                    void upload.send([file]).then((uploaded) => {
+                      const [publicId] = uploaded;
+
+                      if (publicId !== undefined) {
+                        setImage(publicId);
+                      }
+                    });
+                  }
+
+                  // Zerado para que escolher o mesmo arquivo de novo — depois
+                  // de um envio que falhou — volte a disparar o `change`.
+                  event.target.value = '';
+                }}
+              />
+
+              <div className={styles.photoButtons}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  loading={upload.isUploading}
+                  loadingLabel="Enviando"
+                  disabled={saving}
+                  onClick={() => {
+                    fileRef.current?.click();
+                  }}
+                >
+                  {image === '' ? 'Enviar foto' : 'Trocar a foto'}
+                </Button>
+
+                {image === '' ? null : (
+                  <button
+                    type="button"
+                    className={styles.remove}
+                    onClick={() => {
+                      setImage('');
+                    }}
+                  >
+                    Remover
+                  </button>
+                )}
+              </div>
+
+              <p className={styles.photoHint}>
+                Quadrada fica melhor: a loja recorta num círculo. Sem foto, o círculo mostra a
+                inicial do nome.
+              </p>
+            </div>
+          </div>
+
+          {upload.error === null ? null : (
+            <p className={styles.photoError} role="alert">
+              {upload.error}
+            </p>
+          )}
+        </div>
 
         <Input
           label="Endereço na loja"

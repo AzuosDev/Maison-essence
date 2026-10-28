@@ -19,9 +19,10 @@ import AdminSettingsPage from './admin-settings-page';
  * - **só o que mudou viaja**, e o endereço campo a campo — corrigir o número
  *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
- * - **só o administrador do sistema entra**: nem o gerente da loja abre esta
- *   área, porque o que se muda aqui e a moldura inteira e não o dia de
- *   vender.
+ * - **a divisão por campo**: o gerente da loja abre a tela e grava o que muda
+ *   no expediente, e as quatro seções de moldura — redes, carrossel, perfume
+ *   da vez e páginas do rodapé — não são desenhadas para ele. O atendimento
+ *   não entra de jeito nenhum.
  */
 
 const SETTINGS = {
@@ -44,6 +45,7 @@ const SETTINGS = {
   pickupInstructions: 'Toque a campainha.',
   socialLinks: { instagram: '@maisonessence', tiktok: '' },
   freeShippingMinCents: 20_000,
+  featuredPerfumeProductId: null,
   banners: [
     {
       id: 'b1',
@@ -87,6 +89,59 @@ const SETTINGS = {
   ],
   updatedAt: '2026-09-01T12:00:00.000Z',
 };
+
+/**
+ * O catálogo que a busca do "perfume da vez" encontra.
+ *
+ * Dois produtos e o bastante: um para escolher e outro para provar que a
+ * lista não escolhe sozinha.
+ */
+const PRODUCTS = [
+  {
+    id: 'p1',
+    name: 'Asad Lattafa',
+    slug: 'asad-lattafa',
+    description: '',
+    brand: 'Lattafa',
+    categoryIds: [],
+    images: ['produtos/asad'],
+    coverImage: 'produtos/asad',
+    variants: [],
+    hasVariants: false,
+    priceRangeCents: { min: 19_990, max: 19_990 },
+    discountPercent: 0,
+    inStock: true,
+    totalStock: 5,
+    isActive: true,
+    isFeatured: true,
+    isReadyToShip: true,
+    tags: [],
+    createdAt: '2026-09-01T12:00:00.000Z',
+    updatedAt: '2026-09-01T12:00:00.000Z',
+  },
+  {
+    id: 'p2',
+    name: 'Yara Lattafa',
+    slug: 'yara-lattafa',
+    description: '',
+    brand: 'Lattafa',
+    categoryIds: [],
+    images: ['produtos/yara'],
+    coverImage: 'produtos/yara',
+    variants: [],
+    hasVariants: false,
+    priceRangeCents: { min: 17_990, max: 17_990 },
+    discountPercent: 0,
+    inStock: true,
+    totalStock: 2,
+    isActive: true,
+    isFeatured: false,
+    isReadyToShip: false,
+    tags: [],
+    createdAt: '2026-09-02T12:00:00.000Z',
+    updatedAt: '2026-09-02T12:00:00.000Z',
+  },
+];
 
 let calls: { url: string; method: string; body: string }[] = [];
 
@@ -150,6 +205,21 @@ beforeEach(() => {
       calls.push({ url, method, body: typeof init?.body === 'string' ? init.body : '' });
 
       if (method === 'GET') {
+        // A busca do perfume da vez bate em `/admin/products`, e não nas
+        // configurações: sem este desvio, a tela receberia o documento da loja
+        // no lugar de uma página de produtos.
+        if (url.includes('/admin/products')) {
+          return Promise.resolve(
+            jsonResponse({
+              items: PRODUCTS,
+              page: 1,
+              totalPages: 1,
+              totalItems: PRODUCTS.length,
+              hasMore: false,
+            }),
+          );
+        }
+
         return Promise.resolve(jsonResponse(SETTINGS));
       }
 
@@ -229,24 +299,58 @@ test('abrir a tela não a deixa suja, nem com banner agendado', async () => {
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
-test('o gerente da loja não entra: isto não e decisão do dia de vender', async () => {
-  signInAs(USER_ROLES.OWNER);
-
-  abrir();
-
-  expect(
-    await screen.findByRole('heading', { name: /Esta área e de quem mantem o sistema/ }),
-  ).toBeDefined();
-});
-
-test('o STAFF também não entra', async () => {
+test('o STAFF não entra: o destino do pedido não e coisa de atendimento', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta área e de quem mantem o sistema/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem administra a loja/ }),
   ).toBeDefined();
+});
+
+test('o gerente entra e grava a operação da loja', async () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  // As duas seções que são dele, e os campos que elas guardam.
+  expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: /Retirada/ })).toBeDefined();
+  expect(screen.getByLabelText(/Nome da loja/)).toBeDefined();
+  expect(screen.getByLabelText(/Barra de avisos/)).toBeDefined();
+  expect(screen.getByLabelText(/Horário de atendimento/)).toBeDefined();
+});
+
+test('para o gerente, a moldura da loja não e desenhada', async () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await screen.findByRole('heading', { name: 'A loja' });
+
+  // Nem desabilitadas: ausentes. Campo cinza que não aceita digitação e um
+  // convite a perguntar "por que não posso?" no meio do expediente.
+  expect(screen.queryByRole('heading', { name: 'Redes sociais' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'Carrossel da home' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'O perfume da vez' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'Páginas do rodapé' })).toBeNull();
+
+  // E no lugar delas, a linha que diz onde aquilo foi e a quem pedir.
+  expect(screen.getByText(/ficam com quem mantem o sistema/)).toBeDefined();
+});
+
+test('o administrador vê as seis seções', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Redes sociais' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Carrossel da home' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'O perfume da vez' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Páginas do rodapé' })).toBeDefined();
+  expect(screen.queryByText(/ficam com quem mantem o sistema/)).toBeNull();
 });
 
 /* ---- Salvar ------------------------------------------------------------------- */
@@ -308,6 +412,42 @@ test('apagar o frete grátis geral manda null, e não zero', async () => {
   await waitFor(() => {
     expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ freeShippingMinCents: null });
   });
+});
+
+/* ---- O perfume da vez --------------------------------------------------------- */
+
+test('escolher o perfume da vez manda o id do produto, e só ele', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  const busca = await screen.findByRole('searchbox', { name: 'Trocar por outro produto' });
+
+  await user.type(busca, 'asad');
+
+  // O campo consulta na pausa da digitação: o botão aparece quando a resposta
+  // chega, e e por ele que o teste espera. O prazo e maior que o padrão de um
+  // segundo porque são três esperas em fila — digitação, pausa e consulta.
+  await user.click(
+    await screen.findByRole('button', { name: /Escolher Asad Lattafa/ }, { timeout: 3000 }),
+  );
+  await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ featuredPerfumeProductId: 'p1' });
+  });
+});
+
+test('sem escolha, a tela diz o que a home esta mostrando no lugar', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  expect(
+    await screen.findByText(/a home mostra o último produto marcado como destaque/),
+  ).toBeDefined();
 });
 
 test('descartar devolve os campos ao que esta gravado', async () => {

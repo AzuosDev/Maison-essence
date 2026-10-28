@@ -1,13 +1,125 @@
 /*
  * O diálogo de categoria.
  *
- * Três campos empilhados, sem colunas: são curtos, e um formulário de três
- * linhas não ganha nada sendo espalhado.
+ * Campos empilhados, sem colunas: são curtos, e um formulário desta altura
+ * não ganha nada sendo espalhado. A foto e a única linha que abre em duas
+ * colunas, e por um motivo só — a prévia precisa ficar ao lado do botão que
+ * a troca, não acima dele.
  */
 
 .fields {
   display: grid;
   gap: var(--space-16);
+}
+
+/* ---- A foto da categoria ---------------------------------------------- */
+
+.photo {
+  display: grid;
+  gap: var(--space-8);
+}
+
+/* O rótulo imita o do `Input` para que a linha da foto não pareça de outro
+   formulário. Não e `<label>`: não há um controle só para apontar — são o
+   botão de enviar e o de remover. */
+.photoLabel {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+.photoRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+}
+
+/*
+ * A prévia, redonda como na vitrine.
+ *
+ * A inicial mora no fundo e a foto entra por cima quando chega — o mesmo
+ * arranjo de `category-circles.tsx`, e pela mesma razão: assim não existe o
+ * instante em que o círculo esta vazio.
+ */
+.preview {
+  position: relative;
+  flex: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.5rem;
+  height: 4.5rem;
+  overflow: hidden;
+
+  background-color: var(--sand);
+  border-radius: var(--radius-pill);
+}
+
+.previewInitial {
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  color: var(--gold-deep);
+}
+
+.previewImage {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoActions {
+  display: grid;
+  gap: var(--space-8);
+  min-width: 0;
+}
+
+.photoButtons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* Remover não e um botão de verdade: e a ação secundária de uma linha que já
+   tem um botão. Com dois botões lado a lado, a dona teria de ler os dois para
+   achar o que troca a foto. */
+.remove {
+  padding: 0;
+
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+  transition: color var(--transition);
+}
+
+.remove:hover {
+  color: var(--danger);
+}
+
+.photoHint {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.photoError {
+  margin: 0;
+  font-size: var(--text-12);
+  color: var(--danger);
 }
 
 .actions {

@@ -97,6 +97,8 @@ export {
   ADMIN_AREAS,
   ROLE_LABELS,
   areasFor,
+  canDeleteForever,
+  canEditStoreFrame,
   canHandleOrders,
   canManageStore,
   canManageSystem,
@@ -194,7 +196,9 @@ export {
   useProducts,
   useSaveProduct,
   useSetProductStatus,
+  useSetProductsStatus,
   useSetReadyToShip,
+  type BulkStatusResult,
   type SaveProductInput,
 } from './use-products';
 

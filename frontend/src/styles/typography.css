@@ -1,5 +1,5 @@
 /*
- * A voz da marca: serifada de alto contraste no título, sans no corpo.
+ * A voz da loja: uma grotesca só, em quatro pesos.
  *
  * Aqui ficam só os padrões que valem para a página inteira. Variação de
  * tamanho por componente e com os tokens, dentro do CSS Module dele.
@@ -11,41 +11,63 @@ body {
   font-weight: var(--weight-regular);
   line-height: var(--leading-body);
   color: var(--ink-soft);
-  background-color: var(--cream);
+  background-color: var(--bg);
 
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
+/*
+ * Título e peso, não família.
+ *
+ * Antes era a serifada que separava título de texto. Agora e a mesma fonte
+ * nos dois, e quem faz a diferenca e o peso (600 contra 400) e o corpo —
+ * que e como catálogo de loja faz, e o que mantém o título legível em 14px
+ * de celular sem o contraste de traco da serifada se desmanchar.
+ */
 h1,
 h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: var(--weight-regular);
+  font-weight: var(--weight-semibold);
   line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-title);
   color: var(--ink);
+
+  /* Título de duas linhas quebra em duas linhas parecidas, em vez de uma
+     linha cheia e uma palavra órfã embaixo. Onde o navegador não conhece a
+     propriedade, nada muda. */
+  text-wrap: balance;
 }
 
 h1 {
-  font-size: var(--text-36);
-}
-
-h2 {
   font-size: var(--text-28);
 }
 
-h3 {
+h2 {
   font-size: var(--text-22);
 }
 
-h4 {
+h3 {
   font-size: var(--text-18);
 }
 
-@media (min-width: 64rem) {
+h4 {
+  font-size: var(--text-16);
+}
+
+@media (min-width: 48rem) {
   h1 {
-    font-size: var(--text-48);
+    font-size: var(--text-36);
+  }
+
+  h2 {
+    font-size: var(--text-28);
+  }
+
+  h3 {
+    font-size: var(--text-22);
   }
 }
 
@@ -87,7 +109,7 @@ html {
 
   ::-webkit-scrollbar-thumb {
     background-color: var(--line);
-    border: 3px solid var(--cream);
+    border: 3px solid var(--bg);
     border-radius: var(--radius-pill);
   }
 
@@ -113,8 +135,46 @@ small {
 }
 
 /*
+ * O rótulo em caixa alta de um dado: a marca acima do nome do produto, o
+ * cabeçalho de uma coluna, o nome de um campo no resumo do pedido.
+ *
+ * Utilitária global porque a mesma forma aparece em componentes que não se
+ * conhecem, e duplicar três declarações em oito folhas e como as três acabam
+ * divergindo.
+ *
+ * **Nunca acima de um título de seção.** Isto rotula um dado — "LATTAFA"
+ * sobre o nome do perfume e o nome da marca, não um enfeite. Uma linha curta
+ * em caixa alta pendurada sobre um `<h2>` para anuncia-lo e decoração, e o
+ * título já carrega o próprio peso.
+ */
+.meta-label {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/*
  * Conteúdo só para leitor de tela: rótulo que a tela já comunica pelo
  * desenho, mas que precisa existir na árvore de acessibilidade.
+ *
+ * ## O absoluto sem deslocamento, e o preço dele
+ *
+ * Ele e `position: absolute` sem `top` nem `left`: fica na posição estática,
+ * ou seja, exatamente onde o texto estaria, e não no canto da página. E o
+ * que faz um rótulo revelado no foco aparecer junto do que ele descreve.
+ *
+ * O preço: sem nenhum ancestral posicionado, o bloco contêiner dele passa a
+ * ser o da página, e aí nenhum `overflow: hidden` no caminho o corta. Dentro
+ * de uma faixa que rola na horizontal — a de relacionados, a de abas — o
+ * "De " de um preço riscado no sexto card ficava a 2302px da esquerda,
+ * escapava do clip e dava 862px de rolagem horizontal a página inteira: o
+ * `<html>` esticava, o `<body>` não.
+ *
+ * A cura não esta aqui, e nos trilhos: toda faixa que rola ganhou
+ * `position: relative`, e com isso os descendentes absolutos voltam a ser
+ * cortados junto com o resto do conteúdo dela.
  */
 .visually-hidden {
   position: absolute;

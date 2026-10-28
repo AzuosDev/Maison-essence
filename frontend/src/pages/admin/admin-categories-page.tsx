@@ -5,6 +5,7 @@ import { ArrowLeftIcon, CategoryTree, ConfirmDialog, PlusIcon } from '@/componen
 import { Button, EmptyState, Skeleton, useToast } from '@/components/ui';
 import {
   blockedBy,
+  canDeleteForever,
   canManageStore,
   countCategories,
   useAdminCategories,
@@ -37,6 +38,10 @@ import styles from './admin-categories-page.module.css';
  * manda as contagens junto. A tela usa esses números para oferecer
  * **desativar** ali mesmo: some do menu da loja e nenhum produto sai do
  * lugar, que e o que ela queria em quase todo caso.
+ *
+ * Para o gerente da loja esse "quase" vira sempre: excluir e do
+ * administrador, e o item nem aparece no menu da linha. Desativar continua a
+ * um clique, no mesmo lugar — e era ele o caminho desde o começo.
  *
  * ## O que o STAFF vê
  *
@@ -188,7 +193,7 @@ export default function AdminCategoriesPage() {
             onEdit={(category) => {
               setDialog({ mode: 'edit', category });
             }}
-            onDelete={setDeleting}
+            {...(canDeleteForever(role) ? { onDelete: setDeleting } : {})}
           />
         </>
       )}

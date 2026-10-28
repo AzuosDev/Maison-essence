@@ -25,6 +25,12 @@ scripts/catalog-images/output/
 scripts/banners/art/*
 !scripts/banners/art/.gitkeep
 
+# A foto do circulo de categoria segue a mesma regra. A diferenca e que a
+# arvore de categorias e permanente, e nao uma campanha: as sete que estao
+# no ar ficam registradas em fotos-categorias/, com a licenca de cada uma.
+scripts/categories/art/*
+!scripts/categories/art/.gitkeep
+
 logs/
 *.log
 npm-debug.log*

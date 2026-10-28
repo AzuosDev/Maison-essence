@@ -14,6 +14,7 @@ import {
   PAYMENT_METHODS,
   Product,
   QuantityDiscount,
+  StoreSettings,
   type OrderStatus,
 } from '../src/schemas.js';
 
@@ -33,6 +34,7 @@ describe('catalogo publico (e2e)', () => {
   let categories: Model<Category>;
   let discounts: Model<QuantityDiscount>;
   let orders: Model<Order>;
+  let store: Model<StoreSettings>;
   let seeded: Seeded;
 
   beforeAll(async () => {
@@ -47,6 +49,7 @@ describe('catalogo publico (e2e)', () => {
     categories = app.get<Model<Category>>(getModelToken(Category.name));
     discounts = app.get<Model<QuantityDiscount>>(getModelToken(QuantityDiscount.name));
     orders = app.get<Model<Order>>(getModelToken(Order.name));
+    store = app.get<Model<StoreSettings>>(getModelToken(StoreSettings.name));
 
     // `autoIndex` so vale em desenvolvimento: sem isso a busca por relevancia
     // nao acha o indice de texto. Em producao quem os cria e o seed.
@@ -67,6 +70,7 @@ describe('catalogo publico (e2e)', () => {
       categories.deleteMany({}),
       discounts.deleteMany({}),
       orders.deleteMany({}),
+      store.deleteMany({}),
     ]);
   });
 
@@ -363,7 +367,12 @@ describe('catalogo publico (e2e)', () => {
         'asad-lattafa',
       ]);
       expect(prontos.body).toHaveLength(1);
-      expect(vendidos.body).toEqual([]);
+      // Mais vendidos completa as vagas com o catalogo e por isso nao vem
+      // mais vazia: o que se cobra aqui e que o desativado nao entre nela,
+      // nem pelo ranking nem pelo complemento.
+      expect(vendidos.body.map((item: { slug: string }) => item.slug)).not.toContain(
+        'fora-de-linha',
+      );
       await request(server).get(`${API}/products/fora-de-linha`).expect(404);
     });
   });
@@ -400,10 +409,32 @@ describe('catalogo publico (e2e)', () => {
 
       const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
 
-      expect(body.map((item: { slug: string }) => item.slug)).toEqual([
+      // As duas primeiras sao o ranking. O que vem atras e complemento do
+      // catalogo, para a fileira nao chegar pela metade na home.
+      expect(body.slice(0, 2).map((item: { slug: string }) => item.slug)).toEqual([
         'asad-lattafa',
         'vela-lavanda',
       ]);
+    });
+
+    it('sem venda nenhuma, completa com destaque e depois com o catalogo antigo', async () => {
+      const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
+
+      // Destaque na frente; atras dele, do mais antigo para o mais novo, para
+      // a fileira nao repetir os cards de "Compre tambem", que e o contrario.
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual([
+        'asad-lattafa',
+        'qaed-al-fursan',
+        'vela-lavanda',
+      ]);
+    });
+
+    it('o complemento respeita o limite pedido', async () => {
+      const { body } = await request(server)
+        .get(`${API}/products/best-sellers?limit=2`)
+        .expect(200);
+
+      expect(body).toHaveLength(2);
     });
 
     /** Pedido que ainda nao virou conversa no WhatsApp nao e venda. */
@@ -415,7 +446,10 @@ describe('catalogo publico (e2e)', () => {
 
       const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
 
-      expect(body).toEqual([]);
+      // Sem venda, a prateleira e so complemento — e complemento comeca pelo
+      // destaque. Se as 100 unidades nao vendidas da vela contassem, ela
+      // estaria na frente do Asad.
+      expect(body[0].slug).toBe('asad-lattafa');
     });
 
     it('respeita o limite pedido', async () => {
@@ -501,6 +535,59 @@ describe('catalogo publico (e2e)', () => {
 
     it('endereco que nao existe responde 404', async () => {
       await request(server).get(`${API}/products/nao-existe`).expect(404);
+    });
+  });
+
+  describe('o perfume da vez', () => {
+    const perfume = (): request.Test =>
+      request(server).get(`${API}/products/perfume-of-the-week`);
+
+    it('sem escolha, e o primeiro destaque, com descricao e relacionados', async () => {
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('asad-lattafa');
+      expect(body.description).toContain('Amadeirado');
+      expect(Array.isArray(body.related)).toBe(true);
+    });
+
+    it('a escolha da dona vence o destaque', async () => {
+      const vela = (await products.findOne({ slug: 'vela-lavanda' }).exec())!._id;
+
+      await store.create({ featuredPerfumeProductId: vela });
+
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('vela-lavanda');
+    });
+
+    /** Escolha que envelheceu nao apaga o bloco de venda que fecha a home. */
+    it('escolha que saiu do ar cai no destaque', async () => {
+      const fora = (await products.findOne({ slug: 'fora-de-linha' }).exec())!._id;
+
+      await store.create({ featuredPerfumeProductId: fora });
+
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('asad-lattafa');
+    });
+
+    it('sem escolha e sem destaque, a secao nao existe', async () => {
+      await products.updateMany({}, { $set: { isFeatured: false } }).exec();
+
+      await perfume().expect(404);
+    });
+
+    it('a rota de nome fixo nao e confundida com um slug de produto', async () => {
+      await products.create({
+        name: 'Perfume of the week',
+        slug: 'perfume-of-the-week',
+        brand: 'Maison',
+        variants: [{ sku: 'POTW-01', priceCents: 1000, stock: 1 }],
+      });
+
+      const { body } = await perfume().expect(200);
+
+      expect(body.slug).toBe('asad-lattafa');
     });
   });
 

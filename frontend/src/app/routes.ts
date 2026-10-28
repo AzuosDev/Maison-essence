@@ -59,6 +59,15 @@ export const ROUTES = {
    */
   productsByBrand: (brand: string) => `/produtos?marca=${encodeURIComponent(brand)}`,
 
+  /**
+   * A vitrine já filtrada pelo que esta com desconto.
+   *
+   * Mesma regra do filtro de marca: `desconto` e o nome que a vitrine lê da
+   * URL (ver `KEYS` em `catalog.filters`), e não o nome do campo no estado.
+   * E o destino do "ver todas as promoções" da home.
+   */
+  productsOnSale: '/produtos?desconto=1',
+
   category: (slug: string) => `/categorias/${slug}`,
 
   /** A busca, com o termo em `?q=`. */
@@ -143,6 +152,24 @@ export const ROUTES = {
      */
     registerWith: (phone: string) =>
       `${ROUTE_GROUPS.account}/criar?telefone=${encodeURIComponent(phone)}`,
+
+    /**
+     * "Esqueci minha senha": pedir o link.
+     *
+     * Endereço próprio, e não um estado da tela de entrar, porque e para onde
+     * a pessoa volta quando o e-mail demora — e porque o link do e-mail a
+     * tira do navegador e a traz de volta depois.
+     */
+    forgotPassword: `${ROUTE_GROUPS.account}/senha/esqueci`,
+
+    /**
+     * Criar a senha nova, com o token que veio no e-mail.
+     *
+     * O token viaja na query, e não no caminho: e o que o cliente de e-mail
+     * transforma em link clicável sem cortar, e e o que o backend monta em
+     * `PasswordResetService`. Os dois lados precisam combinar exatamente.
+     */
+    newPassword: `${ROUTE_GROUPS.account}/senha/nova`,
   },
 
   /**

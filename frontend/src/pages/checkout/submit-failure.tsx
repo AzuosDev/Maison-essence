@@ -48,7 +48,7 @@ export function SubmitFailure({ failure, onRetry, isSubmitting }: SubmitFailureP
 
       <p className={styles.reassurance}>
         {limited
-          ? 'Antes de enviar de novo, confira o WhatsApp da loja: se uma das tentativas passou, o pedido já esta lá. Sua sacola continua intacta.'
+          ? 'Antes de enviar de novo, confira o WhatsApp da loja: se uma das tentativas passou, o pedido já está lá. Sua sacola continua intacta.'
           : 'Nenhum pedido foi criado e nada foi cobrado. Sua sacola continua com tudo o que você escolheu.'}
       </p>
 

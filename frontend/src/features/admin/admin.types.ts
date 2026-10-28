@@ -605,6 +605,11 @@ export interface AdminStoreSettings {
   socialLinks: AdminSocialLinks;
   /** Mínimo para frete grátis em qualquer cidade. `null` desliga a regra. */
   freeShippingMinCents: number | null;
+  /**
+   * O produto da seção "O perfume da vez", na home. `null` deixa a escolha
+   * no último produto marcado como destaque, que e o padrão da loja.
+   */
+  featuredPerfumeProductId: string | null;
   banners: AdminBanner[];
   /** As cinco, sempre, mesmo as que ninguém escreveu ainda. */
   institutionalPages: AdminInstitutionalPage[];
@@ -664,6 +669,8 @@ export interface UpdateStoreSettingsInput {
   pickupInstructions?: string;
   socialLinks?: Partial<AdminSocialLinks>;
   freeShippingMinCents?: number | null;
+  /** `null` devolve o perfume da vez ao último destaque marcado. */
+  featuredPerfumeProductId?: string | null;
   banners?: BannerInput[];
   institutionalPages?: InstitutionalPageInput[];
 }

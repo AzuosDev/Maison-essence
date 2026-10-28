@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
-import { AlertIcon, ArrowLeftIcon, BannerEditor, PagesEditor } from '@/components/admin';
+import {
+  AlertIcon,
+  ArrowLeftIcon,
+  BannerEditor,
+  PagesEditor,
+  PerfumePicker,
+} from '@/components/admin';
 import { Button, EmptyState, Input, Skeleton, Switch, Textarea, useToast } from '@/components/ui';
 import {
   SETTINGS_LIMITS,
+  canEditStoreFrame,
   canSee,
   draftFromStoreSettings,
   hasSettingsErrors,
@@ -42,12 +49,24 @@ import styles from './admin-settings-page.module.css';
  * onde ir), retirada ligada sem endereço, e página publicada sem texto. As
  * três viram aviso escrito, no bloco onde foram causadas.
  *
- * ## Quem entra
+ * ## Quem entra, e até onde
  *
- * Só o administrador do sistema — nem o gerente da loja, e muito menos o
- * atendimento. O que se muda aqui não e um produto: e a moldura inteira, e
- * são decisões de implantação, tomadas uma vez. O backend recusa pelo mesmo
- * critério, inclusive na leitura.
+ * O gerente da loja e o administrador; o atendimento, não. E dentro da tela a
+ * permissão se divide outra vez, por campo: as duas primeiras seções são a
+ * operação da loja — nome, contato, horário, barra de avisos, frete grátis,
+ * retirada — e o gerente grava as duas. As quatro últimas são a moldura:
+ * redes sociais, carrossel, perfume da vez e páginas do rodapé. Elas aparecem
+ * em toda página da loja e não mudam no expediente, e por isso ficam com quem
+ * mantem o sistema.
+ *
+ * Para o gerente, essas quatro seções não são desabilitadas: elas não são
+ * desenhadas. Campo cinza que não aceita digitação e um convite a perguntar
+ * "por que não posso?" no meio do expediente, e a resposta seria uma conversa
+ * sobre permissão. O lugar some, e no fim da tela fica uma linha dizendo o
+ * que vive lá e a quem pedir.
+ *
+ * O servidor decide igual, campo a campo (`settings-access.policy.ts`), então
+ * o que escapasse daqui morreria lá com 403.
  */
 export default function AdminSettingsPage() {
   const role = useAdminRole();
@@ -62,8 +81,8 @@ export default function AdminSettingsPage() {
     return (
       <EmptyState
         as="h1"
-        title="Esta área e de quem mantem o sistema"
-        description="Aqui ficam o nome da loja, o número para onde vai todo pedido, o carrossel da home e as páginas do rodapé — configurações que se acertam uma vez, com quem cuida do sistema. Para mudar alguma delas, fale com essa pessoa."
+        title="Esta área e de quem administra a loja"
+        description="Aqui ficam o nome da loja, o número para onde vai todo pedido, o carrossel da home e as páginas do rodapé. O seu acesso cobre o atendimento: o início do painel e os pedidos."
         actions={
           <Link to={ROUTES.admin.root} className={styles.backLink}>
             <ArrowLeftIcon />
@@ -95,7 +114,7 @@ export default function AdminSettingsPage() {
           <Skeleton height="16rem" />
         </div>
       ) : (
-        <SettingsForm settings={settings} />
+        <SettingsForm settings={settings} canEditFrame={canEditStoreFrame(role)} />
       )}
     </div>
   );
@@ -103,7 +122,14 @@ export default function AdminSettingsPage() {
 
 /* ---- O formulário ------------------------------------------------------------- */
 
-function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
+function SettingsForm({
+  settings,
+  canEditFrame,
+}: {
+  settings: AdminStoreSettings;
+  /** Desligado para o gerente: as quatro seções de moldura não são desenhadas. */
+  canEditFrame: boolean;
+}) {
   const { toast } = useToast();
   const save = useSaveSettings();
 
@@ -385,84 +411,120 @@ function SettingsForm({ settings }: { settings: AdminStoreSettings }) {
           </div>
         </section>
 
-        <section className={styles.card} aria-labelledby="secao-redes">
-          <h2 className={styles.cardTitle} id="secao-redes">
-            Redes sociais
-          </h2>
+        {canEditFrame ? (
+          <>
+            <section className={styles.card} aria-labelledby="secao-redes">
+              <h2 className={styles.cardTitle} id="secao-redes">
+                Redes sociais
+              </h2>
 
-          <p className={styles.cardHint}>
-            Viram os ícones do rodapé. Cole o endereço inteiro ou só o arroba — o site monta o link
-            a partir do que estiver aqui. Em branco, o ícone não aparece.
+              <p className={styles.cardHint}>
+                Viram os ícones do rodapé. Cole o endereço inteiro ou só o arroba — o site monta o
+                link a partir do que estiver aqui. Em branco, o ícone não aparece.
+              </p>
+
+              <div className={styles.pair}>
+                <Input
+                  label="Instagram"
+                  block
+                  maxLength={SETTINGS_LIMITS.socialLink}
+                  placeholder="@maisonessence"
+                  value={draft.instagram}
+                  error={errors.instagram}
+                  onChange={(event) => {
+                    set({ instagram: event.target.value });
+                  }}
+                />
+
+                <Input
+                  label="TikTok"
+                  block
+                  maxLength={SETTINGS_LIMITS.socialLink}
+                  placeholder="@maisonessence"
+                  value={draft.tiktok}
+                  error={errors.tiktok}
+                  onChange={(event) => {
+                    set({ tiktok: event.target.value });
+                  }}
+                />
+              </div>
+            </section>
+
+            <section className={styles.card} aria-labelledby="secao-banners">
+              <h2 className={styles.cardTitle} id="secao-banners">
+                Carrossel da home
+              </h2>
+
+              <p className={styles.cardHint}>
+                A primeira coisa que a cliente vê. Arraste para mudar a ordem; o agendamento coloca
+                e tira a arte sozinho, sem ninguém precisar lembrar.
+              </p>
+
+              <Warnings warnings={warnings} scope="banners" />
+
+              <BannerEditor
+                banners={draft.banners}
+                errors={errors.banners}
+                onChange={(banners) => {
+                  set({ banners });
+                }}
+              />
+            </section>
+
+            {/*
+          O perfume da vez vem depois do carrossel, e não junto dos textos da
+          loja.
+
+          Os dois são a home: o carrossel abre a página e este bloco a fecha.
+          Lidos em sequencia, eles são o que a dona de fato vem conferir aqui
+          — "o que a cliente vê primeiro e com o que ela sai".
+        */}
+            <section className={styles.card} aria-labelledby="secao-perfume">
+              <h2 className={styles.cardTitle} id="secao-perfume">
+                O perfume da vez
+              </h2>
+
+              <p className={styles.cardHint}>
+                O bloco grande que fecha a home, com foto, descrição e botão de comprar. Escolha o
+                produto aqui; sem escolha, a home mostra o último que você marcou como destaque.
+              </p>
+
+              <PerfumePicker
+                productId={draft.featuredPerfumeProductId}
+                onChange={(featuredPerfumeProductId) => {
+                  set({ featuredPerfumeProductId });
+                }}
+              />
+            </section>
+
+            <section className={styles.card} aria-labelledby="secao-paginas">
+              <h2 className={styles.cardTitle} id="secao-paginas">
+                Páginas do rodapé
+              </h2>
+
+              <p className={styles.cardHint}>
+                As cinco existem sempre, e o endereço de cada uma não muda — esses links circulam no
+                WhatsApp. O que se edita e o título, o texto e se a página esta publicada.
+              </p>
+
+              <Warnings warnings={warnings} scope="pages" />
+
+              <PagesEditor
+                pages={draft.pages}
+                errors={errors.pages}
+                onChange={(pages) => {
+                  set({ pages });
+                }}
+              />
+            </section>
+          </>
+        ) : (
+          <p className={styles.handover}>
+            O carrossel da home, o perfume da vez, as páginas do rodapé e as redes sociais ficam com
+            quem mantem o sistema — aparecem em toda página da loja e não mudam no dia a dia. Para
+            trocar alguma delas, fale com essa pessoa.
           </p>
-
-          <div className={styles.pair}>
-            <Input
-              label="Instagram"
-              block
-              maxLength={SETTINGS_LIMITS.socialLink}
-              placeholder="@maisonessence"
-              value={draft.instagram}
-              error={errors.instagram}
-              onChange={(event) => {
-                set({ instagram: event.target.value });
-              }}
-            />
-
-            <Input
-              label="TikTok"
-              block
-              maxLength={SETTINGS_LIMITS.socialLink}
-              placeholder="@maisonessence"
-              value={draft.tiktok}
-              error={errors.tiktok}
-              onChange={(event) => {
-                set({ tiktok: event.target.value });
-              }}
-            />
-          </div>
-        </section>
-
-        <section className={styles.card} aria-labelledby="secao-banners">
-          <h2 className={styles.cardTitle} id="secao-banners">
-            Carrossel da home
-          </h2>
-
-          <p className={styles.cardHint}>
-            A primeira coisa que a cliente vê. Arraste para mudar a ordem; o agendamento coloca e
-            tira a arte sozinho, sem ninguém precisar lembrar.
-          </p>
-
-          <Warnings warnings={warnings} scope="banners" />
-
-          <BannerEditor
-            banners={draft.banners}
-            errors={errors.banners}
-            onChange={(banners) => {
-              set({ banners });
-            }}
-          />
-        </section>
-
-        <section className={styles.card} aria-labelledby="secao-paginas">
-          <h2 className={styles.cardTitle} id="secao-paginas">
-            Páginas do rodapé
-          </h2>
-
-          <p className={styles.cardHint}>
-            As cinco existem sempre, e o endereço de cada uma não muda — esses links circulam no
-            WhatsApp. O que se edita e o título, o texto e se a página esta publicada.
-          </p>
-
-          <Warnings warnings={warnings} scope="pages" />
-
-          <PagesEditor
-            pages={draft.pages}
-            errors={errors.pages}
-            onChange={(pages) => {
-              set({ pages });
-            }}
-          />
-        </section>
+        )}
       </div>
 
       {dirty ? (

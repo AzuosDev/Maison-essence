@@ -5,6 +5,7 @@ import {
   IsBoolean,
   IsEmail,
   IsInt,
+  IsMongoId,
   IsOptional,
   IsString,
   Max,
@@ -96,6 +97,19 @@ export class UpdateSettingsDto {
   @Min(0)
   @Max(MAX_CENTS)
   freeShippingMinCents?: number | null;
+
+  /**
+   * O produto da seção "O perfume da vez". `null` devolve a escolha ao
+   * primeiro destaque, que e o padrão da loja.
+   *
+   * Só o id e validado aqui. Se o produto existe, se esta no ar e se tem
+   * variante a venda não e pergunta para a gravação das configurações: o
+   * catálogo muda depois dela, e e na hora de montar a home que a resposta
+   * importa — ver `PublicCatalogService.perfumeOfTheWeek`.
+   */
+  @IsOptional()
+  @IsMongoId({ message: 'informe o id de um produto válido' })
+  featuredPerfumeProductId?: string | null;
 
   @IsOptional()
   @IsArray()

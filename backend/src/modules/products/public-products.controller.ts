@@ -43,6 +43,18 @@ export class PublicProductsController {
     return this.catalog.bestSellers(query.limit);
   }
 
+  /**
+   * O produto da seção "O perfume da vez", montado como a página dele.
+   *
+   * 404 quando a loja não tem o que mostrar ali — nem escolha em Ajustes nem
+   * destaque marcado. E a resposta certa: a seção não existe, e não existe
+   * seção vazia.
+   */
+  @Get('perfume-of-the-week')
+  perfumeOfTheWeek(): Promise<PublicProductDetailView> {
+    return this.catalog.perfumeOfTheWeek();
+  }
+
   @Get(':slug')
   bySlug(@Param('slug') slug: string): Promise<PublicProductDetailView> {
     return this.catalog.findBySlug(slug);

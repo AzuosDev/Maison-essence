@@ -1,5 +1,5 @@
 import { Prop, Schema } from '@nestjs/mongoose';
-import type { HydratedDocument, Model } from 'mongoose';
+import type { HydratedDocument, Model, Types } from 'mongoose';
 import type { InstitutionalPageSlug } from '../../../common/enums/institutional-page.js';
 import { INSTITUTIONAL_PAGE_SLUG_VALUES } from '../../../common/enums/institutional-page.js';
 import {
@@ -12,6 +12,7 @@ import {
   createSchema,
   enumProp,
   integerProp,
+  objectIdProp,
   textProp,
 } from '../../../database/schema-helpers.js';
 import {
@@ -182,6 +183,20 @@ export class StoreSettings extends SingletonSchema {
    */
   @Prop(centsProp({ default: null }))
   freeShippingMinCents: number | null;
+
+  /**
+   * O produto da seção "O perfume da vez", na home.
+   *
+   * Guarda o id, e não o slug: renomear o produto troca o slug, e a escolha
+   * da dona não pode se desfazer porque alguém corrigiu um nome no cadastro.
+   *
+   * `null` quer dizer "não escolhi", e aí a seção cai no primeiro destaque —
+   * que era o único critério que existia antes deste campo. O mesmo acontece
+   * quando o produto escolhido sai do ar: a home nunca fica com um bloco de
+   * venda vazio por causa de uma escolha que envelheceu.
+   */
+  @Prop(objectIdProp({ default: null }))
+  featuredPerfumeProductId: Types.ObjectId | null;
 
   @Prop({ type: [BannerSchema], default: [] })
   banners: Banner[];

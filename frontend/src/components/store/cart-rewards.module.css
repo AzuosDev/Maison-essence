@@ -1,0 +1,79 @@
+/*
+ * A régua de benefícios da sacola.
+ *
+ * Uma frase e um filete. Nada de ícone, nada de caixa colorida: ela fica
+ * logo acima do total, e um bloco com fundo próprio ali competiria com a
+ * linha que de fato importa — quanto vai dar.
+ */
+
+.rewards {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-block: var(--space-12);
+}
+
+.message {
+  font-size: var(--text-14);
+  line-height: 1.4;
+  color: var(--ink-soft);
+}
+
+.message strong {
+  color: var(--ink);
+}
+
+/*
+ * O trilho.
+ *
+ * 4px de altura, do tom do filete da loja. Mais grosso que isso vira
+ * componente de jogo; mais fino não se enxerga no celular.
+ */
+.track {
+  display: block;
+  height: 4px;
+  overflow: hidden;
+
+  background-color: var(--line);
+  border-radius: var(--radius-pill);
+}
+
+/*
+ * O preenchimento, dourado.
+ *
+ * Mesma regra da loja: o dourado e o que se ganha.
+ *
+ * A barra ocupa o trilho inteiro e e **espremida** por `scaleX`, em vez de
+ * ter a largura animada. O resultado na tela e o mesmo e o custo não e:
+ * largura e propriedade de layout, e anima-lá obriga o navegador a
+ * recalcular a página a cada quadro — dentro de uma gaveta que já esta
+ * recalculando a cotação. `transform` roda no compositor.
+ *
+ * A largura em porcentagem continua vindo do componente, agora como o fator
+ * da escala; `transform-origin` a esquerda e o que faz a barra crescer da
+ * borda, e não do meio.
+ *
+ * A duração e o token dobrado: 180ms numa barra de 300px lê-se como salto.
+ */
+.fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  background-color: var(--gold);
+  border-radius: inherit;
+
+  transform-origin: left center;
+  transition: transform calc(var(--duration) * 2) var(--ease);
+}
+
+/* Alcancado: a frase vira confirmação, e o verde diz isso sem precisar de
+   ícone nenhum. */
+.done .message {
+  font-weight: var(--weight-medium);
+  color: var(--success);
+}
+
+.done .fill {
+  background-color: var(--success);
+}

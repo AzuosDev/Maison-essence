@@ -89,13 +89,13 @@ test('os dois blocos escuros declaram color-scheme', () => {
 test('a laje não e o primeiro plano', () => {
   const claro = corpoDaRegra(css, ':root {');
 
-  expect(claro).toMatch(/--slab:\s*#0e0e0e/);
+  expect(claro).toMatch(/--slab:\s*#121212/);
   expect(claro).not.toMatch(/--slab:\s*var\(--ink\)/);
 
   const escuro = corpoDaRegra(css, ":root[data-theme='dark'] {");
 
-  // No escuro a laje e um degrau acima do fundo (#0b0b0b), e não o claro.
-  expect(escuro).toMatch(/--slab:\s*#151515/);
+  // No escuro a laje e um degrau acima do fundo (#0d0d0d), e não o claro.
+  expect(escuro).toMatch(/--slab:\s*#161616/);
 });
 
 /**

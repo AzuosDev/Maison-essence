@@ -1,4 +1,5 @@
 import { Button, Skeleton } from '@/components/ui';
+import { CartRewards } from '@/components/store';
 import type { CartQuote } from '@/features/cart';
 import { cx } from '@/lib/cx';
 import { formatCents } from '@/lib/format';
@@ -58,6 +59,10 @@ export function CartSummary({
     <aside className={styles.summary} aria-label="Resumo do pedido">
       <h2 className={styles.title}>Resumo</h2>
 
+      {/* A mesma regua da gaveta, pelo mesmo motivo: ela muda o tamanho do
+          pedido, e precisa ser lida antes do total. */}
+      <CartRewards subtotalCents={subtotalCents} className={styles.rewards} />
+
       {isError && subtotalCents === null ? (
         <div className={styles.failed} role="alert">
           <p className={styles.failedText}>
@@ -72,7 +77,10 @@ export function CartSummary({
         <>
           {/* `aria-busy` enquanto o servidor recalcula: quem ouve a página
               fica sabendo que o número em tela ainda vai mudar. */}
-          <dl className={cx(styles.lines, isFetching && styles.recalculating)} aria-busy={isFetching}>
+          <dl
+            className={cx(styles.lines, isFetching && styles.recalculating)}
+            aria-busy={isFetching}
+          >
             <Line label="Subtotal" isPending={isPending}>
               {subtotalCents === null ? null : formatCents(subtotalCents)}
             </Line>

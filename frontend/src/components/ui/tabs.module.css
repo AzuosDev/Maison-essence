@@ -13,6 +13,12 @@
 
   border-bottom: var(--border);
 
+  /* O trilho que rola precisa ser bloco contêiner: sem `position`, um
+     descendente absoluto — e `.visually-hidden` e um — toma o ICB como
+     referência, escapa deste clip e estica a página inteira na horizontal.
+     Ver a nota em `typography.css`. */
+  position: relative;
+
   /* No celular, a fila de abas rola; a barra de rolagem some. */
   overflow-x: auto;
   scrollbar-width: none;

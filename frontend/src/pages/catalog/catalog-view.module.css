@@ -98,3 +98,15 @@
     margin: calc(var(--focus-offset) * -1);
   }
 }
+
+/*
+ * A contagem, na ponta esquerda da barra de ordenação.
+ *
+ * Só no desktop — ver o comentário no TSX. `margin-right: auto` não e
+ * necessário: o `.sort` já tem `margin-left: auto`, e os dois juntos
+ * empurrariam a contagem para o canto duas vezes.
+ */
+.count {
+  font-size: var(--text-14);
+  color: var(--muted);
+}

@@ -6,7 +6,9 @@ import {
   fetchCategory,
   fetchCategoryTree,
   fetchLatest,
+  fetchPerfumeOfTheWeek,
   fetchProduct,
+  fetchSaleShelf,
   fetchShelf,
   fetchSuggestions,
   type ShelfName,
@@ -111,6 +113,21 @@ export function useLatest(limit?: number) {
   return useQuery<PublicProduct[]>({
     queryKey: catalogKeys.shelf('latest', limit),
     queryFn: ({ signal }) => fetchLatest(limit, signal),
+    staleTime: SHELF_STALE_TIME_MS,
+  });
+}
+
+/**
+ * A prateleira de promoções.
+ *
+ * Mesma política das outras. O corte de quem tem desconto acontece dentro de
+ * `fetchSaleShelf`, e não aqui: assim o que o cache guarda já e a prateleira
+ * pronta, e não uma lista que precisa ser filtrada de novo a cada render.
+ */
+export function useSaleShelf(limit?: number) {
+  return useQuery<PublicProduct[]>({
+    queryKey: catalogKeys.shelf('sale', limit),
+    queryFn: ({ signal }) => fetchSaleShelf(limit, signal),
     staleTime: SHELF_STALE_TIME_MS,
   });
 }
@@ -250,6 +267,26 @@ export function useProduct(slug: string) {
     queryFn: ({ signal }) => fetchProduct(slug, signal),
     enabled: slug !== '',
     staleTime: PRODUCT_STALE_TIME_MS,
+  });
+}
+
+/**
+ * O perfume da vez, para a seção que fecha a home.
+ *
+ * Uma consulta, e não duas: a rota devolve o produto montado como a página
+ * dele, com a descrição que o bloco precisa. O frescor e o das prateleiras —
+ * a dona troca o perfume da vez em Ajustes e a home muda no minuto seguinte,
+ * sem redeploy.
+ *
+ * O `404` de "a loja não tem o que mostrar ali" não e tentado de novo: a
+ * política do `QueryClient` já não repete `404`, e quem lê o erro e a seção,
+ * que simplesmente não se desenha.
+ */
+export function usePerfumeOfTheWeek() {
+  return useQuery<PublicProductDetail>({
+    queryKey: catalogKeys.perfumeOfTheWeek(),
+    queryFn: ({ signal }) => fetchPerfumeOfTheWeek(signal),
+    staleTime: SHELF_STALE_TIME_MS,
   });
 }
 

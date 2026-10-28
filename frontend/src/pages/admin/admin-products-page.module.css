@@ -133,3 +133,63 @@
     max-width: 16rem;
   }
 }
+
+/* ---- A barra do lote ----------------------------------------------------- */
+
+/*
+ * Aparece com a primeira linha marcada e gruda no pe da tela.
+ *
+ * Mesma peca da tela de configurações — superfície, filete, sombra para cima
+ * —, porque faz o mesmo trabalho: segura um comando que precisa estar a mao
+ * enquanto a pessoa percorre uma lista longa. A sombra sobe, com deslocamento
+ * negativo, porque a barra flutua sobre o conteúdo que esta acima dela.
+ */
+.bulk {
+  position: sticky;
+  bottom: var(--space-16);
+  z-index: 1;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+
+  padding: var(--space-12) var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 -2px 4px rgb(14 14 14 / 0.04),
+    0 -12px 28px rgb(14 14 14 / 0.1);
+}
+
+.bulkText {
+  flex: 1 1 12rem;
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.bulkCount {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/*
+ * Os três comandos.
+ *
+ * No celular eles quebram para a linha de baixo e dividem a largura: três
+ * botões de 44px espremidos em 360px seriam três alvos que se erram. A ordem
+ * e a da tela de configurações — o que desfaz primeiro, o que publica por
+ * último, debaixo do polegar.
+ */
+.bulkActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}

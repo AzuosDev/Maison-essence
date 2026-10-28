@@ -17,12 +17,12 @@
  *
  * Enquanto não existe, ela falha de propósito. Um formulário que responde
  * "pronto, você esta inscrito" sem gravar nada e pior do que um que diz que
- * o canal ainda não esta no ar: o cliente que se inscreveu e nunca recebe
+ * o canal ainda não está no ar: o cliente que se inscreveu e nunca recebe
  * nada não volta para conferir se o formulário funcionava.
  */
 
 export const NEWSLETTER_UNAVAILABLE_MESSAGE =
-  'O cadastro por e-mail ainda não esta no ar. Fale com a gente pelo WhatsApp para receber as novidades.';
+  'O cadastro por e-mail ainda não está no ar. Fale com a gente pelo WhatsApp para receber as novidades.';
 
 export class NewsletterUnavailableError extends Error {
   constructor() {

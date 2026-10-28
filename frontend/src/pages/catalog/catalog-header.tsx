@@ -25,6 +25,24 @@ export interface CatalogHeaderProps {
   isLoading: boolean;
   /** O título ainda não chegou — o nome da categoria vem de outra consulta. */
   isTitleLoading?: boolean;
+  /**
+   * A contagem foi para a barra de ordenação.
+   *
+   * E o que acontece no desktop: ali a barra tem o seletor de ordem numa
+   * ponta e nada na outra, e a contagem e exatamente o que faltava daquele
+   * lado. No celular a barra já carrega o botão de filtros, e a contagem
+   * fica onde nasceu — embaixo do título.
+   */
+  hideCount?: boolean;
+}
+
+/** `1 produto`, `24 produtos`, `Nenhum produto`. */
+export function countLabel(total: number): string {
+  if (total === 0) {
+    return 'Nenhum produto';
+  }
+
+  return total === 1 ? '1 produto' : `${total} produtos`;
 }
 
 export function CatalogHeader({
@@ -34,6 +52,7 @@ export function CatalogHeader({
   totalItems,
   isLoading,
   isTitleLoading = false,
+  hideCount = false,
 }: CatalogHeaderProps) {
   return (
     <header className={styles.header}>
@@ -47,22 +66,15 @@ export function CatalogHeader({
         <p className={styles.description}>{description}</p>
       )}
 
-      <p className={styles.count} aria-live="polite">
-        {isLoading || totalItems === undefined ? (
-          <span aria-hidden="true">—</span>
-        ) : (
-          countLabel(totalItems)
-        )}
-      </p>
+      {hideCount ? null : (
+        <p className={styles.count} aria-live="polite">
+          {isLoading || totalItems === undefined ? (
+            <span aria-hidden="true">—</span>
+          ) : (
+            countLabel(totalItems)
+          )}
+        </p>
+      )}
     </header>
   );
-}
-
-/** `1 produto`, `24 produtos`, `Nenhum produto`. */
-function countLabel(total: number): string {
-  if (total === 0) {
-    return 'Nenhum produto';
-  }
-
-  return total === 1 ? '1 produto' : `${total} produtos`;
 }

@@ -157,19 +157,38 @@ export function ProductCard({
           />
         )}
 
+        {/*
+          Na foto ficam so os dois estados que mudam o que da para fazer com o
+          produto: ele acabou, ou ele sai hoje. O desconto nao entra aqui — ele
+          mora ao lado do preco, que e onde quem compara preco esta olhando.
+        */}
         <div className={styles.badges}>
           {product.inStock ? null : <Badge variant="danger">Esgotado</Badge>}
 
-          {product.discountPercent > 0 ? (
-            <Badge variant="ink">-{product.discountPercent}%</Badge>
-          ) : null}
-
           {product.isReadyToShip ? <Badge variant="success">Pronta entrega</Badge> : null}
         </div>
+
+        {/*
+          A faixa do desconto progressivo, no pe da foto.
+
+          Ela nasceu acima do nome, como na loja que serviu de referencia, e
+          era o defeito que mais estragava a fileira: so alguns produtos tem
+          escada de desconto, entao so alguns cartoes ganhavam aquela linha —
+          e os vizinhos sem ela abriam um vao de oitenta pixels entre o nome e
+          o preco. Uma vitrine que promete "cartao de altura unica" nao pode
+          ter uma linha que aparece em um cartao sim, outro nao, no meio da
+          coluna de texto.
+
+          Sobre a foto o problema deixa de existir: a faixa vive numa camada
+          que nao empurra nada, e continua sendo a primeira coisa lida depois
+          da imagem. O canto de baixo, e nao o de cima, porque ali em cima ja
+          moram os dois selos de estado.
+        */}
+        {promo === null ? null : <p className={styles.promo}>{promo}</p>}
       </Link>
 
       <div className={styles.body}>
-        <p className={styles.brand}>{product.brand}</p>
+        <p className={cx(styles.brand, 'meta-label')}>{product.brand}</p>
 
         <h3 className={cx(styles.nameRow, styles.name)}>
           <Link
@@ -182,50 +201,66 @@ export function ProductCard({
           </Link>
         </h3>
 
-        <p className={styles.prices}>
-          {compareAt === null ? null : (
-            <span className={`${styles.compareAt} tabular`}>
-              {/* O leitor de tela nao ve o risco: sem isto, ele anuncia dois
-                  precos seguidos e quem ouve nao sabe qual e qual. */}
-              <span className="visually-hidden">De </span>
-              {formatCents(compareAt)}
-            </span>
-          )}
-
-          <span className={`${styles.price} tabular`}>
-            {min === max ? null : <span className="visually-hidden">A partir de </span>}
-            {priceLabel}
-          </span>
-        </p>
-
-        <p className={styles.installment}>
-          <InstallmentLine priceCents={min} />
-        </p>
-
-        <p className={styles.promo}>{promo}</p>
-
         {/*
-          O botao e contornado, e nao preenchido.
+          O bloco comercial, colado no pe do cartao.
 
-          Numa fileira de cinco, cinco barras pretas cheias pesam mais que as
-          cinco fotos e a vitrine passa a ser uma lista de botoes. Contornado,
-          ele continua sendo claramente um botao — tem a altura e a pilula de
-          todos os outros — e cede o primeiro lugar para o produto. Ao passar
-          o mouse ele se enche de preto, que e quando a atencao de fato esta
-          nele.
-
-          Na pagina do produto o botao principal continua preenchido: la ele e
-          a acao da tela, e nao um entre cinco.
+          `margin-top: auto` no `.pricing` e o que iguala a altura dos oito
+          cartoes de uma fileira: o nome de um produto ocupa uma linha e o do
+          vizinho ocupa duas, e sem isso o preco de cada um pararia numa
+          altura diferente — que e o defeito mais visivel da loja que serviu
+          de referencia.
         */}
-        <div className={styles.action}>
-          <Button
-            block
-            variant="secondary"
-            disabled={!product.inStock || variant === null}
-            onClick={add}
-          >
-            {buttonLabel(product.inStock, single !== null)}
-          </Button>
+        <div className={styles.pricing}>
+          <p className={styles.prices}>
+            {compareAt === null ? null : (
+              <span className={`${styles.compareAt} tabular`}>
+                {/* O leitor de tela nao ve o risco: sem isto, ele anuncia dois
+                    precos seguidos e quem ouve nao sabe qual e qual. */}
+                <span className="visually-hidden">De </span>
+                {formatCents(compareAt)}
+              </span>
+            )}
+
+            <span className={`${styles.price} tabular`}>
+              {min === max ? null : <span className="visually-hidden">A partir de </span>}
+              {priceLabel}
+            </span>
+
+            {/*
+              "ate 15% OFF" quando o produto tem faixa de preco.
+
+              Num produto de preco unico o desconto e exato: 199 saiu de 249,
+              e o riscado ao lado prova. Num produto de 389 a 479, o desconto
+              e o da variante mais barata — e anunciar "15% OFF" ao lado de
+              uma faixa sugere que os dois extremos cairam 15%, o que nao e
+              verdade para as outras opcoes. O "ate" e a unica palavra que
+              falta para a linha parar de prometer o que nao cumpre.
+            */}
+            {product.discountPercent > 0 ? (
+              <span className={styles.off}>
+                {min === max ? '' : 'até '}
+                {product.discountPercent}% OFF
+              </span>
+            ) : null}
+          </p>
+
+          <p className={styles.installment}>
+            <InstallmentLine priceCents={min} />
+          </p>
+
+          {/*
+            O botao e dourado e preenchido.
+
+            E a regra da loja inteira: o que e dourado se clica. Numa fileira
+            de cinco cartoes isso desenha cinco alvos iguais na mesma altura,
+            e e exatamente o que se quer de uma vitrine — o cliente que ja
+            decidiu nao precisa abrir a pagina do produto para comprar.
+          */}
+          <div className={styles.action}>
+            <Button block disabled={!product.inStock || variant === null} onClick={add}>
+              {buttonLabel(product.inStock, single !== null)}
+            </Button>
+          </div>
         </div>
       </div>
 

@@ -1,0 +1,234 @@
+/*
+ * O perfume da vez.
+ *
+ * E a única seção da home que mostra um produto só, e por isso ela tem fundo
+ * próprio: sem a troca de tom, um produto grande no meio de três fileiras de
+ * produtos pequenos leria como "a fileira quebrou", e não como "olha este
+ * aqui".
+ */
+
+.featured {
+  padding-block: var(--space-48);
+  background-color: var(--bg-alt);
+}
+
+.title {
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--ink);
+}
+
+.inner {
+  display: grid;
+  gap: var(--space-24);
+  margin-top: var(--space-24);
+}
+
+@media (min-width: 64rem) {
+  .featured {
+    padding-block: var(--space-64);
+  }
+
+  .title {
+    font-size: var(--text-28);
+  }
+
+  .inner {
+    /* A foto manda, mas não domina: 5 para 6 deixa a coluna de texto um
+       pouco mais larga, que e o que o bloco precisa — ele tem descrição,
+       escada de desconto, preço, parcela e dois botões. */
+    grid-template-columns: 5fr 6fr;
+    gap: var(--space-48);
+    align-items: center;
+    margin-top: var(--space-32);
+  }
+}
+
+/* ---- A foto ------------------------------------------------------------ */
+
+.media {
+  position: relative;
+  overflow: hidden;
+
+  aspect-ratio: 1 / 1;
+  background-color: var(--surface);
+  border-radius: var(--radius-card);
+}
+
+/*
+ * O `<picture>` precisa ser bloco de altura cheia, e isso não e detalhe.
+ *
+ * `picture` nasce `inline`, e um elemento inline tem altura automática. O
+ * `height: 100%` da foto lá embaixo resolve a porcentagem contra **ele**, não
+ * contra a moldura quadrada — e porcentagem contra altura automática vira
+ * `auto`. Resultado: o `object-fit: cover` nunca entrava em acao, a foto 3:2
+ * ocupava dois tercos do quadrado e sobravam 185px de branco dentro do maior
+ * bloco de produto da home.
+ *
+ * Duas linhas, e a foto volta a preencher o quadrado e a ser recortada pelo
+ * centro como em todo o resto da loja.
+ */
+.media picture {
+  display: block;
+  height: 100%;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.badges {
+  position: absolute;
+  top: var(--space-12);
+  left: var(--space-12);
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+/* ---- O texto ----------------------------------------------------------- */
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.brand {
+  line-height: 1.2;
+}
+
+.name {
+  font-size: var(--text-28);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+@media (min-width: 48rem) {
+  .name {
+    font-size: var(--text-36);
+  }
+}
+
+.description {
+  /* Medida de leitura. Acima de uns 70 caracteres por linha o olho perde a
+     volta e a descrição deixa de ser lida. */
+  max-width: 62ch;
+
+  font-size: var(--text-16);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}
+
+/* ---- A escada de desconto ---------------------------------------------- */
+
+.tiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+
+  /* Recuo e margem do <ul> do navegador, zerados: a escada alinha com o
+     preco acima dela. */
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Um degrau.
+ *
+ * Contornado e não preenchido: são três ao lado do outro, e três retângulos
+ * cheios de cor roubariam o olho do preço, que esta logo abaixo e e o que
+ * decide a compra.
+ */
+.tier {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-8);
+
+  padding: var(--space-8) var(--space-12);
+
+  font-size: var(--text-12);
+  line-height: 1.2;
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-chip);
+}
+
+.tierQty {
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+.tierOff {
+  font-weight: var(--weight-bold);
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+/* ---- Preço e ações ------------------------------------------------------ */
+
+.pricing {
+  margin-top: var(--space-4);
+}
+
+.compareAt {
+  font-size: var(--text-14);
+  line-height: 1.2;
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.priceRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4) var(--space-12);
+}
+
+.price {
+  font-size: var(--text-36);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-title);
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* "15% OFF" ao lado do preço, como no cartão e na página do produto. */
+.off {
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+.installment {
+  margin-top: var(--space-4);
+  font-size: var(--text-14);
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-12);
+
+  width: 100%;
+  margin-top: var(--space-8);
+}
+
+/* O botão de comprar e o maior alvo do bloco, e cresce até o limite do que
+   ainda se lê como botão — depois disso ele vira uma barra. */
+.buy {
+  flex: 1 1 12rem;
+  max-width: 20rem;
+}

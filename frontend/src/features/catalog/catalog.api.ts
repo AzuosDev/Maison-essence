@@ -102,6 +102,31 @@ export async function fetchLatest(
 }
 
 /**
+ * A prateleira de promoções: o que esta com desconto agora.
+ *
+ * Não há filtro de desconto em `GET /products` — a vitrine resolve isso do
+ * mesmo jeito que o filtro "só promoções" da listagem resolve (ver
+ * `saleSlice`): pede a lista **ordenada por desconto** e corta no cliente o
+ * que veio com zero.
+ *
+ * A ordem e o que torna o corte barato. Com `sort=discount`, tudo o que tem
+ * desconto vem antes de tudo o que não tem: pedir o dobro do que a fileira
+ * mostra e suficiente para enche-la sempre que a loja tiver ao menos oito
+ * produtos em promoção, e numa loja sem promoção nenhuma a resposta chega
+ * com os mesmos poucos itens e a prateleira some sozinha.
+ */
+export const SALE_SHELF_LIMIT = 8;
+
+export async function fetchSaleShelf(
+  limit = SALE_SHELF_LIMIT,
+  signal?: AbortSignal,
+): Promise<PublicProduct[]> {
+  const page = await fetchProducts({ sort: 'discount', limit: limit * 2 }, signal);
+
+  return page.items.filter((product) => product.discountPercent > 0).slice(0, limit);
+}
+
+/**
  * Uma prateleira de marca.
  *
  * Cinco, e não os doze de novidades: a prateleira de marca não e para navegar
@@ -150,6 +175,24 @@ export async function fetchBrandShelf(
  */
 export function fetchProduct(slug: string, signal?: AbortSignal): Promise<PublicProductDetail> {
   return api.get<PublicProductDetail>(`/products/${encodeURIComponent(slug)}`, {
+    scope: null,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * O perfume da vez: o produto que fecha a home, escolhido pela dona no painel.
+ *
+ * Devolve o produto **inteiro**, no mesmo formato da página dele: a seção tem
+ * foto grande, descrição, a escada de desconto e um botão de comprar. Quem
+ * resolve qual produto e — a escolha de Ajustes, ou o primeiro destaque
+ * quando ela não escolheu — e o servidor, numa consulta só.
+ *
+ * `404` quer dizer que a loja não tem o que pôr ali: nem escolha nem destaque
+ * marcado. E a resposta certa, e a seção some da página.
+ */
+export function fetchPerfumeOfTheWeek(signal?: AbortSignal): Promise<PublicProductDetail> {
+  return api.get<PublicProductDetail>('/products/perfume-of-the-week', {
     scope: null,
     ...(signal ? { signal } : {}),
   });

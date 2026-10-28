@@ -30,7 +30,9 @@
 
   --toggle-ink: var(--slab-ink);
   --toggle-line: color-mix(in srgb, var(--slab-ink) 25%, transparent);
-  --toggle-active-bg: color-mix(in srgb, var(--gold) 18%, transparent);
+  /* O chip ligado sai do realce da laje: sobre a laje dourada do rodapé um
+     véu de dourado a 18% não se distingue do fundo. */
+  --toggle-active-bg: color-mix(in srgb, var(--slab-accent, var(--gold)) 18%, transparent);
   --toggle-active-ink: var(--slab-ink);
   --toggle-hover-bg: color-mix(in srgb, var(--slab-ink) 10%, transparent);
 }
@@ -62,7 +64,16 @@
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-button);
   text-transform: uppercase;
-  color: var(--muted);
+
+  /*
+   * O cinza do rótulo depende do fundo em que o seletor caiu.
+   *
+   * O padrão serve a página branca. No rodapé, que e a laje preta, `--muted`
+   * da 3.3:1 e some — quem coloca o seletor ali passa `--toggle-legend-ink`
+   * com o cinza da laje. E o mesmo arranjo das outras variáveis deste
+   * componente: quem posiciona rege, o componente não conhece o contexto.
+   */
+  color: var(--toggle-legend-ink, var(--muted));
 }
 
 .options {

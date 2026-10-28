@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator.js';
-import { MANAGES_USERS } from '../../common/roles.js';
+import { USER_ROLES } from '../../common/enums/user-role.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -13,12 +13,18 @@ import type { UserView } from './user.view.js';
 /**
  * CRUD dos usuários do painel.
  *
- * O `@Roles` no controller barra o STAFF inteiro de uma vez; o
- * `SUPER_ADMIN` entra pelo guard, sem precisar ser listado. O que o OWNER
- * pode fazer com cada alvo — só STAFF — e decisão por registro, e por isso
- * mora na policy e não aqui.
+ * O `@Roles` no controller fecha o módulo inteiro no `SUPER_ADMIN`: conta de
+ * painel não se cria, não se edita e não muda de papel sem quem mantem o
+ * sistema. Sem isso, o gerente promoveria a si mesmo e a regra acabaria ali.
+ *
+ * A policy do módulo (`user-access.policy.ts`) continua valendo e continua
+ * testada — ela e quem recusa atribuir papel acima do próprio e mudar o
+ * próprio papel, e vale para o `SUPER_ADMIN` também. Que o OWNER já não
+ * chegue até ela pelo HTTP não e razão para afrouxa-lá: ela e a segunda
+ * tranca, e a segunda tranca serve justamente para o dia em que a primeira
+ * for afrouxada por engano.
  */
-@Roles(...MANAGES_USERS)
+@Roles(USER_ROLES.SUPER_ADMIN)
 @Controller('users')
 export class UsersController {
   constructor(private readonly users: UsersService) {}

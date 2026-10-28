@@ -215,7 +215,7 @@ describe('auth (e2e)', () => {
 
       for (const response of [wrongPassword, unknownEmail, inactive]) {
         expect(response.status).toBe(401);
-        expect(response.body.message).toBe('Credenciais invalidas.');
+        expect(response.body.message).toBe('Credenciais inválidas.');
       }
 
       expect(unknownEmail.body.message).toBe(wrongPassword.body.message);
@@ -255,7 +255,7 @@ describe('auth (e2e)', () => {
       // servico: os dois valem cinco por quinze minutos, e quem chega primeiro
       // e o guard. As duas recusas sao igualmente mudas sobre o e-mail.
       expect(blocked.body.message).toBe(
-        'Muitas requisicoes em pouco tempo. Espere um instante e tente de novo.',
+        'Muitas requisições em pouco tempo. Espere um instante e tente de novo.',
       );
       expect(JSON.stringify(blocked.body)).not.toContain(EMAIL);
 
@@ -515,7 +515,7 @@ describe('auth (e2e)', () => {
         .set('Authorization', `Bearer ${session.body.accessToken}`)
         .expect(403);
 
-      expect(blocked.body.message).toBe('Troque a senha temporaria antes de usar o painel.');
+      expect(blocked.body.message).toBe('Troque a senha temporária antes de usar o painel.');
 
       // O que ele precisa poder fazer nesse estado continua aberto.
       await request(server)

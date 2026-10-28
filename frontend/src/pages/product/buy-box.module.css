@@ -74,9 +74,23 @@
 }
 
 .price {
-  font-size: var(--text-28);
-  font-weight: var(--weight-medium);
+  font-size: var(--text-36);
+  font-weight: var(--weight-bold);
+  letter-spacing: var(--tracking-title);
   color: var(--ink);
+}
+
+/*
+ * "15% OFF", ao lado do preço.
+ *
+ * `--gold-deep` e não `--gold`: e texto, e o dourado da marca da 2.4:1 sobre
+ * o branco. Mesma regra do cartão da vitrine, mesmo token.
+ */
+.off {
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--gold-deep);
+  white-space: nowrap;
 }
 
 .unit,

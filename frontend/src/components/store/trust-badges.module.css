@@ -2,20 +2,27 @@
  * Os selos de confiança.
  *
  * Empilhados no celular, em fila a partir de 768px. Não são decoração: são
- * as três perguntas que travam a compra numa loja pequena — chega até mim?
- * meus dados estão seguros? da para parcelar?
+ * as quatro perguntas que travam a compra numa loja pequena — chega até mim?
+ * tem agora? da para parcelar? meus dados estão seguros?
  *
- * As quatro cores saem por variável para que a mesma faixa sirva ao rodapé
- * preto e a home creme. Quem troca e a classe `.light`, e nada além das
+ * As quatro cores saem por variável para que a mesma faixa sirva a laje do
+ * rodapé e a home creme. Quem troca e a classe `.light`, e nada além das
  * cores muda entre os dois tons.
  */
 
 .badges {
   --badge-title: var(--slab-ink);
-  --badge-note: var(--muted);
-  --badge-icon: var(--gold);
-  /* O dourado a 40%, como no rodapé original: moldura que sugere, não cerca. */
-  --badge-icon-line: rgb(195 149 64 / 0.4);
+  --badge-note: var(--slab-muted);
+  /*
+   * O ícone e o realce da laje, com o dourado como reserva.
+   *
+   * Sobre a laje dourada do rodapé o ícone dourado sumiria no próprio fundo
+   * (2.4:1); quem o pinta ali e `--slab-accent`, que o rodapé declara como a
+   * tinta. Onde não houver laje dourada, o dourado da marca continua valendo
+   * — e por isso ele e o valor de reserva, e não uma segunda classe de tom.
+   */
+  --badge-icon: var(--slab-accent, var(--gold));
+  --badge-icon-line: color-mix(in srgb, var(--badge-icon) 40%, transparent);
   --badge-rule: color-mix(in srgb, var(--slab-ink) 12%, transparent);
 
   display: grid;
@@ -40,7 +47,7 @@
 
 @media (min-width: 48rem) {
   .badges {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: var(--space-32);
   }
 }
@@ -74,4 +81,17 @@
 .note {
   font-size: var(--text-12);
   color: var(--badge-note);
+}
+
+/*
+ * Quatro em linha só a partir de 1024px.
+ *
+ * Em 768px, quatro colunas davam 170px para cada selo, e a nota de duas
+ * linhas virava quatro. Duas por duas, no tablet; quatro em fila, no
+ * desktop.
+ */
+@media (min-width: 64rem) {
+  .badges {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }

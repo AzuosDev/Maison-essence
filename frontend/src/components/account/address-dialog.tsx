@@ -161,7 +161,7 @@ export function AddressDialog({
         <Select
           label="Cidade"
           placeholder="Escolher depois"
-          hint="Só as cidades que a loja atende. Deixe em branco se a sua não esta aqui."
+          hint="Só as cidades que a loja atende. Deixe em branco se a sua não está aqui."
           options={cityOptions}
           error={errors.cityId?.message}
           {...register('cityId')}

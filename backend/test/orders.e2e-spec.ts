@@ -412,7 +412,7 @@ describe('pedidos (e2e)', () => {
       expect(message).toContain(`*NOVO PEDIDO* ${created.code}`);
       expect(message).toContain('Asad - 100 ml');
       expect(message).toContain('*TOTAL: R$ 204,90*');
-      expect(message).toContain('Entrega em Sobral/CE (prazo de 2 dias uteis)');
+      expect(message).toContain('Entrega em Sobral/CE (prazo de 2 dias úteis)');
       expect(message).toContain('Rua das Flores, 123');
       expect(message).toContain('Maria Silva');
       expect(message).toContain('(88) 99999-9999');

@@ -66,7 +66,7 @@ export function fieldErrors(error: z.ZodError): FieldErrors {
 export const itemsSchema = z.object({
   items: z
     .array(z.object({ unavailable: z.boolean() }))
-    .min(1, 'Sua sacola esta vazia.')
+    .min(1, 'Sua sacola está vazia.')
     .refine(
       (items) => items.every((item) => !item.unavailable),
       'Remova os itens indisponíveis para continuar.',

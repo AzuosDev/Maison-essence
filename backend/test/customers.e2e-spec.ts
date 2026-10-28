@@ -3,9 +3,13 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test } from '@nestjs/testing';
 import type { Model } from 'mongoose';
 import request from 'supertest';
+import { vi } from 'vitest';
 import { AppModule } from '../src/app.module.js';
 import { configureApp } from '../src/bootstrap.js';
 import { PasswordService } from '../src/modules/auth/password.service.js';
+import { MailService } from '../src/modules/mail/mail.service.js';
+import type { Mail } from '../src/modules/mail/mail.service.js';
+import { PasswordResetToken } from '../src/schemas.js';
 import {
   Customer,
   DeliveryCity,
@@ -53,6 +57,10 @@ describe('contas de cliente (e2e)', () => {
   let refreshTokens: Model<RefreshToken>;
   let hits: Model<RateLimitHit>;
   let users: Model<User>;
+  let resets: Model<PasswordResetToken>;
+  let mail: MailService;
+  /** O que o `MailService` teria mandado. Alimentado pelo spy, abaixo. */
+  let sent: Mail[];
   let seeded: Seeded;
 
   beforeAll(async () => {
@@ -72,11 +80,14 @@ describe('contas de cliente (e2e)', () => {
     refreshTokens = app.get<Model<RefreshToken>>(getModelToken(RefreshToken.name));
     hits = app.get<Model<RateLimitHit>>(getModelToken(RateLimitHit.name));
     users = app.get<Model<User>>(getModelToken(User.name));
+    resets = app.get<Model<PasswordResetToken>>(getModelToken(PasswordResetToken.name));
+    mail = app.get(MailService);
 
     // O telefone unico e o que impede duas contas de disputarem os mesmos
     // pedidos. `autoIndex` so vale em desenvolvimento.
     await customers.createIndexes();
     await orders.createIndexes();
+    await resets.createIndexes();
   });
 
   afterAll(async () => {
@@ -85,10 +96,28 @@ describe('contas de cliente (e2e)', () => {
 
   beforeEach(async () => {
     seeded = await seedStore();
+
+    /*
+     * O e-mail e interceptado, e nao enviado.
+     *
+     * E tambem a unica forma de o teste ver o token: o que fica no banco e o
+     * hash dele, de proposito. Ler a mensagem e o mesmo que o cliente faz —
+     * abre a caixa de entrada e clica no link —, e por isso o teste do fluxo
+     * inteiro passa por aqui em vez de alcancar a coleção por dentro.
+     */
+    sent = [];
+    vi.spyOn(mail, 'send').mockImplementation(async (message: Mail) => {
+      sent.push(message);
+
+      return true;
+    });
   });
 
   afterEach(async () => {
+    vi.restoreAllMocks();
+
     await Promise.all([
+      resets.deleteMany({}),
       products.deleteMany({}),
       cities.deleteMany({}),
       payments.deleteMany({}),
@@ -296,12 +325,46 @@ describe('contas de cliente (e2e)', () => {
   });
 
   describe('login e sessao', () => {
+    it('entra pelo e-mail do cadastro, do jeito que a tela o mostra', async () => {
+      await signUp();
+
+      const { body } = await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: 'MARIA@exemplo.com', password: PASSWORD })
+        .expect(200);
+
+      expect(body.customer.email).toBe('maria@exemplo.com');
+      expect(body.accessToken).toBeDefined();
+    });
+
+    it('e-mail sem conta recusa igual a telefone sem conta', async () => {
+      await signUp();
+
+      const semConta = await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: 'ninguem@maisonessence.test', password: PASSWORD })
+        .expect(401);
+      const telefoneSemConta = await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: '(88) 97777-0000', password: PASSWORD })
+        .expect(401);
+
+      expect(semConta.body.message).toBe(telefoneSemConta.body.message);
+    });
+
+    it('recusa com 400 o que nao e telefone nem e-mail', async () => {
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: 'felipe', password: PASSWORD })
+        .expect(400);
+    });
+
     it('entra pelo telefone, digitado de qualquer jeito', async () => {
       await signUp();
 
       const { body } = await request(server)
         .post(`${CUSTOMER}/login`)
-        .send({ phone: PHONE_STORED, password: PASSWORD })
+        .send({ identifier: PHONE_STORED, password: PASSWORD })
         .expect(200);
 
       expect(body.customer.phone).toBe(PHONE_STORED);
@@ -313,11 +376,11 @@ describe('contas de cliente (e2e)', () => {
 
       const errada = await request(server)
         .post(`${CUSTOMER}/login`)
-        .send({ phone: PHONE_TYPED, password: 'outra-senha-qualquer' })
+        .send({ identifier: PHONE_TYPED, password: 'outra-senha-qualquer' })
         .expect(401);
       const inexistente = await request(server)
         .post(`${CUSTOMER}/login`)
-        .send({ phone: '(88) 97777-0000', password: PASSWORD })
+        .send({ identifier: '(88) 97777-0000', password: PASSWORD })
         .expect(401);
 
       expect(errada.body.message).toBe(inexistente.body.message);
@@ -545,7 +608,7 @@ describe('contas de cliente (e2e)', () => {
 
       const { body: sessao } = await request(server)
         .post(`${CUSTOMER}/login`)
-        .send({ phone: PHONE_TYPED, password: PASSWORD })
+        .send({ identifier: PHONE_TYPED, password: PASSWORD })
         .expect(200);
       const { body: historico } = await request(server)
         .get(`${CUSTOMER}/orders`)
@@ -611,6 +674,335 @@ describe('contas de cliente (e2e)', () => {
 
       // Nada no checkout pode depender de a sessao estar boa.
       expect(saved?.customerId).toBeNull();
+    });
+  });
+
+  /* ---- Trocar a senha estando dentro ------------------------------------ */
+
+  describe('PATCH /customer/me/password', () => {
+    it('troca a senha, derruba as outras sessoes e devolve uma nova', async () => {
+      const primeira = await signUp();
+      // Uma segunda sessao, como quem entrou tambem no computador da loja.
+      const { body: segunda } = await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: PASSWORD })
+        .expect(200);
+
+      const { body: trocada } = await request(server)
+        .patch(`${CUSTOMER}/me/password`)
+        .set(as(primeira.accessToken))
+        .send({ currentPassword: PASSWORD, newPassword: 'outra-senha-bem-longa' })
+        .expect(200);
+
+      // A sessao de quem trocou continua, com o par novo da resposta.
+      await request(server)
+        .get(`${CUSTOMER}/me`)
+        .set(as(trocada.accessToken))
+        .expect(200);
+
+      // A outra morre: e o proposito de trocar senha.
+      await request(server).get(`${CUSTOMER}/me`).set(as(segunda.accessToken)).expect(401);
+      await request(server)
+        .post(`${CUSTOMER}/refresh`)
+        .send({ refreshToken: segunda.refreshToken })
+        .expect(401);
+
+      // A senha velha nao entra mais; a nova entra.
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: PASSWORD })
+        .expect(401);
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: 'outra-senha-bem-longa' })
+        .expect(200);
+    });
+
+    it('recusa a senha atual errada sem mexer em nada', async () => {
+      const { accessToken } = await signUp();
+
+      await request(server)
+        .patch(`${CUSTOMER}/me/password`)
+        .set(as(accessToken))
+        .send({ currentPassword: 'nao-e-essa', newPassword: 'outra-senha-bem-longa' })
+        .expect(401);
+
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: PASSWORD })
+        .expect(200);
+    });
+
+    it('recusa senha curta e senha igual a atual', async () => {
+      const { accessToken } = await signUp();
+
+      await request(server)
+        .patch(`${CUSTOMER}/me/password`)
+        .set(as(accessToken))
+        .send({ currentPassword: PASSWORD, newPassword: 'curta' })
+        .expect(400);
+
+      await request(server)
+        .patch(`${CUSTOMER}/me/password`)
+        .set(as(accessToken))
+        .send({ currentPassword: PASSWORD, newPassword: PASSWORD })
+        .expect(400);
+    });
+
+    it('sem sessao nao chega na rota', async () => {
+      await request(server)
+        .patch(`${CUSTOMER}/me/password`)
+        .send({ currentPassword: PASSWORD, newPassword: 'outra-senha-bem-longa' })
+        .expect(401);
+    });
+  });
+
+  /* ---- Trocar o e-mail, que agora abre a conta -------------------------- */
+
+  describe('o e-mail virou credencial', () => {
+    it('trocar o e-mail sem confirmar a senha e recusado', async () => {
+      const { accessToken } = await signUp();
+
+      await request(server)
+        .patch(`${CUSTOMER}/me`)
+        .set(as(accessToken))
+        .send({ email: 'outro@exemplo.com' })
+        .expect(400);
+
+      const guardada = await customers.findOne({}).exec();
+
+      expect(guardada?.email).toBe('maria@exemplo.com');
+    });
+
+    it('com a senha certa, troca — e o login segue o e-mail novo', async () => {
+      const { accessToken } = await signUp();
+
+      await request(server)
+        .patch(`${CUSTOMER}/me`)
+        .set(as(accessToken))
+        .send({ email: 'outro@exemplo.com', currentPassword: PASSWORD })
+        .expect(200);
+
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: 'outro@exemplo.com', password: PASSWORD })
+        .expect(200);
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: 'maria@exemplo.com', password: PASSWORD })
+        .expect(401);
+    });
+
+    it('corrigir so o nome continua sem pedir senha', async () => {
+      const { accessToken } = await signUp();
+
+      const { body } = await request(server)
+        .patch(`${CUSTOMER}/me`)
+        .set(as(accessToken))
+        .send({ name: 'Maria Silva Souza' })
+        .expect(200);
+
+      expect(body.name).toBe('Maria Silva Souza');
+    });
+
+    it('mandar o mesmo e-mail que ja esta gravado nao pede senha', async () => {
+      const { accessToken } = await signUp();
+
+      // A tela manda o formulario inteiro: o e-mail vem junto sem ter mudado.
+      await request(server)
+        .patch(`${CUSTOMER}/me`)
+        .set(as(accessToken))
+        .send({ name: 'Maria S.', email: 'maria@exemplo.com' })
+        .expect(200);
+    });
+  });
+
+  /* ---- Esqueci minha senha ---------------------------------------------- */
+
+  describe('recuperacao de senha', () => {
+    /** O token que foi no e-mail, lido do link da mensagem interceptada. */
+    function tokenFromMail(): string {
+      const link = /token=([0-9a-f]{64})/.exec(sent.at(-1)?.text ?? '');
+
+      expect(link).not.toBeNull();
+
+      return link?.[1] ?? '';
+    }
+
+    async function forgot(identifier: string): Promise<void> {
+      await request(server)
+        .post(`${CUSTOMER}/password/forgot`)
+        .send({ identifier })
+        .expect(200);
+    }
+
+    it('manda o link para o e-mail da conta e a senha nova entra', async () => {
+      await signUp();
+
+      await forgot(PHONE_TYPED);
+
+      expect(sent).toHaveLength(1);
+      expect(sent[0].to).toBe('maria@exemplo.com');
+
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token: tokenFromMail(), password: 'senha-nova-bem-longa' })
+        .expect(204);
+
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: 'senha-nova-bem-longa' })
+        .expect(200);
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: PASSWORD })
+        .expect(401);
+    });
+
+    it('pedir pelo e-mail funciona igual', async () => {
+      await signUp();
+
+      await forgot('maria@exemplo.com');
+
+      expect(sent).toHaveLength(1);
+    });
+
+    it('conta que nao existe responde a mesma coisa, sem mandar nada', async () => {
+      await signUp();
+
+      const existe = await request(server)
+        .post(`${CUSTOMER}/password/forgot`)
+        .send({ identifier: PHONE_TYPED })
+        .expect(200);
+      const naoExiste = await request(server)
+        .post(`${CUSTOMER}/password/forgot`)
+        .send({ identifier: '(88) 97777-0000' })
+        .expect(200);
+
+      expect(naoExiste.body.message).toBe(existe.body.message);
+      // Uma mensagem so: a do telefone que tem conta.
+      expect(sent).toHaveLength(1);
+    });
+
+    it('derruba todas as sessoes abertas', async () => {
+      const { accessToken, refreshToken } = await signUp();
+
+      await forgot(PHONE_TYPED);
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token: tokenFromMail(), password: 'senha-nova-bem-longa' })
+        .expect(204);
+
+      await request(server).get(`${CUSTOMER}/me`).set(as(accessToken)).expect(401);
+      await request(server).post(`${CUSTOMER}/refresh`).send({ refreshToken }).expect(401);
+    });
+
+    it('o link so funciona uma vez', async () => {
+      await signUp();
+
+      await forgot(PHONE_TYPED);
+      const token = tokenFromMail();
+
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token, password: 'senha-nova-bem-longa' })
+        .expect(204);
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token, password: 'terceira-senha-longa' })
+        .expect(400);
+
+      // A segunda tentativa nao gravou nada por cima.
+      await request(server)
+        .post(`${CUSTOMER}/login`)
+        .send({ identifier: PHONE_TYPED, password: 'senha-nova-bem-longa' })
+        .expect(200);
+    });
+
+    it('pedir de novo encerra o link anterior', async () => {
+      await signUp();
+
+      await forgot(PHONE_TYPED);
+      const primeiro = tokenFromMail();
+
+      await forgot(PHONE_TYPED);
+      const segundo = tokenFromMail();
+
+      expect(segundo).not.toBe(primeiro);
+
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token: primeiro, password: 'senha-nova-bem-longa' })
+        .expect(400);
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token: segundo, password: 'senha-nova-bem-longa' })
+        .expect(204);
+    });
+
+    it('token vencido nao abre nada', async () => {
+      await signUp();
+
+      await forgot(PHONE_TYPED);
+      const token = tokenFromMail();
+
+      // O relogio nao se mexe: o vencimento e que anda para tras.
+      await resets.updateMany({}, { $set: { expiresAt: new Date(Date.now() - 1000) } }).exec();
+
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token, password: 'senha-nova-bem-longa' })
+        .expect(400);
+    });
+
+    it('token inventado responde igual a token vencido', async () => {
+      await signUp();
+
+      const inventado = await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token: 'a'.repeat(64), password: 'senha-nova-bem-longa' })
+        .expect(400);
+
+      expect(String(inventado.body.message)).toMatch(/não vale mais/);
+    });
+
+    it('o que nao tem cara de token morre na validacao, sem consultar nada', async () => {
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token: 'nao-e-um-token', password: 'senha-nova-bem-longa' })
+        .expect(400);
+    });
+
+    it('o token gravado e o hash, nunca o token', async () => {
+      await signUp();
+
+      await forgot(PHONE_TYPED);
+      const token = tokenFromMail();
+
+      // `+tokenHash`: o campo e `select: false`, como o da senha.
+      const guardado = await resets.findOne({}).select('+tokenHash').exec();
+
+      expect(guardado?.tokenHash).not.toBe(token);
+      expect(guardado?.tokenHash).toMatch(/^[0-9a-f]{64}$/);
+      expect(JSON.stringify(guardado?.toJSON() ?? {})).not.toContain(token);
+    });
+
+    it('senha curta e recusada antes de o token ser gasto', async () => {
+      await signUp();
+
+      await forgot(PHONE_TYPED);
+      const token = tokenFromMail();
+
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token, password: 'curta' })
+        .expect(400);
+
+      // O link continua valendo: quem errou o tamanho tenta de novo.
+      await request(server)
+        .post(`${CUSTOMER}/password/reset`)
+        .send({ token, password: 'senha-nova-bem-longa' })
+        .expect(204);
     });
   });
 });

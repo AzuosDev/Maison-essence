@@ -1,0 +1,91 @@
+/*
+ * A faixa de marcas.
+ *
+ * Alinhada a esquerda, como toda seção da loja, e com o mesmo título das
+ * prateleiras. Ela e uma pausa entre duas fileiras de produto: sem foto, sem
+ * preço, só os nomes das casas que a loja representa.
+ */
+
+.row {
+  padding-block: var(--space-48);
+  background-color: var(--bg-alt);
+}
+
+.title {
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  color: var(--ink);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-28);
+  }
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  /* O vão horizontal e grande de propósito: e ele que faz oito nomes se
+     lerem como oito marcas, e não como uma frase. */
+  gap: var(--space-16) var(--space-32);
+
+  /* O <ul> do navegador vem com 40px de recuo e 1em de margem embaixo. Sem
+     zerar os dois, a fileira de marcas nascia 40px para dentro da coluna da
+     pagina — desalinhada do titulo logo acima dela. */
+  margin: var(--space-24) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * O nome da marca.
+ *
+ * Em Onest, como todo o resto da interface. Estava na serifada da marca, e
+ * isso era um erro de sistema: `--font-brand` existe para a assinatura
+ * "Maison Essence" — a loja — e emprestá-la para os nomes dos fabricantes
+ * fazia oito marcas de terceiros falarem com a voz da casa.
+ *
+ * O que carrega o ar de logotipo aqui e a caixa alta com espacejamento
+ * aberto, que não precisa de serifa nenhuma para funcionar.
+ */
+.brand {
+  display: block;
+
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--ink-soft);
+
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+
+  transition:
+    color var(--transition),
+    text-decoration-color var(--transition);
+}
+
+.brand:hover {
+  color: var(--ink);
+  text-decoration-color: var(--gold);
+}
+
+.brand:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+@media (min-width: 64rem) {
+  .brand {
+    font-size: var(--text-18);
+  }
+}

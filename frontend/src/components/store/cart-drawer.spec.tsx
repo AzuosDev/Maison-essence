@@ -216,7 +216,7 @@ test('a gaveta vazia oferece o catálogo em vez de um total', async () => {
 
   const gaveta = await screen.findByRole('dialog');
 
-  expect(within(gaveta).getByText('Sua sacola esta vazia')).toBeTruthy();
+  expect(within(gaveta).getByText('Sua sacola está vazia')).toBeTruthy();
   expect(within(gaveta).queryByRole('button', { name: 'Finalizar compra' })).toBeNull();
   expect(quoteCalls).toBe(0);
 });

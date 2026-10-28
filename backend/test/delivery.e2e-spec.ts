@@ -95,6 +95,11 @@ describe('entrega (e2e)', () => {
     return signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
   }
 
+  /** Quem mantem o sistema, e a unica pessoa que apaga cadastro. */
+  function signedInAdmin(): Promise<Session> {
+    return signedIn(USER_ROLES.SUPER_ADMIN, 'dev@maisonessence.com');
+  }
+
   function listCities(session: Session): request.Test {
     return request(server).get(`${API}/admin/delivery-cities`).set(as(session));
   }
@@ -227,7 +232,7 @@ describe('entrega (e2e)', () => {
         feeCents: 2000,
       }).expect(409);
 
-      expect(String(response.body.message)).toMatch(/ja esta cadastrada/);
+      expect(String(response.body.message)).toMatch(/já esta cadastrada/);
     });
 
     it('recusa taxa em reais', async () => {
@@ -298,7 +303,7 @@ describe('entrega (e2e)', () => {
         feeCents: 1000,
       }).expect(404);
 
-      expect(String(response.body.message)).toMatch(/nao encontrada/);
+      expect(String(response.body.message)).toMatch(/não encontrada/);
     });
 
     it('trata id malformado como cidade inexistente', async () => {
@@ -348,30 +353,68 @@ describe('entrega (e2e)', () => {
       // ter excluido a cidade: gravar assim ressuscitaria a ordem antiga.
       const response = await reorder(owner, ['000000000000000000000000']).expect(422);
 
-      expect(String(response.body.message)).toMatch(/nao existe/);
+      expect(String(response.body.message)).toMatch(/não existe/);
     });
   });
 
   describe('DELETE /admin/delivery-cities/:id', () => {
     it('exclui e some da lista', async () => {
+      const admin = await signedInAdmin();
+      const id = await sobral(admin);
+
+      await request(server)
+        .delete(`${API}/admin/delivery-cities/${id}`)
+        .set(as(admin))
+        .expect(204);
+
+      expect((await listCities(admin).expect(200)).body).toEqual([]);
+    });
+
+    it('responde 404 para cidade que nao existe', async () => {
+      const admin = await signedInAdmin();
+
+      await request(server)
+        .delete(`${API}/admin/delivery-cities/000000000000000000000000`)
+        .set(as(admin))
+        .expect(404);
+    });
+
+    /**
+     * Desligar a cidade guarda a taxa combinada; excluir manda recadastrar
+     * de memoria. O gerente fica com o caminho que lembra.
+     */
+    it('recusa o gerente, que tira do checkout desligando a cidade', async () => {
       const owner = await signedInOwner();
       const id = await sobral(owner);
 
       await request(server)
         .delete(`${API}/admin/delivery-cities/${id}`)
         .set(as(owner))
-        .expect(204);
+        .expect(403);
 
-      expect((await listCities(owner).expect(200)).body).toEqual([]);
+      expect(await cities.countDocuments()).toBe(1);
+
+      const response = await patchCity(owner, id, { isActive: false }).expect(200);
+
+      expect(response.body.isActive).toBe(false);
+      expect((await publicCities().expect(200)).body).toEqual([]);
     });
 
-    it('responde 404 para cidade que nao existe', async () => {
+    it('o gerente continua cadastrando cidade e mexendo na taxa', async () => {
       const owner = await signedInOwner();
+      const id = await sobral(owner);
 
-      await request(server)
-        .delete(`${API}/admin/delivery-cities/000000000000000000000000`)
-        .set(as(owner))
-        .expect(404);
+      const response = await patchCity(owner, id, {
+        feeCents: 1800,
+        estimatedDays: 2,
+        minOrderForFreeCents: 20_000,
+      }).expect(200);
+
+      expect(response.body).toMatchObject({
+        feeCents: 1800,
+        estimatedDays: 2,
+        minOrderForFreeCents: 20_000,
+      });
     });
   });
 
@@ -410,13 +453,13 @@ describe('entrega (e2e)', () => {
         feeCents: 1000,
         feeLabel: 'R$ 10,00',
         estimatedDays: 1,
-        estimatedLabel: 'Ate 1 dia util',
+        estimatedLabel: 'Até 1 dia útil',
         freeFromCents: 15_000,
-        freeFromLabel: 'Frete gratis a partir de R$ 150,00',
+        freeFromLabel: 'Frete grátis a partir de R$ 150,00',
       });
       expect(segunda).toMatchObject({
         feeLabel: 'R$ 25,00',
-        estimatedLabel: 'Ate 3 dias uteis',
+        estimatedLabel: 'Até 3 dias úteis',
         // Sem regra propria e sem regra global: nao ha frete gratis a anunciar.
         freeFromCents: null,
         freeFromLabel: '',
@@ -432,7 +475,7 @@ describe('entrega (e2e)', () => {
       const [city] = (await publicCities().expect(200)).body;
 
       expect(city.freeFromCents).toBe(25_000);
-      expect(city.freeFromLabel).toBe('Frete gratis a partir de R$ 250,00');
+      expect(city.freeFromLabel).toBe('Frete grátis a partir de R$ 250,00');
     });
 
     it('escreve Gratis onde a taxa cadastrada e zero', async () => {
@@ -440,7 +483,7 @@ describe('entrega (e2e)', () => {
 
       await sobral(owner, { feeCents: 0 });
 
-      expect((await publicCities().expect(200)).body[0].feeLabel).toBe('Gratis');
+      expect((await publicCities().expect(200)).body[0].feeLabel).toBe('Grátis');
     });
 
     it('pede cache na borda e responde 304 na revalidacao', async () => {
@@ -515,7 +558,7 @@ describe('entrega (e2e)', () => {
 
       expect(quote.feeCents).toBe(0);
       expect(quote.isFree).toBe(true);
-      expect(quote.freeReason).toBe('Frete gratis para Sobral em pedidos a partir de R$ 150,00.');
+      expect(quote.freeReason).toBe('Frete grátis para Sobral em pedidos a partir de R$ 150,00.');
     });
 
     /** Criterio de aceite: retirada zera a taxa e dispensa endereco. */
@@ -555,7 +598,7 @@ describe('entrega (e2e)', () => {
       });
 
       expect(quote.feeCents).toBe(0);
-      expect(quote.freeReason).toBe('Frete gratis em pedidos a partir de R$ 250,00.');
+      expect(quote.freeReason).toBe('Frete grátis em pedidos a partir de R$ 250,00.');
     });
 
     it('a regra da cidade tem precedencia sobre a global', async () => {
@@ -639,7 +682,7 @@ describe('entrega (e2e)', () => {
           cityId: id,
           subtotalCents: 5000,
         }),
-      ).rejects.toThrow(/nao entregamos mais nessa cidade/i);
+      ).rejects.toThrow(/não entregamos mais nessa cidade/i);
     });
 
     it('exige a cidade quando o modo e entrega', async () => {

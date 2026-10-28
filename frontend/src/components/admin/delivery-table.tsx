@@ -58,7 +58,14 @@ export interface DeliveryTableProps {
   /** Só o que mudou. `null` de `changesOf` nunca chega aqui. */
   onSave: (city: AdminDeliveryCity, changes: UpdateDeliveryCityInput) => void;
   onToggleActive: (city: AdminDeliveryCity) => void;
-  onDelete: (city: AdminDeliveryCity) => void;
+  /**
+   * Ausente: o menu da linha não desenha o item "Excluir".
+   *
+   * E assim que o recorte por papel chega aqui — a tabela não pergunta quem
+   * esta logada, ela desenha o que recebeu. Quem decide e a tela, com
+   * `canDeleteForever`.
+   */
+  onDelete?: ((city: AdminDeliveryCity) => void) | undefined;
   /** O id da cidade que o servidor acabou de confirmar. */
   savedId?: string | null;
   isReordering?: boolean;
@@ -176,7 +183,7 @@ interface CityFieldsProps {
   onMove: (to: number) => void;
   onSave: (city: AdminDeliveryCity, changes: UpdateDeliveryCityInput) => void;
   onToggleActive: (city: AdminDeliveryCity) => void;
-  onDelete: (city: AdminDeliveryCity) => void;
+  onDelete: ((city: AdminDeliveryCity) => void) | undefined;
 }
 
 /**
@@ -257,15 +264,19 @@ function CityFields({
         onMove(index + 1);
       },
     },
-    {
-      label: 'Excluir',
-      icon: TrashIcon,
-      tone: 'danger',
-      separated: true,
-      onSelect: () => {
-        onDelete(city);
-      },
-    },
+    ...(onDelete === undefined
+      ? []
+      : [
+          {
+            label: 'Excluir',
+            icon: TrashIcon,
+            tone: 'danger' as const,
+            separated: true,
+            onSelect: () => {
+              onDelete(city);
+            },
+          },
+        ]),
   ];
 
   const days = Number.parseInt(draft.days, 10);

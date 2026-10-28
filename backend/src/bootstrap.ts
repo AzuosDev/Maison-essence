@@ -11,6 +11,7 @@ import type {
 import helmetImport from 'helmet';
 import type { HelmetOptions } from 'helmet';
 import { JsonLogger, logLevelsFor } from './common/json-logger.js';
+import { MailService } from './modules/mail/mail.service.js';
 import { rejectMongoOperators } from './common/mongo-operator-guard.js';
 import { attachRequestId } from './common/request-id.middleware.js';
 import { apiSecurityHeaders, docsSecurityHeaders } from './common/security-headers.js';
@@ -190,6 +191,11 @@ export function configureApp(app: INestApplication): INestApplication {
       ? { credentials: { user: docsUser, password: docsPassword } }
       : {}),
   });
+
+  // Loja sem SMTP configurado manda o cliente pedir recuperação de senha e não
+  // entrega nada. Em produção isso precisa aparecer no boot, e não no dia em
+  // que alguém reclamar que o e-mail não chegou.
+  app.get(MailService).warnIfUnconfigured();
 
   return app;
 }

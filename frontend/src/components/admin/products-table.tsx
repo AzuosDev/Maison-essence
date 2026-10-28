@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
-import { Badge, Skeleton, Switch } from '@/components/ui';
+import { Badge, Checkbox, Skeleton, Switch } from '@/components/ui';
 import type { AdminProduct } from '@/features/admin';
 import { imageProps } from '@/lib/cloudinary';
 import { cx } from '@/lib/cx';
@@ -28,6 +28,14 @@ import styles from './products-table.module.css';
  * O interruptor vira no dedo (`useSetProductStatus` guarda o retrato e o
  * devolve se o servidor recusar), e por isso ele **não** pede confirmação:
  * despublicar não apaga nada e se desfaz com o mesmo clique.
+ *
+ * ## A seleção existe para o lote, e por isso e opcional
+ *
+ * Marcar linha e publicar doze de uma vez; o interruptor da linha continua
+ * sendo o caminho de um. Quem passa `selected` liga a coluna — hoje, só a
+ * tela de produtos. Na de pronta entrega a pergunta e outra, conferir a
+ * prateleira caixa por caixa, e uma coluna de marcar ali seria um segundo
+ * jeito de fazer o que o interruptor já faz.
  *
  * ## O estoque em vermelho conta duas coisas
  *
@@ -69,6 +77,16 @@ export interface ProductsTableProps {
    * ausência dele.
    */
   onDelete?: ((product: AdminProduct) => void) | undefined;
+  /**
+   * Os ids marcados agora. A presença dele e o que liga a coluna de seleção.
+   *
+   * Conjunto, e não lista: a linha pergunta "estou marcada?" a cada desenho, e
+   * numa página de vinte produtos isso e vinte buscas por render.
+   */
+  selected?: ReadonlySet<string> | undefined;
+  onSelect?: ((product: AdminProduct, selected: boolean) => void) | undefined;
+  /** Marca ou desmarca a página inteira, pelo cabeçalho da coluna. */
+  onSelectAll?: ((selected: boolean) => void) | undefined;
 }
 
 export function ProductsTable({
@@ -80,6 +98,9 @@ export function ProductsTable({
   onToggleStatus,
   onToggleReadyToShip,
   onDelete,
+  selected,
+  onSelect,
+  onSelectAll,
 }: ProductsTableProps) {
   const isWide = useMediaQuery(WIDE);
 
@@ -95,9 +116,22 @@ export function ProductsTable({
     onToggleStatus,
     onToggleReadyToShip,
     onDelete,
+    // Quem não pode editar não seleciona: o lote e uma edição, e o backend
+    // recusaria de todo jeito.
+    selected: canEdit ? selected : undefined,
+    onSelect,
+    onSelectAll,
   };
 
   return isWide ? <ProductRows {...shared} /> : <ProductCards {...shared} />;
+}
+
+/** A coluna de seleção esta ligada? Depende de quem a desenha ter o que ela pede. */
+function selectionOf(
+  selected: ReadonlySet<string> | undefined,
+  onSelect: ((product: AdminProduct, selected: boolean) => void) | undefined,
+): { selected: ReadonlySet<string>; onSelect: (product: AdminProduct, on: boolean) => void } | null {
+  return selected === undefined || onSelect === undefined ? null : { selected, onSelect };
 }
 
 type RowProps = Omit<ProductsTableProps, 'isLoading'> &
@@ -113,12 +147,38 @@ function ProductRows({
   onToggleStatus,
   onToggleReadyToShip,
   onDelete,
+  selected,
+  onSelect,
+  onSelectAll,
 }: RowProps) {
+  const selection = selectionOf(selected, onSelect);
+  const marked = products.filter((product) => selection?.selected.has(product.id)).length;
+
   return (
     <div className={styles.tableWrap}>
       <table className={styles.table}>
         <thead>
           <tr>
+            {selection === null ? null : (
+              <th scope="col" className={styles.selectCell}>
+                {/*
+                  Marca a página, e não o catálogo — e o rótulo diz isso.
+                  Prometer "todos" e entregar vinte seria a tela mentindo sobre
+                  o que o próximo clique vai fazer.
+                */}
+                <Checkbox
+                  label="Selecionar os produtos desta página"
+                  hideLabel
+                  checked={marked > 0 && marked === products.length}
+                  indeterminate={marked > 0 && marked < products.length}
+                  disabled={onSelectAll === undefined || products.length === 0}
+                  onChange={(event) => {
+                    onSelectAll?.(event.target.checked);
+                  }}
+                />
+              </th>
+            )}
+
             <th scope="col">
               <span className="visually-hidden">Foto</span>
             </th>
@@ -139,7 +199,20 @@ function ProductRows({
 
         <tbody>
           {products.map((product) => (
-            <tr key={product.id}>
+            <tr key={product.id} className={selection?.selected.has(product.id) ? styles.marked : undefined}>
+              {selection === null ? null : (
+                <td className={styles.selectCell}>
+                  <Checkbox
+                    label={`Selecionar ${product.name}`}
+                    hideLabel
+                    checked={selection.selected.has(product.id)}
+                    onChange={(event) => {
+                      selection.onSelect(product, event.target.checked);
+                    }}
+                  />
+                </td>
+              )}
+
               <td className={styles.thumbCell}>
                 <Thumb product={product} />
               </td>
@@ -210,11 +283,40 @@ function ProductCards({
   onToggleStatus,
   onToggleReadyToShip,
   onDelete,
+  selected,
+  onSelect,
 }: RowProps) {
+  const selection = selectionOf(selected, onSelect);
+
   return (
     <ul className={styles.cards}>
       {products.map((product) => (
-        <li key={product.id} className={styles.card}>
+        <li
+          key={product.id}
+          className={cx(
+            styles.card,
+            selection !== null && styles.cardSelectable,
+            selection?.selected.has(product.id) && styles.marked,
+          )}
+        >
+          {/*
+            A caixa vem antes da foto, na quina onde o dedo já encosta para
+            abrir o cartão. No celular não há cabeçalho de coluna para
+            "marcar todos" — quem faz isso e a barra do lote, que aparece
+            assim que a primeira linha e marcada.
+          */}
+          {selection === null ? null : (
+            <Checkbox
+              label={`Selecionar ${product.name}`}
+              hideLabel
+              className={styles.cardSelect}
+              checked={selection.selected.has(product.id)}
+              onChange={(event) => {
+                selection.onSelect(product, event.target.checked);
+              }}
+            />
+          )}
+
           <Thumb product={product} />
 
           <div className={styles.cardBody}>

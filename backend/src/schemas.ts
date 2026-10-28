@@ -53,3 +53,4 @@ export * from './modules/settings/schemas/store-settings.schema.js';
 export * from './modules/orders/schemas/order-code.js';
 export * from './modules/orders/schemas/order.schema.js';
 export * from './modules/customers/schemas/customer.schema.js';
+export * from './modules/customers/schemas/password-reset-token.schema.js';

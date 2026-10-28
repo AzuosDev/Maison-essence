@@ -94,9 +94,14 @@ describe('configuracoes da loja (e2e)', () => {
     return { Authorization: `Bearer ${session.accessToken}` };
   }
 
-  /** A dona da loja, que e quem o painel de configuracoes atende. */
+  /** O gerente da loja, que e quem o painel de configuracoes atende. */
   function signedInOwner(): Promise<Session> {
     return signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
+  }
+
+  /** Quem mantem o sistema, e a unica pessoa que mexe na moldura da loja. */
+  function signedInAdmin(): Promise<Session> {
+    return signedIn(USER_ROLES.SUPER_ADMIN, 'dev@maisonessence.com');
   }
 
   function adminSettings(session: Session): request.Test {
@@ -201,9 +206,9 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('guarda o resto do cadastro da loja', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         storeName: 'Maison Essence Sobral',
         announcementText: 'Frete gratis acima de R$ 199',
         contactEmail: 'Contato@MaisonEssence.com',
@@ -222,9 +227,9 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('funde os blocos aninhados campo a campo', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      await patch(owner, {
+      await patch(admin, {
         pickupEnabled: true,
         pickupAddress: {
           street: 'Rua Coronel Mont Alverne',
@@ -240,7 +245,7 @@ describe('configuracoes da loja (e2e)', () => {
 
       // Corrigir o numero da casa nao pode apagar o ponto de referencia, nem
       // trocar o Instagram sumir com o TikTok.
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         pickupAddress: { number: '122' },
         socialLinks: { instagram: '@maison.essence' },
       }).expect(200);
@@ -308,9 +313,9 @@ describe('configuracoes da loja (e2e)', () => {
 
   describe('banners da home', () => {
     it('cria o banner com id proprio e ordena pelo campo order', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         banners: [
           { imageDesktop: BANNER_IMAGE, title: 'Segundo', order: 2 },
           { imageDesktop: BANNER_IMAGE_MOBILE, title: 'Primeiro', order: 1 },
@@ -324,14 +329,14 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('preserva o id do banner entre gravacoes', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const created = await patch(owner, {
+      const created = await patch(admin, {
         banners: [{ imageDesktop: BANNER_IMAGE, title: 'Natal' }],
       }).expect(200);
       const { id } = created.body.banners[0];
 
-      const updated = await patch(owner, {
+      const updated = await patch(admin, {
         banners: [{ id, imageDesktop: BANNER_IMAGE, title: 'Natal 2026' }],
       }).expect(200);
 
@@ -340,13 +345,13 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('recusa periodo que termina antes de comecar', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         banners: [{ imageDesktop: BANNER_IMAGE, startsAt: PAST_END, endsAt: PAST_START }],
       }).expect(422);
 
-      expect(String(response.body.message)).toMatch(/termina antes de comecar/);
+      expect(String(response.body.message)).toMatch(/termina antes de começar/);
 
       // Nada foi gravado: o carrossel continua vazio.
       const stored = await settings.findOne({}).lean().exec();
@@ -355,9 +360,9 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('recusa id de banner que nao existe mais', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         banners: [{ id: '000000000000000000000000', imageDesktop: BANNER_IMAGE }],
       }).expect(422);
 
@@ -365,21 +370,21 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('recusa imagem de fora das pastas da loja', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         banners: [{ imageDesktop: 'https://exemplo.com/banner.png' }],
       }).expect(400);
 
-      expect(String(response.body.message)).toMatch(/imagem invalida/);
+      expect(String(response.body.message)).toMatch(/imagem inválida/);
     });
   });
 
   describe('GET /settings (publica)', () => {
     it('dispensa autenticacao e entrega so o subconjunto seguro', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      await patch(owner, {
+      await patch(admin, {
         whatsappNumber: '5588999999999',
         announcementText: 'Frete gratis acima de R$ 199',
         institutionalPages: [
@@ -429,9 +434,9 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('nao entrega banner cuja data de fim ja passou', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const painel = await patch(owner, {
+      const painel = await patch(admin, {
         banners: [
           { imageDesktop: BANNER_IMAGE, title: 'No ar', order: 0 },
           {
@@ -459,9 +464,9 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('cai na arte de desktop quando o banner nao tem arte de celular', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      await patch(owner, { banners: [{ imageDesktop: BANNER_IMAGE }] }).expect(200);
+      await patch(admin, { banners: [{ imageDesktop: BANNER_IMAGE }] }).expect(200);
 
       const response = await publicSettings().expect(200);
 
@@ -507,8 +512,8 @@ describe('configuracoes da loja (e2e)', () => {
   describe('paginas institucionais publicas', () => {
     const ABOUT_CONTENT = '# Quem somos\n\nPerfumaria em Sobral desde 2019.';
 
-    async function publishAbout(owner: Session): Promise<void> {
-      await patch(owner, {
+    async function publishAbout(admin: Session): Promise<void> {
+      await patch(admin, {
         institutionalPages: [
           {
             slug: INSTITUTIONAL_PAGE_SLUGS.ABOUT,
@@ -521,9 +526,9 @@ describe('configuracoes da loja (e2e)', () => {
     }
 
     it('lista so as publicadas, com titulo e endereco', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      await publishAbout(owner);
+      await publishAbout(admin);
 
       const response = await request(server).get(`${API}/pages`).expect(200);
 
@@ -533,9 +538,9 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('entrega o markdown como foi escrito', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      await publishAbout(owner);
+      await publishAbout(admin);
 
       const response = await request(server)
         .get(`${API}/pages/${INSTITUTIONAL_PAGE_SLUGS.ABOUT}`)
@@ -549,10 +554,10 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('responde 404 para pagina despublicada: de fora, ela nao existe', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      await publishAbout(owner);
-      await patch(owner, {
+      await publishAbout(admin);
+      await patch(admin, {
         institutionalPages: [{ slug: INSTITUTIONAL_PAGE_SLUGS.ABOUT, isActive: false }],
       }).expect(200);
 
@@ -560,7 +565,7 @@ describe('configuracoes da loja (e2e)', () => {
         .get(`${API}/pages/${INSTITUTIONAL_PAGE_SLUGS.ABOUT}`)
         .expect(404);
 
-      expect(response.body.message).toMatch(/nao encontrada/);
+      expect(response.body.message).toMatch(/não encontrada/);
     });
 
     it('responde 404 para endereco que nao e de pagina nenhuma', async () => {
@@ -568,13 +573,123 @@ describe('configuracoes da loja (e2e)', () => {
     });
 
     it('recusa no painel um slug fora da lista fixa', async () => {
-      const owner = await signedInOwner();
+      const admin = await signedInAdmin();
 
-      const response = await patch(owner, {
+      const response = await patch(admin, {
         institutionalPages: [{ slug: 'promocoes', title: 'Promocoes' }],
       }).expect(400);
 
-      expect(String(response.body.message)).toMatch(/pagina desconhecida/);
+      expect(String(response.body.message)).toMatch(/página desconhecida/);
+    });
+  });
+
+  /**
+   * A tela e uma, e a permissao dentro dela e duas.
+   *
+   * O gerente abre `/admin/settings` e grava o que muda no expediente. O que
+   * e moldura da loja — o carrossel da home, o perfume da vez, as paginas do
+   * rodape, as redes sociais — ele le e nao grava. Ver
+   * `settings-access.policy.ts`.
+   */
+  describe('a divisao de Configuracoes por campo', () => {
+    it('o gerente grava o cadastro da loja e a retirada', async () => {
+      const owner = await signedInOwner();
+
+      const response = await patch(owner, {
+        storeName: 'Maison Essence Sobral',
+        whatsappNumber: '(88) 99999-9999',
+        contactEmail: 'contato@maisonessence.com',
+        businessHours: 'Seg a Sex, 9h as 18h',
+        announcementText: 'Frete gratis acima de R$ 199',
+        freeShippingMinCents: 19_900,
+        pickupEnabled: true,
+        pickupAddress: { city: 'Sobral', state: 'CE' },
+        pickupInstructions: 'Toque a campainha do portao azul.',
+      }).expect(200);
+
+      expect(response.body).toMatchObject({
+        storeName: 'Maison Essence Sobral',
+        whatsappNumber: '5588999999999',
+        contactEmail: 'contato@maisonessence.com',
+        businessHours: 'Seg a Sex, 9h as 18h',
+        announcementText: 'Frete gratis acima de R$ 199',
+        freeShippingMinCents: 19_900,
+        pickupEnabled: true,
+      });
+    });
+
+    it('o gerente le a tela inteira, inclusive o que nao pode editar', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, {
+        banners: [{ imageDesktop: BANNER_IMAGE, title: 'Natal' }],
+      }).expect(200);
+
+      const owner = await signedInOwner();
+      const response = await adminSettings(owner).expect(200);
+
+      expect(response.body.banners).toHaveLength(1);
+      expect(response.body.institutionalPages).toHaveLength(5);
+    });
+
+    it.each([
+      ['o carrossel da home', { banners: [{ imageDesktop: BANNER_IMAGE }] }],
+      [
+        'as paginas do rodape',
+        { institutionalPages: [{ slug: INSTITUTIONAL_PAGE_SLUGS.ABOUT, isActive: true }] },
+      ],
+      ['as redes sociais', { socialLinks: { instagram: 'maisonessence' } }],
+      ['o perfume da vez', { featuredPerfumeProductId: '64b7f1c2a1b2c3d4e5f60718' }],
+    ])('recusa o gerente em %s, dizendo o que pedir', async (_campo, body) => {
+      const owner = await signedInOwner();
+
+      const response = await patch(owner, body).expect(403);
+
+      expect(String(response.body.message)).toMatch(/administrador altera/);
+    });
+
+    it('apagar a escolha do perfume da vez tambem e moldura', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, { featuredPerfumeProductId: null }).expect(403);
+    });
+
+    it('um campo de moldura recusa o corpo inteiro: nada e gravado', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, {
+        storeName: 'Maison Essence Sobral',
+        banners: [{ imageDesktop: BANNER_IMAGE }],
+      }).expect(403);
+
+      const stored = await settings.findOne({}).lean().exec();
+
+      // Nem o documento nasceu: a recusa vem antes da primeira leitura.
+      expect(stored).toBeNull();
+    });
+
+    it('o administrador grava os dois lados no mesmo PATCH', async () => {
+      const admin = await signedInAdmin();
+
+      const response = await patch(admin, {
+        storeName: 'Maison Essence Sobral',
+        banners: [{ imageDesktop: BANNER_IMAGE, title: 'Natal' }],
+        socialLinks: { instagram: 'maisonessence' },
+      }).expect(200);
+
+      expect(response.body).toMatchObject({
+        storeName: 'Maison Essence Sobral',
+        socialLinks: { instagram: 'maisonessence' },
+      });
+      expect(response.body.banners).toHaveLength(1);
+    });
+
+    it('a recusa nao vira linha de auditoria', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, { banners: [{ imageDesktop: BANNER_IMAGE }] }).expect(403);
+
+      await expect(audit.countDocuments({ action: 'settings.updated' })).resolves.toBe(0);
     });
   });
 });

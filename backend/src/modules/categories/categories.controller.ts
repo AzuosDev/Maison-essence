@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator.js';
+import { USER_ROLES } from '../../common/enums/user-role.js';
 import { MANAGES_STORE, READS_CATALOG } from '../../common/roles.js';
 import { CategoriesService } from './categories.service.js';
 import type { CategoryView, WithChildren } from './category.view.js';
@@ -20,9 +21,15 @@ import { UpdateCategoryDto } from './dto/update-category.dto.js';
 /**
  * Categorias pelo painel.
  *
- * Mexer no catálogo e da dona (`MANAGES_STORE`); ler e do STAFF também, que
- * precisa da árvore para achar produto e conferir pedido — dai o `@Roles`
+ * Mexer no catálogo e do gerente (`MANAGES_STORE`); ler e do STAFF também,
+ * que precisa da árvore para achar produto e conferir pedido — dai o `@Roles`
  * próprio no GET, que sobrepoe o do controller.
+ *
+ * Criar, renomear, reordenar e ativar/desativar ficam com quem opera a loja.
+ * Só o `DELETE` sobe para o `SUPER_ADMIN`, pelo que ele faz de diferente:
+ * desativar tira a categoria do menu da vitrine e se desfaz num clique;
+ * excluir apaga o registro e não tem volta. Quem opera tem o primeiro
+ * caminho, que resolve o caso real — a categoria que saiu de linha.
  */
 @Roles(...MANAGES_STORE)
 @Controller('admin/categories')
@@ -54,6 +61,7 @@ export class CategoriesController {
     return this.categories.update(id, dto);
   }
 
+  @Roles(USER_ROLES.SUPER_ADMIN)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string): Promise<void> {

@@ -12,6 +12,7 @@ export { CartDrawer } from './cart-drawer';
 export { CartEmpty } from './cart-empty';
 export { CartLineRow, type CartLineRowProps } from './cart-line-row';
 export { CartNotices, type CartNoticesProps } from './cart-notices';
+export { CartRewards } from './cart-rewards';
 export { CategoriesPanel } from './categories-panel';
 export { MainNav } from './main-nav';
 export { MessageScreen } from './message-screen';
