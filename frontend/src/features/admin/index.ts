@@ -97,6 +97,8 @@ export {
   ADMIN_AREAS,
   ROLE_LABELS,
   areasFor,
+  canDeleteForever,
+  canEditStoreFrame,
   canHandleOrders,
   canManageStore,
   canManageSystem,

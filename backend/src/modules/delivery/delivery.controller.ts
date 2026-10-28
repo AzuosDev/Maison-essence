@@ -10,6 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator.js';
+import { USER_ROLES } from '../../common/enums/user-role.js';
 import { MANAGES_STORE } from '../../common/roles.js';
 import type { DeliveryCityView } from './delivery-city.view.js';
 import { DeliveryService } from './delivery.service.js';
@@ -21,8 +22,13 @@ import { UpdateDeliveryCityDto } from './dto/update-delivery-city.dto.js';
  * Cidades de entrega pelo painel.
  *
  * `MANAGES_STORE` sem exceção, inclusive na leitura: a tabela de taxas e
- * preço, e preço e da dona. O STAFF não precisa dela — o pedido que ele
+ * preço, e preço e do gerente. O STAFF não precisa dela — o pedido que ele
  * atende já carrega a taxa combinada em copia própria.
+ *
+ * Cadastrar cidade, mudar taxa e prazo e ligar ou desligar no checkout ficam
+ * com quem opera. O `DELETE` sobe para o `SUPER_ADMIN`: desligar a cidade a
+ * tira do checkout e guarda a taxa combinada para quando a loja voltar a
+ * entregar lá; excluir obriga a recadastrar tudo de memória.
  */
 @Roles(...MANAGES_STORE)
 @Controller('admin/delivery-cities')
@@ -56,6 +62,7 @@ export class DeliveryController {
     return this.delivery.update(id, dto);
   }
 
+  @Roles(USER_ROLES.SUPER_ADMIN)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string): Promise<void> {

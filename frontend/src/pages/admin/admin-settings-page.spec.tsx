@@ -19,9 +19,10 @@ import AdminSettingsPage from './admin-settings-page';
  * - **só o que mudou viaja**, e o endereço campo a campo — corrigir o número
  *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
- * - **só o administrador do sistema entra**: nem o gerente da loja abre esta
- *   área, porque o que se muda aqui e a moldura inteira e não o dia de
- *   vender.
+ * - **a divisão por campo**: o gerente da loja abre a tela e grava o que muda
+ *   no expediente, e as quatro seções de moldura — redes, carrossel, perfume
+ *   da vez e páginas do rodapé — não são desenhadas para ele. O atendimento
+ *   não entra de jeito nenhum.
  */
 
 const SETTINGS = {
@@ -298,24 +299,58 @@ test('abrir a tela não a deixa suja, nem com banner agendado', async () => {
   expect(screen.queryByRole('button', { name: 'Salvar' })).toBeNull();
 });
 
-test('o gerente da loja não entra: isto não e decisão do dia de vender', async () => {
-  signInAs(USER_ROLES.OWNER);
-
-  abrir();
-
-  expect(
-    await screen.findByRole('heading', { name: /Esta área e de quem mantem o sistema/ }),
-  ).toBeDefined();
-});
-
-test('o STAFF também não entra', async () => {
+test('o STAFF não entra: o destino do pedido não e coisa de atendimento', async () => {
   signInAs(USER_ROLES.STAFF);
 
   abrir();
 
   expect(
-    await screen.findByRole('heading', { name: /Esta área e de quem mantem o sistema/ }),
+    await screen.findByRole('heading', { name: /Esta área e de quem administra a loja/ }),
   ).toBeDefined();
+});
+
+test('o gerente entra e grava a operação da loja', async () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  // As duas seções que são dele, e os campos que elas guardam.
+  expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: /Retirada/ })).toBeDefined();
+  expect(screen.getByLabelText(/Nome da loja/)).toBeDefined();
+  expect(screen.getByLabelText(/Barra de avisos/)).toBeDefined();
+  expect(screen.getByLabelText(/Horário de atendimento/)).toBeDefined();
+});
+
+test('para o gerente, a moldura da loja não e desenhada', async () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await screen.findByRole('heading', { name: 'A loja' });
+
+  // Nem desabilitadas: ausentes. Campo cinza que não aceita digitação e um
+  // convite a perguntar "por que não posso?" no meio do expediente.
+  expect(screen.queryByRole('heading', { name: 'Redes sociais' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'Carrossel da home' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'O perfume da vez' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'Páginas do rodapé' })).toBeNull();
+
+  // E no lugar delas, a linha que diz onde aquilo foi e a quem pedir.
+  expect(screen.getByText(/ficam com quem mantem o sistema/)).toBeDefined();
+});
+
+test('o administrador vê as seis seções', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Redes sociais' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Carrossel da home' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'O perfume da vez' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Páginas do rodapé' })).toBeDefined();
+  expect(screen.queryByText(/ficam com quem mantem o sistema/)).toBeNull();
 });
 
 /* ---- Salvar ------------------------------------------------------------------- */

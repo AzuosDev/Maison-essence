@@ -19,6 +19,7 @@ describe('categories (e2e)', () => {
   let products: Model<Product>;
   let passwordHash: string;
   let owner: { Authorization: string };
+  let admin: { Authorization: string };
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -34,6 +35,7 @@ describe('categories (e2e)', () => {
     passwordHash = await app.get(PasswordService).hash(PASSWORD);
 
     owner = await signIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
+    admin = await signIn(USER_ROLES.SUPER_ADMIN, 'dev@maisonessence.com');
   });
 
   afterAll(async () => {
@@ -138,7 +140,7 @@ describe('categories (e2e)', () => {
         .send({ name: 'Lattafa', parentId: child.id })
         .expect(422);
 
-      expect(response.body.message).toMatch(/subcategoria nao pode ter filhos/);
+      expect(response.body.message).toMatch(/subcategoria não pode ter filhos/);
     });
 
     it('exige papel que gerencia a loja', async () => {
@@ -232,7 +234,7 @@ describe('categories (e2e)', () => {
 
       await request(server)
         .delete(`${API}/admin/categories/${created.id}`)
-        .set(owner)
+        .set(admin)
         .expect(204);
 
       expect(await categories.countDocuments()).toBe(0);
@@ -247,7 +249,7 @@ describe('categories (e2e)', () => {
 
       const response = await request(server)
         .delete(`${API}/admin/categories/${created.id}`)
-        .set(owner)
+        .set(admin)
         .expect(409);
 
       expect(response.body.details).toMatchObject({ productCount: 2, canDeactivate: true });
@@ -261,7 +263,7 @@ describe('categories (e2e)', () => {
 
       const response = await request(server)
         .delete(`${API}/admin/categories/${parent.id}`)
-        .set(owner)
+        .set(admin)
         .expect(409);
 
       expect(response.body.details).toMatchObject({ subcategoryCount: 1 });
@@ -273,12 +275,59 @@ describe('categories (e2e)', () => {
 
       await request(server)
         .delete(`${API}/admin/categories/${created.id}`)
-        .set(owner)
+        .set(admin)
         .expect(204);
 
       const orphan = await products.findOne().exec();
 
       expect(orphan?.categoryIds).toEqual([]);
+    });
+
+    /**
+     * O gerente desativa, que tira do menu da vitrine sem mover produto.
+     *
+     * As duas metades no mesmo teste de propósito: a recusa só se justifica
+     * porque o caminho reversível continua na mão dele.
+     */
+    it('recusa o gerente, que tira do menu desativando', async () => {
+      const created = await create({ name: 'Perfumes' });
+
+      await request(server)
+        .delete(`${API}/admin/categories/${created.id}`)
+        .set(owner)
+        .expect(403);
+
+      expect(await categories.countDocuments()).toBe(1);
+
+      const response = await request(server)
+        .patch(`${API}/admin/categories/${created.id}`)
+        .set(owner)
+        .send({ isActive: false })
+        .expect(200);
+
+      expect(response.body.isActive).toBe(false);
+    });
+
+    it('o gerente continua criando, renomeando e reordenando', async () => {
+      const created = await request(server)
+        .post(`${API}/admin/categories`)
+        .set(owner)
+        .send({ name: 'Corporais' })
+        .expect(201);
+
+      const renamed = await request(server)
+        .patch(`${API}/admin/categories/${created.body.id}`)
+        .set(owner)
+        .send({ name: 'Linha corporal' })
+        .expect(200);
+
+      expect(renamed.body.name).toBe('Linha corporal');
+
+      await request(server)
+        .patch(`${API}/admin/categories/reorder`)
+        .set(owner)
+        .send({ ids: [created.body.id] })
+        .expect(200);
     });
   });
 

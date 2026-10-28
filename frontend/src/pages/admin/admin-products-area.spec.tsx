@@ -366,7 +366,7 @@ test('o STAFF não vê caixa de seleção', async () => {
 test('excluir pede confirmação nomeando o produto', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir('/admin/produtos');
 
@@ -383,6 +383,23 @@ test('excluir pede confirmação nomeando o produto', async () => {
   await waitFor(() => {
     expect(calls.some((call) => call.method === 'DELETE')).toBe(true);
   });
+});
+
+test('o gerente não acha o que excluir, e acha o que despublicar', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir('/admin/produtos');
+
+  await user.click(await screen.findByRole('button', { name: 'Ações de Asad' }));
+
+  expect(screen.queryByRole('button', { name: /Excluir produto/ })).toBeNull();
+
+  // O menu continua com o que ele faz, e o interruptor que despublica — o
+  // caminho que resolve o mesmo caso e desfaz — continua na linha.
+  expect(screen.getByRole('link', { name: 'Editar cadastro' })).toBeDefined();
+  expect(screen.getByRole('switch', { name: 'Publicar Asad' })).toBeDefined();
 });
 
 /* ---- O cadastro -------------------------------------------------------------- */

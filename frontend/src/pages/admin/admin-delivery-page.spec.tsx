@@ -306,7 +306,7 @@ test('cadastrar uma cidade manda taxa em centavos e UF em maiúscula', async () 
 test('excluir explica que desativar guarda a taxa, e pede confirmação', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -324,4 +324,19 @@ test('excluir explica que desativar guarda a taxa, e pede confirmação', async 
   await waitFor(() => {
     expect(calls.some((call) => call.method === 'DELETE')).toBe(true);
   });
+});
+
+test('o gerente não acha o que excluir: a cidade se desliga, e não se apaga', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await user.click(await screen.findByRole('button', { name: 'Ações de Sobral' }));
+
+  expect(screen.queryByRole('button', { name: 'Excluir' })).toBeNull();
+
+  // O menu continua com o que ele faz: mudar a cidade de lugar na lista.
+  expect(screen.getByRole('button', { name: 'Descer' })).toBeDefined();
 });

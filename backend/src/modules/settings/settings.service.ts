@@ -19,6 +19,7 @@ import {
   PAGE_NOT_FOUND_MESSAGE,
   unknownBannersMessage,
 } from './settings.constants.js';
+import { assertCanEditSettings } from './settings-access.policy.js';
 import { diffOf } from './settings.diff.js';
 import type { AuditSnapshot } from './settings.diff.js';
 import {
@@ -114,6 +115,11 @@ export class SettingsService {
    * trilha, não o que o painel digitou.
    */
   async update(actor: AuthenticatedUser, dto: UpdateSettingsDto): Promise<SettingsView> {
+    // Antes de ler o documento: o gerente abre esta tela inteira, mas grava
+    // só o que e da operação. A recusa vale para o corpo todo, e por isso
+    // precisa vir antes de qualquer `set` — ver `settings-access.policy.ts`.
+    assertCanEditSettings(actor, dto);
+
     const settings = await this.current();
     const before = auditSnapshot(settings);
 

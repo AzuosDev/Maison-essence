@@ -14,6 +14,7 @@ import {
 import { ROUTES } from '@/app/routes';
 import {
   activeProductFilterCount,
+  canDeleteForever,
   canManageStore,
   canSeePrices,
   productFiltersToSearch,
@@ -102,6 +103,16 @@ export default function AdminProductsPage() {
   usePageMeta({ title: 'Produtos — Painel', description: 'Acesso restrito.' });
 
   const canEdit = canManageStore(role);
+
+  /*
+   * Excluir e do administrador, e o menu da linha nem desenha o item quando
+   * `onDelete` não vem — por isso a permissão aparece aqui como a decisão de
+   * passar, ou não, o callback.
+   *
+   * O que o gerente faz no lugar esta ao lado, no mesmo menu: despublicar.
+   * Tira da vitrine, mantem o cadastro e volta com um clique.
+   */
+  const canDelete = canDeleteForever(role);
 
   const { data, isPending, isFetching, isError, error } = useProducts(params);
   const { data: categories } = useAdminCategories();
@@ -310,7 +321,7 @@ export default function AdminProductsPage() {
                     },
                   );
                 }}
-                onDelete={setDeleting}
+                {...(canDelete ? { onDelete: setDeleting } : {})}
                 selected={picked}
                 onSelect={(product, on) => {
                   toggle(product.id, on);
@@ -343,7 +354,9 @@ export default function AdminProductsPage() {
             <div className={styles.bulk}>
               <p className={styles.bulkText} aria-live="polite">
                 <strong className={styles.bulkCount}>
-                  {chosen.length === 1 ? '1 produto selecionado' : `${chosen.length} produtos selecionados`}
+                  {chosen.length === 1
+                    ? '1 produto selecionado'
+                    : `${chosen.length} produtos selecionados`}
                 </strong>{' '}
                 nesta página.
               </p>

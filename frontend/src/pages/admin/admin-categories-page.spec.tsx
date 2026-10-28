@@ -269,7 +269,7 @@ test('um nome curto demais volta ao anterior sem chamar o servidor', async () =>
 test('a recusa por 409 oferece desativar, e desativar manda isActive false', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -294,7 +294,7 @@ test('a recusa por 409 oferece desativar, e desativar manda isActive false', asy
 test('excluir de verdade chama DELETE depois da confirmação', async () => {
   const user = userEvent.setup();
 
-  signInAs(USER_ROLES.OWNER);
+  signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
@@ -310,6 +310,22 @@ test('excluir de verdade chama DELETE depois da confirmação', async () => {
   await waitFor(() => {
     expect(calls.some((call) => call.method === 'DELETE')).toBe(true);
   });
+});
+
+test('o gerente não acha o que excluir, e acha o que desativar', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await user.click(await screen.findByRole('button', { name: 'Ações de Feminino' }));
+
+  // O item nem e desenhado: o menu não oferece o que o servidor recusaria.
+  expect(screen.queryByRole('button', { name: 'Excluir' })).toBeNull();
+
+  // E o caminho que resolve o mesmo caso continua no mesmo menu.
+  expect(screen.getByRole('button', { name: 'Editar categoria' })).toBeDefined();
 });
 
 /* ---- O diálogo -------------------------------------------------------------------- */

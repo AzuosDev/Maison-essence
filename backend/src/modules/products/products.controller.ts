@@ -11,6 +11,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { Roles } from '../../common/decorators/roles.decorator.js';
+import { USER_ROLES } from '../../common/enums/user-role.js';
 import type { Paginated } from '../../common/pagination.js';
 import { MANAGES_STORE, READS_CATALOG } from '../../common/roles.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
@@ -25,9 +26,13 @@ import { ProductsService } from './products.service.js';
 /**
  * Produtos pelo painel.
  *
- * Mesma divisão das categorias: gravar e da dona (`MANAGES_STORE`), ler e do
- * STAFF também, que precisa consultar preço e estoque para atender no
+ * Mesma divisão das categorias: gravar e do gerente (`MANAGES_STORE`), ler e
+ * do STAFF também, que precisa consultar preço e estoque para atender no
  * WhatsApp sem poder remarcar nada.
+ *
+ * E a mesma exceção no `DELETE`, que sobe para o `SUPER_ADMIN`. O produto que
+ * acabou tem caminho próprio e reversível — `PATCH :id/status` o tira da
+ * vitrine sem apagar nem o cadastro nem o rastro de quem o comprou.
  */
 @Roles(...MANAGES_STORE)
 @Controller('admin/products')
@@ -69,6 +74,7 @@ export class ProductsController {
     return this.products.setStatus(id, dto);
   }
 
+  @Roles(USER_ROLES.SUPER_ADMIN)
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string): Promise<void> {

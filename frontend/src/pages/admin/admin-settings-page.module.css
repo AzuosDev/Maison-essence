@@ -93,6 +93,26 @@
   text-wrap: pretty;
 }
 
+/*
+  A linha que fecha a tela do gerente, no lugar das quatro seções de moldura.
+
+  Sem a moldura do cartão: o que esta ali não e um bloco que ele pode editar e
+  ficou vazio — e uma explicação de onde aquilo foi. Um cartão com borda
+  pareceria um formulário quebrado.
+*/
+.handover {
+  margin: 0;
+  max-width: 62ch;
+  padding: var(--space-12) var(--space-16);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+
+  border-left: var(--border);
+}
+
 .fields {
   display: grid;
   gap: var(--space-16);

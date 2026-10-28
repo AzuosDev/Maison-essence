@@ -131,25 +131,12 @@ describe('users (e2e)', () => {
       expect(response.body[0]).not.toHaveProperty('passwordHash');
     });
 
-    it('o OWNER nao enxerga SUPER_ADMIN', async () => {
-      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
-      await createUser(USER_ROLES.SUPER_ADMIN, 'root@maisonessence.com');
-      await createUser(USER_ROLES.STAFF, 'staff@maisonessence.com');
-
-      const response = await request(server).get(`${API}/users`).set(as(owner)).expect(200);
-
-      const roles = response.body.map((user: { role: UserRole }) => user.role);
-
-      expect(roles).not.toContain(USER_ROLES.SUPER_ADMIN);
-      expect(roles).toContain(USER_ROLES.STAFF);
-    });
-
     it('o STAFF nao gerencia usuarios', async () => {
       const staff = await signedIn(USER_ROLES.STAFF, 'staff@maisonessence.com');
 
       const response = await request(server).get(`${API}/users`).set(as(staff)).expect(403);
 
-      expect(response.body.message).toBe('Seu papel nao permite esta operacao.');
+      expect(response.body.message).toBe('Seu papel não permite esta operação.');
     });
 
     it('sem token continua 401', async () => {
@@ -203,39 +190,6 @@ describe('users (e2e)', () => {
       expect(entry?.createdAt).toBeInstanceOf(Date);
     });
 
-    it('o OWNER recebe 403 ao tentar criar um SUPER_ADMIN', async () => {
-      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
-
-      const response = await request(server)
-        .post(`${API}/users`)
-        .set(as(owner))
-        .send({
-          name: 'Outro root',
-          email: 'outro-root@maisonessence.com',
-          role: USER_ROLES.SUPER_ADMIN,
-          temporaryPassword: 'temporaria-desta-vez',
-        })
-        .expect(403);
-
-      expect(response.body.message).toBe('Voce so pode atribuir o papel STAFF.');
-      await expect(users.countDocuments({ role: USER_ROLES.SUPER_ADMIN })).resolves.toBe(0);
-    });
-
-    it('o OWNER cria STAFF', async () => {
-      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
-
-      await request(server)
-        .post(`${API}/users`)
-        .set(as(owner))
-        .send({
-          name: 'Vendedora',
-          email: 'vendedora@maisonessence.com',
-          role: USER_ROLES.STAFF,
-          temporaryPassword: 'temporaria-desta-vez',
-        })
-        .expect(201);
-    });
-
     it('recusa e-mail repetido com 409', async () => {
       const root = await signedIn(USER_ROLES.SUPER_ADMIN, 'root@maisonessence.com');
 
@@ -281,31 +235,13 @@ describe('users (e2e)', () => {
       expect(response.body.name).toBe('Nome corrigido');
     });
 
-    it('para o OWNER, um SUPER_ADMIN responde 404 e outro OWNER responde 403', async () => {
-      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
-      const rootId = await createUser(USER_ROLES.SUPER_ADMIN, 'root@maisonessence.com');
-      const otherOwnerId = await createUser(USER_ROLES.OWNER, 'socia@maisonessence.com');
-
-      await request(server)
-        .patch(`${API}/users/${rootId}`)
-        .set(as(owner))
-        .send({ name: 'Tentativa' })
-        .expect(404);
-
-      await request(server)
-        .patch(`${API}/users/${otherOwnerId}`)
-        .set(as(owner))
-        .send({ name: 'Tentativa' })
-        .expect(403);
-    });
-
     it('cada um corrige o proprio cadastro', async () => {
-      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
+      const root = await signedIn(USER_ROLES.SUPER_ADMIN, 'root@maisonessence.com');
 
       await request(server)
-        .patch(`${API}/users/${owner.id}`)
-        .set(as(owner))
-        .send({ name: 'Nome novo da dona' })
+        .patch(`${API}/users/${root.id}`)
+        .set(as(root))
+        .send({ name: 'Nome novo' })
         .expect(200);
     });
 
@@ -353,14 +289,16 @@ describe('users (e2e)', () => {
         .send({ role: USER_ROLES.OWNER })
         .expect(200);
 
-      // O que sobrou nao pode ser rebaixado por mais ninguem.
+      // Quem foi rebaixado perde a rota junto com o papel: antes a recusa
+      // vinha da visibilidade (404, o SUPER_ADMIN nem existe para o gerente);
+      // agora vem um passo antes, do `@Roles` do controlador.
       const owner = await signIn('root2@maisonessence.com');
 
       await request(server)
         .patch(`${API}/users/${root.id}`)
         .set(as(owner))
         .send({ role: USER_ROLES.OWNER })
-        .expect(404);
+        .expect(403);
     });
 
     it('recusa corpo vazio', async () => {
@@ -443,7 +381,7 @@ describe('users (e2e)', () => {
         .send({ isActive: false })
         .expect(409);
 
-      expect(response.body.message).toBe('Voce nao pode desativar a si mesmo.');
+      expect(response.body.message).toBe('Você não pode desativar a si mesmo.');
     });
 
     it('o ultimo SUPER_ADMIN ativo nao pode ser desativado', async () => {
@@ -467,26 +405,9 @@ describe('users (e2e)', () => {
         .send({ isActive: false })
         .expect(409);
 
-      expect(response.body.message).toBe('Voce nao pode desativar a si mesmo.');
+      expect(response.body.message).toBe('Você não pode desativar a si mesmo.');
     });
 
-    it('o OWNER desativa STAFF, mas nao outro OWNER', async () => {
-      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
-      const staffId = await createUser(USER_ROLES.STAFF, 'staff@maisonessence.com');
-      const otherOwnerId = await createUser(USER_ROLES.OWNER, 'socia@maisonessence.com');
-
-      await request(server)
-        .patch(`${API}/users/${staffId}/status`)
-        .set(as(owner))
-        .send({ isActive: false })
-        .expect(200);
-
-      await request(server)
-        .patch(`${API}/users/${otherOwnerId}/status`)
-        .set(as(owner))
-        .send({ isActive: false })
-        .expect(403);
-    });
   });
 
   describe('POST /users/:id/reset-password', () => {
@@ -527,14 +448,78 @@ describe('users (e2e)', () => {
       expect(renewed.body.user.mustChangePassword).toBe(true);
     });
 
-    it('o OWNER nao reseta a senha de outro OWNER', async () => {
+  });
+
+  /**
+   * O modulo de usuarios e do administrador, inteiro.
+   *
+   * Um teste por rota e nao um por regra: o que esta sendo provado aqui nao e
+   * o alcance do gerente sobre este ou aquele alvo — isso e assunto da policy
+   * e de `user-access.policy.spec.ts` —, e que o gerente nao entra. A conta
+   * de painel e a unica coisa do painel que ele nao administra, porque e a
+   * unica que decide o que ele mesmo pode fazer.
+   */
+  describe('o gerente nao administra contas', () => {
+    it('recusa as cinco rotas, sem gravar nada', async () => {
       const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
-      const otherOwnerId = await createUser(USER_ROLES.OWNER, 'socia@maisonessence.com');
+      const staffId = await createUser(USER_ROLES.STAFF, 'staff@maisonessence.com');
+      const before = await users.countDocuments();
+
+      await request(server).get(`${API}/users`).set(as(owner)).expect(403);
 
       await request(server)
-        .post(`${API}/users/${otherOwnerId}/reset-password`)
+        .post(`${API}/users`)
+        .set(as(owner))
+        .send({
+          name: 'Vendedora',
+          email: 'vendedora@maisonessence.com',
+          role: USER_ROLES.STAFF,
+          temporaryPassword: 'temporaria-desta-vez',
+        })
+        .expect(403);
+
+      await request(server)
+        .patch(`${API}/users/${staffId}`)
+        .set(as(owner))
+        .send({ name: 'Outro nome' })
+        .expect(403);
+
+      await request(server)
+        .patch(`${API}/users/${staffId}/status`)
+        .set(as(owner))
+        .send({ isActive: false })
+        .expect(403);
+
+      await request(server)
+        .post(`${API}/users/${staffId}/reset-password`)
         .set(as(owner))
         .expect(403);
+
+      expect(await users.countDocuments()).toBe(before);
+      expect((await users.findById(staffId).exec())?.isActive).toBe(true);
+    });
+
+    it('nem sobre a propria conta, nem para se promover', async () => {
+      const owner = await signedIn(USER_ROLES.OWNER, 'dona@maisonessence.com');
+
+      await request(server)
+        .patch(`${API}/users/${owner.id}`)
+        .set(as(owner))
+        .send({ role: USER_ROLES.SUPER_ADMIN })
+        .expect(403);
+
+      // O proprio nome tambem fica fora de alcance: a rota e uma so, e ela
+      // fechou. Trocar a senha, que e o que ele precisa fazer sozinho,
+      // continua em `/auth/change-password`.
+      await request(server)
+        .patch(`${API}/users/${owner.id}`)
+        .set(as(owner))
+        .send({ name: 'Nome novo' })
+        .expect(403);
+
+      const reloaded = await users.findById(owner.id).exec();
+
+      expect(reloaded?.role).toBe(USER_ROLES.OWNER);
     });
   });
 
@@ -605,21 +590,21 @@ describe('users (e2e)', () => {
 
   describe('senha temporaria pendente', () => {
     it('so a troca de senha passa; as rotas administrativas respondem 403', async () => {
-      await createUser(USER_ROLES.OWNER, 'dona@maisonessence.com', {
+      await createUser(USER_ROLES.SUPER_ADMIN, 'root@maisonessence.com', {
         mustChangePassword: true,
       });
-      const owner = await signIn('dona@maisonessence.com');
+      const root = await signIn('root@maisonessence.com');
 
-      await request(server).get(`${API}/users`).set(as(owner)).expect(403);
+      await request(server).get(`${API}/users`).set(as(root)).expect(403);
       await request(server)
         .patch(`${API}/produtos-probe/preco`)
-        .set(as(owner))
+        .set(as(root))
         .send({ priceCents: 19990 })
         .expect(403);
 
       const changed = await request(server)
         .patch(`${API}/auth/change-password`)
-        .set(as(owner))
+        .set(as(root))
         .send({ currentPassword: PASSWORD, newPassword: 'outra-senha-bem-longa' })
         .expect(200);
 
@@ -640,7 +625,7 @@ describe('users (e2e)', () => {
         .send({ priceCents: 19990 })
         .expect(403);
 
-      expect(response.body.message).toBe('Seu papel nao permite esta operacao.');
+      expect(response.body.message).toBe('Seu papel não permite esta operação.');
     });
 
     it('o OWNER altera preco', async () => {

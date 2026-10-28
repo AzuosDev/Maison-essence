@@ -5,10 +5,12 @@ import { USER_ROLES, type UserRole } from '@/features/auth';
  *
  * Três papéis e uma regra que não pode morar espalhada pelas telas:
  *
- * - **SUPER_ADMIN** alcança tudo, inclusive o que só se configura uma vez:
- *   as configurações da loja e a área de sistema.
- * - **OWNER** opera a loja: catálogo, pedidos, entrega e pagamento. E o dia a
- *   dia de vender, e e tudo o que ele precisa para isso.
+ * - **SUPER_ADMIN** alcança tudo: as áreas da loja, a área de sistema, a
+ *   moldura das configurações e a exclusão definitiva de cadastro.
+ * - **OWNER** opera a loja: catálogo, pedidos, entrega, pagamento e as
+ *   configurações do dia a dia. E o dia a dia de vender, e e tudo o que ele
+ *   precisa para isso. O que ele não faz e desfazer: apagar cadastro,
+ *   administrar contas e mexer na moldura da loja.
  * - **STAFF** atende pedidos. Vê o Início e os Pedidos, e nada mais — nem
  *   cadastro, nem taxas, nem configuração. E **não vê preço**: nem para
  *   conferir, nem para editar.
@@ -56,27 +58,18 @@ const STAFF_AREAS = new Set<AdminArea>(['home', 'orders']);
 /**
  * O que só o SUPER_ADMIN alcança.
  *
- * Duas áreas, por duas razões diferentes.
+ * Uma área só. **Sistema** não e área da loja: criar usuário, ler a trilha de
+ * auditoria e conferir a saúde do servidor são tarefas de quem mantem a
+ * aplicação, e deixa-las a vista de quem opera só cria a chance de alguém se
+ * desativar sozinho numa tarde movimentada.
  *
- * **Sistema** não e área da loja: criar usuário, ler a trilha de auditoria e
- * conferir a saúde do servidor são tarefas de quem mantem a aplicação, e
- * deixa-las a vista de quem opera só cria a chance de alguém se desativar
- * sozinho numa tarde movimentada.
- *
- * **Configurações** e área da loja, e mesmo assim esta aqui. O que se muda
- * nela não e um produto: e a moldura inteira — o número para onde vai todo
- * pedido, o que a home mostra primeiro, as páginas que o rodapé lista. São
- * decisões de implantação, tomadas uma vez com quem mantem o sistema, e não
- * escolhas do dia de vender. O backend também as fechou (`@Roles(SUPER_ADMIN)`
- * em `/admin/settings`), então aqui não há divergência: o item some do menu
- * e a rota morre no servidor.
- *
- * Vale registrar uma divergência que existe: `/users` aceita o OWNER
- * (`MANAGES_USERS = [OWNER]`, e o SUPER_ADMIN passa pelo guard), com uma
- * policy que limita o alcance dele aos STAFF. O painel e mais restrito do
- * que o servidor de propósito — esconder aqui não afrouxa nada lá.
+ * **Configurações** fica de fora desta lista: o gerente abre a tela, porque e
+ * nela que mora o que muda no expediente — o horário de atendimento, a barra
+ * de avisos, o número do WhatsApp, a retirada na loja. O que naquela tela e
+ * moldura da loja, e não operação, e recortado por campo e não por área; ver
+ * `canEditStoreFrame`.
  */
-const SUPER_ADMIN_AREAS = new Set<AdminArea>(['settings', 'system']);
+const SUPER_ADMIN_AREAS = new Set<AdminArea>(['system']);
 
 export function canSee(role: UserRole | undefined, area: AdminArea): boolean {
   if (role === undefined) {
@@ -117,14 +110,45 @@ export function canSeePrices(role: UserRole | undefined): boolean {
 }
 
 /**
- * O papel escreve na loja: catálogo, categorias, entrega e pagamento.
- *
- * Não responde pelas configurações, que subiram para o SUPER_ADMIN — quem
- * pergunta por elas usa `canSee(role, 'settings')`, que lê a tabela de áreas
- * em vez de repetir a regra.
+ * O papel escreve na loja: catálogo, categorias, entrega, pagamento e as
+ * configurações do dia a dia.
  */
 export function canManageStore(role: UserRole | undefined): boolean {
   return role !== undefined && role !== USER_ROLES.STAFF;
+}
+
+/**
+ * O papel apaga cadastro para sempre: produto, categoria, cidade de entrega.
+ *
+ * Só o administrador. Não e desconfiança de quem opera a loja — e que para
+ * tudo o que ela precisa fazer existe o caminho que desfaz: despublicar o
+ * produto, desativar a categoria, desligar a cidade no checkout. Excluir
+ * resolve o mesmo problema sem a volta, e a volta e justamente o que se quer
+ * numa tarde movimentada.
+ *
+ * O backend decide igual (`@Roles(USER_ROLES.SUPER_ADMIN)` em cada `DELETE`),
+ * então esconder o botão aqui e cortesia: poupa a pessoa de descobrir pelo
+ * erro. A proteção esta no servidor.
+ */
+export function canDeleteForever(role: UserRole | undefined): boolean {
+  return role === USER_ROLES.SUPER_ADMIN;
+}
+
+/**
+ * O papel mexe na moldura da loja, dentro de Configurações.
+ *
+ * Moldura e o que aparece em toda página e não muda no expediente: o
+ * carrossel da home, o perfume da vez, as páginas que o rodapé lista, as
+ * redes sociais. O resto da tela — nome, contato, horário, barra de avisos,
+ * frete grátis, retirada — e do gerente.
+ *
+ * A divisão e por campo, e não por área, porque a tela e uma: mandar o
+ * gerente a uma segunda tela para corrigir o horário de atendimento seria
+ * trocar uma permissão bem recortada por uma navegação ruim. O backend
+ * recusa os mesmos campos no PATCH (`settings-access.policy.ts`).
+ */
+export function canEditStoreFrame(role: UserRole | undefined): boolean {
+  return role === USER_ROLES.SUPER_ADMIN;
 }
 
 /** O papel mexe em pedido: mudar status, anotar, cancelar. */

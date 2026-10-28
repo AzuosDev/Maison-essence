@@ -19,6 +19,7 @@ import {
   hasErrors,
   useAdminCategories,
   useAdminRole,
+  canDeleteForever,
   useDeleteProduct,
   useImageUpload,
   useProduct,
@@ -119,6 +120,7 @@ export default function AdminProductFormPage() {
       productId={product?.id}
       productName={product?.name ?? ''}
       productSlug={product?.slug ?? ''}
+      canDelete={canDeleteForever(role)}
     />
   );
 }
@@ -130,11 +132,17 @@ function ProductForm({
   productId,
   productName,
   productSlug,
+  canDelete,
 }: {
   initial: ProductDraft;
   productId: string | undefined;
   productName: string;
   productSlug: string;
+  /**
+   * Desligado para o gerente: ele despublica pelo interruptor acima, que
+   * desfaz. Excluir e do administrador, e o backend recusa do mesmo jeito.
+   */
+  canDelete: boolean;
 }) {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -398,7 +406,7 @@ function ProductForm({
           ) : null}
 
           <div className={styles.barActions}>
-            {isNew ? null : (
+            {isNew || !canDelete ? null : (
               <Button
                 type="button"
                 variant="ghost"
