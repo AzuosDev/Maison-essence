@@ -1,11 +1,15 @@
 import type { CustomerSessionResponse } from '@/features/auth';
 import { SESSION_SCOPES, api } from '@/lib/http';
 import type {
+  ChangePasswordInput,
   CustomerOrderDetail,
   CustomerOrderSummary,
+  ForgotPasswordInput,
+  ForgotPasswordResult,
   LoginInput,
   Paginated,
   RegisterInput,
+  ResetPasswordInput,
   UpdateProfileInput,
 } from './account.types';
 import type { Customer } from '@/features/auth';
@@ -51,6 +55,42 @@ export function fetchProfile(signal?: AbortSignal): Promise<Customer> {
 
 export function updateProfile(input: UpdateProfileInput): Promise<Customer> {
   return api.patch<Customer>('/customer/me', input, { scope: SESSION_SCOPES.STORE });
+}
+
+/**
+ * Troca a senha de quem esta dentro.
+ *
+ * Devolve sessão nova, e não vazio: a troca invalida todo token emitido antes
+ * — inclusive o que foi usado para chegar aqui. Quem chama precisa gravar o
+ * par que volta, senão a pessoa troca a senha e cai para fora no clique
+ * seguinte.
+ */
+export function changePassword(input: ChangePasswordInput): Promise<CustomerSessionResponse> {
+  return api.patch<CustomerSessionResponse>('/customer/me/password', input, {
+    scope: SESSION_SCOPES.STORE,
+  });
+}
+
+/**
+ * Pede o link de recuperação.
+ *
+ * `scope: null` como entrar e cadastrar: quem esqueceu a senha não tem sessão
+ * para renovar. A resposta e a mesma para conta que existe e conta que não
+ * existe — o servidor nunca conta qual e qual, e a tela mostra o texto que
+ * vier.
+ */
+export function forgotPassword(input: ForgotPasswordInput): Promise<ForgotPasswordResult> {
+  return api.post<ForgotPasswordResult>('/customer/password/forgot', input, { scope: null });
+}
+
+/**
+ * Grava a senha nova com o token do e-mail.
+ *
+ * Não devolve sessão de propósito: quem chega aqui apresentou um link, não
+ * uma senha. A tela manda a pessoa entrar com a que ela acabou de criar.
+ */
+export function resetPassword(input: ResetPasswordInput): Promise<void> {
+  return api.post<void>('/customer/password/reset', input, { scope: null });
 }
 
 export function listMyOrders(

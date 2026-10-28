@@ -39,6 +39,14 @@ import styles from './account-auth.module.css';
  * e uma pessoa que desiste e compra como convidada. O que não e ruim: a
  * compra continua funcionando. Mas o histórico dela nunca se junta.
  *
+ * ## Um e-mail pode ser dos dois
+ *
+ * O cliente entra por celular **ou** por e-mail, desde que a conta guarda os
+ * dois. Então um e-mail digitado aqui tenta primeiro o login do cliente e,
+ * só se ele recusar, o do painel. A ordem e pelo tamanho das populações, e o
+ * efeito colateral — um e-mail errado gasta tentativa nos dois contadores —
+ * esta anotado no `submit`.
+ *
  * ## A recusa não diz qual dos dois errou
  *
  * Os dois logins respondem o mesmo `401` para conta inexistente, senha
@@ -136,13 +144,43 @@ export default function AccountLoginPage() {
 
     if (who.kind === 'phone') {
       // O destino sai do `<Navigate>` lá em cima, assim que a sessão existe.
-      await customerLogin.mutateAsync({ phone: who.phone, password: values.password }).catch(() => {
-        // A mensagem sai de `failure`, logo abaixo. O `catch` existe para
-        // que a recusa não suba como rejeição não tratada.
-      });
+      await customerLogin
+        .mutateAsync({ identifier: who.phone, password: values.password })
+        .catch(() => {
+          // A mensagem sai de `failure`, logo abaixo. O `catch` existe para
+          // que a recusa não suba como rejeição não tratada.
+        });
 
       return;
     }
+
+    /*
+     * E-mail: tenta o cliente primeiro, e o painel só depois.
+     *
+     * O cliente também entra por e-mail desde que a conta guarda um — e a
+     * tela mostra esse e-mail num campo editável, o que fazia dele uma
+     * armadilha enquanto só o telefone servia.
+     *
+     * A ordem e pelo tamanho das populações: a loja tem clientes aos milhares
+     * e duas ou três contas de painel. Quem trabalha na loja paga uma
+     * tentativa a mais; o cliente, nenhuma.
+     *
+     * O custo de ter duas tentativas e real e vale registrar: um e-mail
+     * recusado gasta uma tentativa no contador do cliente **e** uma no do
+     * painel. Os dois tetos são de cinco por quinze minutos, então quem erra
+     * a senha cinco vezes esbarra nos dois ao mesmo tempo — que e o
+     * comportamento desejado de qualquer jeito.
+     */
+    const asCustomer = await customerLogin
+      .mutateAsync({ identifier: who.email, password: values.password })
+      .catch(() => null);
+
+    if (asCustomer !== null) {
+      // O destino sai do `<Navigate>` lá em cima, assim que a sessão existe.
+      return;
+    }
+
+    customerLogin.reset();
 
     const session = await staffLogin
       .mutateAsync({ email: who.email, password: values.password })
@@ -205,6 +243,20 @@ export default function AccountLoginPage() {
             Entrar
           </Button>
         </form>
+
+        {/*
+          O link fica depois do botão, e não ao lado do campo de senha.
+
+          Ao lado do campo ele disputa com o que a pessoa veio fazer — e quem
+          lembra a senha não precisa ler aquilo. Depois do botão, ele e o
+          segundo caminho para quem o primeiro não serviu, que e exatamente o
+          que ele e.
+        */}
+        <p className={styles.alternative}>
+          <Link to={ROUTES.account.forgotPassword} className={styles.link}>
+            Esqueci minha senha
+          </Link>
+        </p>
 
         <p className={styles.alternative}>
           Ainda não tem conta?{' '}
@@ -280,6 +332,10 @@ function signInErrorMessage(error: unknown, identity: SignInIdentity | null): st
       return identity?.kind === 'email'
         ? 'E-mail ou senha não conferem.'
         : 'Celular ou senha não conferem. Confira o número com o DDD.';
+    }
+
+    if (error.status === 400) {
+      return 'Confira o que foi digitado: use o celular com DDD ou o e-mail da conta.';
     }
 
     if (error.status === 429) {

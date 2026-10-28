@@ -26,10 +26,16 @@ export { maskIdentifier, resolveIdentifier, type SignInIdentity } from './sign-i
 
 export {
   addressSchema,
+  changePasswordSchema,
+  forgotPasswordSchema,
+  newPasswordSchema,
   profileSchema,
   registerSchema,
   signInSchema,
   type AddressForm,
+  type ChangePasswordForm,
+  type ForgotPasswordForm,
+  type NewPasswordForm,
   type ProfileForm,
   type RegisterForm,
   type SignInForm,
@@ -41,11 +47,14 @@ export {
   PASSWORD_MIN_LENGTH,
   type AccountAddress,
   type AddressInput,
+  type ChangePasswordInput,
   type CustomerOrderDetail,
   type CustomerOrderSummary,
+  type ForgotPasswordInput,
   type LoginInput,
   type Paginated,
   type RegisterInput,
+  type ResetPasswordInput,
   type UpdateProfileInput,
 } from './account.types';
 
@@ -67,13 +76,16 @@ export {
 } from './reorder';
 
 export {
+  useChangePassword,
   useCustomer,
   useCustomerLogin,
   useCustomerRegister,
+  useForgotPassword,
   useIsSignedIn,
   useMyOrder,
   useMyOrders,
   useProfile,
+  useResetPassword,
   useSaveAddresses,
   useSignOut,
   useUpdateProfile,

@@ -2,22 +2,28 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback } from 'react';
 import { useCustomerSession, type Customer } from '@/features/auth';
 import {
+  changePassword,
   fetchMyOrder,
   fetchProfile,
+  forgotPassword,
   listMyOrders,
   loginCustomer,
   registerCustomer,
+  resetPassword,
   updateProfile,
 } from './account.api';
 import { accountKeys } from './account.keys';
 import {
   ORDERS_PAGE_SIZE,
   type AddressInput,
+  type ChangePasswordInput,
   type CustomerOrderDetail,
   type CustomerOrderSummary,
+  type ForgotPasswordInput,
   type LoginInput,
   type Paginated,
   type RegisterInput,
+  type ResetPasswordInput,
   type UpdateProfileInput,
 } from './account.types';
 
@@ -132,6 +138,48 @@ export function useCustomerLogin() {
   return useMutation({
     mutationFn: (input: LoginInput) => loginCustomer(input),
     onSuccess: start,
+  });
+}
+
+/**
+ * Troca a senha de quem esta dentro.
+ *
+ * `onSuccess: start` não e cópia do login por descuido: a troca invalida todo
+ * token emitido antes dela, inclusive o que esta tela usou para chamar. O
+ * servidor devolve um par novo justamente por isso, e gravá-lo e o que mantem
+ * a pessoa dentro da conta depois de trocar a senha.
+ */
+export function useChangePassword() {
+  const start = useStartSession();
+
+  return useMutation({
+    mutationFn: (input: ChangePasswordInput) => changePassword(input),
+    onSuccess: start,
+  });
+}
+
+/**
+ * Pede o link de recuperação.
+ *
+ * Sem `onSuccess`: não há sessão para abrir, e a resposta e sempre a mesma
+ * frase. A tela troca o formulário por ela.
+ */
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (input: ForgotPasswordInput) => forgotPassword(input),
+  });
+}
+
+/**
+ * Grava a senha nova com o token do e-mail.
+ *
+ * Também não abre sessão, e aqui isso e decisão do servidor: quem chega
+ * apresentou um link de e-mail, não uma senha. A tela manda entrar com a
+ * senha recém-criada.
+ */
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (input: ResetPasswordInput) => resetPassword(input),
   });
 }
 

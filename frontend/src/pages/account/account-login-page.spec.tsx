@@ -55,12 +55,24 @@ let enviado: Record<string, unknown> = {};
 /** As duas rotas de login recusam quando isto tem o nome delas. */
 let recusa = new Set<string>();
 
+/**
+ * Quem tem conta de cliente, por identificador.
+ *
+ * O cliente entra por celular **ou** por e-mail, então a tela tenta o login
+ * da loja antes do painel também quando o que foi digitado tem arroba. O
+ * servidor de mentira precisa saber o mesmo que o de verdade sabe: quais
+ * identificadores existem do lado do cliente. Sem isso, o e-mail da dona
+ * abriria uma sessão de cliente aqui — e não abre em lugar nenhum.
+ */
+let clientes = new Set<string>();
+
 /** A dona chega com senha temporária quando isto e verdade. */
 let senhaTemporaria = false;
 
 beforeEach(() => {
   enviado = {};
   recusa = new Set<string>();
+  clientes = new Set(['88999998888', 'cliente@exemplo.com']);
   senhaTemporaria = false;
 
   useCustomerSession.getState().signOut();
@@ -74,7 +86,9 @@ beforeEach(() => {
       if (url.includes('/customer/login')) {
         enviado.customerLogin = body;
 
-        return recusa.has('customer')
+        const identifier = String((body as { identifier?: unknown }).identifier ?? '');
+
+        return recusa.has('customer') || !clientes.has(identifier)
           ? Promise.resolve(jsonResponse({ message: 'não confere' }, 401))
           : Promise.resolve(
               jsonResponse({
@@ -174,8 +188,39 @@ test('o celular vai para o login do cliente, normalizado', async () => {
     expect(router.state.location.pathname).toBe('/conta/pedidos');
   });
 
-  expect(enviado.customerLogin).toEqual({ phone: '88999998888', password: 'segredo12345' });
+  expect(enviado.customerLogin).toEqual({
+    identifier: '88999998888',
+    password: 'segredo12345',
+  });
   expect(enviado.staffLogin).toBeUndefined();
+});
+
+/**
+ * O e-mail do cliente entra pela loja, e não pelo painel.
+ *
+ * E o caso que não existia: a conta guarda um e-mail, a tela o mostra num
+ * campo editável, e tentá-lo aqui mandava a pessoa para o login do painel —
+ * onde ela não tem conta — e devolvia "e-mail ou senha não conferem".
+ */
+test('o e-mail do cliente abre a sessão da loja, sem passar pelo painel', async () => {
+  const usuario = userEvent.setup();
+  const { router } = abrirEntrada();
+
+  await entrar(usuario, 'Cliente@Exemplo.com', 'segredo12345');
+
+  await waitFor(() => {
+    expect(router.state.location.pathname).toBe('/conta/pedidos');
+  });
+
+  expect(enviado.customerLogin).toEqual({
+    identifier: 'cliente@exemplo.com',
+    password: 'segredo12345',
+  });
+  // O painel nem foi consultado: a loja respondeu primeiro.
+  expect(enviado.staffLogin).toBeUndefined();
+
+  expect(useCustomerSession.getState().status).toBe('authenticated');
+  expect(useAdminSession.getState().status).not.toBe('authenticated');
 });
 
 test('o e-mail vai para o login do painel, e a sessão aberta e a do painel', async () => {
@@ -194,7 +239,13 @@ test('o e-mail vai para o login do painel, e a sessão aberta e a do painel', as
     email: 'dona@maisonessence.test',
     password: 'senhadaloja123',
   });
-  expect(enviado.customerLogin).toBeUndefined();
+
+  // A loja foi tentada antes, e recusou: o e-mail da dona não e de cliente
+  // nenhum. E essa recusa que faz a tentativa cair no painel.
+  expect(enviado.customerLogin).toEqual({
+    identifier: 'dona@maisonessence.test',
+    password: 'senhadaloja123',
+  });
 
   expect(useAdminSession.getState().status).toBe('authenticated');
   expect(useCustomerSession.getState().status).not.toBe('authenticated');

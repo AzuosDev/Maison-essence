@@ -1,4 +1,10 @@
-import { ConflictException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import type { Model } from 'mongoose';
 import { Types } from 'mongoose';
@@ -15,15 +21,20 @@ import { TOKEN_AUDIENCES } from '../auth/auth.types.js';
 import { TokenService } from '../auth/token.service.js';
 import { DeliveryCity } from '../delivery/schemas/delivery-city.schema.js';
 import { citiesOf, planAddresses } from './customer-addresses.js';
+import { customerFilterFor, resolveCustomerIdentifier } from './customer-identifier.js';
 import type { CustomerSession, CustomerView } from './customer.view.js';
 import { toCustomerView } from './customer.view.js';
 import {
   CUSTOMER_NOT_FOUND_MESSAGE,
+  EMAIL_CHANGE_NEEDS_PASSWORD_MESSAGE,
   EMAIL_TAKEN_MESSAGE,
   PHONE_TAKEN_MESSAGE,
+  SAME_PASSWORD_MESSAGE,
   UNKNOWN_CITY_MESSAGE,
+  WRONG_CURRENT_PASSWORD_MESSAGE,
   unknownAddressesMessage,
 } from './customers.constants.js';
+import type { ChangeCustomerPasswordDto } from './dto/change-customer-password.dto.js';
 import type { CustomerAddressDto } from './dto/update-customer.dto.js';
 import type { RegisterCustomerDto } from './dto/register-customer.dto.js';
 import type { LoginCustomerDto } from './dto/login-customer.dto.js';
@@ -96,20 +107,37 @@ export class CustomerAuthService {
   }
 
   /**
-   * Login por telefone e senha.
+   * Login por celular ou e-mail, e senha.
    *
-   * Todo caminho de recusa — telefone sem conta, senha errada, conta
-   * desativada — devolve o mesmo 401 e demora o mesmo tanto, como no painel.
-   * A diferença e que aqui o oráculo seria pior: descobrir quais telefones
-   * tem conta na loja e descobrir quem comprou.
+   * Os dois servem porque a conta guarda os dois, e porque a tela mostra o
+   * e-mail num campo editável logo acima da senha. Aceitar só o telefone
+   * fazia daquele e-mail uma armadilha: a pessoa tentava o que estava escrito
+   * em "Meus dados" e lia que a senha não conferia.
+   *
+   * Qual dos dois foi digitado e decidido por `resolveCustomerIdentifier`,
+   * pela arroba, e não por duas consultas em sequência — duas consultas
+   * fariam o login por e-mail demorar mais que o login por telefone, e essa
+   * diferença e mensurável.
+   *
+   * Todo caminho de recusa — sem conta, senha errada, conta desativada —
+   * devolve o mesmo 401 e demora o mesmo tanto, como no painel. A diferença e
+   * que aqui o oráculo seria pior: descobrir quais telefones tem conta na
+   * loja e descobrir quem comprou.
    */
   login(dto: LoginCustomerDto, context: CustomerRequestContext): Promise<CustomerSession> {
     return withMinimumDuration(LOGIN_MIN_DURATION_MS, async () => {
+      const identity = resolveCustomerIdentifier(dto.identifier);
+
       // `+passwordHash`: o campo e `select: false` no schema e só o login o pede.
-      const customer = await this.customers
-        .findOne({ phone: dto.phone })
-        .select('+passwordHash')
-        .exec();
+      // Identidade ilegível não chega aqui pelo DTO; chegando, procura o que
+      // não existe e cai na mesma recusa, no mesmo tempo.
+      const customer =
+        identity === null
+          ? null
+          : await this.customers
+              .findOne(customerFilterFor(identity))
+              .select('+passwordHash')
+              .exec();
       const matches = await this.passwords.verify(customer?.passwordHash, dto.password);
 
       if (!customer || !matches || !customer.isActive) {
@@ -176,7 +204,9 @@ export class CustomerAuthService {
       customer.name = dto.name;
     }
 
-    if (dto.email !== undefined) {
+    if (dto.email !== undefined && dto.email !== customer.email) {
+      await this.assertOwnsAccount(customer, dto.currentPassword);
+
       customer.email = dto.email;
     }
 
@@ -185,6 +215,95 @@ export class CustomerAuthService {
     }
 
     return toCustomerView(await this.save(customer));
+  }
+
+  /**
+   * Troca a senha de quem já esta dentro, e derruba as outras sessões.
+   *
+   * A sessão de quem trocou continua: o `credentialVersion` sobe e invalida
+   * todo access token emitido antes, inclusive o que acabou de ser usado para
+   * chegar aqui, então a resposta traz um par novo. As **outras** sessões não
+   * voltam — e esse e o ponto de trocar senha. Quem trocou porque desconfia
+   * de alguém dentro da conta precisa que esse alguém caia agora.
+   */
+  async changePassword(
+    customerId: string,
+    dto: ChangeCustomerPasswordDto,
+    context: CustomerRequestContext,
+  ): Promise<CustomerSession> {
+    if (dto.newPassword === dto.currentPassword) {
+      throw new BadRequestException(SAME_PASSWORD_MESSAGE);
+    }
+
+    const customer = await this.withPasswordHash(customerId);
+    const matches = await this.passwords.verify(customer.passwordHash, dto.currentPassword);
+
+    if (!matches) {
+      // 401 e não 403: a credencial apresentada e que esta errada.
+      throw new UnauthorizedException(WRONG_CURRENT_PASSWORD_MESSAGE);
+    }
+
+    const updated = await this.customers
+      .findOneAndUpdate(
+        { _id: customer._id },
+        {
+          $set: { passwordHash: await this.passwords.hash(dto.newPassword) },
+          $inc: { credentialVersion: 1 },
+        },
+        { returnDocument: 'after' },
+      )
+      .exec();
+
+    if (!updated) {
+      throw new UnauthorizedException(CUSTOMER_NOT_FOUND_MESSAGE);
+    }
+
+    // `revokeRefreshTokens` e nao `revokeAllSessions`: a versão da credencial
+    // já subiu na escrita acima, e subir de novo invalidaria o access token
+    // que esta resposta acabou de emitir.
+    await this.sessions.revokeRefreshTokens(customerOwner(customer._id));
+
+    this.logger.log(`Senha trocada pelo cliente (${customer._id.toHexString()})`);
+
+    return this.issueSession(updated, context);
+  }
+
+  /**
+   * Confirma que quem esta na sessão e o dono, pela senha.
+   *
+   * Usado onde a sessão sozinha não basta porque o que esta mudando e o que
+   * abre a conta. Não derruba sessão nenhuma: não houve troca de credencial,
+   * só uma prova.
+   */
+  private async assertOwnsAccount(
+    customer: CustomerDocument,
+    password: string | undefined,
+  ): Promise<void> {
+    if (password === undefined || password === '') {
+      throw new BadRequestException(EMAIL_CHANGE_NEEDS_PASSWORD_MESSAGE);
+    }
+
+    const stored = await this.withPasswordHash(customer._id.toHexString());
+
+    if (!(await this.passwords.verify(stored.passwordHash, password))) {
+      throw new UnauthorizedException(WRONG_CURRENT_PASSWORD_MESSAGE);
+    }
+  }
+
+  /** A conta com o hash da senha junto, que o schema esconde por padrão. */
+  private async withPasswordHash(customerId: string): Promise<CustomerDocument> {
+    const found = Types.ObjectId.isValid(customerId)
+      ? await this.customers
+          .findById(new Types.ObjectId(customerId))
+          .select('+passwordHash')
+          .exec()
+      : null;
+
+    if (!found) {
+      throw new UnauthorizedException(CUSTOMER_NOT_FOUND_MESSAGE);
+    }
+
+    return found;
   }
 
   /**

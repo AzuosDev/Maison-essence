@@ -60,10 +60,39 @@ export interface RegisterInput {
   password: string;
 }
 
-/** O corpo de `POST /customer/login`. */
+/**
+ * O corpo de `POST /customer/login`.
+ *
+ * `identifier` aceita o celular (onze dígitos, já normalizados) ou o e-mail
+ * da conta. Quem decide qual e qual e o servidor, pela arroba — e a mesma
+ * leitura que esta tela faz para escolher entre o login do cliente e o do
+ * painel.
+ */
 export interface LoginInput {
-  phone: string;
+  identifier: string;
   password: string;
+}
+
+/** O corpo de `PATCH /customer/me/password`. */
+export interface ChangePasswordInput {
+  currentPassword: string;
+  newPassword: string;
+}
+
+/** O corpo de `POST /customer/password/forgot`: celular ou e-mail. */
+export interface ForgotPasswordInput {
+  identifier: string;
+}
+
+/** O corpo de `POST /customer/password/reset`. */
+export interface ResetPasswordInput {
+  token: string;
+  password: string;
+}
+
+/** A resposta de `POST /customer/password/forgot`, sempre a mesma. */
+export interface ForgotPasswordResult {
+  message: string;
 }
 
 /**
@@ -78,10 +107,15 @@ export interface LoginInput {
  * nos endereços: corrigir o nome não pode apagar onde a pessoa mora. E a
  * única forma que a API oferece de remover um endereço, e e por isso que
  * toda ação da tela de endereços manda a lista completa.
+ *
+ * `currentPassword` não e um campo do cadastro: e a confirmação que o
+ * servidor exige quando o **e-mail** muda, porque o e-mail também abre a
+ * conta. Vai junto no mesmo corpo, e só quando há troca de e-mail.
  */
 export interface UpdateProfileInput {
   name?: string;
   email?: string;
+  currentPassword?: string;
   addresses?: AddressInput[];
 }
 

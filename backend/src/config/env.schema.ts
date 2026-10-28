@@ -82,6 +82,26 @@ export const envSchema = z.object({
   // Libera POST /auth/bootstrap. Sem ela a rota responde 404, que e o estado
   // em que o projeto deve ficar depois do primeiro acesso.
   BOOTSTRAP_SECRET: optional(z.string().min(MIN_SECRET_LENGTH, SECRET_TOO_SHORT)),
+  // SMTP do Gmail, por onde sai a recuperação de senha do cliente. `EMAIL_PASS`
+  // e a senha de app gerada na conta Google — a senha da conta não serve, e
+  // gerar uma exige a verificação em duas etapas ligada.
+  //
+  // Opcionais pelo mesmo motivo das do Cloudinary: a API precisa subir sem
+  // elas. Sem as duas, o envio vira registro no log (ver `MailService`), que e
+  // o que se quer em desenvolvimento e no teste. Em produção a ausência vira
+  // aviso no boot, porque ali ela e um defeito silencioso.
+  EMAIL_USER: optional(z.email('informe um e-mail válido')),
+  EMAIL_PASS: optional(z.string().min(1)),
+  EMAIL_FROM_NAME: z.string().min(1).max(80).default('Maison Essence'),
+  // A origem da loja, usada para montar o link de recuperação que vai no
+  // e-mail. Ausente, cai na primeira origem do CORS — que e a da loja em todo
+  // ambiente configurado corretamente — e por isso quase nunca precisa ser
+  // escrita.
+  STOREFRONT_URL: optional(
+    z
+      .string()
+      .refine(isOrigin, 'precisa ser um endereço http(s) sem caminho, como https://loja.com.br'),
+  ),
 })
   /**
    * Os quatro segredos precisam ser diferentes entre si.

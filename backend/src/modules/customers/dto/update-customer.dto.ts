@@ -107,7 +107,11 @@ export class CustomerAddressDto {
  * pessoa, ou perdendo o próprio. Troca de número e conversa com a loja.
  *
  * Senha também não: trocar senha derruba sessão e pede a senha atual, o que e
- * outra rota e outro fluxo.
+ * outra rota e outro fluxo (`PATCH /customer/me/password`).
+ *
+ * `currentPassword` não e um campo editável — e a confirmação que o e-mail
+ * passou a exigir desde que ele também abre a conta. Vai junto no mesmo corpo
+ * porque o formulário e um só: a tela pede a senha quando vê o e-mail mudar.
  */
 export class UpdateCustomerDto {
   @IsOptional()
@@ -116,6 +120,18 @@ export class UpdateCustomerDto {
   @MinLength(2, { message: 'informe seu nome' })
   @MaxLength(120)
   name?: string;
+
+  /**
+   * A senha atual, exigida apenas quando o e-mail muda.
+   *
+   * Opcional no DTO e obrigatória no serviço, onde se sabe se o e-mail de
+   * fato mudou: pedir senha para corrigir o próprio nome seria atrito sem
+   * ganho nenhum.
+   */
+  @IsOptional()
+  @IsString()
+  @MaxLength(128)
+  currentPassword?: string;
 
   @IsOptional()
   @Transform(trimmed)
