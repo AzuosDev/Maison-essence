@@ -274,7 +274,7 @@ describe('seeds (e2e)', () => {
     it('--file aponta outro arquivo, e o inexistente vira frase util', async () => {
       await expect(
         catalogSeed(['--file=./nao-existe.json']),
-      ).rejects.toThrow('Nao encontrei o arquivo');
+      ).rejects.toThrow('Não encontrei o arquivo');
     });
 
     it('sem transacao, deixa o log de rollback com os ids criados', async () => {

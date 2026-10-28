@@ -214,7 +214,7 @@ describe('uploads (e2e)', () => {
     it('recusa pasta que nao existe', async () => {
       const { body } = await sign({ folder: 'recibos' }).expect(400);
 
-      expect(String(body.message)).toContain('pasta invalida');
+      expect(String(body.message)).toContain('pasta inválida');
     });
   });
 
@@ -361,7 +361,7 @@ describe('uploads (e2e)', () => {
         })
         .expect(400);
 
-      expect(String(body.message)).toContain('imagem invalida');
+      expect(String(body.message)).toContain('imagem inválida');
     });
 
     it('aceita o identificador devolvido pelo upload', async () => {

@@ -321,7 +321,7 @@ describe('schemas (e2e)', () => {
           name: 'Desconto negativo',
           variants: [{ sku: 'neg', priceCents: 10_000, compareAtPriceCents: 9000 }],
         }),
-      ).rejects.toThrow(/maior que o preco de venda/);
+      ).rejects.toThrow(/maior que o preço de venda/);
     });
 
     it('desconto por quantidade aponta para produto ou categoria, nunca os dois', async () => {
