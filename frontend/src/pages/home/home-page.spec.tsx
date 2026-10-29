@@ -29,6 +29,7 @@ const BANNERS = [
     subtitle: 'Notas cítricas para os dias quentes.',
     buttonLabel: 'Ver a coleção',
     link: '/produtos',
+    placement: 'hero',
   },
   {
     id: 'b2',
@@ -38,6 +39,18 @@ const BANNERS = [
     subtitle: 'Para a noite.',
     buttonLabel: 'Descobrir',
     link: '/categorias/amadeirados',
+    placement: 'hero',
+  },
+  /** A vaga do meio da página, onde antes ficava a quinta prateleira. */
+  {
+    id: 'b3',
+    imageDesktop: 'banners/brinde-desktop',
+    imageMobile: 'banners/brinde-mobile',
+    title: 'Brinde na compra',
+    subtitle: 'Enquanto durar o estoque.',
+    buttonLabel: 'Aproveitar',
+    link: '/produtos',
+    placement: 'middle',
   },
 ];
 
@@ -149,7 +162,6 @@ beforeEach(() => {
   categorias = CATEGORIES;
 
   prateleiras = {
-    featured: [produto('1', 'Asad', { isFeatured: true })],
     'ready-to-ship': [produto('2', 'Yara', { isReadyToShip: true })],
     'best-sellers': [produto('3', 'Fakhar')],
   };
@@ -314,7 +326,7 @@ test('o indicador troca o banner em exibição', async () => {
 
   expect(slide?.getAttribute('aria-hidden')).toBe('false');
 
-  await user.click(screen.getByRole('button', { name: 'Banner 2 de 2' }));
+  await user.click(screen.getByRole('button', { name: 'Destaques da loja: banner 2 de 2' }));
 
   await waitFor(() => {
     expect(slide?.getAttribute('aria-hidden')).toBe('true');
@@ -332,7 +344,7 @@ test('as setas do teclado andam pelo carrossel', async () => {
 
   abrirHome();
 
-  const indicador = await screen.findByRole('button', { name: 'Banner 1 de 2' });
+  const indicador = await screen.findByRole('button', { name: 'Destaques da loja: banner 1 de 2' });
 
   indicador.focus();
   await user.keyboard('{ArrowRight}');
@@ -344,6 +356,55 @@ test('as setas do teclado andam pelo carrossel', async () => {
       'false',
     );
   });
+});
+
+/* ---- A faixa de banner do meio -------------------------------------------- */
+
+/**
+ * A vaga que era da quinta prateleira.
+ *
+ * O que prova que a separação por vaga funciona e o banner do meio **não**
+ * aparecer no topo: as duas listas saem do mesmo `GET /settings`, e sem o
+ * filtro a mesma arte sairia duas vezes na mesma rolagem.
+ */
+test('o banner do meio aparece fora do hero, e não dentro dele', async () => {
+  abrirHome();
+
+  const faixa = await screen.findByRole('region', { name: 'Campanhas da loja' });
+
+  expect(within(faixa).getByRole('heading', { name: 'Brinde na compra' })).toBeDefined();
+
+  const hero = screen.getByRole('region', { name: 'Destaques da loja' });
+
+  expect(within(hero).queryByRole('heading', { name: 'Brinde na compra' })).toBeNull();
+  expect(within(faixa).queryByRole('heading', { name: 'Coleção de verão' })).toBeNull();
+});
+
+/**
+ * O `<h1>` e um só.
+ *
+ * O título do banner do topo e o cabeçalho da home; o do meio e um `h2`, no
+ * mesmo nível dos títulos de prateleira. Dois `h1` partiriam o documento em
+ * dois para quem navega por cabeçalhos.
+ */
+test('o título do banner do meio e h2, e o do hero continua h1', async () => {
+  abrirHome();
+
+  const hero = await screen.findByRole('heading', { level: 1, name: 'Coleção de verão' });
+
+  expect(hero).toBeDefined();
+  expect(screen.getByRole('heading', { level: 2, name: 'Brinde na compra' })).toBeDefined();
+});
+
+/** Loja que nunca cadastrou banner do meio não ganha uma faixa vazia. */
+test('sem banner do meio, a faixa não existe', async () => {
+  configuracoes = { ...SETTINGS, banners: BANNERS.filter((banner) => banner.placement === 'hero') };
+
+  abrirHome();
+
+  await screen.findByRole('region', { name: 'Destaques da loja' });
+
+  expect(screen.queryByRole('region', { name: 'Campanhas da loja' })).toBeNull();
 });
 
 /* ---- A fileira de categorias --------------------------------------------- */
@@ -399,18 +460,18 @@ test('a fileira do meio e grade, e as outras duas rolam', async () => {
  * Tres, e nao quatro.
  *
  * E a decisao da dona, e e o unico numero que a pagina nao negocia: as
- * candidatas sao cinco justamente para que sempre existam tres com produto.
+ * candidatas sao quatro justamente para que sempre existam tres com produto.
  */
-test('a home mostra tres fileiras, mesmo tendo cinco candidatas com produto', async () => {
+test('a home mostra tres fileiras, mesmo tendo quatro candidatas com produto', async () => {
   abrirHome();
 
   await screen.findByRole('region', { name: 'Mais vendidos' });
+  await screen.findByRole('region', { name: 'Aproveite as promoções' });
+  await screen.findByRole('region', { name: 'Compre também' });
 
   await waitFor(() => {
-    expect(screen.queryByRole('region', { name: 'A seleção da casa' })).toBeNull();
+    expect(screen.queryByRole('region', { name: 'Pronta entrega' })).toBeNull();
   });
-
-  expect(screen.queryByRole('region', { name: 'Pronta entrega' })).toBeNull();
 });
 
 test('prateleira sem produto some, e a candidata seguinte assume a vaga', async () => {
@@ -435,10 +496,9 @@ test('prateleira sem produto some, e a candidata seguinte assume a vaga', async 
  * marcado como pronta entrega e nenhum destaque. Antes, a home abria no
  * banner e ia direto para o rodape.
  */
-test('com as outras quatro candidatas vazias, "compre também" sustenta a vitrine', async () => {
+test('com as outras três candidatas vazias, "compre também" sustenta a vitrine', async () => {
   prateleiras['best-sellers'] = [];
   prateleiras['ready-to-ship'] = [];
-  prateleiras.featured = [];
 
   // Sem nenhum desconto cadastrado, a prateleira de promoções corta tudo e
   // tambem desaparece. Sobra a única que não depende de marcação nenhuma.

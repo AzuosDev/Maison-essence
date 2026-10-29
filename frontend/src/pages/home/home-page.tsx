@@ -7,6 +7,7 @@ import { BrandRow } from './brand-row';
 import { CategoryCircles } from './category-circles';
 import { CollectionPosters } from './collection-posters';
 import { FeaturedPerfume } from './featured-perfume';
+import { HomeBanner } from './home-banner';
 import { HomeHero } from './home-hero';
 import { InstagramInvite } from './instagram-invite';
 
@@ -16,7 +17,8 @@ import { InstagramInvite } from './instagram-invite';
  * ## A ordem das seções
  *
  * Banner, categorias em círculo, fileira, marcas, cartazes de coleção,
- * fileira, selos de confiança, fileira, Instagram, o perfume da vez.
+ * fileira, selos de confiança, fileira, banner do meio, Instagram, o perfume
+ * da vez.
  *
  * E o arranjo que a dona escolheu, e ele não e arbitrário: e a ordem que
  * quase toda loja brasileira de perfume importado usa, e portanto a ordem
@@ -34,13 +36,21 @@ import { InstagramInvite } from './instagram-invite';
  *
  * ## Três fileiras, e quais
  *
- * Três, por decisão da dona. Quais três e o que sobra de uma lista de cinco
+ * Três, por decisão da dona. Quais três e o que sobra de uma lista de quatro
  * candidatas, em ordem de prioridade, depois de tirar as que não tem produto
- * — ver `SHELF_SLOTS`.
+ * — ver `slots`.
  *
  * O arranjo anterior tinha seis fileiras, três delas de marca. Marca agora e
  * filtro: o nome leva para a vitrine filtrada, e a faixa de marcas no meio
  * da página faz esse trabalho sem gastar uma fileira inteira por casa.
+ *
+ * ## Onde ficava a quinta candidata
+ *
+ * Havia uma quinta, "A seleção da casa", que mostrava os produtos marcados
+ * como destaque. Ela saiu em 29/10/2026, por decisão da dona: a vaga dela
+ * passou a ser a faixa de banner do meio (`HomeBanner`), que a dona compoe no
+ * painel. Destaque não ficou sem uso na home — e ele que escolhe o produto de
+ * "O perfume da vez", lá embaixo.
  *
  * ## Por que as prateleiras se resolvem em tempo de execução
  *
@@ -83,16 +93,15 @@ export default function HomePage() {
   const bestSellers = useShelf('best-sellers');
   const sale = useSaleShelf();
   const readyToShip = useShelf('ready-to-ship');
-  const featured = useShelf('featured');
   const latest = useLatest();
 
   /**
-   * As cinco candidatas, em ordem de prioridade.
+   * As quatro candidatas, em ordem de prioridade.
    *
    * As três primeiras são a vitrine que a dona quer, e são as mesmas três da
    * referência: o que mais vende, o que esta em promoção, o que acabou de
-   * chegar. As duas últimas são rede de segurança para a loja que ainda não
-   * tem o que mostrar nas três de cima.
+   * chegar. A última e rede de segurança para a loja que ainda não tem o que
+   * mostrar nas três de cima.
    *
    * "Compre também" e a terceira, e não "Pronta entrega", porque e a única
    * que não depende de marcação nenhuma: ela tem produto no minuto em que o
@@ -134,14 +143,6 @@ export default function HomePage() {
       linkLabel: 'Ver tudo em pronta entrega',
       content: contentOf(readyToShip),
     },
-    {
-      key: 'featured',
-      title: 'A seleção da casa',
-      description: 'Escolhidos a dedo, trocados com frequência.',
-      to: ROUTES.products,
-      linkLabel: 'Ver todos os produtos',
-      content: contentOf(featured),
-    },
   ];
 
   const shelves = slots.filter((shelf) => shelfWillRender(shelf.content)).slice(0, MAX_SHELVES);
@@ -176,18 +177,16 @@ export default function HomePage() {
     </Fragment>,
     <Fragment key="trust">
       {/*
-        A faixa da home e a do rodapé não dizem a mesma coisa.
+        A única faixa de selos da loja, e ela esta aqui.
 
-        Elas ficam a pouco mais de uma tela de distancia, e com os quatro
-        selos idênticos nas duas a página passava a sensação de ter sido
-        montada duas vezes. O conjunto `home` gasta os quatro slots no que
-        esta loja tem de diferente — incluindo o atendimento um a um, que a
-        dona nomeou como diferencial e que não aparecia em lugar nenhum da
-        vitrine; o do rodapé fecha a loja e termina em "site seguro".
-        Ver `trust-badges.tsx`.
+        Houve uma segunda no rodapé, a pouco mais de uma tela daqui, e as
+        duas juntas passavam a sensação de página montada duas vezes. Entre
+        as duas, esta e a que chega **antes** da decisão. Os três slots vão
+        para o que esta loja tem de diferente — incluindo o atendimento um a
+        um, que a dona nomeou como diferencial. Ver `trust-badges.tsx`.
       */}
       <Container>
-        <TrustBadges tone="light" set="home" />
+        <TrustBadges />
       </Container>
     </Fragment>,
   ];
@@ -231,6 +230,18 @@ export default function HomePage() {
         que mostrar, mas os cartazes saem das categorias e continuam de pe.
       */}
       {shelves.length === 0 ? <CollectionPosters /> : null}
+
+      {/*
+        A faixa de banner ocupa a vaga da antiga quinta fileira.
+
+        Ela fica fora do `between` de propósito: aquelas seções dependem de
+        uma prateleira ter aparecido antes delas, e esta não pode depender —
+        a dona pôs uma campanha no ar e ela precisa aparecer inclusive na
+        loja que ainda não tem três fileiras para mostrar. Quando não há
+        banner do meio cadastrado, `HomeBanner` devolve nada e a home segue
+        da última fileira direto para o Instagram, como antes.
+      */}
+      <HomeBanner />
 
       {/*
         O Instagram vem antes do perfume da vez, como na referência.

@@ -12,7 +12,6 @@ import { BrandLogo } from './brand-logo';
 import { ChevronDownIcon, InstagramIcon, TiktokIcon } from './icons';
 import { DeferredNewsletter } from './deferred-newsletter';
 import { LEGAL } from './store.constants';
-import { TrustBadges } from './trust-badges';
 import styles from './store-footer.module.css';
 
 /**
@@ -27,12 +26,16 @@ const COLUMNS = '(min-width: 40rem)';
 /**
  * O rodapé da loja.
  *
- * Quatro colunas — institucional, categorias, contato e redes —, o cadastro
- * na newsletter, os selos de confiança e a linha legal. Tudo o que e da loja
- * vem da API: as páginas institucionais de `GET /pages`, as categorias de
- * `GET /categories` e contato e redes das configurações. O que não existe
- * cadastrado simplesmente não desenha, em vez de deixar um título de coluna
- * com o vazio embaixo.
+ * O cadastro na newsletter, quatro colunas — institucional, categorias,
+ * contato e redes — e a linha legal. Tudo o que e da loja vem da API: as
+ * páginas institucionais de `GET /pages`, as categorias de `GET /categories`
+ * e contato e redes das configurações. O que não existe cadastrado
+ * simplesmente não desenha, em vez de deixar um título de coluna com o vazio
+ * embaixo.
+ *
+ * Os selos de confiança ficaram só na home. Aqui eles caíam a meia tela da
+ * faixa da home e eram a terceira leitura das mesmas quatro frases na mesma
+ * rolagem — e, num rodapé, chegavam depois de a visitante já ter decidido.
  *
  * Encaminha `ref` porque o botão flutuante do WhatsApp precisa observar
  * quando este elemento entra na tela para sair da frente dele.
@@ -52,8 +55,6 @@ export const StoreFooter = forwardRef<HTMLElement>(function StoreFooter(_props, 
           <BrandLogo inverted asLink={false} className={styles.newsletterBrand} />
           <DeferredNewsletter />
         </div>
-
-        <TrustBadges />
 
         <div className={styles.columns}>
           <FooterColumn title="Institucional" collapsible={collapsible}>

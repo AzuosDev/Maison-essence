@@ -233,13 +233,19 @@ function PriceBlock({
       )}
 
       {/*
-        Parcelamento com juros existe, mas as parcelas nao sao calculadas
-        aqui: quem as devolve e a cotacao, com a tabela do servidor. Anunciar
-        um numero proprio abriria a chance de a loja cobrar outro.
+        O teto de parcelas, sem o valor de cada uma: as parcelas com juros
+        quem calcula e a cotação, com a tabela do servidor, e anunciar aqui um
+        número próprio abriria a chance de a loja cobrar outro.
+
+        A palavra "juros" fica para o checkout de propósito. Ela não informa
+        nada sozinha — o que informa e o valor da parcela, e o valor esta lá.
+        Pendurada no primeiro olhar de quem acabou de ver o preço, ela só
+        pesa. O que esta linha promete — "em até 12x no cartão" — e verdade, e
+        a de cima e a única que diz "sem juros".
       */}
       {card && card.maxInstallments > card.interestFreeUpTo ? (
         <p className={styles.financed}>
-          Em até {card.maxInstallments}x com juros. As parcelas aparecem no checkout.
+          Em até {card.maxInstallments}x no cartão. As parcelas aparecem no checkout.
         </p>
       ) : null}
 

@@ -1,5 +1,5 @@
 import { cx } from '@/lib/cx';
-import { THEME_LABELS, type ThemeMode } from './theme';
+import { THEME_CHOICE_VISIBLE, THEME_LABELS, type ThemeMode } from './theme';
 import { MoonIcon, SunIcon } from './theme-icons';
 import { useTheme } from './theme-context';
 import styles from './theme-icon-button.module.css';
@@ -38,6 +38,11 @@ function nextMode(current: ThemeMode): ThemeMode {
  */
 export function ThemeIconButton({ className }: { className?: string | undefined }) {
   const { mode, setMode } = useTheme();
+
+  // Escolha escondida, botão nenhum — ver `ThemeToggle`, que faz o mesmo.
+  if (!THEME_CHOICE_VISIBLE) {
+    return null;
+  }
 
   const CurrentIcon = ICONS[mode];
   const next = nextMode(mode);

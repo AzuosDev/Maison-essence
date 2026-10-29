@@ -160,16 +160,11 @@ describe('configuracoes da loja (e2e)', () => {
         INSTITUTIONAL_PAGE_SLUGS.FAQ,
         INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
       ]);
-      // As duas que ninguem escreveu nascem despublicadas: link de rodape que
-      // abre em branco e pior que a ausencia do link. As outras quatro sobem
-      // com o texto da loja (ver `DEFAULT_INSTITUTIONAL_PAGES`).
-      const vazias = pages.filter((page) => page.content === '');
-
-      expect(vazias.map((page) => page.slug)).toEqual([
-        INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
-        INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
-      ]);
-      expect(vazias.every((page) => !page.isActive)).toBe(true);
+      // As seis sobem escritas e publicadas, com o texto da loja (ver
+      // `DEFAULT_INSTITUTIONAL_PAGES`): o painel abre com seis formularios
+      // preenchidos, e nao com dois em branco esperando alguem lembrar.
+      expect(pages.every((page) => page.content !== '')).toBe(true);
+      expect(pages.every((page) => page.isActive)).toBe(true);
     });
   });
 
@@ -335,6 +330,31 @@ describe('configuracoes da loja (e2e)', () => {
 
       expect(banners.map((banner) => banner.title)).toEqual(['Primeiro', 'Segundo']);
       expect(banners[0].id).toMatch(/^[0-9a-f]{24}$/);
+    });
+
+    it('grava a vaga do banner e assume o topo quando ela nao vem', async () => {
+      const admin = await signedInAdmin();
+
+      const response = await patch(admin, {
+        banners: [
+          { imageDesktop: BANNER_IMAGE, title: 'Meio', placement: 'middle', order: 0 },
+          // Sem `placement`: e o que um painel antigo manda, e o que todo
+          // banner gravado antes da vaga do meio existir parece no banco.
+          { imageDesktop: BANNER_IMAGE, title: 'Topo', order: 1 },
+        ],
+      }).expect(200);
+
+      const banners = response.body.banners as { title: string; placement: string }[];
+
+      expect(banners.map((banner) => banner.placement)).toEqual(['middle', 'hero']);
+    });
+
+    it('recusa vaga de banner que nao existe', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, {
+        banners: [{ imageDesktop: BANNER_IMAGE, placement: 'rodape' }],
+      }).expect(400);
     });
 
     it('preserva o id do banner entre gravacoes', async () => {
@@ -545,9 +565,11 @@ describe('configuracoes da loja (e2e)', () => {
     async function hideShippedPages(admin: Session): Promise<void> {
       await patch(admin, {
         institutionalPages: [
+          { slug: INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY, isActive: false },
           { slug: INSTITUTIONAL_PAGE_SLUGS.USAGE, isActive: false },
           { slug: INSTITUTIONAL_PAGE_SLUGS.RETURNS, isActive: false },
           { slug: INSTITUTIONAL_PAGE_SLUGS.FAQ, isActive: false },
+          { slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY, isActive: false },
         ],
       }).expect(200);
     }
@@ -557,10 +579,36 @@ describe('configuracoes da loja (e2e)', () => {
 
       expect(response.body.map((page: { slug: string }) => page.slug)).toEqual([
         INSTITUTIONAL_PAGE_SLUGS.ABOUT,
+        INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
         INSTITUTIONAL_PAGE_SLUGS.USAGE,
         INSTITUTIONAL_PAGE_SLUGS.RETURNS,
         INSTITUTIONAL_PAGE_SLUGS.FAQ,
+        INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
       ]);
+    });
+
+    /**
+     * O defeito que a loja no ar tinha em 29/10/2026.
+     *
+     * Quatro paginas estavam gravadas com conteudo vazio, salvas em branco
+     * antes de existir texto de fabrica para elas. Enquanto o vazio gravado
+     * vencia, publicar o texto nao mudava nada: o menu mostrava os links e
+     * os links abriam uma pagina em branco.
+     */
+    it('entrega o texto de fabrica para a pagina salva em branco', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, {
+        institutionalPages: [
+          { slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY, content: '', isActive: true },
+        ],
+      }).expect(200);
+
+      const response = await request(server)
+        .get(`${API}/pages/${INSTITUTIONAL_PAGE_SLUGS.PRIVACY}`)
+        .expect(200);
+
+      expect(String(response.body.content)).toContain('Quais dados pedimos');
     });
 
     it('entrega o texto de fabrica sem o painel ter tocado na pagina', async () => {

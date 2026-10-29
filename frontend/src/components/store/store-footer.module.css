@@ -37,9 +37,9 @@
    * este dourado daria 2:1.
    *
    * O dourado deixa de poder ser realce — dourado sobre dourado não se vê —,
-   * e quem assume o papel e `--slab-accent`: o hover dos links, o ícone do
-   * selo de confiança, o anel de foco, o estado ligado do seletor de tema e o
-   * hover do botão da newsletter saem dele. Token próprio em vez de
+   * e quem assume o papel e `--slab-accent`: o hover dos links, o anel de
+   * foco, o estado ligado do seletor de tema e o hover do botão da
+   * newsletter saem dele. Token próprio em vez de
    * redefinir `--gold` aqui dentro porque o monograma da marca e arte
    * dourada e continua dourado: o que muda e a cor de ação, não a marca.
    */
@@ -148,9 +148,9 @@
 /*
  * Os filetes da fileira são os das próprias linhas, e só os que faltam.
  *
- * Em cima da primeira já existe o que fecha os selos de confiança; embaixo da
- * última, o que abre a linha legal. Desenhar os dois de novo daria uma regua
- * dupla nas duas pontas.
+ * Em cima da primeira já existe o que fecha a newsletter; embaixo da última,
+ * o que abre a linha legal. Desenhar os dois de novo daria uma regua dupla
+ * nas duas pontas.
  */
 .column {
   min-width: 0;

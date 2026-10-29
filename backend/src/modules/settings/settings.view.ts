@@ -1,3 +1,4 @@
+import type { BannerPlacement } from '../../common/enums/banner-placement.js';
 import type { InstitutionalPageSlug } from '../../common/enums/institutional-page.js';
 import { liveBanners } from './banners.js';
 import { mergeInstitutionalPages } from './institutional-pages.js';
@@ -37,6 +38,8 @@ export interface BannerView {
   subtitle: string;
   buttonLabel: string;
   link: string;
+  /** A vaga da home: topo do carrossel ou faixa do meio. */
+  placement: BannerPlacement;
   order: number;
   startsAt: Date | null;
   endsAt: Date | null;
@@ -58,6 +61,12 @@ export interface PublicBannerView {
   subtitle: string;
   buttonLabel: string;
   link: string;
+  /**
+   * A vaga da home. Vem para a vitrine porque e ela que separa a lista em
+   * dois blocos — o carrossel do topo e a faixa do meio — e a separação
+   * precisa acontecer depois do filtro de agendamento, não antes.
+   */
+  placement: BannerPlacement;
 }
 
 /** Página institucional no painel. */
@@ -205,6 +214,7 @@ export function toBannerView(banner: Banner): BannerView {
     subtitle: banner.subtitle,
     buttonLabel: banner.buttonLabel,
     link: banner.link,
+    placement: banner.placement,
     order: banner.order,
     startsAt: banner.startsAt,
     endsAt: banner.endsAt,
@@ -222,6 +232,7 @@ export function toPublicBannerView(banner: Banner): PublicBannerView {
     subtitle: banner.subtitle,
     buttonLabel: banner.buttonLabel,
     link: banner.link,
+    placement: banner.placement,
   };
 }
 

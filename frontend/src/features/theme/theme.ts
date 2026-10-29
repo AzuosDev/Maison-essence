@@ -29,6 +29,22 @@ export const THEME_MODES = ['light', 'dark'] as const;
 export type ThemeMode = (typeof THEME_MODES)[number];
 
 /**
+ * A escolha de tema aparece na tela?
+ *
+ * Não, desde 29/10/2026, por decisão da dona: a loja e o painel ficam sempre
+ * no claro. O que saiu foi a **escolha**, e não o tema — os tokens do escuro,
+ * `applyTheme`, o armazenamento e as regras daqui continuam inteiros e
+ * testados, e os dois controles (`ThemeToggle` e `ThemeIconButton`) seguem
+ * montados nos quatro lugares em que estavam, só que desenhando nada.
+ *
+ * Trocar esta linha para `true` devolve tudo como era, sem mais nenhuma
+ * edição — menos uma: o script do `index.html` repete a decisão em
+ * JavaScript solto, porque precisa rodar antes da primeira pintura, e a
+ * cópia dele não lê esta constante. `theme.spec.ts` amarra as duas.
+ */
+export const THEME_CHOICE_VISIBLE = false;
+
+/**
  * O tema de quem não escolheu e cujo aparelho não respondeu.
  *
  * Acontece quando `matchMedia` não existe (o jsdom dos testes) ou quando o
@@ -98,6 +114,26 @@ export function initialMode(
   systemPrefersDark: boolean,
 ): ThemeMode {
   return readStoredMode(storage) ?? (systemPrefersDark ? 'dark' : 'light');
+}
+
+/**
+ * Com que tema a página abre de verdade — e e esta que a aplicação chama.
+ *
+ * Com a escolha escondida, e sempre o claro, e nem o que ficou guardado nem o
+ * aparelho tem voz. As duas exclusões são deliberadas: quem escolheu escuro
+ * antes de a escolha sair ficaria preso num site escuro sem nenhum controle
+ * para desfazer, e quem chega com o celular no modo noturno veria uma loja
+ * que a dona decidiu que não existe mais.
+ *
+ * `DEFAULT_THEME_MODE` e não `'light'` escrito a mão: o claro e o `:root` de
+ * `tokens.css`, e ter um lugar só dizendo isso e o que mantém as duas pontas
+ * juntas.
+ */
+export function openingMode(
+  storage: Pick<Storage, 'getItem'> | undefined,
+  systemPrefersDark: boolean,
+): ThemeMode {
+  return THEME_CHOICE_VISIBLE ? initialMode(storage, systemPrefersDark) : DEFAULT_THEME_MODE;
 }
 
 /**

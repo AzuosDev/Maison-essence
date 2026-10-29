@@ -3,11 +3,13 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, test } from 'vitest';
 import {
   DEFAULT_THEME_MODE,
+  THEME_CHOICE_VISIBLE,
   THEME_COLORS,
   THEME_MODES,
   THEME_STORAGE_KEY,
   initialMode,
   isThemeMode,
+  openingMode,
   readStoredMode,
   writeStoredMode,
 } from './theme';
@@ -101,6 +103,27 @@ describe('o tema com que a loja abre', () => {
   });
 });
 
+/**
+ * A loja travada no claro.
+ *
+ * `initialMode` continua sendo a regra de como um tema se escolhe, e os casos
+ * acima continuam valendo. O que a aplicação chama e `openingMode`, e
+ * enquanto `THEME_CHOICE_VISIBLE` for `false` ela ignora as duas entradas.
+ */
+describe('o tema quando a escolha esta escondida', () => {
+  test('a escolha de tema não aparece na tela', () => {
+    expect(THEME_CHOICE_VISIBLE).toBe(false);
+  });
+
+  test('o escuro guardado antes não devolve a loja ao escuro', () => {
+    expect(openingMode(armazenamento({ [THEME_STORAGE_KEY]: 'dark' }), false)).toBe('light');
+  });
+
+  test('o celular no modo noturno também não decide', () => {
+    expect(openingMode(armazenamento(), true)).toBe('light');
+  });
+});
+
 test('isThemeMode recusa o que não é modo', () => {
   expect(isThemeMode('dark')).toBe(true);
   expect(isThemeMode('Light')).toBe(false);
@@ -128,12 +151,23 @@ const indexHtml = readFileSync(
  * Estes casos amarram as duas pontas.
  */
 describe('o script que roda antes da pintura', () => {
-  test('usa a mesma chave de armazenamento', () => {
-    expect(indexHtml).toContain(`'${THEME_STORAGE_KEY}'`);
+  test('escreve o tema travado, e não o do aparelho', () => {
+    expect(indexHtml).toContain(`setAttribute('data-theme', '${DEFAULT_THEME_MODE}')`);
+    // `matchMedia` e não "prefers-color-scheme": a consulta aparece no
+    // comentário do script, explicando qual bloco do `tokens.css` o atributo
+    // desarma. O que não pode voltar e a **chamada**.
+    expect(indexHtml).not.toContain('matchMedia');
   });
 
-  test('só pergunta ao aparelho quando não há escolha guardada', () => {
-    expect(indexHtml).toContain("mode !== 'light' && mode !== 'dark'");
+  /**
+   * O escuro de quem escolheu antes não pode voltar sozinho.
+   *
+   * Enquanto havia escolha, este script lia `localStorage`. Se a leitura
+   * tivesse ficado, quem marcou escuro naquela época abriria a loja escura
+   * para sempre — e sem nenhum controle na tela para desfazer.
+   */
+  test('não lê mais a escolha guardada', () => {
+    expect(indexHtml).not.toContain(THEME_STORAGE_KEY);
   });
 
   /** O modo que saiu não pode voltar por engano como valor do atributo. */
@@ -141,9 +175,9 @@ describe('o script que roda antes da pintura', () => {
     expect(indexHtml).not.toContain("'system'");
   });
 
-  test('usa as mesmas cores de barra do navegador', () => {
-    expect(indexHtml).toContain(THEME_COLORS.dark);
+  test('pinta a barra do navegador com a cor do tema claro', () => {
     expect(indexHtml).toContain(THEME_COLORS.light);
+    expect(indexHtml).not.toContain(THEME_COLORS.dark);
   });
 });
 

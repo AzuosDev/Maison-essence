@@ -13,7 +13,25 @@ import { ThemeToggle } from './theme-toggle';
  * O que importa aqui não é o desenho: é o atributo no `<html>`, que é a única
  * coisa que `tokens.css` lê. Um controle que marca a opção certa sem escrever
  * o atributo parece funcionar e não muda cor nenhuma.
+ *
+ * ## Por que este arquivo liga a escolha de volta
+ *
+ * A loja está travada no claro, e os dois controles desenham nada enquanto
+ * `THEME_CHOICE_VISIBLE` for `false` — o que está no ar hoje é o que
+ * `theme-hidden.spec.tsx` descreve. Os casos **deste** arquivo são a outra
+ * metade da mesma promessa: a de que o escuro continua inteiro e que devolver
+ * a escolha é trocar uma linha, e não reescrever o recurso. Sem eles, o dia
+ * de religar seria o dia de descobrir o que apodreceu.
+ *
+ * `openingMode` entra no lugar junto da constante porque ela lê a constante
+ * de dentro do próprio módulo: trocar só o valor exportado não alcançaria a
+ * função, e o provedor continuaria prendendo tudo no claro.
  */
+vi.mock('./theme', async (importOriginal) => {
+  const real = await importOriginal<typeof import('./theme')>();
+
+  return { ...real, THEME_CHOICE_VISIBLE: true, openingMode: real.initialMode };
+});
 
 /** O aparelho responde o que o teste mandar; o padrão é claro. */
 function aparelhoNoEscuro(escuro: boolean) {

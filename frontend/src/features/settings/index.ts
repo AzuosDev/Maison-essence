@@ -8,6 +8,7 @@ export { settingsKeys } from './settings.keys';
 export {
   INSTITUTIONAL_PAGE_SLUGS,
   type AddressView,
+  type BannerPlacement,
   type InstitutionalPageSlug,
   type PublicBanner,
   type PublicPage,

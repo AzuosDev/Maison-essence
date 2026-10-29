@@ -13,26 +13,77 @@ describe('mergeInstitutionalPages', () => {
     expect(merged).toHaveLength(6);
   });
 
-  it('entrega escritas e publicadas as páginas que já vem com texto', () => {
-    const escritas = mergeInstitutionalPages([]).filter((page) => page.content !== '');
+  it('entrega as seis escritas e publicadas, sem banco nenhum', () => {
+    const merged = mergeInstitutionalPages([]);
 
-    expect(escritas.map((page) => page.slug)).toEqual([
+    expect(merged.map((page) => page.slug)).toEqual([
       INSTITUTIONAL_PAGE_SLUGS.ABOUT,
+      INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
       INSTITUTIONAL_PAGE_SLUGS.USAGE,
       INSTITUTIONAL_PAGE_SLUGS.RETURNS,
       INSTITUTIONAL_PAGE_SLUGS.FAQ,
-    ]);
-    expect(escritas.every((page) => page.isActive)).toBe(true);
-  });
-
-  it('deixa vazia e despublicada a página que ninguém escreveu ainda', () => {
-    const vazias = mergeInstitutionalPages([]).filter((page) => page.content === '');
-
-    expect(vazias.map((page) => page.slug)).toEqual([
-      INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
       INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
     ]);
-    expect(vazias.every((page) => !page.isActive)).toBe(true);
+    expect(merged.every((page) => page.content !== '')).toBe(true);
+    expect(merged.every((page) => page.isActive)).toBe(true);
+  });
+
+  /**
+   * O defeito que estava no ar em 29/10/2026.
+   *
+   * Quatro páginas tinham sido salvas em branco antes de este módulo ter
+   * texto para elas. Com o vazio gravado vencendo, publicar o texto de
+   * fábrica não mudava nada: os links do menu e do rodapé continuavam
+   * abrindo uma página em branco.
+   */
+  it('o texto de fábrica responde pela página salva em branco', () => {
+    const merged = mergeInstitutionalPages([
+      {
+        slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+        title: 'Política de privacidade',
+        content: '   ',
+        isActive: true,
+      },
+    ]);
+    const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
+
+    expect(privacidade?.content).toContain('Quais dados pedimos');
+  });
+
+  /**
+   * Despublicar continua sendo o jeito de tirar uma página do ar.
+   *
+   * E o que impede a exceção acima de virar uma trava: o texto de fábrica
+   * responde pelo vazio, mas quem decide se a página existe no site continua
+   * sendo a dona, pelo `isActive`.
+   */
+  it('a página despublicada no painel continua despublicada', () => {
+    const merged = mergeInstitutionalPages([
+      {
+        slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+        title: 'Política de privacidade',
+        content: '',
+        isActive: false,
+      },
+    ]);
+    const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
+
+    expect(privacidade?.isActive).toBe(false);
+  });
+
+  /** O texto escrito pela dona continua vencendo o de fábrica. */
+  it('deixa o que foi escrito no painel por cima do padrão', () => {
+    const merged = mergeInstitutionalPages([
+      {
+        slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+        title: 'Privacidade',
+        content: 'O que a dona escreveu.',
+        isActive: true,
+      },
+    ]);
+    const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
+
+    expect(privacidade?.content).toBe('O que a dona escreveu.');
   });
 
   it('mantem sempre a mesma ordem, independente da ordem gravada', () => {

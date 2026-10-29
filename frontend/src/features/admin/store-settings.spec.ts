@@ -38,6 +38,7 @@ const BANNER: AdminBanner = {
   subtitle: 'Notas cítricas',
   buttonLabel: 'Ver a coleção',
   link: '/produtos',
+  placement: 'hero',
   order: 0,
   startsAt: null,
   endsAt: null,

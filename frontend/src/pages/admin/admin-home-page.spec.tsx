@@ -239,20 +239,23 @@ test('o menu do STAFF tem duas áreas', () => {
 });
 
 /**
- * O tema, no pé da coluna, em um alvo só.
+ * O tema não aparece no pé da coluna.
  *
- * O caso e negativo de propósito: o que se cobra aqui e que a pílula de três
- * segmentos **não** voltou para a coluna de 15rem, onde ela passava da
- * largura e punha uma barra de rolagem horizontal debaixo do menu. O que o
- * botão faz quando clicado esta coberto em `theme-toggle.spec.tsx`, onde há
- * provedor de tema em volta.
+ * A escolha saiu da tela em 29/10/2026 e o painel seguiu a loja: o tema e um
+ * só, escrito no `<html>`, e um botão aqui viraria a vitrine inteira junto.
+ * A decisão mora em `THEME_CHOICE_VISIBLE`, e `theme-hidden.spec.tsx` cobre
+ * o que os controles fazem — nada.
+ *
+ * O caso continua valendo como guarda do defeito antigo: a pílula de
+ * segmentos não cabia nos 15rem da coluna e punha uma barra de rolagem
+ * horizontal debaixo do menu.
  */
-test('o tema no painel e um botão, e não o grupo de três opções', () => {
+test('o painel não mostra controle de tema nenhum', () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirPainel();
 
-  expect(screen.getByRole('button', { name: /^Tema: / })).toBeDefined();
+  expect(screen.queryByRole('button', { name: /^Tema: / })).toBeNull();
   expect(screen.queryByRole('group', { name: 'Tema' })).toBeNull();
   expect(screen.queryByRole('radio')).toBeNull();
 });

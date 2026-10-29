@@ -248,6 +248,7 @@ const SETTINGS = {
       subtitle: 'Âmbares, madeiras e baunilhas selecionados peça a peça.',
       buttonLabel: 'Ver a coleção',
       link: '/produtos',
+      placement: 'hero',
     },
     {
       id: 'b2',
@@ -257,6 +258,19 @@ const SETTINGS = {
       subtitle: 'Retire hoje em Juazeiro do Norte ou receba primeiro.',
       buttonLabel: 'Ver pronta entrega',
       link: '/pronta-entrega',
+      placement: 'hero',
+    },
+    // A faixa do meio da home, para a bancada desenhar a vaga que a vitrine
+    // de verdade também tem.
+    {
+      id: 'b3',
+      imageDesktop: PHOTOS[2]!,
+      imageMobile: PHOTOS[2]!,
+      title: 'Frete grátis acima de R$ 299',
+      subtitle: 'Para todo o Brasil, sem cupom.',
+      buttonLabel: 'Montar o pedido',
+      link: '/produtos',
+      placement: 'middle',
     },
   ],
 };

@@ -3,6 +3,8 @@ import type { InstitutionalPageSlug } from '../../common/enums/institutional-pag
 import {
   ABOUT_CONTENT,
   FAQ_CONTENT,
+  HOW_TO_BUY_CONTENT,
+  PRIVACY_CONTENT,
   RETURNS_CONTENT,
   USAGE_CONTENT,
 } from './institutional-content.js';
@@ -31,19 +33,21 @@ export interface EditablePage {
 /**
  * Título e texto iniciais de cada página, e a ordem em que o painel as lista.
  *
- * Quatro delas já nascem escritas e publicadas, com o texto que a dona
- * mandou: a apresentação da marca, o modo de uso, a política de trocas e as
- * perguntas frequentes (ver `institutional-content.ts`). São respostas que a
- * loja precisa dar na primeira visita — a aba "Trocas e devoluções" da página
- * do produto, por exemplo, só existe se a página existir —, e esperar que
- * alguém as digite no painel seria subir a loja muda justamente no que o
- * cliente pergunta antes de pagar.
+ * As seis já nascem escritas e publicadas (ver `institutional-content.ts`).
+ * São respostas que a loja precisa dar na primeira visita — a aba "Trocas e
+ * devoluções" da página do produto, por exemplo, só existe se a página
+ * existir —, e esperar que alguém as digite no painel seria subir a loja muda
+ * justamente no que o cliente pergunta antes de pagar.
  *
- * As outras duas nascem vazias e despublicadas, e e de propósito: página ativa
- * sem conteúdo vira link do rodapé que abre em branco, e um rodapé com "Como
- * comprar" vazio e pior do que um rodapé sem o link. Elas dependem de decisão
- * da loja — o passo a passo do pedido e o texto legal da privacidade —, então
- * quem escreve e publica e a dona.
+ * Quatro saíram da mão da dona: a apresentação da marca, o modo de uso, a
+ * política de trocas e as perguntas frequentes. "Como comprar" e a política
+ * de privacidade nasceram do código — elas descrevem o checkout que existe e
+ * os dados que ele de fato pede. Nasciam vazias e despublicadas enquanto
+ * ninguém as tinha escrito, porque link de rodapé que abre em branco e pior
+ * que link nenhum; agora que têm texto, entram publicadas como as outras.
+ *
+ * Continua valendo o de sempre: o que a dona gravar no painel passa por cima
+ * daqui, para aquela página.
  */
 export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
   {
@@ -55,8 +59,8 @@ export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
   {
     slug: INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
     title: 'Como comprar',
-    content: '',
-    isActive: false,
+    content: HOW_TO_BUY_CONTENT,
+    isActive: true,
   },
   {
     slug: INSTITUTIONAL_PAGE_SLUGS.USAGE,
@@ -79,8 +83,8 @@ export const DEFAULT_INSTITUTIONAL_PAGES: readonly EditablePage[] = [
   {
     slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
     title: 'Política de privacidade',
-    content: '',
-    isActive: false,
+    content: PRIVACY_CONTENT,
+    isActive: true,
   },
 ];
 
@@ -98,7 +102,22 @@ export function defaultTitleOf(slug: InstitutionalPageSlug): string {
  *
  * O que esta gravado vence campo por campo, e e isso que faz do texto deste
  * módulo um padrão e não uma trava: a dona reescreve "Quem somos" no painel e
- * a versão dela passa a valer, inclusive quando ela a esvazia ou despublica.
+ * a versão dela passa a valer, inclusive quando ela a despublica.
+ *
+ * ## Texto vazio e a única exceção, e ela nasceu de um defeito em produção
+ *
+ * Em 29/10/2026 a loja no ar tinha quatro páginas gravadas com conteúdo
+ * vazio — "Como comprar", "Trocas e devoluções", "Perguntas frequentes" e
+ * "Política de privacidade" —, salvas em branco antes de este módulo ter
+ * texto para elas. Com o vazio vencendo, publicar o texto de fábrica não
+ * mudava nada: o menu da loja mostrava os quatro links e os quatro abriam
+ * uma página em branco. O próprio painel já chamava isso de defeito, na
+ * linha "publicada sem texto, o link do rodapé abre uma página em branco".
+ *
+ * Então vazio não e mais uma versão da dona: e a ausência de uma, e quem
+ * responde e o padrão. O jeito de tirar uma página do site continua sendo
+ * despublicar — `isActive`, que e o campo que existe para isso e que o
+ * rodapé e o menu de fato leem.
  */
 export function mergeInstitutionalPages(stored: readonly EditablePage[]): EditablePage[] {
   const bySlug = new Map(stored.map((page) => [page.slug, page]));
@@ -106,7 +125,15 @@ export function mergeInstitutionalPages(stored: readonly EditablePage[]): Editab
   return DEFAULT_INSTITUTIONAL_PAGES.map((fallback) => {
     const saved = bySlug.get(fallback.slug);
 
-    return saved ? { ...fallback, ...saved } : { ...fallback };
+    if (saved === undefined) {
+      return { ...fallback };
+    }
+
+    return {
+      ...fallback,
+      ...saved,
+      content: saved.content.trim() === '' ? fallback.content : saved.content,
+    };
   });
 }
 

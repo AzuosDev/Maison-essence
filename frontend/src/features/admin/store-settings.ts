@@ -7,6 +7,7 @@ import {
   type AdminPickupAddress,
   type AdminStoreSettings,
   type BannerInput,
+  type BannerPlacement,
   type InstitutionalPageInput,
   type UpdateStoreSettingsInput,
 } from './admin.types';
@@ -75,6 +76,8 @@ export interface BannerDraft {
   subtitle: string;
   buttonLabel: string;
   link: string;
+  /** A vaga da home: topo do carrossel ou faixa do meio da página. */
+  placement: BannerPlacement;
   /** Dia local, `YYYY-MM-DD`. Vazio e "desde sempre". */
   startsOn: string;
   /** Dia local. Vazio e "até segunda ordem"; preenchido, e o último dia no ar. */
@@ -199,6 +202,7 @@ export function draftFromBanner(banner: AdminBanner): BannerDraft {
     subtitle: banner.subtitle,
     buttonLabel: banner.buttonLabel,
     link: banner.link,
+    placement: banner.placement,
     startsOn: dateInputValue(banner.startsAt),
     endsOn: dateInputValue(banner.endsAt),
     isActive: banner.isActive,
@@ -227,6 +231,9 @@ export function newBanner(imageDesktop: string): BannerDraft {
     subtitle: '',
     buttonLabel: '',
     link: '',
+    // Nasce no topo: e a vaga que toda loja usa, e a do meio e a escolha
+    // deliberada de quem já tem uma campanha para pôr lá.
+    placement: 'hero',
     startsOn: '',
     endsOn: '',
     isActive: true,
@@ -775,6 +782,7 @@ function sameBanner(banner: BannerDraft, other: BannerDraft | undefined): boolea
     banner.subtitle === other.subtitle &&
     banner.buttonLabel === other.buttonLabel &&
     banner.link === other.link &&
+    banner.placement === other.placement &&
     banner.startsOn === other.startsOn &&
     banner.endsOn === other.endsOn &&
     banner.isActive === other.isActive
@@ -807,6 +815,7 @@ export function bannerToInput(banner: BannerDraft, index: number): BannerInput {
     subtitle: banner.subtitle.trim(),
     buttonLabel: banner.buttonLabel.trim(),
     link: banner.link.trim(),
+    placement: banner.placement,
     order: index,
     startsAt: banner.startsOn === '' ? null : dayStartISO(banner.startsOn),
     endsAt: banner.endsOn === '' ? null : dayEndISO(banner.endsOn),

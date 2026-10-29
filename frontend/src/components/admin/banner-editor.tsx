@@ -1,7 +1,8 @@
 import { useRef, useState, type DragEvent } from 'react';
-import { Button, Input, Switch } from '@/components/ui';
+import { Button, Input, Select, Switch } from '@/components/ui';
 import {
   BANNER_ART,
+  BANNER_PLACEMENT_LABELS,
   BANNER_STATUS_LABELS,
   bannerArtMeasure,
   SETTINGS_LIMITS,
@@ -12,6 +13,7 @@ import {
   UPLOAD_FOLDERS,
   type BannerDraft,
   type BannerErrors,
+  type BannerPlacement,
 } from '@/features/admin';
 import { imageUrl } from '@/lib/cloudinary';
 import { cx } from '@/lib/cx';
@@ -27,7 +29,15 @@ import { RowMenu, type RowMenuItem } from './row-menu';
 import styles from './banner-editor.module.css';
 
 /**
- * O carrossel da home.
+ * Os banners da home.
+ *
+ * ## Uma lista, duas vagas
+ *
+ * A home tem dois lugares de banner — o carrossel do topo e a faixa do meio,
+ * depois da última fileira de produto — e eles se editam na mesma lista,
+ * porque são o mesmo objeto com a mesma arte e a mesma medida. Quem separa e
+ * o campo "Onde aparece" de cada linha; a ordem de cima para baixo continua
+ * valendo dentro de cada vaga.
  *
  * ## A arte vem primeiro
  *
@@ -104,7 +114,7 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
     <div className={styles.editor}>
       {banners.length === 0 ? (
         <p className={styles.empty}>
-          A home ainda não tem carrossel. Sem banner, ela começa direto pelos produtos — o que
+          A home ainda não tem banner. Sem nenhum, ela começa direto pelos produtos — o que
           funciona, mas deixa de contar o que a loja quer contar primeiro.
         </p>
       ) : (
@@ -235,6 +245,17 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
 }
 
 /* ---- Uma linha ------------------------------------------------------------------ */
+
+/**
+ * As duas vagas da home, na ordem em que a página as mostra.
+ *
+ * Fora do componente porque a lista não muda: declarada dentro, ela viraria
+ * um array novo a cada tecla digitada em qualquer campo da linha.
+ */
+const PLACEMENT_OPTIONS = [
+  { value: 'hero', label: BANNER_PLACEMENT_LABELS.hero },
+  { value: 'middle', label: BANNER_PLACEMENT_LABELS.middle },
+] as const;
 
 function BannerRow({
   banner,
@@ -389,6 +410,24 @@ function BannerRow({
         </div>
 
         <div className={styles.fields}>
+          {/*
+            A vaga vem antes do texto porque e ela que decide o resto.
+
+            O mesmo arquivo serve as duas — a medida da arte e a mesma, e esta
+            escrita logo acima —, então trocar uma campanha de lugar e trocar
+            esta linha, e não preparar outra imagem.
+          */}
+          <Select
+            label="Onde aparece"
+            block
+            options={PLACEMENT_OPTIONS}
+            hint="Topo e o carrossel da primeira tela. Meio e a faixa que vem depois da última fileira de produtos."
+            value={banner.placement}
+            onChange={(event) => {
+              onSet({ placement: event.target.value as BannerPlacement });
+            }}
+          />
+
           <Input
             label="Título"
             block
