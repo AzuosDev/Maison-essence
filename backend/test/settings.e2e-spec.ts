@@ -587,6 +587,30 @@ describe('configuracoes da loja (e2e)', () => {
       ]);
     });
 
+    /**
+     * O defeito que a loja no ar tinha em 29/10/2026.
+     *
+     * Quatro paginas estavam gravadas com conteudo vazio, salvas em branco
+     * antes de existir texto de fabrica para elas. Enquanto o vazio gravado
+     * vencia, publicar o texto nao mudava nada: o menu mostrava os links e
+     * os links abriam uma pagina em branco.
+     */
+    it('entrega o texto de fabrica para a pagina salva em branco', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, {
+        institutionalPages: [
+          { slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY, content: '', isActive: true },
+        ],
+      }).expect(200);
+
+      const response = await request(server)
+        .get(`${API}/pages/${INSTITUTIONAL_PAGE_SLUGS.PRIVACY}`)
+        .expect(200);
+
+      expect(String(response.body.content)).toContain('Quais dados pedimos');
+    });
+
     it('entrega o texto de fabrica sem o painel ter tocado na pagina', async () => {
       const response = await request(server)
         .get(`${API}/pages/${INSTITUTIONAL_PAGE_SLUGS.USAGE}`)

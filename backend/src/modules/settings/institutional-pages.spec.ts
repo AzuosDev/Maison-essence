@@ -29,25 +29,61 @@ describe('mergeInstitutionalPages', () => {
   });
 
   /**
-   * O padrão e padrão, e não trava.
+   * O defeito que estava no ar em 29/10/2026.
    *
-   * Agora que as seis nascem escritas, o caso que importa e o contrário do de
-   * antes: a dona apaga o texto de uma delas no painel e o vazio precisa
-   * vencer: senão o site voltaria a mostrar o texto deste módulo, e ela não
-   * teria como tirar do ar o que escreveu.
+   * Quatro páginas tinham sido salvas em branco antes de este módulo ter
+   * texto para elas. Com o vazio gravado vencendo, publicar o texto de
+   * fábrica não mudava nada: os links do menu e do rodapé continuavam
+   * abrindo uma página em branco.
    */
-  it('deixa o texto apagado no painel vencer o padrão deste módulo', () => {
+  it('o texto de fábrica responde pela página salva em branco', () => {
     const merged = mergeInstitutionalPages([
       {
         slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
         title: 'Política de privacidade',
-        content: '',
+        content: '   ',
         isActive: true,
       },
     ]);
     const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
 
-    expect(privacidade?.content).toBe('');
+    expect(privacidade?.content).toContain('Quais dados pedimos');
+  });
+
+  /**
+   * Despublicar continua sendo o jeito de tirar uma página do ar.
+   *
+   * E o que impede a exceção acima de virar uma trava: o texto de fábrica
+   * responde pelo vazio, mas quem decide se a página existe no site continua
+   * sendo a dona, pelo `isActive`.
+   */
+  it('a página despublicada no painel continua despublicada', () => {
+    const merged = mergeInstitutionalPages([
+      {
+        slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+        title: 'Política de privacidade',
+        content: '',
+        isActive: false,
+      },
+    ]);
+    const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
+
+    expect(privacidade?.isActive).toBe(false);
+  });
+
+  /** O texto escrito pela dona continua vencendo o de fábrica. */
+  it('deixa o que foi escrito no painel por cima do padrão', () => {
+    const merged = mergeInstitutionalPages([
+      {
+        slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+        title: 'Privacidade',
+        content: 'O que a dona escreveu.',
+        isActive: true,
+      },
+    ]);
+    const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
+
+    expect(privacidade?.content).toBe('O que a dona escreveu.');
   });
 
   it('mantem sempre a mesma ordem, independente da ordem gravada', () => {

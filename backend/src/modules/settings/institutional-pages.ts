@@ -102,7 +102,22 @@ export function defaultTitleOf(slug: InstitutionalPageSlug): string {
  *
  * O que esta gravado vence campo por campo, e e isso que faz do texto deste
  * módulo um padrão e não uma trava: a dona reescreve "Quem somos" no painel e
- * a versão dela passa a valer, inclusive quando ela a esvazia ou despublica.
+ * a versão dela passa a valer, inclusive quando ela a despublica.
+ *
+ * ## Texto vazio e a única exceção, e ela nasceu de um defeito em produção
+ *
+ * Em 29/10/2026 a loja no ar tinha quatro páginas gravadas com conteúdo
+ * vazio — "Como comprar", "Trocas e devoluções", "Perguntas frequentes" e
+ * "Política de privacidade" —, salvas em branco antes de este módulo ter
+ * texto para elas. Com o vazio vencendo, publicar o texto de fábrica não
+ * mudava nada: o menu da loja mostrava os quatro links e os quatro abriam
+ * uma página em branco. O próprio painel já chamava isso de defeito, na
+ * linha "publicada sem texto, o link do rodapé abre uma página em branco".
+ *
+ * Então vazio não e mais uma versão da dona: e a ausência de uma, e quem
+ * responde e o padrão. O jeito de tirar uma página do site continua sendo
+ * despublicar — `isActive`, que e o campo que existe para isso e que o
+ * rodapé e o menu de fato leem.
  */
 export function mergeInstitutionalPages(stored: readonly EditablePage[]): EditablePage[] {
   const bySlug = new Map(stored.map((page) => [page.slug, page]));
@@ -110,7 +125,15 @@ export function mergeInstitutionalPages(stored: readonly EditablePage[]): Editab
   return DEFAULT_INSTITUTIONAL_PAGES.map((fallback) => {
     const saved = bySlug.get(fallback.slug);
 
-    return saved ? { ...fallback, ...saved } : { ...fallback };
+    if (saved === undefined) {
+      return { ...fallback };
+    }
+
+    return {
+      ...fallback,
+      ...saved,
+      content: saved.content.trim() === '' ? fallback.content : saved.content,
+    };
   });
 }
 
