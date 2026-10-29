@@ -1,5 +1,6 @@
 /*
- * O hero: o banner ocupa a largura inteira e o texto vive sobre ele.
+ * O carrossel de banner: a arte ocupa a largura inteira e o texto vive sobre
+ * ela.
  *
  * Antes eram duas colunas — foto de um lado, bloco preto do outro. A foto
  * chegava cortada pela metade e o bloco preto era um retângulo vazio com três
@@ -8,9 +9,19 @@
  * tamanho que ela precisa para valer a primeira tela.
  *
  * O que segura o contraste do texto e o véu (`.scrim`), não o corte.
+ *
+ * ## As duas vagas usam esta folha inteira
+ *
+ * O carrossel do topo e a faixa do meio da home desenham igual, e a diferença
+ * entre elas mora no respiro de fora (`home-banner.module.css`), não aqui. A
+ * dona prepara uma arte só, na medida escrita em `.mediaWide`, e escolhe no
+ * painel onde ela entra.
+ *
+ * `.fallback` e `.ghostPanel` são do topo e só dele: a faixa do meio some
+ * quando não tem banner, em vez de pedir desculpa com um bloco no lugar.
  */
 
-.hero {
+.carousel {
   position: relative;
 
   /* Tokens locais para o par escuro/claro do bloco. O botão lá embaixo os

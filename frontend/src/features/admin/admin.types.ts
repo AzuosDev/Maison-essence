@@ -558,6 +558,21 @@ export interface AdminSocialLinks {
 }
 
 /**
+ * Onde o banner aparece na home.
+ *
+ * `hero` e o carrossel da primeira tela; `middle` e a faixa que corta a
+ * página depois da última fileira de produto. A arte e a medida são as
+ * mesmas nas duas vagas — o que muda e onde ela entra.
+ */
+export type BannerPlacement = 'hero' | 'middle';
+
+/** O nome de cada vaga na tela, na voz da dona. */
+export const BANNER_PLACEMENT_LABELS: Record<BannerPlacement, string> = {
+  hero: 'Topo da home',
+  middle: 'Meio da home',
+};
+
+/**
  * Um banner do carrossel, como o painel o vê.
  *
  * As datas e o `isActive` são dois desligamentos diferentes, e os dois
@@ -574,6 +589,8 @@ export interface AdminBanner {
   subtitle: string;
   buttonLabel: string;
   link: string;
+  /** A vaga da home que este banner ocupa. */
+  placement: BannerPlacement;
   order: number;
   /** ISO. `null` e "desde sempre". */
   startsAt: string | null;
@@ -631,6 +648,7 @@ export interface BannerInput {
   subtitle?: string;
   buttonLabel?: string;
   link?: string;
+  placement?: BannerPlacement;
   order?: number;
   startsAt?: string | null;
   endsAt?: string | null;

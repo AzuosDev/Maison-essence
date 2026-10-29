@@ -55,6 +55,7 @@ const SETTINGS = {
       subtitle: 'Notas cítricas',
       buttonLabel: 'Ver a coleção',
       link: '/produtos',
+      placement: 'hero',
       order: 0,
       startsAt: null,
       endsAt: null,
@@ -68,6 +69,7 @@ const SETTINGS = {
       subtitle: '',
       buttonLabel: '',
       link: '',
+      placement: 'hero',
       order: 1,
       // Agendado para o passado: o banner já saiu do ar sozinho.
       startsAt: '2026-01-01T00:00:00.000Z',
@@ -332,7 +334,7 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
   // Nem desabilitadas: ausentes. Campo cinza que não aceita digitação e um
   // convite a perguntar "por que não posso?" no meio do expediente.
   expect(screen.queryByRole('heading', { name: 'Redes sociais' })).toBeNull();
-  expect(screen.queryByRole('heading', { name: 'Carrossel da home' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'Banners da home' })).toBeNull();
   expect(screen.queryByRole('heading', { name: 'O perfume da vez' })).toBeNull();
   expect(screen.queryByRole('heading', { name: 'Páginas do rodapé' })).toBeNull();
 
@@ -347,7 +349,7 @@ test('o administrador vê as seis seções', async () => {
 
   expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Redes sociais' })).toBeDefined();
-  expect(screen.getByRole('heading', { name: 'Carrossel da home' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Banners da home' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'O perfume da vez' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Páginas do rodapé' })).toBeDefined();
   expect(screen.queryByText(/ficam com quem mantem o sistema/)).toBeNull();
@@ -531,6 +533,36 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
     // O array substitui o gravado: vai inteiro, com a ordem que foi arrastada.
     expect(body.banners?.map((banner) => banner.id)).toEqual(['b2', 'b1']);
     expect(body.banners?.map((banner) => banner.order)).toEqual([0, 1]);
+  });
+});
+
+/**
+ * A vaga viaja no mesmo array do resto.
+ *
+ * E o que separa um banner do topo de um banner do meio da home: sem o campo
+ * no corpo do PATCH, a dona trocaria a vaga na tela, salvaria, e a home
+ * continuaria desenhando a arte onde ela estava.
+ */
+test('mudar a vaga do banner manda a escolha no PATCH', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  await screen.findByRole('textbox', { name: 'WhatsApp' });
+
+  const [vaga] = screen.getAllByRole('combobox', { name: 'Onde aparece' });
+
+  await user.selectOptions(vaga as HTMLSelectElement, 'middle');
+  await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    const body = JSON.parse(lastWrite()?.body ?? '{}') as {
+      banners?: { id?: string; placement?: string }[];
+    };
+
+    expect(body.banners?.map((banner) => banner.placement)).toEqual(['middle', 'hero']);
   });
 });
 

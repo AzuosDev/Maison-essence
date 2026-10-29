@@ -452,11 +452,12 @@ function SettingsForm({
 
             <section className={styles.card} aria-labelledby="secao-banners">
               <h2 className={styles.cardTitle} id="secao-banners">
-                Carrossel da home
+                Banners da home
               </h2>
 
               <p className={styles.cardHint}>
-                A primeira coisa que a cliente vê. Arraste para mudar a ordem; o agendamento coloca
+                O carrossel que abre a página e a faixa do meio dela. Cada banner escolhe a vaga
+                em "Onde aparece"; arraste para mudar a ordem dentro da vaga. O agendamento coloca
                 e tira a arte sozinho, sem ninguém precisar lembrar.
               </p>
 

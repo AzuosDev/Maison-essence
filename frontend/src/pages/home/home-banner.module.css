@@ -1,0 +1,23 @@
+/*
+ * A faixa de banner do meio da home.
+ *
+ * O desenho inteiro vem de `banner-carousel.module.css`; aqui mora só o que a
+ * vaga do meio tem de diferente do topo — o respiro em volta.
+ *
+ * O topo encosta na barra preta do menu porque e a primeira coisa da página.
+ * No meio, a faixa tem prateleira de um lado e o convite do Instagram do
+ * outro, e sem respiro ela viraria mais uma fileira colada nas vizinhas. A
+ * medida e a mesma do ritmo das seções da vitrine — 48px no celular, 64px a
+ * partir de 1024px — e não um valor próprio: a home não pode ter dois
+ * espaçamentos de seção.
+ */
+
+.band {
+  margin-block: var(--space-48);
+}
+
+@media (min-width: 64rem) {
+  .band {
+    margin-block: var(--space-64);
+  }
+}

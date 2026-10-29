@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import { BANNER_PLACEMENTS } from '../../common/enums/banner-placement.js';
 import { AUDIT_ACTIONS } from '../audit/audit.constants.js';
 import { AuditService } from '../audit/audit.service.js';
 import type { AuditActor } from '../audit/audit.types.js';
@@ -246,6 +247,9 @@ export class SettingsService {
         subtitle: banner.subtitle ?? '',
         buttonLabel: banner.buttonLabel ?? '',
         link: banner.link ?? '',
+        // Sem `placement`, o banner vai para o topo: e onde todos estavam
+        // antes de a vaga do meio existir, e e o que um painel antigo manda.
+        placement: banner.placement ?? BANNER_PLACEMENTS.HERO,
         // Sem `order`, vale a posição na lista que a dona arrastou na tela.
         order: banner.order ?? index,
         startsAt,
@@ -302,6 +306,7 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
           subtitle: banner.subtitle,
           buttonLabel: banner.buttonLabel,
           link: banner.link,
+          placement: banner.placement,
           order: banner.order,
           startsAt: banner.startsAt?.toISOString() ?? null,
           endsAt: banner.endsAt?.toISOString() ?? null,

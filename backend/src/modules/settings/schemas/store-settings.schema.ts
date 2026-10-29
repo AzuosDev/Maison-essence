@@ -1,5 +1,10 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import type { HydratedDocument, Model, Types } from 'mongoose';
+import type { BannerPlacement } from '../../../common/enums/banner-placement.js';
+import {
+  BANNER_PLACEMENTS,
+  BANNER_PLACEMENT_VALUES,
+} from '../../../common/enums/banner-placement.js';
 import type { InstitutionalPageSlug } from '../../../common/enums/institutional-page.js';
 import { INSTITUTIONAL_PAGE_SLUG_VALUES } from '../../../common/enums/institutional-page.js';
 import {
@@ -85,6 +90,16 @@ export class Banner extends EmbeddedSchema {
 
   @Prop(textProp({ max: 300, default: '' }))
   link: string;
+
+  /**
+   * A vaga da home que este banner ocupa.
+   *
+   * O padrão e o topo porque e onde todo banner já cadastrado estava quando a
+   * vaga do meio nasceu: sem o `default`, a migração silenciosa deixaria o
+   * carrossel vazio no dia do deploy.
+   */
+  @Prop(enumProp(BANNER_PLACEMENT_VALUES, { default: BANNER_PLACEMENTS.HERO }))
+  placement: BannerPlacement;
 
   @Prop(integerProp({ default: 0, max: 9999 }))
   order: number;

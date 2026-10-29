@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDate,
+  IsIn,
   IsInt,
   IsMongoId,
   IsOptional,
@@ -10,6 +11,8 @@ import {
   MaxLength,
   Min,
 } from 'class-validator';
+import type { BannerPlacement } from '../../../common/enums/banner-placement.js';
+import { BANNER_PLACEMENT_VALUES } from '../../../common/enums/banner-placement.js';
 import {
   IsImagePublicId,
   IsOptionalImagePublicId,
@@ -64,7 +67,15 @@ export class BannerDto {
   @MaxLength(300)
   link?: string;
 
-  /** Posição no carrossel. Omitido, vale a posição no array recebido. */
+  /**
+   * A vaga da home. Omitido, o banner vai para o topo — que e onde todo
+   * banner estava antes de a vaga do meio existir.
+   */
+  @IsOptional()
+  @IsIn(BANNER_PLACEMENT_VALUES, { message: 'posição de banner inválida' })
+  placement?: BannerPlacement;
+
+  /** Posição dentro da vaga. Omitido, vale a posição no array recebido. */
   @IsOptional()
   @IsInt()
   @Min(0)

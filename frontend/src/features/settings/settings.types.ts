@@ -23,6 +23,15 @@ export interface SocialLinks {
   tiktok: string;
 }
 
+/**
+ * Onde o banner aparece na home.
+ *
+ * `hero` e o carrossel da primeira tela; `middle` e a faixa que corta a
+ * página depois da última fileira de produto. A mesma arte e o mesmo
+ * acabamento nas duas — o que muda e a vaga, e quem a escolhe e a dona.
+ */
+export type BannerPlacement = 'hero' | 'middle';
+
 /** Banner da home, já filtrado pelo agendamento. */
 export interface PublicBanner {
   id: string;
@@ -32,6 +41,7 @@ export interface PublicBanner {
   subtitle: string;
   buttonLabel: string;
   link: string;
+  placement: BannerPlacement;
 }
 
 export interface PublicSettings {
