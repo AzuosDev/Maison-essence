@@ -11,7 +11,7 @@ import {
   DARK_MEDIA_QUERY,
   DEFAULT_THEME_MODE,
   applyTheme,
-  initialMode,
+  openingMode,
   writeStoredMode,
   type ThemeMode,
 } from './theme';
@@ -58,7 +58,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
    * está olhando para ele.
    */
   const [mode, setModeState] = useState<ThemeMode>(() =>
-    initialMode(safeStorage(), systemPrefersDark()),
+    openingMode(safeStorage(), systemPrefersDark()),
   );
 
   /*

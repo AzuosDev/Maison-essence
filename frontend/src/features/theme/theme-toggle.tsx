@@ -1,7 +1,12 @@
 import { useId } from 'react';
 import { cx } from '@/lib/cx';
 import { useTheme } from './theme-context';
-import { THEME_DESCRIPTIONS, THEME_LABELS, THEME_MODES } from './theme';
+import {
+  THEME_CHOICE_VISIBLE,
+  THEME_DESCRIPTIONS,
+  THEME_LABELS,
+  THEME_MODES,
+} from './theme';
 import styles from './theme-toggle.module.css';
 
 interface ThemeToggleProps {
@@ -42,6 +47,14 @@ interface ThemeToggleProps {
 export function ThemeToggle({ tone = 'slab', className }: ThemeToggleProps) {
   const { mode, setMode } = useTheme();
   const name = useId();
+
+  // Com a escolha escondida, o controle não desenha nada — e quem o colocou
+  // não precisa saber disso. A decisão mora num lugar só (`theme.ts`), e os
+  // quatro pontos de uso continuam escritos como estavam, prontos para o dia
+  // em que a escolha voltar.
+  if (!THEME_CHOICE_VISIBLE) {
+    return null;
+  }
 
   return (
     <fieldset className={cx(styles.group, tone === 'page' && styles.page, className)}>
