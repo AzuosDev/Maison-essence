@@ -1081,16 +1081,29 @@ de terceiros no formato `pacote@versao`).
 **2. Nao reconstruir o que nao mudou.** O `vercel.json` ja traz
 
 ```json
-"ignoreCommand": "git diff --quiet HEAD^ HEAD -- ."
+"ignoreCommand": "git diff --quiet ${VERCEL_GIT_PREVIOUS_SHA:-HEAD^} HEAD -- ."
 ```
 
 Com o Root Directory em `backend`, esse `.` e a propria pasta: commit que so
 toca o frontend sai com o build ignorado, e o deploy anterior continua
 servindo. Em *Settings > Git > Ignored Build Step* a opcao equivalente e
-*Only build if there are changes in the Root Directory* — o comando do
-`vercel.json` tem precedencia, e os dois dizem a mesma coisa. Na duvida, o
-comando falhando (por exemplo, num clone raso sem `HEAD^`) constroi: o lado
-seguro do erro e publicar demais, nunca de menos.
+*Only build if there are changes in the Root Directory*, e o comando do
+`vercel.json` tem precedencia. Na duvida, o comando falhando (por exemplo,
+num clone raso que nao alcance o commit anterior) constroi: o lado seguro do
+erro e publicar demais, nunca de menos.
+
+A comparacao e contra `VERCEL_GIT_PREVIOUS_SHA` — o ultimo commit que **de
+fato** foi publicado neste projeto — e nao contra `HEAD^`. A diferenca
+aparece no push com mais de um commit, e custou um dia em 29/10/2026: tres
+commits subiram juntos, dois deles mexendo no backend, e o ultimo da fila
+mexia so no frontend. A Vercel cria um deploy unico, para o commit do topo,
+e `HEAD^ HEAD` comparava justamente esse par — nenhuma mudanca em
+`backend/`, build ignorado, e as duas paginas institucionais novas ficaram
+no GitHub sem nunca chegar a API. O frontend subiu, o menu ganhou os links,
+e eles abriam em branco.
+
+Com o SHA do ultimo deploy, o intervalo examinado e o push inteiro, e a
+ordem dos commits dentro dele deixa de decidir o que vai para o ar.
 
 **3. Variaveis de ambiente.** Em *Settings > Environment Variables*, para o
 ambiente *Production* (e *Preview*, se for usar):
