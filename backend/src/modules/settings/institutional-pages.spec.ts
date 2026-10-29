@@ -13,26 +13,41 @@ describe('mergeInstitutionalPages', () => {
     expect(merged).toHaveLength(6);
   });
 
-  it('entrega escritas e publicadas as páginas que já vem com texto', () => {
-    const escritas = mergeInstitutionalPages([]).filter((page) => page.content !== '');
+  it('entrega as seis escritas e publicadas, sem banco nenhum', () => {
+    const merged = mergeInstitutionalPages([]);
 
-    expect(escritas.map((page) => page.slug)).toEqual([
+    expect(merged.map((page) => page.slug)).toEqual([
       INSTITUTIONAL_PAGE_SLUGS.ABOUT,
+      INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
       INSTITUTIONAL_PAGE_SLUGS.USAGE,
       INSTITUTIONAL_PAGE_SLUGS.RETURNS,
       INSTITUTIONAL_PAGE_SLUGS.FAQ,
-    ]);
-    expect(escritas.every((page) => page.isActive)).toBe(true);
-  });
-
-  it('deixa vazia e despublicada a página que ninguém escreveu ainda', () => {
-    const vazias = mergeInstitutionalPages([]).filter((page) => page.content === '');
-
-    expect(vazias.map((page) => page.slug)).toEqual([
-      INSTITUTIONAL_PAGE_SLUGS.HOW_TO_BUY,
       INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
     ]);
-    expect(vazias.every((page) => !page.isActive)).toBe(true);
+    expect(merged.every((page) => page.content !== '')).toBe(true);
+    expect(merged.every((page) => page.isActive)).toBe(true);
+  });
+
+  /**
+   * O padrão e padrão, e não trava.
+   *
+   * Agora que as seis nascem escritas, o caso que importa e o contrário do de
+   * antes: a dona apaga o texto de uma delas no painel e o vazio precisa
+   * vencer: senão o site voltaria a mostrar o texto deste módulo, e ela não
+   * teria como tirar do ar o que escreveu.
+   */
+  it('deixa o texto apagado no painel vencer o padrão deste módulo', () => {
+    const merged = mergeInstitutionalPages([
+      {
+        slug: INSTITUTIONAL_PAGE_SLUGS.PRIVACY,
+        title: 'Política de privacidade',
+        content: '',
+        isActive: true,
+      },
+    ]);
+    const privacidade = merged.find((page) => page.slug === INSTITUTIONAL_PAGE_SLUGS.PRIVACY);
+
+    expect(privacidade?.content).toBe('');
   });
 
   it('mantem sempre a mesma ordem, independente da ordem gravada', () => {
