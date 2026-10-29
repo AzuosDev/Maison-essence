@@ -1,0 +1,10 @@
+Arquivo sem função no código: existe para ser tocado.
+
+O projeto do backend na Vercel só reconstrói quando algo dentro de `backend/`
+muda — é o `ignoreCommand` do `vercel.json` daqui. Quando um deploy não sai
+sozinho (repositório privado, webhook perdido, build cancelada), mexer nesta
+linha e publicar o commit é o que força a reconstrução sem fingir uma mudança
+em código de verdade.
+
+Último toque: 29/10/2026 — o deploy dos três commits anteriores não saiu
+porque o repositório estava privado.
