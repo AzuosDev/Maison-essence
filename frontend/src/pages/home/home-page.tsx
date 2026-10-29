@@ -177,18 +177,16 @@ export default function HomePage() {
     </Fragment>,
     <Fragment key="trust">
       {/*
-        A faixa da home e a do rodapé não dizem a mesma coisa.
+        A única faixa de selos da loja, e ela esta aqui.
 
-        Elas ficam a pouco mais de uma tela de distancia, e com os quatro
-        selos idênticos nas duas a página passava a sensação de ter sido
-        montada duas vezes. O conjunto `home` gasta os quatro slots no que
-        esta loja tem de diferente — incluindo o atendimento um a um, que a
-        dona nomeou como diferencial e que não aparecia em lugar nenhum da
-        vitrine; o do rodapé fecha a loja e termina em "site seguro".
-        Ver `trust-badges.tsx`.
+        Houve uma segunda no rodapé, a pouco mais de uma tela daqui, e as
+        duas juntas passavam a sensação de página montada duas vezes. Entre
+        as duas, esta e a que chega **antes** da decisão. Os três slots vão
+        para o que esta loja tem de diferente — incluindo o atendimento um a
+        um, que a dona nomeou como diferencial. Ver `trust-badges.tsx`.
       */}
       <Container>
-        <TrustBadges tone="light" set="home" />
+        <TrustBadges />
       </Container>
     </Fragment>,
   ];

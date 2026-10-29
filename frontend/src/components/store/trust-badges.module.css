@@ -2,59 +2,62 @@
  * Os selos de confiança.
  *
  * Empilhados no celular, em fila a partir de 768px. Não são decoração: são
- * as quatro perguntas que travam a compra numa loja pequena — chega até mim?
- * tem agora? da para parcelar? meus dados estão seguros?
+ * as três perguntas que travam a compra numa loja pequena — chega até mim?
+ * da para parcelar? tem gente do outro lado?
  *
- * As quatro cores saem por variável para que a mesma faixa sirva a laje do
- * rodapé e a home creme. Quem troca e a classe `.light`, e nada além das
- * cores muda entre os dois tons.
+ * Um tom só, o claro: a faixa vive na home, sobre o branco. Houve um segundo
+ * jogo de cores enquanto os mesmos selos também fechavam a laje do rodapé;
+ * ele saiu junto com aquela faixa.
  */
 
 .badges {
-  --badge-title: var(--slab-ink);
-  --badge-note: var(--slab-muted);
-  /*
-   * O ícone e o realce da laje, com o dourado como reserva.
-   *
-   * Sobre a laje dourada do rodapé o ícone dourado sumiria no próprio fundo
-   * (2.4:1); quem o pinta ali e `--slab-accent`, que o rodapé declara como a
-   * tinta. Onde não houver laje dourada, o dourado da marca continua valendo
-   * — e por isso ele e o valor de reserva, e não uma segunda classe de tom.
-   */
-  --badge-icon: var(--slab-accent, var(--gold));
-  --badge-icon-line: color-mix(in srgb, var(--badge-icon) 40%, transparent);
-  --badge-rule: color-mix(in srgb, var(--slab-ink) 12%, transparent);
+  --badge-icon-line: rgb(156 124 60 / 0.4);
 
   display: grid;
   gap: var(--space-24);
   grid-template-columns: 1fr;
 
   padding-block: var(--space-32);
-  border-bottom: 1px solid var(--badge-rule);
+  /* Filete nas duas pontas: aqui a faixa separa duas seções, em vez de
+     fechar a página. */
+  border-block: 1px solid var(--line);
 }
 
-/* A faixa da home, sobre o creme: filete em cima também, porque ali ela
-   separa duas seções em vez de fechar a página. */
-.light {
-  --badge-title: var(--ink);
-  --badge-note: var(--ink-soft);
-  --badge-icon: var(--gold-deep);
-  --badge-icon-line: rgb(156 124 60 / 0.4);
-  --badge-rule: var(--line);
-
-  border-top: 1px solid var(--badge-rule);
-}
-
+/*
+ * Três em fila já no tablet.
+ *
+ * Com quatro selos essa largura dava 170px para cada um, e a nota de duas
+ * linhas virava quatro — por isso o arranjo de antes esperava 1024px para
+ * enfileirar. Três cabem em 768px com folga, e o passo intermediário de duas
+ * colunas deixaria um selo órfão na segunda linha.
+ */
 @media (min-width: 48rem) {
   .badges {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 64rem) {
+  .badges {
     gap: var(--space-32);
   }
 }
 
+/*
+ * Alinhados pelo topo, e não centrados.
+ *
+ * As três notas não têm o mesmo número de linhas — "Parcelamento no cartão"
+ * cabe em uma onde as outras duas gastam duas —, e centrar cada selo no
+ * próprio bloco fazia o título do meio descer meia linha em relação aos
+ * vizinhos. Pelo topo, os três títulos ficam na mesma horizontal, que e a
+ * linha que o olho percorre.
+ *
+ * O ícone não precisa de ajuste para acompanhar: com 2.5rem, o centro dele
+ * cai entre o título e a primeira linha da nota.
+ */
 .badge {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--space-12);
 }
 
@@ -67,7 +70,9 @@
   width: 2.5rem;
   height: 2.5rem;
 
-  color: var(--badge-icon);
+  /* `gold-deep` e não `gold`: o dourado da marca sobre o branco desta faixa
+     fica em 2.4:1, abaixo dos 3:1 que um elemento gráfico precisa ter. */
+  color: var(--gold-deep);
   border: 1px solid var(--badge-icon-line);
   border-radius: var(--radius-pill);
 }
@@ -75,23 +80,10 @@
 .title {
   font-size: var(--text-14);
   font-weight: var(--weight-semibold);
-  color: var(--badge-title);
+  color: var(--ink);
 }
 
 .note {
   font-size: var(--text-12);
-  color: var(--badge-note);
-}
-
-/*
- * Quatro em linha só a partir de 1024px.
- *
- * Em 768px, quatro colunas davam 170px para cada selo, e a nota de duas
- * linhas virava quatro. Duas por duas, no tablet; quatro em fila, no
- * desktop.
- */
-@media (min-width: 64rem) {
-  .badges {
-    grid-template-columns: repeat(4, 1fr);
-  }
+  color: var(--ink-soft);
 }

@@ -14,9 +14,8 @@ interface ThemeToggleProps {
    * Em que fundo o controle caiu.
    *
    * `slab` é o padrão porque o lugar principal dele é o rodapé, que é a laje
-   * escura. Mesmo arranjo do `NewsletterForm` e do `TrustBadges`, que moram
-   * no mesmo lugar: quem sabe em que fundo o componente caiu é quem o
-   * coloca, não ele.
+   * escura. Mesmo arranjo do `NewsletterForm`, que mora no mesmo lugar: quem
+   * sabe em que fundo o componente caiu é quem o coloca, não ele.
    */
   tone?: 'slab' | 'page';
   className?: string | undefined;
