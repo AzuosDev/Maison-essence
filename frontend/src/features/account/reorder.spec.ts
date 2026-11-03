@@ -64,7 +64,7 @@ function quote(items: QuoteLine[]): CartQuote {
       freeReason: '',
       missingForFreeCents: null,
     },
-    payment: { method: 'pix', installments: 1, selected: null },
+    payment: { method: 'pix', cardMode: null, installments: 1, selected: null },
     subtotalCents: 0,
     discountTotalCents: 0,
     deliveryFeeCents: 0,

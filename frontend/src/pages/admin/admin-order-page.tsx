@@ -30,6 +30,7 @@ import {
   type AdminOrder,
   type OrderStatus,
 } from '@/features/admin';
+import { CARD_MODE_SHORT, type CardMode } from '@/features/payments';
 import { addressLines, formatCents, formatDateTime, formatZipCode } from '@/lib/format';
 import { errorMessage } from '@/lib/http';
 import { usePageMeta } from '@/lib/use-page-meta';
@@ -193,13 +194,7 @@ function Order({ order, showPrices }: { order: AdminOrder; showPrices: boolean }
               {order.payment.method === PAYMENT_METHODS.CARD ? (
                 <Fact
                   label="Parcelas"
-                  value={
-                    order.payment.installments <= 1
-                      ? 'A vista'
-                      : `${String(order.payment.installments)}x ${
-                          order.payment.hasInterest ? 'com juros' : 'sem juros'
-                        }`
-                  }
+                  value={cardLine(order.payment)}
                 />
               ) : null}
             </dl>
@@ -603,6 +598,24 @@ function Notes({ order }: { order: AdminOrder }) {
       </div>
     </Panel>
   );
+}
+
+/**
+ * O cartão do pedido: por onde foi combinado e em quantas vezes.
+ *
+ * Por onde vem primeiro porque e o que a dona precisa para cobrar — as duas
+ * modalidades têm tabelas de taxa diferentes, e "6x com juros" sem dizer por
+ * onde não diz o valor. `null` nos pedidos anteriores a pergunta: a frase
+ * encurta em vez de inventar.
+ */
+function cardLine(payment: { cardMode: CardMode | null; installments: number; hasInterest: boolean }): string {
+  const onde = payment.cardMode === null ? '' : ` ${CARD_MODE_SHORT[payment.cardMode]}`;
+
+  if (payment.installments <= 1) {
+    return `A vista${onde}`;
+  }
+
+  return `${String(payment.installments)}x${onde}, ${payment.hasInterest ? 'com juros' : 'sem juros'}`;
 }
 
 /* ---- As peças repetidas ---------------------------------------------------------- */

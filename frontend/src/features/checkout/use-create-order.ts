@@ -246,7 +246,15 @@ function withRecalculatedTotal(
     expectedTotalCents: conflict.quote.totalCents,
     payment:
       method === PAYMENT_METHODS.CARD
-        ? { method, installments: conflict.quote.payment.installments }
+        ? {
+            method,
+            installments: conflict.quote.payment.installments,
+            // A modalidade não e recalculada pelo conflito: ela e escolha de
+            // quem compra, e o servidor devolve a mesma que recebeu.
+            ...(input.payment.cardMode === undefined
+              ? {}
+              : { cardMode: input.payment.cardMode }),
+          }
         : { method },
   };
 }

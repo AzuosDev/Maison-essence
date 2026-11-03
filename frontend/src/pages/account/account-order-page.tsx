@@ -12,6 +12,7 @@ import {
   useReorder,
   type CustomerOrderDetail,
 } from '@/features/account';
+import { CARD_MODE_SHORT } from '@/features/payments';
 import { useStoreSettings } from '@/features/settings';
 import { addressLines, formatCents, formatDateTime, toDateTimeAttribute } from '@/lib/format';
 import { errorMessage, isApiError } from '@/lib/http';
@@ -312,11 +313,15 @@ function describePayment(order: CustomerOrderDetail): string {
     return 'PIX';
   }
 
+  // `null` nos pedidos fechados antes de a loja passar a perguntar: a frase
+  // some em vez de inventar uma modalidade que ninguém escolheu.
+  const onde = payment.cardMode === null ? '' : ` ${CARD_MODE_SHORT[payment.cardMode]}`;
+
   if (payment.installments <= 1) {
-    return 'Cartão, a vista';
+    return `Cartão${onde}, a vista`;
   }
 
-  return `Cartão em ${payment.installments}x, ${payment.hasInterest ? 'com juros' : 'sem juros'}`;
+  return `Cartão${onde} em ${payment.installments}x, ${payment.hasInterest ? 'com juros' : 'sem juros'}`;
 }
 
 /* ---- O pedido que não esta aqui -------------------------------------------- */

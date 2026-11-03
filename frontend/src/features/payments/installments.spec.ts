@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest';
-import { bestInterestFreeInstallment, buildInstallmentOptions, priceTotal } from './installments';
+import {
+  bestInterestFreeInstallment,
+  buildInstallmentOptions,
+  grossUp,
+  netOf,
+} from './installments';
+import type { InstallmentRules } from './installments';
 import type { PublicCard } from './payments.types';
 
 /**
@@ -14,7 +20,6 @@ import type { PublicCard } from './payments.types';
 const CARD: PublicCard = {
   maxInstallments: 12,
   interestFreeUpTo: 6,
-  monthlyInterestPercent: 1.99,
   minInstallmentCents: 2000,
 };
 
@@ -59,24 +64,42 @@ test('loja que não parcela não anuncia parcela', () => {
   expect(bestInterestFreeInstallment(18000, avista)).toBeNull();
 });
 
-/* ---- A lista inteira, com juros ---------------------------------------------- */
+/* ---- A lista inteira, com a taxa repassada ----------------------------------- */
 
 /**
- * `buildInstallmentOptions` e o que o painel mostra a dona quando ela mexe
- * nos juros, e o que o checkout oferece ao cliente. Os números abaixo são os
- * do backend: se um dia divergirem, e porque uma das duas contas mudou.
+ * `buildInstallmentOptions` e o que a prévia do painel mostra a dona
+ * enquanto ela digita a tabela de taxas. Os números abaixo são os do
+ * backend: se um dia divergirem, e porque uma das duas contas mudou.
  */
 
+/** A tabela do link, como a operadora a publica. */
+const LINK_RATES = new Map([
+  [1, 4.2],
+  [2, 6.09],
+  [3, 7.01],
+  [4, 7.91],
+  [5, 8.8],
+  [6, 9.67],
+  [7, 12.59],
+  [8, 13.42],
+  [9, 14.25],
+  [10, 15.06],
+  [11, 15.87],
+  [12, 16.66],
+]);
+
+const RULES: InstallmentRules = { ...CARD, feePercents: LINK_RATES };
+
 test('a lista começa no a vista e vai até o máximo', () => {
-  const options = buildInstallmentOptions(30000, CARD);
+  const options = buildInstallmentOptions(30000, RULES);
 
   expect(options[0]?.count).toBe(1);
   expect(options.at(-1)?.count).toBe(12);
   expect(options).toHaveLength(12);
 });
 
-test('até o limite sem juros, o total não muda', () => {
-  const options = buildInstallmentOptions(30000, CARD);
+test('até o limite absorvido, o total não muda', () => {
+  const options = buildInstallmentOptions(30000, RULES);
 
   expect(options[2]).toEqual({
     count: 3,
@@ -89,15 +112,15 @@ test('até o limite sem juros, o total não muda', () => {
   expect(options[5]?.totalCents).toBe(30000);
 });
 
-test('acima do limite, a tabela price entra e o total sobe', () => {
-  const options = buildInstallmentOptions(30000, CARD);
+test('acima do limite, a taxa e repassada e o total sobe', () => {
+  const options = buildInstallmentOptions(30000, RULES);
 
-  // R$ 300 em 7x a 1,99% ao mês. Mesmos centavos do backend.
+  // R$ 300 em 7x a 12,59%: 300 / (1 - 0,1259). Mesmos centavos do backend.
   expect(options[6]).toEqual({
     count: 7,
-    installmentCents: 4633,
-    firstInstallmentCents: 4637,
-    totalCents: 32435,
+    installmentCents: 4903,
+    firstInstallmentCents: 4903,
+    totalCents: 34321,
     hasInterest: true,
   });
 });
@@ -105,7 +128,7 @@ test('acima do limite, a tabela price entra e o total sobe', () => {
 test('a soma das parcelas e exatamente o total, em toda opção', () => {
   // E o que a primeira parcela maior existe para garantir. Uma soma que não
   // fecha vira discussão com o cliente na hora de cobrar.
-  for (const option of buildInstallmentOptions(30000, CARD)) {
+  for (const option of buildInstallmentOptions(30000, RULES)) {
     const rest = option.installmentCents * (option.count - 1);
 
     expect(option.firstInstallmentCents + rest).toBe(option.totalCents);
@@ -114,7 +137,7 @@ test('a soma das parcelas e exatamente o total, em toda opção', () => {
 
 test('a parcela mínima corta as opções de baixo, mas nunca o a vista', () => {
   // R$ 90: em 5x a parcela seria R$ 18, abaixo do mínimo de R$ 20.
-  const options = buildInstallmentOptions(9000, CARD);
+  const options = buildInstallmentOptions(9000, RULES);
 
   expect(options.map((option) => option.count)).toEqual([1, 2, 3, 4]);
 });
@@ -122,23 +145,47 @@ test('a parcela mínima corta as opções de baixo, mas nunca o a vista', () => 
 test('o a vista sobrevive a um pedido menor que a parcela mínima', () => {
   // Recusar R$ 15 no cartão porque o mínimo de parcela e R$ 20 seria recusar
   // a venda: a regra existe para impedir "12x de R$ 1,25".
-  const options = buildInstallmentOptions(1500, CARD);
+  const options = buildInstallmentOptions(1500, RULES);
 
   expect(options).toHaveLength(1);
   expect(options[0]?.installmentCents).toBe(1500);
 });
 
-test('sem juros cadastrados, nada e financiado', () => {
-  const semJuros: PublicCard = { ...CARD, monthlyInterestPercent: 0 };
+test('sem taxa cadastrada, nada e repassado', () => {
+  const zeradas = new Map([...LINK_RATES.keys()].map((count) => [count, 0]));
 
-  for (const option of buildInstallmentOptions(30000, semJuros)) {
+  for (const option of buildInstallmentOptions(30000, { ...RULES, feePercents: zeradas })) {
     expect(option.hasInterest).toBe(false);
     expect(option.totalCents).toBe(30000);
   }
 });
 
-test('a tabela price devolve o valor a vista quando a taxa e zero', () => {
-  // A formula viraria `0 / 0`. Quem chamar de fora merece o valor, e não um
-  // `NaN` que só aparece três somas adiante.
-  expect(priceTotal(30000, 10, 0)).toBe(30000);
+/**
+ * Linha que falta esconde a parcela em vez de oferece-la sem acréscimo.
+ *
+ * O erro barato: a dona vê a lista encurtada na prévia e completa a tabela.
+ * O caro seria a loja vender em 11x e pagar os 15,87% sozinha.
+ */
+test('a parcela sem taxa não entra na lista', () => {
+  const faltando = new Map(LINK_RATES);
+  faltando.delete(11);
+
+  const options = buildInstallmentOptions(30000, { ...RULES, feePercents: faltando });
+
+  expect(options.map((option) => option.count)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12]);
+});
+
+test('o repasse e a sua volta fecham no centavo', () => {
+  const cobrado = grossUp(30000, 16.66);
+
+  expect(cobrado).toBe(35997);
+  expect(netOf(cobrado, 16.66)).toBe(30000);
+});
+
+test('sem taxa, o valor cobrado e o próprio valor', () => {
+  // A divisão viraria `/ 1`, e a taxa impossível viraria `Infinity`. Quem
+  // chamar de fora merece o valor, e não um número que só aparece três somas
+  // adiante.
+  expect(grossUp(30000, 0)).toBe(30000);
+  expect(grossUp(30000, 100)).toBe(30000);
 });

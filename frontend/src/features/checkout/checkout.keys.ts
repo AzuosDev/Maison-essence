@@ -37,6 +37,8 @@ export interface QuoteInput {
   };
   payment: {
     method: 'pix' | 'card';
+    /** Só no cartão, e só depois de escolhida: define a tabela de taxas. */
+    cardMode?: 'link' | 'tap';
     /** Só no cartão. */
     installments?: number;
   };

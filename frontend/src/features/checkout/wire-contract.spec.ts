@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { expect, test } from 'vitest';
+import { CARD_MODES, CARD_PLANS } from '@/features/payments';
 import { FULFILLMENT_MODES, PAYMENT_METHODS } from './checkout.types';
 
 /**
@@ -58,6 +59,19 @@ test('as formas de pagamento são as mesmas que o backend declara', () => {
   );
 });
 
+test('as modalidades de cartão são as mesmas que o backend declara', () => {
+  expect(Object.values(CARD_MODES)).toEqual(valoresDoBackend('card-mode.ts', 'CARD_MODES'));
+});
+
+/**
+ * O plano não viaja no pedido — ele e uma decisão da loja, e quem cota não
+ * escolhe. Viaja no `PATCH` do painel, pelo mesmo `@IsIn` dos outros, e um
+ * valor fora da lista derruba a gravação das regras de pagamento inteira.
+ */
+test('os planos da operadora são os mesmos que o backend declara', () => {
+  expect(Object.values(CARD_PLANS)).toEqual(valoresDoBackend('card-plan.ts', 'CARD_PLANS'));
+});
+
 /**
  * A ordem também importa, e por isso os casos acima usam `toEqual` numa lista
  * e não um conjunto: `Object.values` segue a ordem de declaração, e os dois
@@ -70,4 +84,8 @@ test('as chaves continuam apontando para o valor certo, e não só para algum', 
   expect(FULFILLMENT_MODES.DELIVERY).toBe('delivery');
   expect(PAYMENT_METHODS.PIX).toBe('pix');
   expect(PAYMENT_METHODS.CARD).toBe('card');
+  expect(CARD_MODES.LINK).toBe('link');
+  expect(CARD_MODES.TAP).toBe('tap');
+  expect(CARD_PLANS.STANDARD).toBe('standard');
+  expect(CARD_PLANS.NITRO).toBe('nitro');
 });

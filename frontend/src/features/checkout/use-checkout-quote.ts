@@ -211,15 +211,25 @@ function useQuoteFulfillment(): ResolvedFulfillment {
  */
 function useQuotePayment(): QuoteInput['payment'] {
   const method = useCheckout((state) => state.method);
+  const cardMode = useCheckout((state) => state.cardMode);
   const installments = useCheckout((state) => state.installments);
 
-  return useMemo(
-    () =>
-      method === PAYMENT_METHODS.PIX
-        ? { method }
-        : { method: PAYMENT_METHODS.CARD, installments },
-    [method, installments],
-  );
+  return useMemo(() => {
+    if (method === PAYMENT_METHODS.PIX) {
+      return { method };
+    }
+
+    // A modalidade entra no corpo e, com ele, na chave da consulta: trocar
+    // de link para maquininha e uma cotação nova, com outra lista de
+    // parcelas. Enquanto ela não existe, o campo fica de fora e a cotação
+    // volta só com o total — que e o que o resumo precisa para aparecer
+    // antes da escolha.
+    return {
+      method: PAYMENT_METHODS.CARD,
+      installments,
+      ...(cardMode === null ? {} : { cardMode }),
+    };
+  }, [method, cardMode, installments]);
 }
 
 /* ---- Auxiliares ----------------------------------------------------------- */

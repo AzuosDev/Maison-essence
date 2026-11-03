@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
 import { Input } from '@/components/ui';
+import { CARD_MODE_LABELS } from '@/features/payments';
 import {
   CHECKOUT_STEPS,
   FULFILLMENT_MODES,
@@ -172,6 +173,7 @@ function Review({
   const mode = useCheckout((state) => state.mode);
   const address = useCheckout((state) => state.address);
   const method = useCheckout((state) => state.method);
+  const cardMode = useCheckout((state) => state.cardMode);
   const installments = useCheckout((state) => state.installments);
 
   const { quote } = quoting;
@@ -220,6 +222,13 @@ function Review({
       <Block title="Pagamento" step={CHECKOUT_STEPS[2]} onGoTo={onGoTo}>
         <p className={styles.line}>
           {method === PAYMENT_METHODS.PIX ? 'PIX' : 'Cartão'}
+
+          {/* Por onde, antes de em quantas vezes: as duas modalidades custam
+              valores diferentes, e e a conferencia que esta revisão existe
+              para permitir. */}
+          {method === PAYMENT_METHODS.CARD && cardMode !== null
+            ? ` · ${CARD_MODE_LABELS[cardMode].toLocaleLowerCase('pt-BR')}`
+            : ''}
 
           {method === PAYMENT_METHODS.CARD && quote?.payment.selected ? (
             <>

@@ -32,7 +32,7 @@ function order(patch: Partial<AdminOrderSummary> = {}): AdminOrderSummary {
     phone: '88999998888',
     phoneLabel: '(88) 99999-8888',
     mode: 'delivery',
-    payment: { method: 'pix', installments: 1, hasInterest: false },
+    payment: { method: 'pix', cardMode: null, installments: 1, hasInterest: false },
     itemCount: 1,
     totalCents: 10_000,
     createdAt: '2026-09-22T12:00:00.000Z',

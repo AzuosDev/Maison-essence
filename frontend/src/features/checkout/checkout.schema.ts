@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CARD_MODES } from '@/features/payments';
 import { normalizePhone } from '@/lib/format';
 import { FULFILLMENT_MODES, PAYMENT_METHODS } from './checkout.types';
 
@@ -160,6 +161,11 @@ export const fulfillmentSchema = z
 /**
  * A forma de pagamento e, no cartão, em quantas vezes.
  *
+ * A modalidade entra junto porque e ela que define a tabela de taxas, e
+ * sem tabela não ha parcela nenhuma a oferecer: a lista chega vazia e o
+ * erro precisa apontar para a pergunta que falta responder, não para uma
+ * escolha de parcelas que a tela nem chegou a mostrar.
+ *
  * `offered` não e um campo do formulário: são os parcelamentos que a
  * **cotação** devolveu, e entram no esquema porque são a regra. O total
  * muda, a lista de parcelas muda junto, e a opção de 10x que existia dois
@@ -172,6 +178,7 @@ export const fulfillmentSchema = z
 export const paymentSchema = z
   .object({
     method: z.enum(PAYMENT_METHODS).nullable(),
+    cardMode: z.enum(CARD_MODES).nullable(),
     installments: z.number().int().min(1),
     offered: z.array(z.number().int()),
   })
@@ -181,6 +188,18 @@ export const paymentSchema = z
         code: 'custom',
         path: ['method'],
         message: 'Escolha a forma de pagamento.',
+      });
+
+      return;
+    }
+
+    // Sem modalidade não ha lista de parcelas para conferir — e a lista
+    // vazia não reprova ninguém —, então a cobrança vem primeiro.
+    if (value.method === PAYMENT_METHODS.CARD && value.cardMode === null) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['cardMode'],
+        message: 'Escolha como prefere pagar no cartão.',
       });
 
       return;

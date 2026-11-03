@@ -1,4 +1,5 @@
 import type { CartQuote } from '@/features/cart';
+import type { CardMode } from '@/features/payments';
 import type { FulfillmentMode, PaymentMethod } from './checkout.types';
 
 /**
@@ -38,7 +39,7 @@ export interface OrderAddressInput {
 export interface CreateOrderInput {
   items: { productId: string; variantId: string; quantity: number }[];
   fulfillment: { mode: FulfillmentMode; cityId?: string };
-  payment: { method: PaymentMethod; installments?: number };
+  payment: { method: PaymentMethod; cardMode?: CardMode; installments?: number };
   customer: {
     name: string;
     /** Onze digitos, já normalizados. O servidor valida de novo. */
@@ -94,7 +95,13 @@ export interface CustomerOrder {
     estimatedDays: number;
     address: (OrderAddressInput & { zipCode: string }) | null;
   };
-  payment: { method: PaymentMethod; installments: number; hasInterest: boolean };
+  payment: {
+    method: PaymentMethod;
+    /** `null` no PIX e nos pedidos anteriores a pergunta da modalidade. */
+    cardMode: CardMode | null;
+    installments: number;
+    hasInterest: boolean;
+  };
   totals: OrderTotalsView;
   /** A mensagem como o servidor a montou, para a tela oferecer copiar. */
   whatsappMessage: string;

@@ -1,22 +1,28 @@
 import type { PublicCard } from './payments.types';
 
 /**
- * A linha de parcelamento do card, calculada no cliente.
+ * O parcelamento, calculado no cliente.
  *
  * A conta e a mesma de `payments/installments.ts` no backend, e a igualdade e
  * o ponto: o "3x de R$ 66,33" do card precisa ser exatamente o que o checkout
  * vai oferecer e o que a mensagem do WhatsApp vai registrar. Duas contas
  * parecidas viram uma discussão com o cliente na hora de cobrar.
  *
- * Por que refazer a conta aqui em vez de pedir a parcela pronta: a rota de
- * cotação precisa da sacola montada, e o card e uma vitrine — vinte produtos
- * numa tela, cada um com o seu preço. As regras são quatro números que vem de
- * `GET /payment-settings` uma vez por visita; a aritmética em cima deles não
- * justifica uma ida ao servidor por produto.
+ * ## Quem usa o que daqui
  *
- * Tudo em centavos inteiros. O card só anuncia parcela **sem juros** — o
- * financiamento pela tabela price fica na página do produto e no checkout,
- * onde há espaço para mostrar o total financiado ao lado.
+ * `bestInterestFreeInstallment` e da vitrine: o card e a página do produto
+ * anunciam só a parcela **sem juros**, que depende de três números que vem de
+ * `GET /payment-settings` uma vez por visita. Vinte produtos numa tela, cada
+ * um com o seu preço, não justificam uma ida ao servidor por produto.
+ *
+ * `buildInstallmentOptions` e do painel. As parcelas com taxa que o cliente
+ * vê saem da cotação, calculadas no servidor; esta copia existe para a prévia
+ * do painel mostrar a lista mudando enquanto a dona digita a tabela, antes de
+ * salvar — e por isso ela precisa arredondar igual ao servidor. Prévia que
+ * arredonda diferente e pior do que prévia nenhuma: ela da confiança num
+ * número errado.
+ *
+ * Tudo em centavos inteiros.
  */
 
 export interface Installment {
@@ -57,7 +63,22 @@ export function bestInterestFreeInstallment(
 }
 
 /**
- * Uma opção de parcelamento inteira, com juros quando houver.
+ * As regras que o cálculo consome. Espelho de `InstallmentRules` no backend.
+ *
+ * `feePercents` e um mapa, e não uma lista indexada, porque "não ha taxa
+ * cadastrada para 11x" precisa ser diferente de "a taxa de 11x e zero". A
+ * primeira esconde a opção; a segunda a oferece sem acréscimo.
+ */
+export interface InstallmentRules {
+  maxInstallments: number;
+  /** Até aqui a loja absorve a taxa, e o cliente paga o preço de etiqueta. */
+  interestFreeUpTo: number;
+  feePercents: ReadonlyMap<number, number>;
+  minInstallmentCents: number;
+}
+
+/**
+ * Uma opção de parcelamento inteira, com a taxa repassada quando houver.
  *
  * `installmentCents` e o valor que se repete — o número depois do "x".
  * `firstInstallmentCents` e a primeira, que carrega a sobra do arredondamento
@@ -79,20 +100,18 @@ export interface InstallmentOption {
 /**
  * Todas as opções de parcelamento de um total.
  *
- * Copia fiel de `buildInstallmentOptions` do backend, e a fidelidade e o
- * ponto: e esta lista que o painel mostra a dona quando ela mexe nos juros, e
- * ela precisa ser exatamente a que o checkout vai oferecer. Uma prévia que
- * arredonda diferente do servidor e pior do que prévia nenhuma — ela da
- * confiança num número errado.
- *
- * A lista começa em 1x e vai até `maxInstallments`, pulando o que a parcela
- * mínima proibir.
+ * Copia fiel de `buildInstallmentOptions` do backend, incluindo os dois
+ * motivos de uma opção não existir: a parcela que cai abaixo do mínimo e a
+ * taxa que não esta cadastrada acima do limite absorvido.
  */
-export function buildInstallmentOptions(totalCents: number, card: PublicCard): InstallmentOption[] {
+export function buildInstallmentOptions(
+  totalCents: number,
+  rules: InstallmentRules,
+): InstallmentOption[] {
   const options: InstallmentOption[] = [];
 
-  for (let count = 1; count <= card.maxInstallments; count += 1) {
-    const option = optionFor(totalCents, count, card);
+  for (let count = 1; count <= rules.maxInstallments; count += 1) {
+    const option = optionFor(totalCents, count, rules);
 
     if (option !== null) {
       options.push(option);
@@ -109,18 +128,31 @@ export function buildInstallmentOptions(totalCents: number, card: PublicCard): I
  * recusar o pagamento a vista de um pedido de R$ 15 porque o mínimo e R$ 20
  * seria recusar a venda — a regra existe para impedir "12x de R$ 1,25", e não
  * para impedir compra pequena no cartão.
+ *
+ * Dentro do limite absorvido a tabela nem e consultada: lá o cliente paga a
+ * etiqueta venha o que vier, e uma linha faltando não pode derrubar a venda
+ * a vista.
  */
-function optionFor(totalCents: number, count: number, card: PublicCard): InstallmentOption | null {
-  const hasInterest = count > card.interestFreeUpTo && card.monthlyInterestPercent > 0;
-  const financedCents = hasInterest
-    ? priceTotal(totalCents, count, card.monthlyInterestPercent)
-    : totalCents;
+function optionFor(
+  totalCents: number,
+  count: number,
+  rules: InstallmentRules,
+): InstallmentOption | null {
+  const absorbed = count <= rules.interestFreeUpTo;
+  const feePercent = absorbed ? 0 : rules.feePercents.get(count);
+
+  if (feePercent === undefined) {
+    return null;
+  }
+
+  const hasInterest = feePercent > 0;
+  const financedCents = hasInterest ? grossUp(totalCents, feePercent) : totalCents;
 
   // `floor` e não `round`: e o que garante que a sobra seja sempre positiva e
   // caiba na primeira parcela, em vez de faltar centavo no fim.
   const installmentCents = Math.floor(financedCents / count);
 
-  if (count > 1 && installmentCents < card.minInstallmentCents) {
+  if (count > 1 && installmentCents < rules.minInstallmentCents) {
     return null;
   }
 
@@ -134,29 +166,31 @@ function optionFor(totalCents: number, count: number, card: PublicCard): Install
 }
 
 /**
- * O total financiado pela tabela price, em centavos inteiros.
+ * O valor cobrado do cliente para a loja receber `netCents` limpos.
  *
- * `PMT = PV * i / (1 - (1 + i)^-n)` — a parcela fixa que quita o principal com
- * juros compostos ao mês. O total e a parcela vezes o número de parcelas,
- * arredondado uma vez só: arredondar a parcela antes de multiplicar espalha o
- * erro por todas elas, e o total deixa de bater com o que o cliente somou na
- * calculadora.
- *
- * Com juros zerados a formula vira `0 / 0`, e o valor a vista e a resposta
- * certa — quem chamar esta função de fora merece recebe-lo, e não um `NaN`
- * que só aparece três somas adiante.
+ * `cobrado = liquido / (1 - taxa)`, a mesma formula da calculadora da
+ * maquininha. Multiplicar por `1 + taxa` e o erro que parece dar certo: a
+ * taxa incide sobre o valor **cobrado**, não sobre o liquido.
  */
-export function priceTotal(
-  presentValueCents: number,
-  count: number,
-  monthlyInterestPercent: number,
-): number {
-  if (monthlyInterestPercent <= 0) {
-    return presentValueCents;
+export function grossUp(netCents: number, feePercent: number): number {
+  if (feePercent <= 0 || feePercent >= 100) {
+    return netCents;
   }
 
-  const rate = monthlyInterestPercent / 100;
-  const installment = (presentValueCents * rate) / (1 - (1 + rate) ** -count);
+  return Math.round(netCents / (1 - feePercent / 100));
+}
 
-  return Math.round(installment * count);
+/**
+ * Quanto a loja recebe de uma venda, depois da taxa.
+ *
+ * O contrario de `grossUp`, e a conta que o cliente nunca vê: ela existe para
+ * a prévia do painel mostrar o preço de absorver a taxa. "Sem juros até 3x" e
+ * uma frase simpática na vitrine e uma linha no extrato.
+ */
+export function netOf(chargedCents: number, feePercent: number): number {
+  if (feePercent <= 0 || feePercent >= 100) {
+    return chargedCents;
+  }
+
+  return Math.round(chargedCents * (1 - feePercent / 100));
 }

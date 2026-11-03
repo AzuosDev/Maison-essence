@@ -11,7 +11,14 @@ import {
   type CheckoutQuoteView,
   type PaymentMethod,
 } from '@/features/checkout';
-import { usePaymentSettings } from '@/features/payments';
+import {
+  CARD_MODES,
+  CARD_MODE_LABELS,
+  CARD_MODE_NOTES,
+  CARD_MODE_VALUES,
+  usePaymentSettings,
+  type CardMode,
+} from '@/features/payments';
 import { formatCents, formatInstallment } from '@/lib/format';
 import { StepCard } from './step-card';
 import { StepTotal } from './step-total';
@@ -38,6 +45,15 @@ import styles from './step-payment.module.css';
  * resposta. Quando sobra uma só, ela já vem marcada: não e escolha se não há
  * alternativa.
  *
+ * ## Por onde o cartão vai, antes de em quantas vezes
+ *
+ * As duas modalidades têm tabelas de taxa diferentes, então a mesma compra em
+ * 6x custa um valor pelo link e outro na maquininha. A pergunta vem antes da
+ * lista de parcelas porque e ela que define os números da lista — e nenhuma
+ * das duas vem marcada: marcar uma faria quem não reparou no campo fechar o
+ * pedido pela modalidade que a loja preferiu, e descobrir o outro valor na
+ * hora de pagar.
+ *
  * ## As parcelas são do servidor
  *
  * A lista inteira vem de `installmentOptions`, na cotação. O navegador não
@@ -56,8 +72,10 @@ export interface StepPaymentProps {
 
 export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepPaymentProps) {
   const method = useCheckout((state) => state.method);
+  const cardMode = useCheckout((state) => state.cardMode);
   const installments = useCheckout((state) => state.installments);
   const chooseMethod = useCheckout((state) => state.chooseMethod);
+  const chooseCardMode = useCheckout((state) => state.chooseCardMode);
   const chooseInstallments = useCheckout((state) => state.chooseInstallments);
 
   const { data: payments, isPending: paymentsPending } = usePaymentSettings();
@@ -72,7 +90,7 @@ export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepP
   const offered = options.map((option) => option.number);
 
   const [tried, setTried] = useState(false);
-  const result = paymentSchema.safeParse({ method, installments, offered });
+  const result = paymentSchema.safeParse({ method, cardMode, installments, offered });
   const errors = tried && !result.success ? fieldErrors(result.error) : NO_ERRORS;
 
   /**
@@ -164,6 +182,14 @@ export function StepPayment({ quoting, focusOnMount, onContinue, onBack }: StepP
       {method === PAYMENT_METHODS.PIX ? <PixPanel quote={quote} /> : null}
 
       {method === PAYMENT_METHODS.CARD ? (
+        <CardModeChoice
+          selected={cardMode}
+          error={errors.cardMode}
+          onChoose={chooseCardMode}
+        />
+      ) : null}
+
+      {method === PAYMENT_METHODS.CARD && cardMode !== null ? (
         <Installments
           options={options}
           isPending={isPending}
@@ -211,6 +237,56 @@ function PixPanel({ quote }: { quote: CheckoutQuoteView['quote'] }) {
 }
 
 /* ---- Cartão --------------------------------------------------------------- */
+
+/**
+ * Por onde o cartão vai ser cobrado.
+ *
+ * Duas opções, nenhuma marcada, e a lista de parcelas só aparece depois.
+ * Mostrar as parcelas antes da escolha exigiria escolher uma tabela por
+ * conta própria e trocar os valores debaixo do olho de quem esta lendo.
+ *
+ * A frase embaixo diz que o valor muda, e não por que muda: a tabela de taxas
+ * e o custo da loja, e o cliente precisa da consequência — comparar os dois
+ * valores — e não da contabilidade.
+ */
+function CardModeChoice({
+  selected,
+  error,
+  onChoose,
+}: {
+  selected: CardMode | null;
+  error: string | undefined;
+  onChoose: (mode: CardMode) => void;
+}) {
+  return (
+    <div className={styles.modes}>
+      <RadioGroup
+        legend="Como prefere pagar no cartão"
+        name="card-mode"
+        value={selected ?? ''}
+        onChange={(value) => {
+          onChoose(value === CARD_MODES.TAP ? CARD_MODES.TAP : CARD_MODES.LINK);
+        }}
+        error={error}
+      >
+        {CARD_MODE_VALUES.map((mode) => (
+          <Radio
+            key={mode}
+            value={mode}
+            label={CARD_MODE_LABELS[mode]}
+            description={CARD_MODE_NOTES[mode]}
+            card
+            className={styles.mode}
+          />
+        ))}
+      </RadioGroup>
+
+      <p className={styles.modeNote}>
+        O valor das parcelas muda conforme a escolha. Você confere os dois antes de fechar.
+      </p>
+    </div>
+  );
+}
 
 /**
  * As parcelas, como a cotação as devolveu.

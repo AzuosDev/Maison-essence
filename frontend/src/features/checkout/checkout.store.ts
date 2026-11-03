@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
+import type { CardMode } from '@/features/payments';
 import {
   CHECKOUT_STEPS,
   EMPTY_ADDRESS,
@@ -71,6 +72,16 @@ interface CheckoutState {
 
   method: PaymentMethod | null;
 
+  /**
+   * Por onde o cartão vai ser cobrado. `null` no PIX e antes da escolha.
+   *
+   * Nenhuma das duas vem marcada de propósito. As taxas do link e da
+   * maquininha são diferentes, e marcar uma por padrão faria quem não reparou
+   * no campo fechar o pedido pela modalidade que a loja preferiu — e descobrir
+   * o outro valor na hora de pagar.
+   */
+  cardMode: CardMode | null;
+
   /** Sempre 1 no PIX, que não parcela. */
   installments: number;
 
@@ -88,6 +99,7 @@ interface CheckoutState {
   applySavedAddress: (address: CheckoutAddress, cityId: string) => void;
 
   chooseMethod: (method: PaymentMethod) => void;
+  chooseCardMode: (cardMode: CardMode) => void;
   chooseInstallments: (installments: number) => void;
 
   setContactField: (field: keyof CheckoutContact, value: string) => void;
@@ -102,6 +114,7 @@ const INITIAL = {
   cityId: '',
   address: EMPTY_ADDRESS,
   method: null,
+  cardMode: null,
   installments: 1,
   contact: EMPTY_CONTACT,
 } satisfies Partial<CheckoutState>;
@@ -151,7 +164,24 @@ export const useCheckout = create<CheckoutState>()(
         // no cartão continue no corpo da cotação depois da troca — o servidor
         // ignoraria, mas a tela leria o próprio estado e escreveria "6x" no
         // resumo de um pagamento a vista.
-        set(method === PAYMENT_METHODS.PIX ? { method, installments: 1 } : { method });
+        set(
+          method === PAYMENT_METHODS.PIX
+            ? { method, cardMode: null, installments: 1 }
+            : { method },
+        );
+      },
+
+      /**
+       * Trocar de modalidade volta o parcelamento para a vista.
+       *
+       * As duas tabelas cortam a lista em lugares diferentes: a parcela
+       * mínima pode deixar 10x existir no link e não na maquininha. Manter o
+       * "10x" escolhido faria a tela mostrar uma opção marcada que não esta
+       * mais na lista, e o servidor devolveria a vista sem que ninguém
+       * tivesse pedido.
+       */
+      chooseCardMode: (cardMode) => {
+        set({ cardMode, installments: 1 });
       },
 
       chooseInstallments: (installments) => {
@@ -185,6 +215,7 @@ export const useCheckout = create<CheckoutState>()(
         cityId: state.cityId,
         address: state.address,
         method: state.method,
+        cardMode: state.cardMode,
         installments: state.installments,
         contact: state.contact,
       }),

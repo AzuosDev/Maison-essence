@@ -11,6 +11,35 @@
   flex: 1 1 10rem;
 }
 
+/* ---- A modalidade do cartão ------------------------------------------------ */
+
+/*
+ * Empilhadas, e não lado a lado como as formas de pagamento.
+ *
+ * "Na maquininha, quando receber" não cabe em meia largura de celular sem
+ * quebrar em três linhas, e duas opções quebradas lado a lado deixam de ser
+ * comparáveis — que e exatamente o que esta escolha pede.
+ */
+.modes {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-top: var(--space-8);
+}
+
+.mode {
+  width: 100%;
+}
+
+.modeNote {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
 /* ---- O painel do PIX ------------------------------------------------------ */
 
 .panel {

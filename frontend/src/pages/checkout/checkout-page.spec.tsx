@@ -103,7 +103,6 @@ const PAGAMENTOS = {
   card: {
     maxInstallments: 6,
     interestFreeUpTo: 3,
-    monthlyInterestPercent: 2.5,
     minInstallmentCents: 2000,
   },
 };
@@ -162,7 +161,7 @@ function cotacao(options: {
       freeReason: (options.feeCents ?? 0) === 0 ? 'Retirada na loja' : '',
       missingForFreeCents: null,
     },
-    payment: { method: 'card', installments: 1, selected: null },
+    payment: { method: 'card', cardMode: null, installments: 1, selected: null },
     subtotalCents: 18990,
     discountTotalCents: 0,
     deliveryFeeCents: options.feeCents ?? 0,
@@ -306,7 +305,7 @@ function jsonResponse(body: unknown, status = 200): Response {
 /** Os corpos que a tela mandou para `POST /cart/quote`, em ordem. */
 let quoteRequests: {
   fulfillment: { mode: string; cityId?: string };
-  payment: { method: string; installments?: number };
+  payment: { method: string; cardMode?: string; installments?: number };
 }[] = [];
 
 /** Os corpos que a tela mandou para `POST /orders`. */
@@ -824,6 +823,51 @@ test('o 409 de estoque tira da sacola o item que acabou', async () => {
 
   // Nenhum segundo pedido saiu por conta própria.
   expect(orderRequests.length).toBe(1);
+});
+
+/**
+ * A modalidade do cartão e obrigatória, e não vem marcada.
+ *
+ * As duas tabelas de taxa dão valores diferentes para a mesma compra, então
+ * não ha lista de parcelas antes da escolha — e também não ha padrão
+ * razoável a assumir. Avançar sem responder fecharia o pedido por uma
+ * modalidade que a cliente não escolheu, e ela descobriria o outro valor na
+ * hora de pagar.
+ */
+test('o cartão não avança sem dizer por onde vai ser cobrado', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+  await avancar(usuario);
+
+  await usuario.click(await screen.findByRole('radio', { name: /Retirar na loja/ }));
+  await avancar(usuario);
+
+  await usuario.click(await screen.findByRole('radio', { name: /^Cartão/ }));
+  await avancar(usuario);
+
+  // Continua no pagamento, com o erro apontando a pergunta que falta.
+  expect(await screen.findByText('Escolha como prefere pagar no cartão.')).toBeDefined();
+  expect(screen.queryByRole('heading', { name: 'Seus dados' })).toBeNull();
+
+  await usuario.click(screen.getByRole('radio', { name: /Na maquininha/ }));
+
+  // A escolha entra no corpo da cotação: e ela que escolhe a coluna da
+  // tabela, e trocar de modalidade e uma cotação nova.
+  await waitFor(() => {
+    expect(quoteRequests.at(-1)?.payment).toEqual({
+      method: 'card',
+      cardMode: 'tap',
+      installments: 1,
+    });
+  });
+
+  await avancar(usuario);
+
+  expect(await screen.findByRole('heading', { name: 'Seus dados' })).toBeDefined();
 });
 
 /** Atravessa os três primeiros passos com retirada e PIX. */

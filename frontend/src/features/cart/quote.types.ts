@@ -68,6 +68,8 @@ export interface InstallmentOption {
 
 export interface QuotePayment {
   method: 'pix' | 'card';
+  /** `null` no PIX e enquanto a modalidade do cartão não foi escolhida. */
+  cardMode: 'link' | 'tap' | null;
   installments: number;
   selected: InstallmentOption | null;
 }
