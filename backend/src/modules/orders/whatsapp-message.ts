@@ -1,4 +1,6 @@
 import { formatCents } from '../../common/money.js';
+import type { CardMode } from '../../common/enums/card-mode.js';
+import { CARD_MODES } from '../../common/enums/card-mode.js';
 import type { FulfillmentMode } from '../../common/enums/fulfillment-mode.js';
 import { FULFILLMENT_MODES } from '../../common/enums/fulfillment-mode.js';
 import type { PaymentMethod } from '../../common/enums/payment-method.js';
@@ -64,6 +66,8 @@ export interface WhatsappFulfillment {
 /** A forma de pagamento escolhida, já resolvida contra as regras da loja. */
 export interface WhatsappPayment {
   method: PaymentMethod;
+  /** Por onde o cartão foi combinado. `null` no PIX. */
+  cardMode: CardMode | null;
   installments: number;
   /** O valor que se repete. Zero no PIX e no pagamento a vista. */
   installmentCents: number;
@@ -195,8 +199,13 @@ function paymentLine(payment: WhatsappPayment): string {
     return 'PIX a vista';
   }
 
+  // Por onde cobrar e a primeira coisa que a dona precisa da linha: as duas
+  // modalidades têm tabelas de taxa diferentes, e o valor abaixo só fecha com
+  // uma delas.
+  const where = payment.cardMode === CARD_MODES.TAP ? 'na maquininha' : 'pelo link';
+
   if (payment.installments <= 1) {
-    return 'Cartão a vista';
+    return `Cartão a vista ${where}`;
   }
 
   const interest = payment.hasInterest
@@ -209,7 +218,7 @@ function paymentLine(payment: WhatsappPayment): string {
 
   const valor = formatCents(payment.installmentCents);
 
-  return `Cartão em ${payment.installments}x de ${valor}${interest}${first}`;
+  return `Cartão ${where} em ${payment.installments}x de ${valor}${interest}${first}`;
 }
 
 /** Para onde vai, ou o aviso de que o cliente vem buscar. */

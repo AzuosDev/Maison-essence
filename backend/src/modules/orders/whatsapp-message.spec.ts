@@ -1,3 +1,4 @@
+import { CARD_MODES } from '../../common/enums/card-mode.js';
 import { FULFILLMENT_MODES } from '../../common/enums/fulfillment-mode.js';
 import { PAYMENT_METHODS } from '../../common/enums/payment-method.js';
 import { buildWhatsappMessage, whatsappUrlOf } from './whatsapp-message.js';
@@ -47,6 +48,7 @@ function order(overrides: Partial<WhatsappOrder> = {}): WhatsappOrder {
     },
     payment: {
       method: PAYMENT_METHODS.CARD,
+      cardMode: CARD_MODES.LINK,
       installments: 3,
       installmentCents: 19_991,
       firstInstallmentCents: 19_991,
@@ -91,7 +93,7 @@ describe('buildWhatsappMessage', () => {
         '*TOTAL: R$ 599,73*',
         '',
         '*PAGAMENTO*',
-        'Cartão em 3x de R$ 199,91 sem juros',
+        'Cartão pelo link em 3x de R$ 199,91 sem juros',
         '',
         '*ENTREGA*',
         'Entrega em Sobral/CE (prazo de 2 dias úteis)',
@@ -176,6 +178,7 @@ describe('buildWhatsappMessage', () => {
     const pix = order({
       payment: {
         method: PAYMENT_METHODS.PIX,
+        cardMode: null,
         installments: 1,
         installmentCents: 0,
         firstInstallmentCents: 0,
@@ -196,7 +199,7 @@ describe('buildWhatsappMessage', () => {
     });
 
     expect(buildWhatsappMessage(quebrado)).toContain(
-      'Cartão em 3x de R$ 199,90 sem juros (primeira de R$ 199,93)',
+      'Cartão pelo link em 3x de R$ 199,90 sem juros (primeira de R$ 199,93)',
     );
   });
 
@@ -206,7 +209,7 @@ describe('buildWhatsappMessage', () => {
     });
 
     expect(buildWhatsappMessage(comJuros)).toContain(
-      'Cartão em 3x de R$ 199,91 com juros (total R$ 620,00)',
+      'Cartão pelo link em 3x de R$ 199,91 com juros (total R$ 620,00)',
     );
   });
 

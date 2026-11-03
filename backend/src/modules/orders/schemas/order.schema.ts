@@ -1,5 +1,7 @@
 import { Prop, Schema } from '@nestjs/mongoose';
 import type { HydratedDocument, Types } from 'mongoose';
+import type { CardMode } from '../../../common/enums/card-mode.js';
+import { CARD_MODE_VALUES } from '../../../common/enums/card-mode.js';
 import type { FulfillmentMode } from '../../../common/enums/fulfillment-mode.js';
 import { FULFILLMENT_MODE_VALUES } from '../../../common/enums/fulfillment-mode.js';
 import type { OrderStatus } from '../../../common/enums/order-status.js';
@@ -128,6 +130,20 @@ export const OrderFulfillmentSchema = createSchema(OrderFulfillment);
 export class OrderPayment {
   @Prop(enumProp(PAYMENT_METHOD_VALUES, { required: true }))
   method: PaymentMethod;
+
+  /**
+   * Por onde o cartão foi combinado: link de pagamento ou maquininha.
+   *
+   * `null` no PIX, e também nos pedidos fechados antes de a loja passar a
+   * perguntar — a tela que os exibe trata a ausência como "não registrado",
+   * que e a verdade sobre eles.
+   *
+   * Fica gravado porque e o que a dona precisa saber ao abrir o pedido para
+   * cobrar: as duas modalidades têm tabelas de taxa diferentes, e "6x com
+   * juros" sem dizer por onde não diz o valor.
+   */
+  @Prop(enumProp(CARD_MODE_VALUES, { default: null }))
+  cardMode: CardMode | null;
 
   @Prop(integerProp({ required: true, default: 1, min: 1, max: 24 }))
   installments: number;

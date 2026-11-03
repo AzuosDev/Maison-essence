@@ -294,6 +294,8 @@ export const DEMO_PAYMENT_SETTINGS = {
   acceptsCard: true,
   maxInstallments: 12,
   interestFreeUpTo: 3,
-  monthlyInterestPercent: 1.99,
+  // Omitida de propósito: a tabela de taxas vem do padrão do schema, que e a
+  // tabela real da operadora. Repeti-la aqui criaria uma segunda cópia para
+  // esquecer de reajustar.
   minInstallmentCents: 2000,
 } as const;

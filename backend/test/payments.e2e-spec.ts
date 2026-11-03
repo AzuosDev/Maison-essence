@@ -10,6 +10,7 @@ import { InstallmentService } from '../src/modules/payments/installment.service.
 import { PaymentsService } from '../src/modules/payments/payments.service.js';
 import {
   AuditEntry,
+  CARD_MODES,
   PIX_KEY_TYPES,
   PaymentSettings,
   RefreshToken,
@@ -134,7 +135,17 @@ describe('pagamento (e2e)', () => {
         acceptsCard: true,
         maxInstallments: 12,
         interestFreeUpTo: 3,
+        activeCardPlan: 'standard',
         minInstallmentCents: 2000,
+      });
+      // As duas tabelas nascem preenchidas, e so uma delas esta em uso. No
+      // Nitro a operadora cobra o mesmo pelo link e pela maquininha, entao as
+      // duas colunas repetem o numero de proposito.
+      expect(response.body.nitroCardRates).toHaveLength(12);
+      expect(response.body.nitroCardRates.at(-1)).toEqual({
+        installments: 12,
+        linkPercent: 18.79,
+        tapPercent: 18.79,
       });
       expect(await settings.countDocuments({})).toBe(1);
     });
@@ -147,16 +158,120 @@ describe('pagamento (e2e)', () => {
       const response = await patch(owner, {
         maxInstallments: 6,
         interestFreeUpTo: 2,
-        monthlyInterestPercent: 1.99,
         minInstallmentCents: 3000,
       }).expect(200);
 
       expect(response.body).toMatchObject({
         maxInstallments: 6,
         interestFreeUpTo: 2,
-        monthlyInterestPercent: 1.99,
         minInstallmentCents: 3000,
       });
+    });
+
+    /** A tabela chega inteira e substitui a que estava. */
+    it('grava a tabela de taxas das duas modalidades', async () => {
+      const owner = await signedInOwner();
+
+      const response = await patch(owner, {
+        cardRates: [
+          { installments: 1, linkPercent: 4.2, tapPercent: 1.37 },
+          { installments: 2, linkPercent: 6.09, tapPercent: 3.5 },
+        ],
+      }).expect(200);
+
+      expect(response.body.cardRates).toEqual([
+        { installments: 1, linkPercent: 4.2, tapPercent: 1.37 },
+        { installments: 2, linkPercent: 6.09, tapPercent: 3.5 },
+      ]);
+    });
+
+    /** As duas tabelas sao independentes: gravar uma nao mexe na outra. */
+    it('grava a tabela do Nitro sem tocar na do plano padrao', async () => {
+      const owner = await signedInOwner();
+
+      const response = await patch(owner, {
+        nitroCardRates: [{ installments: 1, linkPercent: 5.99, tapPercent: 6.5 }],
+      }).expect(200);
+
+      expect(response.body.nitroCardRates).toEqual([
+        { installments: 1, linkPercent: 5.99, tapPercent: 6.5 },
+      ]);
+      expect(response.body.cardRates).toHaveLength(12);
+      expect(response.body.activeCardPlan).toBe('standard');
+    });
+
+    /**
+     * A recusa mais barata do sistema. Com o Nitro ativo e a tabela vazia a
+     * loja passaria a oferecer so as parcelas que absorve, sem erro em lugar
+     * nenhum — taxa que falta esconde a parcela por desenho.
+     */
+    it('recusa ativar o Nitro com a tabela dele vazia', async () => {
+      const owner = await signedInOwner();
+
+      // A tabela vem preenchida de fabrica, entao esvazia-la e o unico jeito
+      // de chegar neste estado — e e um jeito que existe: o painel deixa
+      // apagar as linhas.
+      await patch(owner, { activeCardPlan: 'nitro', nitroCardRates: [] }).expect(422);
+
+      const depois = await adminPayments(owner).expect(200);
+
+      expect(depois.body.activeCardPlan).toBe('standard');
+      expect(depois.body.nitroCardRates).toHaveLength(12);
+    });
+
+    /** A tabela e o plano podem chegar na mesma requisicao. */
+    it('ativa o Nitro junto da tabela que o sustenta', async () => {
+      const owner = await signedInOwner();
+
+      const response = await patch(owner, {
+        activeCardPlan: 'nitro',
+        nitroCardRates: [
+          { installments: 1, linkPercent: 5.99, tapPercent: 6.5 },
+          { installments: 6, linkPercent: 13.5, tapPercent: 10 },
+        ],
+      }).expect(200);
+
+      expect(response.body.activeCardPlan).toBe('nitro');
+
+      // E a tabela do Nitro que passa a cotar: 13,5% em 6x, e nao os 9,67%
+      // da tabela padrao.
+      const seis = (await installments.buildOptions(100_000, CARD_MODES.LINK)).find(
+        (option) => option.number === 6,
+      );
+
+      expect(seis?.totalCents).toBe(115_607);
+    });
+
+    it('recusa taxa acima do teto', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, {
+        cardRates: [{ installments: 1, linkPercent: 99, tapPercent: 1 }],
+      }).expect(400);
+    });
+
+    /** Duas linhas para a mesma parcela nao definem taxa nenhuma. */
+    it('recusa duas taxas para a mesma quantidade de parcelas', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, {
+        cardRates: [
+          { installments: 3, linkPercent: 7.01, tapPercent: 4 },
+          { installments: 3, linkPercent: 8, tapPercent: 5 },
+        ],
+      }).expect(422);
+    });
+
+    /** A mesma conferencia na tabela do plano que ainda nao esta em uso. */
+    it('recusa duas taxas para a mesma parcela tambem no Nitro', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, {
+        nitroCardRates: [
+          { installments: 3, linkPercent: 9, tapPercent: 5 },
+          { installments: 3, linkPercent: 10, tapPercent: 6 },
+        ],
+      }).expect(422);
     });
 
     it('normaliza a chave PIX junto do tipo', async () => {
@@ -310,7 +425,6 @@ describe('pagamento (e2e)', () => {
       expect(response.body.card).toEqual({
         maxInstallments: 12,
         interestFreeUpTo: 3,
-        monthlyInterestPercent: 0,
         minInstallmentCents: 2000,
       });
     });
@@ -371,7 +485,7 @@ describe('pagamento (e2e)', () => {
      * total de R$ 100 devolve no maximo 5 opcoes.
      */
     it('R$ 100 nas regras padrao devolve 5 opcoes', async () => {
-      const options = await installments.buildOptions(10_000);
+      const options = await installments.buildOptions(10_000, CARD_MODES.LINK);
 
       expect(options).toHaveLength(5);
       expect(options.map((option) => option.number)).toEqual([1, 2, 3, 4, 5]);
@@ -381,9 +495,11 @@ describe('pagamento (e2e)', () => {
     it('a soma das parcelas fecha com o total de cada opcao', async () => {
       const owner = await signedInOwner();
 
-      await patch(owner, { monthlyInterestPercent: 1.99 }).expect(200);
+      await patch(owner, {
+        cardRates: [{ installments: 6, linkPercent: 9.67, tapPercent: 4.5 }],
+      }).expect(200);
 
-      for (const option of await installments.buildOptions(99_999)) {
+      for (const option of await installments.buildOptions(99_999, CARD_MODES.LINK)) {
         expect(
           option.firstInstallmentCents + option.installmentCents * (option.number - 1),
         ).toBe(option.totalCents);
@@ -395,17 +511,17 @@ describe('pagamento (e2e)', () => {
 
       await patch(owner, { acceptsCard: false }).expect(200);
 
-      expect(await installments.buildOptions(100_000)).toEqual([]);
+      expect(await installments.buildOptions(100_000, CARD_MODES.LINK)).toEqual([]);
     });
 
     it('a regra trocada no painel vale no calculo seguinte, sem redeploy', async () => {
       const owner = await signedInOwner();
 
-      const antes = await installments.buildOptions(100_000);
+      const antes = await installments.buildOptions(100_000, CARD_MODES.LINK);
 
       await patch(owner, { maxInstallments: 6 }).expect(200);
 
-      const depois = await installments.buildOptions(100_000);
+      const depois = await installments.buildOptions(100_000, CARD_MODES.LINK);
 
       expect(antes).toHaveLength(12);
       expect(depois).toHaveLength(6);

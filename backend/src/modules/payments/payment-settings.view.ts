@@ -1,6 +1,17 @@
+import { CARD_MODES } from '../../common/enums/card-mode.js';
+import type { CardMode } from '../../common/enums/card-mode.js';
+import { CARD_PLANS } from '../../common/enums/card-plan.js';
+import type { CardPlan } from '../../common/enums/card-plan.js';
 import type { PixKeyType } from '../../common/enums/payment-method.js';
 import type { InstallmentRules } from './installments.js';
-import type { PaymentSettingsDocument } from './schemas/payment-settings.schema.js';
+import type { CardRate, PaymentSettingsDocument } from './schemas/payment-settings.schema.js';
+
+/** Uma linha da tabela de taxas, como o painel a lê e a grava. */
+export interface CardRateView {
+  installments: number;
+  linkPercent: number;
+  tapPercent: number;
+}
 
 /** As regras de pagamento como o painel as vê: tudo, inclusive a chave. */
 export interface PaymentSettingsView {
@@ -11,7 +22,9 @@ export interface PaymentSettingsView {
   acceptsCard: boolean;
   maxInstallments: number;
   interestFreeUpTo: number;
-  monthlyInterestPercent: number;
+  cardRates: CardRateView[];
+  nitroCardRates: CardRateView[];
+  activeCardPlan: CardPlan;
   minInstallmentCents: number;
   updatedAt: Date;
 }
@@ -33,11 +46,23 @@ export interface PublicPixView {
   discountPercent: number;
 }
 
-/** O que a loja aberta sabe sobre o cartão. */
+/**
+ * O que a loja aberta sabe sobre o cartão.
+ *
+ * A tabela de taxas **não** esta aqui, e a ausência e deliberada, pelo mesmo
+ * motivo da chave PIX. Ela e o custo da loja, item por item — quem a lê sabe
+ * exatamente quanto a dona paga a operadora e qual e a margem de cada venda
+ * parcelada. Numa rota publica, cacheada na borda, isso ficaria disponível em
+ * toda visita, para qualquer um, inclusive para quem vende do outro lado da
+ * rua.
+ *
+ * E ninguém do lado de fora precisa dela. A vitrine anuncia só o parcelamento
+ * sem juros, que sai destes três números; as parcelas com taxa quem calcula e
+ * a cotação, no servidor, e elas chegam prontas ao checkout.
+ */
 export interface PublicCardView {
   maxInstallments: number;
   interestFreeUpTo: number;
-  monthlyInterestPercent: number;
   minInstallmentCents: number;
 }
 
@@ -63,7 +88,9 @@ export function toPaymentSettingsView(settings: PaymentSettingsDocument): Paymen
     acceptsCard: settings.acceptsCard,
     maxInstallments: settings.maxInstallments,
     interestFreeUpTo: settings.interestFreeUpTo,
-    monthlyInterestPercent: settings.monthlyInterestPercent,
+    cardRates: settings.cardRates.map(toCardRateView),
+    nitroCardRates: settings.nitroCardRates.map(toCardRateView),
+    activeCardPlan: settings.activeCardPlan,
     minInstallmentCents: settings.minInstallmentCents,
     updatedAt: settings.updatedAt,
   };
@@ -80,16 +107,69 @@ export function toPublicPaymentSettingsView(
           discountPercent: settings.pixDiscountPercent,
         }
       : null,
-    card: settings.acceptsCard ? toInstallmentRules(settings) : null,
+    card: settings.acceptsCard
+      ? {
+          maxInstallments: settings.maxInstallments,
+          interestFreeUpTo: settings.interestFreeUpTo,
+          minInstallmentCents: settings.minInstallmentCents,
+        }
+      : null,
   };
 }
 
-/** As regras que o cálculo de parcelas consome. */
-export function toInstallmentRules(settings: PaymentSettingsDocument): InstallmentRules {
+/**
+ * As regras que o cálculo de parcelas consome, na modalidade escolhida.
+ *
+ * A modalidade entra aqui e não vai adiante: `buildInstallmentOptions` recebe
+ * uma tabela de taxas e não sabe de onde ela veio. E o que mantém o cálculo
+ * com um caso só — a conta do link e a do tap são a mesma conta com números
+ * diferentes, e duplicar o caminho seria criar duas chances de divergir.
+ *
+ * O plano não e parâmetro: ele e uma decisão da loja, gravada no documento, e
+ * quem cota não escolhe. A modalidade e, porque e do cliente.
+ */
+export function toInstallmentRules(
+  settings: PaymentSettingsDocument,
+  mode: CardMode,
+): InstallmentRules {
   return {
     maxInstallments: settings.maxInstallments,
     interestFreeUpTo: settings.interestFreeUpTo,
-    monthlyInterestPercent: settings.monthlyInterestPercent,
+    feePercents: feePercentsOf(activeCardRates(settings), mode),
     minInstallmentCents: settings.minInstallmentCents,
+  };
+}
+
+/**
+ * A tabela do plano em uso.
+ *
+ * Uma função e não um campo porque e aqui que a troca de plano acontece, em
+ * um lugar só: ligar o Nitro no painel muda o preço do próximo pedido sem que
+ * nada mais no sistema saiba que existem dois planos.
+ */
+export function activeCardRates(settings: PaymentSettingsDocument): CardRate[] {
+  return settings.activeCardPlan === CARD_PLANS.NITRO
+    ? settings.nitroCardRates
+    : settings.cardRates;
+}
+
+/** A coluna da modalidade, indexada pela quantidade de parcelas. */
+export function feePercentsOf(
+  rates: readonly CardRate[],
+  mode: CardMode,
+): ReadonlyMap<number, number> {
+  return new Map(
+    rates.map((rate) => [
+      rate.installments,
+      mode === CARD_MODES.LINK ? rate.linkPercent : rate.tapPercent,
+    ]),
+  );
+}
+
+function toCardRateView(rate: CardRate): CardRateView {
+  return {
+    installments: rate.installments,
+    linkPercent: rate.linkPercent,
+    tapPercent: rate.tapPercent,
   };
 }

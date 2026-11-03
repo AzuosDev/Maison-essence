@@ -8,6 +8,7 @@ import { AppModule } from '../src/app.module.js';
 import { configureApp } from '../src/bootstrap.js';
 import { QUOTE_RATE_LIMIT } from '../src/modules/cart/cart.constants.js';
 import {
+  CARD_MODES,
   DeliveryCity,
   FULFILLMENT_MODES,
   Order,
@@ -116,7 +117,13 @@ describe('cotacao do carrinho (e2e)', () => {
       acceptsCard: true,
       maxInstallments: 12,
       interestFreeUpTo: 3,
-      monthlyInterestPercent: 0,
+      // Tabela zerada: aqui o parcelamento não pode mexer no total, senão o
+      // teste passa a falar de taxa em vez de falar do que quer falar.
+      cardRates: Array.from({ length: 12 }, (_, index) => ({
+        installments: index + 1,
+        linkPercent: 0,
+        tapPercent: 0,
+      })),
       minInstallmentCents: 2_000,
     });
     await store.create({ freeShippingMinCents: null });
@@ -273,7 +280,13 @@ describe('cotacao do carrinho (e2e)', () => {
     it('trocar de PIX para cartao muda o total e a lista de parcelas', async () => {
       const pix = await quote(body()).expect(200);
       const card = await quote(
-        body({ payment: { method: PAYMENT_METHODS.CARD, installments: 3 } }),
+        body({
+          payment: {
+            method: PAYMENT_METHODS.CARD,
+            cardMode: CARD_MODES.LINK,
+            installments: 3,
+          },
+        }),
       ).expect(200);
 
       expect(pix.body.pixDiscountCents).toBe(1_000);
@@ -289,7 +302,13 @@ describe('cotacao do carrinho (e2e)', () => {
 
     it('a soma das parcelas fecha com o total', async () => {
       const { body: quoted } = await quote(
-        body({ payment: { method: PAYMENT_METHODS.CARD, installments: 3 } }),
+        body({
+          payment: {
+            method: PAYMENT_METHODS.CARD,
+            cardMode: CARD_MODES.LINK,
+            installments: 3,
+          },
+        }),
       ).expect(200);
       const { number, installmentCents, firstInstallmentCents, totalCents } =
         quoted.payment.selected;
@@ -297,9 +316,31 @@ describe('cotacao do carrinho (e2e)', () => {
       expect(firstInstallmentCents + installmentCents * (number - 1)).toBe(totalCents);
     });
 
+    /**
+     * Criterio de aceite: sem modalidade nao ha coluna de taxa, entao nao ha
+     * parcela — e tambem nao ha aviso, porque o cliente esta no meio da
+     * escolha e o total continua valendo.
+     */
+    it('cartao sem modalidade cota o total sem parcelas e sem aviso', async () => {
+      const { body: quoted } = await quote(
+        body({ payment: { method: PAYMENT_METHODS.CARD, installments: 3 } }),
+      ).expect(200);
+
+      expect(quoted.totalCents).toBe(PRICE_100ML + CITY_FEE);
+      expect(quoted.payment.cardMode).toBeNull();
+      expect(quoted.installmentOptions).toEqual([]);
+      expect(quoted.warnings).toEqual([]);
+    });
+
     it('cai para a vista quando o parcelamento pedido nao cabe no total', async () => {
       const { body: quoted } = await quote(
-        body({ payment: { method: PAYMENT_METHODS.CARD, installments: 12 } }),
+        body({
+          payment: {
+            method: PAYMENT_METHODS.CARD,
+            cardMode: CARD_MODES.LINK,
+            installments: 12,
+          },
+        }),
       ).expect(200);
 
       // R$ 214,90 em 12x dariam parcelas de R$ 17,90, abaixo do minimo de R$ 20.

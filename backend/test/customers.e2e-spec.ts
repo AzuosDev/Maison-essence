@@ -153,7 +153,13 @@ describe('contas de cliente (e2e)', () => {
       acceptsCard: true,
       maxInstallments: 12,
       interestFreeUpTo: 3,
-      monthlyInterestPercent: 0,
+      // Tabela zerada: aqui o parcelamento não pode mexer no total, senão o
+      // teste passa a falar de taxa em vez de falar do que quer falar.
+      cardRates: Array.from({ length: 12 }, (_, index) => ({
+        installments: index + 1,
+        linkPercent: 0,
+        tapPercent: 0,
+      })),
       minInstallmentCents: 2_000,
     });
     await store.create({ whatsappNumber: '5588999999999', freeShippingMinCents: null });

@@ -62,6 +62,17 @@ export const INSTALLMENTS_CHANGED_MESSAGE =
 export const STOCK_TAKEN_MESSAGE =
   'A última unidade de um dos itens acabou de ser vendida. Confira a sacola antes de continuar.';
 
+/**
+ * Cartão sem modalidade na hora de fechar.
+ *
+ * Na cotação a ausência e normal — o checkout cota o pedido antes de
+ * perguntar por onde o cartão vai. No pedido ela não pode passar: sem a
+ * modalidade não ha tabela de taxa, e o valor combinado fica sem conta que o
+ * explique.
+ */
+export const CARD_MODE_REQUIRED_MESSAGE =
+  'Escolha como o cartão vai ser cobrado: pelo link de pagamento ou na maquininha.';
+
 /** A forma de pagamento saiu do ar entre a cotação e o fechamento. */
 export const PAYMENT_UNAVAILABLE_MESSAGE =
   'A forma de pagamento escolhida não esta mais disponível. Escolha outra para continuar.';

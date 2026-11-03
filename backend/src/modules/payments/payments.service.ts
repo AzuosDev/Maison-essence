@@ -18,6 +18,7 @@ import { pixQuoteOf } from './pix-discount.js';
 import type { PixQuote } from './pix-discount.js';
 import { PaymentSettings } from './schemas/payment-settings.schema.js';
 import type {
+  CardRate,
   PaymentSettingsDocument,
   PaymentSettingsModel,
 } from './schemas/payment-settings.schema.js';
@@ -29,7 +30,7 @@ const SCALARS = [
   'acceptsCard',
   'maxInstallments',
   'interestFreeUpTo',
-  'monthlyInterestPercent',
+  'activeCardPlan',
   'minInstallmentCents',
 ] as const;
 
@@ -91,6 +92,17 @@ export class PaymentsService {
       if (value !== undefined) {
         settings.set(field, value);
       }
+    }
+
+    // A tabela de taxas fica fora do laço dos escalares porque o que chega
+    // não e um valor novo para um campo: e a tabela inteira no lugar da que
+    // estava. Ver `cardRates` no DTO.
+    if (dto.cardRates !== undefined) {
+      settings.set('cardRates', dto.cardRates);
+    }
+
+    if (dto.nitroCardRates !== undefined) {
+      settings.set('nitroCardRates', dto.nitroCardRates);
     }
 
     this.applyPixKey(settings, dto);
@@ -167,9 +179,26 @@ function auditSnapshot(settings: PaymentSettingsDocument): AuditSnapshot {
     acceptsCard: settings.acceptsCard,
     maxInstallments: settings.maxInstallments,
     interestFreeUpTo: settings.interestFreeUpTo,
-    monthlyInterestPercent: settings.monthlyInterestPercent,
+    // Indexadas pela parcela, e não como lista: assim um reajuste só na taxa
+    // de 10x aparece na trilha como `cardRates.10.link`, e não como a tabela
+    // inteira reescrita de um lado e do outro.
+    cardRates: tableSnapshot(settings.cardRates),
+    nitroCardRates: tableSnapshot(settings.nitroCardRates),
+    // O campo que mais vale a pena ter aqui: quem ligou o Nitro, e quando. E
+    // a pergunta que aparece no mes seguinte, olhando um extrato que não
+    // bate com o que os pedidos daquela semana diziam.
+    activeCardPlan: settings.activeCardPlan,
     minInstallmentCents: settings.minInstallmentCents,
   };
+}
+
+function tableSnapshot(rates: readonly CardRate[]): Record<string, unknown> {
+  return Object.fromEntries(
+    rates.map((rate) => [
+      String(rate.installments),
+      { link: rate.linkPercent, tap: rate.tapPercent },
+    ]),
+  );
 }
 
 function toParty(actor: AuthenticatedUser): AuditActor {

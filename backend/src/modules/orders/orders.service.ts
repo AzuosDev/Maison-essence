@@ -34,6 +34,7 @@ import { toCustomerOrderView, toOrderSummaryView, toOrderView } from './order.vi
 import type { CreatedOrderView, OrderSummaryView, OrderView } from './order.view.js';
 import {
   CANCELLED_IS_FINAL_MESSAGE,
+  CARD_MODE_REQUIRED_MESSAGE,
   DEFAULT_PAGE_SIZE,
   INSTALLMENTS_CHANGED_MESSAGE,
   ITEMS_UNAVAILABLE_MESSAGE,
@@ -309,6 +310,7 @@ export class OrdersService {
       },
       payment: {
         method: quote.payment.method,
+        cardMode: quote.payment.cardMode,
         installments: quote.payment.installments,
         installmentCents: selected?.installmentCents ?? 0,
         firstInstallmentCents: selected?.firstInstallmentCents ?? 0,
@@ -357,6 +359,16 @@ function assertQuoteHolds(dto: CreateOrderDto, quote: CartQuoteView): void {
     throw new UnprocessableEntityException({
       message: PAYMENT_UNAVAILABLE_MESSAGE,
       details: { warning: blocked, quote },
+    });
+  }
+
+  // Mesma família do 422 acima: não e valor que mudou, e pedido que não pode
+  // existir do jeito que foi montado. A tela do checkout não deixa chegar
+  // aqui, e a rota não depende disso.
+  if (quote.payment.method === PAYMENT_METHODS.CARD && quote.payment.cardMode === null) {
+    throw new UnprocessableEntityException({
+      message: CARD_MODE_REQUIRED_MESSAGE,
+      details: { quote },
     });
   }
 
@@ -421,6 +433,7 @@ function snapshotOf(
     },
     payment: {
       method: quote.payment.method,
+      cardMode: quote.payment.cardMode,
       installments: quote.payment.installments,
       hasInterest: quote.payment.selected?.hasInterest ?? false,
     },

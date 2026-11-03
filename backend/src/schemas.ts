@@ -15,6 +15,8 @@
  */
 
 // Enumerações. Objetos const, nunca `enum` nativo, com os tipos derivados.
+export * from './common/enums/card-mode.js';
+export * from './common/enums/card-plan.js';
 export * from './common/enums/fulfillment-mode.js';
 export * from './common/enums/institutional-page.js';
 export * from './common/enums/order-status.js';

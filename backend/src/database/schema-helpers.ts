@@ -127,7 +127,8 @@ export function textProp(options: TextPropOptions): SchemaTypeOptions<string> {
 
 interface EnumPropOptions<T extends string> {
   required?: boolean;
-  default?: T;
+  /** `null` e um padrão legitimo: campo opcional nasce vazio, e não ausente. */
+  default?: T | null;
   index?: boolean;
 }
 

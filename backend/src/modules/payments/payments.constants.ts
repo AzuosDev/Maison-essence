@@ -9,8 +9,19 @@
 /** Ninguém parcela mais que isso, e cartão nenhum aceita. */
 export const MAX_INSTALLMENTS = 24;
 
-/** Juros ao mês. Fracionário: 1,99 e o valor corrente da maquininha. */
-export const MAX_MONTHLY_INTEREST_PERCENT = 20;
+/**
+ * Teto da taxa da maquininha, por parcela.
+ *
+ * Fracionária, como a operadora a publica: 16,66% e a taxa de 12x no link, e
+ * arredondar para 17% muda o total de um pedido de R$ 300 em quase um real.
+ *
+ * Quarenta por cento não e um limite de negocio — nenhuma tabela chega perto
+ * disso. E o mesmo papel do teto do desconto do PIX: pegar o zero a mais antes
+ * que ele vire preço. O limite que o cálculo exige de verdade e 100%, onde o
+ * repasse dividiria por zero, e por isso nada que chegue perto disso pode ser
+ * gravado.
+ */
+export const MAX_CARD_FEE_PERCENT = 40;
 
 /**
  * Teto do desconto do PIX.

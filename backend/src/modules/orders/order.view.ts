@@ -1,3 +1,4 @@
+import type { CardMode } from '../../common/enums/card-mode.js';
 import type { FulfillmentMode } from '../../common/enums/fulfillment-mode.js';
 import type { OrderStatus } from '../../common/enums/order-status.js';
 import type { PaymentMethod } from '../../common/enums/payment-method.js';
@@ -37,6 +38,8 @@ export interface OrderFulfillmentView {
 
 export interface OrderPaymentView {
   method: PaymentMethod;
+  /** `null` no PIX e nos pedidos anteriores a pergunta da modalidade. */
+  cardMode: CardMode | null;
   installments: number;
   hasInterest: boolean;
 }
@@ -147,6 +150,7 @@ export function toCustomerOrderView(order: OrderDocument): CustomerOrderView {
     },
     payment: {
       method: order.payment.method,
+      cardMode: order.payment.cardMode,
       installments: order.payment.installments,
       hasInterest: order.payment.hasInterest,
     },
@@ -182,6 +186,7 @@ export function toOrderSummaryView(order: OrderDocument): OrderSummaryView {
     mode: order.fulfillment.mode,
     payment: {
       method: order.payment.method,
+      cardMode: order.payment.cardMode,
       installments: order.payment.installments,
       hasInterest: order.payment.hasInterest,
     },

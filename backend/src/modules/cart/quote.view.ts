@@ -1,3 +1,4 @@
+import type { CardMode } from '../../common/enums/card-mode.js';
 import type { PaymentMethod } from '../../common/enums/payment-method.js';
 import type { DeliveryQuote } from '../delivery/delivery.service.js';
 import type { InstallmentOption } from '../payments/installments.js';
@@ -14,6 +15,11 @@ import type { QuoteItem } from './cart-lines.js';
  */
 export interface QuotePaymentView {
   method: PaymentMethod;
+  /**
+   * Por onde o cartão vai ser cobrado. `null` no PIX e enquanto o cliente
+   * ainda não escolheu — e a lista de parcelas vem vazia junto.
+   */
+  cardMode: CardMode | null;
   /** O parcelamento que vale: o pedido, ou 1 quando ele não pode ser oferecido. */
   installments: number;
   selected: InstallmentOption | null;

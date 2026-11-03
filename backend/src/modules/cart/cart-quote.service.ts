@@ -182,7 +182,7 @@ export class CartQuoteService {
         // Uma parcela, sempre: no PIX o pagamento e único, e oferecer uma
         // lista vazia e mais honesto do que repetir as opções do cartão com
         // um total que não vale para elas.
-        payment: { method: chosen.method, installments: 1, selected: null },
+        payment: { method: chosen.method, cardMode: null, installments: 1, selected: null },
         pixDiscountCents: pix.discountCents,
         totalCents: pix.totalCents,
         installmentOptions: [],
@@ -190,7 +190,22 @@ export class CartQuoteService {
     }
 
     const totalCents = subtotalCents + deliveryFeeCents;
-    const installmentOptions = await this.installments.buildOptions(totalCents);
+    const mode = chosen.cardMode ?? null;
+
+    // Sem modalidade não ha coluna na tabela de taxas, e sem taxa não ha
+    // parcela. O total continua valendo — ele não depende do parcelamento —,
+    // e e por isso que esta saída não e um erro: e a cotação que o checkout
+    // pede para desenhar o resumo antes de perguntar por onde o cartão vai.
+    if (mode === null) {
+      return {
+        payment: { method: chosen.method, cardMode: null, installments: 1, selected: null },
+        pixDiscountCents: 0,
+        totalCents,
+        installmentOptions: [],
+      };
+    }
+
+    const installmentOptions = await this.installments.buildOptions(totalCents, mode);
     const requested = chosen.installments ?? 1;
     // O parcelamento que vale e o que existe na lista calculada agora. Quando
     // o pedido não esta lá — 12x num total que não alcança a parcela mínima —,
@@ -201,7 +216,12 @@ export class CartQuoteService {
       null;
 
     return {
-      payment: { method: chosen.method, installments: selected?.number ?? 1, selected },
+      payment: {
+        method: chosen.method,
+        cardMode: mode,
+        installments: selected?.number ?? 1,
+        selected,
+      },
       pixDiscountCents: 0,
       totalCents,
       installmentOptions,
@@ -224,8 +244,16 @@ export class CartQuoteService {
       ];
     }
 
-    // Lista vazia no cartão só acontece de um jeito: a loja não o aceita. A
-    // opção a vista nunca e filtrada pela parcela mínima.
+    // Modalidade ainda não escolhida: não ha parcela a oferecer e também não
+    // ha nada a avisar. O cliente esta no meio da escolha, e um aviso aqui
+    // seria o site reclamando de uma pergunta que ele mesmo acabou de fazer.
+    if (settled.payment.cardMode === null) {
+      return [];
+    }
+
+    // Lista vazia no cartão, com a modalidade escolhida, só acontece de um
+    // jeito: a loja não aceita cartão. A opção a vista nunca e filtrada pela
+    // parcela mínima.
     if (settled.installmentOptions.length === 0) {
       return [CARD_UNAVAILABLE_WARNING];
     }

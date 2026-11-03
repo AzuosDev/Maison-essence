@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import type { CardMode } from '../../common/enums/card-mode.js';
 import { buildInstallmentOptions } from './installments.js';
 import type { InstallmentOption } from './installments.js';
 import { toInstallmentRules } from './payment-settings.view.js';
@@ -22,14 +23,19 @@ export class InstallmentService {
    *
    * Lista vazia quando a loja não aceita cartão: não há opção a oferecer, e
    * quem chama não precisa perguntar antes se pode perguntar.
+   *
+   * A modalidade e obrigatória porque e ela que escolhe a coluna da tabela de
+   * taxas, e as duas colunas dão parcelas diferentes. Não ha padrão razoável
+   * a assumir: quem ainda não sabe por onde o cartão vai ser cobrado ainda
+   * não tem parcela nenhuma para mostrar.
    */
-  async buildOptions(totalCents: number): Promise<InstallmentOption[]> {
+  async buildOptions(totalCents: number, mode: CardMode): Promise<InstallmentOption[]> {
     const settings = await this.payments.current();
 
     if (!settings.acceptsCard) {
       return [];
     }
 
-    return buildInstallmentOptions(totalCents, toInstallmentRules(settings));
+    return buildInstallmentOptions(totalCents, toInstallmentRules(settings, mode));
   }
 }

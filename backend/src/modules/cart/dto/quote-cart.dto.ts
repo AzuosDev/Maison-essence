@@ -11,6 +11,8 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
+import { CARD_MODE_VALUES } from '../../../common/enums/card-mode.js';
+import type { CardMode } from '../../../common/enums/card-mode.js';
 import { FULFILLMENT_MODE_VALUES } from '../../../common/enums/fulfillment-mode.js';
 import type { FulfillmentMode } from '../../../common/enums/fulfillment-mode.js';
 import { PAYMENT_METHOD_VALUES } from '../../../common/enums/payment-method.js';
@@ -55,10 +57,25 @@ export class QuoteFulfillmentDto {
   cityId?: string;
 }
 
-/** A forma de pagamento escolhida e, no cartão, em quantas vezes. */
+/** A forma de pagamento escolhida e, no cartão, por onde e em quantas vezes. */
 export class QuotePaymentDto {
   @IsIn(PAYMENT_METHOD_VALUES, { message: 'forma de pagamento inválida' })
   method: PaymentMethod;
+
+  /**
+   * Por onde o cartão vai ser cobrado. Opcional **nesta rota**, e só nela.
+   *
+   * O checkout precisa cotar antes de o cliente escolher a modalidade: ele
+   * mostra o total do pedido e só então pergunta por onde o cartão vai. Sem
+   * modalidade a cotação volta sem parcelas — a tabela de taxas e por
+   * modalidade, e não ha como calcular parcela sem saber qual coluna vale.
+   *
+   * Fechar o pedido sem ela, esse não da: quem recusa e `assertQuoteHolds`,
+   * na criação, com 422.
+   */
+  @IsOptional()
+  @IsIn(CARD_MODE_VALUES, { message: 'modalidade de cartão inválida' })
+  cardMode?: CardMode;
 
   /** Sem parcelamento informado, a cotação sai a vista. */
   @IsOptional()
