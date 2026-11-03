@@ -55,6 +55,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
   private normalize(exception: unknown, isProduction: boolean): NormalizedError {
     if (exception instanceof HttpException) {
+      // O erro do parser chega aqui embrulhado, e não cru — ver
+      // `parsingError`. O original fica em `cause`, e e nele que esta o
+      // `type` do body-parser; sem olhar ali, a mensagem que sai e a interna
+      // do pacote.
+      const wrapped = parsingError(exception.cause);
+
+      if (wrapped) {
+        return wrapped;
+      }
+
       const statusCode = exception.getStatus();
       const payload = exception.getResponse();
 
@@ -110,9 +120,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
  *
  * O `body-parser` roda como middleware do Express, antes de o Nest existir na
  * requisição: o que ele lança e um `Error` comum com `status`, e não uma
- * `HttpException`. Sem esta tradução, o corpo de 300 KB — que o teto de
- * `MAX_BODY_SIZE` acabou de recusar de propósito — voltava como 500 "Erro
- * interno do servidor", com a pilha inteira no log em nível de erro: a defesa
+ * `HttpException`. Desde o `platform-express` 12.3 o adaptador embrulha esse
+ * erro numa `HttpException` antes de os filtros o verem — justamente para que
+ * um `@Catch(HttpException)` o alcance — e guarda o original em `cause`. Por
+ * isso `normalize` chama esta função duas vezes: uma com o `cause` do
+ * embrulho, e outra com o erro cru, que e como ele ainda chega quando o
+ * adaptador não o reconhece.
+ *
+ * Sem esta tradução, o corpo de 300 KB — que o teto de `MAX_BODY_SIZE`
+ * acabou de recusar de propósito — voltava como 500 "Erro interno do
+ * servidor", com a pilha inteira no log em nível de erro: a defesa
  * funcionando, mas se anunciando como falha do servidor e escondendo de quem
  * chamou a única informação útil, que e o tamanho.
  *
