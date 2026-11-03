@@ -11,7 +11,7 @@
  * as duas coisas funcionam no texto ordenável que o JSON já traz.
  */
 
-import type { PixKeyType } from '@/features/payments';
+import type { CardMode, CardPlan, PixKeyType } from '@/features/payments';
 import type { InstitutionalPageSlug } from '@/features/settings';
 
 /* ---- Paginação ---------------------------------------------------------- */
@@ -125,6 +125,8 @@ export interface AdminOrderFulfillment {
 
 export interface AdminOrderPayment {
   method: PaymentMethod;
+  /** Por onde o cartão foi combinado. `null` no PIX e nos pedidos antigos. */
+  cardMode: CardMode | null;
   installments: number;
   hasInterest: boolean;
 }
@@ -492,6 +494,20 @@ export const DELIVERY_LIMITS = {
  * Nenhum pagamento e processado pelo sistema. Estes campos descrevem o que a
  * loja aceita e alimentam a conta das parcelas; a cobrança acontece por fora.
  */
+/**
+ * Uma linha da tabela de taxas da operadora.
+ *
+ * As duas modalidades na mesma linha, como a dona as lê no aplicativo: uma
+ * coluna para o link de pagamento e outra para a maquininha, lado a lado, por
+ * quantidade de parcelas.
+ */
+export interface AdminCardRate {
+  installments: number;
+  /** Percentual fracionário: 16,66 e o valor que a operadora publica. */
+  linkPercent: number;
+  tapPercent: number;
+}
+
 export interface AdminPaymentSettings {
   acceptsPix: boolean;
   /** Vazia e o estado em que a loja nasce — e o PIX não pode ser oferecido. */
@@ -501,10 +517,14 @@ export interface AdminPaymentSettings {
   pixDiscountPercent: number;
   acceptsCard: boolean;
   maxInstallments: number;
-  /** Até aqui, divisão simples. Acima, tabela price. */
+  /** Até aqui a loja absorve a taxa. Acima, ela e repassada ao cliente. */
   interestFreeUpTo: number;
-  /** O único percentual fracionário do projeto: 1,99 e o valor da maquininha. */
-  monthlyInterestPercent: number;
+  /** A tabela da operadora, uma linha por parcela, ordenada. */
+  cardRates: AdminCardRate[];
+  /** A mesma tabela, do plano Nitro. Vazia enquanto a loja não o usa. */
+  nitroCardRates: AdminCardRate[];
+  /** Qual das duas tabelas vale no checkout. */
+  activeCardPlan: CardPlan;
   /** Opção cuja parcela cai abaixo disto não e oferecida. */
   minInstallmentCents: number;
   updatedAt: string;
@@ -523,8 +543,8 @@ export type UpdatePaymentSettingsInput = Partial<Omit<AdminPaymentSettings, 'upd
 export const PAYMENT_LIMITS = {
   /** `MAX_INSTALLMENTS`: cartão nenhum aceita mais. */
   installments: 24,
-  /** `MAX_MONTHLY_INTEREST_PERCENT`. */
-  monthlyInterestPercent: 20,
+  /** `MAX_CARD_FEE_PERCENT`: pega o zero a mais, não limita negocio nenhum. */
+  cardFeePercent: 40,
   /**
    * `MAX_PIX_DISCOUNT_PERCENT`. Metade do pedido já e absurdo, e o teto existe
    * para o zero a mais não virar promoção: 50 no lugar de 5 e erro de dedo.

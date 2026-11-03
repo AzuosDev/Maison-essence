@@ -259,6 +259,23 @@
   color: var(--danger);
 }
 
+/*
+ * O erro do plano em uso: a tabela que o checkout cota esta vazia.
+ *
+ * Não cabe em campo nenhum — ele e sobre a escolha de plano, que vive nas
+ * abas. Fica embaixo delas, do tamanho de um erro de campo e com a cor de
+ * erro, porque e o que ele e: o que impede de salvar.
+ */
+.fieldError {
+  margin: 0;
+  max-width: 62ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+  text-wrap: pretty;
+}
+
 @media (min-width: 48rem) {
   .title {
     font-size: var(--text-36);

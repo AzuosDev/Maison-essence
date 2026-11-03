@@ -1,7 +1,16 @@
-import type { PixKeyType, PublicCard } from '@/features/payments';
+import {
+  CARD_PLANS,
+  CARD_PLAN_LABELS,
+  grossUp,
+  netOf,
+  type CardPlan,
+  type InstallmentRules,
+  type PixKeyType,
+} from '@/features/payments';
 import { centsFromInput, centsToInput } from '@/lib/format';
 import {
   PAYMENT_LIMITS,
+  type AdminCardRate,
   type AdminPaymentSettings,
   type UpdatePaymentSettingsInput,
 } from './admin.types';
@@ -33,6 +42,22 @@ import {
  * quem decide.
  */
 
+/**
+ * Uma linha da tabela de taxas, em edição.
+ *
+ * As duas células vazias significam "esta parcela não tem taxa cadastrada", e
+ * isso não e erro: a parcela simplesmente deixa de ser oferecida acima do
+ * limite que a loja absorve. Uma célula só preenchida e erro — seria oferecer
+ * a parcela numa modalidade e esconde-la na outra, e a dona não veria isso
+ * acontecer.
+ */
+export interface RateDraft {
+  installments: number;
+  /** `16,66`. Texto, como todo número deste rascunho. */
+  link: string;
+  tap: string;
+}
+
 /** As regras como a tela as carrega, com os números em texto. */
 export interface PaymentDraft {
   acceptsPix: boolean;
@@ -44,14 +69,42 @@ export interface PaymentDraft {
   acceptsCard: boolean;
   maxInstallments: string;
   interestFreeUpTo: string;
-  /** `1,99`. Duas casas, porque a maquininha cobra assim. */
-  monthlyInterest: string;
+  /** A tabela da operadora, uma linha por parcela, da primeira a última. */
+  rates: RateDraft[];
+  /** A mesma tabela, do plano Nitro. Toda em branco enquanto a loja não o usa. */
+  nitroRates: RateDraft[];
+  /**
+   * Qual das duas tabelas vale no checkout.
+   *
+   * Vive no rascunho, e não num botão que grava sozinho, porque ligar o Nitro
+   * sem a tabela preenchida não pode acontecer — e as duas coisas se decidem
+   * na mesma tela, no mesmo gesto. Salvas juntas, a troca e atômica: ou o
+   * plano e a tabela entram, ou nenhum dos dois entra.
+   */
+  activeCardPlan: CardPlan;
   /** `20,00`. Zero e legitimo: e a loja que não tem parcela mínima. */
   minInstallment: string;
 }
 
-/** Onde os erros aparecem, por campo. */
-export type PaymentErrors = Partial<Record<keyof PaymentDraft, string>>;
+/**
+ * Onde os erros aparecem.
+ *
+ * A tabela foge do formato dos outros campos de propósito. Um erro só para
+ * ela inteira — "confira as taxas" — mandaria a dona procurar a célula errada
+ * no olho, entre vinte e quatro delas; os erros vem por quantidade de
+ * parcelas, e a linha que os carrega e a que fica marcada.
+ *
+ * As duas tabelas têm cada uma o seu mapa. A do plano que não esta em uso
+ * também e conferida: ela vai ao servidor no mesmo `PATCH`, e um erro dela
+ * recusaria a gravação inteira. Sem um mapa próprio, a recusa apareceria
+ * marcando a linha errada da tabela errada.
+ */
+export type PaymentErrors = Partial<
+  Record<Exclude<keyof PaymentDraft, 'rates' | 'nitroRates'>, string>
+> & {
+  rates?: Record<number, string>;
+  nitroRates?: Record<number, string>;
+};
 
 /**
  * Um aviso: o servidor aceita, e mesmo assim não e o que a dona quis.
@@ -219,9 +272,61 @@ export function draftFromSettings(settings: AdminPaymentSettings): PaymentDraft 
     acceptsCard: settings.acceptsCard,
     maxInstallments: String(settings.maxInstallments),
     interestFreeUpTo: String(settings.interestFreeUpTo),
-    monthlyInterest: percentToInput(settings.monthlyInterestPercent),
+    rates: ratesDraftOf(settings.cardRates, settings.maxInstallments),
+    nitroRates: ratesDraftOf(settings.nitroCardRates, settings.maxInstallments),
+    activeCardPlan: settings.activeCardPlan,
     minInstallment: centsToInput(settings.minInstallmentCents),
   };
+}
+
+/**
+ * A tabela gravada, aberta para edição, com uma linha por parcela oferecida.
+ *
+ * Linha que a loja oferece e a operadora ainda não teve taxa cadastrada nasce
+ * vazia, visível e esperando: a alternativa seria a dona precisar descobrir
+ * que falta uma linha olhando para uma lista que não a menciona.
+ */
+export function ratesDraftOf(
+  rates: readonly AdminCardRate[],
+  maxInstallments: number,
+): RateDraft[] {
+  const saved = new Map(rates.map((rate) => [rate.installments, rate]));
+  const last = Math.max(maxInstallments, ...rates.map((rate) => rate.installments), 1);
+  const rows: RateDraft[] = [];
+
+  for (let installments = 1; installments <= last; installments += 1) {
+    const rate = saved.get(installments);
+
+    rows.push({
+      installments,
+      link: rate === undefined ? '' : percentToInput(rate.linkPercent),
+      tap: rate === undefined ? '' : percentToInput(rate.tapPercent),
+    });
+  }
+
+  return rows;
+}
+
+/**
+ * A tabela com linhas suficientes para o máximo de parcelas pedido.
+ *
+ * Acrescenta o que falta e **não tira** o que sobra. Baixar o limite de 12
+ * para 6 e uma decisão que se desfaz num segundo; apagar as seis taxas de
+ * baixo junto faria a dona redigitar a tabela inteira ao voltar atrás, e ela
+ * não teria como saber que foi isso que aconteceu.
+ */
+export function syncedRates(rates: readonly RateDraft[], maxInstallments: number): RateDraft[] {
+  if (rates.length >= maxInstallments) {
+    return [...rates];
+  }
+
+  const rows = [...rates];
+
+  for (let installments = rows.length + 1; installments <= maxInstallments; installments += 1) {
+    rows.push({ installments, link: '', tap: '' });
+  }
+
+  return rows;
 }
 
 /**
@@ -270,12 +375,24 @@ export function validatePayment(draft: PaymentDraft): PaymentErrors {
     errors.interestFreeUpTo = 'Sem juros até mais parcelas do que a loja aceita parcelar.';
   }
 
-  const interest = percentFromInput(draft.monthlyInterest);
+  const rates = rateErrorsOf(draft.rates);
 
-  if (interest === null || interest < 0) {
-    errors.monthlyInterest = 'Escreva os juros ao mês, ou 0 se a loja não cobra juros.';
-  } else if (interest > PAYMENT_LIMITS.monthlyInterestPercent) {
-    errors.monthlyInterest = `Os juros máximos são de ${String(PAYMENT_LIMITS.monthlyInterestPercent)}% ao mês.`;
+  if (Object.keys(rates).length > 0) {
+    errors.rates = rates;
+  }
+
+  const nitroRates = rateErrorsOf(draft.nitroRates);
+
+  if (Object.keys(nitroRates).length > 0) {
+    errors.nitroRates = nitroRates;
+  }
+
+  // A mesma recusa do schema, antecipada. Plano ativo sem tabela não devolve
+  // erro nenhum no checkout: a parcela sem taxa simplesmente deixa de ser
+  // oferecida, e a loja passaria a semana vendendo só a vista sem nada na
+  // tela dizendo por que.
+  if (!hasAnyRate(ratesOfPlan(draft, draft.activeCardPlan))) {
+    errors.activeCardPlan = `A tabela do plano ${CARD_PLAN_LABELS[draft.activeCardPlan]} esta vazia. Preencha-a antes de deixar este plano em uso.`;
   }
 
   const minimum = centsFromInput(draft.minInstallment);
@@ -289,8 +406,83 @@ export function validatePayment(draft: PaymentDraft): PaymentErrors {
   return errors;
 }
 
+/**
+ * O que impede a tabela de taxas de ser salva, linha por linha.
+ *
+ * Linha inteira vazia passa: e a parcela sem taxa cadastrada, que o servidor
+ * entende como "não oferecer". Meia linha não passa.
+ */
+function rateErrorsOf(rates: readonly RateDraft[]): Record<number, string> {
+  const errors: Record<number, string> = {};
+
+  for (const row of rates) {
+    const link = row.link.trim();
+    const tap = row.tap.trim();
+
+    if (link === '' && tap === '') {
+      continue;
+    }
+
+    if (link === '' || tap === '') {
+      errors[row.installments] = 'Preencha as duas taxas, ou deixe as duas em branco.';
+      continue;
+    }
+
+    const linkPercent = percentFromInput(link);
+    const tapPercent = percentFromInput(tap);
+
+    if (
+      linkPercent === null ||
+      tapPercent === null ||
+      linkPercent < 0 ||
+      tapPercent < 0
+    ) {
+      errors[row.installments] = 'Escreva a taxa em porcentagem, como 16,66.';
+      continue;
+    }
+
+    if (
+      linkPercent > PAYMENT_LIMITS.cardFeePercent ||
+      tapPercent > PAYMENT_LIMITS.cardFeePercent
+    ) {
+      errors[row.installments] = `A taxa máxima e de ${String(PAYMENT_LIMITS.cardFeePercent)}%.`;
+    }
+  }
+
+  return errors;
+}
+
 export function hasPaymentErrors(errors: PaymentErrors): boolean {
   return Object.keys(errors).length > 0;
+}
+
+/* ---- Os dois planos ---------------------------------------------------------- */
+
+/**
+ * A tabela de um plano, no rascunho.
+ *
+ * Um `if` num lugar só, e por isso uma função: o plano escolhe a tabela na
+ * validação, nos avisos, na prévia e no que viaja no `PATCH`, e os quatro
+ * precisam escolher a mesma. Espelha `activeCardRates` do backend.
+ */
+export function ratesOfPlan(draft: PaymentDraft, plan: CardPlan): readonly RateDraft[] {
+  return plan === CARD_PLANS.NITRO ? draft.nitroRates : draft.rates;
+}
+
+/** O outro plano: o que a tela compara contra, e o que a dona pode ligar. */
+export function otherPlan(plan: CardPlan): CardPlan {
+  return plan === CARD_PLANS.NITRO ? CARD_PLANS.STANDARD : CARD_PLANS.NITRO;
+}
+
+/**
+ * A tabela tem ao menos uma linha para gravar.
+ *
+ * Meia linha conta: ela e um erro próprio, cadastrado em `rateErrorsOf`, e
+ * somar "e também esta vazia" por cima mandaria a dona procurar duas coisas
+ * para consertar uma.
+ */
+export function hasAnyRate(rates: readonly RateDraft[]): boolean {
+  return rates.some((row) => row.link.trim() !== '' || row.tap.trim() !== '');
 }
 
 /**
@@ -322,23 +514,78 @@ export function warningsOf(draft: PaymentDraft): PaymentWarning[] {
 
   const max = integerOf(draft.maxInstallments);
   const free = integerOf(draft.interestFreeUpTo);
-  const interest = percentFromInput(draft.monthlyInterest);
 
-  if (
-    draft.acceptsCard &&
-    interest !== null &&
-    interest > 0 &&
-    max !== null &&
-    free !== null &&
-    free >= max
-  ) {
+  if (draft.acceptsCard && max !== null && free !== null && free >= max) {
     warnings.push({
       scope: 'card',
-      text: 'Todas as parcelas estão dentro do limite sem juros, então estes juros nunca são cobrados.',
+      text: 'Todas as parcelas estão dentro do limite sem juros, então a loja absorve a taxa de todas elas.',
+    });
+  }
+
+  // Daqui para baixo os avisos são sobre o que a cliente vê hoje, então eles
+  // leem a tabela do plano em uso. A do outro plano pode estar pela metade
+  // sem consequência nenhuma — ela não cota nada enquanto não for ligada.
+  const active = ratesOfPlan(draft, draft.activeCardPlan);
+
+  // A falta que não aparece: a parcela sem taxa some da lista do checkout, e
+  // o único sinal disso e a lista mais curta na prévia ao lado.
+  if (draft.acceptsCard && max !== null && free !== null) {
+    const faltando = active
+      .filter((row) => row.installments > free && row.installments <= max)
+      .filter((row) => row.link.trim() === '' || row.tap.trim() === '')
+      .map((row) => row.installments);
+
+    if (faltando.length > 0) {
+      warnings.push({
+        scope: 'card',
+        text: `Sem taxa cadastrada, ${listOf(faltando)} não aparece${faltando.length > 1 ? 'm' : ''} para a cliente.`,
+      });
+    }
+  }
+
+  // As duas colunas iguais são o estado em que a loja nasce, e não uma
+  // decisão: a tabela padrão repete a do link na maquininha para nunca
+  // cobrar a menos. Enquanto estiver assim, quem paga na entrega paga a
+  // taxa do link.
+  if (draft.acceptsCard && active.length > 0 && sameColumns(active)) {
+    warnings.push({
+      scope: 'card',
+      text: 'As taxas do link e da maquininha estão iguais. Se as suas forem diferentes, quem paga na entrega esta pagando a mais.',
+    });
+  }
+
+  // O plano e a única coisa desta tela que também esta ligada em outro
+  // lugar — no aplicativo da operadora. Enquanto o Nitro estiver em uso, o
+  // aviso lembra que as duas pontas precisam concordar: vender pela tabela
+  // errada não dá erro em lugar nenhum, só sai do bolso da dona.
+  if (draft.acceptsCard && draft.activeCardPlan === CARD_PLANS.NITRO) {
+    warnings.push({
+      scope: 'card',
+      text: 'O plano Nitro esta em uso aqui. Confira se ele também esta ligado no aplicativo da maquininha — se não estiver, a loja cobra por uma tabela e paga por outra.',
     });
   }
 
   return warnings;
+}
+
+/** `4x`, `4x e 7x`, `4x, 7x e 10x`. */
+function listOf(installments: readonly number[]): string {
+  const labels = installments.map((count) => `${String(count)}x`);
+
+  const last = labels.at(-1) ?? '';
+
+  if (labels.length === 1) {
+    return last;
+  }
+
+  return `${labels.slice(0, -1).join(', ')} e ${last}`;
+}
+
+/** Nenhuma linha preenchida distingue as duas modalidades. */
+function sameColumns(rates: readonly RateDraft[]): boolean {
+  const filled = rates.filter((row) => row.link.trim() !== '' && row.tap.trim() !== '');
+
+  return filled.length > 0 && filled.every((row) => row.link.trim() === row.tap.trim());
 }
 
 /**
@@ -392,10 +639,23 @@ export function changesOf(
     changes.interestFreeUpTo = free;
   }
 
-  const interest = percentFromInput(draft.monthlyInterest) ?? settings.monthlyInterestPercent;
+  const rates = ratesOf(draft.rates);
 
-  if (interest !== settings.monthlyInterestPercent) {
-    changes.monthlyInterestPercent = interest;
+  if (rates !== null && !sameRates(rates, settings.cardRates)) {
+    changes.cardRates = rates;
+  }
+
+  const nitroRates = ratesOf(draft.nitroRates);
+
+  if (nitroRates !== null && !sameRates(nitroRates, settings.nitroCardRates)) {
+    changes.nitroCardRates = nitroRates;
+  }
+
+  // O plano viaja sozinho quando só ele mudou: a tabela do outro plano já
+  // esta gravada do lado de lá, e reenvia-la por garantia sobrescreveria com
+  // o que esta tela abriu uma correção feita em outra aba.
+  if (draft.activeCardPlan !== settings.activeCardPlan) {
+    changes.activeCardPlan = draft.activeCardPlan;
   }
 
   const minimum = centsFromInput(draft.minInstallment) ?? settings.minInstallmentCents;
@@ -422,7 +682,58 @@ export function isDirty(draft: PaymentDraft, settings: AdminPaymentSettings): bo
   return changesOf(draft, settings) !== null || hasPaymentErrors(validatePayment(draft));
 }
 
+/**
+ * A tabela do rascunho pronta para o servidor, ou `null` se ela ainda não
+ * esta inteira.
+ *
+ * Linha vazia sai da lista: no documento, taxa que não existe e linha que não
+ * existe, e e isso que faz a parcela não ser oferecida.
+ */
+function ratesOf(rates: readonly RateDraft[]): AdminCardRate[] | null {
+  const rows: AdminCardRate[] = [];
+
+  for (const row of rates) {
+    if (row.link.trim() === '' && row.tap.trim() === '') {
+      continue;
+    }
+
+    const linkPercent = percentFromInput(row.link);
+    const tapPercent = percentFromInput(row.tap);
+
+    if (linkPercent === null || tapPercent === null) {
+      return null;
+    }
+
+    rows.push({ installments: row.installments, linkPercent, tapPercent });
+  }
+
+  return rows;
+}
+
+/** Mesma tabela, linha por linha e na mesma ordem. */
+function sameRates(draft: readonly AdminCardRate[], saved: readonly AdminCardRate[]): boolean {
+  return (
+    draft.length === saved.length &&
+    draft.every((row, index) => {
+      const other = saved[index];
+
+      return (
+        other !== undefined &&
+        row.installments === other.installments &&
+        row.linkPercent === other.linkPercent &&
+        row.tapPercent === other.tapPercent
+      );
+    })
+  );
+}
+
 /* ---- A prévia ---------------------------------------------------------------- */
+
+/** As duas colunas da tabela, cada uma pronta para o cálculo. */
+export interface CardPreviewRules {
+  link: InstallmentRules;
+  tap: InstallmentRules;
+}
 
 /**
  * As regras do rascunho, no formato que o cálculo de parcelas consome.
@@ -430,6 +741,9 @@ export function isDirty(draft: PaymentDraft, settings: AdminPaymentSettings): bo
  * Do rascunho e não do que esta salvo: e isso que faz a prévia ser ao vivo. A
  * dona troca `3` por `6` no limite sem juros e vê a lista inteira mudar antes
  * de salvar, que e o único momento em que a decisão ainda pode ser outra.
+ *
+ * Devolve as duas colunas: a prévia mostra o link e a maquininha lado a
+ * lado, que e a comparação que a dona precisa fazer para decidir.
  *
  * Devolve `null` com o cartão desligado ou com um número que ainda não e
  * número — a prévia some em vez de mostrar uma conta feita sobre zero.
@@ -439,34 +753,141 @@ export function isDirty(draft: PaymentDraft, settings: AdminPaymentSettings): bo
  * meio da digitação, e sem o aparo a prévia anunciaria juros zero em tudo por
  * causa de um estado que dura dois caracteres.
  */
-export function previewCard(draft: PaymentDraft): PublicCard | null {
+export function previewRules(draft: PaymentDraft): CardPreviewRules | null {
   if (!draft.acceptsCard) {
     return null;
   }
 
   const maxInstallments = integerOf(draft.maxInstallments);
   const interestFreeUpTo = integerOf(draft.interestFreeUpTo);
-  const monthlyInterestPercent = percentFromInput(draft.monthlyInterest);
   const minInstallmentCents = centsFromInput(draft.minInstallment);
 
   if (
     maxInstallments === null ||
     maxInstallments < 1 ||
     interestFreeUpTo === null ||
-    monthlyInterestPercent === null ||
-    monthlyInterestPercent < 0 ||
     minInstallmentCents === null ||
     minInstallmentCents < 0
   ) {
     return null;
   }
 
-  return {
+  const shared = {
     maxInstallments,
     interestFreeUpTo: Math.min(interestFreeUpTo, maxInstallments),
-    monthlyInterestPercent,
     minInstallmentCents,
   };
+
+  const active = ratesOfPlan(draft, draft.activeCardPlan);
+
+  return {
+    link: { ...shared, feePercents: feePercentsOf(active, 'link') },
+    tap: { ...shared, feePercents: feePercentsOf(active, 'tap') },
+  };
+}
+
+/**
+ * Quanto o outro plano mudaria nesta venda.
+ *
+ * ## Por que esta linha existe
+ *
+ * A tela mostra duas tabelas de percentuais, e percentual nenhum responde a
+ * pergunta que a dona faz: *vale a pena receber na hora?* O Nitro adianta o
+ * dinheiro da venda parcelada e cobra mais por isso — quanto mais, em reais,
+ * nesta venda, e o que decide. Sem este número a escolha vira comparar
+ * 9,67% com 13,50% de cabeça, no meio de vinte e quatro linhas.
+ *
+ * ## Em qual parcela
+ *
+ * Na maior que as duas tabelas têm em comum, dentro do que a loja parcela. E
+ * onde a diferença entre os planos e maior, e e a parcela que mais aparece
+ * nos pedidos que motivam a pergunta.
+ *
+ * ## Quem sente a diferença muda com a parcela
+ *
+ * Dentro do limite sem juros a taxa sai da loja, então o plano mexe no que
+ * ela **recebe**. Acima dele a taxa e repassada, e o plano mexe no que a
+ * cliente **paga** — e preço mais alto não e custo, e venda que não acontece.
+ * São duas frases diferentes, e `absorbed` diz qual delas cabe.
+ *
+ * Devolve `null` quando não há o que comparar: cartão desligado, a outra
+ * tabela vazia naquela parcela, ou as duas com a mesma taxa.
+ */
+export interface PlanContrast {
+  /** O plano que **não** esta em uso. */
+  other: CardPlan;
+  count: number;
+  /** A parcela esta dentro do limite que a loja absorve. */
+  absorbed: boolean;
+  /**
+   * Em centavos, sempre do ponto de vista de quem paga a diferença: positivo
+   * quando o outro plano e o pior dos dois.
+   */
+  differenceCents: number;
+}
+
+export function planContrast(draft: PaymentDraft, totalCents: number): PlanContrast | null {
+  if (!draft.acceptsCard || totalCents <= 0) {
+    return null;
+  }
+
+  const max = integerOf(draft.maxInstallments);
+  const free = integerOf(draft.interestFreeUpTo);
+
+  if (max === null || max < 1 || free === null) {
+    return null;
+  }
+
+  const other = otherPlan(draft.activeCardPlan);
+  const here = feePercentsOf(ratesOfPlan(draft, draft.activeCardPlan), 'link');
+  const there = feePercentsOf(ratesOfPlan(draft, other), 'link');
+
+  for (let count = max; count >= 1; count -= 1) {
+    const mine = here.get(count);
+    const theirs = there.get(count);
+
+    if (mine === undefined || theirs === undefined || mine === theirs) {
+      continue;
+    }
+
+    const absorbed = count <= Math.min(free, max);
+
+    return {
+      other,
+      count,
+      absorbed,
+      differenceCents: absorbed
+        ? netOf(totalCents, mine) - netOf(totalCents, theirs)
+        : grossUp(totalCents, theirs) - grossUp(totalCents, mine),
+    };
+  }
+
+  return null;
+}
+
+/**
+ * A coluna de uma modalidade, pronta para o cálculo.
+ *
+ * Célula pela metade fica de fora, como ficaria no `PATCH`: a prévia precisa
+ * mostrar a lista que a tabela produz hoje, e não a que ela produziria se a
+ * dona terminasse de digitar.
+ */
+function feePercentsOf(rates: readonly RateDraft[], mode: 'link' | 'tap'): Map<number, number> {
+  const percents = new Map<number, number>();
+
+  for (const row of rates) {
+    if (row.link.trim() === '' || row.tap.trim() === '') {
+      continue;
+    }
+
+    const percent = percentFromInput(mode === 'link' ? row.link : row.tap);
+
+    if (percent !== null && percent >= 0) {
+      percents.set(row.installments, percent);
+    }
+  }
+
+  return percents;
 }
 
 /** O que a prévia do PIX mostra, ou `null` com o PIX desligado. */

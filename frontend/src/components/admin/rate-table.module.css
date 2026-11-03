@@ -1,0 +1,206 @@
+/*
+ * A tabela de taxas da operadora.
+ *
+ * Três colunas e uma linha por parcela, na mesma ordem em que a operadora as
+ * publica — a tela da maquininha fica aberta ao lado enquanto se copia, e
+ * qualquer reordenação daqui vira um erro de digitação lá.
+ *
+ * A coluna das parcelas e estreita e fixa: ela e uma régua, não um dado que
+ * se compara. As duas de taxa dividem o resto em partes iguais, porque a
+ * comparação entre elas e justamente o que esta tabela existe para permitir.
+ */
+
+.block {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-top: var(--space-16);
+  border-top: var(--border);
+}
+
+.title {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.hint {
+  margin: 0;
+  max-width: 62ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/*
+ * As abas dos dois planos.
+ *
+ * A aba ganha o selo de "em uso" e, quando a tabela dela tem erro, um ponto.
+ * Os dois ficam na própria aba e não acima dela por um motivo so: a aba
+ * fechada e a única que precisa deles — a aberta se explica sozinha, com a
+ * tabela a vista.
+ */
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/*
+ * O selo do plano que cota o checkout.
+ *
+ * Dourado, como tudo que esta valendo nesta loja — e com texto, porque a cor
+ * sozinha não diz qual das duas abas e a que esta no ar.
+ */
+.inUse {
+  padding: 0.0625rem var(--space-8);
+  border-radius: var(--radius-pill);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  color: var(--gold-deep);
+  background-color: color-mix(in srgb, var(--gold) 18%, transparent);
+}
+
+/*
+ * O ponto da aba com erro.
+ *
+ * Decorativo: o texto equivalente vai ao lado, em `.visually-hidden`. Quem lê
+ * pela cor tem o ponto; quem ouve tem a frase; e ninguém aperta "Salvar" sem
+ * saber que a recusa vem da outra aba.
+ */
+.flag {
+  flex: none;
+
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: var(--radius-pill);
+
+  background-color: var(--danger);
+}
+
+/* O conteúdo da aba: o estado do plano e, embaixo, a tabela dele. */
+.panel {
+  display: grid;
+  gap: var(--space-16);
+}
+
+/* "Em uso" ou "Fora de uso", e o que o plano significa no extrato. */
+.state {
+  margin: 0;
+  max-width: 62ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.stateTitle {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/*
+ * A linha do plano fora de uso: o texto e a ação de liga-lo.
+ *
+ * No celular o botão cai para baixo do texto em vez de espremer os dois, e e
+ * por isso que a frase vem primeiro na marcação: ela e o que explica o botão.
+ */
+.swap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+}
+
+.table {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-8);
+
+  padding-top: var(--space-4);
+}
+
+/*
+ * O cabeçalho das colunas.
+ *
+ * `aria-hidden` no TSX: cada campo já carrega o nome inteiro — "Taxa do link
+ * em 6x" —, e repetir "Link" para quem ouve seria dizer a mesma palavra duas
+ * vezes por linha, vinte e quatro vezes.
+ */
+.head {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+/*
+ * A quantidade de parcelas.
+ *
+ * Tabular porque a coluna se lê de cima a baixo: sem isso o `1x` e o `11x`
+ * desalinham e a régua deixa de ser régua.
+ */
+.count {
+  font-size: var(--text-14);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/*
+ * As duas linhas que explicam onde a tabela muda de sentido: onde a taxa
+ * passa a ser repassada, e onde as parcelas deixam de ser oferecidas.
+ *
+ * Atravessam as três colunas e separam com filete, como o catálogo separa
+ * seção — e não com fundo próprio, que faria duas faixas competindo com os
+ * campos.
+ */
+.note {
+  grid-column: 1 / -1;
+
+  margin: 0;
+  padding-top: var(--space-12);
+  margin-top: var(--space-4);
+  border-top: var(--border);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* O erro da linha, embaixo das duas células que ele acusa. */
+.error {
+  grid-column: 2 / -1;
+
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+  text-wrap: pretty;
+}
+
+/*
+ * No celular a coluna da régua encolhe e as taxas ficam com o resto.
+ *
+ * Empilhar as duas colunas seria perder a comparação, que e a razão de a
+ * tabela ter duas colunas. Em 320px sobram ~6rem para cada campo, e um campo
+ * de "16,66" com o sufixo cabe nisso.
+ */
+@media (max-width: 30rem) {
+  .table {
+    grid-template-columns: 2.5rem minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}

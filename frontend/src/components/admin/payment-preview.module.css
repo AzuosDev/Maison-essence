@@ -209,3 +209,24 @@
     overflow-y: auto;
   }
 }
+
+/*
+ * Quanto a loja recebe nas parcelas que ela absorve.
+ *
+ * Não e aviso nem erro — e o preço de uma decisão que a dona já tomou —, e
+ * por isso não usa o dourado do aviso nem o vermelho. Fica na areia, uma
+ * frase de caixa, logo abaixo da lista a que se refere.
+ */
+.cost {
+  margin: 0;
+  padding: var(--space-8);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  text-wrap: pretty;
+}

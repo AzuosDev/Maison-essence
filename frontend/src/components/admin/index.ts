@@ -5,6 +5,8 @@
  * aparecem na loja. O que serve aos dois lados desce para `components/ui`.
  */
 
+export { RateTable, type RateTableProps } from './rate-table';
+
 export {
   AlertIcon,
   ArrowDownIcon,

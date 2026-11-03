@@ -280,7 +280,6 @@ const PAYMENTS = {
   card: {
     maxInstallments: 10,
     interestFreeUpTo: 6,
-    monthlyInterestPercent: 2.5,
     minInstallmentCents: 3000,
   },
 };

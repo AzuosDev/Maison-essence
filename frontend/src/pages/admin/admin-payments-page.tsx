@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
-import { AlertIcon, ArrowLeftIcon, PaymentPreview } from '@/components/admin';
+import { AlertIcon, ArrowLeftIcon, PaymentPreview, RateTable } from '@/components/admin';
 import {
   Button,
   EmptyState,
@@ -22,7 +22,8 @@ import {
   isPaymentDirty,
   paymentChangesOf,
   pixPreview,
-  previewCard,
+  planContrast,
+  previewRules,
   useAdminPaymentSettings,
   useAdminRole,
   useSavePaymentSettings,
@@ -32,7 +33,7 @@ import {
   type PaymentDraft,
   type PaymentWarning,
 } from '@/features/admin';
-import type { PixKeyType } from '@/features/payments';
+import { CARD_PLANS, type CardPlan, type PixKeyType } from '@/features/payments';
 import { centsFromInput, formatDateTime } from '@/lib/format';
 import { errorMessage } from '@/lib/http';
 import { usePageMeta } from '@/lib/use-page-meta';
@@ -50,10 +51,10 @@ import styles from './admin-payments-page.module.css';
  *
  * ## Por que há botão de salvar, ao contrário da tela de entrega
  *
- * Na tabela de taxas cada campo grava ao sair dele, porque lá a dona esta
- * reajustando cinco cidades e conferindo uma contra a outra. Aqui e o
- * oposto: são seis números que se afetam, e a pergunta não e "quanto custa"
- * e sim "como fica a lista". A prévia ao lado responde isso enquanto se
+ * Lá cada campo grava ao sair dele, porque a dona esta reajustando cinco
+ * cidades e conferindo uma contra a outra. Aqui e o oposto: são três números
+ * e uma tabela de taxas que se afetam, e a pergunta não e "quanto custa" e
+ * sim "como fica a lista". A prévia ao lado responde isso enquanto se
  * digita — e responder antes de gravar só tem sentido se gravar for um
  * segundo passo.
  *
@@ -294,23 +295,6 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
                     set({ interestFreeUpTo: event.target.value });
                   }}
                 />
-              </div>
-
-              <div className={styles.pair}>
-                <Input
-                  label="Juros ao mês"
-                  block
-                  numeric
-                  inputMode="decimal"
-                  suffix="%"
-                  placeholder="0,00"
-                  hint="1,99 e o que a maquininha costuma cobrar."
-                  value={draft.monthlyInterest}
-                  error={errors.monthlyInterest}
-                  onChange={(event) => {
-                    set({ monthlyInterest: event.target.value });
-                  }}
-                />
 
                 <Input
                   label="Parcela mínima"
@@ -327,6 +311,28 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
                   }}
                 />
               </div>
+
+              <RateTable
+                rates={draft.rates}
+                nitroRates={draft.nitroRates}
+                activePlan={draft.activeCardPlan}
+                maxInstallments={draft.maxInstallments}
+                interestFreeUpTo={draft.interestFreeUpTo}
+                errors={errors.rates}
+                nitroErrors={errors.nitroRates}
+                onChange={(plan, rows) => {
+                  set(plan === CARD_PLANS.NITRO ? { nitroRates: rows } : { rates: rows });
+                }}
+                onActivate={(plan: CardPlan) => {
+                  set({ activeCardPlan: plan });
+                }}
+              />
+
+              {errors.activeCardPlan === undefined ? null : (
+                <p className={styles.fieldError} role="alert">
+                  {errors.activeCardPlan}
+                </p>
+              )}
             </div>
 
             {warnings
@@ -342,7 +348,8 @@ function PaymentForm({ settings }: { settings: AdminPaymentSettings }) {
           amountCents={amountCents}
           onAmountChange={setAmount}
           pix={amountCents === null ? null : pixPreview(draft, amountCents)}
-          card={previewCard(draft)}
+          card={previewRules(draft)}
+          contrast={amountCents === null ? null : planContrast(draft, amountCents)}
         />
       </div>
 

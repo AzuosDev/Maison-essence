@@ -1,6 +1,11 @@
 import { Input } from '@/components/ui';
-import type { PixPreview } from '@/features/admin';
-import { buildInstallmentOptions, type PublicCard } from '@/features/payments';
+import type { CardPreviewRules, PixPreview, PlanContrast } from '@/features/admin';
+import {
+  CARD_PLAN_LABELS,
+  buildInstallmentOptions,
+  netOf,
+  type InstallmentOption,
+} from '@/features/payments';
 import { formatCents } from '@/lib/format';
 import styles from './payment-preview.module.css';
 
@@ -9,14 +14,34 @@ import styles from './payment-preview.module.css';
  *
  * ## Por que esta tela precisa de uma prévia
  *
- * "1,99% ao mês" e "parcela mínima de R$ 20" não dizem nada sozinhos. O que
+ * "16,66% em 12x" e "parcela mínima de R$ 20" não dizem nada sozinhos. O que
  * eles significam e uma lista: quantas opções a cliente vai ver, qual e a
  * última que aparece, e quanto ela paga a mais na maior delas. A dona decide
- * olhando para essa lista, e não para os quatro números que a produzem.
+ * olhando para essa lista, e não para a tabela que a produz.
  *
- * Duas regras só se descobrem assim, e as duas apagam opções em silêncio:
- * a parcela mínima corta o fim da lista, e o limite sem juros decide onde o
- * total começa a subir.
+ * Três regras só se descobrem assim, e as três apagam opções em silêncio: a
+ * parcela mínima corta o fim da lista, o limite absorvido decide onde o total
+ * começa a subir, e a taxa que ninguém cadastrou faz a parcela desaparecer.
+ *
+ * ## As duas modalidades, uma embaixo da outra
+ *
+ * O limite sem juros e um só, então a primeira lista — a que a loja absorve —
+ * vale para as duas e aparece uma vez. O que muda e o resto, e e por isso que
+ * o link e a maquininha ganham um bloco cada: a mesma compra em 6x custa um
+ * valor em cada tabela, e essa diferença e a decisão que a tela existe para
+ * mostrar.
+ *
+ * ## O preço de absorver
+ *
+ * "Sem juros até 3x" e uma frase simpática na vitrine e uma linha no extrato.
+ * A prévia escreve, em reais, quanto a loja recebe nessas parcelas — e e o
+ * único lugar do painel onde esse número aparece.
+ *
+ * ## E quanto custa o outro plano
+ *
+ * Pela mesma razão. Duas tabelas de percentuais não respondem se vale a pena
+ * receber na hora; uma venda de R$ 300 com os dois planos lado a lado
+ * responde. A última linha do bloco faz essa conta.
  *
  * ## A prévia lê o rascunho
  *
@@ -40,7 +65,9 @@ export interface PaymentPreviewProps {
   /** `null` com o PIX desligado. */
   pix: PixPreview | null;
   /** `null` com o cartão desligado, ou enquanto um campo esta pela metade. */
-  card: PublicCard | null;
+  card: CardPreviewRules | null;
+  /** O que o outro plano da operadora mudaria nesta venda, quando há o que comparar. */
+  contrast: PlanContrast | null;
 }
 
 export function PaymentPreview({
@@ -49,15 +76,15 @@ export function PaymentPreview({
   onAmountChange,
   pix,
   card,
+  contrast,
 }: PaymentPreviewProps) {
-  const options =
-    card === null || amountCents === null ? [] : buildInstallmentOptions(amountCents, card);
-  const interestFree = options.filter((option) => !option.hasInterest);
-  const financed = options.filter((option) => option.hasInterest);
-
-  // Quantas opções a parcela mínima tirou do fim da lista. E a regra que
-  // menos se enxerga olhando para o campo que a define.
-  const cut = card === null ? 0 : card.maxInstallments - options.length;
+  // A lista sem juros e a mesma nas duas modalidades — dentro do limite a
+  // tabela nem e consultada —, então ela sai de uma só e aparece uma vez.
+  const byLink =
+    card === null || amountCents === null ? [] : buildInstallmentOptions(amountCents, card.link);
+  const byTap =
+    card === null || amountCents === null ? [] : buildInstallmentOptions(amountCents, card.tap);
+  const absorbed = byLink.filter((option) => !option.hasInterest);
 
   return (
     <aside className={styles.panel} aria-label="Prévia do pagamento">
@@ -117,10 +144,10 @@ export function PaymentPreview({
           <p className={styles.off}>Escreva um valor acima para ver as parcelas.</p>
         ) : (
           <>
-            <p className={styles.groupTitle}>Sem juros</p>
+            <p className={styles.groupTitle}>Sem juros, nas duas formas</p>
 
             <ol className={styles.options}>
-              {interestFree.map((option) => (
+              {absorbed.map((option) => (
                 <li key={option.count} className={styles.option}>
                   <span className={styles.count}>
                     {option.count === 1 ? 'A vista' : `${String(option.count)}x`}
@@ -135,40 +162,175 @@ export function PaymentPreview({
               ))}
             </ol>
 
-            {financed.length === 0 ? null : (
-              <>
-                <p className={styles.groupTitle}>
-                  Com juros, total mais alto
-                  <span className={styles.groupRate}>
-                    {card.monthlyInterestPercent.toLocaleString('pt-BR')}% ao mês
-                  </span>
-                </p>
+            <Absorbed
+              rules={card}
+              totalCents={amountCents}
+              count={absorbed.at(-1)?.count ?? 0}
+            />
 
-                <ol className={styles.options}>
-                  {financed.map((option) => (
-                    <li key={option.count} className={styles.option}>
-                      <span className={styles.count}>{String(option.count)}x</span>
+            <Financed title="Com juros, pelo link" options={byLink} />
 
-                      <span className={styles.amount}>
-                        de {formatCents(option.installmentCents)}
-                      </span>
+            <Financed title="Com juros, na maquininha" options={byTap} />
 
-                      <span className={styles.total}>{formatCents(option.totalCents)}</span>
-                    </li>
-                  ))}
-                </ol>
-              </>
-            )}
+            <Cut
+              link={byLink.length}
+              tap={byTap.length}
+              maxInstallments={card.link.maxInstallments}
+              minInstallmentCents={card.link.minInstallmentCents}
+            />
 
-            {cut > 0 ? (
-              <p className={styles.note}>
-                Acima de {String(options.length)}x a parcela fica abaixo de{' '}
-                {formatCents(card.minInstallmentCents)}, e a opção não aparece.
-              </p>
-            ) : null}
+            <Plan contrast={contrast} />
           </>
         )}
       </section>
     </aside>
+  );
+}
+
+/**
+ * Quanto a loja recebe nas parcelas que ela absorve.
+ *
+ * Só a última, e não uma linha por parcela: a taxa cresce com o número de
+ * vezes, então o maior parcelamento sem juros e o que mais custa — e o
+ * número que decide se o limite esta no lugar certo.
+ */
+function Absorbed({
+  rules,
+  totalCents,
+  count,
+}: {
+  rules: CardPreviewRules;
+  totalCents: number;
+  count: number;
+}) {
+  const link = rules.link.feePercents.get(count);
+  const tap = rules.tap.feePercents.get(count);
+
+  if (count < 2 || link === undefined || tap === undefined) {
+    return null;
+  }
+
+  return (
+    <p className={styles.cost}>
+      Em {String(count)}x a taxa e sua: você recebe {formatCents(netOf(totalCents, link))} pelo
+      link e {formatCents(netOf(totalCents, tap))} na maquininha.
+    </p>
+  );
+}
+
+/**
+ * As parcelas com a taxa repassada, de uma modalidade.
+ *
+ * O total vai junto do valor da parcela porque e ele que se compara com o
+ * preço a vista — "12x de R$ 29,99" sem o total esconde exatamente o que a
+ * cliente vai somar sozinha.
+ */
+function Financed({
+  title,
+  options,
+}: {
+  title: string;
+  options: readonly InstallmentOption[];
+}) {
+  const financed = options.filter((option) => option.hasInterest);
+
+  if (financed.length === 0) {
+    return null;
+  }
+
+  return (
+    <>
+      <p className={styles.groupTitle}>{title}</p>
+
+      <ol className={styles.options}>
+        {financed.map((option) => (
+          <li key={option.count} className={styles.option}>
+            <span className={styles.count}>{String(option.count)}x</span>
+
+            <span className={styles.amount}>de {formatCents(option.installmentCents)}</span>
+
+            <span className={styles.total}>{formatCents(option.totalCents)}</span>
+          </li>
+        ))}
+      </ol>
+    </>
+  );
+}
+
+/**
+ * Quantas opções sumiram da lista, e por que.
+ *
+ * Fica no fim do bloco inteiro, e não dentro de cada modalidade, porque a
+ * lista encurta também quando nenhuma parcela chega a ter juros: num pedido
+ * de R$ 90 a lista acaba em 4x por causa da parcela mínima, sem nenhum grupo
+ * "com juros" na tela para pendurar o aviso. E ali, justamente, que a dona
+ * mais precisa dele.
+ *
+ * As duas modalidades podem parar em lugares diferentes — a taxa maior
+ * levanta o total e a parcela demora mais a cair abaixo do mínimo —, e
+ * quando param, a frase diz as duas.
+ */
+function Cut({
+  link,
+  tap,
+  maxInstallments,
+  minInstallmentCents,
+}: {
+  link: number;
+  tap: number;
+  maxInstallments: number;
+  minInstallmentCents: number;
+}) {
+  const porque = `a parcela cai abaixo de ${formatCents(minInstallmentCents)}, ou a taxa não esta cadastrada`;
+
+  if (link === maxInstallments && tap === maxInstallments) {
+    return null;
+  }
+
+  if (link === tap) {
+    return (
+      <p className={styles.note}>
+        Faltam {String(maxInstallments - link)} opções na lista: {porque}.
+      </p>
+    );
+  }
+
+  return (
+    <p className={styles.note}>
+      Faltam {String(maxInstallments - link)} opções pelo link e{' '}
+      {String(maxInstallments - tap)} na maquininha: {porque}.
+    </p>
+  );
+}
+
+/**
+ * O que o outro plano da operadora mudaria nesta venda.
+ *
+ * Em reais, porque a pergunta e em reais: a dona não esta escolhendo entre
+ * 9,67% e 13,50%, esta escolhendo entre receber em trinta dias e receber na
+ * hora pagando por isso. O percentual não responde; o valor de uma venda de
+ * verdade responde.
+ *
+ * O sujeito da frase muda com a parcela, e e a parte que mais importa.
+ * Dentro do limite sem juros a taxa sai da loja, então o plano mexe no que
+ * **ela recebe**. Acima dele a taxa e repassada, e o plano mexe no que **a
+ * cliente paga** — que não e custo da loja, e e um jeito diferente de perder
+ * dinheiro.
+ */
+function Plan({ contrast }: { contrast: PlanContrast | null }) {
+  if (contrast === null) {
+    return null;
+  }
+
+  const plan = CARD_PLAN_LABELS[contrast.other];
+  const money = formatCents(Math.abs(contrast.differenceCents));
+  const count = contrast.count === 1 ? 'a vista' : `${String(contrast.count)}x`;
+
+  return (
+    <p className={styles.cost}>
+      {contrast.absorbed
+        ? `No plano ${plan}, esta venda ${count} pelo link renderia ${money} ${contrast.differenceCents > 0 ? 'a menos' : 'a mais'} para a loja.`
+        : `No plano ${plan}, a cliente pagaria ${money} ${contrast.differenceCents > 0 ? 'a mais' : 'a menos'} em ${count} pelo link.`}
+    </p>
   );
 }
