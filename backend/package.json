@@ -80,5 +80,10 @@
     "tsx": "^4.23.15",
     "typescript": "^6.0.2",
     "vitest": "^4.1.12"
+  },
+  "overrides": {
+    "@nestjs/cli": {
+      "minimatch": "^11.0.4"
+    }
   }
 }
