@@ -14,6 +14,7 @@ export { CartLineRow, type CartLineRowProps } from './cart-line-row';
 export { CartNotices, type CartNoticesProps } from './cart-notices';
 export { CartRewards } from './cart-rewards';
 export { CategoriesPanel } from './categories-panel';
+export { GiftBalloon } from './gift-balloon';
 export { MainNav } from './main-nav';
 export { MessageScreen } from './message-screen';
 export { MobileMenu } from './mobile-menu';
@@ -48,6 +49,7 @@ export {
   ExitIcon,
   EyeIcon,
   EyeOffIcon,
+  GiftIcon,
   InstagramIcon,
   MenuIcon,
   PencilIcon,

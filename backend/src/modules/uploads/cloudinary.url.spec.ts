@@ -12,6 +12,7 @@ describe('imageUrl', () => {
   it('usa a largura de cada preset', () => {
     expect(imageUrl('maison-test', PUBLIC_ID, 'thumb')).toContain('w_400');
     expect(imageUrl('maison-test', PUBLIC_ID, 'detail')).toContain('w_1200');
+    expect(imageUrl('maison-test', PUBLIC_ID, 'wide')).toContain('w_1920');
   });
 
   /**
@@ -25,11 +26,12 @@ describe('imageUrl', () => {
 });
 
 describe('imageUrls', () => {
-  it('devolve os três presets de uma vez', () => {
+  it('devolve os quatro presets de uma vez', () => {
     expect(Object.keys(imageUrls('maison-test', PUBLIC_ID))).toEqual([
       'thumb',
       'card',
       'detail',
+      'wide',
     ]);
   });
 });

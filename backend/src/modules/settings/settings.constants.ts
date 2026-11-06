@@ -12,6 +12,15 @@ export const MAX_BANNER_ORDER = 9999;
 /** Teto do conteúdo de uma página institucional, igual ao do schema. */
 export const MAX_PAGE_CONTENT_LENGTH = 20_000;
 
+/**
+ * Quanto cabe na frase do brinde.
+ *
+ * Cento e vinte caracteres e o que entra no balão da loja sem ele virar
+ * parágrafo: a frase completa "Compre R$ 179,99 e ganhe ___" e e lida de
+ * relance, no canto da tela, por quem esta olhando perfume.
+ */
+export const MAX_GIFT_LABEL_LENGTH = 120;
+
 export const PAGE_NOT_FOUND_MESSAGE = 'Página não encontrada.';
 
 export const INVALID_BANNER_WINDOW_MESSAGE =

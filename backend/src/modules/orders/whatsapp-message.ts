@@ -94,6 +94,19 @@ export interface WhatsappOrder {
   fulfillment: WhatsappFulfillment;
   payment: WhatsappPayment;
   totals: WhatsappTotals;
+  /**
+   * O brinde que este pedido ganhou. Vazio quando não ganhou nenhum.
+   *
+   * A loja promete o brinde no balão da vitrine e na régua da sacola; esta
+   * linha e onde a promessa chega a quem separa o pedido. Sem ela, a cliente
+   * saberia do brinde e a dona não — e quem descobre a falha e a cliente, na
+   * hora de abrir a caixa.
+   *
+   * Já vem resolvido (ver `liveGift` e `giftEarned`, em settings): esta
+   * função não decide se o pedido alcancou a meta, só escreve o que lhe
+   * disseram.
+   */
+  gift: string;
 }
 
 /** A mensagem inteira, pronta para o `wa.me`. */
@@ -107,6 +120,7 @@ export function buildWhatsappMessage(order: WhatsappOrder): string {
     '*RESUMO*',
     ...summaryLines(order.totals, order.fulfillment),
     '',
+    ...(order.gift === '' ? [] : ['*BRINDE*', order.gift, '']),
     '*PAGAMENTO*',
     paymentLine(order.payment),
     '',

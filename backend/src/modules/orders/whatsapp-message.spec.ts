@@ -62,6 +62,9 @@ function order(overrides: Partial<WhatsappOrder> = {}): WhatsappOrder {
       pixDiscountCents: 0,
       totalCents: 59_973,
     },
+    // O pedido comum não ganha brinde: a loja nasce sem campanha, e o caso
+    // de base precisa ser o que mais acontece.
+    gift: '',
     ...overrides,
   };
 }
@@ -172,6 +175,27 @@ describe('buildWhatsappMessage', () => {
     });
 
     expect(buildWhatsappMessage(gratis)).toContain('Entrega: grátis (pedido acima de R$ 150,00)');
+  });
+
+  /**
+   * O brinde prometido na vitrine chega a quem separa o pedido.
+   *
+   * Sem esta seção a cliente saberia do brinde e a dona não, e a falha só
+   * apareceria na hora de abrir a caixa — que e o único momento em que ela
+   * não tem mais conserto.
+   */
+  it('escreve o brinde conquistado em seção própria', () => {
+    const comBrinde = order({ gift: 'um porta hidratante com pasta árabe' });
+    const message = buildWhatsappMessage(comBrinde);
+
+    expect(message).toContain('*BRINDE*\num porta hidratante com pasta árabe');
+    // Entre o resumo e o pagamento: e ali que a dona confere o que separar.
+    expect(message.indexOf('*BRINDE*')).toBeGreaterThan(message.indexOf('*RESUMO*'));
+    expect(message.indexOf('*BRINDE*')).toBeLessThan(message.indexOf('*PAGAMENTO*'));
+  });
+
+  it('pedido sem brinde não ganha seção vazia', () => {
+    expect(buildWhatsappMessage(order())).not.toContain('BRINDE');
   });
 
   it('mostra o desconto do PIX e o pagamento a vista', () => {

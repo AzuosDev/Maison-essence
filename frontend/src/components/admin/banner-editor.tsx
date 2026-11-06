@@ -237,8 +237,9 @@ export function BannerEditor({ banners, errors, onChange }: BannerEditorProps) {
       */}
       <p className={styles.sizes}>
         Medida da arte — computador {bannerArtMeasure(BANNER_ART.desktop)}, celular{' '}
-        {bannerArtMeasure(BANNER_ART.mobile)}. Outro formato entra do mesmo jeito, mas a home
-        corta pelo centro o que sobrar.
+        {bannerArtMeasure(BANNER_ART.mobile)}. Outro formato entra inteiro: a home ajusta a
+        altura da faixa a arte. Com titulo cadastrado a arte vira fundo do texto, e ai sim ela
+        e cortada para caber.
       </p>
     </div>
   );

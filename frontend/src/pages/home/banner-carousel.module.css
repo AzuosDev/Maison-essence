@@ -124,9 +124,15 @@
  * dentro do arquivo: logo, frase e botão já fazem parte da imagem. Aqui ele
  * aparece sem véu e sem bloco de texto por cima — o arquivo e o banner.
  *
- * ## A medida
+ * ## As medidas
  *
- * 1920 x 562,283, que e a faixa que a loja pediu. Não e uma proporção de
+ * Duas, uma por arquivo, e cada uma vale na largura em que o `<picture>`
+ * serve aquele arquivo: 1200 x 1500 no celular, 1920 x 562,283 a partir de
+ * 64rem. Sao as mesmas que o painel escreve embaixo do editor de banner
+ * (`BANNER_ART`), e o ponto de virada e o mesmo dos dois lados — se um dia
+ * um deles andar, o outro anda junto, senao volta o corte.
+ *
+ * A panoramica, a de computador, e a faixa que a loja pediu. Não e uma proporção de
  * catálogo — e uma medida de arte —, e por isso esta escrita como os dois
  * números e não reduzida a "3,4/1": quem for conferir contra o arquivo do
  * design quer ver os mesmos números dos dois lados.
@@ -135,27 +141,57 @@
  * tela cheia: sobra tela para a primeira fileira de produtos aparecer sem
  * ninguém precisar rolar.
  *
- * ## Por que `cover` aqui, e `contain` seria errado
+ * ## Nem `cover` nem `contain`: a caixa cede
  *
- * A arte tem de encostar nas quatro bordas. Enquanto o arquivo enviado tiver
- * a medida acima, os dois dao o mesmo resultado e a discussão e teórica; a
- * diferença aparece no arquivo que chega fora da medida — e aí `contain`
- * encolheria a arte deixando tarja preta em volta, que e exatamente o
- * defeito que esta regra existe para resolver. `cover` corta, e corte pelo
- * centro de uma faixa larga tira margem; tarja lateral anuncia que a arte
- * não coube.
+ * A arte tem de encostar nas quatro bordas, e os dois ajustes erram quando o
+ * arquivo chega fora da medida — `cover` corta a frase da campanha,
+ * `contain` encolhe e deixa tarja preta em volta. A saída e não ajustar
+ * imagem nenhuma: a largura e sempre 100%, e a altura da caixa e a que a
+ * arte pedir. Assim o arquivo fora da medida entra inteiro, sem corte e sem
+ * tarja, e a medida acima deixa de ser uma exigência para virar o que ela
+ * sempre quis ser — a recomendação que da o melhor enquadramento.
  */
 .slideWide {
   grid-template-columns: minmax(0, 1fr);
 }
 
 .mediaWide {
-  aspect-ratio: 1920 / 562.283;
+  /* Sem proporção própria: quem da a altura e a arte, pela regra do `<img>`
+     logo abaixo. A caixa so acompanha. */
+  aspect-ratio: auto;
   background-color: var(--dark);
 }
 
+/*
+ * A arte manda na altura da caixa.
+ *
+ * `position: static` desfaz o `inset: 0` de `.image`: aqui a imagem volta ao
+ * fluxo, e e a altura dela que estica a caixa, em vez de a caixa recortar a
+ * imagem. Com `height: auto` e largura cheia, qualquer arquivo entra inteiro
+ * — 1920 x 562, 1600 x 500, o que a dona tiver. Nada e cortado e nada ganha
+ * tarja preta em volta, que eram os dois jeitos de errar aqui.
+ *
+ * `aspect-ratio: auto <medida>` e o par dos dois momentos. O `auto` diz que,
+ * assim que o arquivo chega, quem vale e a proporção dele. A medida escrita
+ * do lado e so a reserva de espaço enquanto ele não chegou — sem ela a caixa
+ * nasce com altura zero e a página pula quando a arte carrega. Por isso ela
+ * acompanha o `<picture>`: 1200 x 1500 enquanto o arquivo e o de celular,
+ * 1920 x 562,283 a partir de 64rem, onde o de computador entra.
+ *
+ * O `object-fit` sai de cena: com a caixa do tamanho da arte não ha o que
+ * ajustar.
+ *
+ * O preco honesto: arte fora da medida reservada move a página alguns pixels
+ * ao carregar. E menos grave que cortar a frase da campanha, e some assim
+ * que o arquivo respeita a medida que o painel pede.
+ */
 .imageWide {
-  object-fit: cover;
+  position: static;
+
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto 1200 / 1500;
+  object-fit: fill;
 }
 
 /* ---- O bloco de texto ------------------------------------------------- */
@@ -403,16 +439,29 @@
   }
 
   .mediaWide {
-    /* A medida repetida aqui, e não herdada da regra base: `.media` declara
-       16/9 neste mesmo `@media` e vem antes na folha. Entre duas regras de
-       mesma especificidade vale a última escrita, e sem esta linha o banner
-       de arte sairia com a proporção do banner de foto — 810px de altura em
-       vez de 422. */
-    aspect-ratio: 1920 / 562.283;
+    /* O `aspect-ratio: auto` repetido aqui, e não herdado da regra base:
+       `.media` declara 16/9 neste mesmo `@media` e vem antes na folha. Entre
+       duas regras de mesma especificidade vale a última escrita, e sem esta
+       linha o banner de arte sairia com a proporção do banner de foto.
+
+       O `max-height` do banner de foto também não vale: la ele existe para o
+       hero não comer a primeira tela inteira; aqui a altura ja e a da arte,
+       que e uma faixa.
+
+       O `max-width` e o limite do arquivo: 120rem são os 1920px da arte, e
+       passar disso seria amplia-lá e entregar borrão. Em monitor mais largo
+       o banner para de crescer e fica centrado. */
+    aspect-ratio: auto;
     height: auto;
     max-height: none;
     max-width: 120rem;
     margin-inline: auto;
+  }
+
+  .imageWide {
+    /* A reserva de espaço troca junto com o arquivo que o `<picture>` serve:
+       daqui para cima quem entra e a arte de computador. */
+    aspect-ratio: auto 1920 / 562.283;
   }
 }
 

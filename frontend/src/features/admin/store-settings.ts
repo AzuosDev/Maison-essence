@@ -3,6 +3,7 @@ import { centsFromInput, centsToInput, dateInputValue, dayEndISO, dayStartISO } 
 import {
   SETTINGS_LIMITS,
   type AdminBanner,
+  type AdminGift,
   type AdminInstitutionalPage,
   type AdminPickupAddress,
   type AdminStoreSettings,
@@ -85,6 +86,23 @@ export interface BannerDraft {
   isActive: boolean;
 }
 
+/**
+ * O brinde por valor de compra, em edição.
+ *
+ * O valor meta e texto — `179,99` —, como todo dinheiro nesta tela: a dona
+ * digita vírgula, e o campo vazio e "ainda não escolhi", não `0,00`, que
+ * seria brinde em qualquer pedido.
+ */
+export interface GiftDraft {
+  isActive: boolean;
+  /** `179,99`. Vazio e "sem valor meta", e o brinde não aparece na loja. */
+  minValue: string;
+  /** O produto que a cliente ganha. `null` deixa o balão sem foto. */
+  productId: string | null;
+  /** A frase que completa "Compre R$ 179,99 e ganhe ___". */
+  label: string;
+}
+
 /** Uma página institucional em edição. O slug não se edita. */
 export interface PageDraft {
   slug: InstitutionalPageSlug;
@@ -115,6 +133,7 @@ export interface SettingsDraft {
    * uma consulta por id, e o rascunho não precisa envelhecer com eles.
    */
   featuredPerfumeProductId: string | null;
+  gift: GiftDraft;
   banners: BannerDraft[];
   pages: PageDraft[];
 }
@@ -129,6 +148,8 @@ export type BannerErrors = Partial<
 
 export type PageErrors = Partial<Record<'title' | 'content', string>>;
 
+export type GiftErrors = Partial<Record<'minValue' | 'label', string>>;
+
 export interface SettingsErrors {
   storeName?: string;
   whatsapp?: string;
@@ -139,6 +160,7 @@ export interface SettingsErrors {
   instagram?: string;
   tiktok?: string;
   freeShippingMin?: string;
+  gift?: GiftErrors;
   address?: AddressErrors;
   /** Por `key` do rascunho, e não por `id`: banner novo ainda não tem `id`. */
   banners?: Record<string, BannerErrors>;
@@ -154,7 +176,7 @@ export interface SettingsErrors {
  * lado sem dizer nada.
  */
 export interface SettingsWarning {
-  scope: 'store' | 'pickup' | 'banners' | 'pages';
+  scope: 'store' | 'pickup' | 'gift' | 'banners' | 'pages';
   text: string;
 }
 
@@ -187,8 +209,20 @@ export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
     freeShippingMin:
       settings.freeShippingMinCents === null ? '' : centsToInput(settings.freeShippingMinCents),
     featuredPerfumeProductId: settings.featuredPerfumeProductId,
+    gift: draftFromGift(settings.gift),
     banners: settings.banners.map(draftFromBanner),
     pages: settings.institutionalPages.map(draftFromPage),
+  };
+}
+
+function draftFromGift(gift: AdminGift): GiftDraft {
+  return {
+    isActive: gift.isActive,
+    // `null` vira campo vazio, e não `0,00`: zero seria brinde em qualquer
+    // pedido, inclusive num de cinco reais.
+    minValue: gift.minCents === null ? '' : centsToInput(gift.minCents),
+    productId: gift.productId,
+    label: gift.label,
   };
 }
 
@@ -442,6 +476,12 @@ export function validateSettings(
     }
   }
 
+  const gift = validateGift(draft.gift);
+
+  if (Object.keys(gift).length > 0) {
+    errors.gift = gift;
+  }
+
   const address = validateAddress(draft.pickupAddress);
 
   if (Object.keys(address).length > 0) {
@@ -458,6 +498,43 @@ export function validateSettings(
 
   if (Object.keys(pages).length > 0) {
     errors.pages = pages;
+  }
+
+  return errors;
+}
+
+/**
+ * O brinde por valor de compra.
+ *
+ * Dois erros, e os dois são de digitação. O que falta — brinde ligado sem
+ * produto, sem frase ou sem valor — não e erro: e configuração pela metade,
+ * que o servidor aceita e que vira aviso escrito em `warningsOf`. A diferença
+ * importa porque a dona monta a campanha em duas sessões, e uma tela que
+ * recusasse o meio do caminho a obrigaria a terminar de uma vez.
+ *
+ * O zero e a exceção, e por isso e erro: "a partir de R$ 0,00" não desliga o
+ * brinde com clareza nenhuma — ele some da loja e o campo continua
+ * preenchido, que e o jeito mais rápido de alguém achar que salvou e não
+ * salvou.
+ */
+export function validateGift(gift: GiftDraft): GiftErrors {
+  const errors: GiftErrors = {};
+  const written = gift.minValue.trim();
+
+  if (written !== '') {
+    const cents = centsFromInput(written);
+
+    if (cents === null || cents < 0) {
+      errors.minValue = 'Escreva o valor a partir do qual a cliente ganha o brinde.';
+    } else if (cents === 0) {
+      errors.minValue = 'A partir de zero todo pedido ganharia. Para tirar o brinde, desligue-o.';
+    } else if (cents > SETTINGS_LIMITS.giftMinCents) {
+      errors.minValue = 'Esse valor passa do limite do sistema.';
+    }
+  }
+
+  if (gift.label.length > SETTINGS_LIMITS.giftLabel) {
+    errors.label = `A frase passa de ${String(SETTINGS_LIMITS.giftLabel)} caracteres e não cabe no balão.`;
   }
 
   return errors;
@@ -602,6 +679,8 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
     });
   }
 
+  warnings.push(...giftWarnings(draft.gift));
+
   const semArte = draft.banners.filter((banner) => banner.imageMobile === '').length;
 
   if (semArte > 0) {
@@ -620,6 +699,46 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
     warnings.push({
       scope: 'pages',
       text: `${vazias.map((page) => PAGE_LABELS[page.slug]).join(', ')}: publicada sem texto, o link do rodapé abre uma página em branco.`,
+    });
+  }
+
+  return warnings;
+}
+
+/**
+ * O brinde ligado que a loja não vai mostrar.
+ *
+ * E o aviso mais caro desta tela, porque ele e silencioso dos dois lados: a
+ * dona liga o brinde, salva, e nada acontece na loja — nem erro, nem balão. O
+ * servidor aceitou tudo; o que falta e o que a campanha precisa para ser uma
+ * promessa (ver `gift.ts`, no backend).
+ *
+ * Brinde desligado não avisa nada: desligado e um estado legitimo, e um aviso
+ * ali seria a tela cobrando uma campanha que ninguém pediu.
+ */
+function giftWarnings(gift: GiftDraft): SettingsWarning[] {
+  if (!gift.isActive) {
+    return [];
+  }
+
+  const warnings: SettingsWarning[] = [];
+
+  if (gift.minValue.trim() === '') {
+    warnings.push({
+      scope: 'gift',
+      text: 'O brinde esta ligado e sem valor meta: enquanto não houver um valor, o balão não aparece na loja.',
+    });
+  }
+
+  if (gift.productId === null && gift.label.trim() === '') {
+    warnings.push({
+      scope: 'gift',
+      text: 'O brinde esta ligado e não tem produto nem frase: não há o que anunciar, e o balão não aparece.',
+    });
+  } else if (gift.productId === null) {
+    warnings.push({
+      scope: 'gift',
+      text: 'Sem produto escolhido, o balão aparece só com a frase — e e a foto do brinde que faz a cliente parar para ler.',
     });
   }
 
@@ -707,6 +826,12 @@ export function changesOf(
     changes.featuredPerfumeProductId = draft.featuredPerfumeProductId;
   }
 
+  const gift = giftChanges(draft.gift, base.gift);
+
+  if (gift !== null) {
+    changes.gift = gift;
+  }
+
   // O carrossel vai inteiro ou não vai: o array substitui o gravado, e o que
   // sumiu dele foi removido de propósito.
   if (!sameBanners(draft.banners, base.banners)) {
@@ -761,6 +886,44 @@ function addressChanges(
 /** `null` desliga o mínimo geral: cada cidade responde pela sua regra. */
 function freeShippingOf(draft: SettingsDraft): number | null {
   return draft.freeShippingMin.trim() === '' ? null : centsFromInput(draft.freeShippingMin);
+}
+
+/**
+ * Só o que mudou no brinde. O servidor funde campo a campo.
+ *
+ * O valor meta e comparado em centavos, e não como texto: `179,9` e `179,90`
+ * são a mesma quantia, e compara-los como string faria a barra de salvar
+ * aparecer por causa de um zero que a dona não digitou.
+ */
+function giftChanges(draft: GiftDraft, base: GiftDraft): Partial<AdminGift> | null {
+  const changes: Partial<AdminGift> = {};
+
+  if (draft.isActive !== base.isActive) {
+    changes.isActive = draft.isActive;
+  }
+
+  const min = giftMinOf(draft);
+
+  if (min !== giftMinOf(base)) {
+    changes.minCents = min;
+  }
+
+  // `null` viaja: e ele que tira o produto do brinde, e omitir o campo
+  // deixaria a escolha antiga gravada para sempre.
+  if (draft.productId !== base.productId) {
+    changes.productId = draft.productId;
+  }
+
+  if (draft.label.trim() !== base.label.trim()) {
+    changes.label = draft.label.trim();
+  }
+
+  return Object.keys(changes).length === 0 ? null : changes;
+}
+
+/** `null` e "sem valor meta", que e o que tira o brinde do ar. */
+function giftMinOf(gift: GiftDraft): number | null {
+  return gift.minValue.trim() === '' ? null : centsFromInput(gift.minValue);
 }
 
 function sameBanners(draft: readonly BannerDraft[], base: readonly BannerDraft[]): boolean {

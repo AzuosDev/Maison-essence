@@ -160,15 +160,20 @@
 /*
  * A arte de computador, no formato em que a home a mostra.
  *
- * `object-fit: cover` porque a proporção enviada nem sempre e a do banner, e
- * o que interessa aqui e reconhecer a imagem — o corte fiel quem faz e a
- * home.
+ * A proporção e a mesma faixa da home — `BANNER_ART.desktop`, os 1920 x 562
+ * que a linha de medida logo acima pede. Era 16/9: o arquivo na medida certa
+ * aparecia cortado nos lados justamente aqui, no lugar onde a dona confere
+ * se subiu a arte certa, e ela publicava achando que a home faria o mesmo.
+ *
+ * E a altura acompanha a arte, como na home: `aspect-ratio: auto <medida>`
+ * reserva a faixa enquanto o arquivo não chegou e entrega o comando a ele
+ * assim que chega. Arquivo fora da medida aparece aqui inteiro, do mesmo
+ * jeito que vai aparecer na loja — que e o ponto de ter uma prévia.
  */
 .art {
   width: 100%;
   height: auto;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  aspect-ratio: auto 1920 / 562.283;
 
   border-radius: var(--radius-chip);
   background-color: var(--bg-alt);
@@ -229,12 +234,19 @@
   gap: var(--space-12);
 }
 
+/*
+ * A miniatura da arte de celular.
+ *
+ * 4/5, que e `BANNER_ART.mobile` (1200 x 1500) e a caixa que a home da a ela.
+ * Antes era 3 x 5,25rem — um retrato mais esguio que o real, que cortava a
+ * miniatura em cima e embaixo.
+ */
 .portrait {
   flex: none;
 
-  width: 3rem;
-  height: 5.25rem;
-  object-fit: cover;
+  width: 3.5rem;
+  height: auto;
+  aspect-ratio: auto 4 / 5;
 
   border-radius: var(--radius-chip);
   background-color: var(--bg-alt);

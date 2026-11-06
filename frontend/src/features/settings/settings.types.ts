@@ -44,6 +44,23 @@ export interface PublicBanner {
   placement: BannerPlacement;
 }
 
+/**
+ * O brinde por valor de compra, já resolvido pelo servidor.
+ *
+ * Chega pronto para ser escrito na tela: a frase e a foto já passaram pela
+ * regra que decide se a campanha esta de pé — brinde desligado, sem valor
+ * meta ou sem nome não vira `null` aqui, vira `gift: null` lá. A loja não
+ * decide nada sobre brinde; ela só desenha o que recebeu.
+ */
+export interface PublicGift {
+  /** O subtotal que libera o brinde, em centavos. Sempre maior que zero. */
+  minCents: number;
+  /** O que se ganha: "um porta hidratante com a melhor pasta árabe dentro". */
+  label: string;
+  /** `publicId` da foto no Cloudinary. Vazio e legitimo: o balão vive sem ela. */
+  image: string;
+}
+
 export interface PublicSettings {
   storeName: string;
   /** Só digitos, com código do pais: `5588999999999`. */
@@ -59,6 +76,8 @@ export interface PublicSettings {
   pickupAddress: AddressView | null;
   pickupInstructions: string;
   freeShippingMinCents: number | null;
+  /** O brinde por valor de compra. `null` quando a loja não da brinde hoje. */
+  gift: PublicGift | null;
   banners: PublicBanner[];
 }
 

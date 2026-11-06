@@ -24,9 +24,16 @@ import { env } from '@/lib/env';
  *
  * - `thumb`: miniatura do carrinho, da linha do pedido e da galeria;
  * - `card`: o card da vitrine, que e 3:4 em grid de até quatro colunas;
- * - `detail`: a foto grande da página do produto.
+ * - `detail`: a foto grande da página do produto;
+ * - `wide`: o banner da home, que ocupa a largura inteira da tela.
+ *
+ * O `wide` e o único que existe por causa de uma tela só. Com teto de 1200 a
+ * arte de 1920 do banner era reduzida na entrega e esticada de volta pelo
+ * navegador — chegava mole no monitor. As outras telas não passam a baixar a
+ * versão grande: quem escolhe a candidata do `srcset` e o `sizes` de cada
+ * `<img>`, e card e miniatura continuam pedindo a menor que couber.
  */
-export const IMAGE_WIDTHS = { thumb: 400, card: 600, detail: 1200 } as const;
+export const IMAGE_WIDTHS = { thumb: 400, card: 600, detail: 1200, wide: 1920 } as const;
 
 export type ImagePreset = keyof typeof IMAGE_WIDTHS;
 

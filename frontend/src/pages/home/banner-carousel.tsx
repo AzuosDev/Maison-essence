@@ -21,8 +21,14 @@ import styles from './banner-carousel.module.css';
  * ## As duas fotos
  *
  * Desktop e celular são arquivos diferentes, escolhidos por `<picture>` com
- * `media`. O celular baixa a versão retrato e nunca vê a panorâmica de
- * 1200px.
+ * `media`. O celular baixa a versão retrato e nunca vê a panorâmica.
+ *
+ * ## A altura do banner de arte inteira
+ *
+ * Quem a define e o arquivo, não a folha de estilo: a arte entra com largura
+ * cheia e altura própria, e a caixa acompanha. E o que faz qualquer medida
+ * caber sem corte e sem tarja — ver `.imageWide` em
+ * `banner-carousel.module.css`.
  */
 export interface BannerCarouselProps {
   /** Já filtrados pelo agendamento e pela vaga. Nunca vazio. */
@@ -240,18 +246,27 @@ function BannerImage({
   const desktop = imageSrcSet(banner.imageDesktop);
   const mobile = banner.imageMobile === '' ? banner.imageDesktop : banner.imageMobile;
 
+  // A arte inteira ocupa a largura da tela até o limite de 1920px que a folha
+  // impoe — e nesse ponto que o navegador escolhe a candidata de 1920 do
+  // `srcset` em vez de pedir a de 1200 e deixar o monitor esticá-la. O banner
+  // com texto divide a faixa com o bloco da frase e nunca passa de 60vw.
+  const sizes = standalone ? 'min(100vw, 1920px)' : '60vw';
+
   return (
     <picture>
-      {desktop ? (
-        <source media="(min-width: 64rem)" srcSet={desktop} sizes={standalone ? '100vw' : '60vw'} />
-      ) : null}
+      {desktop ? <source media="(min-width: 64rem)" srcSet={desktop} sizes={sizes} /> : null}
 
       <img
         {...imageProps(mobile, 'detail', '100vw')}
         alt=""
         className={cx(styles.image, standalone && styles.imageWide)}
-        width={1200}
-        height={1500}
+        // A arte inteira vai sem `width`/`height`: os dois números viram a
+        // proporção que o navegador usa antes de o arquivo chegar, e um par
+        // fixo diria 4/5 também no desktop, onde o `<picture>` serve a faixa
+        // larga. Quem reserva o espaço ali e o `aspect-ratio` da folha, que
+        // troca no mesmo ponto que o `<picture>`. No banner com texto a caixa
+        // tem proporção própria e os dois números seguem úteis.
+        {...(standalone ? {} : { width: 1200, height: 1500 })}
         loading={priority ? 'eager' : 'lazy'}
         fetchPriority={priority ? 'high' : 'auto'}
         decoding="async"

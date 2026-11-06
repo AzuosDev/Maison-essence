@@ -11,6 +11,7 @@ export {
   type BannerPlacement,
   type InstitutionalPageSlug,
   type PublicBanner,
+  type PublicGift,
   type PublicPage,
   type PublicPageSummary,
   type PublicSettings,

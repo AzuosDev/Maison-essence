@@ -68,6 +68,52 @@ export class SocialLinks {
 
 export const SocialLinksSchema = createSchema(SocialLinks);
 
+/**
+ * O brinde por valor de compra.
+ *
+ * "Compre R$ 179,99 e ganhe um porta hidratante" e mecânica real do negócio,
+ * e até aqui ela não tinha onde morar: a vitrine a anunciava a partir de uma
+ * constante do build, que só mudava por deploy. Agora e campo, e a dona liga,
+ * desliga e troca o valor pelo painel, como faz com o frete grátis.
+ *
+ * Os quatro campos convivem assim:
+ *
+ * - `isActive` desliga a campanha sem desmanchar a configuração. E o que
+ *   permite guardar o brinde do Natal em janeiro e trazê-lo de volta em
+ *   dezembro sem redigitar nada;
+ * - `minCents` e o valor que libera o brinde, medido pelo subtotal dos
+ *   produtos — o mesmo número que a régua da sacola persegue;
+ * - `productId` aponta o produto que a cliente ganha, e dele saem a foto e o
+ *   nome. Guarda o id e não o nome pelo mesmo motivo do perfume da vez:
+ *   corrigir o cadastro não pode desfazer a escolha da dona. O produto não
+ *   precisa estar publicado — brinde não se vende, e exigir que ele estivesse
+ *   a venda obrigaria a loja a pôr na vitrine uma coisa que não esta a venda;
+ * - `label` e a frase que completa "Compre R$ 179,99 e ganhe ___". Vazia, o
+ *   nome do produto ocupa o lugar; escrita, ela vence, porque "um porta
+ *   hidratante com a melhor pasta árabe dentro" vende o que "Porta Hidratante
+ *   ME" não vende.
+ */
+@Schema(embeddedSchemaOptions({ _id: false }))
+export class StoreGift {
+  /** Desligado nasce: brinde no ar e decisão, nunca padrão. */
+  @Prop({ type: Boolean, default: false })
+  isActive: boolean;
+
+  /** O subtotal que libera o brinde. `null` e "ainda não escolhi o valor". */
+  @Prop(centsProp({ default: null }))
+  minCents: number | null;
+
+  /** O produto que a cliente ganha. `null` deixa o brinde sem foto e sem nome. */
+  @Prop(objectIdProp({ default: null }))
+  productId: Types.ObjectId | null;
+
+  /** A frase do balão. Vazia, vale o nome do produto. */
+  @Prop(textProp({ max: 120, default: '' }))
+  label: string;
+}
+
+export const StoreGiftSchema = createSchema(StoreGift);
+
 /** Banner da home. Aparece só dentro do período de exibição, quando definido. */
 @Schema(embeddedSchemaOptions())
 export class Banner extends EmbeddedSchema {
@@ -212,6 +258,16 @@ export class StoreSettings extends SingletonSchema {
    */
   @Prop(objectIdProp({ default: null }))
   featuredPerfumeProductId: Types.ObjectId | null;
+
+  /**
+   * O brinde por valor de compra.
+   *
+   * Bloco inteiro e não quatro campos soltos porque as quatro decisões são uma
+   * só: ligar o brinde sem valor, ou escolher o produto sem ligar, não e
+   * campanha nenhuma. Ver `StoreGift`.
+   */
+  @Prop({ type: StoreGiftSchema, default: () => ({}) })
+  gift: StoreGift;
 
   @Prop({ type: [BannerSchema], default: [] })
   banners: Banner[];

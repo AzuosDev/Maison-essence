@@ -1,10 +1,10 @@
 /*
- * O perfume da vez.
+ * Escolher um produto do cadastro: o perfume da vez, o brinde.
  *
  * Duas linhas de lista com a mesma anatomia: miniatura, nome com a marca
  * embaixo, e a ação no fim. A de cima e a escolha que esta no ar; as de baixo
- * são as candidatas da busca. Mesma anatomia de propósito — trocar o perfume
- * da vez e ler duas linhas iguais e preferir uma.
+ * são as candidatas da busca. Mesma anatomia de propósito — trocar a escolha
+ * e ler duas linhas iguais e preferir uma.
  */
 
 .picker {
@@ -138,8 +138,9 @@
   list-style: none;
 }
 
-/* "na home" no lugar do botão: a linha que já esta escolhida não se escolhe
-   de novo, e sumir com ela faria a lista mudar de tamanho sem motivo. */
+/* O rótulo no lugar do botão ("na home", "e o brinde"): a linha que já esta
+   escolhida não se escolhe de novo, e sumir com ela faria a lista mudar de
+   tamanho sem motivo. */
 .current {
   flex: none;
 

@@ -423,7 +423,11 @@
   --z-drawer: 200;
   --z-modal: 300;
   --z-toast: 400;
+  /* Os dois flutuantes dos cantos de baixo: o WhatsApp a direita e o balão
+     do brinde a esquerda. Abaixo do cabeçalho de propósito — quem rola para
+     buscar não pode ter a busca coberta por eles. */
   --z-whatsapp: 90;
+  --z-balloon: 90;
 }
 
 /*

@@ -10,13 +10,29 @@
  * que passa a ficar na margem, ao lado dos campos.
  */
 
+/*
+ * A medida de leitura mora nas seções, e não na página.
+ *
+ * Um formulário não melhora com 1360px de largura: o campo de nome esticado
+ * de ponta a ponta e mais difícil de ler do que um de 40rem. Por isso cada
+ * seção para em 60rem. A página, não: a seção das variantes e uma planilha
+ * de oito colunas, e num teto de 60rem ela sobrava 50px para o nome da
+ * variante. Ela sai de `.sectionWide`, e ninguém mais cresce junto.
+ */
 .page {
   display: grid;
   gap: var(--space-24);
 
-  /* Um formulário não melhora com 1360px de largura: o campo de nome esticado
-     de ponta a ponta e mais difícil de ler do que um de 40rem. */
+  max-width: 76rem;
+}
+
+.header,
+.section {
   max-width: 60rem;
+}
+
+.sectionWide {
+  max-width: none;
 }
 
 /* ---- O cabeçalho ----------------------------------------------------------- */

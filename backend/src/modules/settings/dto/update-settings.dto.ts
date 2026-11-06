@@ -18,6 +18,7 @@ import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { IsWhatsappNumber } from '../whatsapp-number.js';
 import { MAX_BANNERS } from '../settings.constants.js';
 import { BannerDto } from './banner.dto.js';
+import { GiftDto } from './gift.dto.js';
 import { InstitutionalPageDto } from './institutional-page.dto.js';
 import { PickupAddressDto } from './pickup-address.dto.js';
 import { SocialLinksDto } from './social-links.dto.js';
@@ -29,8 +30,8 @@ import { SocialLinksDto } from './social-links.dto.js';
  * deliberada:
  *
  * - campo simples: o valor recebido substitui o gravado;
- * - `pickupAddress` e `socialLinks`: fusão campo a campo, porque a tela manda
- *   só o que a dona mexeu;
+ * - `pickupAddress`, `socialLinks` e `gift`: fusão campo a campo, porque a
+ *   tela manda só o que a dona mexeu;
  * - `banners`: substituição do array inteiro, porque e uma lista ordenável —
  *   o que sumiu dela foi removido de propósito;
  * - `institutionalPages`: atualização por `slug`, porque as seis páginas
@@ -110,6 +111,19 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsMongoId({ message: 'informe o id de um produto válido' })
   featuredPerfumeProductId?: string | null;
+
+  /**
+   * O brinde por valor de compra: "Compre R$ 179,99 e ganhe um porta
+   * hidratante".
+   *
+   * Fusão campo a campo, como `pickupAddress`: trocar o valor meta não apaga
+   * a frase do balão. Que combinação de campos faz o brinde valer e pergunta
+   * de quem o mostra, não de quem o grava — ver `gift.ts`.
+   */
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => GiftDto)
+  gift?: GiftDto;
 
   @IsOptional()
   @IsArray()

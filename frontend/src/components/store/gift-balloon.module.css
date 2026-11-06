@@ -1,0 +1,212 @@
+/*
+ * O balão do brinde.
+ *
+ * Canto inferior esquerdo, espelhando o botão do WhatsApp do outro lado: as
+ * mesmas bordas (16px no celular, 24px a partir de 768px), o mesmo diâmetro
+ * de 56px quando fechado, a mesma sombra do sistema. Dois flutuantes de
+ * medidas diferentes nas duas pontas desequilibram o pé da tela.
+ *
+ * Aberto, e um cartão branco com filete — o que todo painel que paira nesta
+ * loja faz. Fechado, e um círculo dourado: o dourado aqui não e enfeite, e a
+ * regra da casa sendo cumprida ao pé da letra — o que e dourado nesta loja se
+ * clica ou se ganha, e este e o único elemento da vitrine em que as duas
+ * coisas são verdade ao mesmo tempo.
+ */
+
+.balloon {
+  position: fixed;
+  bottom: var(--space-16);
+  left: var(--space-16);
+  z-index: var(--z-balloon);
+
+  display: flex;
+
+  transition: transform var(--transition);
+}
+
+@media (min-width: 48rem) {
+  .balloon {
+    bottom: var(--space-24);
+    left: var(--space-24);
+  }
+}
+
+/*
+ * O rodapé entrou na tela: o balão sobe para não cobrir os links dele.
+ *
+ * Sobe, e não some — a mesma decisão do botão do WhatsApp, e a mesma
+ * distância, para que os dois subam juntos em vez de um de cada vez.
+ */
+.raised {
+  transform: translateY(calc(var(--space-64) * -1));
+}
+
+/* ---- Aberto: o cartão ------------------------------------------------------ */
+
+/*
+ * A entrada, e o único momento animado deste componente.
+ *
+ * Ele sobe 12px e aparece, uma vez, quando as configurações chegam — que e
+ * sempre depois da primeira pintura. Sem isso o cartão surgiria pronto no
+ * meio da página já desenhada, que e o jeito mais barato de parecer defeito.
+ *
+ * A duração e o dobro do token: 180ms num cartão deste tamanho lê-se como
+ * salto. Quem pediu menos movimento no sistema não ganha nenhum.
+ */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--space-12));
+  }
+}
+
+.card {
+  position: relative;
+
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+
+  width: min(20rem, calc(100vw - var(--space-32)));
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+
+  animation: rise calc(var(--duration) * 2) var(--ease) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+  }
+}
+
+/*
+ * A oferta inteira e o link, e o botão de fechar e irmão dele.
+ *
+ * Um botão dentro de um link não recebe clique de teclado em navegador
+ * nenhum, e esta e a única ação que a cliente pode querer desfazer.
+ */
+.offer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  flex: 1;
+  min-width: 0;
+
+  padding: var(--space-12);
+  padding-right: 0;
+
+  border-radius: var(--radius-card);
+}
+
+.photo,
+.mark {
+  flex: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+
+  object-fit: cover;
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-chip);
+}
+
+/* Sem foto cadastrada, o ícone ocupa o lugar dela — e o cartão continua
+   tendo onde o olho pousa antes de ler. */
+.mark {
+  color: var(--gold-deep);
+}
+
+.mark svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.text {
+  margin: 0;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/*
+ * O valor, em dourado escurecido.
+ *
+ * E o número que a cliente compara com a sacola, então ele sai do corpo da
+ * frase pelo peso e pela cor. `--gold-deep` e não `--gold`: o dourado da
+ * marca da 2.4:1 sobre o branco e não pode ser texto.
+ */
+.amount {
+  font-weight: var(--weight-bold);
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+/*
+ * O fechar.
+ *
+ * Alvo de 44px — o mínimo de toque —, com o desenho de 16px dentro: a
+ * medida do dedo não e a medida do ícone, e um × de 44px no canto de um
+ * cartão de 320px competiria com a frase que ele acompanha.
+ */
+.close {
+  flex: none;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+
+  color: var(--muted);
+  border-radius: var(--radius-chip);
+
+  transition: color var(--transition);
+}
+
+.close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.close:hover {
+  color: var(--ink);
+}
+
+/* ---- Fechado: o círculo ---------------------------------------------------- */
+
+.circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 3.5rem;
+  height: 3.5rem;
+
+  color: var(--on-gold);
+  background-color: var(--gold);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow);
+
+  /* O anel de foco dourado sumiria dentro do próprio botão dourado. */
+  --focus-color: var(--ink);
+
+  transition:
+    transform var(--transition),
+    background-color var(--transition);
+}
+
+.circle:hover {
+  background-color: var(--gold-press);
+  transform: scale(1.05);
+}

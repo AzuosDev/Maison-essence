@@ -22,6 +22,7 @@ import { CARD_UNAVAILABLE_WARNING, PIX_UNAVAILABLE_WARNING } from '../cart/cart.
 import type { CartQuoteView } from '../cart/quote.view.js';
 import type { AuthenticatedCustomer } from '../customers/customer-auth.types.js';
 import { RateLimitService } from '../rate-limit/rate-limit.service.js';
+import { giftEarned } from '../settings/gift.js';
 import { SettingsService } from '../settings/settings.service.js';
 import type { StoreSettingsDocument } from '../settings/schemas/store-settings.schema.js';
 import type { CreateOrderDto } from './dto/create-order.dto.js';
@@ -251,6 +252,12 @@ export class OrdersService {
     customer: AuthenticatedCustomer | null,
   ): Promise<CreatedOrderView> {
     const store = await this.settings.current();
+    // O brinde e resolvido uma vez, fora do laço: ele não depende do código
+    // sorteado, e uma colisão de código não pode custar outra ida ao
+    // catálogo. Quem decide se o pedido alcancou a meta e `giftEarned`, a
+    // mesma regra que a vitrine usou para prometer.
+    const offer = await this.settings.giftOffer(store);
+    const gift = giftEarned(offer, quote.subtotalCents) ? offer.label : '';
 
     for (let attempt = 1; ; attempt += 1) {
       const order = new this.orders({
@@ -258,7 +265,7 @@ export class OrdersService {
         code: generateOrderCode(),
       });
 
-      order.whatsappMessage = this.messageFor(order.code, dto, quote, store);
+      order.whatsappMessage = this.messageFor(order.code, dto, quote, store, gift);
 
       try {
         await order.save();
@@ -283,6 +290,7 @@ export class OrdersService {
     dto: CreateOrderDto,
     quote: CartQuoteView,
     store: StoreSettingsDocument,
+    gift: string,
   ): string {
     const selected = quote.payment.selected;
 
@@ -324,6 +332,7 @@ export class OrdersService {
         pixDiscountCents: quote.pixDiscountCents,
         totalCents: quote.totalCents,
       },
+      gift,
     });
   }
 

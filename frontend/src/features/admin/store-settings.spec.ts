@@ -67,6 +67,9 @@ function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
     socialLinks: { instagram: '@maisonessence', tiktok: '' },
     freeShippingMinCents: 20_000,
     featuredPerfumeProductId: null,
+    // A loja nasce sem campanha de brinde: o caso de base e o que mais
+    // acontece.
+    gift: { isActive: false, minCents: null, productId: null, label: '' },
     banners: [BANNER],
     institutionalPages: [
       { slug: 'quem-somos', title: 'Quem somos', content: 'Texto', isActive: true },

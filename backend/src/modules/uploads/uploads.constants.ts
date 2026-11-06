@@ -29,8 +29,18 @@ export const SIGNATURE_TTL_SECONDS = 3600;
 /**
  * Larguras de entrega por contexto. O `w_` correspondente entra na URL, e o
  * Cloudinary gera e guarda em cache aquela versão na primeira visita.
+ *
+ * `wide` existe por causa do banner da home, que ocupa a largura inteira da
+ * tela: com teto de 1200 a arte de 1920 era reduzida na entrega e esticada de
+ * volta pelo navegador, e chegava mole no monitor. Nenhuma outra tela da loja
+ * pede essa largura — card e miniatura continuam escolhendo a menor que
+ * couber, porque quem decide e o `sizes` de cada `<img>`, não esta lista.
+ *
+ * O teto de `MAX_IMAGE_SIDE` (2000) fica acima dela de propósito: `c_limit`
+ * só reduz, então arte menor que 1920 não e ampliada — ela e servida no
+ * tamanho que tem.
  */
-export const IMAGE_WIDTHS = { thumb: 400, card: 600, detail: 1200 } as const;
+export const IMAGE_WIDTHS = { thumb: 400, card: 600, detail: 1200, wide: 1920 } as const;
 
 export type ImagePreset = keyof typeof IMAGE_WIDTHS;
 

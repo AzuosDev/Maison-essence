@@ -8,6 +8,7 @@ import { ToastProvider } from '@/components/ui';
 import { StoreSettingsProvider } from '@/features/settings';
 import ProductPage from './product-page';
 import buyBox from './buy-box.module.css';
+import variantOptions from './variant-options.module.css';
 
 /**
  * A página do produto contra a API.
@@ -287,6 +288,30 @@ test('a variante esgotada aparece na lista e não pode ser escolhida', async () 
 
   expect(esgotada.checked).toBe(false);
   expect(radio(/50ml/).checked).toBe(true);
+});
+
+/**
+ * O preço de antes, pílula por pílula.
+ *
+ * O desconto quase nunca e igual em todos os tamanhos — nesta ficha só os
+ * 50ml tem preço de comparação —, então o riscado tem de nascer da variante
+ * e não do produto. O caso checa os dois lados: a opção com comparação
+ * mostra o "de", a sem comparação mostra um preço só.
+ */
+test('a opção em promoção mostra o preço de antes riscado', async () => {
+  await abrirProduto();
+
+  // Quem ouve a página recebe os dois números na ordem em que se lê um
+  // desconto, e não dois preços soltos lado a lado.
+  expect(radio(/50ml\s*De\s*R\$ 259,90\s*por\s*R\$ 189,90/)).toBeTruthy();
+
+  const riscados = document.querySelectorAll(`.${variantOptions.was}`);
+
+  expect(riscados).toHaveLength(1);
+  expect(riscados[0]?.textContent?.trim()).toBe('De R$ 259,90');
+
+  // E a pílula sem comparação não inventa um riscado igual ao próprio preço.
+  expect(radio(/100ml/).closest('label')?.textContent).toBe('100mlR$ 289,90');
 });
 
 test('a prévia compartilhada leva a foto e o preço da variante escolhida', async () => {

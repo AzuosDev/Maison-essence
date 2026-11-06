@@ -56,6 +56,29 @@ describe('policy de acesso as configuracoes', () => {
       }).not.toThrow();
     });
 
+    /**
+     * O brinde e regra de operacao, como o minimo de frete gratis.
+     *
+     * Ligar a campanha, trocar o valor meta e escolher o produto sao decisoes
+     * do expediente — a mesma natureza do "frete gratis acima de R$ 199" que
+     * ja esta logo acima. Apontar um produto nao faz disso moldura: o que
+     * define a moldura e aparecer em toda pagina e nao mudar no dia a dia.
+     */
+    it('passa o brinde por valor de compra', () => {
+      const dto = body({
+        gift: {
+          isActive: true,
+          minCents: 17_999,
+          label: 'um porta hidratante com a melhor pasta arabe dentro',
+        } as UpdateSettingsDto['gift'],
+      });
+
+      expect(frameFieldsIn(dto)).toEqual([]);
+      expect(() => {
+        assertCanEditSettings(actor(USER_ROLES.OWNER), dto);
+      }).not.toThrow();
+    });
+
     it('nao reclama de corpo vazio: salvar sem editar nada e so um no-op', () => {
       expect(() => {
         assertCanEditSettings(actor(USER_ROLES.OWNER), body({}));

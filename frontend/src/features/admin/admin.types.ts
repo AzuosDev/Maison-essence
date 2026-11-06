@@ -619,6 +619,27 @@ export interface AdminBanner {
   isActive: boolean;
 }
 
+/**
+ * O brinde por valor de compra, como o painel o guarda.
+ *
+ * Cru de propósito: brinde desligado, sem valor meta ou sem produto continua
+ * aqui inteiro. E a campanha de dezembro guardada em janeiro — a tela precisa
+ * dela como esta para a dona voltar de onde parou.
+ *
+ * Que combinação faz o brinde valer na loja e pergunta do servidor, e a
+ * resposta chega em `PublicSettings.gift`.
+ */
+export interface AdminGift {
+  /** Desligado nasce: brinde no ar e decisão, nunca padrão. */
+  isActive: boolean;
+  /** O subtotal que libera o brinde. `null` e "ainda não escolhi o valor". */
+  minCents: number | null;
+  /** O produto que a cliente ganha, de onde saem a foto e o nome. */
+  productId: string | null;
+  /** A frase que completa "Compre R$ 179,99 e ganhe ___". */
+  label: string;
+}
+
 /** Uma página institucional. O slug e fixo; some dele só título e conteúdo. */
 export interface AdminInstitutionalPage {
   slug: InstitutionalPageSlug;
@@ -647,6 +668,8 @@ export interface AdminStoreSettings {
    * no último produto marcado como destaque, que e o padrão da loja.
    */
   featuredPerfumeProductId: string | null;
+  /** O brinde por valor de compra, como esta guardado. */
+  gift: AdminGift;
   banners: AdminBanner[];
   /** As cinco, sempre, mesmo as que ninguém escreveu ainda. */
   institutionalPages: AdminInstitutionalPage[];
@@ -689,8 +712,9 @@ export interface InstitutionalPageInput {
  * Três comportamentos convivem neste corpo, e a diferença e do servidor:
  *
  * - campo simples substitui o gravado;
- * - `pickupAddress` e `socialLinks` fundem campo a campo — corrigir o número
- *   da casa não pode apagar o ponto de referência;
+ * - `pickupAddress`, `socialLinks` e `gift` fundem campo a campo — corrigir o
+ *   número da casa não pode apagar o ponto de referência, e mexer no valor
+ *   meta do brinde não pode apagar a frase do balão;
  * - `banners` substitui o array inteiro, porque e uma lista ordenável e o que
  *   sumiu dela foi removido de propósito;
  * - `institutionalPages` atualiza por `slug`, e a página que não vier fica
@@ -709,6 +733,8 @@ export interface UpdateStoreSettingsInput {
   freeShippingMinCents?: number | null;
   /** `null` devolve o perfume da vez ao último destaque marcado. */
   featuredPerfumeProductId?: string | null;
+  /** Só o que mudou no brinde: o servidor funde campo a campo. */
+  gift?: Partial<AdminGift>;
   banners?: BannerInput[];
   institutionalPages?: InstitutionalPageInput[];
 }
@@ -738,22 +764,32 @@ export const SETTINGS_LIMITS = {
   reference: 200,
   /** `MAX_CENTS`. */
   freeShippingMinCents: 99_999_999,
+  /** `MAX_GIFT_LABEL_LENGTH`: o que cabe no balão sem ele virar parágrafo. */
+  giftLabel: 120,
+  /** `MAX_CENTS`, como o frete grátis. */
+  giftMinCents: 99_999_999,
 } as const;
 
 /**
  * A medida que a home pede de cada arte do carrossel.
  *
- * Os dois números saem de `home-hero.module.css`, e não de um palpite:
+ * Os dois números saem de `banner-carousel.module.css`, e não de um palpite:
  *
  * - **Computador.** A faixa larga do banner sem texto tem
  *   `aspect-ratio: 1920 / 562.283` e para de crescer em `120rem`, que são os
  *   mesmos 1920px. Nessa medida o arquivo entra inteiro, sem corte.
- * - **Celular.** A caixa é `aspect-ratio: 4 / 5` e a `<img>` da home declara
- *   1200 × 1500, que é essa proporção no tamanho em que ela é servida.
+ * - **Celular.** Abaixo de 64rem a caixa é `aspect-ratio: 4 / 5` — nas duas
+ *   vagas, com ou sem texto — e a `<img>` da home declara 1200 × 1500, que é
+ *   essa proporção no tamanho em que ela é servida.
  *
- * Quem enviar outra proporção não quebra nada: a home usa `object-fit: cover`
- * e corta pelo centro. A medida existe para que a dona não descubra o corte
- * depois de publicar.
+ * Quem enviar outra proporção não perde nada: no banner de arte inteira a
+ * caixa da home toma a altura do arquivo, então ele entra sem corte e sem
+ * tarja. A medida continua valendo como recomendação — e nela que o banner
+ * ocupa a faixa prevista no desenho da home, sem mover a página ao carregar
+ * e sem deixar sobra escura ao lado de um banner mais alto no carrossel.
+ *
+ * No banner com título cadastrado a caixa tem proporção própria, porque ali
+ * a arte e fundo de texto: esse corta pelo centro.
  */
 export const BANNER_ART = {
   desktop: { width: 1920, height: 562 },

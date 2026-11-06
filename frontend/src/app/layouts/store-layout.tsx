@@ -3,6 +3,7 @@ import { Outlet, ScrollRestoration, type Location } from 'react-router-dom';
 import {
   AnnouncementBar,
   CartDrawer,
+  GiftBalloon,
   StoreFooter,
   StoreHeader,
   WhatsappButton,
@@ -49,6 +50,10 @@ export function StoreLayout() {
             loja — card, seletor rápido, página do produto — e o estado dela
             mora no store do carrinho. Fechada, não monta nada. */}
         <CartDrawer />
+        {/* Os dois flutuantes do pé da tela: o brinde a esquerda, o WhatsApp
+            a direita. Os dois leem das configurações e não desenham nada
+            enquanto a loja não tiver o que anunciar. */}
+        <GiftBalloon avoidRef={footerRef} />
         <WhatsappButton avoidRef={footerRef} />
       </div>
     </StoreSettingsProvider>

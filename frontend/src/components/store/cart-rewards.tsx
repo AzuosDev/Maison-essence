@@ -1,7 +1,6 @@
 import { useStoreSettings } from '@/features/settings';
 import { formatCents } from '@/lib/format';
 import { cx } from '@/lib/cx';
-import { GIFT } from './store.constants';
 import styles from './cart-rewards.module.css';
 
 /**
@@ -18,11 +17,12 @@ import styles from './cart-rewards.module.css';
  *
  * ## De onde vem cada degrau
  *
- * O frete grátis sai de `GET /settings` (`freeShippingMinCents`), que a dona
- * edita no painel — e e `null` quando ela desliga a regra. O brinde sai de
- * uma constante revisada (ver `GIFT` em `store.constants`), porque a API
- * ainda não tem campo para ele; nasce desligado, e com ele desligado este
- * componente simplesmente não desenha o degrau.
+ * Os dois saem de `GET /settings`, que a dona edita no painel: o frete grátis
+ * de `freeShippingMinCents` — `null` quando ela desliga a regra — e o brinde
+ * de `gift`, que vem `null` quando a loja não da brinde hoje. O brinde já
+ * chega resolvido pelo servidor: a frase, o valor e a foto passaram pela
+ * mesma regra que o balão da vitrine e a mensagem do pedido usam, e esta
+ * régua não decide nada sobre campanha.
  *
  * Sem nenhum dos dois configurados, não há régua nenhuma e o componente não
  * ocupa espaço — que e o caso de uma loja que não trabalha com faixa de
@@ -63,11 +63,13 @@ export function CartRewards({ subtotalCents, className }: CartRewardsProps) {
     });
   }
 
-  if (GIFT.minCents > 0 && GIFT.label !== '') {
+  const gift = settings?.gift ?? null;
+
+  if (gift !== null) {
     steps.push({
-      minCents: GIFT.minCents,
-      prize: GIFT.label,
-      reached: `Brinde liberado: ${GIFT.label}.`,
+      minCents: gift.minCents,
+      prize: gift.label,
+      reached: `Brinde liberado: ${gift.label}.`,
     });
   }
 

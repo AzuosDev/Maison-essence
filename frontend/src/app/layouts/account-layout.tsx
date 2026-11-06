@@ -4,6 +4,7 @@ import { AccountNav } from '@/components/account';
 import {
   AnnouncementBar,
   CartDrawer,
+  GiftBalloon,
   StoreFooter,
   StoreHeader,
   WhatsappButton,
@@ -91,6 +92,7 @@ export function AccountLayout() {
         <StoreFooter ref={footerRef} />
 
         <CartDrawer />
+        <GiftBalloon avoidRef={footerRef} />
         <WhatsappButton avoidRef={footerRef} />
       </div>
     </StoreSettingsProvider>

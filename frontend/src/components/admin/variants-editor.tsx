@@ -45,8 +45,19 @@ import styles from './variants-editor.module.css';
  * precisa.
  */
 
-/** Acima disto, tabela. Abaixo, blocos. */
-const WIDE = '(min-width: 64rem)';
+/**
+ * Acima disto, tabela. Abaixo, blocos.
+ *
+ * A medida nao e a do celular: e a largura em que a planilha cabe sem
+ * apertar ninguem. O formulario mora numa coluna ao lado do menu de 15rem,
+ * entao a tabela so recebe ~1090px de verdade a partir de 1440px de janela.
+ * Com o limite antigo de 64rem, ela abria em 1024px dentro de uma coluna de
+ * 736px: as colunas com largura declarada encolhiam proporcionalmente, as
+ * duas sem largura (nome e SKU) ficavam com 50px, e o preco saia cortado.
+ * Abaixo daqui os blocos fazem melhor o mesmo trabalho — com rotulo, e sem
+ * rolagem lateral.
+ */
+const WIDE = '(min-width: 90rem)';
 
 export interface VariantsEditorProps {
   variants: readonly VariantDraft[];
@@ -92,7 +103,11 @@ export function VariantsEditor({
   };
 
   const imageOptions = [
-    { value: '', label: 'Usar a capa do produto' },
+    // "Capa do produto" e nao "Usar a capa do produto": o <select> nativo
+    // corta o texto que nao cabe em vez de reticenciar, e na coluna FOTO a
+    // versao longa chegava ao olho como "Usar a capa d". O verbo estava
+    // sobrando — a coluna ja diz que ali se escolhe uma foto.
+    { value: '', label: 'Capa do produto' },
     ...images.map((publicId, index) => ({
       value: publicId,
       label: index === 0 ? 'Foto 1 (capa)' : `Foto ${String(index + 1)}`,
@@ -202,7 +217,7 @@ function VariantRows({
 
             return (
               <tr key={variant.key}>
-                <td>
+                <td className={styles.nameCell}>
                   <Input
                     label={`Nome da variante ${String(index + 1)}`}
                     hideLabel
@@ -218,7 +233,7 @@ function VariantRows({
                   />
                 </td>
 
-                <td>
+                <td className={styles.skuCell}>
                   <Input
                     label={`SKU da variante ${String(index + 1)}`}
                     hideLabel

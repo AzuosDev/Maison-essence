@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
+import type { Model } from 'mongoose';
 import { BANNER_PLACEMENTS } from '../../common/enums/banner-placement.js';
+import { Product } from '../../schemas.js';
 import { AUDIT_ACTIONS } from '../audit/audit.constants.js';
 import { AuditService } from '../audit/audit.service.js';
 import type { AuditActor } from '../audit/audit.types.js';
 import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { hasValidWindow, unknownBannerIds } from './banners.js';
+import { liveGift } from './gift.js';
+import type { GiftOffer, GiftProduct } from './gift.js';
 import type { BannerDto } from './dto/banner.dto.js';
 import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
 import { upsertPages } from './institutional-pages.js';
@@ -54,6 +58,11 @@ export interface Versioned<T> {
 export class SettingsService {
   constructor(
     @InjectModel(StoreSettings.name) private readonly settings: StoreSettingsModel,
+    // O catálogo entra por uma pergunta só: qual e a foto e o nome do produto
+    // que a dona escolheu como brinde. E o model, e não o serviço de
+    // produtos, pelo mesmo motivo que a vitrine lê `StoreSettings` assim —
+    // ler um documento não justifica acoplar os dois domínios.
+    @InjectModel(Product.name) private readonly products: Model<Product>,
     private readonly audit: AuditService,
   ) {}
 
@@ -79,8 +88,50 @@ export class SettingsService {
   /** O subconjunto que a loja aberta recebe, com os banners vigentes agora. */
   async publicView(now: Date = new Date()): Promise<Versioned<PublicSettingsView>> {
     const settings = await this.current();
+    const product = await this.giftProduct(settings);
 
-    return { payload: toPublicSettingsView(settings, now), updatedAt: settings.updatedAt };
+    return {
+      payload: toPublicSettingsView(settings, now, product),
+      updatedAt: settings.updatedAt,
+    };
+  }
+
+  /**
+   * O brinde de pé, para quem precisa dele fora da resposta publica.
+   *
+   * Existe por causa do pedido: a mensagem que chega no WhatsApp da dona diz
+   * qual brinde separar, e ela precisa da mesma frase que o site prometeu.
+   * Devolver `GiftOffer` e não os campos crus e o que garante isso — a regra
+   * de quando o brinde vale mora em um lugar só (`gift.ts`).
+   */
+  async giftOffer(settings?: StoreSettingsDocument): Promise<GiftOffer | null> {
+    const current = settings ?? (await this.current());
+
+    return liveGift(current.gift, await this.giftProduct(current));
+  }
+
+  /**
+   * A foto e o nome do produto escolhido como brinde.
+   *
+   * Sem produto escolhido não há consulta. Produto excluído do cadastro
+   * devolve `null` e o brinde segue valendo pela frase escrita no painel — a
+   * promessa e da loja, não do catálogo, e um balão sem foto e melhor do que
+   * uma campanha que some porque alguém apagou um produto.
+   */
+  private async giftProduct(settings: StoreSettingsDocument): Promise<GiftProduct | null> {
+    const { productId } = settings.gift;
+
+    if (productId === null) {
+      return null;
+    }
+
+    const product = await this.products
+      .findById(productId)
+      .select('name images')
+      .lean<{ name: string; images: string[] } | null>()
+      .exec();
+
+    return product === null ? null : { name: product.name, image: product.images[0] ?? '' };
   }
 
   /** Páginas publicadas, para o rodapé montar os links. */
@@ -185,11 +236,12 @@ export class SettingsService {
    * Blocos aninhados: fusão campo a campo.
    *
    * Substituir o bloco inteiro apagaria o que a tela não mandou — corrigir o
-   * número da casa não pode limpar o ponto de referência, e trocar o
-   * Instagram não pode sumir com o TikTok.
+   * número da casa não pode limpar o ponto de referência, trocar o Instagram
+   * não pode sumir com o TikTok, e mudar o valor meta do brinde não pode
+   * apagar a frase do balão.
    */
   private applyBlocks(settings: StoreSettingsDocument, dto: UpdateSettingsDto): void {
-    for (const block of ['pickupAddress', 'socialLinks'] as const) {
+    for (const block of ['pickupAddress', 'socialLinks', 'gift'] as const) {
       const received = dto[block];
 
       if (received === undefined) {
@@ -271,7 +323,7 @@ export class SettingsService {
  * objetos diferentes, e o diff registraria alteração onde não houve.
  */
 function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
-  const { pickupAddress, socialLinks } = settings;
+  const { pickupAddress, socialLinks, gift } = settings;
 
   return {
     storeName: settings.storeName,
@@ -296,6 +348,14 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
       reference: pickupAddress.reference,
     },
     socialLinks: { instagram: socialLinks.instagram, tiktok: socialLinks.tiktok },
+    gift: {
+      isActive: gift.isActive,
+      minCents: gift.minCents,
+      // Texto, e não `ObjectId`, como o perfume da vez: o diff registraria
+      // alteração onde não houve.
+      productId: gift.productId?.toHexString() ?? null,
+      label: gift.label,
+    },
     banners: Object.fromEntries(
       settings.banners.map((banner) => [
         banner.id,

@@ -27,6 +27,7 @@ import {
   validateDraft,
   type ProductDraft,
 } from '@/features/admin';
+import { cx } from '@/lib/cx';
 import { errorMessage } from '@/lib/http';
 import { usePageMeta } from '@/lib/use-page-meta';
 import styles from './admin-product-form-page.module.css';
@@ -330,8 +331,9 @@ function ProductForm({
         </Section>
 
         <Section
+          wide
           title="Variantes"
-          note="O preço, o SKU e o estoque moram aqui. Um produto de frasco único tem uma variante sem nome."
+          note="O preço, o SKU e o estoque moram aqui. Um produto de frasco único tem uma variante sem nome. “Preço de” é o valor antigo: preenchido acima do preço, ele aparece riscado na loja, com o % de desconto ao lado."
         >
           <VariantsEditor
             variants={draft.variants}
@@ -478,9 +480,27 @@ function ProductForm({
 
 /* ---- Pedaços --------------------------------------------------------------- */
 
-function Section({ title, note, children }: { title: string; note?: string; children: ReactNode }) {
+/**
+ * Uma seção do formulário.
+ *
+ * `wide` solta a medida de leitura de 60rem. Uma seção so precisa disso:
+ * a das variantes, que carrega uma planilha de oito colunas. As outras
+ * guardam campos de texto, e um campo de nome de 1200px e pior de ler do
+ * que um de 40rem — a razão pela qual a medida existe.
+ */
+function Section({
+  title,
+  note,
+  wide = false,
+  children,
+}: {
+  title: string;
+  note?: string;
+  wide?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <section className={styles.section}>
+    <section className={cx(styles.section, wide && styles.sectionWide)}>
       <div className={styles.sectionHead}>
         <h2 className={styles.sectionTitle}>{title}</h2>
         {note === undefined ? null : <p className={styles.sectionNote}>{note}</p>}

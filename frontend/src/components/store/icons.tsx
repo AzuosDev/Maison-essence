@@ -162,6 +162,25 @@ export function CardIcon(props: IconProps) {
 }
 
 /** O pedido fechado, na lista da conta. Caixa amarrada, e não sacola. */
+/**
+ * O brinde: caixa com laço.
+ *
+ * Desenhado como os outros — traço de 1.5, sem preenchimento — e não um emoji
+ * de presente. O emoji muda de cara em cada sistema e não herda a cor de quem
+ * o contem, e este ícone aparece sobre o dourado da marca.
+ */
+export function GiftIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M4 11h16v9H4z" />
+      <path d="M3 7.5h18V11H3z" />
+      <path d="M12 7.5V20" />
+      <path d="M12 7.5H8.8a2.4 2.4 0 1 1 0-4.8C11 2.7 12 7.5 12 7.5Z" />
+      <path d="M12 7.5h3.2a2.4 2.4 0 1 0 0-4.8C13 2.7 12 7.5 12 7.5Z" />
+    </Icon>
+  );
+}
+
 export function BoxIcon(props: IconProps) {
   return (
     <Icon {...props}>

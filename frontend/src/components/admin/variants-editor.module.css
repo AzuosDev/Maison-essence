@@ -47,8 +47,19 @@
   border-radius: var(--radius-card);
 }
 
+/*
+ * A planilha tem um piso.
+ *
+ * Sem ele, `width: 100%` manda: numa coluna estreita o navegador encolhe
+ * todas as larguras declaradas em proporcao e corta o conteudo dentro dos
+ * campos — foi assim que `R$ 1.299,90` virou `R$ 1.299,9`. Com o piso, a
+ * tabela para de encolher e quem rola e o `.tableWrap`. O piso e a soma das
+ * colunas abaixo, e so entra em cena entre 90rem de janela (onde a tabela
+ * aparece) e a largura que a coluna do formulario de fato tem ali.
+ */
 .table {
   width: 100%;
+  min-width: 67.75rem;
   border-collapse: collapse;
 }
 
@@ -75,21 +86,36 @@
 }
 
 /*
- * As colunas numericas são estreitas de propósito.
+ * Toda coluna declara a sua largura, inclusive as duas primeiras.
  *
- * `R$ 1.299,90` cabe em 8rem, e dar mais espaço a elas tiraria do nome da
- * variante, que e o campo que a dona lê para saber em qual linha esta.
+ * Uma coluna sem largura numa tabela cheia de larguras nao fica "flexivel":
+ * fica com a sobra. Nome e SKU nao declaravam nada e recebiam o que as
+ * outras seis deixavam — 50px cada, menos que o proprio rotulo. Agora as
+ * oito somam o piso da tabela, e a sobra, quando existe, se reparte entre
+ * todas.
+ *
+ * As medidas saem do conteudo real: `R$ 1.299,90` no campo com prefixo,
+ * `100 ml` no nome, tres digitos no estoque, `Sem estoque` ao lado do
+ * interruptor, e dois alvos de 44px nas acoes.
  */
+.nameCell {
+  width: 7.5rem;
+}
+
+.skuCell {
+  width: 6.75rem;
+}
+
 .priceCell {
-  width: 9rem;
+  width: 9.75rem;
 }
 
 .stockCell {
-  width: 7rem;
+  width: 4.75rem;
 }
 
 .imageCell {
-  width: 12rem;
+  width: 13rem;
 }
 
 /*
@@ -102,15 +128,18 @@
 .availability {
   display: grid;
   gap: var(--space-8);
-  width: 9rem;
+  width: 9.5rem;
 }
 
+/* "Sem estoque" em duas linhas desalinharia a linha inteira da tabela. */
 .smallSwitch {
   font-size: var(--text-12);
+  white-space: nowrap;
 }
 
+/* Os dois botões de 44px, e nada além deles. */
 .rowActions {
-  width: 1px;
+  width: 6.75rem;
 }
 
 /* ---- Os blocos do celular --------------------------------------------------- */

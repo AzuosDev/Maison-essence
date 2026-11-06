@@ -1,6 +1,8 @@
 import type { BannerPlacement } from '../../common/enums/banner-placement.js';
 import type { InstitutionalPageSlug } from '../../common/enums/institutional-page.js';
 import { liveBanners } from './banners.js';
+import { liveGift } from './gift.js';
+import type { GiftOffer, GiftProduct } from './gift.js';
 import { mergeInstitutionalPages } from './institutional-pages.js';
 import type { EditablePage } from './institutional-pages.js';
 import type {
@@ -8,6 +10,7 @@ import type {
   InstitutionalPage,
   PickupAddress,
   SocialLinks,
+  StoreGift,
   StoreSettingsDocument,
 } from './schemas/store-settings.schema.js';
 import { whatsappLinkOf } from './whatsapp-number.js';
@@ -28,6 +31,30 @@ export interface SocialLinksView {
   instagram: string;
   tiktok: string;
 }
+
+/**
+ * O brinde como o painel o edita: os quatro campos, inclusive os que não
+ * fazem o brinde valer ainda.
+ *
+ * Sai cru de propósito — brinde desligado, sem valor meta ou sem produto
+ * continua aqui. E a configuração guardada da campanha de dezembro, e a tela
+ * que a mostra precisa dela inteira para a dona voltar de onde parou.
+ */
+export interface GiftView {
+  isActive: boolean;
+  minCents: number | null;
+  productId: string | null;
+  label: string;
+}
+
+/**
+ * O brinde como a loja aberta o recebe, ou `null` quando ele não esta de pé.
+ *
+ * Já resolvido: a frase e a foto chegam prontas, e a vitrine não precisa
+ * saber que existe um produto por trás do brinde nem decidir quando a
+ * promessa vale — ver `gift.ts`.
+ */
+export interface PublicGiftView extends GiftOffer {}
 
 /** Banner como o painel o edita: com o agendamento a mostra. */
 export interface BannerView {
@@ -103,6 +130,8 @@ export interface SettingsView {
    * primeiro destaque, que e o padrão da loja.
    */
   featuredPerfumeProductId: string | null;
+  /** O brinde por valor de compra, como esta guardado. Ver `GiftView`. */
+  gift: GiftView;
   banners: BannerView[];
   institutionalPages: PageView[];
   updatedAt: Date;
@@ -135,6 +164,20 @@ export interface PublicSettingsView {
    * antes de o cliente escolher para onde a entrega vai.
    */
   freeShippingMinCents: number | null;
+  /**
+   * O brinde por valor de compra. `null` quando a loja não da brinde hoje.
+   *
+   * Sai aqui, e não numa rota própria, porque o balão que o anuncia esta em
+   * toda página da loja — do mesmo jeito que a barra de avisos e o botão do
+   * WhatsApp, que também moram nesta resposta.
+   *
+   * Uma consequência conhecida: o ETag desta resposta carrega o `updatedAt`
+   * das configurações, e trocar o **nome ou a foto do produto do brinde** não
+   * mexe nele. A loja leva até a janela do cache (cinco minutos) para repetir
+   * o nome novo. Mexer na campanha pelo painel, que e o caso comum, grava as
+   * configurações e troca a etiqueta na hora.
+   */
+  gift: PublicGiftView | null;
   banners: PublicBannerView[];
 }
 
@@ -151,6 +194,7 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     socialLinks: toSocialLinksView(settings.socialLinks),
     freeShippingMinCents: settings.freeShippingMinCents,
     featuredPerfumeProductId: settings.featuredPerfumeProductId?.toHexString() ?? null,
+    gift: toGiftView(settings.gift),
     // Ordenados como a home os exibe, para a tela do painel bater com o site.
     banners: [...settings.banners]
       .sort((first, second) => first.order - second.order)
@@ -160,9 +204,17 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
   };
 }
 
+/**
+ * O subconjunto publico das configurações.
+ *
+ * O produto do brinde chega de fora, já lido: esta função e pura e o `view`
+ * não vai ao banco. Quem o busca e `SettingsService.publicView`, que e onde
+ * mora o acesso ao catálogo.
+ */
 export function toPublicSettingsView(
   settings: StoreSettingsDocument,
   now: Date,
+  giftProduct: GiftProduct | null = null,
 ): PublicSettingsView {
   return {
     storeName: settings.storeName,
@@ -176,7 +228,20 @@ export function toPublicSettingsView(
     pickupAddress: settings.pickupEnabled ? toAddressView(settings.pickupAddress) : null,
     pickupInstructions: settings.pickupEnabled ? settings.pickupInstructions : '',
     freeShippingMinCents: settings.freeShippingMinCents,
+    gift: liveGift(settings.gift, giftProduct),
     banners: liveBanners(settings.banners, now).map(toPublicBannerView),
+  };
+}
+
+export function toGiftView(gift: StoreGift): GiftView {
+  return {
+    isActive: gift.isActive,
+    minCents: gift.minCents,
+    // Texto, e não `ObjectId`, pelo mesmo motivo do perfume da vez: e o id
+    // que o painel devolve no `PATCH`, e dois ids iguais são objetos
+    // diferentes.
+    productId: gift.productId?.toHexString() ?? null,
+    label: gift.label,
   };
 }
 
