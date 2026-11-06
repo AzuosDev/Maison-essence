@@ -48,8 +48,16 @@ export type OrderStatus = (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES];
  *
  * Copia fiel de `SOLD_ORDER_STATUSES` no backend, e a fidelidade e o ponto:
  * o faturamento que o painel mostra precisa ser o mesmo número que qualquer
- * relatório do servidor daria. `PENDING_CONTACT` fica de fora porque metade
- * desses pedidos nunca vira conversa; `CANCELLED`, por motivo obvio.
+ * relatório do servidor daria.
+ *
+ * Nos nomes de tela (ver `order-labels.ts`), a soma conta de "saiu para
+ * entrega" em diante, e "vendido" — a venda fechada e paga — e `CONFIRMED`.
+ * "Processando" (`PENDING_CONTACT`) fica fora porque metade desses pedidos
+ * nunca vira conversa; `CANCELLED`, por motivo obvio.
+ *
+ * `PREPARING` continua na lista. E o status aposentado do ciclo antigo, e o
+ * pedido parado nele já foi confirmado e separado quando aquele ciclo valia:
+ * tira-lo daqui mudaria o faturamento de um mês que já foi lido e fechado.
  */
 export const SOLD_ORDER_STATUSES: readonly OrderStatus[] = [
   ORDER_STATUSES.CONFIRMED,

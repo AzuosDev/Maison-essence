@@ -391,10 +391,7 @@ function StatusPicker({ order, isCancelled }: { order: AdminOrder; isCancelled: 
         block
         value={order.status}
         disabled={setStatus.isPending}
-        // O cancelamento sai da lista: ele devolve estoque e não volta atrás,
-        // e uma ação assim não pertence a um menu onde se escolhe por
-        // aproximação. Ele e o botão vermelho lá em cima.
-        options={ORDER_STATUS_OPTIONS.filter((option) => option.value !== ORDER_STATUSES.CANCELLED)}
+        options={statusOptions(order.status)}
         onChange={(event) => {
           move(event.target.value as OrderStatus);
         }}
@@ -405,6 +402,30 @@ function StatusPicker({ order, isCancelled }: { order: AdminOrder; isCancelled: 
       </p>
     </>
   );
+}
+
+/**
+ * As opções do seletor, para este pedido.
+ *
+ * O cancelamento sai da lista: ele devolve estoque e não volta atrás, e uma
+ * ação assim não pertence a um menu onde se escolhe por aproximação. Ele e o
+ * botão vermelho lá em cima.
+ *
+ * O status do próprio pedido entra mesmo quando não esta mais no ciclo — o
+ * caso do "Processando (antigo)" de quem foi gravado antes dos nomes de
+ * hoje. Sem isto, o seletor abriria mostrando outro status que não e o do
+ * pedido, e a primeira mudanca salvaria uma coisa que ninguém escolheu.
+ */
+function statusOptions(current: OrderStatus): { value: OrderStatus; label: string }[] {
+  const options = ORDER_STATUS_OPTIONS.filter(
+    (option) => option.value !== ORDER_STATUSES.CANCELLED,
+  );
+
+  if (options.some((option) => option.value === current)) {
+    return [...options];
+  }
+
+  return [{ value: current, label: ORDER_STATUS_LABELS[current] }, ...options];
 }
 
 /* ---- A entrega -------------------------------------------------------------- */

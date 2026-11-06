@@ -7,8 +7,9 @@ import { orderTimeline, statusLabel, statusTone } from './order-status';
  *
  * Dois assuntos, e os dois tem consequência fora do teste:
  *
- * 1. **Retirada e entrega leem o mesmo status de jeitos diferentes.** Quem
- *    marcou retirada nunca pode ver uma palavra sobre entrega.
+ * 1. **As palavras são as mesmas do painel**, por decisão da dona, e quem
+ *    marcou retirada e atendido pela descrição do passo — e ela que diz
+ *    "já pode ser retirado na loja" sob o rótulo "Saiu para entrega".
  * 2. **A trilha não inventa data.** O pedido guarda duas — quando nasceu e
  *    quando mudou pela última vez —, e os passos do meio ficam sem horário
  *    de propósito. Uma data plausível escrita por um `Math` viraria um prazo
@@ -27,21 +28,24 @@ function trilha(status: (typeof ORDER_STATUSES)[keyof typeof ORDER_STATUSES], mo
   });
 }
 
-test('o mesmo status muda de palavra conforme entrega ou retirada', () => {
-  expect(statusLabel(ORDER_STATUSES.SHIPPED, 'delivery')).toBe('A caminho');
-  expect(statusLabel(ORDER_STATUSES.SHIPPED, 'pickup')).toBe('Pronto para retirada');
-  expect(statusLabel(ORDER_STATUSES.DELIVERED, 'pickup')).toBe('Retirado');
+test('o cliente lê as mesmas palavras do painel', () => {
+  // Uma palavra por estado, nas duas telas: foi o que a dona pediu. O que
+  // muda com a retirada e a descrição do passo, e não o rótulo.
+  expect(statusLabel(ORDER_STATUSES.PENDING_CONTACT)).toBe('Processando');
+  expect(statusLabel(ORDER_STATUSES.SHIPPED)).toBe('Saiu para entrega');
+  expect(statusLabel(ORDER_STATUSES.DELIVERED)).toBe('Entregue');
+  expect(statusLabel(ORDER_STATUSES.CONFIRMED)).toBe('Vendido');
 });
 
-test('o status que espera a loja não diz ao cliente que ele tem de ligar', () => {
-  // O painel chama de "Aguardando contato", que e uma tarefa da dona. Aqui a
-  // mesma palavra faria a cliente achar que o próximo passo e dela.
-  expect(statusLabel(ORDER_STATUSES.PENDING_CONTACT, 'delivery')).toBe('Aguardando confirmação');
+test('o status aposentado do ciclo antigo continua tendo palavra', () => {
+  // Pode haver pedido parado nele. Um selo em branco seria pior.
+  expect(statusLabel(ORDER_STATUSES.PREPARING)).toBe('Processando');
 });
 
 test('os tons dizem o mesmo que as palavras', () => {
   expect(statusTone(ORDER_STATUSES.PENDING_CONTACT)).toBe('gold');
   expect(statusTone(ORDER_STATUSES.DELIVERED)).toBe('success');
+  expect(statusTone(ORDER_STATUSES.CONFIRMED)).toBe('success');
   expect(statusTone(ORDER_STATUSES.CANCELLED)).toBe('danger');
   expect(statusTone(ORDER_STATUSES.SHIPPED)).toBe('ink');
 });
@@ -55,20 +59,29 @@ test('o pedido recém-feito esta no primeiro passo, com a data de criação', ()
 });
 
 test('o passo atual leva a data da última mudanca', () => {
-  const passos = trilha(ORDER_STATUSES.PREPARING);
+  const passos = trilha(ORDER_STATUSES.SHIPPED);
   const atual = passos.find((passo) => passo.state === 'current');
 
-  expect(atual?.status).toBe(ORDER_STATUSES.PREPARING);
+  expect(atual?.status).toBe(ORDER_STATUSES.SHIPPED);
   expect(atual?.at).toBe(MUDOU);
 });
 
+test('o pedido parado no status antigo aparece como processando', () => {
+  // `PREPARING` saiu do ciclo. Sem este cuidado, a trilha de um pedido
+  // gravado antes abriria sem passo atual nenhum.
+  const passos = trilha(ORDER_STATUSES.PREPARING);
+
+  expect(passos[0]?.state).toBe('current');
+  expect(passos[0]?.status).toBe(ORDER_STATUSES.PENDING_CONTACT);
+});
+
 test('os passos cumpridos no meio aparecem sem data, e não com uma inventada', () => {
-  // O critério honesto desta tela. Um pedido entregue passou por confirmado
-  // e por em preparo; dizer *quando* exigiria um número que não existe.
+  // O critério honesto desta tela. Um pedido entregue passou por "saiu para
+  // entrega"; dizer *quando* exigiria um número que não existe.
   const passos = trilha(ORDER_STATUSES.DELIVERED);
   const meio = passos.filter((passo) => passo.state === 'done').slice(1);
 
-  expect(meio).toHaveLength(3);
+  expect(meio).toHaveLength(1);
   expect(meio.every((passo) => passo.at === null)).toBe(true);
 
   // O primeiro passo e a exceção: o pedido nasce nele, e essa data existe.
@@ -76,11 +89,11 @@ test('os passos cumpridos no meio aparecem sem data, e não com uma inventada', 
 });
 
 test('os passos que ainda não aconteceram ficam na trilha, apagados', () => {
-  // Esconde-los faria a trilha de um pedido confirmado parecer terminada.
-  const passos = trilha(ORDER_STATUSES.CONFIRMED);
+  // Esconde-los faria a trilha de um pedido a caminho parecer terminada.
+  const passos = trilha(ORDER_STATUSES.SHIPPED);
 
-  expect(passos).toHaveLength(5);
-  expect(passos.filter((passo) => passo.state === 'pending')).toHaveLength(3);
+  expect(passos).toHaveLength(4);
+  expect(passos.filter((passo) => passo.state === 'pending')).toHaveLength(2);
 });
 
 test('o cancelamento mostra só o que aconteceu, e não a fila com um X no fim', () => {
@@ -95,9 +108,11 @@ test('o cancelamento mostra só o que aconteceu, e não a fila com um X no fim',
 });
 
 test('cada passo explica o que significa, e a explicação muda com o modo', () => {
+  // O rótulo "Saiu para entrega" e igual para os dois; e aqui, na descrição,
+  // que quem vai buscar na loja descobre que o pedido esta pronto.
   const entrega = trilha(ORDER_STATUSES.SHIPPED);
   const retirada = trilha(ORDER_STATUSES.SHIPPED, 'pickup');
 
-  expect(entrega[3]?.description).toContain('endereço de entrega');
-  expect(retirada[3]?.description).toContain('retirado na loja');
+  expect(entrega[1]?.description).toContain('endereço de entrega');
+  expect(retirada[1]?.description).toContain('retirado na loja');
 });
