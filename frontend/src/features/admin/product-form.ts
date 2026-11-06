@@ -101,7 +101,15 @@ function nextKey(): string {
   return `v${String(keySeed)}`;
 }
 
-/** Uma linha de variante em branco, ativa e sem estoque. */
+/**
+ * Uma linha de variante em branco, ativa e vendendo sob encomenda.
+ *
+ * `allowBackorder` nasce ligado porque e assim que a loja trabalha: o frasco
+ * e encomendado quando alguém compra, e um produto cadastrado com estoque
+ * zero e a venda desligada ficaria no ar como "esgotado" sem ninguém pedir
+ * isso. Quem controla estoque de verdade desliga o interruptor no cadastro —
+ * uma decisão por produto, e não uma lembrança a cada cadastro.
+ */
 export function newVariant(): VariantDraft {
   return {
     key: nextKey(),
@@ -112,7 +120,7 @@ export function newVariant(): VariantDraft {
     stock: '0',
     image: '',
     isActive: true,
-    allowBackorder: false,
+    allowBackorder: true,
   };
 }
 
