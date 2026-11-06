@@ -575,6 +575,28 @@ perguntar. Recolhe pela direita (`translateX(150%)`) enquanto a página desce,
 porque no celular aquele canto é onde mora o preço do segundo cartão de cada
 fileira.
 
+### Balão do brinde
+O par do botão do WhatsApp, no canto oposto: mesmas bordas, mesmo diâmetro de
+56px quando fechado, mesma sombra, mesma subida de 64px sobre o rodapé. Aberto
+é um cartão branco com filete — a foto do brinde, a frase da dona e o valor em
+`gold-deep` —, e a largura para de crescer 100px antes da borda direita da
+tela para não passar por baixo do círculo verde no celular. Fechado é um
+círculo dourado, que é a regra do ouro clicável no seu caso mais literal: ali
+o dourado é o que se clica **e** o que se ganha. Sobre o rodapé ele inverte
+para fundo de tinta com o desenho dourado, porque dourado sobre a laje dourada
+dá 1.3:1 — a mesma inversão que o botão do rodapé já faz.
+
+O conteúdo vem de `GET /settings` (`gift`), que a dona edita no painel; sem
+campanha configurada o balão não existe, como o botão do WhatsApp sem número.
+
+**Ele nunca se esconde sozinho** — decisão da dona, e é o eixo do componente.
+Não recolhe na rolagem, não some com o tempo e não guarda que alguém fechou:
+a campanha é o motivo de a cliente somar mais um frasco, e um aviso que some
+na primeira rolagem não alcança a terceira página de catálogo, que é onde a
+decisão acontece. O × encolhe o cartão no círculo **daquela** página; o
+brinde muda de tamanho, nunca de presença, e a página seguinte devolve o
+cartão inteiro. A única coisa que o move sem a cliente pedir é o rodapé.
+
 ### Esqueleto
 A forma do conteúdo antes dele chegar, em areia com canto de 4px. O brilho que
 atravessa é um pseudo-elemento deslizando com `transform`, e não um gradiente
@@ -636,9 +658,6 @@ Decisões documentadas da build revisada, registradas como defeito conhecido e
 **não** como regra do sistema. Nenhuma delas deve ser herdada por superfície
 nova.
 
-- **Brinde por valor de compra.** Mecânica real do negócio sem campo na API.
-  Vive como constante declarada (`GIFT` em `store.constants.ts`), vazia por
-  padrão e escondida enquanto vazia — o mesmo tratamento do CNPJ do rodapé.
 - **Corredor do flutuante entre ~1300px e 1440px.** Nessa janela a margem
   encurta e o botão cobre até 56px da borda direita do conteúdo. Quem resolve é
   o recolhimento na rolagem, não a largura do container.

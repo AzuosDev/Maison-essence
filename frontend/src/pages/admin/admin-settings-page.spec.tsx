@@ -46,6 +46,7 @@ const SETTINGS = {
   socialLinks: { instagram: '@maisonessence', tiktok: '' },
   freeShippingMinCents: 20_000,
   featuredPerfumeProductId: null,
+  gift: { isActive: false, minCents: null, productId: null, label: '' },
   banners: [
     {
       id: 'b1',
@@ -414,6 +415,76 @@ test('apagar o frete grátis geral manda null, e não zero', async () => {
   await waitFor(() => {
     expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ freeShippingMinCents: null });
   });
+});
+
+/* ---- O brinde ----------------------------------------------------------------- */
+
+/**
+ * O brinde e da operação, e o gerente grava.
+ *
+ * E a mesma natureza do frete grátis logo acima: uma regra de "compre X e
+ * ganhe Y", ligada e desligada conforme a campanha do mês. Se ela virasse
+ * moldura, a seção sumiria da tela do gerente — e trocar o valor do brinde
+ * passaria a depender de quem mantem o sistema.
+ */
+test('o gerente liga o brinde e escolhe o valor meta', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await user.click(await screen.findByRole('switch', { name: 'Oferecer brinde' }));
+  await user.type(await screen.findByRole('textbox', { name: 'A partir de' }), '179,99');
+  await user.type(
+    await screen.findByRole('textbox', { name: 'A frase do brinde' }),
+    'um porta hidratante',
+  );
+  await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({
+      gift: { isActive: true, minCents: 17_999, label: 'um porta hidratante' },
+    });
+  });
+});
+
+/**
+ * A prévia escreve a frase antes de ela valer.
+ *
+ * E a única defesa contra a falha silenciosa desta seção: ligar o brinde,
+ * salvar e não ver nada acontecer na loja.
+ */
+test('a prévia mostra a frase que a cliente vai ler', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await user.click(await screen.findByRole('switch', { name: 'Oferecer brinde' }));
+  await user.type(await screen.findByRole('textbox', { name: 'A partir de' }), '179,99');
+  await user.type(
+    await screen.findByRole('textbox', { name: 'A frase do brinde' }),
+    'um porta hidratante',
+  );
+
+  expect(await screen.findByText('Na loja, a cliente lê:')).toBeDefined();
+  expect(screen.getByText('R$ 179,99')).toBeDefined();
+});
+
+test('brinde ligado pela metade diz que não vai aparecer', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.OWNER);
+
+  abrir();
+
+  await user.click(await screen.findByRole('switch', { name: 'Oferecer brinde' }));
+
+  expect(
+    await screen.findByText(/o aviso do brinde não aparece na loja/),
+  ).toBeDefined();
 });
 
 /* ---- O perfume da vez --------------------------------------------------------- */

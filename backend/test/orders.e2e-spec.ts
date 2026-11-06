@@ -447,6 +447,64 @@ describe('pedidos (e2e)', () => {
       );
     });
 
+    /**
+     * O brinde prometido na vitrine chega a quem separa o pedido.
+     *
+     * A cliente viu "compre R$ 179,99 e ganhe" no balao e na regua da sacola.
+     * Sem esta secao na mensagem, a dona nao saberia do brinde — e a falha so
+     * apareceria na hora de a cliente abrir a caixa, que e quando ela nao tem
+     * mais conserto.
+     *
+     * O corte e pelo subtotal dos produtos, o mesmo numero que a regua
+     * perseguiu: R$ 199,90 de Asad passa de R$ 179,99 com frete a parte.
+     */
+    it('escreve o brinde conquistado na mensagem', async () => {
+      await store
+        .updateOne(
+          {},
+          {
+            $set: {
+              gift: {
+                isActive: true,
+                minCents: 17_999,
+                productId: null,
+                label: 'um porta hidratante com a melhor pasta arabe dentro',
+              },
+            },
+          },
+        )
+        .exec();
+
+      const { body: created } = ok(await place(), 201);
+
+      expect(created.order.whatsappMessage).toContain(
+        '*BRINDE*\num porta hidratante com a melhor pasta arabe dentro',
+      );
+    });
+
+    it('pedido abaixo da meta nao ganha a secao do brinde', async () => {
+      await store
+        .updateOne(
+          {},
+          {
+            $set: {
+              gift: {
+                isActive: true,
+                // Acima do subtotal deste pedido: a mensagem nao promete nada.
+                minCents: 99_000,
+                productId: null,
+                label: 'um porta hidratante',
+              },
+            },
+          },
+        )
+        .exec();
+
+      const { body: created } = ok(await place(), 201);
+
+      expect(created.order.whatsappMessage).not.toContain('BRINDE');
+    });
+
     it('sem numero cadastrado, o pedido existe e o link fica vazio', async () => {
       await store.updateOne({}, { $set: { whatsappNumber: '' } }).exec();
 

@@ -73,7 +73,6 @@ export { SearchOverlay } from './search-overlay';
 export { SectionHeading } from './section-heading';
 export { StoreFooter } from './store-footer';
 export { StoreHeader } from './store-header';
-export { TrustBadges } from './trust-badges';
 export { VariantPicker } from './variant-picker';
 export { WhatsappButton } from './whatsapp-button';
 

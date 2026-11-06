@@ -351,3 +351,120 @@ test('mover um banner para fora da lista devolve a lista como estava', () => {
 
   expect(moveBanner(banners, 0, 5)).toEqual(banners);
 });
+
+/* ---- O brinde ----------------------------------------------------------------------- */
+
+/** O rascunho do brinde, ligado e completo. */
+function comBrinde(patch: Partial<SettingsDraft['gift']> = {}): SettingsDraft {
+  return draft({
+    gift: {
+      isActive: true,
+      minValue: '179,99',
+      productId: 'p1',
+      label: 'um porta hidratante com a melhor pasta árabe dentro',
+      ...patch,
+    },
+  });
+}
+
+test('o valor meta vai em centavos, e o resto do brinde vai junto', () => {
+  const mudanca = changesOf(comBrinde(), settings());
+
+  expect(mudanca?.gift).toEqual({
+    isActive: true,
+    minCents: 17_999,
+    productId: 'p1',
+    label: 'um porta hidratante com a melhor pasta árabe dentro',
+  });
+});
+
+/**
+ * Só o campo mexido viaja: o servidor funde o bloco campo a campo.
+ *
+ * E o que garante que trocar o valor meta não apague a frase do balão.
+ */
+test('mexer só no valor manda só o valor', () => {
+  const gravado = settings({
+    gift: {
+      isActive: true,
+      minCents: 17_999,
+      productId: 'p1',
+      label: 'um porta hidratante',
+    },
+  });
+  const mexido = {
+    ...draftFromSettings(gravado),
+    gift: { ...draftFromSettings(gravado).gift, minValue: '199,90' },
+  };
+
+  expect(changesOf(mexido, gravado)?.gift).toEqual({ minCents: 19_990 });
+});
+
+/**
+ * `179,9` e `179,90` são a mesma quantia.
+ *
+ * Comparadas como texto, a barra de salvar apareceria por causa de um zero
+ * que a dona não digitou — e ela aprenderia a ignorar o único aviso de que
+ * há algo por gravar.
+ */
+test('um zero a menos no centavo não e alteração', () => {
+  const gravado = settings({
+    gift: { isActive: true, minCents: 17_990, productId: null, label: 'um brinde' },
+  });
+  const mexido = {
+    ...draftFromSettings(gravado),
+    gift: { ...draftFromSettings(gravado).gift, minValue: '179,9' },
+  };
+
+  expect(changesOf(mexido, gravado)).toBeNull();
+});
+
+/** Tirar o produto precisa viajar como `null`, ou a escolha antiga fica. */
+test('tirar o produto do brinde manda null', () => {
+  const gravado = settings({
+    gift: { isActive: true, minCents: 17_999, productId: 'p1', label: 'um brinde' },
+  });
+  const semProduto = {
+    ...draftFromSettings(gravado),
+    gift: { ...draftFromSettings(gravado).gift, productId: null },
+  };
+
+  expect(changesOf(semProduto, gravado)?.gift).toEqual({ productId: null });
+});
+
+test('a partir de zero todo pedido ganharia: isso e erro, não campanha', () => {
+  const erros = validateSettings(comBrinde({ minValue: '0,00' }), settings());
+
+  expect(erros.gift?.minValue).toBeDefined();
+  expect(hasSettingsErrors(erros)).toBe(true);
+});
+
+/**
+ * Brinde ligado pela metade e aviso, e não erro.
+ *
+ * A dona monta a campanha em duas sessões — escolhe o produto hoje, decide o
+ * valor quando a nota do fornecedor chegar. Uma tela que recusasse o meio do
+ * caminho a obrigaria a terminar de uma vez, ou a desligar o brinde para
+ * conseguir salvar o CEP.
+ */
+test('brinde ligado e sem valor avisa, mas deixa salvar', () => {
+  const pelaMetade = comBrinde({ minValue: '' });
+
+  expect(hasSettingsErrors(validateSettings(pelaMetade, settings()))).toBe(false);
+  expect(warningsOf(pelaMetade).map((aviso) => aviso.scope)).toContain('gift');
+});
+
+test('brinde ligado sem produto avisa que o balão sai sem foto', () => {
+  const avisos = warningsOf(comBrinde({ productId: null }));
+
+  expect(avisos.some((aviso) => aviso.scope === 'gift' && aviso.text.includes('foto'))).toBe(
+    true,
+  );
+});
+
+/** Desligado e estado legitimo: a tela não cobra campanha de ninguém. */
+test('brinde desligado não avisa nada', () => {
+  const desligado = comBrinde({ isActive: false, minValue: '', productId: null, label: '' });
+
+  expect(warningsOf(desligado).filter((aviso) => aviso.scope === 'gift')).toEqual([]);
+});

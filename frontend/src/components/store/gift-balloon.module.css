@@ -67,7 +67,16 @@
   align-items: flex-start;
   gap: var(--space-4);
 
-  width: min(20rem, calc(100vw - var(--space-32)));
+  /*
+   * A largura para de crescer antes do botão do WhatsApp.
+   *
+   * 16px de borda esquerda + 56px do círculo verde + 16px da borda direita +
+   * 12px de respiro entre os dois = 100px que o cartão não pode ocupar. Sem
+   * essa conta, num celular de 390px os 320rem do cartão passam por baixo do
+   * círculo e ele cobre a última palavra da frase — que e, justamente, o que
+   * a cliente ganha.
+   */
+  width: min(20rem, calc(100vw - 6.25rem));
 
   background-color: var(--surface);
   border: var(--border);
@@ -209,4 +218,25 @@
 .circle:hover {
   background-color: var(--gold-press);
   transform: scale(1.05);
+}
+
+/*
+ * Sobre o rodapé, o círculo inverte.
+ *
+ * O rodapé desta loja e uma laje dourada, e um círculo dourado em cima dela
+ * da 1.3:1 de superfície — some. A regra da laje dourada já resolve isso
+ * para quem mora dentro do rodapé: a ação inverte para fundo de tinta com o
+ * dourado por cima. O balão não mora lá dentro, mas passa por cima dele, e
+ * por isso repete a mesma inversão enquanto estiver levantado.
+ *
+ * `--gold` como desenho sobre `--slab` e legitimo: os 2.4:1 que o proibem
+ * como texto são contra o branco da página, não contra o quase-preto.
+ */
+.raised .circle {
+  color: var(--gold);
+  background-color: var(--slab);
+}
+
+.raised .circle:hover {
+  background-color: var(--ink-soft);
 }

@@ -15,7 +15,7 @@ Visitor mode: **Persuade**.
 
 Dois públicos de peso igual: quem vem do Instagram/WhatsApp quase decidido (celular, quer preço, parcela e pronta entrega) e quem chega de busca ou anúncio sem conhecer a loja (precisa confiar antes de considerar). Ação: adicionar à sacola e fechar o pedido no site.
 
-Prova disponível: preço com comparativo, % de desconto, parcelamento calculado, desconto progressivo por quantidade, frete grátis a partir de valor, pronta entrega, retirada em Juazeiro do Norte, WhatsApp da dona. Nada além disso pode ser afirmado: não há avaliação, depoimento, número de clientes nem campo de brinde na API.
+Prova disponível: preço com comparativo, % de desconto, parcelamento calculado, desconto progressivo por quantidade, frete grátis a partir de valor, brinde a partir de valor de compra (`StoreSettings.gift`, desde 06/11/2026), pronta entrega, retirada em Juazeiro do Norte, WhatsApp da dona. Nada além disso pode ser afirmado: não há avaliação, depoimento nem número de clientes.
 
 ## Direction contract
 
@@ -33,13 +33,13 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 ## Composition da home (ordem travada)
 
-1. Barra de avisos · 2. Cabeçalho com busca larga · 3. Barra preta de navegação · 4. Carrossel de banner · 5. Categorias em círculo · 6. **Mais vendidos** · 7. Marcas da casa (tipográfico, sem logo de terceiro) · 8. Dois cartazes de coleção (categorias reais) · 9. **Aproveite nossas promoções** · 10. Faixa de benefícios (4) · 11. **Compre também** · 12. Perfume em destaque (bloco grande, descrição real) · 13. Instagram · 14. Newsletter · 15. Rodapé · WhatsApp flutuante.
+1. Barra de avisos · 2. Cabeçalho com busca larga · 3. Barra preta de navegação · 4. Carrossel de banner · 5. Categorias em círculo · 6. **Mais vendidos** · 7. Marcas da casa (tipográfico, sem logo de terceiro) · 8. Dois cartazes de coleção (categorias reais) · 9. **Aproveite nossas promoções** · 10. Faixa de benefícios (4) · 11. **Compre também** · 12. Perfume em destaque (bloco grande, descrição real) · 13. Instagram · 14. Newsletter · 15. Rodapé · WhatsApp flutuante (direita) · balão do brinde (esquerda, sempre aparente: não recolhe na rolagem, e o × só o encolhe no círculo da página em que foi dado).
 
 Três fileiras de produto, decisão da dona. As prateleiras de marca saem da home e viram filtro no catálogo.
 
 ## Unresolved
 
-- **Brinde por valor de compra** é mecânica real do negócio e não existe na API. Entra como constante declarada, vazia por padrão, escondida enquanto vazia — o mesmo tratamento do CNPJ do rodapé. Precisa de campo em `StoreSettings` para funcionar de verdade.
+- ~~**Brinde por valor de compra**~~ — resolvido em 06/11/2026. `StoreSettings.gift` guarda o interruptor, o valor meta, o produto e a frase; a dona edita em Ajustes (regra de operação, que o gerente também grava). A loja o anuncia no balão flutuante do canto inferior esquerdo, a régua da sacola passou a ter dois degraus, e o pedido leva o brinde para a mensagem do WhatsApp da dona. Quem decide se a campanha está de pé é `gift.ts`, no backend, e as três telas leem a mesma resposta.
 - Não há logo de marca de terceiro no repositório; a faixa de marcas é tipográfica por isso, não por estilo.
 - **Corredor do flutuante do WhatsApp em janela estreita.** Com `--container-max` em 1280px, em 1440 a margem de 80px aloja o botão inteiro e nada passa por baixo dele em repouso. Entre ~1300px e 1440px a margem volta a encurtar e o botão cobre até 56px da borda direita do conteúdo. Fechar isso exigiria ou coluna mais estreita em toda largura, ou gutter assimétrico, ou nenhum botão fixo — os três custam mais do que o defeito. Para essa faixa, quem resolve é o recolhimento na rolagem (`whatsapp-button.tsx`).
 - **Cartão de faixa de preço com duas linhas de preço.** `.prices` reserva a linha do riscado e ancora o bloco pelo pé, então todo cartão de preço único alinha o número grande com os vizinhos. O cartão de faixa ("R$ 389,00 – R$ 479,00" com "até 15% OFF" embaixo) ocupa duas linhas por largura do próprio texto: o que alinha nele é o pé do bloco, não o número. Alinhar o número exigiria pôr o "% OFF" numa terceira linha fixa em todos os cartões, somando ~14px de vão a cada um e separando o desconto do preço que ele desconta.

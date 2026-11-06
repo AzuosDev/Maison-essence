@@ -13,15 +13,31 @@ export interface CdnCacheOptions {
 export const CATALOG_CACHE: CdnCacheOptions = { sMaxAge: 60, staleWhileRevalidate: 300 };
 
 /**
- * Configurações da loja e páginas institucionais: cinco minutos.
+ * Configurações da loja e páginas institucionais: trinta segundos.
  *
- * Aguentam mais cache que o catálogo porque mudam menos — o nome da loja, o
- * endereço de retirada e o texto de "Quem somos" ficam meses parados — e
- * porque são lidos em *toda* página: o cabeçalho, o rodapé e o botão do
- * WhatsApp saem daqui. Quem encurta a janela real depois de uma alteração e
- * o ETag, que muda junto com o `updatedAt` do documento.
+ * Eram cinco minutos de `s-maxage` com dez de `stale-while-revalidate`, com a
+ * justificativa de que o ETag encurtaria a janela depois de uma alteração.
+ * **Ele não encurta.** ETag economiza corpo na revalidação; ele não faz a
+ * borda revalidar antes da hora. Enquanto a entrada estava fresca a CDN
+ * respondia a resposta velha — ou um 304 que mandava o navegador servir a
+ * cópia velha dele — sem nunca perguntar nada a esta função. Trocar um banner
+ * de vaga e recarregar a loja mostrava a home de antes por cinco minutos
+ * certos, e por até quinze no total com a janela de `stale-while-revalidate`.
+ * Quem mexe no painel conclui, com razão, que o painel não gravou.
+ *
+ * São lidas em *toda* página — cabeçalho, rodapé, barra de avisos, banners da
+ * home e o botão do WhatsApp saem daqui —, então a borda continua existindo:
+ * trinta segundos ainda absorvem a rajada de quem chega por um link
+ * compartilhado, que e o tráfego que esta janela foi criada para segurar. O
+ * que sai e a promessa de que a dona pode esperar sentada.
+ *
+ * O `stale-while-revalidate` ficou curto, e não zerado: ele e o que evita que
+ * a primeira visitante depois de cada janela pague o tempo de a função
+ * acordar. Entre ver a moldura da loja meio minuto atrasada e ver a página
+ * parada esperando um cold start, o atraso e o mal menor — e o prejuízo dele
+ * agora e de um minuto e meio no pior caso, não de quinze.
  */
-export const SETTINGS_CACHE: CdnCacheOptions = { sMaxAge: 300, staleWhileRevalidate: 600 };
+export const SETTINGS_CACHE: CdnCacheOptions = { sMaxAge: 30, staleWhileRevalidate: 60 };
 
 /**
  * Monta o `Cache-Control` das rotas públicas.

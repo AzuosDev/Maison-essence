@@ -10,9 +10,9 @@ import { CartRewards } from './cart-rewards';
  *
  * O que estes casos protegem e a aritmética, que e onde uma régua erra sem
  * quebrar: ela continua desenhando uma barra bonita enquanto anuncia o valor
- * errado. O degrau do brinde não entra aqui — ele sai de uma constante que
- * nasce desligada (ver `GIFT`), e um teste que a ligasse estaria testando o
- * valor do deploy, não o componente.
+ * errado. Com dois degraus — frete grátis e brinde — o erro mais caro e a
+ * barra que encolhe: quem acabou de passar do frete grátis vê o progresso
+ * dele voltar ao começo se a medida for feita do zero.
  */
 
 const SETTINGS = {
@@ -27,7 +27,15 @@ const SETTINGS = {
   pickupAddress: null,
   pickupInstructions: '',
   freeShippingMinCents: 25_000,
+  gift: null as { minCents: number; label: string; image: string } | null,
   banners: [],
+};
+
+/** A campanha da loja: brinde a partir de R$ 300. */
+const BRINDE = {
+  minCents: 30_000,
+  label: 'um porta hidratante com a melhor pasta árabe dentro',
+  image: '',
 };
 
 let configuracoes: Record<string, unknown>;
@@ -97,6 +105,62 @@ test('sem mínimo cadastrado, a régua não existe', async () => {
   });
 
   expect(container.textContent).toBe('');
+});
+
+/**
+ * Alcancado o frete grátis, a régua passa a perseguir o brinde.
+ *
+ * E o degrau que a loja ganhou quando o brinde virou campo no painel: antes
+ * dele, a régua parava de pedir no primeiro benefício.
+ */
+test('com os dois degraus, o seguinte e o brinde', async () => {
+  configuracoes = { ...SETTINGS, gift: BRINDE };
+
+  montar(26_000);
+
+  expect(await screen.findByText(/Faltam/)).toBeDefined();
+  expect(screen.getByText('R$ 40,00')).toBeDefined();
+  expect(
+    screen.getByText(/um porta hidratante com a melhor pasta árabe dentro/),
+  ).toBeDefined();
+});
+
+/**
+ * A barra mede do degrau anterior, e não do zero.
+ *
+ * Uma sacola de R$ 260 com frete grátis em R$ 250 e brinde em R$ 300 esta a
+ * 20% do trecho novo. Medindo do zero daria 86%, e a barra cheia prometeria
+ * um brinde que ainda esta a quarenta reais de distância.
+ */
+test('a barra recomeça no degrau que acabou de ser alcancado', async () => {
+  configuracoes = { ...SETTINGS, gift: BRINDE };
+
+  const { container } = montar(26_000);
+
+  await screen.findByText(/Faltam/);
+
+  const fill = container.querySelector<HTMLElement>('[style*="scaleX"]');
+
+  expect(fill?.style.transform).toBe('scaleX(0.200)');
+});
+
+test('alcancados os dois, a régua confirma o brinde', async () => {
+  configuracoes = { ...SETTINGS, gift: BRINDE };
+
+  montar(30_000);
+
+  expect(
+    await screen.findByText(/Brinde liberado: um porta hidratante com a melhor pasta árabe dentro./),
+  ).toBeDefined();
+  expect(screen.queryByText(/Faltam/)).toBeNull();
+});
+
+/** Loja sem campanha: o brinde some da régua sem deixar buraco. */
+test('sem brinde configurado, a régua para no frete grátis', async () => {
+  montar(25_000);
+
+  expect(await screen.findByText('Frete grátis liberado neste pedido.')).toBeDefined();
+  expect(screen.queryByText(/[Bb]rinde/)).toBeNull();
 });
 
 /**
