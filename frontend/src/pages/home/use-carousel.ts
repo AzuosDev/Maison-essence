@@ -20,8 +20,17 @@ import { useCallback, useEffect, useState, type KeyboardEvent } from 'react';
  *    para um slide que não existe mais.
  */
 
-/** Seis segundos: o tempo de ler um título, um subtítulo e decidir. */
-export const AUTOPLAY_MS = 6000;
+/**
+ * Quatro segundos, por decisão da dona (06/11/2026).
+ *
+ * Eram seis, pelo tempo de ler um título, um subtítulo e decidir. Quatro
+ * passa a lista inteira na primeira tela em menos de meio minuto, que e o que
+ * ela quer: o carrossel aqui anuncia campanha, e campanha que não e vista não
+ * vende. Quem para para ler para o giro ao passar o mouse ou ao focar — as
+ * setas e os pontos continuam de pé, e quem pediu menos movimento não vê giro
+ * nenhum.
+ */
+export const AUTOPLAY_MS = 4000;
 
 export interface Carousel {
   index: number;

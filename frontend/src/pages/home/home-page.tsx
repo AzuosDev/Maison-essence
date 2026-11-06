@@ -1,7 +1,6 @@
 import { Fragment } from 'react';
 import { ROUTES } from '@/app/routes';
-import { ProductShelf, TrustBadges, shelfWillRender, type ShelfContent } from '@/components/store';
-import { Container } from '@/components/ui';
+import { ProductShelf, shelfWillRender, type ShelfContent } from '@/components/store';
 import { useLatest, useSaleShelf, useShelf, type PublicProduct } from '@/features/catalog';
 import { BrandRow } from './brand-row';
 import { CategoryCircles } from './category-circles';
@@ -17,22 +16,22 @@ import { InstagramInvite } from './instagram-invite';
  * ## A ordem das seções
  *
  * Banner, categorias em círculo, fileira, marcas, cartazes de coleção,
- * fileira, selos de confiança, fileira, banner do meio, Instagram, o perfume
- * da vez.
+ * fileira, banner do meio, fileira, Instagram, o perfume da vez.
  *
  * E o arranjo que a dona escolheu, e ele não e arbitrário: e a ordem que
  * quase toda loja brasileira de perfume importado usa, e portanto a ordem
  * que a cliente dela já sabe percorrer sem aprender nada. Entre duas
- * fileiras de produto sempre entra uma seção de outra natureza — marcas,
- * cartazes, selos —, porque três fileiras seguidas viram uma só, longa, e o
- * olho para de distinguir onde uma acaba.
+ * fileiras de produto sempre entra uma seção de outra natureza — marcas e
+ * cartazes na primeira vaga, a faixa de banner na segunda —, porque fileiras
+ * seguidas viram uma só, longa, e o olho para de distinguir onde uma acaba.
  *
  * A ordem foi conferida contra a referência em 27/10/2026, seção por seção,
  * pela posição de cada bloco no documento dela. Duas trocas sairam daquela
  * conferência: os cartazes subiram para junto das marcas, entre a primeira e
- * a segunda fileira, e os selos de confiança desceram para depois da segunda
- * — antes eles fechavam a última, onde repetiam de perto a faixa do rodapé.
- * O Instagram passou a vir antes do perfume da vez pelo mesmo motivo.
+ * a segunda fileira, e o Instagram passou a vir antes do perfume da vez. A
+ * faixa de selos, que aquela conferência tinha descido para depois da
+ * segunda fileira, saiu da home inteira depois (06/11/2026), e a faixa de
+ * banner do meio subiu do fim da página para a vaga que ela deixou.
  *
  * ## Três fileiras, e quais
  *
@@ -80,6 +79,15 @@ import { InstagramInvite } from './instagram-invite';
 /** Quantas fileiras de produto a home mostra. Decisão da dona. */
 const MAX_SHELVES = 3;
 
+/**
+ * Depois de qual fileira cai a faixa de banner do meio.
+ *
+ * Nomeado porque dois lugares precisam concordar: a posição dela no `between`
+ * e a condição que a desenha fora dali quando a loja não tem fileira
+ * suficiente para abrir a vaga.
+ */
+const BANNER_SLOT = 1;
+
 interface Shelf {
   key: string;
   title: string;
@@ -107,8 +115,7 @@ export default function HomePage() {
    * que não depende de marcação nenhuma: ela tem produto no minuto em que o
    * catálogo tem, enquanto as outras duas dependem de alguém ter marcado
    * destaque ou pronta entrega no painel. Pronta entrega não sumiu da loja —
-   * tem rota própria, selo no card e uma linha na faixa de confiança logo
-   * acima desta fileira.
+   * tem rota própria e selo no card, que nasce do cadastro de cada frasco.
    */
   const slots: Shelf[] = [
     {
@@ -175,19 +182,22 @@ export default function HomePage() {
       <BrandRow products={shown} />
       <CollectionPosters />
     </Fragment>,
-    <Fragment key="trust">
+    <Fragment key="banner">
       {/*
-        A única faixa de selos da loja, e ela esta aqui.
+        A faixa de banner separa a segunda fileira da terceira.
 
-        Houve uma segunda no rodapé, a pouco mais de uma tela daqui, e as
-        duas juntas passavam a sensação de página montada duas vezes. Entre
-        as duas, esta e a que chega **antes** da decisão. Os três slots vão
-        para o que esta loja tem de diferente — incluindo o atendimento um a
-        um, que a dona nomeou como diferencial. Ver `trust-badges.tsx`.
+        Ela vinha depois da última, quase no fim da página, onde herdara a
+        vaga da antiga quinta prateleira. Subiu para cá em 06/11/2026, por
+        decisão da dona, quando a faixa de selos que ocupava esta vaga saiu:
+        sem nada entre a segunda e a terceira fileira, as duas encostavam e
+        viravam uma prateleira só, longa.
+
+        A troca não e só tapa-buraco. Uma campanha que a dona compõe no painel
+        rende mais no meio da descida, entre dois blocos de produto, do que
+        depois da última fileira — onde chegava a quem já tinha decidido
+        descer até o fim.
       */}
-      <Container>
-        <TrustBadges />
-      </Container>
+      <HomeBanner />
     </Fragment>,
   ];
 
@@ -232,16 +242,19 @@ export default function HomePage() {
       {shelves.length === 0 ? <CollectionPosters /> : null}
 
       {/*
-        A faixa de banner ocupa a vaga da antiga quinta fileira.
+        A campanha aparece mesmo na loja que não chegou a duas fileiras.
 
-        Ela fica fora do `between` de propósito: aquelas seções dependem de
-        uma prateleira ter aparecido antes delas, e esta não pode depender —
-        a dona pôs uma campanha no ar e ela precisa aparecer inclusive na
-        loja que ainda não tem três fileiras para mostrar. Quando não há
-        banner do meio cadastrado, `HomeBanner` devolve nada e a home segue
-        da última fileira direto para o Instagram, como antes.
+        A vaga dela e entre a segunda e a terceira (`between`), e vaga do
+        `between` só existe se a prateleira de antes apareceu. Esta seção não
+        pode depender disso: a dona pôs uma campanha no ar e ela precisa estar
+        na home inclusive numa loja com uma fileira só, ou com nenhuma. Então
+        quando a vaga não chegou a existir, a faixa cai aqui, antes do
+        Instagram — que e onde ela ficava até 06/11/2026.
+
+        Sem banner do meio cadastrado, `HomeBanner` devolve nada nos dois
+        casos, e a home segue direto.
       */}
-      <HomeBanner />
+      {shelves.length <= BANNER_SLOT ? <HomeBanner /> : null}
 
       {/*
         O Instagram vem antes do perfume da vez, como na referência.

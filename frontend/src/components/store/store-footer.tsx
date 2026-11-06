@@ -33,9 +33,11 @@ const COLUMNS = '(min-width: 40rem)';
  * simplesmente não desenha, em vez de deixar um título de coluna com o vazio
  * embaixo.
  *
- * Os selos de confiança ficaram só na home. Aqui eles caíam a meia tela da
- * faixa da home e eram a terceira leitura das mesmas quatro frases na mesma
- * rolagem — e, num rodapé, chegavam depois de a visitante já ter decidido.
+ * Não há selos de confiança aqui. Houve: eles caíam a meia tela da faixa da
+ * home e eram a terceira leitura das mesmas frases na mesma rolagem — e, num
+ * rodapé, chegavam depois de a visitante já ter decidido. A faixa da home
+ * saiu depois, em 06/11/2026, e a loja ficou sem selo nenhum, por decisão da
+ * dona.
  *
  * Encaminha `ref` porque o botão flutuante do WhatsApp precisa observar
  * quando este elemento entra na tela para sair da frente dele.

@@ -407,6 +407,59 @@ test('sem banner do meio, a faixa não existe', async () => {
   expect(screen.queryByRole('region', { name: 'Campanhas da loja' })).toBeNull();
 });
 
+/**
+ * A faixa separa a segunda fileira da terceira.
+ *
+ * E a vaga que a faixa de selos ocupava até 06/11/2026; antes disso a
+ * campanha vinha depois da última fileira. A posição e o ponto: sem nada
+ * entre a segunda e a terceira, as duas encostam e o olho lê uma prateleira
+ * só, longa. Por posição e não por prateleira — qual fileira cai em cada vaga
+ * depende do que a loja tem cadastrado.
+ */
+test('a faixa de campanha cai entre a segunda fileira e a terceira', async () => {
+  abrirHome();
+
+  const promocoes = await screen.findByRole('region', { name: 'Aproveite as promoções' });
+  // `findBy` nos três: as prateleiras e as configurações chegam de respostas
+  // separadas, e a faixa só existe depois que `GET /settings` responde.
+  const faixa = await screen.findByRole('region', { name: 'Campanhas da loja' });
+  const compreTambem = await screen.findByRole('region', { name: 'Compre também' });
+
+  expect(vemAntes(promocoes, faixa)).toBe(true);
+  expect(vemAntes(faixa, compreTambem)).toBe(true);
+});
+
+/**
+ * Campanha no ar aparece mesmo sem a vaga existir.
+ *
+ * A vaga e depois da segunda fileira, e loja com uma fileira só nunca chega
+ * lá. A faixa não pode sumir por isso: quem pôs a campanha no painel precisa
+ * vê-la na home de qualquer jeito, e nessa loja ela cai no fim, antes do
+ * Instagram — onde ficava até 06/11/2026.
+ */
+test('com uma fileira só, a campanha continua na home', async () => {
+  prateleiras['ready-to-ship'] = [];
+  listagem = [];
+
+  abrirHome();
+
+  const maisVendidos = await screen.findByRole('region', { name: 'Mais vendidos' });
+  const faixa = await screen.findByRole('region', { name: 'Campanhas da loja' });
+
+  expect(vemAntes(maisVendidos, faixa)).toBe(true);
+
+  await waitFor(() => {
+    expect(screen.queryByRole('region', { name: 'Compre também' })).toBeNull();
+  });
+});
+
+/** Se `primeiro` aparece antes de `segundo` na ordem do documento. */
+function vemAntes(primeiro: Element, segundo: Element): boolean {
+  return (
+    (primeiro.compareDocumentPosition(segundo) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+  );
+}
+
 /* ---- A fileira de categorias --------------------------------------------- */
 
 test('a fileira de categorias leva as categorias principais', async () => {
