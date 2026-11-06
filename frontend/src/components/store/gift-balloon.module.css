@@ -44,7 +44,8 @@
 /* ---- Aberto: o cartão ------------------------------------------------------ */
 
 /*
- * A entrada, e o único momento animado deste componente.
+ * A entrada do cartão — um dos dois momentos animados daqui; o outro é o
+ * pulinho, no fim do arquivo, e ele só existe no celular.
  *
  * Ele sobe 12px e aparece, uma vez, quando as configurações chegam — que e
  * sempre depois da primeira pintura. Sem isso o cartão surgiria pronto no
@@ -239,4 +240,111 @@
 
 .raised .circle:hover {
   background-color: var(--ink-soft);
+}
+
+/* ---- O pulinho do brinde --------------------------------------------------- */
+
+/*
+ * O único gesto que o balão faz sem a cliente pedir — e ele existe só onde
+ * não há apontador.
+ *
+ * No desktop o mouse já resolve: o círculo cresce 5% ao passar por cima e o
+ * cartão responde ao cursor. No celular não há hover nenhum, e o balão fica
+ * imóvel num canto enquanto a cliente rola a terceira página de catálogo —
+ * que é justamente onde o brinde precisa ser lembrado. Por isso o respiro é
+ * `hover: none` e não uma largura: o que falta no celular é o apontador, não
+ * a tela.
+ *
+ * É um pulo com peso, não um pisca-pisca. Sobe desacelerando, estica no ar,
+ * cai acelerando (gravidade), amassa 10% ao pousar com a origem na base e dá
+ * um segundo pulo menor antes de parar. Os 20% de altura não são estética: a
+ * foto do brinde tem 12px de respiro acima dela dentro do cartão, e 20% de
+ * 56px são 11px — o brinde pula sem cruzar o filete do próprio cartão.
+ *
+ * A pausa mora dentro do keyframe: o movimento ocupa os primeiros 12,5% e o
+ * resto do quadro fica parado. Com isso uma animação só, de três repetições,
+ * dá três rajadas separadas por 6,3s e depois silêncio — chama na chegada,
+ * chama em quem rolou um pouco, e não fica se mexendo para sempre no canto de
+ * quem está lendo a ficha do produto.
+ */
+@keyframes hop {
+  0% {
+    transform: translateY(0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.2, 0.85, 0.3, 1);
+  }
+
+  3% {
+    transform: translateY(-20%) scale(0.98, 1.04);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+
+  5.5% {
+    transform: translateY(0) scale(1.08, 0.9);
+    animation-timing-function: cubic-bezier(0.2, 0.85, 0.3, 1);
+  }
+
+  7% {
+    transform: translateY(0) scale(1, 1);
+    animation-timing-function: cubic-bezier(0.2, 0.85, 0.3, 1);
+  }
+
+  9% {
+    transform: translateY(-9%) scale(0.99, 1.02);
+    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
+  }
+
+  11% {
+    transform: translateY(0) scale(1.04, 0.96);
+  }
+
+  12.5%,
+  100% {
+    transform: translateY(0) scale(1, 1);
+  }
+}
+
+/*
+ * Quem pula é o brinde, não a caixa dele.
+ *
+ * No cartão aberto o gesto fica na foto (ou no ícone que a substitui): o
+ * cartão branco de 320px saltando inteiro no canto da tela leria como defeito
+ * de layout e atropelaria a leitura da vitrine. Encolhido, quem pula é o
+ * próprio círculo dourado, que ali é o brinde inteiro.
+ *
+ * `transform-origin` fica dentro do respiro de propósito — no desktop o
+ * crescimento do hover continua saindo do centro do círculo.
+ */
+@media (hover: none) {
+  .photo,
+  .mark,
+  .circle {
+    transform-origin: bottom center;
+
+    animation: hop 7.2s var(--ease) 1.2s 3;
+  }
+
+  /*
+   * O círculo espera mais para pular.
+   *
+   * Ele só existe depois do × — e dar o pulinho 1,2s depois do clique seria
+   * responder a um "não agora" com um "olha aqui". Seis segundos depois já é
+   * outra coisa: a cliente seguiu rolando, e o círculo dourado lembra que a
+   * campanha continua de pé. A promessa da casa é que o brinde muda de
+   * tamanho, nunca de presença; o atraso é o que separa lembrar de insistir.
+   */
+  .circle {
+    animation-delay: 6s;
+  }
+}
+
+/*
+ * O pulinho é chamariz, e chamariz é a primeira coisa que sai quando alguém
+ * pede menos movimento. O cartão continua dizendo tudo por escrito.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .photo,
+  .mark,
+  .circle {
+    animation: none;
+  }
 }
