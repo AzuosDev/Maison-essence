@@ -29,13 +29,6 @@
   color: var(--danger);
 }
 
-.hint {
-  margin: 0;
-
-  font-size: var(--text-12);
-  color: var(--ink-soft);
-}
-
 /* ---- A planilha do desktop ------------------------------------------------- */
 
 .tableWrap {
@@ -59,7 +52,7 @@
  */
 .table {
   width: 100%;
-  min-width: 67.75rem;
+  min-width: 64.75rem;
   border-collapse: collapse;
 }
 
@@ -96,7 +89,7 @@
  *
  * As medidas saem do conteudo real: `R$ 1.299,90` no campo com prefixo,
  * `100 ml` no nome, tres digitos no estoque, `Sem estoque` ao lado do
- * interruptor, e dois alvos de 44px nas acoes.
+ * interruptor, e o alvo de 44px de remover nas acoes.
  */
 .nameCell {
   width: 7.5rem;
@@ -137,9 +130,9 @@
   white-space: nowrap;
 }
 
-/* Os dois botões de 44px, e nada além deles. */
+/* Um alvo de 44px, e nada além dele. */
 .rowActions {
-  width: 6.75rem;
+  width: 3.75rem;
 }
 
 /* ---- Os blocos do celular --------------------------------------------------- */
@@ -229,14 +222,13 @@
   border-radius: var(--radius-chip);
 }
 
-/* ---- Duplicar e remover -------------------------------------------------------- */
+/* ---- Remover ------------------------------------------------------------------ */
 
 .buttons {
   display: flex;
   gap: var(--space-4);
 }
 
-.iconButton,
 .removeButton {
   display: inline-flex;
   align-items: center;
@@ -250,7 +242,7 @@
   border: 0;
   border-radius: var(--radius-chip);
 
-  color: var(--ink-soft);
+  color: var(--danger);
   cursor: pointer;
 
   transition:
@@ -258,26 +250,15 @@
     color var(--transition);
 }
 
-.iconButton:hover:not(:disabled) {
-  background-color: var(--admin-bg);
-  color: var(--ink);
-}
-
-.removeButton {
-  color: var(--danger);
-}
-
 .removeButton:hover:not(:disabled) {
   background-color: var(--danger-wash);
 }
 
-.iconButton:focus-visible,
 .removeButton:focus-visible {
   outline: var(--focus-ring);
   outline-offset: var(--focus-offset);
 }
 
-.iconButton:disabled,
 .removeButton:disabled {
   color: var(--muted);
   cursor: not-allowed;

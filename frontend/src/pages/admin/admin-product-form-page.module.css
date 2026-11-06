@@ -79,18 +79,6 @@
   text-wrap: pretty;
 }
 
-.address {
-  margin: 0;
-
-  font-size: var(--text-12);
-  color: var(--ink-soft);
-}
-
-.address code {
-  font-family: var(--font-mono);
-  color: var(--ink);
-}
-
 /* ---- As seções --------------------------------------------------------------- */
 
 .form {

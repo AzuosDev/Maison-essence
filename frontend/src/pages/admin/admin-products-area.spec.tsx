@@ -20,7 +20,8 @@ import AdminProductsPage from './admin-products-page';
  * - **o interruptor vira na hora** e manda o valor oposto ao servidor;
  * - **cadastrar um produto com variantes funciona**, e o corpo que sai tem os
  *   preços em centavos;
- * - **duplicar uma variante** copia o trabalho sem copiar o SKU;
+ * - **o cadastro não cria variante** — não há botão de adicionar nem de
+ *   duplicar, e nem campo de endereço na loja;
  * - **excluir pede confirmação nomeando o produto**.
  *
  * E o que a seleção em lote prometeu: marcar linha, mandar o comando uma vez
@@ -450,9 +451,7 @@ test('cadastrar manda o preço em centavos', async () => {
   });
 });
 
-test('duplicar a variante copia o preço e limpa o SKU', async () => {
-  const user = userEvent.setup();
-
+test('o cadastro não oferece jeito nenhum de somar uma variante', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir('/admin/produtos/p1');
@@ -461,15 +460,30 @@ test('duplicar a variante copia o preço e limpa o SKU', async () => {
 
   expect((sku as HTMLInputElement).value).toBe('ASA-100');
 
-  await user.click(screen.getByRole('button', { name: 'Duplicar a variante 1' }));
+  // Nem adicionar, nem duplicar: a loja vende um frasco por produto.
+  expect(screen.queryByRole('button', { name: /Adicionar variante/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /Duplicar a variante/ })).toBeNull();
 
-  const price2 = screen.getByRole('textbox', { name: 'Preço da variante 2' });
-  const sku2 = screen.getByRole('textbox', { name: 'SKU da variante 2' });
+  // E a única variante não pode sair: sem ela o produto não tem preço.
+  expect(screen.queryByRole('button', { name: /Remover a variante/ })).toBeNull();
+});
 
-  expect((price2 as HTMLInputElement).value).toBe('189,90');
-  // O SKU e único por variante: copia-lo faria a linha nova sobrescrever a
-  // original ao salvar.
-  expect((sku2 as HTMLInputElement).value).toBe('');
+test('o endereço na loja não e perguntado nem mostrado', async () => {
+  signInAs(USER_ROLES.OWNER);
+
+  abrir('/admin/produtos/novo');
+
+  await screen.findByRole('textbox', { name: 'Nome' });
+
+  expect(screen.queryByRole('textbox', { name: /Endereço na loja/ })).toBeNull();
+
+  cleanup();
+  abrir('/admin/produtos/p1');
+
+  await screen.findByRole('textbox', { name: 'Nome' });
+
+  // O endereço sai do nome, no servidor, e o painel não fala dele.
+  expect(screen.queryByText(/Endereço na loja/)).toBeNull();
 });
 
 test('a edição manda PATCH e não muda o endereço do produto', async () => {
