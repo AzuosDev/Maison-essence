@@ -43,10 +43,10 @@ export interface OrderCardProps {
  *
  * ## O selo diz a palavra, não só a cor
  *
- * "A caminho" em tinta, "Entregue" em verde, "Cancelado" em vermelho. Quem
- * não distingue as cores lê a mesma coisa — e quem escolheu retirada lê
- * "Pronto para retirada" no lugar de "A caminho", porque e o mesmo status
- * significando outra coisa.
+ * "Saiu para entrega" em tinta, "Entregue" e "Vendido" em verde, "Cancelado"
+ * em vermelho. Quem não distingue as cores lê a mesma coisa. São as palavras
+ * do painel, iguais nas duas telas por decisão da dona — ver o bloco em
+ * `features/account/order-status.ts`.
  */
 export function OrderCard({ order, storeNumber }: OrderCardProps) {
   const conversation = conversationUrl(storeNumber, order.code);
@@ -60,7 +60,7 @@ export function OrderCard({ order, storeNumber }: OrderCardProps) {
           </Link>
         </h3>
 
-        <Badge variant={statusTone(order.status)}>{statusLabel(order.status, order.mode)}</Badge>
+        <Badge variant={statusTone(order.status)}>{statusLabel(order.status)}</Badge>
       </div>
 
       <p className={styles.meta}>

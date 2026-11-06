@@ -93,7 +93,7 @@ export default function AccountOrderPage() {
         <div className={styles.headLine}>
           <h1 className={styles.code}>{order.code}</h1>
           <Badge variant={statusTone(order.status)}>
-            {statusLabel(order.status, order.fulfillment.mode)}
+            {statusLabel(order.status)}
           </Badge>
         </div>
 

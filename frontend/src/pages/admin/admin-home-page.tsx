@@ -70,11 +70,11 @@ export default function AdminHomePage() {
         />
 
         <StatCard
-          label="Esperando contato"
+          label="Processando"
           value={String(dashboard.pendingCount)}
           note={
             dashboard.pendingCount === 0
-              ? 'Tudo respondido.'
+              ? 'Nenhum pedido parado.'
               : 'Abra a conversa antes que o cliente desista.'
           }
           to={`${ROUTES.admin.orders}?status=${ORDER_STATUSES.PENDING_CONTACT}`}
@@ -90,7 +90,7 @@ export default function AdminHomePage() {
             note={
               dashboard.monthRevenue.truncated
                 ? 'No mínimo: há mais pedidos do que coube na soma.'
-                : 'Pedidos confirmados em diante.'
+                : 'De "saiu para entrega" em diante.'
             }
             to={ROUTES.admin.orders}
             icon={CardIcon}

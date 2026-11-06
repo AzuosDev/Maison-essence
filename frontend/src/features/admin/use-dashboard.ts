@@ -24,7 +24,7 @@ import { ADMIN_MAX_PAGE_SIZE, ORDER_STATUSES, type AdminOrderSummary } from './a
  *    o faturamento e quantos pedidos entraram hoje, porque os de hoje estão
  *    dentro do mês e a lista vem do mais novo para o mais antigo. Duas
  *    consultas para o mesmo intervalo seriam uma ida a rede a toa.
- * 2. **Pendentes de contato** — só a contagem. `limit: 1` e de propósito: a
+ * 2. **Em processamento** — só a contagem. `limit: 1` e de propósito: a
  *    resposta que interessa e `totalItems`, e não os pedidos.
  * 3. **Os últimos dez** — a lista que ela realmente abre.
  * 4. **Os produtos** — para o esgotados e o estoque baixo.

@@ -98,6 +98,13 @@ test('o cadastro novo já vem com uma variante', () => {
   expect(emptyProductDraft().variants).toHaveLength(1);
 });
 
+test('a variante nova já vende sob encomenda', () => {
+  // E assim que a loja trabalha: o frasco e encomendado quando alguém
+  // compra. Desligado por padrão, todo cadastro novo subiria esgotado.
+  expect(emptyProductDraft().variants[0]?.allowBackorder).toBe(true);
+  expect(newVariant().allowBackorder).toBe(true);
+});
+
 test('a chave de linha e sempre nova', () => {
   const keys = [newVariant().key, newVariant().key, newVariant().key];
 

@@ -260,7 +260,7 @@ test('o painel não mostra controle de tema nenhum', () => {
   expect(screen.queryByRole('radio')).toBeNull();
 });
 
-test('o pedido esperando contato acende o card de alerta', async () => {
+test('o pedido parado em processando acende o card de alerta', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrirPainel();
@@ -270,7 +270,7 @@ test('o pedido esperando contato acende o card de alerta', async () => {
   // de saber que há um pedido parado.
   expect(await screen.findByText(/Abra a conversa/)).toBeDefined();
 
-  const card = screen.getByRole('link', { name: /Esperando contato/ });
+  const card = screen.getByRole('link', { name: /Processando/ });
 
   expect(card.textContent).toContain('1');
 });

@@ -1,6 +1,25 @@
 /**
  * Ciclo de vida do pedido. Como não há gateway de pagamento, quem move o
  * status e sempre a dona pelo painel.
+ *
+ * ## Os valores daqui não são as palavras do painel
+ *
+ * A dona nomeou o ciclo em quatro passos — processando, saiu para entrega,
+ * entregue, vendido —, mais o cancelamento. Os valores abaixo ficaram como
+ * estavam, porque renomea-los pediria migração de pedido já fechado e nenhum
+ * deles aparece em tela:
+ *
+ * | No painel          | Aqui              |
+ * | ------------------ | ----------------- |
+ * | Processando        | `PENDING_CONTACT` |
+ * | Saiu para entrega  | `SHIPPED`         |
+ * | Entregue           | `DELIVERED`       |
+ * | Vendido            | `CONFIRMED`       |
+ * | Cancelado          | `CANCELLED`       |
+ *
+ * `PREPARING` sobrou do ciclo antigo: nenhum pedido novo chega nele, e o
+ * painel não o oferece mais. Continua aqui porque pode haver pedido gravado
+ * nele, e um valor fora do enum seria recusado na leitura.
  */
 export const ORDER_STATUSES = {
   PENDING_CONTACT: 'PENDING_CONTACT',

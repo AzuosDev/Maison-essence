@@ -33,7 +33,7 @@ test('o caminho do campo e traduzido segmento a segmento', () => {
 
 test('papel e status de pedido saem com o rótulo que o resto do painel usa', () => {
   expect(describeValue('STAFF')).toBe('Atendimento');
-  expect(describeValue('PENDING_CONTACT')).toBe('Aguardando contato');
+  expect(describeValue('PENDING_CONTACT')).toBe('Processando');
 });
 
 test('vazio, nulo e booleano viram texto legível', () => {
@@ -50,7 +50,7 @@ test('o diff em inglês do backend vira antes e depois', () => {
   });
 
   expect(lines).toEqual([
-    { path: 'status', label: 'Status', from: 'Aguardando contato', to: 'Confirmado' },
+    { path: 'status', label: 'Status', from: 'Processando', to: 'Vendido' },
   ]);
 });
 

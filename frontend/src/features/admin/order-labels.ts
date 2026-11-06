@@ -12,33 +12,54 @@ import {
  * Como o pedido aparece escrito no painel.
  *
  * Os nomes do contrato (`PENDING_CONTACT`) não são os nomes da tela
- * ("Aguardando contato"). A tradução mora aqui, e não dentro de cada
- * componente, porque o mesmo status aparece na tabela, no detalhe, no
- * seletor e no filtro — e quatro traduções soltas viram quatro palavras
- * diferentes para o mesmo estado.
+ * ("Processando"). A tradução mora aqui, e não dentro de cada componente,
+ * porque o mesmo status aparece na tabela, no detalhe, no seletor e no
+ * filtro — e quatro traduções soltas viram quatro palavras diferentes para o
+ * mesmo estado.
+ *
+ * ## Os nomes da dona, e os valores que o banco já tem
+ *
+ * A dona nomeou o ciclo em quatro passos — processando, saiu para entrega,
+ * entregue, vendido —, mais o cancelamento. Os valores gravados continuam os
+ * mesmos de antes, porque renomear no banco pediria migração em pedido já
+ * fechado, e o nome interno não aparece em tela nenhuma:
+ *
+ * | Na tela            | No banco          |
+ * | ------------------ | ----------------- |
+ * | Processando        | `PENDING_CONTACT` |
+ * | Saiu para entrega  | `SHIPPED`         |
+ * | Entregue           | `DELIVERED`       |
+ * | Vendido            | `CONFIRMED`       |
+ * | Cancelado          | `CANCELLED`       |
+ *
+ * `PREPARING` sobrou do ciclo antigo e não entra mais no seletor. Ele
+ * continua traduzido porque pode haver pedido parado nele: um status sem
+ * rótulo apareceria como célula vazia na tabela, e "(antigo)" e o aviso de
+ * que aquele pedido precisa ser movido para um dos cinco de agora.
  */
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
-  [ORDER_STATUSES.PENDING_CONTACT]: 'Aguardando contato',
-  [ORDER_STATUSES.CONFIRMED]: 'Confirmado',
-  [ORDER_STATUSES.PREPARING]: 'Em preparo',
+  [ORDER_STATUSES.PENDING_CONTACT]: 'Processando',
   [ORDER_STATUSES.SHIPPED]: 'Saiu para entrega',
   [ORDER_STATUSES.DELIVERED]: 'Entregue',
+  [ORDER_STATUSES.CONFIRMED]: 'Vendido',
   [ORDER_STATUSES.CANCELLED]: 'Cancelado',
+  [ORDER_STATUSES.PREPARING]: 'Processando (antigo)',
 };
 
 /**
- * A ordem do ciclo de vida, para o seletor de status.
+ * A ordem do ciclo de vida, para o seletor e para o filtro.
  *
  * Não e a ordem alfabética nem a do objeto de constantes: e a ordem em que o
  * pedido anda de verdade, que e como a dona procura o próximo passo.
+ * "Vendido" vem depois de "Entregue" porque e a venda fechada e paga — o
+ * último passo, e não a confirmação do começo.
  */
 export const ORDER_STATUS_FLOW: readonly OrderStatus[] = [
   ORDER_STATUSES.PENDING_CONTACT,
-  ORDER_STATUSES.CONFIRMED,
-  ORDER_STATUSES.PREPARING,
   ORDER_STATUSES.SHIPPED,
   ORDER_STATUSES.DELIVERED,
+  ORDER_STATUSES.CONFIRMED,
   ORDER_STATUSES.CANCELLED,
 ];
 
@@ -85,16 +106,17 @@ export function paymentLabel(payment: AdminOrderPayment): string {
  * O tom do selo de status.
  *
  * Quatro tons para seis status, porque o que a cor precisa dizer e mais
- * simples que o estado: **este pedido espera você** (dourado), **esta
- * andando** (tinta), **acabou bem** (verde), **acabou mal** (vermelho). A
- * palavra continua escrita no selo — a cor nunca e o único portador.
+ * simples que o estado: **este pedido espera você** (dourado, processando),
+ * **esta andando** (tinta, saiu para entrega), **acabou bem** (verde,
+ * entregue e vendido), **acabou mal** (vermelho). A palavra continua escrita
+ * no selo — a cor nunca e o único portador.
  */
 export function statusTone(status: OrderStatus): 'gold' | 'ink' | 'success' | 'danger' {
-  if (status === ORDER_STATUSES.PENDING_CONTACT) {
+  if (status === ORDER_STATUSES.PENDING_CONTACT || status === ORDER_STATUSES.PREPARING) {
     return 'gold';
   }
 
-  if (status === ORDER_STATUSES.DELIVERED) {
+  if (status === ORDER_STATUSES.DELIVERED || status === ORDER_STATUSES.CONFIRMED) {
     return 'success';
   }
 

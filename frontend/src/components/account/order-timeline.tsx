@@ -11,8 +11,8 @@ import styles from './order-timeline.module.css';
  *
  * O pedido guarda duas datas: quando foi feito e quando mudou pela última
  * vez. Não há, na API publica, um registro por transição. Então um pedido
- * entregue mostra "Confirmado" e "Em preparo" como cumpridos e **sem data** —
- * porque eles foram cumpridos e a data não existe deste lado.
+ * vendido mostra "Saiu para entrega" e "Entregue" como cumpridos e **sem
+ * data** — porque eles foram cumpridos e a data não existe deste lado.
  *
  * A alternativa seria distribuir datas plausíveis entre os passos. Ficaria
  * mais bonito e seria mentira: alguém cobraria a loja por um prazo que um
@@ -23,10 +23,14 @@ import styles from './order-timeline.module.css';
  *
  * ## A trilha não e uma barra de progresso
  *
- * Cada passo traz o que significa — "Seu pedido esta sendo separado e
- * embalado" —, porque "Em preparo" sozinho não diz se alguém já pegou o
+ * Cada passo traz o que significa — "seu pedido chegou a loja e esta sendo
+ * separado" —, porque "Processando" sozinho não diz se alguém já pegou o
  * frasco da prateleira. E os passos futuros ficam apagados e visíveis, e não
  * escondidos: saber que ainda faltam dois e parte de saber onde se esta.
+ *
+ * E a descrição e o único lugar onde a retirada e a entrega se separam: o
+ * rótulo do passo e o mesmo nas duas, e e a descrição que diz "já pode ser
+ * retirado na loja" para quem vai buscar.
  */
 export function OrderTimeline({ order }: { order: CustomerOrderDetail }) {
   const steps = orderTimeline({

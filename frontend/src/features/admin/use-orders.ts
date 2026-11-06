@@ -52,7 +52,7 @@ export function useOrder(id: string) {
  * Move o pedido de status, com o seletor virando na hora.
  *
  * O otimismo aqui e menos sobre velocidade e mais sobre confiança: a dona
- * marca "Confirmado" e volta para o WhatsApp no mesmo segundo. Se ela
+ * marca "Vendido" e volta para o WhatsApp no mesmo segundo. Se ela
  * precisar esperar o servidor para ver a mudanca, ela clica de novo.
  *
  * O que o servidor pode recusar e real e tem mensagem própria — cancelar um
