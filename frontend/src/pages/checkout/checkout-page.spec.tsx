@@ -312,7 +312,10 @@ let quoteRequests: {
 let orderRequests: Record<string, unknown>[] = [];
 
 /** Quem responde a cotação. Trocado por caso, conforme o que se quer provar. */
-let quoteFor: (body: { fulfillment: { mode: string; cityId?: string } }) => unknown;
+let quoteFor: (body: {
+  fulfillment: { mode: string; cityId?: string };
+  payment: { method: string; cardMode?: string; installments?: number };
+}) => unknown;
 
 /** A resposta de `POST /orders`: sucesso por padrão. */
 let orderResponse: () => Response;
@@ -540,6 +543,89 @@ test('trocar a cidade muda a taxa e o total na hora', async () => {
     mode: 'delivery',
     cityId: 'c-crato',
   });
+});
+
+test('o resumo mostra o que o cartão cobra quando a parcela tem juros', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+
+  /**
+   * As duas opções, como o servidor as devolve.
+   *
+   * O `totalCents` da cotação e o preço a vista nas duas — a taxa da
+   * maquininha vive dentro da opção escolhida, e não no total do pedido.
+   * E justamente essa diferença que o resumo precisa escrever: sem ela, a
+   * tela responde R$ 587,90 a quem acabou de marcar "2x de R$ 313,01".
+   */
+  const A_VISTA = {
+    number: 1,
+    installmentCents: 58790,
+    firstInstallmentCents: 58790,
+    totalCents: 58790,
+    hasInterest: false,
+  };
+
+  const DUAS_VEZES = {
+    number: 2,
+    installmentCents: 31301,
+    firstInstallmentCents: 31301,
+    totalCents: 62602,
+    hasInterest: true,
+  };
+
+  quoteFor = (body) => {
+    // Sem modalidade escolhida não há tabela de taxa, e a cotação volta sem
+    // parcela nenhuma — como o servidor faz.
+    if (body.payment.cardMode === undefined) {
+      return cotacao({ mode: 'pickup', totalCents: 58790 });
+    }
+
+    const escolhida = body.payment.installments === 2 ? DUAS_VEZES : A_VISTA;
+
+    return {
+      ...cotacao({
+        mode: 'pickup',
+        totalCents: 58790,
+        installmentOptions: [A_VISTA, DUAS_VEZES],
+      }),
+      payment: {
+        method: 'card',
+        cardMode: body.payment.cardMode,
+        installments: escolhida.number,
+        selected: escolhida,
+      },
+    };
+  };
+
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+  await avancar(usuario);
+
+  await usuario.click(screen.getByRole('radio', { name: /Retirar na loja/ }));
+  await avancar(usuario);
+
+  await usuario.click(await screen.findByRole('radio', { name: /^Cartão/ }));
+  await usuario.click(await screen.findByRole('radio', { name: /Na maquininha/ }));
+  await usuario.click(await screen.findByRole('radio', { name: /^2x de R\$ 313,01/ }));
+
+  const resumo = screen.getByRole('complementary', { name: 'Resumo do pedido' });
+
+  // O total continua sendo o preço a vista: e ele que o pedido grava e que a
+  // mensagem do WhatsApp escreve.
+  await waitFor(() => {
+    expect(totalDoResumo()).toBe('R$ 587,90');
+  });
+
+  // E o que o cartão vai cobrar aparece junto, com o rótulo dele e com a
+  // parcela repetida embaixo.
+  await waitFor(() => {
+    expect(within(resumo).getByText('R$ 626,02')).toBeTruthy();
+  });
+
+  expect(within(resumo).getByText(/Parcelado em 2x/)).toBeTruthy();
+  expect(within(resumo).getByText(/2x de R\$ 313,01 · com juros/)).toBeTruthy();
 });
 
 test('recarregar no meio do checkout não perde nada', async () => {
