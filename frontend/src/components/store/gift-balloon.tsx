@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState, type RefObject } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useState, type RefObject } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
 import { useStoreSettings } from '@/features/settings';
 import { imageProps } from '@/lib/cloudinary';
@@ -22,21 +22,23 @@ import styles from './gift-balloon.module.css';
  * virariam uma pilha de botões, e o canto inferior direito e o que o polegar
  * cobre no celular.
  *
- * ## Dois tamanhos, um estado
+ * ## Ele nunca se esconde sozinho
  *
- * Aberto e o cartão com a foto e a frase; fechado e o círculo dourado — o
- * mesmo diâmetro do botão do WhatsApp, do outro lado da tela, porque dois
- * flutuantes de tamanhos diferentes nas duas pontas desequilibram o rodapé da
- * tela.
+ * Decisão da dona, e e o eixo deste componente: o brinde fica aparente em
+ * toda página da loja. O site não o recolhe na rolagem, não o esconde depois
+ * de um tempo e não guarda que alguém o fechou — a campanha e o motivo de a
+ * cliente somar mais um frasco, e um aviso que some na primeira rolagem não
+ * alcanca a terceira página de catálogo, que e onde a decisão acontece.
  *
- * O estado e um só e vive na sessão: fechado numa página, continua fechado na
- * seguinte. Um balão que reabrisse a cada navegação seria propaganda
- * perseguindo quem já disse não — e o círculo continua ali, dourado, para
- * quem mudar de ideia.
+ * O que existe e tirar o cartão da frente **nesta** página: o × troca o
+ * cartão pelo círculo dourado, do mesmo diâmetro do botão do WhatsApp do
+ * outro lado da tela. O brinde continua na tela — muda de tamanho, não de
+ * presença. Na página seguinte o cartão volta inteiro, e essa volta e
+ * deliberada, não esquecimento.
  *
- * Rolar a página para baixo também fecha, e **não** reabre quando a rolagem
- * para: descer e procurar produto, e o cartão ficaria por cima de um deles.
- * A volta e sempre um clique da cliente, nunca do site.
+ * A única coisa que mexe no balão sem a cliente pedir e o rodapé: ao chegar
+ * nele o balão sobe 64px para não cobrir os links, do mesmo jeito que o botão
+ * do WhatsApp faz do outro lado.
  *
  * ## O que ele promete, promete de verdade
  *
@@ -56,22 +58,22 @@ interface GiftBalloonProps {
   avoidRef?: RefObject<HTMLElement | null>;
 }
 
-/** Onde a escolha da cliente fica guardada enquanto a aba estiver aberta. */
-const OPEN_KEY = 'maison:brinde-aberto';
-
 export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
   const { settings } = useStoreSettings();
-  const [open, setOpen] = useState(readOpen);
   const raised = useIsVisible(avoidRef);
+  const { pathname } = useLocation();
 
-  // Estável entre renderizações: sem isto, o efeito da rolagem se
-  // reinscreveria a cada quadro em que o componente renderizasse.
-  const collapse = useCallback(() => {
-    setOpen(false);
-    writeOpen(false);
-  }, []);
-
-  useCollapseOnScroll(open, collapse);
+  /*
+   * O estado não e "fechado", e **em que página** a cliente fechou.
+   *
+   * O balão mora na moldura da loja e não e desmontado quando ela troca de
+   * página, então um `open` booleano faria um × dado na home valer para a
+   * visita inteira — e o brinde passaria o resto do caminho encolhido num
+   * círculo. Guardando o endereço, a comparação se resolve na renderização:
+   * mudou de página, mudou o endereço, o cartão volta inteiro.
+   */
+  const [closedOn, setClosedOn] = useState<string | null>(null);
+  const open = closedOn !== pathname;
 
   const gift = settings?.gift ?? null;
 
@@ -80,11 +82,6 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
   if (gift === null) {
     return null;
   }
-
-  const toggle = (next: boolean): void => {
-    setOpen(next);
-    writeOpen(next);
-  };
 
   return (
     <div className={cx(styles.balloon, raised && styles.raised)}>
@@ -95,7 +92,7 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
             irmão do link, e não filho dele: um botão dentro de um link não e
             clicável por teclado em nenhum navegador.
           */}
-          <Link to={ROUTES.products} className={styles.offer} onClick={() => { toggle(false); }}>
+          <Link to={ROUTES.products} className={styles.offer}>
             <Figure image={gift.image} />
 
             <p className={styles.text}>
@@ -107,9 +104,9 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
           <button
             type="button"
             className={styles.close}
-            aria-label="Fechar o aviso do brinde"
+            aria-label="Encolher o aviso do brinde"
             onClick={() => {
-              toggle(false);
+              setClosedOn(pathname);
             }}
           >
             <CloseIcon />
@@ -121,7 +118,7 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
           className={styles.circle}
           aria-label={`Ver o brinde: compre ${formatCents(gift.minCents)} e ganhe ${gift.label}`}
           onClick={() => {
-            toggle(true);
+            setClosedOn(null);
           }}
         >
           <GiftIcon />
@@ -161,60 +158,6 @@ function Figure({ image }: { image: string }) {
 }
 
 /**
- * A rolagem para baixo fecha o cartão.
- *
- * Mesma medida do botão do WhatsApp (dez pixels, e só depois dos primeiros
- * duzentos) para que os dois flutuantes reajam ao mesmo gesto — um saindo
- * para a direita enquanto o outro encolhe a esquerda e um tranco só, não dois.
- *
- * Só desce fecha. Subir não reabre, e parar também não: reabrir sozinho seria
- * o site insistindo em cima de quem acabou de fechar.
- */
-const COLLAPSE_THRESHOLD_PX = 10;
-const QUIET_ZONE_PX = 200;
-
-function useCollapseOnScroll(open: boolean, collapse: () => void): void {
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    let last = window.scrollY;
-    let ticking = false;
-
-    const measure = (): void => {
-      ticking = false;
-
-      const current = window.scrollY;
-      const delta = current - last;
-
-      if (Math.abs(delta) < COLLAPSE_THRESHOLD_PX) {
-        return;
-      }
-
-      last = current;
-
-      if (delta > 0 && current > QUIET_ZONE_PX) {
-        collapse();
-      }
-    };
-
-    const onScroll = (): void => {
-      if (!ticking) {
-        ticking = true;
-        requestAnimationFrame(measure);
-      }
-    };
-
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, [open, collapse]);
-}
-
-/**
  * O elemento observado esta na tela?
  *
  * `IntersectionObserver` e não um listener de rolagem, como no botão do
@@ -246,30 +189,4 @@ function useIsVisible(ref: RefObject<HTMLElement | null> | undefined): boolean {
   }, [ref]);
 
   return visible;
-}
-
-/**
- * A escolha da cliente, guardada só enquanto a aba viver.
- *
- * `sessionStorage` e não `localStorage`: fechar o balão e uma decisão desta
- * visita, não para sempre. A loja pode trocar o brinde amanhã, e quem fechou
- * o balão de dezembro merece ver o de janeiro.
- *
- * Tudo dentro de `try`: janela anônima e navegador com dados de site
- * bloqueados fazem o acesso lancar, e um balão não pode derrubar a loja.
- */
-function readOpen(): boolean {
-  try {
-    return window.sessionStorage.getItem(OPEN_KEY) !== 'nao';
-  } catch {
-    return true;
-  }
-}
-
-function writeOpen(open: boolean): void {
-  try {
-    window.sessionStorage.setItem(OPEN_KEY, open ? 'sim' : 'nao');
-  } catch {
-    // Sem armazenamento, o balão simplesmente reabre na próxima página.
-  }
 }

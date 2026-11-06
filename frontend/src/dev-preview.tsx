@@ -239,6 +239,13 @@ const SETTINGS = {
   },
   pickupInstructions: 'Combine o horário pelo WhatsApp.',
   freeShippingMinCents: 29900,
+  // Uma campanha de brinde ligada: e a única forma de o balão do canto e o
+  // segundo degrau da régua da sacola aparecerem na bancada.
+  gift: {
+    minCents: 17_999,
+    label: 'um porta hidratante com a melhor pasta árabe dentro',
+    image: PHOTOS[2]!,
+  },
   banners: [
     {
       id: 'b1',

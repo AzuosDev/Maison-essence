@@ -76,9 +76,17 @@ export function Providers({ children }: ProvidersProps) {
           <ToastProvider>{children}</ToastProvider>
         </ThemeProvider>
 
+        {/*
+          O botão das ferramentas vai para o alto da tela.
+
+          Ele morava no canto inferior esquerdo, que agora e do balão do
+          brinde — e os dois cantos de baixo passaram a ser da loja: o
+          esquerdo do brinde, o direito do WhatsApp. Só aparece em
+          desenvolvimento, mas e em desenvolvimento que se confere o balão.
+        */}
         {Devtools ? (
           <Suspense fallback={null}>
-            <Devtools buttonPosition="bottom-left" />
+            <Devtools buttonPosition="top-left" />
           </Suspense>
         ) : null}
       </QueryClientProvider>

@@ -5,6 +5,7 @@ import {
   AlertIcon,
   ArrowLeftIcon,
   BannerEditor,
+  GiftEditor,
   PagesEditor,
   PerfumePicker,
 } from '@/components/admin';
@@ -52,9 +53,10 @@ import styles from './admin-settings-page.module.css';
  * ## Quem entra, e até onde
  *
  * O gerente da loja e o administrador; o atendimento, não. E dentro da tela a
- * permissão se divide outra vez, por campo: as duas primeiras seções são a
+ * permissão se divide outra vez, por campo: as três primeiras seções são a
  * operação da loja — nome, contato, horário, barra de avisos, frete grátis,
- * retirada — e o gerente grava as duas. As quatro últimas são a moldura:
+ * retirada e o brinde por valor de compra — e o gerente grava as três. As
+ * quatro últimas são a moldura:
  * redes sociais, carrossel, perfume da vez e páginas do rodapé. Elas aparecem
  * em toda página da loja e não mudam no expediente, e por isso ficam com quem
  * mantem o sistema.
@@ -409,6 +411,48 @@ function SettingsForm({
               }}
             />
           </div>
+        </section>
+
+        {/*
+          O brinde fica com a operação, e não com a moldura.
+
+          E a mesma natureza do "frete grátis acima de R$ 199" que esta logo
+          no primeiro cartão: uma regra de "compre X e ganhe Y", ligada e
+          desligada conforme a campanha do mês. Apontar um produto não faz
+          disso moldura — o que define a moldura e aparecer em toda página e
+          não mudar no dia a dia. O servidor concorda, campo a campo
+          (`settings-access.policy.ts`).
+        */}
+        <section className={styles.card} aria-labelledby="secao-brinde">
+          <div className={styles.cardHead}>
+            <h2 className={styles.cardTitle} id="secao-brinde">
+              O brinde
+            </h2>
+
+            <Switch
+              label="Oferecer brinde"
+              checked={draft.gift.isActive}
+              onChange={(event) => {
+                set({ gift: { ...draft.gift, isActive: event.target.checked } });
+              }}
+            />
+          </div>
+
+          <p className={styles.cardHint}>
+            "Compre R$ 179,99 e ganhe um porta hidratante." O aviso aparece num balão no canto da
+            loja, a régua da sacola passa a contar quanto falta, e o brinde entra na mensagem do
+            pedido que chega no seu WhatsApp.
+          </p>
+
+          <Warnings warnings={warnings} scope="gift" />
+
+          <GiftEditor
+            gift={draft.gift}
+            errors={errors.gift}
+            onChange={(gift) => {
+              set({ gift });
+            }}
+          />
         </section>
 
         {canEditFrame ? (

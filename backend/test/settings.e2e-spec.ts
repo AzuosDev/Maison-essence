@@ -9,6 +9,7 @@ import { PasswordService } from '../src/modules/auth/password.service.js';
 import {
   AuditEntry,
   INSTITUTIONAL_PAGE_SLUGS,
+  Product,
   RefreshToken,
   StoreSettings,
   USER_ROLES,
@@ -34,6 +35,7 @@ describe('configuracoes da loja (e2e)', () => {
   let users: Model<User>;
   let refreshTokens: Model<RefreshToken>;
   let settings: Model<StoreSettings>;
+  let products: Model<Product>;
   let audit: Model<AuditEntry>;
   let passwordHash: string;
 
@@ -48,6 +50,7 @@ describe('configuracoes da loja (e2e)', () => {
     users = app.get<Model<User>>(getModelToken(User.name));
     refreshTokens = app.get<Model<RefreshToken>>(getModelToken(RefreshToken.name));
     settings = app.get<Model<StoreSettings>>(getModelToken(StoreSettings.name));
+    products = app.get<Model<Product>>(getModelToken(Product.name));
     audit = app.get<Model<AuditEntry>>(getModelToken(AuditEntry.name));
     passwordHash = await app.get(PasswordService).hash(PASSWORD);
   });
@@ -63,6 +66,7 @@ describe('configuracoes da loja (e2e)', () => {
       users.deleteMany({}),
       refreshTokens.deleteMany({}),
       settings.deleteMany({}),
+      products.deleteMany({}),
       audit.deleteMany({}),
     ]);
   });
@@ -102,6 +106,25 @@ describe('configuracoes da loja (e2e)', () => {
   /** Quem mantem o sistema, e a unica pessoa que mexe na moldura da loja. */
   function signedInAdmin(): Promise<Session> {
     return signedIn(USER_ROLES.SUPER_ADMIN, 'dev@maisonessence.com');
+  }
+
+  /**
+   * O produto que a loja da de brinde.
+   *
+   * Nasce **fora do ar**, e nao por descuido: brinde nao se vende, e exigir
+   * que ele estivesse publicado obrigaria a loja a por na vitrine uma coisa
+   * que nao esta a venda. A variante existe porque o schema de produto a
+   * exige, nao porque o brinde precise de preco.
+   */
+  function giftProduct(overrides: Record<string, unknown> = {}) {
+    return products.create({
+      name: 'Porta Hidratante ME',
+      slug: 'porta-hidratante-me',
+      images: ['maison-essence/produtos/porta-hidratante'],
+      variants: [{ sku: 'BRINDE-1', priceCents: 0, stock: 0 }],
+      isActive: false,
+      ...overrides,
+    });
   }
 
   function adminSettings(session: Session): request.Test {
@@ -432,6 +455,112 @@ describe('configuracoes da loja (e2e)', () => {
       // Estado do painel nao vaza para a vitrine.
       expect(response.body).not.toHaveProperty('updatedAt');
       expect(response.body).not.toHaveProperty('institutionalPages');
+    });
+
+    /**
+     * O brinde chega resolvido: frase, valor e foto, prontos para a tela.
+     *
+     * A vitrine nao sabe que existe um produto por tras do brinde, e nao
+     * decide quando a promessa vale. Os tres lugares que a anunciam — o
+     * balao, a regua da sacola e a mensagem do pedido — leem esta resposta.
+     */
+    it('entrega o brinde com a foto e o nome do produto resolvidos', async () => {
+      const owner = await signedInOwner();
+      const brinde = await giftProduct({
+        images: ['maison-essence/produtos/porta-hidratante', 'maison-essence/produtos/outra'],
+      });
+
+      await patch(owner, {
+        gift: {
+          isActive: true,
+          minCents: 17_999,
+          productId: brinde._id.toHexString(),
+          label: 'um porta hidratante com a melhor pasta arabe dentro',
+        },
+      }).expect(200);
+
+      const response = await publicSettings().expect(200);
+
+      expect(response.body.gift).toEqual({
+        minCents: 17_999,
+        label: 'um porta hidratante com a melhor pasta arabe dentro',
+        image: 'maison-essence/produtos/porta-hidratante',
+      });
+      // O id do produto e assunto do painel: a vitrine recebe a foto pronta.
+      expect(response.body.gift).not.toHaveProperty('productId');
+    });
+
+    it('sem frase escrita, vale o nome do produto', async () => {
+      const owner = await signedInOwner();
+      const brinde = await giftProduct({ images: [] });
+
+      await patch(owner, {
+        gift: { isActive: true, minCents: 17_999, productId: brinde._id.toHexString() },
+      }).expect(200);
+
+      const response = await publicSettings().expect(200);
+
+      expect(response.body.gift).toEqual({
+        minCents: 17_999,
+        label: 'Porta Hidratante ME',
+        image: '',
+      });
+    });
+
+    /**
+     * Campanha pela metade nao vira promessa.
+     *
+     * E a falha silenciosa desta configuracao: ligar o brinde, salvar e nao
+     * ver nada acontecer. O painel avisa antes; a vitrine simplesmente nao
+     * promete o que nao tem como cumprir.
+     */
+    it('brinde ligado sem valor meta nao chega a vitrine', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, { gift: { isActive: true, label: 'um porta hidratante' } }).expect(200);
+
+      const response = await publicSettings().expect(200);
+
+      expect(response.body.gift).toBeNull();
+    });
+
+    it('brinde desligado nao chega a vitrine, mesmo configurado', async () => {
+      const owner = await signedInOwner();
+
+      await patch(owner, {
+        gift: { isActive: false, minCents: 17_999, label: 'um porta hidratante' },
+      }).expect(200);
+
+      expect((await publicSettings().expect(200)).body.gift).toBeNull();
+    });
+
+    /**
+     * A fusao campo a campo: mexer no valor nao apaga a frase.
+     *
+     * E o mesmo contrato do endereco de retirada, e aqui ele importa porque a
+     * dona troca o valor da campanha sem reescrever o que a cliente ganha.
+     */
+    it('trocar so o valor meta preserva a frase e o produto', async () => {
+      const owner = await signedInOwner();
+      const brinde = await giftProduct();
+
+      await patch(owner, {
+        gift: {
+          isActive: true,
+          minCents: 17_999,
+          productId: brinde._id.toHexString(),
+          label: 'um porta hidratante',
+        },
+      }).expect(200);
+
+      const response = await patch(owner, { gift: { minCents: 24_999 } }).expect(200);
+
+      expect(response.body.gift).toEqual({
+        isActive: true,
+        minCents: 24_999,
+        productId: brinde._id.toHexString(),
+        label: 'um porta hidratante',
+      });
     });
 
     it('esconde o endereco enquanto a retirada esta desligada', async () => {
@@ -778,6 +907,27 @@ describe('configuracoes da loja (e2e)', () => {
         socialLinks: { instagram: 'maisonessence' },
       });
       expect(response.body.banners).toHaveLength(1);
+    });
+
+    it('o brinde e da operacao: o gerente liga, escolhe o valor e o produto', async () => {
+      const owner = await signedInOwner();
+      const brinde = await giftProduct();
+
+      const response = await patch(owner, {
+        gift: {
+          isActive: true,
+          minCents: 17_999,
+          productId: brinde._id.toHexString(),
+          label: 'um porta hidratante com a melhor pasta arabe dentro',
+        },
+      }).expect(200);
+
+      expect(response.body.gift).toEqual({
+        isActive: true,
+        minCents: 17_999,
+        productId: brinde._id.toHexString(),
+        label: 'um porta hidratante com a melhor pasta arabe dentro',
+      });
     });
 
     it('a recusa nao vira linha de auditoria', async () => {

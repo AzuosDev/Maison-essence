@@ -36,8 +36,9 @@ O que a dona confirmou como a diferença da casa, em ordem de peso:
 - **Preço, parcelamento e promoção**, no mesmo terreno das concorrentes
   populares do segmento: desconto visível, preço riscado, parcela no cartão,
   desconto progressivo por quantidade, frete grátis a partir de um valor.
-- **Brinde a partir de um valor de compra.** Mecânica real do negócio hoje.
-  Ver *Capabilities and Constraints*: a API ainda não tem campo para ela.
+- **Brinde a partir de um valor de compra.** Mecânica real do negócio hoje, e
+  configurável pelo painel desde 06/11/2026: a dona liga o brinde, escolhe o
+  valor meta e aponta o produto em Ajustes.
 - **Atendimento um a um no WhatsApp**, com a dona, antes e depois da compra.
 - **Curadoria curta e original**, escolhida peça a peça, conferida antes de
   sair — e não um catálogo gigante de milhares de itens.
@@ -65,16 +66,15 @@ Mecânicas comerciais que **existem hoje** na API e podem ser desenhadas:
   com o primeiro degrau no card e a escada inteira na página do produto;
 - parcelamento calculado pelo backend;
 - frete grátis acima de um valor, global ou por cidade, com o quanto falta;
+- brinde a partir de um valor de compra (`StoreSettings.gift`), anunciado no
+  balão flutuante da loja, perseguido pela régua da sacola e escrito na
+  mensagem do pedido que chega no WhatsApp da dona;
 - pronta entrega e retirada em Juazeiro do Norte;
 - variantes com estoque, disponibilidade e sob encomenda;
 - busca com sugestão, categorias em árvore, banners agendados.
 
 O que **não existe** e não pode ser simulado como se funcionasse:
 
-- **Brinde por valor de compra.** Não há campo em `StoreSettings` nem regra no
-  carrinho. A vitrine pode anunciar a régua, mas o valor e o texto precisam
-  nascer de um lugar declarado — e, enquanto a API não tiver o campo, de uma
-  constante revisada, vazia por padrão, do mesmo jeito que o CNPJ do rodapé.
 - **Inscrição em newsletter.** Não há rota; o formulário recusa com uma
   mensagem honesta que manda para o WhatsApp.
 - **CNPJ e razão social.** Não vêm de `GET /settings`; o rodapé esconde a linha

@@ -1,0 +1,105 @@
+/*
+ * O brinde por valor de compra, no painel.
+ *
+ * Três campos e uma prévia, nesta ordem: o valor, a frase, o produto, e no
+ * fim a sentenca inteira como a cliente vai lê-la. A prévia e o único lugar
+ * desta tela que imita a loja — a mesma licenca que a prévia de pagamento já
+ * tem, e pelo mesmo motivo: a decisão acontece olhando para o lado de lá.
+ */
+
+.editor {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.pair {
+  display: grid;
+  gap: var(--space-16);
+}
+
+@media (min-width: 48rem) {
+  .pair {
+    grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+  }
+}
+
+/* ---- A prévia -------------------------------------------------------------- */
+
+.preview {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: 0;
+}
+
+.caption {
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
+/*
+ * O balão, do tamanho que ele tem na loja.
+ *
+ * Fundo branco, filete e canto de cartão: o que todo painel flutuante da
+ * vitrine faz. Sem sombra aqui — ela existe para o que paira sobre a página,
+ * e este balão esta deitado dentro de um formulário.
+ */
+.balloon {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  width: min(20rem, 100%);
+  padding: var(--space-12);
+
+  background-color: var(--bg);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.photo,
+.blank {
+  flex: none;
+
+  display: block;
+  width: 3rem;
+  height: 3rem;
+
+  object-fit: cover;
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+}
+
+.text {
+  margin: 0;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* O valor em dourado escurecido, como na loja: `--gold` da 2.4:1 sobre o
+   branco e não pode ser texto. */
+.amount {
+  font-weight: var(--weight-bold);
+  font-variant-numeric: tabular-nums;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+/*
+ * O aviso de que não vai aparecer.
+ *
+ * Texto corrido, sem caixa vermelha: não e erro — e configuração pela
+ * metade, e a frase diz exatamente o que falta.
+ */
+.off {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
