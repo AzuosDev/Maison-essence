@@ -1,0 +1,28 @@
+/*
+ * A linha de total do rodapé do passo, no celular.
+ *
+ * A moldura e o alinhamento são de `step-card.module.css`, que desenha a
+ * faixa inteira. O que mora aqui e só a coluna da direita, que deixou de ser
+ * um número e passou a ser um número com uma condição embaixo.
+ */
+
+.value {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-4);
+
+  text-align: right;
+}
+
+/*
+ * O que o cartão cobra quando a parcela tem juros.
+ *
+ * Em corpo de nota, embaixo do total: não e um segundo total, e a condição
+ * que o cliente acabou de escolher dois dedos acima — e sem ela o número
+ * grande parece contradizer a parcela marcada na lista.
+ */
+.financed {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+}

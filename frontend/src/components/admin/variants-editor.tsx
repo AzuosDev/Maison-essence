@@ -1,14 +1,8 @@
-import { Button, Input, Select, Switch } from '@/components/ui';
-import {
-  PRODUCT_LIMITS,
-  duplicateVariant,
-  newVariant,
-  type DraftErrors,
-  type VariantDraft,
-} from '@/features/admin';
+import { Input, Select, Switch } from '@/components/ui';
+import { PRODUCT_LIMITS, type DraftErrors, type VariantDraft } from '@/features/admin';
 import { imageUrl } from '@/lib/cloudinary';
 import { useMediaQuery } from '@/lib/use-media-query';
-import { CopyIcon, PlusIcon, TrashIcon } from './admin-icons';
+import { TrashIcon } from './admin-icons';
 import styles from './variants-editor.module.css';
 
 /**
@@ -22,13 +16,17 @@ import styles from './variants-editor.module.css';
  * a seção: quem cadastra precisa saber onde o preço esta guardado para
  * saber onde muda-lo depois.
  *
- * ## Duplicar e o gesto principal
+ * ## Aqui não se cria variante
  *
- * Um perfume entra em 50 ml, 100 ml e 200 ml pelo mesmo preço por mililitro,
- * com o mesmo estoque inicial e a mesma foto. Preencher a segunda linha do
- * zero e refazer seis campos para trocar um. Duplicar copia o trabalho e
- * descarta a identidade — `id` e `sku` saem fora, porque são únicos por
- * variante (ver `duplicateVariant`).
+ * O cadastro abre com a variante que o produto precisa ter e não oferece
+ * nenhum jeito de somar outra: nem "adicionar", nem duplicar. A loja da
+ * Maison Essence vende um frasco por produto, e os dois botões convidavam a
+ * dona a montar uma grade de tamanhos que depois precisa de preço, SKU e
+ * estoque próprios em cada linha.
+ *
+ * O que sobra e editar e remover. Remover existe porque há produto salvo de
+ * antes com mais de uma variante, e ela precisa poder enxugar — a última
+ * nunca sai, que produto sem variante não tem preço nem estoque.
  *
  * ## A foto sai da galeria do produto
  *
@@ -82,22 +80,6 @@ export function VariantsEditor({
     onChange(variants.map((variant) => (variant.key === key ? { ...variant, ...patch } : variant)));
   };
 
-  const duplicate = (key: string): void => {
-    const next: VariantDraft[] = [];
-
-    for (const variant of variants) {
-      next.push(variant);
-
-      if (variant.key === key) {
-        // A copia entra logo abaixo da original, e não no fim da lista: e ali
-        // que o olho esta, e e ali que a diferença entre as duas será escrita.
-        next.push(duplicateVariant(variant));
-      }
-    }
-
-    onChange(next);
-  };
-
   const remove = (key: string): void => {
     onChange(variants.filter((variant) => variant.key !== key));
   };
@@ -113,8 +95,6 @@ export function VariantsEditor({
       label: index === 0 ? 'Foto 1 (capa)' : `Foto ${String(index + 1)}`,
     })),
   ];
-
-  const full = variants.length >= PRODUCT_LIMITS.variants;
 
   return (
     <div className={styles.editor}>
@@ -132,7 +112,6 @@ export function VariantsEditor({
           disabled={disabled}
           canRemove={variants.length > 1}
           onUpdate={update}
-          onDuplicate={duplicate}
           onRemove={remove}
         />
       ) : (
@@ -143,28 +122,9 @@ export function VariantsEditor({
           disabled={disabled}
           canRemove={variants.length > 1}
           onUpdate={update}
-          onDuplicate={duplicate}
           onRemove={remove}
         />
       )}
-
-      <Button
-        type="button"
-        variant="secondary"
-        disabled={disabled || full}
-        onClick={() => {
-          onChange([...variants, newVariant()]);
-        }}
-      >
-        <PlusIcon />
-        Adicionar variante
-      </Button>
-
-      {full ? (
-        <p className={styles.hint}>
-          São no máximo {PRODUCT_LIMITS.variants} variantes por produto.
-        </p>
-      ) : null}
     </div>
   );
 }
@@ -177,7 +137,6 @@ interface ListProps {
   /** A última variante não pode sair: produto sem variante não existe. */
   canRemove: boolean;
   onUpdate: (key: string, patch: Partial<VariantDraft>) => void;
-  onDuplicate: (key: string) => void;
   onRemove: (key: string) => void;
 }
 
@@ -190,7 +149,6 @@ function VariantRows({
   disabled,
   canRemove,
   onUpdate,
-  onDuplicate,
   onRemove,
 }: ListProps) {
   return (
@@ -340,12 +298,11 @@ function VariantRows({
                 </td>
 
                 <td className={styles.rowActions}>
-                  <RowButtons
+                  <RemoveButton
                     index={index}
                     variantKey={variant.key}
                     disabled={disabled}
                     canRemove={canRemove}
-                    onDuplicate={onDuplicate}
                     onRemove={onRemove}
                   />
                 </td>
@@ -367,7 +324,6 @@ function VariantBlocks({
   disabled,
   canRemove,
   onUpdate,
-  onDuplicate,
   onRemove,
 }: ListProps) {
   return (
@@ -384,12 +340,11 @@ function VariantBlocks({
                   : variant.label.trim()}
               </h3>
 
-              <RowButtons
+              <RemoveButton
                 index={index}
                 variantKey={variant.key}
                 disabled={disabled}
                 canRemove={canRemove}
-                onDuplicate={onDuplicate}
                 onRemove={onRemove}
               />
             </div>
@@ -556,44 +511,39 @@ function VariantImage({
   );
 }
 
-function RowButtons({
+/**
+ * Remover esta variante.
+ *
+ * Quando o produto tem uma variante só — o caso de toda a loja — o botão não
+ * aparece: sem variante o produto não tem preço nem estoque, e o servidor
+ * recusa o cadastro com 422. Um alvo desligado que nunca liga não e um
+ * estado, e lixo em cima de uma linha que ela vai editar todo mês.
+ */
+function RemoveButton({
   index,
   variantKey,
   disabled,
   canRemove,
-  onDuplicate,
   onRemove,
 }: {
   index: number;
   variantKey: string;
   disabled: boolean;
   canRemove: boolean;
-  onDuplicate: (key: string) => void;
   onRemove: (key: string) => void;
 }) {
+  if (!canRemove) {
+    return null;
+  }
+
   return (
     <div className={styles.buttons}>
       <button
         type="button"
-        className={styles.iconButton}
-        aria-label={`Duplicar a variante ${String(index + 1)}`}
-        title="Duplicar"
-        disabled={disabled}
-        onClick={() => {
-          onDuplicate(variantKey);
-        }}
-      >
-        <CopyIcon className={styles.buttonIcon} />
-      </button>
-
-      <button
-        type="button"
         className={styles.removeButton}
         aria-label={`Remover a variante ${String(index + 1)}`}
-        // A última não sai: sem variante, o produto não tem preço nem estoque,
-        // e o servidor recusa o cadastro com 422.
-        title={canRemove ? 'Remover' : 'Todo produto precisa de uma variante'}
-        disabled={disabled || !canRemove}
+        title="Remover"
+        disabled={disabled}
         onClick={() => {
           onRemove(variantKey);
         }}

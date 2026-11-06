@@ -207,6 +207,11 @@ test('a dona vê o total e a forma de pagamento na lista', async () => {
   expect(await screen.findByRole('link', { name: 'ME-260922-K4P1' })).toBeDefined();
   expect(screen.getByText('R$ 379,80')).toBeDefined();
   expect(screen.getByText('Cartão 3x')).toBeDefined();
+
+  // A hora da emissão, com os segundos. O caso confere o formato, e não um
+  // horário fixo: o relógio e o de quem esta lendo, e um valor cravado aqui
+  // passaria na máquina da dona e falharia na integração, que roda em UTC.
+  expect(screen.getByText(/^\d{2}:\d{2}:\d{2}$/)).toBeDefined();
 });
 
 test('o STAFF não vê o total, mas vê como o cliente vai pagar', async () => {

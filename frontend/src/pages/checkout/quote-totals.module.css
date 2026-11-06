@@ -82,6 +82,32 @@
   line-height: var(--leading-tight);
 }
 
+/*
+ * O que o cartão cobra quando a parcela escolhida tem juros.
+ *
+ * Colada no total, e com o vão menor que o das outras linhas: as duas
+ * respondem a mesma pergunta — quanto eu pago — e precisam ser lidas como
+ * um par. O valor fica em peso de apoio, e não no corpo grande do total:
+ * dois números do mesmo tamanho um embaixo do outro seriam dois totais, e
+ * o pedido tem um só.
+ */
+.financed {
+  margin-top: calc(var(--space-4) * -1);
+}
+
+.financed dd {
+  font-weight: var(--weight-semibold);
+}
+
+/* A parcela embaixo do rótulo, como a cidade na linha do frete: "Parcelado
+   em 2x" e o que a linha e, e "2x de R$ 313,01" e de onde o valor saiu. */
+.financedNote {
+  display: block;
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+}
+
 .note {
   margin: var(--space-16) 0 0;
 

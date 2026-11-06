@@ -3,7 +3,8 @@ import { Skeleton } from '@/components/ui';
 import type { CartQuote } from '@/features/cart';
 import { FULFILLMENT_MODES } from '@/features/checkout';
 import { cx } from '@/lib/cx';
-import { formatCents } from '@/lib/format';
+import { formatCents, formatInstallment } from '@/lib/format';
+import { financedInstallment } from './financed-installment';
 import styles from './quote-totals.module.css';
 
 /**
@@ -32,6 +33,16 @@ import styles from './quote-totals.module.css';
  * O que este bloco nunca faz e somar o subtotal com uma taxa por conta
  * própria para adiantar o total. Seria a única conta do checkout feita no
  * navegador, e seria justamente a do número que o cliente vai pagar.
+ *
+ * ## O total que o cartão cobra
+ *
+ * O "Total" desta lista e o preço a vista, e e ele que o pedido grava e que
+ * a mensagem do WhatsApp escreve como TOTAL. Quando a parcela escolhida tem
+ * juros, o cartão cobra outro número — e esse número também vem pronto do
+ * servidor, dentro da opção selecionada. Os dois aparecem, cada um com o seu
+ * rótulo: um resumo que responde R$ 587,90 ao lado de uma escolha de "2x de
+ * R$ 313,01" parece erro de conta, e faz o cliente descobrir a diferença na
+ * maquininha.
  */
 
 export interface QuoteTotalsProps {
@@ -79,6 +90,8 @@ export function QuoteTotals({ quote, totalsResolved, isPending, isFetching }: Qu
             )}
           </dd>
         </div>
+
+        <FinancedLine quote={quote} totalsResolved={totalsResolved} isPending={isPending} />
       </dl>
 
       {totalsResolved ? null : (
@@ -89,6 +102,51 @@ export function QuoteTotals({ quote, totalsResolved, isPending, isFetching }: Qu
 
       <FreeShippingNote quote={quote} totalsResolved={totalsResolved} />
     </>
+  );
+}
+
+/**
+ * O que o cartão cobra, quando a parcela escolhida tem juros.
+ *
+ * Abaixo do total e em corpo menor, porque e consequência de uma escolha e
+ * não da conta do pedido: o valor a vista continua sendo o número que o
+ * pedido grava. O rótulo diz em quantas vezes, e a linha de apoio repete a
+ * parcela — o número que o cliente acabou de marcar no passo do pagamento e
+ * precisa reconhecer aqui.
+ *
+ * A primeira parcela entra quando difere das outras. São centavos de sobra
+ * de arredondamento, e e por serem centavos que precisam estar escritos:
+ * ninguém deve descobrir na fatura que a primeira veio maior.
+ */
+function FinancedLine({
+  quote,
+  totalsResolved,
+  isPending,
+}: {
+  quote: CartQuote | undefined;
+  totalsResolved: boolean;
+  isPending: boolean;
+}) {
+  const financed = financedInstallment(quote, totalsResolved);
+
+  if (isPending || financed === null) {
+    return null;
+  }
+
+  const unevenFirst = financed.firstInstallmentCents !== financed.installmentCents;
+
+  return (
+    <div className={cx(styles.line, styles.financed)}>
+      <dt>
+        Parcelado em {financed.number}x
+        <span className={styles.financedNote}>
+          {formatInstallment(financed.number, financed.installmentCents)} · com juros
+          {unevenFirst ? ` · primeira de ${formatCents(financed.firstInstallmentCents)}` : ''}
+        </span>
+      </dt>
+
+      <dd className="tabular">{formatCents(financed.totalCents)}</dd>
+    </div>
   );
 }
 

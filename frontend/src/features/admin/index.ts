@@ -180,7 +180,6 @@ export {
   draftFromProduct,
   draftToCreate,
   draftToUpdate,
-  duplicateVariant,
   emptyProductDraft,
   hasErrors,
   moveImage,
