@@ -385,7 +385,9 @@ test('a quantidade para no estoque da variante escolhida', async () => {
   await abrirProduto();
 
   const mais = screen.getByRole('button', { name: 'Aumentar a quantidade' }) as HTMLButtonElement;
-  const campo = screen.getByLabelText('Quantidade') as HTMLInputElement;
+  // O rotulo sai da tela para o seletor caber na linha do botao, e continua
+  // na arvore de acessibilidade nomeando o que esta sendo contado.
+  const campo = screen.getByLabelText(/^Quantidade de /) as HTMLInputElement;
 
   await usuario.click(mais);
 
@@ -414,4 +416,31 @@ test('a aba de trocas mostra o texto da página institucional', async () => {
   const painel = await screen.findByRole('tabpanel');
 
   expect(within(painel).getByText('Sete dias para devolver.')).toBeTruthy();
+});
+
+/**
+ * A coluna de compra, na ordem que a dona pediu.
+ *
+ * O caso cobra a **ordem** e a presença de cada campo, que e o que um olhar
+ * na tela confunde: preço riscado em cima, preço, percentual, economia,
+ * parcela — e, no fim, os dois caminhos de compra e o recado de segurança.
+ */
+test('o bloco de compra mostra a economia e fecha com a compra protegida', async () => {
+  await abrirProduto();
+
+  const riscado = document.querySelector(`.${buyBox.compareAt}`)?.textContent ?? '';
+
+  // `De` sai do texto escondido que nomeia o número para quem ouve.
+  expect(riscado).toBe('De R$ 259,90');
+  expect(precoDestaque()).toBe('R$ 189,90');
+  expect(screen.getByText('27% OFF')).toBeTruthy();
+
+  // R$ 259,90 − R$ 189,90, a conta que o cliente faria de cabeça.
+  expect(document.querySelector(`.${buyBox.savings}`)?.textContent).toBe('Economize: R$ 70,00');
+
+  // "Comprar" fecha agora; "Adicionar a sacola" continua a visita.
+  expect(screen.getByRole('button', { name: 'Comprar' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Adicionar a sacola' })).toBeTruthy();
+
+  expect(screen.getByText('Compra protegida')).toBeTruthy();
 });

@@ -67,7 +67,10 @@
   margin: 0;
 }
 
+/* O "de", na linha de cima e sozinho. Ver a nota em `buy-box.tsx`. */
 .compareAt {
+  margin: 0;
+
   font-size: var(--text-16);
   color: var(--ink-soft);
   text-decoration: line-through;
@@ -91,6 +94,22 @@
   font-weight: var(--weight-semibold);
   color: var(--gold-deep);
   white-space: nowrap;
+}
+
+/*
+ * "Economize: R$ 30,00".
+ *
+ * No dourado escuro do "% OFF", e não no verde do PIX: os dois dizem a mesma
+ * coisa por caminhos diferentes — o percentual e o valor da mesma promoção —
+ * e a cor os mantem como uma informação só. O verde esta reservado para o
+ * preço do PIX, que e outro desconto, somado a este.
+ */
+.savings {
+  margin: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--gold-deep);
 }
 
 .unit,
@@ -127,19 +146,42 @@
   color: var(--ink-soft);
 }
 
-/* ---- Quantidade e estoque ----------------------------------------------- */
+/* ---- A linha de compra -------------------------------------------------- */
 
-.quantity {
+/*
+ * Quantidade e "Comprar" na mesma linha, e a sacola embaixo.
+ *
+ * São uma decisão só — quantos, e vamos —, e separa-las punha o seletor
+ * numa faixa própria que ninguém usa: o caso de quase todo mundo e um.
+ * Abaixo, "Adicionar a sacola" ocupa a largura inteira em secundário, que e
+ * a hierarquia certa entre fechar agora e continuar olhando.
+ */
+.actions {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.buyRow {
   display: flex;
-  flex-wrap: wrap;
-  align-items: end;
-  gap: var(--space-16);
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/*
+ * O botão fica com a sobra, e o seletor com a medida dele.
+ *
+ * `min-width: 0` porque "Comprar" dentro de um flex não encolhe abaixo do
+ * conteúdo por padrão, e em 360px o par estouraria a coluna.
+ */
+.buyRow > :last-child {
+  flex: 1;
+  min-width: 0;
 }
 
 .stock {
   /* `<output>` nasce inline, e a nota e um parágrafo. */
   display: block;
-  margin: 0 0 var(--space-8);
+  margin: 0;
 
   font-size: var(--text-14);
   color: var(--ink-soft);
@@ -149,25 +191,46 @@
   color: var(--danger);
 }
 
-/* ---- Os botões ---------------------------------------------------------- */
+/* ---- A compra protegida ------------------------------------------------- */
 
 /*
- * Empilhados no celular, lado a lado no desktop.
- *
- * O primário vem primeiro nos dois casos: "adicionar" e o que a maioria faz,
- * e "comprar agora" e o atalho de quem já decidiu.
+ * Sem contorno e sem fundo: o bloco de entrega, logo abaixo, já e o cartão
+ * da coluna. Ver a nota em `buy-box.tsx`.
  */
-.actions {
-  display: grid;
+.secure {
+  display: flex;
+  align-items: start;
   gap: var(--space-12);
+
+  margin: 0;
+}
+
+.secureIcon {
+  flex: none;
+  width: 1.25rem;
+  height: 1.25rem;
+
+  /* A mesma tinta do texto de apoio: o escudo separa a linha, não a anuncia. */
+  color: var(--ink-soft);
+}
+
+.secureTitle {
+  display: block;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.secureNote {
+  display: block;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
 }
 
 @media (min-width: 48rem) {
   .name {
     font-size: var(--text-36);
-  }
-
-  .actions {
-    grid-template-columns: 1fr 1fr;
   }
 }
