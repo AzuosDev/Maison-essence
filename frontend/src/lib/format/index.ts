@@ -22,6 +22,7 @@ export {
   formatDate,
   formatDateTime,
   formatLongDate,
+  formatTime,
   toDateTimeAttribute,
   type DateInput,
 } from './date';
