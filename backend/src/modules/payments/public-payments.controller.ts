@@ -9,11 +9,14 @@ import { PaymentsService } from './payments.service.js';
 /**
  * As formas de pagamento que a loja aberta anuncia.
  *
- * Cinco minutos na borda (`SETTINGS_CACHE`), como as configurações da loja:
+ * Meio minuto na borda (`SETTINGS_CACHE`), como as configurações da loja:
  * são regras que mudam algumas vezes por ano e que a vitrine consulta em toda
- * visita, para escrever "em até 3x sem juros" no card e montar o checkout. O
- * ETag encurta a janela real — desligar o cartão no painel muda a etiqueta na
- * mesma hora, e a próxima revalidação já entrega a resposta sem a opção.
+ * visita, para escrever "em até 3x sem juros" no card e montar o checkout.
+ *
+ * A janela e curta porque e a dona quem mexe nela. O ETag **não** a encurta —
+ * ele poupa o corpo da resposta na revalidação, não antecipa a revalidação —,
+ * e desligar o cartão no painel só chega a quem esta comprando quando a borda
+ * volta a perguntar. Ver o comentário de `SETTINGS_CACHE`.
  */
 @Public()
 @CdnCache(SETTINGS_CACHE)

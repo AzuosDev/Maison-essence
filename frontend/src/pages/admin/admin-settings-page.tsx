@@ -167,10 +167,15 @@ function SettingsForm({
         // banners de novo sem `id` e criaria copias deles.
         setDraft(draftFromStoreSettings(saved));
         setTouched(false);
+        // A promessa aqui era "quem abrir o site agora vê", e ela não era
+        // verdade: entre esta gravação e a loja há a janela de cache da borda
+        // (ver `cache-control.ts` no backend). Dizer o número e o que evita a
+        // conclusão de que o painel não gravou — que foi o que aconteceu com
+        // a troca de vaga dos banners.
         toast({
           variant: 'success',
-          title: 'A loja já esta assim',
-          description: 'Quem abrir o site agora vê as configurações novas.',
+          title: 'Gravado',
+          description: 'A loja mostra o que você acabou de salvar em até um minuto.',
         });
       },
       onError: (cause) => {

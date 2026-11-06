@@ -9,16 +9,17 @@ import type { PublicSettingsView } from './settings.view.js';
 /**
  * As configurações que a loja aberta consome.
  *
- * Cinco minutos na CDN (`SETTINGS_CACHE`) porque esta resposta e pedida em
- * toda visita: cabeçalho, rodapé, barra de avisos, banners da home e o botão
- * do WhatsApp saem daqui.
+ * Meio minuto na CDN (`SETTINGS_CACHE`), e não mais: esta resposta e pedida
+ * em toda visita — cabeçalho, rodapé, barra de avisos, banners da home e o
+ * botão do WhatsApp saem daqui —, mas e também a que a dona edita no painel
+ * esperando ver o resultado na loja.
  *
- * A invalidação e por versão no ETag, e não por expurgo na borda. O ETag
- * carrega o `updatedAt` do documento, então todo PATCH no painel já muda a
- * etiqueta: na primeira revalidação depois da gravação a CDN recebe 200 com
- * o conteúdo novo, e enquanto nada muda ela recebe 304 sem corpo. E o que
- * torna a loja operável sem redeploy — trocar o número do WhatsApp no painel
- * troca o destino do pedido, com a janela de cache como único atraso.
+ * Não há expurgo na borda: a Vercel não oferece um para função comum, e o
+ * ETag não faz as vezes de um. Ele carrega o `updatedAt`, então todo PATCH
+ * muda a etiqueta — só que a borda só compara etiquetas quando *decide*
+ * revalidar, e essa decisão e a janela, não o ETag. O que o ETag entrega e
+ * revalidação barata: enquanto nada muda ela custa um 304 sem corpo, e e isso
+ * que torna uma janela de trinta segundos sustentável.
  */
 @Public()
 @CdnCache(SETTINGS_CACHE)

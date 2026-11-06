@@ -4,12 +4,12 @@ import type { Request, Response } from 'express';
 /**
  * ETag das rotas públicas que a CDN guarda.
  *
- * A validação existe porque cache compartilhado sozinho não resolve o caso
- * das configurações: a dona troca o número do WhatsApp e quer ver a mudanca,
- * não esperar o `s-maxage` vencer com a certeza de que a resposta velha ainda
- * esta correta. Com ETag, a borda pergunta "mudou?" e a função responde 304
- * sem serializar nada quando nada mudou — e responde 200 com o corpo novo no
- * instante seguinte ao PATCH.
+ * A validação existe para baratear a revalidação, e não para antecipa-la: a
+ * borda só pergunta "mudou?" quando a janela do `s-maxage` venceu, e nenhum
+ * ETag muda essa hora. O que ele muda e o preço da pergunta — 304 sem
+ * serializar nada enquanto nada mudou —, e e esse preço que permite manter a
+ * janela das configurações curta o bastante para a dona ver no site o que
+ * acabou de salvar no painel. Ver `SETTINGS_CACHE` em `cache-control.ts`.
  *
  * O ETag e fraco (`W/`) de propósito: ele identifica o *conteúdo semântico*
  * da resposta, não os bytes. Duas respostas com os mesmos campos em ordem

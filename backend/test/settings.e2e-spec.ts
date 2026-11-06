@@ -635,7 +635,7 @@ describe('configuracoes da loja (e2e)', () => {
       const response = await publicSettings().expect(200);
 
       expect(response.headers['cache-control']).toBe(
-        'public, max-age=0, s-maxage=300, stale-while-revalidate=600',
+        'public, max-age=0, s-maxage=30, stale-while-revalidate=60',
       );
     });
 
@@ -650,7 +650,7 @@ describe('configuracoes da loja (e2e)', () => {
       expect(revalidacao.body).toEqual({});
       // O cabecalho de cache sai tambem no 304: sem ele a borda esqueceria a
       // janela justamente na revalidacao.
-      expect(revalidacao.headers['cache-control']).toContain('s-maxage=300');
+      expect(revalidacao.headers['cache-control']).toContain('s-maxage=30');
     });
 
     it('o PATCH do painel muda o ETag, e a borda larga a copia velha', async () => {

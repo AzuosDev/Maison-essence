@@ -455,7 +455,7 @@ describe('pagamento (e2e)', () => {
       const primeira = await publicPayments().expect(200);
 
       expect(primeira.headers['cache-control']).toBe(
-        'public, max-age=0, s-maxage=300, stale-while-revalidate=600',
+        'public, max-age=0, s-maxage=30, stale-while-revalidate=60',
       );
 
       const revalidacao = await publicPayments()
@@ -463,7 +463,7 @@ describe('pagamento (e2e)', () => {
         .expect(304);
 
       expect(revalidacao.body).toEqual({});
-      expect(revalidacao.headers['cache-control']).toContain('s-maxage=300');
+      expect(revalidacao.headers['cache-control']).toContain('s-maxage=30');
     });
 
     it('o PATCH do painel muda o ETag, e a borda larga a copia velha', async () => {

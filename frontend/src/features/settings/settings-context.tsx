@@ -18,13 +18,24 @@ import type { PublicPageSummary, PublicSettings } from './settings.types';
  * a mão — coisa que se vê na revisão. Sem ele, o segundo `useQuery` seria
  * indistinguível do primeiro.
  *
- * Os dados não mudam durante a visita, então o `staleTime` e longo: a dona
- * trocar o texto da barra de avisos aparece na próxima navegação completa, e
- * não há por que revalidar isso a cada troca de rota.
+ * ## Por que um minuto, e por que a volta para a aba revalida
+ *
+ * O `staleTime` era de meia hora, com o argumento de que nada disto muda
+ * durante uma visita. Muda, sim, para uma pessoa: a dona, que edita no painel
+ * — quase sempre numa aba — e vai conferir na loja, noutra. A aba da loja tem
+ * o seu próprio cache do TanStack Query: o `invalidateQueries` que o painel
+ * dispara ao salvar não atravessa para ela. Com meia hora de `staleTime` e
+ * `refetchOnWindowFocus` desligado, aquela aba ficava congelada até um
+ * recarregamento completo, e trocar um banner de vaga parecia não ter sido
+ * gravado.
+ *
+ * Um minuto, e revalidando ao voltar para a aba, e o que torna "salvei ali,
+ * olho aqui" previsível. Não custa resposta: a rota devolve `ETag`, então a
+ * revalidação que não encontra novidade e um `304` sem corpo.
  */
 
-/** Meia hora. A resposta já vem com cinco minutos de cache na borda. */
-const STALE_TIME_MS = 30 * 60 * 1000;
+/** Um minuto, como o resto do catálogo. */
+const STALE_TIME_MS = 60_000;
 
 interface StoreSettingsContextValue {
   settings: PublicSettings | undefined;
@@ -49,12 +60,16 @@ export function StoreSettingsProvider({ children }: { children: ReactNode }) {
     queryKey: settingsKeys.settings(),
     queryFn: ({ signal }) => fetchSettings(signal),
     staleTime: STALE_TIME_MS,
+    // Contra o padrão da aplicação, e pelo motivo escrito acima: esta e a
+    // resposta que a dona edita noutra aba e vem conferir nesta.
+    refetchOnWindowFocus: true,
   });
 
   const pages = useQuery({
     queryKey: settingsKeys.pages(),
     queryFn: ({ signal }) => fetchInstitutionalPages(signal),
     staleTime: STALE_TIME_MS,
+    refetchOnWindowFocus: true,
   });
 
   const value = useMemo(
