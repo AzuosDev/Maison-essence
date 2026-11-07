@@ -14,6 +14,7 @@ import {
 } from '../../schemas.js';
 import type { StoreSettingsModel } from '../../schemas.js';
 import { CATEGORY_NOT_FOUND_MESSAGE } from '../categories/categories.constants.js';
+import { CouponsService } from '../coupons/coupons.service.js';
 import {
   catalogCollation,
   catalogFilter,
@@ -73,6 +74,7 @@ export class PublicCatalogService {
     @InjectModel(QuantityDiscount.name) private readonly discounts: Model<QuantityDiscount>,
     @InjectModel(Order.name) private readonly orders: Model<Order>,
     @InjectModel(StoreSettings.name) private readonly settings: StoreSettingsModel,
+    private readonly coupons: CouponsService,
   ) {}
 
   /**
@@ -89,6 +91,7 @@ export class PublicCatalogService {
     const filter = catalogFilter({
       categoryIds:
         query.category === undefined ? undefined : await this.categoryBranch(query.category),
+      productIds: await this.campaignScope(query.campaign),
       q: term,
       brand: query.brand,
       minPriceCents: query.minPrice,
@@ -114,6 +117,35 @@ export class PublicCatalogService {
     ]);
 
     return paginate(await this.toCards(found), totalItems, page, limit);
+  }
+
+  /**
+   * A que produtos uma campanha restringe a vitrine.
+   *
+   * Três respostas, e as três importam:
+   *
+   * - **sem campanha pedida** (`undefined`): nenhuma restrição, a vitrine
+   *   inteira;
+   * - **campanha da loja inteira**: também `undefined`, porque o cupom vale
+   *   para todo o catálogo e a vitrine dele e a vitrine comum;
+   * - **campanha de produtos específicos**: a lista dela;
+   * - **campanha que não esta no ar**: lista vazia, que não casa com produto
+   *   nenhum. E a resposta honesta para o link de story que ficou circulando
+   *   depois do fim da promoção — melhor a grade vazia com a página dizendo
+   *   que acabou do que o catálogo todo fingindo desconto.
+   */
+  private async campaignScope(slug: string | undefined): Promise<Types.ObjectId[] | undefined> {
+    if (slug === undefined || slug === '') {
+      return undefined;
+    }
+
+    const productIds = await this.coupons.campaignProductIds(slug);
+
+    if (productIds === null) {
+      return [];
+    }
+
+    return productIds.length === 0 ? undefined : productIds;
   }
 
   /** Prateleira de destaques da home. */

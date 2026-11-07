@@ -47,9 +47,27 @@ export interface OrderPaymentView {
 export interface OrderTotalsView {
   subtotalCents: number;
   discountTotalCents: number;
+  /** Quanto o cupom tirou. Zero na maioria dos pedidos. */
+  couponDiscountCents: number;
   deliveryFeeCents: number;
   pixDiscountCents: number;
   totalCents: number;
+}
+
+/**
+ * O cupom do pedido, como ficou gravado.
+ *
+ * Sem `couponId`: quem lê um pedido — a cliente na conta dela, a dona no painel
+ * — não tem nada a fazer com o id da campanha, e o que importa esta todo aqui,
+ * congelado no dia da compra. O id existe no documento para uma coisa só, que e
+ * mexer no contador quando a venda fecha.
+ */
+export interface OrderCouponView {
+  code: string;
+  title: string;
+  /** `20% OFF`, como estava escrito na tela quando ela comprou. */
+  discountLabel: string;
+  discountCents: number;
 }
 
 export interface OrderCustomerView {
@@ -76,6 +94,8 @@ export interface CustomerOrderView {
   fulfillment: OrderFulfillmentView;
   payment: OrderPaymentView;
   totals: OrderTotalsView;
+  /** O cupom usado, ou `null`. */
+  coupon: OrderCouponView | null;
   /** A mensagem como foi montada, para a tela oferecer copiar o texto. */
   whatsappMessage: string;
   createdAt: Date;
@@ -157,10 +177,20 @@ export function toCustomerOrderView(order: OrderDocument): CustomerOrderView {
     totals: {
       subtotalCents: order.totals.subtotalCents,
       discountTotalCents: order.totals.discountTotalCents,
+      couponDiscountCents: order.totals.couponDiscountCents,
       deliveryFeeCents: order.totals.deliveryFeeCents,
       pixDiscountCents: order.totals.pixDiscountCents,
       totalCents: order.totals.totalCents,
     },
+    coupon:
+      order.coupon === null
+        ? null
+        : {
+            code: order.coupon.code,
+            title: order.coupon.title,
+            discountLabel: order.coupon.discountLabel,
+            discountCents: order.coupon.discountCents,
+          },
     whatsappMessage: order.whatsappMessage,
     createdAt: order.createdAt,
     updatedAt: order.updatedAt,

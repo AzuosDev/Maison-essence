@@ -4,6 +4,7 @@ import type { Model } from 'mongoose';
 import { Types } from 'mongoose';
 import { PAYMENT_METHODS } from '../../common/enums/payment-method.js';
 import { Product, QuantityDiscount } from '../../schemas.js';
+import { CouponsService } from '../coupons/coupons.service.js';
 import { DeliveryService } from '../delivery/delivery.service.js';
 import { InstallmentService } from '../payments/installment.service.js';
 import type { InstallmentOption } from '../payments/installments.js';
@@ -55,6 +56,7 @@ export class CartQuoteService {
     private readonly delivery: DeliveryService,
     private readonly payments: PaymentsService,
     private readonly installments: InstallmentService,
+    private readonly coupons: CouponsService,
   ) {}
 
   /**
@@ -73,12 +75,31 @@ export class CartQuoteService {
     const catalog = await this.load(lines);
     const items = quoteItems(lines, catalog, await this.rulesFor(catalog));
     const { subtotalCents, discountTotalCents } = sumItems(items);
+    /*
+     * A entrega mede o subtotal **cheio** dos produtos, e não o que sobra
+     * depois do cupom.
+     *
+     * Quem comprou R$ 400 em produtos alcançou o frete grátis, e um cupom de
+     * 20% não pode tirar dela um frete que ela já tinha conquistado na
+     * prateleira. A mesma régua vale para o brinde, lá na criação do pedido —
+     * `giftEarned` também lê o subtotal.
+     */
     const fulfillment = await this.delivery.resolveFee({
       mode: dto.fulfillment.mode,
       cityId: dto.fulfillment.cityId ?? null,
       subtotalCents,
     });
-    const settled = await this.settle(dto.payment, subtotalCents, fulfillment.feeCents);
+    const applied = await this.coupons.resolve(dto.couponCode, items);
+    /*
+     * O pagamento, por sua vez, só vê o que sobrou.
+     *
+     * O desconto do PIX incide sobre este valor, e não sobre o subtotal cheio:
+     * 20% de cupom mais 5% de PIX sobre o mesmo R$ 400 tirariam R$ 100 de uma
+     * loja que prometeu tirar R$ 96 — e a diferença apareceria como um pedido
+     * que não fecha com o que a tela mostrou.
+     */
+    const payableCents = subtotalCents - applied.discountCents;
+    const settled = await this.settle(dto.payment, payableCents, fulfillment.feeCents);
 
     return {
       items,
@@ -86,8 +107,15 @@ export class CartQuoteService {
       payment: settled.payment,
       subtotalCents,
       discountTotalCents,
+      coupon: applied.coupon,
+      couponDiscountCents: applied.discountCents,
+      couponWarning: applied.warning,
       deliveryFeeCents: fulfillment.feeCents,
       pixDiscountCents: settled.pixDiscountCents,
+      // O total menos a entrega: o que os produtos custam depois dos
+      // descontos. Daqui, e não de `payableCents` lá de cima, porque este já
+      // desconta o PIX — ver a nota do campo em `quote.view.ts`.
+      payableCents: settled.totalCents - fulfillment.feeCents,
       totalCents: settled.totalCents,
       installmentOptions: settled.installmentOptions,
       warnings: [

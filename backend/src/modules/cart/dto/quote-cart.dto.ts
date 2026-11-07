@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   ArrayNotEmpty,
@@ -7,10 +7,13 @@ import {
   IsInt,
   IsMongoId,
   IsOptional,
+  IsString,
   Max,
+  MaxLength,
   Min,
   ValidateNested,
 } from 'class-validator';
+import { MAX_COUPON_CODE_LENGTH } from '../../coupons/coupons.constants.js';
 import { CARD_MODE_VALUES } from '../../../common/enums/card-mode.js';
 import type { CardMode } from '../../../common/enums/card-mode.js';
 import { FULFILLMENT_MODE_VALUES } from '../../../common/enums/fulfillment-mode.js';
@@ -104,4 +107,24 @@ export class QuoteCartDto {
   @ValidateNested()
   @Type(() => QuotePaymentDto)
   payment: QuotePaymentDto;
+
+  /**
+   * O código do cupom, como a cliente o digitou.
+   *
+   * Normalizado aqui — sem espaco, em maiúsculas — para que `blackfriday` e
+   * ` BlackFriday ` cheguem ao banco como o mesmo cupom. Nenhum formato e
+   * exigido além do tamanho: código inválido não e corpo inválido, e sim um
+   * código que não existe, e a resposta certa para isso e a cotação completa
+   * com um aviso — nunca um 400 que apaga a tela de quem errou uma letra.
+   *
+   * Ausente e o caso comum. O que ele **nunca** carrega e valor de desconto:
+   * como no preço dos itens, o cliente diz *qual*, e o banco diz *quanto*.
+   */
+  @IsOptional()
+  @Transform(({ value }: { value: unknown }) =>
+    typeof value === 'string' ? value.trim().toUpperCase() : value,
+  )
+  @IsString({ message: 'cupom inválido' })
+  @MaxLength(MAX_COUPON_CODE_LENGTH, { message: 'cupom inválido' })
+  couponCode?: string;
 }

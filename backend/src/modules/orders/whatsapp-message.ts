@@ -82,9 +82,24 @@ export interface WhatsappTotals {
   /** Soma das linhas já com o desconto por quantidade descontado. */
   subtotalCents: number;
   discountTotalCents: number;
+  /** Quanto o cupom tirou. Zero quando não houve cupom. */
+  couponDiscountCents: number;
   deliveryFeeCents: number;
   pixDiscountCents: number;
   totalCents: number;
+}
+
+/**
+ * O cupom usado, para a linha do resumo.
+ *
+ * A dona precisa do código escrito na mensagem, e não só do valor: e por ele
+ * que ela reconhece de qual campanha veio a venda quando abre a conversa, e e
+ * ele que ela confere contra a régua de usos no painel.
+ */
+export interface WhatsappCoupon {
+  code: string;
+  /** `20% OFF` ou `R$ 30,00 OFF`. */
+  discountLabel: string;
 }
 
 export interface WhatsappOrder {
@@ -94,6 +109,8 @@ export interface WhatsappOrder {
   fulfillment: WhatsappFulfillment;
   payment: WhatsappPayment;
   totals: WhatsappTotals;
+  /** O cupom deste pedido. `null` na maioria deles. */
+  coupon: WhatsappCoupon | null;
   /**
    * O brinde que este pedido ganhou. Vazio quando não ganhou nenhum.
    *
@@ -118,7 +135,7 @@ export function buildWhatsappMessage(order: WhatsappOrder): string {
     ...order.items.flatMap((item, index) => itemLines(item, index + 1)),
     '',
     '*RESUMO*',
-    ...summaryLines(order.totals, order.fulfillment),
+    ...summaryLines(order.totals, order.fulfillment, order.coupon),
     '',
     ...(order.gift === '' ? [] : ['*BRINDE*', order.gift, '']),
     '*PAGAMENTO*',
@@ -179,12 +196,26 @@ function itemLines(item: WhatsappItem, position: number): string[] {
  * subtotal líquido e ainda mostrar a linha de desconto faria o desconto
  * aparecer duas vezes para quem conferisse.
  */
-function summaryLines(totals: WhatsappTotals, fulfillment: WhatsappFulfillment): string[] {
+function summaryLines(
+  totals: WhatsappTotals,
+  fulfillment: WhatsappFulfillment,
+  coupon: WhatsappCoupon | null,
+): string[] {
   return [
     `Subtotal: ${formatCents(totals.subtotalCents + totals.discountTotalCents)}`,
     ...(totals.discountTotalCents > 0
       ? [`Desconto: -${formatCents(totals.discountTotalCents)}`]
       : []),
+    /*
+     * O cupom vem com o código escrito, e logo depois do desconto por
+     * quantidade: e a ordem em que os dois entraram na conta, e e a ordem que
+     * deixa as linhas somarem o total na ponta do lapis.
+     */
+    ...(coupon === null || totals.couponDiscountCents <= 0
+      ? []
+      : [
+          `Cupom ${coupon.code}${coupon.discountLabel === '' ? '' : ` (${coupon.discountLabel})`}: -${formatCents(totals.couponDiscountCents)}`,
+        ]),
     ...(fulfillment.mode === FULFILLMENT_MODES.DELIVERY ? [feeLine(totals, fulfillment)] : []),
     ...(totals.pixDiscountCents > 0
       ? [`Desconto PIX: -${formatCents(totals.pixDiscountCents)}`]
