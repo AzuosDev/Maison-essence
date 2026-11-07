@@ -154,6 +154,41 @@ export class OrderPayment {
 
 export const OrderPaymentSchema = createSchema(OrderPayment);
 
+/**
+ * O cupom usado no pedido, congelado como os itens.
+ *
+ * Código, nome e desconto são copiados: a dona pode editar a campanha amanha
+ * ou excluí-la depois do Natal, e o pedido de hoje continua dizendo o que foi
+ * combinado — "BLACKFRIDAY, 20% OFF, menos R$ 80,00" — em vez de apontar para
+ * um documento que mudou de valor ou não existe mais.
+ *
+ * `couponId` e a exceção, e tem um trabalho só: dizer qual contador mexer
+ * quando a gerente marcar o pedido como vendido. Fica sem `ref` como os itens
+ * — não existe `populate` previsto nele, e essa e a garantia de que ninguém vai
+ * exibir o desconto de hoje num pedido de três meses atrás.
+ */
+@Schema(embeddedSchemaOptions({ _id: false }))
+export class OrderCoupon {
+  @Prop(objectIdProp({ default: null }))
+  couponId: Types.ObjectId | null;
+
+  @Prop(textProp({ required: true, max: 24, uppercase: true }))
+  code: string;
+
+  @Prop(textProp({ max: 60, default: '' }))
+  title: string;
+
+  /** `20% OFF` ou `R$ 30,00 OFF`, como estava escrito na tela. */
+  @Prop(textProp({ max: 40, default: '' }))
+  discountLabel: string;
+
+  /** Quanto o cupom tirou deste pedido. Já esta em `totals.couponDiscountCents`. */
+  @Prop(centsProp({ required: true, default: 0 }))
+  discountCents: number;
+}
+
+export const OrderCouponSchema = createSchema(OrderCoupon);
+
 /** Totais do pedido, todos em centavos e todos calculados no servidor. */
 @Schema(embeddedSchemaOptions({ _id: false }))
 export class OrderTotals {
@@ -162,6 +197,17 @@ export class OrderTotals {
 
   @Prop(centsProp({ required: true, default: 0 }))
   discountTotalCents: number;
+
+  /**
+   * O desconto do cupom. Linha própria, como a do PIX.
+   *
+   * Fora de `subtotalCents` de propósito: o subtotal e o que a cliente levou em
+   * produtos, e e por ele que se mede a meta do brinde e a do frete grátis.
+   * Quem comprou R$ 400 ganhou o brinde — o cupom e desconto no pagamento, não
+   * compra menor.
+   */
+  @Prop(centsProp({ required: true, default: 0 }))
+  couponDiscountCents: number;
 
   @Prop(centsProp({ required: true, default: 0 }))
   deliveryFeeCents: number;
@@ -219,6 +265,25 @@ export class Order extends BaseSchema {
   @Prop({ type: OrderTotalsSchema, required: true })
   totals: OrderTotals;
 
+  /** O cupom usado, ou `null` — que e o caso da maioria dos pedidos. */
+  @Prop({ type: OrderCouponSchema, default: null })
+  coupon: OrderCoupon | null;
+
+  /**
+   * Quando este pedido entrou no contador do cupom.
+   *
+   * O irmão de `stockRestoredAt`, e pela mesma razão: a ação que mexe em um
+   * número de fora precisa de um marcador no documento, ou marcar "Vendido"
+   * duas vezes contaria dois usos. Nulo em todo pedido sem cupom, e nos que
+   * têm cupom e ainda não viraram venda — são justamente esses que a campanha
+   * conta como "segurando" uma vaga.
+   *
+   * Cancelar uma venda fechada devolve o uso e volta este campo a nulo: a vaga
+   * retorna à campanha, e o pedido cancelado deixa de segurá-la.
+   */
+  @Prop({ type: Date, default: null })
+  couponConsumedAt: Date | null;
+
   @Prop(enumProp(ORDER_STATUS_VALUES, { required: true, default: ORDER_STATUSES.PENDING_CONTACT }))
   status: OrderStatus;
 
@@ -264,3 +329,9 @@ OrderSchema.index({ 'customer.phone': 1, createdAt: -1 });
  * produto. Sem o índice, cada gravação no painel varreria os pedidos.
  */
 OrderSchema.index({ 'items.variantId': 1 });
+/**
+ * "Quantos pedidos estão segurando este cupom?" — a pergunta que a campanha faz
+ * antes de aceitar o código numa sacola nova, e que o painel faz para desenhar
+ * a régua de usos. Sem o índice, cada cotação com cupom varreria os pedidos.
+ */
+OrderSchema.index({ 'coupon.couponId': 1, couponConsumedAt: 1 });

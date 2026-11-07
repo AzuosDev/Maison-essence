@@ -16,6 +16,19 @@ export type PublicSort = (typeof PUBLIC_SORTS)[number];
 export interface CatalogFilterInput {
   /** A categoria pedida e as subcategorias dela, já resolvidas do slug. */
   categoryIds?: readonly Types.ObjectId[];
+  /**
+   * Os produtos aos quais a vitrine esta restrita, já resolvidos.
+   *
+   * Hoje quem usa e a página da campanha: o cupom aponta uma lista de produtos,
+   * e a vitrine filtrada por ela e a vitrine da promoção — com a mesma grade, a
+   * mesma ordenação e a mesma paginação da loja inteira.
+   *
+   * Lista vazia e um filtro que não casa com nada, e e o comportamento certo:
+   * "restrito a estes produtos, e não há nenhum" não pode virar "sem restrição"
+   * no meio do caminho. Campanha da loja inteira não passa `productIds` —
+   * passa `undefined`.
+   */
+  productIds?: readonly Types.ObjectId[];
   q?: string;
   brand?: string;
   minPriceCents?: number;
@@ -47,6 +60,10 @@ export function catalogFilter(input: CatalogFilterInput): QueryFilter<Product> {
 
   if (input.categoryIds !== undefined) {
     filter.categoryIds = { $in: [...input.categoryIds] };
+  }
+
+  if (input.productIds !== undefined) {
+    filter._id = { $in: [...input.productIds] };
   }
 
   if (input.brand !== undefined && input.brand.length > 0) {

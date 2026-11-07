@@ -20,6 +20,16 @@ export const AUDIT_ACTIONS = {
   PRODUCT_PRICE_CHANGED: 'product.price_changed',
   CATALOG_IMPORTED: 'catalog.imported',
   ORDER_STATUS_CHANGED: 'order.status_changed',
+  /**
+   * Cupons. Criar, editar e excluir entram na trilha; o contador de usos não.
+   *
+   * O contador se move por venda fechada, e cada venda já tem a sua entrada em
+   * `order.status_changed` — registrar as duas coisas encheria a trilha de
+   * linhas que contam a mesma história duas vezes.
+   */
+  COUPON_CREATED: 'coupon.created',
+  COUPON_UPDATED: 'coupon.updated',
+  COUPON_DELETED: 'coupon.deleted',
 } as const;
 
 export type AuditAction = (typeof AUDIT_ACTIONS)[keyof typeof AUDIT_ACTIONS];
@@ -31,6 +41,7 @@ export const AUDIT_TARGETS = {
   ORDER: 'order',
   SETTINGS: 'settings',
   CATALOG: 'catalog',
+  COUPON: 'coupon',
 } as const;
 
 export type AuditTargetKind = (typeof AUDIT_TARGETS)[keyof typeof AUDIT_TARGETS];

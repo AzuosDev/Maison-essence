@@ -20,6 +20,7 @@ import type { AuthenticatedUser } from '../auth/auth.types.js';
 import { CartQuoteService } from '../cart/cart-quote.service.js';
 import { CARD_UNAVAILABLE_WARNING, PIX_UNAVAILABLE_WARNING } from '../cart/cart.constants.js';
 import type { CartQuoteView } from '../cart/quote.view.js';
+import { CouponsService } from '../coupons/coupons.service.js';
 import type { AuthenticatedCustomer } from '../customers/customer-auth.types.js';
 import { RateLimitService } from '../rate-limit/rate-limit.service.js';
 import { giftEarned } from '../settings/gift.js';
@@ -79,6 +80,7 @@ export class OrdersService {
     private readonly settings: SettingsService,
     private readonly limits: RateLimitService,
     private readonly audit: AuditService,
+    private readonly coupons: CouponsService,
   ) {}
 
   /**
@@ -168,10 +170,19 @@ export class OrdersService {
     }
 
     const previous = order.status;
-    const view =
+    const moved =
       dto.status === ORDER_STATUSES.CANCELLED
         ? await this.cancel(order)
-        : toOrderView(await this.moveTo(order, dto.status));
+        : await this.moveTo(order, dto.status);
+    /*
+     * O cupom se move depois do status, e nunca antes.
+     *
+     * Contar um uso de uma venda que não chegou a ser gravada gastaria uma vaga
+     * da campanha para sempre — e vaga gasta e desconto que a próxima cliente
+     * não recebe. A ordem aqui e a mesma do estoque na criação do pedido: o
+     * número de fora só muda depois de o documento estar de pé.
+     */
+    const view = toOrderView(await this.settleCoupon(moved, dto.status));
 
     // Depois da gravação, e nunca antes: trilha de ação que não
     // aconteceu e pior do que trilha nenhuma. O código do pedido vai
@@ -197,6 +208,88 @@ export class OrdersService {
     return order.save();
   }
 
+  /**
+   * Conta o uso do cupom quando a venda fecha, e devolve quando ela e desfeita.
+   *
+   * Só o **Vendido** conta, porque foi o que a dona pediu e porque e o único
+   * passo do ciclo que significa dinheiro recebido: "saiu para entrega" e
+   * "entregue" são logística, e metade do que ela marca como processando nunca
+   * vira venda. O pedido pode passear por esses estados sem mexer na campanha.
+   *
+   * ## Contar uma vez, e uma vez só
+   *
+   * Quem reivindica o direito de contar e o próprio pedido: quem conseguir
+   * gravar `couponConsumedAt` partindo de nulo e quem chama `consume`, e duas
+   * chamadas simultâneas não podem as duas conseguir. E a mesma mecânica do
+   * `stockRestoredAt` no cancelamento, e e o que torna seguro marcar "Vendido"
+   * duas vezes, ou ir e voltar entre Entregue e Vendido a tarde inteira.
+   *
+   * O cancelamento faz o caminho inverso, e pelo mesmo mecanismo: zera o
+   * marcador e devolve o uso. Pedido cancelado antes de virar venda não devolve
+   * nada — ele nunca entrou no contador —, mas também deixa de segurar a vaga
+   * na hora, porque quem conta os pedidos pendentes ignora os cancelados.
+   *
+   * Falhando a escrita no cupom depois da reivindicação, o pedido fica marcado
+   * e o contador não se move. E o lado seguro do erro: sobra uma vaga a mais
+   * numa campanha, e não um desconto prometido duas vezes.
+   */
+  private async settleCoupon(order: OrderDocument, status: OrderStatus): Promise<OrderDocument> {
+    const couponId = order.coupon?.couponId ?? null;
+
+    if (couponId === null) {
+      return order;
+    }
+
+    if (status === ORDER_STATUSES.CONFIRMED) {
+      const claimed = await this.claimCoupon(order, { consumed: false });
+
+      if (claimed === null) {
+        return order;
+      }
+
+      await this.coupons.consume(couponId.toHexString());
+
+      return claimed;
+    }
+
+    if (status === ORDER_STATUSES.CANCELLED) {
+      const claimed = await this.claimCoupon(order, { consumed: true });
+
+      if (claimed === null) {
+        return order;
+      }
+
+      await this.coupons.release(couponId.toHexString());
+
+      return claimed;
+    }
+
+    return order;
+  }
+
+  /**
+   * Vira o marcador do cupom, só se ele estiver do lado esperado.
+   *
+   * `null` de volta significa "outra chamada chegou primeiro", e quem recebe
+   * `null` não mexe no contador. A condição no filtro e a reivindicação: ela e
+   * atômica no banco, e por isso não depende de ninguém ter lido o pedido antes.
+   */
+  private claimCoupon(
+    order: OrderDocument,
+    { consumed }: { consumed: boolean },
+  ): Promise<OrderDocument | null> {
+    return this.orders
+      .findOneAndUpdate(
+        {
+          _id: order._id,
+          couponConsumedAt: consumed ? { $ne: null } : null,
+        },
+        { $set: { couponConsumedAt: consumed ? null : new Date() } },
+        { returnDocument: 'after' },
+      )
+      .exec();
+  }
+
   /** A anotação interna. Substitui a anterior; vazio apaga. */
   async setNotes(id: string, dto: UpdateOrderNotesDto): Promise<OrderView> {
     const order = await this.findById(id);
@@ -219,7 +312,7 @@ export class OrdersService {
    * estoque, baixado — e o lado seguro do erro: sobra conferência manual, e
    * não unidade inventada que a loja não tem na prateleira.
    */
-  private async cancel(order: OrderDocument): Promise<OrderView> {
+  private async cancel(order: OrderDocument): Promise<OrderDocument> {
     const claimed = await this.orders
       .findOneAndUpdate(
         { _id: order._id, status: { $ne: ORDER_STATUSES.CANCELLED } },
@@ -230,12 +323,12 @@ export class OrdersService {
 
     if (claimed === null) {
       // Outra chamada cancelou primeiro e já devolveu o estoque.
-      return toOrderView(await this.findById(order._id.toHexString()));
+      return this.findById(order._id.toHexString());
     }
 
     await this.stock.giveBack(claimed.items.map(toStockLine));
 
-    return toOrderView(claimed);
+    return claimed;
   }
 
   /**
@@ -328,10 +421,15 @@ export class OrdersService {
       totals: {
         subtotalCents: quote.subtotalCents,
         discountTotalCents: quote.discountTotalCents,
+        couponDiscountCents: quote.couponDiscountCents,
         deliveryFeeCents: quote.deliveryFeeCents,
         pixDiscountCents: quote.pixDiscountCents,
         totalCents: quote.totalCents,
       },
+      coupon:
+        quote.coupon === null
+          ? null
+          : { code: quote.coupon.code, discountLabel: quote.coupon.discountLabel },
       gift,
     });
   }
@@ -449,10 +547,30 @@ function snapshotOf(
     totals: {
       subtotalCents: quote.subtotalCents,
       discountTotalCents: quote.discountTotalCents,
+      couponDiscountCents: quote.couponDiscountCents,
       deliveryFeeCents: quote.deliveryFeeCents,
       pixDiscountCents: quote.pixDiscountCents,
       totalCents: quote.totalCents,
     },
+    /**
+     * O cupom congelado, como os itens.
+     *
+     * Vem da cotação refeita no servidor, nunca do corpo: o código que o
+     * cliente mandou diz qual cupom, e `CouponsService` diz se ele valia e
+     * quanto tirou. Um cupom que venceu entre montar a sacola e fechar o pedido
+     * simplesmente não chega aqui — e a diferença no total vira o 409 de
+     * `assertQuoteHolds`, com a cotação nova na mão de quem ia pagar.
+     */
+    coupon:
+      quote.coupon === null
+        ? null
+        : {
+            couponId: new Types.ObjectId(quote.coupon.couponId),
+            code: quote.coupon.code,
+            title: quote.coupon.title,
+            discountLabel: quote.coupon.discountLabel,
+            discountCents: quote.coupon.discountCents,
+          },
     status: ORDER_STATUSES.PENDING_CONTACT,
     /**
      * A conta de quem comprou, quando havia uma sessão.

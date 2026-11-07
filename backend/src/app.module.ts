@@ -11,6 +11,7 @@ import { AuthModule } from './modules/auth/auth.module.js';
 import { CartModule } from './modules/cart/cart.module.js';
 import { CatalogImportModule } from './modules/catalog-import/catalog-import.module.js';
 import { CategoriesModule } from './modules/categories/categories.module.js';
+import { CouponsModule } from './modules/coupons/coupons.module.js';
 import { CustomersModule } from './modules/customers/customers.module.js';
 import { DeliveryModule } from './modules/delivery/delivery.module.js';
 import { OrdersModule } from './modules/orders/orders.module.js';
@@ -36,6 +37,9 @@ import { UsersModule } from './modules/users/users.module.js';
     UsersModule,
     SystemModule,
     CategoriesModule,
+    // Antes do catálogo e do carrinho: os dois perguntam a ele — a vitrine
+    // pelos produtos da campanha, a cotação pelo desconto do código.
+    CouponsModule,
     ProductsModule,
     CatalogImportModule,
     UploadsModule,

@@ -12,6 +12,7 @@ import {
   StoreSettings,
   StoreSettingsSchema,
 } from '../../schemas.js';
+import { CouponsModule } from '../coupons/coupons.module.js';
 import { ProductsController } from './products.controller.js';
 import { ProductsService } from './products.service.js';
 import { PublicCatalogService } from './public-catalog.service.js';
@@ -44,6 +45,13 @@ import { PublicProductsController } from './public-products.controller.js';
       { name: QuantityDiscount.name, schema: QuantityDiscountSchema },
       { name: StoreSettings.name, schema: StoreSettingsSchema },
     ]),
+    /*
+     * `CouponsModule` entra por uma pergunta da vitrine: quais produtos estão
+     * na campanha deste endereço? E o módulo, e não o model do cupom, porque a
+     * resposta não e um campo — e uma regra, a de saber se a campanha esta no ar
+     * agora, e ela precisa valer igual aqui e no checkout.
+     */
+    CouponsModule,
   ],
   controllers: [ProductsController, PublicProductsController],
   providers: [ProductsService, PublicCatalogService],

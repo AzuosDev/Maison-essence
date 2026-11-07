@@ -46,6 +46,9 @@ export * from './modules/categories/schemas/category.schema.js';
 export * from './modules/products/schemas/product.schema.js';
 export * from './modules/products/schemas/quantity-discount.schema.js';
 
+// Cupons e campanhas promocionais.
+export * from './modules/coupons/schemas/coupon.schema.js';
+
 // Entrega e pagamento.
 export * from './modules/delivery/schemas/delivery-city.schema.js';
 export * from './modules/payments/schemas/payment-settings.schema.js';

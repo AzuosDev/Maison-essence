@@ -58,10 +58,14 @@ function order(overrides: Partial<WhatsappOrder> = {}): WhatsappOrder {
     totals: {
       subtotalCents: 58_473,
       discountTotalCents: 5_997,
+      couponDiscountCents: 0,
       deliveryFeeCents: 1_500,
       pixDiscountCents: 0,
       totalCents: 59_973,
     },
+    // Nem cupom: o pedido de base e o que mais acontece, e a maioria das
+    // vendas não passa por campanha nenhuma.
+    coupon: null,
     // O pedido comum não ganha brinde: a loja nasce sem campanha, e o caso
     // de base precisa ser o que mais acontece.
     gift: '',
@@ -139,6 +143,7 @@ describe('buildWhatsappMessage', () => {
       totals: {
         subtotalCents: 19_990,
         discountTotalCents: 0,
+        couponDiscountCents: 0,
         deliveryFeeCents: 1_500,
         pixDiscountCents: 0,
         totalCents: 21_490,
@@ -146,6 +151,48 @@ describe('buildWhatsappMessage', () => {
     });
 
     expect(buildWhatsappMessage(semDesconto)).not.toContain('Desconto');
+  });
+
+  /**
+   * A linha do cupom carrega o código, e não só o valor.
+   *
+   * E por ele que a dona reconhece de qual campanha veio a venda quando abre a
+   * conversa no WhatsApp, e e ele que ela confere contra a régua de usos no
+   * painel. "Desconto: -R$ 40,00" não diria de onde veio.
+   */
+  it('escreve a linha do cupom com o código e o desconto', () => {
+    const comCupom = order({
+      coupon: { code: 'BLACKFRIDAY', discountLabel: '20% OFF' },
+      totals: {
+        subtotalCents: 58_473,
+        discountTotalCents: 5_997,
+        couponDiscountCents: 11_695,
+        deliveryFeeCents: 1_500,
+        pixDiscountCents: 0,
+        totalCents: 48_278,
+      },
+    });
+
+    expect(buildWhatsappMessage(comCupom)).toContain(
+      'Cupom BLACKFRIDAY (20% OFF): -R$ 116,95',
+    );
+  });
+
+  /** Cupom gravado com desconto zero não vira linha: não houve desconto. */
+  it('não escreve a linha do cupom quando ele não tirou nada', () => {
+    const semEfeito = order({
+      coupon: { code: 'BLACKFRIDAY', discountLabel: '20% OFF' },
+      totals: {
+        subtotalCents: 58_473,
+        discountTotalCents: 5_997,
+        couponDiscountCents: 0,
+        deliveryFeeCents: 1_500,
+        pixDiscountCents: 0,
+        totalCents: 59_973,
+      },
+    });
+
+    expect(buildWhatsappMessage(semEfeito)).not.toContain('Cupom');
   });
 
   it('avisa a retirada em vez de inventar endereço', () => {

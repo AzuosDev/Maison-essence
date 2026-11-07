@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Order, OrderSchema, Product, ProductSchema } from '../../schemas.js';
 import { CartModule } from '../cart/cart.module.js';
+import { CouponsModule } from '../coupons/coupons.module.js';
 import { CustomersModule } from '../customers/customers.module.js';
 import { RateLimitModule } from '../rate-limit/rate-limit.module.js';
 import { SettingsModule } from '../settings/settings.module.js';
@@ -22,6 +23,11 @@ import { OrdersService } from './orders.service.js';
  * que escreve em `variants.stock` sem passar pelo cadastro. `SettingsModule`
  * vem pelo número do WhatsApp e pelas instruções de retirada, que são o
  * destino e o rodapé da mensagem.
+ *
+ * `CouponsModule` entra por uma ação só, e ela e a que a dona pediu: quando ela
+ * marca o pedido como **Vendido**, o uso do cupom sai da campanha. E aqui que
+ * isso acontece porque e aqui que o status vira — e porque e o pedido que
+ * guarda o marcador que impede contar duas vezes.
  */
 @Module({
   imports: [
@@ -30,6 +36,7 @@ import { OrdersService } from './orders.service.js';
       { name: Product.name, schema: ProductSchema },
     ]),
     CartModule,
+    CouponsModule,
     CustomersModule,
     SettingsModule,
     RateLimitModule,
