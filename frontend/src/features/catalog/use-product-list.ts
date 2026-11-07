@@ -198,6 +198,13 @@ export function useCatalogFacets(q: string, context: CatalogContext = {}): Catal
       : { category: context.category }),
     ...(q === '' ? {} : { q }),
     ...(context.readyToShip === true ? { readyToShip: true } : {}),
+    // O recorte da campanha entra aqui como entra na listagem: sem ele, a
+    // barra de filtros de `/promocao/<slug>` ofereceria as marcas e o teto de
+    // preço do catálogo inteiro — e escolher uma marca que não esta na
+    // campanha devolveria uma vitrine vazia sem explicação.
+    ...(context.campaign === undefined || context.campaign === ''
+      ? {}
+      : { campaign: context.campaign }),
     sort: 'price_desc',
     limit: MAX_API_PAGE_SIZE,
   };

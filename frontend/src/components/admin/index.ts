@@ -40,6 +40,7 @@ export {
   SignOutIcon,
   SlidersIcon,
   StarIcon,
+  TagIcon,
   TrashIcon,
   TruckIcon,
   UploadIcon,
@@ -49,6 +50,8 @@ export {
 export { AdminNav, type AdminNavProps } from './admin-nav';
 export { BannerEditor, type BannerEditorProps } from './banner-editor';
 export { CategoryPicker, type CategoryPickerProps } from './category-picker';
+export { CampaignPreview, type CampaignPreviewProps } from './campaign-preview';
+export { CouponCard, type CouponCardProps } from './coupon-card';
 export { CategoryTree, type CategoryTreeProps } from './category-tree';
 export { DeliveryTable, type DeliveryTableProps } from './delivery-table';
 export { GiftEditor, type GiftEditorProps } from './gift-editor';
@@ -64,7 +67,12 @@ export {
   type ProductPickerCopy,
   type ProductPickerProps,
 } from './product-picker';
+export {
+  ProductMultiPicker,
+  type ProductMultiPickerProps,
+} from './product-multi-picker';
 export { RowMenu, type RowMenuItem, type RowMenuProps } from './row-menu';
+export { UsesRuler, type UsesRulerProps } from './uses-ruler';
 export { PaymentPreview, type PaymentPreviewProps } from './payment-preview';
 export { OrdersTable, type OrdersTableProps } from './orders-table';
 export { ProductsTable, type ProductsTableProps } from './products-table';

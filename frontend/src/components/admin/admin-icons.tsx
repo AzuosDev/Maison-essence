@@ -102,6 +102,23 @@ export function PinIcon(props: IconProps) {
   );
 }
 
+/**
+ * Cupons: a etiqueta de preço, com o furo do cordão.
+ *
+ * Etiqueta e não tesoura, nem percentual, nem presente. Tesoura e o cupom de
+ * jornal recortado, que não e o que acontece aqui; o `%` mentiria para o
+ * cupom de R$ 30; e o presente já e o balão do brinde, no outro canto da
+ * mesma loja. A etiqueta e o que a dona pendura no frasco.
+ */
+export function TagIcon(props: IconProps) {
+  return (
+    <Icon {...props}>
+      <path d="M20.5 12.2V5a1.5 1.5 0 0 0-1.5-1.5h-7.2a2 2 0 0 0-1.42.59l-7 7a2 2 0 0 0 0 2.83l5.2 5.2a2 2 0 0 0 2.83 0l7-7a2 2 0 0 0 .59-1.42z" />
+      <circle cx="16" cy="8" r="1.4" />
+    </Icon>
+  );
+}
+
 export function CardIcon(props: IconProps) {
   return (
     <Icon {...props}>

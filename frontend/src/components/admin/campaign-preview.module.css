@@ -1,0 +1,181 @@
+/*
+ * A pré-visualização da faixa da campanha.
+ *
+ * Areia com filete, como a seção que ela representa na home. O bloco não tenta
+ * ser do tamanho da home: ele mostra a hierarquia — nome grande, apoio
+ * embaixo, desconto e código a direita —, que e o que a dona precisa decidir
+ * ao escrever o nome da campanha.
+ */
+
+.preview {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12) var(--space-24);
+
+  padding: var(--space-16);
+
+  background-color: var(--bg-alt);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+/* ---- O que a faixa diz --------------------------------------------------- */
+
+.copy {
+  flex: 1;
+  min-width: 10rem;
+
+  display: grid;
+  gap: var(--space-4);
+}
+
+/*
+ * O nome da campanha, na voz de título da loja.
+ *
+ * Readex Pro em 22px, que e o degrau em que ela ainda e ela mesma — abaixo de
+ * 18px a Readex e a Onest com outro nome, e a faixa perderia justamente o que
+ * a separa do resto da página.
+ */
+.title {
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* O nome que ainda não foi escrito: cinza, para não parecer conteúdo. */
+.waiting {
+  color: var(--muted);
+}
+
+.tagline {
+  max-width: 48ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- A oferta ------------------------------------------------------------ */
+
+.offer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/*
+ * O desconto.
+ *
+ * `--gold-deep`, porque aqui o dourado e texto: o dourado da marca dá 2.4:1
+ * sobre o branco e sobre a areia, e não pode escrever.
+ */
+.discount {
+  font-size: var(--text-28);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--gold-deep);
+}
+
+/*
+ * O código, na forma do que ele e: um cupom a destacar.
+ *
+ * Filete tracejado de 1px — a única linha tracejada do sistema, e ela existe
+ * por significado e não por estilo: e o pontilhado de onde se recorta. O fundo
+ * e a superfície da página, para o retângulo se separar da areia.
+ */
+.coupon {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  align-items: flex-start;
+
+  padding: var(--space-4) var(--space-12);
+
+  background-color: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-chip);
+}
+
+.couponLabel {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.code {
+  font-size: var(--text-16);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.deadline {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/*
+ * O atalho para a vitrine da campanha.
+ *
+ * Desenhado como o link que ele será, e não como botão: na home a faixa inteira
+ * e informação, e o botão dourado da loja esta reservado para pôr na sacola.
+ */
+.shortcut {
+  display: inline-flex;
+  align-items: center;
+
+  min-height: 2.25rem;
+  padding-inline: var(--space-16);
+
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/* ---- A frase do pé ------------------------------------------------------- */
+
+.note {
+  margin: 0;
+
+  max-width: 72ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+@media (min-width: 48rem) {
+  .strip {
+    padding: var(--space-24);
+  }
+
+  .title {
+    font-size: var(--text-28);
+  }
+}

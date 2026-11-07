@@ -3,6 +3,7 @@ import type { AdminOrderListParams, AdminProductListParams } from './admin.keys'
 import type {
   AdminCategory,
   AdminCategoryNode,
+  AdminCoupon,
   AdminDeliveryCity,
   AdminOrder,
   AdminOrderSummary,
@@ -11,10 +12,12 @@ import type {
   AdminProduct,
   AdminStoreSettings,
   CreateCategoryInput,
+  CreateCouponInput,
   CreateDeliveryCityInput,
   CreateProductInput,
   OrderStatus,
   UpdateCategoryInput,
+  UpdateCouponInput,
   UpdateDeliveryCityInput,
   UpdatePaymentSettingsInput,
   UpdateProductInput,
@@ -395,6 +398,79 @@ export function updateSettings(
   signal?: AbortSignal,
 ): Promise<AdminStoreSettings> {
   return api.patch<AdminStoreSettings>('/admin/settings', input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/* ---- Cupons -------------------------------------------------------------- */
+
+/**
+ * Os cupons, todos de uma vez.
+ *
+ * Sem paginação e sem filtro na query: uma loja tem três ou quatro campanhas
+ * vivas e um punhado de encerradas, e a tela precisa da lista inteira para
+ * agrupar por estado — que e a razão de ela existir. O recorte e da tela.
+ *
+ * A resposta já traz `holdingCount` e `remainingUses` calculados contra os
+ * pedidos abertos, e e por isso que esta rota não e cacheada pela borda: o
+ * número de vagas se gasta enquanto a dona olha a tela.
+ */
+export function listCoupons(signal?: AbortSignal): Promise<AdminCoupon[]> {
+  return api.get<AdminCoupon[]>('/admin/coupons', {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function fetchCoupon(id: string, signal?: AbortSignal): Promise<AdminCoupon> {
+  return api.get<AdminCoupon>(`/admin/coupons/${encodeURIComponent(id)}`, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Cadastra o cupom.
+ *
+ * A recusa mais comum e `409`: o código já existe. A frase do servidor diz o
+ * que fazer no lugar — editar o que existe em vez de criar outro com desconto
+ * diferente —, e e ela que a tela mostra.
+ */
+export function createCoupon(
+  input: CreateCouponInput,
+  signal?: AbortSignal,
+): Promise<AdminCoupon> {
+  return api.post<AdminCoupon>('/admin/coupons', input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+export function updateCoupon(
+  id: string,
+  input: UpdateCouponInput,
+  signal?: AbortSignal,
+): Promise<AdminCoupon> {
+  return api.patch<AdminCoupon>(`/admin/coupons/${encodeURIComponent(id)}`, input, {
+    scope: SESSION_SCOPES.ADMIN,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * Exclui o cupom.
+ *
+ * Só do administrador, como toda exclusão deste painel. O que se perde não e o
+ * cadastro: e o histórico de quantos usos a campanha teve, que e o único
+ * lugar onde "a Black Friday vendeu 48" fica escrito. Desligar encerra a
+ * campanha e guarda a conta; excluir apaga a conta e não desfaz.
+ *
+ * Os pedidos já fechados não mudam — eles guardam código, título e desconto em
+ * copia própria, e continuam legíveis depois que o cupom some.
+ */
+export function deleteCoupon(id: string, signal?: AbortSignal): Promise<void> {
+  return api.delete<void>(`/admin/coupons/${encodeURIComponent(id)}`, {
     scope: SESSION_SCOPES.ADMIN,
     ...(signal ? { signal } : {}),
   });

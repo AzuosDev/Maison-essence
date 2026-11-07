@@ -121,6 +121,21 @@ export function CartSummary({
             </p>
           ) : null}
 
+          {/*
+            O cupom não e aplicado aqui, e esta linha diz onde ele e.
+
+            A sacola não manda código nenhum para a cotação de propósito: o
+            desconto do cupom e do pedido, e aqui ainda não ha pedido — nem
+            cidade, nem forma de pagamento, nem a conferência que o servidor
+            faz do teto de usos. Sem esta linha, quem chega com o código do
+            story procura um campo que não existe nesta tela e conclui que a
+            loja não aceita o que ela mesma anunciou.
+
+            Encostada no botão, e não junto das notas acima: ela e sobre o que
+            acontece do outro lado do clique.
+          */}
+          {canCheckout ? <p className={styles.coupon}>Tem um cupom? Aplique no fechamento.</p> : null}
+
           <Button block onClick={onCheckout} disabled={!canCheckout}>
             Finalizar compra
           </Button>

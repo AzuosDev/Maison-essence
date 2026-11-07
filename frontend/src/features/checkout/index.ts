@@ -14,6 +14,17 @@ export {
 export { checkoutStep, needsAddress, useCheckout } from './checkout.store';
 
 export {
+  COUPON_CODE_MAX,
+  COUPON_CODE_MIN,
+  canSubmitCoupon,
+  couponActionLabel,
+  couponReachLabel,
+  couponStateOf,
+  normalizeCouponCode,
+  type CouponState,
+} from './coupon';
+
+export {
   CHECKOUT_STEPS,
   CHECKOUT_STEP_LABELS,
   EMPTY_ADDRESS,

@@ -313,8 +313,470 @@ function detail(slug: string) {
   };
 }
 
-function route(path: string, query: URLSearchParams): unknown {
+/* ---- A bancada do painel ---------------------------------------------------
+ *
+ * A revisão visual do painel precisa de três coisas que a loja aberta não
+ * pede: uma sessão já aberta, as rotas `/admin/...` respondidas e um produto
+ * encontrável pela busca do seletor de campanha. Nada disso entra no build —
+ * esta pasta e o `dev-preview` inteiro são descartáveis.
+ */
+
+const ADMIN_USER = {
+  id: 'u1',
+  name: 'Rayane Souza',
+  email: 'rayane@maisonessence.test',
+  role: 'SUPER_ADMIN',
+  isActive: true,
+  mustChangePassword: false,
+  credentialVersion: 1,
+  lastLoginAt: '2026-11-06T12:00:00.000Z',
+};
+
+try {
+  localStorage.setItem(
+    'maison-essence.admin-session',
+    JSON.stringify({
+      state: {
+        user: ADMIN_USER,
+        tokens: { accessToken: 'preview', refreshToken: 'preview' },
+      },
+      version: 0,
+    }),
+  );
+} catch {
+  // Janela privada: a bancada abre no login, e esta não e a tela em revisão.
+}
+
+/*
+ * Uma sacola com dois itens, para a sacola e o fechamento terem o que mostrar.
+ *
+ * O primeiro produto esta na campanha da bancada e o segundo não: e o par que
+ * faz a linha do cupom mostrar alcance parcial, que e o estado da caixa do
+ * cupom mais difícil de acertar no olho.
+ */
+try {
+  localStorage.setItem(
+    'maison-essence.cart',
+    JSON.stringify({
+      state: {
+        lines: [
+          {
+            productId: PRODUCTS[0]!.id,
+            variantId: PRODUCTS[0]!.variants[0]!.id,
+            quantity: 2,
+          },
+          {
+            productId: PRODUCTS[1]!.id,
+            variantId: PRODUCTS[1]!.variants[0]!.id,
+            quantity: 1,
+          },
+        ],
+      },
+      version: 2,
+    }),
+  );
+} catch {
+  // Idem: sem armazenamento, a sacola abre vazia.
+}
+
+/*
+ * `#/checkout?cupom=BLACKFRIDAY` abre o fechamento com o cupom já aplicado.
+ *
+ * Existe para a revisão visual: o estado aplicado da caixa do cupom — o chip
+ * dourado no lugar do campo — não tem como ser capturado sem alguém digitar e
+ * clicar, e a captura e sem mão. O código vai para o mesmo lugar em que o
+ * store o guardaria, então a tela sobe pelo caminho de sempre.
+ */
+try {
+  const cupom = new URLSearchParams(window.location.hash.split('?')[1] ?? '').get('cupom');
+
+  if (cupom !== null) {
+    localStorage.setItem(
+      'maison-essence.checkout',
+      JSON.stringify({ state: { step: 'items', couponCode: cupom }, version: 1 }),
+    );
+  }
+} catch {
+  // Idem.
+}
+
+function day(offset: number, end = false): string {
+  const date = new Date();
+
+  date.setDate(date.getDate() + offset);
+  date.setHours(end ? 23 : 0, end ? 59 : 0, end ? 59 : 0, end ? 999 : 0);
+
+  return date.toISOString();
+}
+
+/*
+ * As cinco campanhas que cobrem os cinco estados.
+ *
+ * A primeira e a que a home anuncia — termina primeiro entre as anunciáveis.
+ * A segunda tem o anúncio ligado e fica na fila. A terceira esgotou dentro do
+ * prazo. A quarta esta agendada. A quinta foi desligada.
+ */
+const COUPONS = [
+  {
+    id: 'c1',
+    code: 'BLACKFRIDAY',
+    title: 'Black Friday Maison',
+    slug: 'black-friday-maison',
+    tagline: 'Os importados que mais saem, com 20% até domingo.',
+    percentOff: 20,
+    amountOffCents: null,
+    discountLabel: '20% OFF',
+    maxUses: 50,
+    usedCount: 20,
+    holdingCount: 7,
+    remainingUses: 23,
+    startsAt: day(-3),
+    endsAt: day(2, true),
+    productIds: [PRODUCTS[0]!.id, PRODUCTS[2]!.id, PRODUCTS[6]!.id],
+    wholeStore: false,
+    showOnHome: true,
+    isActive: true,
+    status: 'live',
+    createdAt: day(-10),
+    updatedAt: day(-1),
+  },
+  {
+    id: 'c2',
+    code: 'NATAL2026',
+    title: 'Natal na Maison',
+    slug: 'natal-na-maison',
+    tagline: 'R$ 30 de abatimento no catálogo todo.',
+    percentOff: null,
+    amountOffCents: 3000,
+    discountLabel: 'R$ 30,00 OFF',
+    maxUses: null,
+    usedCount: 4,
+    holdingCount: 1,
+    remainingUses: null,
+    startsAt: null,
+    endsAt: day(40, true),
+    productIds: [],
+    wholeStore: true,
+    showOnHome: true,
+    isActive: true,
+    status: 'live',
+    createdAt: day(-6),
+    updatedAt: day(-6),
+  },
+  {
+    id: 'c3',
+    code: 'PRIMEIRACOMPRA',
+    title: 'Primeira compra',
+    slug: 'primeira-compra',
+    tagline: '',
+    percentOff: 10,
+    amountOffCents: null,
+    discountLabel: '10% OFF',
+    maxUses: 10,
+    usedCount: 9,
+    holdingCount: 1,
+    remainingUses: 0,
+    startsAt: null,
+    endsAt: null,
+    productIds: [],
+    wholeStore: true,
+    showOnHome: false,
+    isActive: true,
+    status: 'exhausted',
+    createdAt: day(-60),
+    updatedAt: day(-2),
+  },
+  {
+    id: 'c4',
+    code: 'DIADASMAES',
+    title: 'Dia das Mães',
+    slug: 'dia-das-maes',
+    tagline: 'A seleção de presente, com 15%.',
+    percentOff: 15,
+    amountOffCents: null,
+    discountLabel: '15% OFF',
+    maxUses: 100,
+    usedCount: 0,
+    holdingCount: 0,
+    remainingUses: 100,
+    startsAt: day(20),
+    endsAt: day(27, true),
+    productIds: [PRODUCTS[1]!.id, PRODUCTS[3]!.id],
+    wholeStore: false,
+    showOnHome: false,
+    isActive: true,
+    status: 'scheduled',
+    createdAt: day(-1),
+    updatedAt: day(-1),
+  },
+  {
+    id: 'c5',
+    code: 'ANIVERSARIO',
+    title: 'Aniversário da loja',
+    slug: 'aniversario-da-loja',
+    tagline: '',
+    percentOff: 25,
+    amountOffCents: null,
+    discountLabel: '25% OFF',
+    maxUses: 40,
+    usedCount: 38,
+    holdingCount: 0,
+    remainingUses: 2,
+    startsAt: day(-120),
+    endsAt: day(-90, true),
+    productIds: [],
+    wholeStore: true,
+    showOnHome: false,
+    isActive: false,
+    status: 'paused',
+    createdAt: day(-130),
+    updatedAt: day(-90),
+  },
+];
+
+/** O produto como o painel o lê: a bancada só precisa do que o cartão mostra. */
+/* A campanha como a loja aberta a vê: sem contador, sem teto, sem a lista. */
+function publicCampaign(coupon: (typeof COUPONS)[number]) {
+  const remaining = coupon.remainingUses;
+
+  return {
+    code: coupon.code,
+    title: coupon.title,
+    slug: coupon.slug,
+    tagline: coupon.tagline,
+    percentOff: coupon.percentOff,
+    amountOffCents: coupon.amountOffCents,
+    discountLabel: coupon.discountLabel,
+    endsAt: coupon.endsAt,
+    wholeStore: coupon.wholeStore,
+    scarcityLabel:
+      remaining === null || remaining <= 0 || remaining > 10
+        ? ''
+        : remaining === 1
+          ? 'Resta 1 cupom'
+          : `Restam ${String(remaining)} cupons`,
+  };
+}
+
+/* A campanha que a home anuncia: a que termina primeiro entre as anunciáveis. */
+function liveCampaign() {
+  const chosen = COUPONS.find(
+    (coupon) => coupon.showOnHome && coupon.isActive && coupon.status === 'live',
+  );
+
+  return chosen === undefined ? null : publicCampaign(chosen);
+}
+
+/* As cidades atendidas, para o fechamento ter o que cotar. */
+const CITIES = [
+  {
+    id: 'juazeiro',
+    name: 'Juazeiro do Norte',
+    state: 'CE',
+    feeCents: 1500,
+    feeLabel: 'R$ 15,00',
+    estimatedDays: 2,
+    estimatedLabel: 'Até 2 dias úteis',
+    freeFromCents: null,
+    freeFromLabel: '',
+  },
+  {
+    id: 'crato',
+    name: 'Crato',
+    state: 'CE',
+    feeCents: 2500,
+    feeLabel: 'R$ 25,00',
+    estimatedDays: 3,
+    estimatedLabel: 'Até 3 dias úteis',
+    freeFromCents: null,
+    freeFromLabel: '',
+  },
+];
+
+/**
+ * A cotação da sacola, com o cupom resolvido como o servidor o resolve.
+ *
+ * A conta aqui existe para a bancada ter números coerentes na tela — ela não e
+ * a regra. A regra vive em `CouponsService.resolve`, e e ela que decide o
+ * desconto em produção.
+ */
+function quote(body: { items?: { productId: string; variantId: string; quantity: number }[]; fulfillment?: { mode?: string; cityId?: string }; payment?: { method?: string }; couponCode?: string }) {
+  const lines = (body.items ?? []).map((line) => {
+    const product = PRODUCTS.find((item) => item.id === line.productId) ?? PRODUCTS[0]!;
+    const variant =
+      product.variants.find((option) => option.id === line.variantId) ?? product.variants[0]!;
+
+    return {
+      productId: product.id,
+      variantId: variant.id,
+      productName: product.name,
+      productSlug: product.slug,
+      variantLabel: variant.label,
+      image: product.coverImage,
+      quantity: line.quantity,
+      unitPriceCents: variant.priceCents,
+      availableStock: variant.stock,
+      allowBackorder: false,
+      discountPercent: 0,
+      discountCents: 0,
+      lineTotalCents: variant.priceCents * line.quantity,
+      unavailable: false,
+      unavailableReason: '',
+    };
+  });
+
+  const subtotalCents = lines.reduce((total, line) => total + line.lineTotalCents, 0);
+
+  const code = (body.couponCode ?? '').trim().toUpperCase();
+  const found = code === '' ? undefined : COUPONS.find((item) => item.code === code);
+  const usable = found !== undefined && found.isActive && found.status === 'live';
+
+  const eligible = !usable
+    ? 0
+    : found.wholeStore
+      ? subtotalCents
+      : lines
+          .filter((line) => (found.productIds as string[]).includes(line.productId))
+          .reduce((total, line) => total + line.lineTotalCents, 0);
+
+  const discountCents = !usable || eligible === 0
+    ? 0
+    : found.percentOff === null
+      ? Math.min(found.amountOffCents ?? 0, eligible)
+      : Math.round((eligible * found.percentOff) / 100);
+
+  const coupon =
+    discountCents === 0
+      ? null
+      : {
+          couponId: found!.id,
+          code: found!.code,
+          title: found!.title,
+          percentOff: found!.percentOff,
+          amountOffCents: found!.amountOffCents,
+          discountLabel: found!.discountLabel,
+          discountCents,
+          eligibleSubtotalCents: eligible,
+          wholeStore: found!.wholeStore,
+        };
+
+  const couponWarning =
+    code === '' || coupon !== null
+      ? ''
+      : found === undefined || usable === false
+        ? 'Esse cupom não é válido. Confira o código ou siga sem ele.'
+        : 'Esse cupom não vale para os itens da sacola. Veja os produtos da campanha.';
+
+  const mode = body.fulfillment?.mode ?? 'pickup';
+  const city = CITIES.find((item) => item.id === body.fulfillment?.cityId) ?? CITIES[0]!;
+  const feeCents = mode === 'pickup' ? 0 : city.feeCents;
+
+  const afterCoupon = subtotalCents - discountCents;
+  const pixDiscountCents =
+    body.payment?.method === 'pix' ? Math.round((afterCoupon * 5) / 100) : 0;
+  const payableCents = afterCoupon - pixDiscountCents;
+
+  return {
+    items: lines,
+    fulfillment: {
+      mode,
+      cityId: mode === 'pickup' ? null : city.id,
+      cityName: mode === 'pickup' ? '' : city.name,
+      state: mode === 'pickup' ? '' : city.state,
+      estimatedDays: city.estimatedDays,
+      requiresAddress: mode === 'delivery',
+      feeCents,
+      isFree: feeCents === 0,
+      freeReason: mode === 'pickup' ? 'Retirada na loja' : '',
+      missingForFreeCents: null,
+    },
+    payment: {
+      method: body.payment?.method ?? 'card',
+      cardMode: null,
+      installments: 1,
+      selected: null,
+    },
+    subtotalCents,
+    discountTotalCents: 0,
+    coupon,
+    couponDiscountCents: discountCents,
+    couponWarning,
+    deliveryFeeCents: feeCents,
+    pixDiscountCents,
+    payableCents,
+    totalCents: payableCents + feeCents,
+    installmentOptions: [],
+    warnings: [],
+  };
+}
+
+function adminProduct(product: (typeof PRODUCTS)[number]) {
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    brand: product.brand,
+    coverImage: product.coverImage,
+    isActive: true,
+    isFeatured: product.isFeatured,
+    isReadyToShip: product.isReadyToShip,
+    priceCents: product.priceRangeCents.min,
+    categories: [],
+    variants: [],
+    createdAt: day(-30),
+    updatedAt: day(-30),
+  };
+}
+
+function adminRoute(path: string, query: URLSearchParams): unknown {
+  if (path === '/admin/coupons') return COUPONS;
+
+  if (path.startsWith('/admin/coupons/')) {
+    const id = path.slice('/admin/coupons/'.length);
+
+    return COUPONS.find((coupon) => coupon.id === id) ?? COUPONS[0]!;
+  }
+
+  if (path === '/admin/products') {
+    const term = (query.get('q') ?? '').toLowerCase();
+    const items = (
+      term ? PRODUCTS.filter((product) => product.name.toLowerCase().includes(term)) : PRODUCTS
+    ).map(adminProduct);
+
+    return { items, page: 1, limit: 8, total: items.length, pages: 1 };
+  }
+
+  if (path.startsWith('/admin/products/')) {
+    const id = path.slice('/admin/products/'.length);
+    const found = PRODUCTS.find((product) => product.id === id) ?? PRODUCTS[0]!;
+
+    return adminProduct(found);
+  }
+
+  if (path === '/admin/dashboard') {
+    return { orders: {}, revenueCents: 0, products: {}, lowStock: [] };
+  }
+
+  return null;
+}
+
+function route(path: string, query: URLSearchParams, body: unknown): unknown {
+  if (path.startsWith('/admin/')) return adminRoute(path, query);
   if (path === '/settings') return SETTINGS;
+  if (path === '/delivery-cities') return CITIES;
+  if (path === '/cart/quote') return quote((body ?? {}) as Parameters<typeof quote>[0]);
+
+  if (path === '/campaigns/live') return { campaign: liveCampaign() };
+
+  if (path.startsWith('/campaigns/')) {
+    const slug = path.slice('/campaigns/'.length);
+    const found = COUPONS.find(
+      (coupon) => coupon.slug === slug && coupon.isActive && coupon.status === 'live',
+    );
+
+    return found === undefined ? null : publicCampaign(found);
+  }
+
   if (path === '/payment-settings') return PAYMENTS;
   if (path === '/pages') return PAGES;
   if (path.startsWith('/pages/')) {
@@ -331,9 +793,23 @@ function route(path: string, query: URLSearchParams): unknown {
   }
   if (path === '/products') {
     const term = (query.get('q') ?? '').toLowerCase();
+    const campaign = query.get('campaign') ?? '';
+
+    // O recorte da campanha, como o backend o faz: cupom da loja inteira não
+    // restringe nada, e campanha fora do ar não casa com produto nenhum.
+    const coupon = campaign === '' ? undefined : COUPONS.find((item) => item.slug === campaign);
+    const scope =
+      campaign === ''
+        ? PRODUCTS
+        : coupon === undefined
+          ? []
+          : coupon.wholeStore
+            ? PRODUCTS
+            : PRODUCTS.filter((product) => (coupon.productIds as string[]).includes(product.id));
+
     const items = term
-      ? PRODUCTS.filter((product) => product.name.toLowerCase().includes(term))
-      : PRODUCTS;
+      ? scope.filter((product) => product.name.toLowerCase().includes(term))
+      : scope;
 
     return { items, page: 1, totalPages: 1, totalItems: items.length, hasMore: false };
   }
@@ -357,7 +833,13 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Res
 
   const url = new URL(href);
   const path = url.pathname.replace('/api/v1', '');
-  const body = route(decodeURIComponent(path), url.searchParams);
+
+  // O corpo do `POST`, para a cotação da sacola poder responder ao que foi
+  // pedido — inclusive ao código do cupom.
+  const sent: unknown =
+    typeof init?.body === 'string' ? JSON.parse(init.body) : null;
+
+  const body = route(decodeURIComponent(path), url.searchParams, sent);
 
   await new Promise((resolve) => {
     setTimeout(resolve, 120);

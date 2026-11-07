@@ -15,6 +15,7 @@ import { useDebouncedValue } from '@/lib/use-debounced-value';
 import { checkoutKeys, type QuoteInput } from './checkout.keys';
 import { useCheckout } from './checkout.store';
 import { FULFILLMENT_MODES, PAYMENT_METHODS } from './checkout.types';
+import { couponStateOf, type CouponState } from './coupon';
 
 /**
  * Quanto custa este pedido — perguntado ao servidor a cada escolha.
@@ -96,6 +97,10 @@ export interface CheckoutQuoteView {
    */
   pricesChanged: boolean;
   dismissPriceNotice: () => void;
+  /** Em que pe esta o cupom: nada, conferindo, aplicado ou recusado. */
+  coupon: CouponState;
+  /** Aplicar um código, ou `''` para tirar o que estava. */
+  applyCoupon: (code: string) => void;
 }
 
 export function useCheckoutQuote(): CheckoutQuoteView {
@@ -105,10 +110,30 @@ export function useCheckoutQuote(): CheckoutQuoteView {
   const { fulfillment, totalsResolved } = useQuoteFulfillment();
   const payment = useQuotePayment();
 
+  /*
+   * O código aplicado entra no corpo sem atraso nenhum.
+   *
+   * Ele já e o resultado de um clique em "Aplicar" — o rascunho fica na caixa
+   * do cupom e nunca chega ao store —, então não há rajada a juntar. E o
+   * mesmo tratamento da cidade e da forma de pagamento, pela mesma razão:
+   * cliques únicos e deliberados, e meio segundo de espera ali seria lido
+   * como a tela não ter entendido o clique.
+   */
+  const couponCode = useCheckout((state) => state.couponCode);
+
   const input = useMemo<QuoteInput | null>(
     () =>
-      settled.length === 0 || fulfillment === null ? null : { items: settled, fulfillment, payment },
-    [settled, fulfillment, payment],
+      settled.length === 0 || fulfillment === null
+        ? null
+        : {
+            items: settled,
+            fulfillment,
+            payment,
+            // Ausente, e não vazio: o campo a toa engordaria a chave de cache
+            // e faria duas cotações idênticas virarem duas entradas.
+            ...(couponCode === '' ? {} : { couponCode }),
+          },
+    [settled, fulfillment, payment, couponCode],
   );
 
   const query = useQuery<CartQuote>({
@@ -128,6 +153,7 @@ export function useCheckoutQuote(): CheckoutQuoteView {
 
   const { available, unavailable } = useMemo(() => split(query.data?.items ?? []), [query.data]);
   const priceNotice = usePriceNotice(query.data);
+  const applyCoupon = useCheckout((state) => state.applyCoupon);
 
   return {
     quote: query.data,
@@ -142,6 +168,8 @@ export function useCheckoutQuote(): CheckoutQuoteView {
     totalsResolved,
     input,
     ...priceNotice,
+    coupon: couponStateOf(couponCode, query.data, query.isFetching),
+    applyCoupon,
   };
 }
 

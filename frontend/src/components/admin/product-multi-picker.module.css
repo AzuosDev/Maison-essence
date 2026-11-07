@@ -1,0 +1,189 @@
+/*
+ * Escolher vários produtos: os produtos de uma campanha.
+ *
+ * Duas listas com a mesma anatomia de linha — miniatura, nome com a marca
+ * embaixo, ação no fim. A de cima e o que já esta na campanha; a de baixo são
+ * as candidatas da busca. A igualdade e deliberada: trocar um produto por
+ * outro e ler duas linhas iguais e preferir uma.
+ */
+
+/*
+ * A medida da coluna.
+ *
+ * A linha do produto e miniatura, nome e uma ação — não uma tabela. Solta na
+ * largura da seção, o × de tirar ficava a setecentos pixels do nome que ele
+ * tira, e o olho perdia a ligação entre os dois.
+ */
+.picker {
+  display: grid;
+  gap: var(--space-12);
+
+  max-width: 34rem;
+}
+
+/* ---- A contagem ---------------------------------------------------------- */
+
+.count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+
+  min-height: 2.25rem;
+}
+
+.tally {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---- As duas listas ------------------------------------------------------ */
+
+.chosen,
+.results {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * A lista escolhida para de crescer e passa a rolar.
+ *
+ * Cinquenta linhas de 4.5rem empurrariam o resto do formulário — o anúncio na
+ * home, o interruptor, o botão de salvar — para 225rem abaixo do dobro da
+ * tela. O limite e generoso o bastante para a campanha comum de dez ou doze
+ * caber inteira sem rolagem interna.
+ */
+.chosen {
+  overflow-y: auto;
+  max-height: 24rem;
+}
+
+.chosenRow,
+.result {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+
+  padding: var(--space-8);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+/*
+ * A linha que já esta na campanha se distingue pela moldura dourada, como a
+ * escolha no ar do seletor de um produto — e não por um segundo nível de
+ * elevação: a tela e plana.
+ */
+.chosenRow {
+  border-color: var(--gold);
+  background-color: var(--gold-wash);
+}
+
+.thumb {
+  flex: none;
+
+  display: block;
+  width: 3.5rem;
+  height: 3.5rem;
+
+  object-fit: cover;
+  background-color: var(--sand);
+  border-radius: var(--radius-chip);
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+
+  display: grid;
+  gap: 0.125rem;
+}
+
+.name {
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+
+  /* Nome longo corta no fim da linha em vez de empurrar a ação para fora. */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.brand {
+  font-size: var(--text-12);
+  line-height: var(--leading-tight);
+  color: var(--ink-soft);
+}
+
+.remove {
+  flex: none;
+}
+
+.remove svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/*
+ * O produto já escolhido, visto da lista de resultados.
+ *
+ * Fica no lugar do botão, e não some: sumir faria a busca por "Asad" voltar
+ * vazia e parecer quebrada quando o Asad já esta na campanha.
+ */
+.already {
+  flex: none;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  padding-inline: var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+.already svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/* ---- As frases ----------------------------------------------------------- */
+
+.empty,
+.gone {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.gone {
+  flex: 1;
+}
+
+.error {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+  text-wrap: pretty;
+}
