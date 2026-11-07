@@ -1,0 +1,275 @@
+/*
+ * O cartão da campanha.
+ *
+ * Fundo de superfície com filete de 1px, como o resto do painel — nenhuma
+ * sombra: o cartão não paira, ele esta na página. A separação entre cartões e
+ * o vão e o filete, que e como esta casa separa tudo.
+ */
+
+/*
+ * Coluna, e não grade de linhas automáticas.
+ *
+ * E o que permite ao pé do cartão descer com `margin-top: auto` e encostar na
+ * base. Numa fileira de três campanhas, uma com frase de aviso e duas sem, a
+ * grade deixaria os três "Editar" em três alturas diferentes — e o olho que
+ * percorre a fileira procura o botão sempre no mesmo lugar.
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  transition: border-color var(--transition);
+}
+
+/*
+ * O verde de "salvo".
+ *
+ * Só o filete muda. Fundo verde no cartão inteiro seria uma superfície de cor
+ * onde o sistema só permite dose de selo — e a confirmação dura um segundo.
+ */
+.saved {
+  border-color: var(--success);
+}
+
+/*
+ * A campanha desligada.
+ *
+ * Não some e não fica cinza-sobre-cinza: ela perde o contraste da superfície,
+ * que e o que faz um cartão desligado parecer desligado sem que o texto dele
+ * fique ilegível. O que estiver escrito aqui continua precisando ser lido —
+ * e nesse cartão que se decide reabrir a campanha.
+ */
+.off {
+  background-color: var(--bg-alt);
+}
+
+/*
+ * O desconto da campanha desligada sai do dourado.
+ *
+ * Duas razões, e as duas mandam na mesma direção. `--gold-deep` dá 4.7:1 sobre
+ * o branco e **4.3:1** sobre a areia deste cartão — abaixo do piso, porque
+ * 18px em peso cheio ainda não e texto grande. E, antes disso, dourado nesta
+ * casa e oferta que vale: numa campanha desligada o número e histórico, e
+ * tinta e a cor de quem só informa.
+ */
+.off .discount {
+  color: var(--ink-soft);
+}
+
+/* ---- O topo -------------------------------------------------------------- */
+
+/*
+ * Identidade em cima, desconto e selos embaixo. Sempre, em toda largura.
+ *
+ * A primeira versão punha os dois lados numa linha só com `space-between` e
+ * quebra automática, e o resultado foi um cartão com o desconto ao lado do
+ * código e o vizinho com o desconto abaixo — porque `NATAL2026` e mais curto
+ * que `BLACKFRIDAY`. Numa fileira de cartões, a anatomia não pode depender do
+ * comprimento do código.
+ */
+.head {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+/*
+ * O código.
+ *
+ * Caixa alta com espacejamento aberto, porque e um código que se lê caractere
+ * a caractere e se dita no WhatsApp — e nesse uso o espacejamento fechado da
+ * escala de display atrapalha. Fica em `--text-18` e não maior: ele divide a
+ * linha com o desconto e os selos, e crescer mais empurraria tudo para baixo.
+ */
+.code {
+  margin: 0;
+
+  font-size: var(--text-18);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+.title {
+  margin: 0;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-tight);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.flags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+/*
+ * O desconto.
+ *
+ * `--gold-deep` porque aqui o dourado e texto, e o dourado da marca não
+ * alcança 4.5:1 sobre o branco. E e dourado de propósito: o desconto e o que
+ * a loja esta dando, e e a única coisa dourada deste cartão fora dos selos.
+ */
+.discount {
+  font-size: var(--text-16);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--gold-deep);
+}
+
+/* ---- Prazo e recorte ------------------------------------------------------ */
+
+.terms {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-tight);
+  color: var(--muted);
+}
+
+/* O ponto que separa as duas informações, em vez de um caractere de texto. */
+.dot {
+  width: 3px;
+  height: 3px;
+
+  background-color: currentcolor;
+  border-radius: var(--radius-pill);
+  opacity: 0.6;
+}
+
+.uses {
+  margin-top: var(--space-4);
+}
+
+/*
+ * As frases que explicam um estado.
+ *
+ * Fundo lavado e filete de 1px a esquerda, na cor do aviso — 1px, que e a
+ * espessura do sistema, e não uma tarja colorida. O texto fica em `--ink-soft`
+ * e não na cor do aviso: vermelho em três linhas de texto corrido grita mais
+ * do que a notícia merece, e o selo do topo já deu a cor.
+ */
+.note {
+  margin: 0;
+  padding: var(--space-8) var(--space-12);
+
+  background-color: var(--bg-alt);
+  border-left: 1px solid var(--line);
+  border-radius: 0 var(--radius-chip) var(--radius-chip) 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- O pé ---------------------------------------------------------------- */
+
+/* `margin-top: auto` encosta o pé na base: ver a nota em `.card`. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+
+  margin-top: auto;
+  padding-top: var(--space-12);
+
+  border-top: var(--border);
+}
+
+.copy {
+  margin-inline-start: calc(var(--space-12) * -1);
+}
+
+/*
+ * O aviso de falha ao copiar.
+ *
+ * Vazio ele não ocupa nada — `<output>` sem conteúdo não desenha caixa —, e
+ * quando aparece toma a linha inteira, porque a frase traz o código escrito
+ * para quem precisa selecionar a mão.
+ */
+.copyStatus:not(:empty) {
+  flex: 1;
+  min-width: 100%;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+}
+
+/*
+ * "Editar", a ação principal do cartão.
+ *
+ * Link e não botão, porque leva a outro endereço — e só link abre em outra
+ * aba com o meio do mouse, que e como se compara duas campanhas. Ganha o
+ * contorno de botão secundário para ser o alvo óbvio do cartão.
+ */
+.edit {
+  display: inline-flex;
+  align-items: center;
+
+  margin-inline-start: auto;
+  min-height: 2.25rem;
+  padding-inline: var(--space-16);
+
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-button);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+
+  transition:
+    background-color var(--transition),
+    color var(--transition);
+}
+
+.edit:hover {
+  background-color: var(--ink);
+  color: var(--bg);
+}
+
+.edit:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+@media (min-width: 48rem) {
+  .card {
+    padding: var(--space-24);
+  }
+
+  .code {
+    font-size: var(--text-22);
+  }
+
+  .discount {
+    font-size: var(--text-18);
+  }
+}

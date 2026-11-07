@@ -26,6 +26,7 @@ export {
 export { fetchCartQuote } from './quote.api';
 
 export type {
+  AppliedCoupon,
   CartQuote,
   InstallmentOption,
   QuoteFulfillment,

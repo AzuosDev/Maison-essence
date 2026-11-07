@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { ROUTES } from '@/app/routes';
-import { ProductShelf, shelfWillRender, type ShelfContent } from '@/components/store';
+import { CampaignStrip, ProductShelf, shelfWillRender, type ShelfContent } from '@/components/store';
+import { hasShowcase, useCampaignProducts, useLiveCampaign } from '@/features/campaign';
 import { useLatest, useSaleShelf, useShelf, type PublicProduct } from '@/features/catalog';
 import { BrandRow } from './brand-row';
 import { ShortcutCircles } from './shortcut-circles';
@@ -15,8 +16,16 @@ import { InstagramInvite } from './instagram-invite';
  *
  * ## A ordem das seções
  *
- * Banner, atalhos em círculo, fileira, marcas, cartazes de coleção,
- * fileira, banner do meio, fileira, Instagram, o perfume da vez.
+ * Banner, faixa da campanha (se houver), atalhos em círculo, fileira, marcas,
+ * cartazes de coleção, fileira, banner do meio, fileira, Instagram, o perfume
+ * da vez.
+ *
+ * A faixa da campanha e a única seção condicional do topo: ela existe nos dias
+ * em que ha promoção no ar e não existe no resto do ano. Fica logo abaixo do
+ * banner porque e um prazo, e prazo não espera que alguém pense em procurá-lo
+ * — ver `campaign-strip.tsx`, que explica por que ela não e aba de menu nem
+ * elemento flutuante.
+
  *
  * E o arranjo que a dona escolheu, e ele não e arbitrário: e a ordem que
  * quase toda loja brasileira de perfume importado usa, e portanto a ordem
@@ -35,9 +44,20 @@ import { InstagramInvite } from './instagram-invite';
  *
  * ## Três fileiras, e quais
  *
- * Três, por decisão da dona. Quais três e o que sobra de uma lista de quatro
+ * Três, por decisão da dona. Quais três e o que sobra de uma lista de
  * candidatas, em ordem de prioridade, depois de tirar as que não tem produto
  * — ver `slots`.
+ *
+ * A prateleira da campanha entra como **primeira candidata**, e não como uma
+ * quarta fileira: o teto de três e decisão da dona e a promoção não compra o
+ * direito de esticar a home. Ela desloca a candidata de menor prioridade, que
+ * e o comportamento certo — nos dias de campanha, o que a loja tem a mostrar
+ * primeiro e a campanha.
+ *
+ * Ela só aparece quando o cupom tem produtos escolhidos. Cupom da loja inteira
+ * não tem recorte: `?campaign=<slug>` devolveria o catálogo inteiro, e uma
+ * prateleira chamada "Black Friday" mostrando tudo seria a loja anunciando um
+ * recorte que não existe.
  *
  * O arranjo anterior tinha seis fileiras, três delas de marca. Marca agora e
  * filtro: o nome leva para a vitrine filtrada, e a faixa de marcas no meio
@@ -98,6 +118,19 @@ interface Shelf {
 }
 
 export default function HomePage() {
+  const { data: campaign } = useLiveCampaign();
+
+  /*
+   * O slug só vai a consulta quando ha vitrine a montar.
+   *
+   * `undefined` desliga a consulta dos produtos (`enabled`), que e o caso de
+   * toda a loja na maior parte do ano — e o da campanha da loja inteira, que
+   * tem faixa mas não tem prateleira própria.
+   */
+  const campaignSlug =
+    campaign != null && hasShowcase(campaign) ? campaign.slug : undefined;
+  const campaignProducts = useCampaignProducts(campaignSlug);
+
   const bestSellers = useShelf('best-sellers');
   const sale = useSaleShelf();
   const readyToShip = useShelf('ready-to-ship');
@@ -118,6 +151,31 @@ export default function HomePage() {
    * tem rota própria e selo no card, que nasce do cadastro de cada frasco.
    */
   const slots: Shelf[] = [
+    ...(campaign != null && campaignSlug !== undefined
+      ? [
+          {
+            key: `campaign-${campaignSlug}`,
+            /*
+             * O nome da campanha **não** se repete aqui.
+             *
+             * Ele e o `h2` da faixa, duas seções acima. Repetido no título da
+             * prateleira, a home ficaria com dois cabeçalhos de mesmo nome e
+             * mesmo nível — e quem navega por cabeçalho ouviria "Black Friday
+             * Maison" duas vezes sem saber o que muda entre as duas. A faixa
+             * anuncia a campanha; esta fileira mostra o que tem nela, e e isso
+             * que o título diz.
+             */
+            title: 'Os produtos da promoção',
+            description:
+              campaign.tagline === ''
+                ? `${campaign.discountLabel} com o cupom ${campaign.code}.`
+                : campaign.tagline,
+            to: ROUTES.campaign(campaignSlug),
+            linkLabel: 'Ver toda a promoção',
+            content: contentOf(campaignProducts),
+          },
+        ]
+      : []),
     {
       key: 'best-sellers',
       title: 'Mais vendidos',
@@ -207,6 +265,7 @@ export default function HomePage() {
   return (
     <>
       <HomeHero />
+      {campaign == null ? null : <CampaignStrip campaign={campaign} />}
       <ShortcutCircles />
 
       {shelves.map((shelf, index) => (

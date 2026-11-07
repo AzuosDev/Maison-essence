@@ -206,6 +206,20 @@ function Totals({ order }: { order: CustomerOrderDetail }) {
         </div>
       ) : null}
 
+      {/* O cupom pelo código e pelo desconto que estava escrito na tela
+          quando ela comprou — os dois congelados no pedido. A campanha pode
+          ter mudado de 20% para 15% depois; este pedido continua sendo o de
+          20%, e e isso que a linha precisa dizer a quem volta para conferir. */}
+      {order.coupon === null ? null : (
+        <div className={styles.totalRow}>
+          <dt>
+            Cupom {order.coupon.code}
+            <span className={styles.couponLabel}>{order.coupon.discountLabel}</span>
+          </dt>
+          <dd className={styles.discount}>-{formatCents(totals.couponDiscountCents)}</dd>
+        </div>
+      ) }
+
       {order.fulfillment.mode === 'delivery' ? (
         <div className={styles.totalRow}>
           <dt>Entrega</dt>

@@ -84,10 +84,12 @@ const ORDER = {
   totals: {
     subtotalCents: 37_980,
     discountTotalCents: 0,
+    couponDiscountCents: 0,
     deliveryFeeCents: 1000,
     pixDiscountCents: 0,
     totalCents: 38_980,
   },
+  coupon: null,
   whatsappMessage: 'Pedido ME-260922-K4P1\nAsad 100ml x2',
   notes: '',
   stockRestoredAt: null,

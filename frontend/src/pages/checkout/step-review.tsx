@@ -14,6 +14,7 @@ import {
   type OrderFailure,
 } from '@/features/checkout';
 import { formatCents, formatInstallment, maskPhone } from '@/lib/format';
+import { CouponBox } from './coupon-box';
 import { QuoteTotals } from './quote-totals';
 import { StepCard } from './step-card';
 import { SubmitFailure } from './submit-failure';
@@ -132,6 +133,15 @@ export function StepReview({
 
       <div className={styles.totals}>
         <h3 className={styles.totalsTitle}>Valores</h3>
+
+        {/* A mesma caixa do resumo lateral, que não existe nesta etapa: aqui
+            a revisão **e** o resumo, e o cupom precisa estar alcançável na
+            última tela antes do pedido sair. */}
+        <CouponBox
+          state={quoting.coupon}
+          subtotalCents={quoting.quote?.subtotalCents ?? 0}
+          onApply={quoting.applyCoupon}
+        />
 
         <QuoteTotals
           quote={quoting.quote}

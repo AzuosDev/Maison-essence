@@ -142,9 +142,26 @@ export interface AdminOrderPayment {
 export interface AdminOrderTotals {
   subtotalCents: number;
   discountTotalCents: number;
+  /** Quanto o cupom tirou. Zero na maioria dos pedidos. */
+  couponDiscountCents: number;
   deliveryFeeCents: number;
   pixDiscountCents: number;
   totalCents: number;
+}
+
+/**
+ * O cupom do pedido, congelado no dia da compra.
+ *
+ * Sem id: do painel não se faz nada com o id da campanha, e o que a dona
+ * precisa ver esta todo aqui. O `discountLabel` e a frase que estava na tela
+ * quando a cliente comprou, e continua sendo a verdade daquele pedido mesmo
+ * depois de a campanha mudar de desconto ou sair do ar.
+ */
+export interface AdminOrderCoupon {
+  code: string;
+  title: string;
+  discountLabel: string;
+  discountCents: number;
 }
 
 export interface AdminOrderCustomer {
@@ -164,6 +181,8 @@ export interface AdminOrder {
   fulfillment: AdminOrderFulfillment;
   payment: AdminOrderPayment;
   totals: AdminOrderTotals;
+  /** O cupom usado, ou `null`. E ele que o "Vendido" vai descontar da régua. */
+  coupon: AdminOrderCoupon | null;
   /** A mensagem como foi montada e enviada ao WhatsApp. */
   whatsappMessage: string;
   /** Conversa interna da loja. Nunca sai para o cliente. */
@@ -877,3 +896,124 @@ export function bannerArtMeasure(art: { width: number; height: number }): string
  * frasco sai pela borda.
  */
 export const SHORTCUT_ART = { width: 400, height: 400 } as const;
+
+/* ---- Cupons --------------------------------------------------------------- */
+
+/**
+ * Onde a campanha esta, agora.
+ *
+ * Cinco estados e não dois, pela mesma razão do banner: uma campanha
+ * desligada e uma que terminou ontem parecem a mesma coisa na tela e não
+ * são — a primeira volta com um clique, a segunda precisa de datas novas. O
+ * que o banner não tem e o quinto: **esgotada**, a campanha que esta dentro
+ * da janela, ligada, e já gastou todos os cupons. E o estado que mais pede
+ * decisão, porque ele recusa cliente no fechamento.
+ *
+ * O servidor deriva isto a cada leitura (`couponStatusOf`), nunca grava. O
+ * painel recebe pronto e não recalcula: duas contas de janela em dois lugares
+ * viram dois resultados diferentes na virada da meia-noite.
+ */
+export const COUPON_STATUSES = ['live', 'scheduled', 'ended', 'exhausted', 'paused'] as const;
+
+export type CouponStatus = (typeof COUPON_STATUSES)[number];
+
+/**
+ * Um cupom como o painel o vê.
+ *
+ * ## Os três números da régua
+ *
+ * `usedCount`, `holdingCount` e `remainingUses` chegam separados porque a
+ * pergunta da dona não e "quantos sobraram?", e sim "quantos sobraram **de
+ * verdade**?". Um pedido em Processando já recebeu o desconto e ainda não
+ * virou venda: ele não conta em `usedCount`, mas segura uma vaga. Sem a
+ * distinção na tela, um cupom de 50 viraria 70 sem ninguém notar.
+ *
+ * ## O cupom e a campanha são o mesmo cadastro
+ *
+ * `title`, `slug` e `tagline` não são enfeite administrativo: são o que a
+ * faixa da home anuncia e o que a página `/promocao/<slug>` mostra. Um cupom
+ * sem `showOnHome` existe calado, para quem recebeu o código no WhatsApp;
+ * com ele ligado, o mesmo cadastro vira a campanha que a loja aberta vê.
+ */
+export interface AdminCoupon {
+  id: string;
+  /** Caixa alta, letras e números. E o que a cliente digita no fechamento. */
+  code: string;
+  title: string;
+  /** Gerado uma vez, no cadastro, e nunca mais: o endereço já circulou. */
+  slug: string;
+  tagline: string;
+  percentOff: number | null;
+  amountOffCents: number | null;
+  /** `20% OFF` ou `R$ 30,00 OFF`, escrito pelo servidor para as duas telas. */
+  discountLabel: string;
+  /** `null` e "sem teto": o cupom vale enquanto a janela estiver aberta. */
+  maxUses: number | null;
+  /** Vendas fechadas com o cupom — o contador que sobe no "Vendido". */
+  usedCount: number;
+  /** Pedidos abertos que já usaram o código e ainda não viraram venda. */
+  holdingCount: number;
+  /** Quantos ainda cabem, já descontados os pedidos abertos. */
+  remainingUses: number | null;
+  startsAt: string | null;
+  endsAt: string | null;
+  productIds: string[];
+  /** Nenhum produto escolhido: o cupom vale para a loja inteira. */
+  wholeStore: boolean;
+  showOnHome: boolean;
+  isActive: boolean;
+  status: CouponStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/**
+ * O cadastro de um cupom.
+ *
+ * `percentOff` e `amountOffCents` são exclusivos: um dos dois vem preenchido e
+ * o outro vem `null`. Os dois juntos — ou nenhum — e recusado pelo servidor
+ * com a frase de `ONE_DISCOUNT_MESSAGE`, e a tela recusa antes para não
+ * gastar a viagem.
+ */
+export interface CreateCouponInput {
+  code: string;
+  title: string;
+  tagline?: string;
+  percentOff?: number | null;
+  amountOffCents?: number | null;
+  maxUses?: number | null;
+  startsAt?: string | null;
+  endsAt?: string | null;
+  productIds?: string[];
+  showOnHome?: boolean;
+  isActive?: boolean;
+}
+
+/**
+ * Edição do cupom. Campo omitido fica como esta.
+ *
+ * `usedCount` não esta aqui, e nunca estará: o contador e consequência de
+ * venda fechada, não configuração. Quem precisa de mais usos aumenta o
+ * `maxUses`, que e a decisão que de fato se quis tomar. `slug` também não —
+ * trocar o nome da campanha não pode quebrar o `/promocao/black-friday` que
+ * foi para o story.
+ */
+export type UpdateCouponInput = Partial<CreateCouponInput>;
+
+/** Os limites que o servidor impoe ao cadastro de cupom. */
+export const COUPON_LIMITS = {
+  /** `MIN_COUPON_CODE_LENGTH` e `MAX_COUPON_CODE_LENGTH`. */
+  codeMin: 3,
+  codeMax: 24,
+  title: 60,
+  tagline: 120,
+  /** `MIN_COUPON_PERCENT` e `MAX_COUPON_PERCENT`: acima de 90% e digitação. */
+  percentMin: 1,
+  percentMax: 90,
+  /** `MAX_CENTS`. */
+  amountOffCents: 99_999_999,
+  /** `MAX_COUPON_USES`: mais que isso esta loja não vende num ano. */
+  maxUses: 10_000,
+  /** `MAX_COUPON_PRODUCTS`: a lista entra num `$in` e viaja na resposta. */
+  products: 50,
+} as const;

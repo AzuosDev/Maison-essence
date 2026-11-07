@@ -1,0 +1,131 @@
+/*
+ * A régua de usos do cupom.
+ *
+ * Barra de duas fatias e uma linha de números. O que separa as fatias e um
+ * filete da cor do fundo do cartão, e não um vão: vão deixaria o tom da
+ * trilha aparecer entre as duas e sugerir uma terceira fatia.
+ */
+
+.ruler {
+  display: grid;
+  gap: var(--space-8);
+}
+
+/* ---- A barra ------------------------------------------------------------- */
+
+.track {
+  display: flex;
+  overflow: hidden;
+
+  height: 0.375rem;
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-pill);
+}
+
+.full .track {
+  height: 0.5rem;
+}
+
+.used {
+  background-color: var(--ink);
+}
+
+/*
+ * A fatia dos pedidos abertos.
+ *
+ * `--ink-soft` contra `--ink` e a diferença de tom; o filete da esquerda, na
+ * cor da superfície, e o que a torna uma fatia e não a continuação da outra.
+ * `border-box` esta no reset, então o filete não alarga a fatia — e a conta de
+ * `usesRulerOf` continua fechando em 100%.
+ */
+.holding {
+  border-left: 2px solid var(--surface);
+  background-color: var(--ink-soft);
+}
+
+/*
+ * Esgotada.
+ *
+ * As duas fatias viram vermelho porque a barra cheia não e "campanha bem
+ * sucedida": e o código parando de funcionar no fechamento. A segunda fatia
+ * clareia o mesmo vermelho em vez de trocar de cor — a distinção entre
+ * vendido e em aberto continua valendo, e misturar vermelho com tinta daria
+ * duas mensagens na mesma barra.
+ */
+.spent .used {
+  background-color: var(--danger);
+}
+
+.spent .holding {
+  background-color: color-mix(in srgb, var(--danger) 55%, var(--surface));
+}
+
+/* ---- Os números ---------------------------------------------------------- */
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-12);
+
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-tight);
+  color: var(--ink-soft);
+}
+
+.full .legend {
+  font-size: var(--text-14);
+  gap: var(--space-8) var(--space-16);
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+/*
+ * O quadradinho que liga o número a sua fatia.
+ *
+ * Quadrado de canto pequeno, e não círculo: a fatia da barra e um retângulo, e
+ * a legenda de um gráfico repete a forma do que ela nomeia.
+ */
+.swatch {
+  flex: none;
+
+  width: 0.5rem;
+  height: 0.5rem;
+
+  background-color: var(--ink);
+  border-radius: 2px;
+}
+
+.swatchHolding {
+  background-color: var(--ink-soft);
+}
+
+/* A fatia livre e a trilha, e por isso o quadradinho leva o filete. */
+.swatchFree {
+  background-color: var(--bg-alt);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+.swatchSpent {
+  background-color: var(--danger);
+}
+
+.swatchHolding.swatchSpent {
+  background-color: color-mix(in srgb, var(--danger) 55%, var(--surface));
+}
+
+.number {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/* Sem teto não tem número para destacar: a frase se basta. */
+.open {
+  color: var(--muted);
+}

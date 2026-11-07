@@ -514,6 +514,13 @@ function Totals({ order }: { order: AdminOrder }) {
           <Money label="Descontos" cents={-totals.discountTotalCents} />
         ) : null}
 
+        {/* O cupom pelo código, e não como "Desconto": e por este código que
+            a dona reconhece a campanha na régua de usos do painel de cupons,
+            e e ele que o "Vendido" deste pedido vai consumir. */}
+        {order.coupon === null ? null : (
+          <Money label={`Cupom ${order.coupon.code}`} cents={-totals.couponDiscountCents} />
+        )}
+
         {totals.deliveryFeeCents > 0 ? (
           <Money label="Entrega" cents={totals.deliveryFeeCents} />
         ) : null}

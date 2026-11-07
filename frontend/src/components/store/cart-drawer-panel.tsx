@@ -185,7 +185,11 @@ function Summary({
         )}
       </p>
 
-      <p className={styles.shipping}>Frete calculado no fechamento do pedido.</p>
+      {/* Frete e cupom na mesma linha: as duas coisas que esta gaveta não
+          resolve, e que o fechamento resolve. Quem chega com o código do
+          story precisa saber que ha onde digitá-lo antes de concluir que a
+          loja não aceita o que ela mesma anunciou. */}
+      <p className={styles.shipping}>Frete e cupom entram no fechamento do pedido.</p>
     </div>
   );
 }

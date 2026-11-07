@@ -1,5 +1,7 @@
 import { Button } from '@/components/ui';
 import type { CartQuote } from '@/features/cart';
+import type { CouponState } from '@/features/checkout';
+import { CouponBox } from './coupon-box';
 import { QuoteTotals } from './quote-totals';
 import styles from './checkout-summary.module.css';
 
@@ -29,6 +31,9 @@ export interface CheckoutSummaryProps {
   onRetry: () => void;
   /** Quantas unidades entram no pedido. */
   itemCount: number;
+  /** Em que pe esta o cupom, e como aplicar outro. */
+  coupon: CouponState;
+  onApplyCoupon: (code: string) => void;
 }
 
 export function CheckoutSummary({
@@ -39,6 +44,8 @@ export function CheckoutSummary({
   isError,
   onRetry,
   itemCount,
+  coupon,
+  onApplyCoupon,
 }: CheckoutSummaryProps) {
   if (isError && quote === undefined) {
     return (
@@ -69,6 +76,13 @@ export function CheckoutSummary({
           </p>
         ) : null}
       </div>
+
+      {/* Acima das linhas de dinheiro: o cupom e o que mexe nelas. */}
+      <CouponBox
+        state={coupon}
+        subtotalCents={quote?.subtotalCents ?? 0}
+        onApply={onApplyCoupon}
+      />
 
       <QuoteTotals
         quote={quote}

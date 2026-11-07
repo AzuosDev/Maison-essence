@@ -1,0 +1,125 @@
+/*
+ * O bloco da oferta, na vitrine da campanha.
+ *
+ * Mesma gramática da faixa da home — areia, desconto em dourado, código no
+ * retângulo tracejado —, porque e o mesmo cupom visto do outro lado do clique.
+ * O que muda e a moldura: na home a areia sangra até a borda da tela, e aqui
+ * ela e um bloco dentro da coluna da listagem.
+ */
+
+/*
+ * A medida do bloco.
+ *
+ * Quatro informações curtas — desconto, código, prazo, instrução — não ocupam
+ * mil e duzentos pixels. Solto na largura da listagem, o bloco era uma faixa
+ * de areia com o conteúdo amontoado no primeiro terço e dois terços de vazio
+ * a direita, que e a forma de uma seção inacabada.
+ */
+.offer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12) var(--space-16);
+
+  max-width: 38rem;
+  padding: var(--space-16);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+}
+
+/*
+ * O desconto.
+ *
+ * `--gold-deep`, porque aqui o dourado e texto: o da marca da 2.4:1 sobre a
+ * areia e não escreve.
+ */
+.discount {
+  font-size: var(--text-28);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+/*
+ * O código, no retângulo tracejado.
+ *
+ * A única linha tracejada do sistema, e ela existe por significado: e o
+ * pontilhado de onde se recorta um cupom. Fundo de superfície para o retângulo
+ * se separar da areia do bloco.
+ */
+.coupon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+
+  min-width: 0;
+  padding: var(--space-4) var(--space-12);
+
+  background-color: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-chip);
+}
+
+.couponLabel {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Espacejamento aberto: o código se lê caractere a caractere e se digita. */
+.code {
+  font-size: var(--text-16);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* ---- O prazo e a escassez ------------------------------------------------ */
+
+.terms {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.deadline {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* Sem cor de alerta: o número já carrega a urgência, e só aparece quando ela
+   e verdade — o servidor cala em cupom sem teto, teto folgado e esgotado. */
+.scarcity {
+  font-size: var(--text-12);
+  line-height: var(--leading-tight);
+  color: var(--muted);
+}
+
+/* ---- A instrução --------------------------------------------------------- */
+
+/*
+ * Onde o cupom se aplica.
+ *
+ * Toma a linha inteira — `min-width: 100%` numa caixa que embrulha —, porque e
+ * uma frase e não mais um dado da oferta. Ao lado do código ela disputaria a
+ * fileira com ele e as duas sairiam cortadas no celular.
+ */
+.how {
+  min-width: 100%;
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}

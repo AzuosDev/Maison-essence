@@ -1,0 +1,231 @@
+/*
+ * A faixa da campanha.
+ *
+ * Areia de ponta a ponta, conteúdo na régua da esquerda. Areia e não laje: os
+ * blocos escuros desta loja são três e só três — avisos, menu, rodapé —, e
+ * abrir um quarto para a promoção seria trocar a regra da laje por um efeito.
+ * O filete embaixo fecha a faixa contra o branco da seção seguinte.
+ */
+
+.band {
+  /*
+   * Respiro curto, e não os 48px de uma seção comum.
+   *
+   * Ela nasce encostada no banner, que e uma foto escura de ponta a ponta;
+   * contra ela o respiro cheio não separa nada, só empurra o resto da home
+   * para fora da primeira tela. E a mesma medida que a primeira prateleira
+   * usa, pela mesma razão.
+   */
+  padding-block: var(--space-24);
+
+  background-color: var(--bg-alt);
+  border-bottom: var(--border);
+}
+
+/*
+ * Empilhado no celular, em fileira a partir de 768px.
+ *
+ * No celular a ordem e a de leitura: o que e, quanto e, o código, e o caminho.
+ * Lado a lado num telefone, o nome da campanha ficaria com cento e poucos
+ * pixels e `Black Friday Maison` sairia em quatro linhas.
+ */
+.strip {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+/* ---- O que a faixa diz --------------------------------------------------- */
+
+.copy {
+  display: grid;
+  gap: var(--space-4);
+
+  min-width: 0;
+}
+
+/*
+ * O nome da campanha, na voz de título da loja.
+ *
+ * Readex Pro em 22px no celular e 28px a partir de 768px — os mesmos degraus
+ * do título de prateleira, porque esta faixa e uma seção da home como as
+ * outras. Abaixo de 18px a Readex e a Onest com outro nome, e a faixa perderia
+ * justamente o que a separa do resto da página.
+ */
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-22);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.tagline {
+  margin: 0;
+
+  /* Legenda, e não parágrafo: para antes de virar uma linha de leitura. */
+  max-width: 48ch;
+
+  font-size: var(--text-14);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- A oferta ------------------------------------------------------------ */
+
+.offer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12) var(--space-16);
+}
+
+/*
+ * O desconto.
+ *
+ * `--gold-deep`, porque aqui o dourado e texto: o da marca da 2.4:1 sobre o
+ * branco e sobre a areia, e não escreve. Em 28px e peso cheio ele e o segundo
+ * maior elemento da faixa, atrás do nome — e e o número que faz alguém parar
+ * de rolar.
+ */
+.discount {
+  font-size: var(--text-28);
+  font-weight: var(--weight-bold);
+  line-height: 1;
+  color: var(--gold-deep);
+  white-space: nowrap;
+}
+
+/*
+ * O código, na forma do que ele e: um cupom a destacar.
+ *
+ * Filete tracejado de 1px — a única linha tracejada do sistema, e ela existe
+ * por significado e não por estilo: e o pontilhado de onde se recorta. O fundo
+ * e a superfície da página, para o retângulo se separar da areia.
+ */
+.coupon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+
+  min-width: 0;
+  padding: var(--space-4) var(--space-12);
+
+  background-color: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-chip);
+}
+
+.couponLabel {
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/*
+ * O código em si.
+ *
+ * Espacejamento aberto porque ele se lê caractere a caractere e se digita no
+ * fechamento: nesse uso a diferença entre `0` e `O` precisa ser visível aqui,
+ * e não descoberta na recusa. `anywhere` porque um código de vinte e quatro
+ * caracteres num telefone de 320px tem de quebrar em vez de esticar a faixa.
+ */
+.code {
+  font-size: var(--text-16);
+  font-weight: var(--weight-bold);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* ---- O prazo e a escassez ------------------------------------------------ */
+
+/*
+ * As duas condições, empilhadas.
+ *
+ * Prazo em cima, cupons restantes embaixo, e as duas podem faltar: campanha
+ * sem data não tem prazo, e a escassez só e escrita quando ela aperta de
+ * verdade — o servidor manda vazio em cupom sem teto, em teto folgado e em
+ * cupom esgotado.
+ */
+.terms {
+  display: grid;
+  gap: 0.125rem;
+}
+
+.deadline {
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/*
+ * "Restam 7 cupons".
+ *
+ * Em cinza legítimo e sem cor de alerta. O vermelho faria a faixa inteira
+ * parecer um aviso de erro, e o número já carrega a própria urgência — e ele
+ * só aparece quando e verdade, o que e exatamente o que torna o cinza
+ * suficiente.
+ */
+.scarcity {
+  font-size: var(--text-12);
+  line-height: var(--leading-tight);
+  color: var(--muted);
+}
+
+/* ---- O atalho ------------------------------------------------------------ */
+
+/*
+ * Contornado em tinta, e não o dourado cheio.
+ *
+ * O botão dourado desta loja põe na sacola. Um dourado aqui, numa faixa que e
+ * informação, competiria com os quatro "Adicionar" da prateleira logo abaixo
+ * — e o olho que procura o botão de comprar acharia primeiro o que leva para
+ * outra página.
+ *
+ * Largura total no celular, medida própria a partir de 768px: no telefone ele
+ * e a última coisa da faixa e o alvo do polegar; na fileira, um botão
+ * esticado por mil pixels seria uma barra.
+ */
+.shortcut {
+  align-self: stretch;
+  justify-content: center;
+}
+
+@media (min-width: 48rem) {
+  .strip {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-24) var(--space-32);
+  }
+
+  /* O nome e a linha de apoio ficam com o que sobra: são o que pode quebrar. */
+  .copy {
+    flex: 1;
+  }
+
+  .offer,
+  .shortcut {
+    flex: none;
+  }
+
+  .shortcut {
+    align-self: auto;
+  }
+
+  .title {
+    font-size: var(--text-28);
+  }
+}

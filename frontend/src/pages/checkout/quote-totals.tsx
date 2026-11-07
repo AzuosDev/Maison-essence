@@ -34,6 +34,12 @@ import styles from './quote-totals.module.css';
  * própria para adiantar o total. Seria a única conta do checkout feita no
  * navegador, e seria justamente a do número que o cliente vai pagar.
  *
+ * O que ele mostra nessa janela e o `payableCents`: o que os produtos custam
+ * depois dos descontos, sem a entrega, calculado no servidor. Era o
+ * `subtotalCents` até o cupom existir — e aí a lista passou a mostrar
+ * "Subtotal 189,90 / Cupom -37,98 / Total 189,90", uma soma que não fecha na
+ * frente de quem esta conferindo.
+ *
  * ## O total que o cartão cobra
  *
  * O "Total" desta lista e o preço a vista, e e ele que o pedido grava e que
@@ -70,6 +76,21 @@ export function QuoteTotals({ quote, totalsResolved, isPending, isFetching }: Qu
           </Line>
         ) : null}
 
+        {/*
+          O cupom, logo depois do desconto por quantidade.
+
+          Os dois são desconto de produto, e ficam juntos; o frete e o PIX vem
+          depois porque são outra conversa — um acrescenta, o outro depende da
+          forma de pagamento. A ordem na tela e a ordem em que a conta
+          acontece no servidor, e e o que faz a soma de cima para baixo fechar
+          com o total.
+        */}
+        {quote?.coupon == null ? null : (
+          <Line label={`Cupom ${quote.coupon.code}`} tone="discount" isPending={false}>
+            -{formatCents(quote.couponDiscountCents)}
+          </Line>
+        )}
+
         <DeliveryLine quote={quote} totalsResolved={totalsResolved} isPending={isPending} />
 
         {quote !== undefined && quote.pixDiscountCents > 0 ? (
@@ -85,7 +106,7 @@ export function QuoteTotals({ quote, totalsResolved, isPending, isFetching }: Qu
               <Skeleton variant="text" width="6rem" />
             ) : (
               <strong className="tabular">
-                {formatCents(totalsResolved ? quote.totalCents : quote.subtotalCents)}
+                {formatCents(totalsResolved ? quote.totalCents : quote.payableCents)}
               </strong>
             )}
           </dd>
