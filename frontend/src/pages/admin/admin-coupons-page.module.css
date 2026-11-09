@@ -1,0 +1,190 @@
+/*
+ * Cupons.
+ *
+ * Título, a regra escrita e três grupos de cartões. A regra fica na página e
+ * não num tooltip, como a instrução da tela de entrega: "pedido aberto já
+ * segura um cupom" e algo que ninguém descobre olhando, e a tela e aberta em
+ * dias de campanha — longe o bastante um do outro para esquecer.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+
+  margin-bottom: var(--space-8);
+}
+
+.identity {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+/* `--ink-soft` e não `--muted`: 14px no cinza de rótulo não alcança 4.5:1. */
+.count {
+  margin: 0;
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+}
+
+.add {
+  flex: 1;
+  min-width: 100%;
+}
+
+.hint {
+  margin: 0;
+
+  /* A frase e explicação, e explicação se lê em linha curta. */
+  max-width: 72ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.hint strong {
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+/* ---- Os grupos ----------------------------------------------------------- */
+
+.group {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/*
+ * O título do grupo.
+ *
+ * Filete embaixo e não fundo próprio: o grupo e uma divisão da mesma lista, e
+ * uma faixa de cor atrás de "No ar" criaria três superfícies competindo com os
+ * cartões. A contagem vem numa pílula de areia — apoio, que e o papel dela na
+ * tabela de selos deste sistema.
+ */
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding-bottom: var(--space-8);
+
+  border-bottom: var(--border);
+
+  font-family: var(--font-display);
+  font-size: var(--text-18);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.groupCount {
+  min-width: 1.5rem;
+  padding: 0.125rem var(--space-8);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-pill);
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+/*
+ * A grade de cartões.
+ *
+ * Uma coluna no celular. A partir de 64rem o cartão tem piso de 22rem e a
+ * grade acomoda dois — a régua de usos precisa dessa largura para que a barra
+ * e os três números não quebrem em duas linhas.
+ */
+.cards {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/* ---- O resto ------------------------------------------------------------- */
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: 2.75rem;
+  padding-inline: var(--space-8);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.backLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.skeleton {
+  display: grid;
+  gap: var(--space-12);
+}
+
+.error {
+  margin: 0;
+  padding: var(--space-16);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-card);
+
+  font-size: var(--text-14);
+  color: var(--danger);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .add {
+    flex: none;
+    min-width: 0;
+  }
+
+  .groupTitle {
+    font-size: var(--text-22);
+  }
+}
+
+@media (min-width: 64rem) {
+  .cards {
+    grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+    gap: var(--space-16);
+  }
+}

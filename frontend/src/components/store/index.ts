@@ -7,6 +7,8 @@
 
 export { AnnouncementBar } from './announcement-bar';
 export { BrandLogo } from './brand-logo';
+export { CampaignStrip, type CampaignStripProps } from './campaign-strip';
+
 export { CartButton } from './cart-button';
 export { CartDrawer } from './cart-drawer';
 export { CartEmpty } from './cart-empty';

@@ -27,6 +27,20 @@ export class ListPublicProductsDto {
   @MaxLength(MAX_SLUG_LENGTH)
   category?: string;
 
+  /**
+   * O endereço de uma campanha: a vitrine dos produtos daquele cupom.
+   *
+   * E assim que a página `/promocao/black-friday` monta a grade dela — pela
+   * mesma rota da vitrine, com a mesma ordenação e a mesma paginação. Campanha
+   * que não existe ou saiu do ar devolve página vazia, e não o catálogo
+   * inteiro: a alternativa seria um link velho de story anunciando a loja toda
+   * como se estivesse em promoção.
+   */
+  @IsOptional()
+  @IsString()
+  @MaxLength(MAX_SLUG_LENGTH)
+  campaign?: string;
+
   /** Busca por nome e marca. */
   @IsOptional()
   @Transform(({ value }: { value: unknown }) =>

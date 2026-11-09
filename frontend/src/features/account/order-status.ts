@@ -8,51 +8,54 @@ import {
 /**
  * O pedido escrito para quem comprou.
  *
- * ## Por que não são os mesmos rótulos do painel
+ * ## As mesmas palavras do painel, por decisão da dona
  *
- * `features/admin/order-labels.ts` traduz os mesmos seis status, e traduz
- * diferente de propósito. O painel responde "o que **eu**, loja, preciso
- * fazer com este pedido" — por isso "Aguardando contato", que e uma tarefa
- * da dona. A conta responde "o que esta acontecendo com o **meu** pedido", e
- * "aguardando contato" faria o cliente achar que *ele* precisa ligar.
+ * Os rótulos eram outros aqui — "Aguardando confirmação" no lugar de
+ * "Processando", "Pronto para retirada" no lugar de "Saiu para entrega" —,
+ * porque o painel responde "o que **eu**, loja, preciso fazer" e a conta
+ * responde "o que esta acontecendo com o **meu** pedido". A dona pediu uma
+ * palavra só para cada estado, nas duas telas, e e o que esta escrito aqui.
  *
- * Importar o módulo do painel aqui também arrastaria o painel para o pedaço
- * inicial da loja, que e um preço alto por uma tabela de seis linhas.
+ * Duas consequências que a tela compensa como pode, e que ficam registradas
+ * porque não são descuido:
  *
- * ## Retirada e entrega leem o mesmo status de jeitos diferentes
+ * - quem marcou **retirada** lê "Saiu para entrega" quando o pedido fica
+ *   pronto. A descrição do passo continua falando a língua dele ("já pode
+ *   ser retirado na loja"), e e ela que diz o que fazer;
+ * - "Vendido" e uma palavra de loja, não de cliente. A descrição do último
+ *   passo e que agradece a compra.
  *
- * `SHIPPED` e "a caminho" para quem escolheu entrega e "pronto para
- * retirada" para quem vai buscar. `DELIVERED` e "entregue" e "retirado". E o
- * mesmo campo no banco, e o cliente que marcou retirada nunca vai ver uma
- * palavra sobre entrega.
+ * A tabela continua escrita aqui, e não importada do painel: importar o
+ * módulo do painel arrastaria o painel inteiro para o pedaço inicial da
+ * loja, que e um preço alto por seis linhas.
  */
 
 /** O ciclo normal, na ordem em que o pedido anda. `CANCELLED` fica fora. */
 export const ORDER_FLOW: readonly OrderStatus[] = [
   ORDER_STATUSES.PENDING_CONTACT,
-  ORDER_STATUSES.CONFIRMED,
-  ORDER_STATUSES.PREPARING,
   ORDER_STATUSES.SHIPPED,
   ORDER_STATUSES.DELIVERED,
+  ORDER_STATUSES.CONFIRMED,
 ];
 
-const DELIVERY_LABELS: Record<OrderStatus, string> = {
-  [ORDER_STATUSES.PENDING_CONTACT]: 'Aguardando confirmação',
-  [ORDER_STATUSES.CONFIRMED]: 'Confirmado',
-  [ORDER_STATUSES.PREPARING]: 'Em preparo',
-  [ORDER_STATUSES.SHIPPED]: 'A caminho',
+/**
+ * Os nomes dos estados, iguais aos do painel.
+ *
+ * `PREPARING` saiu do ciclo e não aparece na trilha, mas continua traduzido:
+ * pode haver pedido antigo parado nele, e um selo sem palavra e pior do que
+ * um nome aposentado.
+ */
+const LABELS: Record<OrderStatus, string> = {
+  [ORDER_STATUSES.PENDING_CONTACT]: 'Processando',
+  [ORDER_STATUSES.SHIPPED]: 'Saiu para entrega',
   [ORDER_STATUSES.DELIVERED]: 'Entregue',
+  [ORDER_STATUSES.CONFIRMED]: 'Vendido',
   [ORDER_STATUSES.CANCELLED]: 'Cancelado',
+  [ORDER_STATUSES.PREPARING]: 'Processando',
 };
 
-const PICKUP_LABELS: Record<OrderStatus, string> = {
-  ...DELIVERY_LABELS,
-  [ORDER_STATUSES.SHIPPED]: 'Pronto para retirada',
-  [ORDER_STATUSES.DELIVERED]: 'Retirado',
-};
-
-export function statusLabel(status: OrderStatus, mode: FulfillmentMode): string {
-  return mode === 'pickup' ? PICKUP_LABELS[status] : DELIVERY_LABELS[status];
+export function statusLabel(status: OrderStatus): string {
+  return LABELS[status];
 }
 
 /**
@@ -64,11 +67,11 @@ export function statusLabel(status: OrderStatus, mode: FulfillmentMode): string 
  * A palavra continua escrita no selo — a cor nunca e o único portador.
  */
 export function statusTone(status: OrderStatus): 'gold' | 'ink' | 'success' | 'danger' {
-  if (status === ORDER_STATUSES.PENDING_CONTACT) {
+  if (status === ORDER_STATUSES.PENDING_CONTACT || status === ORDER_STATUSES.PREPARING) {
     return 'gold';
   }
 
-  if (status === ORDER_STATUSES.DELIVERED) {
+  if (status === ORDER_STATUSES.DELIVERED || status === ORDER_STATUSES.CONFIRMED) {
     return 'success';
   }
 
@@ -97,16 +100,10 @@ export interface TimelineStep {
    uma vez — ver o bloco em `checkout.types.ts`. */
 const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = {
   [ORDER_STATUSES.PENDING_CONTACT]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido chegou a loja. A confirmação vem pelo WhatsApp.',
-    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido chegou a loja. A confirmação vem pelo WhatsApp.',
-  },
-  [ORDER_STATUSES.CONFIRMED]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'A loja confirmou os itens e o valor.',
-    [FULFILLMENT_MODES.PICKUP]: 'A loja confirmou os itens e o valor.',
-  },
-  [ORDER_STATUSES.PREPARING]: {
-    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido está sendo separado e embalado.',
-    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido está sendo separado e embalado.',
+    [FULFILLMENT_MODES.DELIVERY]:
+      'Seu pedido chegou a loja e esta sendo separado. A confirmação vem pelo WhatsApp.',
+    [FULFILLMENT_MODES.PICKUP]:
+      'Seu pedido chegou a loja e esta sendo separado. A confirmação vem pelo WhatsApp.',
   },
   [ORDER_STATUSES.SHIPPED]: {
     [FULFILLMENT_MODES.DELIVERY]: 'Saiu para o endereço de entrega.',
@@ -116,9 +113,21 @@ const STEP_DESCRIPTIONS: Record<OrderStatus, Record<FulfillmentMode, string>> = 
     [FULFILLMENT_MODES.DELIVERY]: 'Entregue. Qualquer coisa, é só chamar no WhatsApp.',
     [FULFILLMENT_MODES.PICKUP]: 'Retirado. Qualquer coisa, é só chamar no WhatsApp.',
   },
+  // "Vendido" e a palavra da loja para a compra fechada. Para quem comprou,
+  // o que importa e que acabou bem — e e isto que a descrição diz.
+  [ORDER_STATUSES.CONFIRMED]: {
+    [FULFILLMENT_MODES.DELIVERY]: 'Compra concluída. Obrigado por comprar com a gente.',
+    [FULFILLMENT_MODES.PICKUP]: 'Compra concluída. Obrigado por comprar com a gente.',
+  },
   [ORDER_STATUSES.CANCELLED]: {
     [FULFILLMENT_MODES.DELIVERY]: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',
     [FULFILLMENT_MODES.PICKUP]: 'Este pedido foi cancelado. A loja explica o motivo na conversa.',
+  },
+  // Fora da trilha: o ciclo antigo tinha um passo a mais entre a chegada do
+  // pedido e a saída para entrega.
+  [ORDER_STATUSES.PREPARING]: {
+    [FULFILLMENT_MODES.DELIVERY]: 'Seu pedido está sendo separado e embalado.',
+    [FULFILLMENT_MODES.PICKUP]: 'Seu pedido está sendo separado e embalado.',
   },
 };
 
@@ -145,9 +154,10 @@ interface TimelineSource {
  * - O primeiro passo leva `createdAt`. E a data em que o pedido foi feito, e
  *   ele nasce sempre neste status.
  * - O passo **atual** leva `updatedAt`, que e quando ele chegou aí.
- * - Os passos do meio aparecem cumpridos e **sem data**. Um pedido entregue
- *   passou por confirmado e por em preparo; dizer *quando* exigiria inventar
- *   um número, e uma data errada num histórico e pior do que nenhuma.
+ * - Os passos do meio aparecem cumpridos e **sem data**. Um pedido vendido
+ *   passou por "saiu para entrega" e por "entregue"; dizer *quando* exigiria
+ *   inventar um número, e uma data errada num histórico e pior do que
+ *   nenhuma.
  * - Os passos seguintes ficam pendentes, apagados, sem data.
  *
  * No dia em que a API publicar as transições, e esta função que muda — e só
@@ -168,7 +178,7 @@ export function orderTimeline(order: TimelineSource): TimelineStep[] {
     at: string | null,
   ): TimelineStep => ({
     status: stepStatus,
-    label: statusLabel(stepStatus, mode),
+    label: statusLabel(stepStatus),
     description: STEP_DESCRIPTIONS[stepStatus][mode],
     state,
     at,
@@ -181,7 +191,10 @@ export function orderTimeline(order: TimelineSource): TimelineStep[] {
     ];
   }
 
-  const current = ORDER_FLOW.indexOf(status);
+  // `PREPARING` saiu do ciclo, e um pedido antigo parado nele não pode cair
+  // numa trilha sem passo atual: ele esta, em palavras de hoje, processando.
+  const current =
+    status === ORDER_STATUSES.PREPARING ? 0 : Math.max(ORDER_FLOW.indexOf(status), 0);
 
   return ORDER_FLOW.map((flowStatus, index) => {
     if (index === 0) {

@@ -164,6 +164,21 @@
   color: var(--success);
 }
 
+/*
+ * O desconto do cupom embaixo do código, e não ao lado.
+ *
+ * "Cupom BLACKFRIDAY" e o que a linha e; "20% OFF" e de onde o valor saiu —
+ * a mesma anatomia da cidade na linha do frete do fechamento. Ao lado, os
+ * dois disputariam a largura com o valor na outra ponta e o código quebraria
+ * no meio.
+ */
+.couponLabel {
+  display: block;
+
+  font-size: var(--text-12);
+  color: var(--muted);
+}
+
 .grandTotal {
   padding-top: var(--space-12);
   margin-top: var(--space-4);

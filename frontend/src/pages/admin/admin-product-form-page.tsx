@@ -37,7 +37,7 @@ import styles from './admin-product-form-page.module.css';
  *
  * ## Por que não e um modal
  *
- * Porque não e uma tarefa curta. São nove campos, uma galeria e uma tabela de
+ * Porque não e uma tarefa curta. São oito campos, uma galeria e a tabela de
  * variantes, e a dona faz isso no celular com a caixa do fornecedor aberta ao
  * lado. Um modal rouba a rolagem da página, não tem endereço próprio para ela
  * voltar depois de uma ligação, e no celular vira uma página cheia com uma
@@ -50,7 +50,7 @@ import styles from './admin-product-form-page.module.css';
  *
  * Nome e marca primeiro, porque e o que esta escrito no frasco. Fotos em
  * seguida, porque e o que ela acabou de tirar. Variantes depois, porque e
- * preciso ver as fotos para dizer qual e a do frasco de 50 ml. Categorias e
+ * preciso ver as fotos para dizer qual e a do frasco. Categorias e
  * vitrine por último, que são decisões sobre onde o produto aparece — e não
  * sobre o que ele e.
  *
@@ -120,7 +120,6 @@ export default function AdminProductFormPage() {
       initial={product === undefined ? emptyProductDraft() : draftFromProduct(product)}
       productId={product?.id}
       productName={product?.name ?? ''}
-      productSlug={product?.slug ?? ''}
       canDelete={canDeleteForever(role)}
     />
   );
@@ -132,13 +131,11 @@ function ProductForm({
   initial,
   productId,
   productName,
-  productSlug,
   canDelete,
 }: {
   initial: ProductDraft;
   productId: string | undefined;
   productName: string;
-  productSlug: string;
   /**
    * Desligado para o gerente: ele despublica pelo interruptor acima, que
    * desfaz. Excluir e do administrador, e o backend recusa do mesmo jeito.
@@ -178,8 +175,9 @@ function ProductForm({
       return;
     }
 
-    // Corpos diferentes, e não o mesmo com um campo a mais: a criação pode
-    // escolher o endereço do produto, a edição não mexe nele.
+    // Corpos diferentes, e não o mesmo com um campo a mais: o `POST` leva o
+    // nome, de onde o servidor tira o endereço do produto; o `PATCH` não
+    // mexe nesse endereço, porque o link já foi para o WhatsApp de alguém.
     save.mutate(
       productId === undefined
         ? { input: draftToCreate(draft) }
@@ -216,12 +214,6 @@ function ProductForm({
         </Link>
 
         <h1 className={styles.title}>{isNew ? 'Novo produto' : productName}</h1>
-
-        {isNew || productSlug === '' ? null : (
-          <p className={styles.address}>
-            Endereço na loja: <code>/produtos/{productSlug}</code>
-          </p>
-        )}
       </header>
 
       {/*
@@ -263,21 +255,6 @@ function ProductForm({
               set({ brand: event.target.value });
             }}
           />
-
-          {isNew ? (
-            <Input
-              label="Endereço na loja"
-              block
-              maxLength={PRODUCT_LIMITS.slug}
-              placeholder="sai do nome"
-              hint="Só pode ser escolhido agora: depois de publicado, o link já foi para o WhatsApp de alguém."
-              value={draft.slug}
-              error={shown.slug}
-              onChange={(event) => {
-                set({ slug: event.target.value });
-              }}
-            />
-          ) : null}
 
           <Textarea
             label="Descrição"

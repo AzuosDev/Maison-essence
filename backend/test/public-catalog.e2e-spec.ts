@@ -429,6 +429,73 @@ describe('catalogo publico (e2e)', () => {
       ]);
     });
 
+    it('a escolha da dona vence o ranking das vendas', async () => {
+      const asad = (await products.findOne({ slug: 'asad-lattafa' }).exec())!._id;
+      const vela = (await products.findOne({ slug: 'vela-lavanda' }).exec())!._id;
+
+      // O Asad vendeu e a vela nao vendeu nada: pelo ranking ele seria o
+      // primeiro card da home.
+      await placeOrder(asad, 9, ORDER_STATUSES.DELIVERED);
+      await store.create({ bestSellerProductIds: [vela, asad] });
+
+      const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
+
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual([
+        'vela-lavanda',
+        'asad-lattafa',
+      ]);
+    });
+
+    /** Criterio de aceite do campo: a fileira e so o que a dona escolheu. */
+    it('a fileira tem o tamanho da escolha, sem completar com o catalogo', async () => {
+      const vela = (await products.findOne({ slug: 'vela-lavanda' }).exec())!._id;
+
+      await store.create({ bestSellerProductIds: [vela] });
+
+      const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
+
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual(['vela-lavanda']);
+    });
+
+    it('escolhido que saiu do ar some da fileira, e o resto fica', async () => {
+      const fora = (await products.findOne({ slug: 'fora-de-linha' }).exec())!._id;
+      const vela = (await products.findOne({ slug: 'vela-lavanda' }).exec())!._id;
+
+      await store.create({ bestSellerProductIds: [fora, vela] });
+
+      const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
+
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual(['vela-lavanda']);
+    });
+
+    /** A home nao abre sem a primeira fileira por escolha que envelheceu. */
+    it('escolha inteira fora do ar volta ao ranking', async () => {
+      const fora = (await products.findOne({ slug: 'fora-de-linha' }).exec())!._id;
+
+      await store.create({ bestSellerProductIds: [fora] });
+
+      const { body } = await request(server).get(`${API}/products/best-sellers`).expect(200);
+
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual([
+        'asad-lattafa',
+        'qaed-al-fursan',
+        'vela-lavanda',
+      ]);
+    });
+
+    it('a escolha respeita o limite pedido', async () => {
+      const asad = (await products.findOne({ slug: 'asad-lattafa' }).exec())!._id;
+      const vela = (await products.findOne({ slug: 'vela-lavanda' }).exec())!._id;
+
+      await store.create({ bestSellerProductIds: [vela, asad] });
+
+      const { body } = await request(server)
+        .get(`${API}/products/best-sellers?limit=1`)
+        .expect(200);
+
+      expect(body.map((item: { slug: string }) => item.slug)).toEqual(['vela-lavanda']);
+    });
+
     it('o complemento respeita o limite pedido', async () => {
       const { body } = await request(server)
         .get(`${API}/products/best-sellers?limit=2`)

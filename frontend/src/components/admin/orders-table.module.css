@@ -7,7 +7,7 @@
  */
 
 .tableWrap {
-  /* Uma tabela com sete colunas não encolhe abaixo de certo ponto. Rolar na
+  /* Uma tabela com oito colunas não encolhe abaixo de certo ponto. Rolar na
      horizontal e melhor do que quebrar o nome do cliente em cinco linhas. */
   overflow-x: auto;
 
@@ -100,6 +100,19 @@
   font-size: var(--text-12);
   font-weight: var(--weight-regular);
   color: var(--muted);
+}
+
+/* ---- A hora da emissão --------------------------------------------------- */
+
+/*
+ * O relógio em cinza, e não em tinta cheia.
+ *
+ * A coluna existe para ser varrida de cima a baixo, e não para competir com
+ * o código e o nome do cliente, que são o que se lê de verdade na linha.
+ */
+.time {
+  color: var(--ink-soft);
+  white-space: nowrap;
 }
 
 /* ---- Cliente e telefone -------------------------------------------------- */

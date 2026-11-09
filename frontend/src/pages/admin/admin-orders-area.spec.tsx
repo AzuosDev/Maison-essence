@@ -84,10 +84,12 @@ const ORDER = {
   totals: {
     subtotalCents: 37_980,
     discountTotalCents: 0,
+    couponDiscountCents: 0,
     deliveryFeeCents: 1000,
     pixDiscountCents: 0,
     totalCents: 38_980,
   },
+  coupon: null,
   whatsappMessage: 'Pedido ME-260922-K4P1\nAsad 100ml x2',
   notes: '',
   stockRestoredAt: null,
@@ -207,6 +209,11 @@ test('a dona vê o total e a forma de pagamento na lista', async () => {
   expect(await screen.findByRole('link', { name: 'ME-260922-K4P1' })).toBeDefined();
   expect(screen.getByText('R$ 379,80')).toBeDefined();
   expect(screen.getByText('Cartão 3x')).toBeDefined();
+
+  // A hora da emissão, com os segundos. O caso confere o formato, e não um
+  // horário fixo: o relógio e o de quem esta lendo, e um valor cravado aqui
+  // passaria na máquina da dona e falharia na integração, que roda em UTC.
+  expect(screen.getByText(/^\d{2}:\d{2}:\d{2}$/)).toBeDefined();
 });
 
 test('o STAFF não vê o total, mas vê como o cliente vai pagar', async () => {
@@ -226,7 +233,7 @@ test('o STAFF não vê o total, mas vê como o cliente vai pagar', async () => {
 test('o endereço com filtro vira consulta filtrada', async () => {
   signInAs(USER_ROLES.OWNER);
 
-  // E o link do card "Esperando contato" da abertura do painel.
+  // E o link do card "Processando" da abertura do painel.
   abrir('/admin/pedidos?status=PENDING_CONTACT');
 
   await screen.findByRole('link', { name: 'ME-260922-K4P1' });
@@ -236,7 +243,7 @@ test('o endereço com filtro vira consulta filtrada', async () => {
   // E a pílula correspondente aparece escolhida, para que o recorte não
   // fique invisível na tela.
   expect(
-    screen.getByRole('button', { name: 'Aguardando contato' }).getAttribute('aria-pressed'),
+    screen.getByRole('button', { name: 'Processando' }).getAttribute('aria-pressed'),
   ).toBe('true');
 });
 

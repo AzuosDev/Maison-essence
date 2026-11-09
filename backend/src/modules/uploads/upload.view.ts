@@ -44,4 +44,6 @@ export interface ImageReferences {
   banners: number;
   /** Os círculos da home. Ver `Shortcut`, nas configurações. */
   shortcuts: number;
+  /** Os cartazes largos da home. Ver `CollectionPoster`, nas configurações. */
+  posters: number;
 }

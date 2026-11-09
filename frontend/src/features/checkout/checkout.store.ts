@@ -87,6 +87,21 @@ interface CheckoutState {
 
   contact: CheckoutContact;
 
+  /**
+   * O cupom **aplicado**, e não o que esta sendo digitado.
+   *
+   * A caixa do cupom guarda o rascunho dela mesma; só o "Aplicar" chega aqui.
+   * A diferença não e de estilo: este campo entra na chave da cotação, e um
+   * rascunho aqui faria `BL`, `BLA`, `BLAC` e `BLACK` virarem cinco idas ao
+   * servidor — quatro delas perguntando por cupons que não existem, cada uma
+   * respondendo "esse cupom não e válido" embaixo de quem ainda esta digitando.
+   *
+   * Atravessa o armazenamento porque e o que a cliente digitou, como o
+   * endereço e o telefone. Quem trocou de aplicativo no meio do checkout
+   * volta com o desconto que já tinha conseguido.
+   */
+  couponCode: string;
+
   goTo: (step: CheckoutStep) => void;
   advance: () => void;
   goBack: () => void;
@@ -104,6 +119,9 @@ interface CheckoutState {
 
   setContactField: (field: keyof CheckoutContact, value: string) => void;
 
+  /** Aplicar um código, ou tirar o que estava — `''` tira. */
+  applyCoupon: (code: string) => void;
+
   /** Pedido fechado: o checkout volta ao início, sem rastro do anterior. */
   reset: () => void;
 }
@@ -117,6 +135,7 @@ const INITIAL = {
   cardMode: null,
   installments: 1,
   contact: EMPTY_CONTACT,
+  couponCode: '',
 } satisfies Partial<CheckoutState>;
 
 export const useCheckout = create<CheckoutState>()(
@@ -192,6 +211,10 @@ export const useCheckout = create<CheckoutState>()(
         set((state) => ({ contact: { ...state.contact, [field]: value } }));
       },
 
+      applyCoupon: (code) => {
+        set({ couponCode: code });
+      },
+
       reset: () => {
         set(INITIAL);
       },
@@ -218,6 +241,7 @@ export const useCheckout = create<CheckoutState>()(
         cardMode: state.cardMode,
         installments: state.installments,
         contact: state.contact,
+        couponCode: state.couponCode,
       }),
     },
   ),

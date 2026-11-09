@@ -149,6 +149,15 @@ let configuracoes: Record<string, unknown>;
 let categorias: unknown[];
 let chamadas: string[];
 
+/**
+ * A campanha que a home anuncia, ou `null`.
+ *
+ * `null` por padrão porque e a resposta de quase todo dia: a loja passa a
+ * maior parte do ano sem promoção no ar, e a home de todo dia comum e a que
+ * precisa continuar certa.
+ */
+let campanha: Record<string, unknown> | null;
+
 function jsonResponse(body: unknown): Response {
   return new Response(JSON.stringify(body), {
     status: 200,
@@ -160,6 +169,7 @@ beforeEach(() => {
   chamadas = [];
   configuracoes = SETTINGS;
   categorias = CATEGORIES;
+  campanha = null;
 
   prateleiras = {
     'ready-to-ship': [produto('2', 'Yara', { isReadyToShip: true })],
@@ -252,6 +262,10 @@ beforeEach(() => {
 
       if (url.includes('/products/')) {
         return Promise.resolve(jsonResponse(detalhe));
+      }
+
+      if (url.includes('/campaigns/live')) {
+        return Promise.resolve(jsonResponse({ campaign: campanha }));
       }
 
       if (url.includes('/settings')) {
@@ -703,6 +717,43 @@ test('os cartazes trazem as duas maiores categorias com foto', async () => {
   expect(links[1]?.getAttribute('href')).toBe('/categorias/velas');
 });
 
+test('a faixa cadastrada manda, e o catalogo nao e consultado', async () => {
+  // O ponto da lista propria: "Mais vendidos" nao e categoria nenhuma, e
+  // ainda assim e um cartaz. Antes disso, por ele ali exigia inventar uma
+  // categoria vazia.
+  configuracoes = {
+    ...SETTINGS,
+    posters: [
+      {
+        id: 'p1',
+        label: 'Mais vendidos',
+        image: 'maison-essence/posters/mais-vendidos-09b18b9f',
+        link: '/mais-vendidos',
+        caption: '',
+      },
+      {
+        id: 'p2',
+        label: "Victoria's Secret",
+        image: 'maison-essence/posters/victorias-secret-00fbe353',
+        link: "/produtos?marca=Victoria's%20Secret",
+        caption: '',
+      },
+    ],
+  };
+
+  abrirHome();
+
+  const colecoes = await screen.findByRole('region', { name: 'Coleções' });
+  const links = within(colecoes).getAllByRole('link');
+
+  expect(links).toHaveLength(2);
+  expect(links[0]?.getAttribute('href')).toBe('/mais-vendidos');
+  expect(within(colecoes).getByText('Mais vendidos')).toBeDefined();
+
+  // A linha de apoio vazia não abre um vão embaixo do nome.
+  expect(within(colecoes).queryByText(/\d+ produtos?$/)).toBeNull();
+});
+
 test('sem duas categorias com foto, a faixa de cartazes some', async () => {
   categorias = CATEGORIES.map((categoria) => Object.assign({}, categoria, { image: '' }));
 
@@ -713,4 +764,143 @@ test('sem duas categorias com foto, a faixa de cartazes some', async () => {
   await waitFor(() => {
     expect(screen.queryByRole('region', { name: 'Coleções' })).toBeNull();
   });
+});
+
+/* ---- A faixa da promoção ---------------------------------------------------
+ *
+ * O cupom visto de fora: o que a home anuncia quando a dona põe uma campanha
+ * no ar, e o que ela não anuncia no resto do ano.
+ */
+
+/** A campanha como `GET /campaigns/live` a devolve. */
+function campanhaNoAr(over: Record<string, unknown> = {}) {
+  return {
+    code: 'BLACKFRIDAY',
+    title: 'Black Friday Maison',
+    slug: 'black-friday-maison',
+    tagline: 'Os cinco mais pedidos com desconto.',
+    percentOff: 20,
+    amountOffCents: null,
+    discountLabel: '20% OFF',
+    endsAt: null,
+    wholeStore: false,
+    scarcityLabel: '',
+    ...over,
+  };
+}
+
+test('sem campanha no ar, a faixa da promoção não existe', async () => {
+  abrirHome();
+
+  await screen.findByRole('heading', { name: 'Mais vendidos' });
+
+  expect(screen.queryByText('BLACKFRIDAY')).toBeNull();
+  expect(screen.queryByRole('link', { name: 'Ver os produtos' })).toBeNull();
+});
+
+/**
+ * A faixa, isolada do resto da home.
+ *
+ * Pela região nomeada, e não por texto solto na página: "20% OFF" também e o
+ * selo de desconto de um card de produto da vitrine, e um teste que procura
+ * aquele texto na tela inteira mede a coisa errada.
+ */
+async function faixaDaPromocao() {
+  return within(await screen.findByRole('region', { name: 'Black Friday Maison' }));
+}
+
+test('a campanha no ar anuncia nome, desconto e código, e leva para a vitrine dela', async () => {
+  campanha = campanhaNoAr();
+
+  abrirHome();
+
+  const faixa = await faixaDaPromocao();
+
+  expect(faixa.getByRole('heading', { level: 2, name: 'Black Friday Maison' })).toBeTruthy();
+  expect(faixa.getByText('20% OFF')).toBeTruthy();
+  expect(faixa.getByText('BLACKFRIDAY')).toBeTruthy();
+  expect(faixa.getByText('Os cinco mais pedidos com desconto.')).toBeTruthy();
+
+  const atalho = faixa.getByRole('link', { name: 'Ver os produtos' });
+  expect(atalho.getAttribute('href')).toBe('/promocao/black-friday-maison');
+});
+
+/*
+ * A escassez e escrita pelo servidor e repetida como ela veio. Esta tela não
+ * sabe contar cupom nenhum — o que e de propósito: a tentação de fabricar
+ * "últimas unidades" morre na ausência do dado.
+ */
+test('a escassez aparece com as palavras do servidor, e só quando ele a escreve', async () => {
+  campanha = campanhaNoAr({ scarcityLabel: 'Restam 3 cupons' });
+
+  abrirHome();
+
+  expect((await faixaDaPromocao()).getByText('Restam 3 cupons')).toBeTruthy();
+});
+
+test('o prazo vira a frase que vende quando a campanha termina hoje', async () => {
+  const hoje = new Date();
+  hoje.setHours(23, 59, 0, 0);
+
+  campanha = campanhaNoAr({ endsAt: hoje.toISOString() });
+
+  abrirHome();
+
+  expect((await faixaDaPromocao()).getByText('Último dia')).toBeTruthy();
+});
+
+/*
+ * O teto de três fileiras e decisão da dona, e a promoção não compra o direito
+ * de esticar a home: ela entra como primeira candidata e desloca a de menor
+ * prioridade — que, com as quatro cheias, e "Pronta entrega".
+ */
+test('a prateleira da campanha entra na frente, sem virar uma quarta fileira', async () => {
+  campanha = campanhaNoAr();
+
+  abrirHome();
+
+  await faixaDaPromocao();
+  await screen.findByRole('heading', { name: 'Os produtos da promoção' });
+
+  const titulos = screen
+    .getAllByRole('heading', { level: 2 })
+    .map((node) => node.textContent ?? '');
+
+  // A faixa nomeia a campanha; a prateleira dela diz o que mostra — e o nome
+  // não aparece duas vezes no sumário de cabeçalhos.
+  expect(titulos.filter((titulo) => titulo === 'Black Friday Maison')).toHaveLength(1);
+
+  // A prateleira da campanha vem antes de "Mais vendidos".
+  expect(titulos.indexOf('Os produtos da promoção')).toBeLessThan(
+    titulos.indexOf('Mais vendidos'),
+  );
+
+  // E continuam sendo três fileiras de produto, não quatro: a candidata de
+  // menor prioridade sai.
+  expect(titulos).not.toContain('Pronta entrega');
+});
+
+/*
+ * Cupom da loja inteira não tem recorte: `?campaign=<slug>` devolveria o
+ * catálogo inteiro, e uma prateleira chamada "Black Friday" mostrando tudo
+ * seria a loja anunciando um recorte que não existe. A faixa continua — o
+ * desconto e verdade —, e manda para a vitrine normal.
+ */
+test('o cupom da loja inteira tem faixa, mas não tem prateleira nem vitrine própria', async () => {
+  campanha = campanhaNoAr({ wholeStore: true });
+
+  abrirHome();
+
+  const faixa = await faixaDaPromocao();
+  await screen.findByRole('heading', { name: 'Mais vendidos' });
+
+  const atalho = faixa.getByRole('link', { name: 'Ver a vitrine' });
+  expect(atalho.getAttribute('href')).toBe('/produtos');
+
+  const titulos = screen
+    .getAllByRole('heading', { level: 2 })
+    .map((node) => node.textContent ?? '');
+
+  expect(titulos).not.toContain('Os produtos da promoção');
+  expect(chamadas.some((url) => url.includes('campaign='))).toBe(false);
 });

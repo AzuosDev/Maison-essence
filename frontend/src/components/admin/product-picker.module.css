@@ -150,3 +150,16 @@
   color: var(--gold-deep);
   white-space: nowrap;
 }
+
+/* Por que não se pode escolher esta linha agora — "fileira cheia". No lugar
+   do botão, e não no lugar da linha: o resultado continua legível, e o motivo
+   aparece onde o dedo iria. */
+.locked {
+  flex: none;
+
+  padding: 0 var(--space-4);
+
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  white-space: nowrap;
+}

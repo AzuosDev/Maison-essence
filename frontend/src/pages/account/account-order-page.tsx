@@ -93,7 +93,7 @@ export default function AccountOrderPage() {
         <div className={styles.headLine}>
           <h1 className={styles.code}>{order.code}</h1>
           <Badge variant={statusTone(order.status)}>
-            {statusLabel(order.status, order.fulfillment.mode)}
+            {statusLabel(order.status)}
           </Badge>
         </div>
 
@@ -205,6 +205,20 @@ function Totals({ order }: { order: CustomerOrderDetail }) {
           <dd className={styles.discount}>-{formatCents(totals.discountTotalCents)}</dd>
         </div>
       ) : null}
+
+      {/* O cupom pelo código e pelo desconto que estava escrito na tela
+          quando ela comprou — os dois congelados no pedido. A campanha pode
+          ter mudado de 20% para 15% depois; este pedido continua sendo o de
+          20%, e e isso que a linha precisa dizer a quem volta para conferir. */}
+      {order.coupon === null ? null : (
+        <div className={styles.totalRow}>
+          <dt>
+            Cupom {order.coupon.code}
+            <span className={styles.couponLabel}>{order.coupon.discountLabel}</span>
+          </dt>
+          <dd className={styles.discount}>-{formatCents(totals.couponDiscountCents)}</dd>
+        </div>
+      ) }
 
       {order.fulfillment.mode === 'delivery' ? (
         <div className={styles.totalRow}>

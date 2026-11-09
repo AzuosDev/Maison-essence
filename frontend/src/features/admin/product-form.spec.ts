@@ -4,7 +4,6 @@ import {
   draftFromProduct,
   draftToCreate,
   draftToUpdate,
-  duplicateVariant,
   emptyProductDraft,
   hasErrors,
   moveImage,
@@ -19,9 +18,9 @@ import {
  * O cadastro do produto.
  *
  * O que estes casos cobram e o que erra em silêncio: um preço lido um centavo
- * errado, uma variante duplicada que rouba o SKU da original, uma capa que
- * troca sem ninguém pedir, um campo opcional que viaja vazio e derruba a
- * gravação inteira. Nenhum deles quebra a tela — todos entram no banco.
+ * errado, duas variantes disputando o mesmo SKU, uma capa que troca sem
+ * ninguém pedir, um campo opcional que viaja vazio e derruba a gravação
+ * inteira. Nenhum deles quebra a tela — todos entram no banco.
  */
 
 function product(patch: Partial<AdminProduct> = {}): AdminProduct {
@@ -99,24 +98,15 @@ test('o cadastro novo já vem com uma variante', () => {
   expect(emptyProductDraft().variants).toHaveLength(1);
 });
 
-/* ---- Duplicar --------------------------------------------------------------- */
-
-test('duplicar copia o trabalho e descarta a identidade', () => {
-  const original = { ...newVariant(), id: 'v1', sku: 'ASA-100', label: '100ml', price: '189,90' };
-  const copy = duplicateVariant(original);
-
-  // O que se repete: o trabalho.
-  expect(copy.price).toBe('189,90');
-  expect(copy.label).toBe('100ml');
-
-  // O que não se repete: o que e único por variante.
-  expect(copy.id).toBeUndefined();
-  expect(copy.sku).toBe('');
-  expect(copy.key).not.toBe(original.key);
+test('a variante nova já vende sob encomenda', () => {
+  // E assim que a loja trabalha: o frasco e encomendado quando alguém
+  // compra. Desligado por padrão, todo cadastro novo subiria esgotado.
+  expect(emptyProductDraft().variants[0]?.allowBackorder).toBe(true);
+  expect(newVariant().allowBackorder).toBe(true);
 });
 
 test('a chave de linha e sempre nova', () => {
-  const keys = [newVariant().key, newVariant().key, duplicateVariant(newVariant()).key];
+  const keys = [newVariant().key, newVariant().key, newVariant().key];
 
   expect(new Set(keys).size).toBe(3);
 });
@@ -233,14 +223,12 @@ test('o SKU e o id em branco não viajam', () => {
   expect('id' in variant).toBe(false);
 });
 
-test('o endereço só entra na criação quando foi escrito', () => {
+test('o endereço do produto nunca viaja — nem na criação, nem na edição', () => {
+  // O painel não pergunta o endereço: na criação ele sai do nome, no
+  // servidor; na edição ninguém mexe nele, porque o link já foi para o
+  // WhatsApp de alguém.
   expect('slug' in draftToCreate(draft())).toBe(false);
-  expect(draftToCreate(draft({ slug: 'asad-elixir' })).slug).toBe('asad-elixir');
-});
-
-test('a edição nunca manda o endereço', () => {
-  // O link já foi para o WhatsApp de alguém: troca-lo e outra operação.
-  expect('slug' in draftToUpdate(draft({ slug: 'asad-elixir' }))).toBe(false);
+  expect('slug' in draftToUpdate(draft())).toBe(false);
 });
 
 test('o que foi salvo e reaberto sai igual', () => {

@@ -112,6 +112,14 @@ export const EMPTY_FILTERS: CatalogFilters = {
 export interface CatalogContext {
   category?: string | undefined;
   readyToShip?: boolean | undefined;
+  /**
+   * O endereço de uma campanha: a vitrine dos produtos daquele cupom.
+   *
+   * Como a bandeira de pronta entrega, e contexto e não filtro marcável — e o
+   * endereço da página, não uma escolha. "Limpar filtros" não tira ninguém da
+   * campanha, e a barra lateral não oferece um jeito de sair dela.
+   */
+  campaign?: string | undefined;
 }
 
 /* ---- URL -> estado ----------------------------------------------------- */
@@ -219,6 +227,10 @@ export function apiParamsFrom(
 
   if (context.category !== undefined && context.category !== '') {
     params.category = context.category;
+  }
+
+  if (context.campaign !== undefined && context.campaign !== '') {
+    params.campaign = context.campaign;
   }
 
   if (filters.q !== '') {

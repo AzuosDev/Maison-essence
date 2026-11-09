@@ -261,6 +261,8 @@ export default function CheckoutPage() {
             isError={quoting.isError}
             onRetry={quoting.refetch}
             itemCount={quoting.available.reduce((total, item) => total + item.quantity, 0)}
+            coupon={quoting.coupon}
+            onApplyCoupon={quoting.applyCoupon}
           />
         )}
       </div>
@@ -385,6 +387,11 @@ function orderInputFrom(
     payment: input.payment,
     customer: { name: contact.name.trim(), phone },
     expectedTotalCents: totalCents,
+
+    // O cupom sai do mesmo `input` que gerou o total, como tudo aqui: o
+    // servidor refaz a cotação com este código e grava o desconto que a tela
+    // mostrou — ou recusa o pedido, se a última vaga foi embora no caminho.
+    ...(input.couponCode === undefined ? {} : { couponCode: input.couponCode }),
 
     ...(input.fulfillment.mode === FULFILLMENT_MODES.DELIVERY
       ? {

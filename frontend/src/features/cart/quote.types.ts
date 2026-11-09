@@ -58,6 +58,35 @@ export interface QuoteFulfillment {
   missingForFreeCents: number | null;
 }
 
+/**
+ * O cupom aplicado a esta sacola.
+ *
+ * Não e o cupom: e o cupom **nesta sacola**. Os mesmos 20% dao números
+ * diferentes em sacolas diferentes, e e esse número — já calculado contra o
+ * catálogo de agora — que a tela exibe e que o pedido congela. Espelho de
+ * `AppliedCouponView`.
+ */
+export interface AppliedCoupon {
+  /** O id que o pedido congela, e por onde o "Vendido" acha o contador. */
+  couponId: string;
+  code: string;
+  title: string;
+  percentOff: number | null;
+  amountOffCents: number | null;
+  /** `20% OFF` ou `R$ 30,00 OFF`, escrito pelo servidor. */
+  discountLabel: string;
+  /** Quanto este cupom tirou desta sacola, em centavos. */
+  discountCents: number;
+  /**
+   * Quanto do subtotal ele alcançou.
+   *
+   * E o que explica 20% de uma sacola de R$ 500 dando R$ 40: só R$ 200 dela
+   * estavam na campanha. Igual ao subtotal num cupom da loja inteira.
+   */
+  eligibleSubtotalCents: number;
+  wholeStore: boolean;
+}
+
 export interface InstallmentOption {
   number: number;
   installmentCents: number;
@@ -82,8 +111,43 @@ export interface CartQuote {
   subtotalCents: number;
   /** Quanto o desconto por quantidade retirou. Já saiu do subtotal. */
   discountTotalCents: number;
+  /**
+   * O cupom que pegou, ou `null`.
+   *
+   * `null` com `couponWarning` escrito e o código que não pegou. `null` com
+   * ele vazio e o caso comum: ninguém digitou código nenhum.
+   */
+  coupon: AppliedCoupon | null;
+  /**
+   * Quanto o cupom retirou. Zero sem cupom.
+   *
+   * **Fora** do `subtotalCents`, ao contrário do desconto por quantidade: o
+   * subtotal e o que a cliente levou em produtos, e e por ele que se medem a
+   * meta do brinde e a do frete grátis. O cupom entra depois, sobre o que ela
+   * vai pagar — e e por isso que um cupom de 20% não tira dela o frete grátis
+   * que ela conquistou na prateleira.
+   */
+  couponDiscountCents: number;
+  /**
+   * Por que o código digitado não pegou. Vazio quando pegou, e sem código.
+   *
+   * Fora de `warnings` no servidor também, e pelo motivo que esta tela usa: e
+   * a única mensagem da resposta que pertence a um campo de formulário, e vai
+   * embaixo da caixa do cupom, onde quem digitou esta olhando.
+   */
+  couponWarning: string;
   deliveryFeeCents: number;
   pixDiscountCents: number;
+  /**
+   * O que os produtos custam depois dos descontos, sem a entrega.
+   *
+   * E o total que o fechamento mostra enquanto o cliente ainda não escolheu
+   * entrega ou retirada — a altura em que a taxa que voltou na resposta não e
+   * de ninguém. Calculado no servidor, como todo valor desta tela: subtrair o
+   * cupom do subtotal aqui seria a única conta de dinheiro feita no navegador,
+   * e seria justamente a do número que o cliente lê antes de pagar.
+   */
+  payableCents: number;
   totalCents: number;
   installmentOptions: InstallmentOption[];
   /**

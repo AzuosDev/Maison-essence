@@ -56,6 +56,18 @@ export const adminKeys = {
   categories: () => [...adminKeys.all, 'categories'] as const,
 
   /**
+   * Os cupons e as campanhas.
+   *
+   * Sem parâmetros: a rota devolve todos — no ar, agendados e encerrados —, e
+   * quem agrupa e a tela. A lista carrega os pedidos abertos que seguram cada
+   * cupom, então ela envelhece sozinha: fechar uma venda num cupom muda a
+   * conta de outro item da mesma lista, e por isso toda escrita invalida a
+   * família inteira, nunca a chave de um cupom.
+   */
+  coupons: () => [...adminKeys.all, 'coupons'] as const,
+  coupon: (id: string) => [...adminKeys.coupons(), 'detail', id] as const,
+
+  /**
    * As cidades atendidas.
    *
    * Sem parâmetros: a rota devolve todas, ativas e desativadas, e quem

@@ -49,6 +49,22 @@
   opacity: 0.55;
 }
 
+/*
+ * A linha do cupom, colada no botão.
+ *
+ * Vão de 4px contra os 16px do resumo: ela e legenda do botão, e não mais um
+ * parágrafo da coluna. Em cinza legítimo e 12px, porque e um convite para
+ * quem já tem o código — não um anúncio para quem não tem.
+ */
+.coupon {
+  margin: 0 0 calc(var(--space-12) * -1);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
 .line {
   display: flex;
   align-items: baseline;

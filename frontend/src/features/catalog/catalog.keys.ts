@@ -24,6 +24,8 @@ export interface ProductListParams {
   inStock?: boolean;
   readyToShip?: boolean;
   featured?: boolean;
+  /** O slug da campanha: só os produtos daquele cupom. */
+  campaign?: string;
   sort?: string;
   page?: number;
   limit?: number;

@@ -24,6 +24,19 @@ const DATE_TIME = new Intl.DateTimeFormat('pt-BR', {
   minute: '2-digit',
 });
 
+/**
+ * O relógio, com os segundos.
+ *
+ * Os segundos não são preciosismo: na lista do painel eles são o que
+ * ordena dois pedidos do mesmo minuto, que e o caso de quem fecha a compra
+ * logo depois de conversar no WhatsApp.
+ */
+const TIME = new Intl.DateTimeFormat('pt-BR', {
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+});
+
 /** Por extenso, para a página do pedido: `3 de outubro de 2026`. */
 const LONG = new Intl.DateTimeFormat('pt-BR', {
   day: 'numeric',
@@ -41,6 +54,11 @@ export function formatDate(value: DateInput): string {
 /** `03/10/2026 14:32`. */
 export function formatDateTime(value: DateInput): string {
   return format(DATE_TIME, value);
+}
+
+/** `14:32:07`, no relógio de quem esta lendo. */
+export function formatTime(value: DateInput): string {
+  return format(TIME, value);
 }
 
 /** `3 de outubro de 2026`. */

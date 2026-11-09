@@ -145,6 +145,11 @@ function cotacao(options: {
   totalCents: number;
   installmentOptions?: unknown[];
   pixDiscountCents?: number;
+  /** O cupom que pegou, como `AppliedCouponView` o devolve. */
+  coupon?: Record<string, unknown> | null;
+  couponDiscountCents?: number;
+  /** Por que o código não pegou. Escrito pelo servidor, lido pela caixa. */
+  couponWarning?: string;
 }) {
   const items = options.items ?? [itemCotado()];
 
@@ -165,8 +170,14 @@ function cotacao(options: {
     payment: { method: 'card', cardMode: null, installments: 1, selected: null },
     subtotalCents: 18990,
     discountTotalCents: 0,
+    coupon: options.coupon ?? null,
+    couponDiscountCents: options.couponDiscountCents ?? 0,
+    couponWarning: options.couponWarning ?? '',
     deliveryFeeCents: options.feeCents ?? 0,
     pixDiscountCents: options.pixDiscountCents ?? 0,
+    // O total menos a entrega, como o servidor o calcula: e o número que o
+    // resumo mostra enquanto o cliente ainda não escolheu entrega ou retirada.
+    payableCents: options.totalCents - (options.feeCents ?? 0),
     totalCents: options.totalCents,
     installmentOptions: options.installmentOptions ?? [],
     warnings: [],
@@ -233,10 +244,12 @@ function pedidoCriado() {
       totals: {
         subtotalCents: 18990,
         discountTotalCents: 0,
+        couponDiscountCents: 0,
         deliveryFeeCents: 0,
         pixDiscountCents: 0,
         totalCents: 18990,
       },
+      coupon: null,
       whatsappMessage: MENSAGEM,
       createdAt: '2026-09-22T12:00:00.000Z',
       updatedAt: '2026-09-22T12:00:00.000Z',
@@ -307,13 +320,18 @@ function jsonResponse(body: unknown, status = 200): Response {
 let quoteRequests: {
   fulfillment: { mode: string; cityId?: string };
   payment: { method: string; cardMode?: string; installments?: number };
+  couponCode?: string;
 }[] = [];
 
 /** Os corpos que a tela mandou para `POST /orders`. */
 let orderRequests: Record<string, unknown>[] = [];
 
 /** Quem responde a cotação. Trocado por caso, conforme o que se quer provar. */
-let quoteFor: (body: { fulfillment: { mode: string; cityId?: string } }) => unknown;
+let quoteFor: (body: {
+  fulfillment: { mode: string; cityId?: string };
+  payment: { method: string; cardMode?: string; installments?: number };
+  couponCode?: string;
+}) => unknown;
 
 /** A resposta de `POST /orders`: sucesso por padrão. */
 let orderResponse: () => Response;
@@ -541,6 +559,89 @@ test('trocar a cidade muda a taxa e o total na hora', async () => {
     mode: 'delivery',
     cityId: 'c-crato',
   });
+});
+
+test('o resumo mostra o que o cartão cobra quando a parcela tem juros', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+
+  /**
+   * As duas opções, como o servidor as devolve.
+   *
+   * O `totalCents` da cotação e o preço a vista nas duas — a taxa da
+   * maquininha vive dentro da opção escolhida, e não no total do pedido.
+   * E justamente essa diferença que o resumo precisa escrever: sem ela, a
+   * tela responde R$ 587,90 a quem acabou de marcar "2x de R$ 313,01".
+   */
+  const A_VISTA = {
+    number: 1,
+    installmentCents: 58790,
+    firstInstallmentCents: 58790,
+    totalCents: 58790,
+    hasInterest: false,
+  };
+
+  const DUAS_VEZES = {
+    number: 2,
+    installmentCents: 31301,
+    firstInstallmentCents: 31301,
+    totalCents: 62602,
+    hasInterest: true,
+  };
+
+  quoteFor = (body) => {
+    // Sem modalidade escolhida não há tabela de taxa, e a cotação volta sem
+    // parcela nenhuma — como o servidor faz.
+    if (body.payment.cardMode === undefined) {
+      return cotacao({ mode: 'pickup', totalCents: 58790 });
+    }
+
+    const escolhida = body.payment.installments === 2 ? DUAS_VEZES : A_VISTA;
+
+    return {
+      ...cotacao({
+        mode: 'pickup',
+        totalCents: 58790,
+        installmentOptions: [A_VISTA, DUAS_VEZES],
+      }),
+      payment: {
+        method: 'card',
+        cardMode: body.payment.cardMode,
+        installments: escolhida.number,
+        selected: escolhida,
+      },
+    };
+  };
+
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+  await avancar(usuario);
+
+  await usuario.click(screen.getByRole('radio', { name: /Retirar na loja/ }));
+  await avancar(usuario);
+
+  await usuario.click(await screen.findByRole('radio', { name: /^Cartão/ }));
+  await usuario.click(await screen.findByRole('radio', { name: /Na maquininha/ }));
+  await usuario.click(await screen.findByRole('radio', { name: /^2x de R\$ 313,01/ }));
+
+  const resumo = screen.getByRole('complementary', { name: 'Resumo do pedido' });
+
+  // O total continua sendo o preço a vista: e ele que o pedido grava e que a
+  // mensagem do WhatsApp escreve.
+  await waitFor(() => {
+    expect(totalDoResumo()).toBe('R$ 587,90');
+  });
+
+  // E o que o cartão vai cobrar aparece junto, com o rótulo dele e com a
+  // parcela repetida embaixo.
+  await waitFor(() => {
+    expect(within(resumo).getByText('R$ 626,02')).toBeTruthy();
+  });
+
+  expect(within(resumo).getByText(/Parcelado em 2x/)).toBeTruthy();
+  expect(within(resumo).getByText(/2x de R\$ 313,01 · com juros/)).toBeTruthy();
 });
 
 test('recarregar no meio do checkout não perde nada', async () => {
@@ -889,3 +990,199 @@ async function irAteARevisao(usuario: ReturnType<typeof userEvent.setup>) {
   await usuario.type(screen.getByLabelText('Nome'), 'Maria Silva');
   await usuario.type(screen.getByLabelText('WhatsApp'), '88999998888');
 }
+
+/* ---- O cupom ---------------------------------------------------------------
+ *
+ * Cinco casos, e todos eles medem a mesma coisa de ângulos diferentes: o que
+ * a tela mostra sobre o desconto saiu do servidor, e não de uma conta ou de
+ * um otimismo local.
+ */
+
+/** O cupom aplicado, como `AppliedCouponView` o devolve. */
+const CUPOM = {
+  couponId: 'c1',
+  code: 'BLACKFRIDAY',
+  title: 'Black Friday Maison',
+  percentOff: 20,
+  amountOffCents: null,
+  discountLabel: '20% OFF',
+  discountCents: 3798,
+  eligibleSubtotalCents: 18990,
+  wholeStore: true,
+};
+
+/** A caixa do cupom, dentro do resumo — e não um "Aplicar" qualquer da tela. */
+function caixaDoCupom() {
+  const resumo = screen.getByRole('complementary', { name: 'Resumo do pedido' });
+
+  return within(resumo);
+}
+
+test('aplicar o cupom manda o código ao servidor e mostra o desconto que ele devolveu', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+
+  quoteFor = (body) =>
+    body.couponCode === 'BLACKFRIDAY'
+      ? cotacao({ coupon: CUPOM, couponDiscountCents: 3798, totalCents: 15192 })
+      : cotacao({ totalCents: 18990 });
+
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+
+  // O código sai minúsculo e com espaço, como alguém o digita depois de
+  // ouvi-lo no WhatsApp. O que viaja e o normalizado.
+  await usuario.type(caixaDoCupom().getByLabelText('Cupom de desconto'), 'black friday');
+  await usuario.click(caixaDoCupom().getByRole('button', { name: 'Aplicar' }));
+
+  await waitFor(() => {
+    expect(quoteRequests.at(-1)?.couponCode).toBe('BLACKFRIDAY');
+  });
+
+  // A linha do desconto traz o valor do servidor, e o total também: 15192 não
+  // e nenhuma conta que esta tela saiba fazer.
+  await waitFor(() => {
+    expect(caixaDoCupom().getByText('-R$ 37,98')).toBeTruthy();
+  });
+
+  expect(screen.getByText('Cupom BLACKFRIDAY')).toBeTruthy();
+  expect(totalDoResumo()).toBe('R$ 151,92');
+
+  // O campo da lugar a confirmação: não ha mais nada a digitar, só a tirar.
+  expect(caixaDoCupom().queryByLabelText('Cupom de desconto')).toBeNull();
+  expect(caixaDoCupom().getByRole('button', { name: 'Tirar' })).toBeTruthy();
+});
+
+test('o cupom recusado mostra o motivo do servidor e mantem o total dos itens', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+
+  quoteFor = (body) =>
+    body.couponCode === undefined
+      ? cotacao({ totalCents: 18990 })
+      : cotacao({ couponWarning: 'Esse cupom venceu e não vale mais.', totalCents: 18990 });
+
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+
+  await usuario.type(caixaDoCupom().getByLabelText('Cupom de desconto'), 'VENCIDO');
+  await usuario.click(caixaDoCupom().getByRole('button', { name: 'Aplicar' }));
+
+  // A frase e a do servidor, palavra por palavra, e vive num `role="alert"`
+  // ligado ao campo: quem usa leitor de tela ouve o motivo quando ele aparece.
+  const recusa = await screen.findByRole('alert');
+  expect(recusa.textContent).toBe('Esse cupom venceu e não vale mais.');
+
+  expect(caixaDoCupom().getByLabelText('Cupom de desconto').getAttribute('aria-invalid')).toBe(
+    'true',
+  );
+
+  // A recusa não derruba a cotação: o total dos itens continua em pe.
+  expect(totalDoResumo()).toBe('R$ 189,90');
+
+  // E não ha linha de desconto nenhuma na conta: o código recusado não entra
+  // na lista nem com valor zero.
+  expect(screen.queryByText('Cupom VENCIDO')).toBeNull();
+});
+
+test('tirar o cupom devolve o campo e o total sem desconto', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+
+  quoteFor = (body) =>
+    body.couponCode === 'BLACKFRIDAY'
+      ? cotacao({ coupon: CUPOM, couponDiscountCents: 3798, totalCents: 15192 })
+      : cotacao({ totalCents: 18990 });
+
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+
+  await usuario.type(caixaDoCupom().getByLabelText('Cupom de desconto'), 'BLACKFRIDAY');
+  await usuario.click(caixaDoCupom().getByRole('button', { name: 'Aplicar' }));
+
+  await screen.findByRole('button', { name: 'Tirar' });
+  await usuario.click(screen.getByRole('button', { name: 'Tirar' }));
+
+  await waitFor(() => {
+    expect(totalDoResumo()).toBe('R$ 189,90');
+  });
+
+  // O campo volta com o código que estava escrito, e não vazio: quem tirou
+  // por engano não precisa digitar tudo de novo.
+  const campo = caixaDoCupom().getByLabelText('Cupom de desconto') as HTMLInputElement;
+  expect(campo.value).toBe('BLACKFRIDAY');
+
+  // E o código sai do corpo da cotação em vez de viajar vazio.
+  expect(quoteRequests.at(-1)?.couponCode).toBeUndefined();
+});
+
+test('o código aplicado sobrevive a recarregar a página no meio do checkout', async () => {
+  const usuario = userEvent.setup();
+
+  comUmItem();
+
+  quoteFor = (body) =>
+    body.couponCode === 'BLACKFRIDAY'
+      ? cotacao({ coupon: CUPOM, couponDiscountCents: 3798, totalCents: 15192 })
+      : cotacao({ totalCents: 18990 });
+
+  const primeira = abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+  await usuario.type(caixaDoCupom().getByLabelText('Cupom de desconto'), 'BLACKFRIDAY');
+  await usuario.click(caixaDoCupom().getByRole('button', { name: 'Aplicar' }));
+
+  await screen.findByRole('button', { name: 'Tirar' });
+
+  // A recarga: a página sai e volta, com o `localStorage` no meio. E o mesmo
+  // gesto que trocar de aplicativo no celular faz com a aba.
+  primeira.unmount();
+  abrirCheckout();
+
+  await screen.findByRole('heading', { name: 'Seus itens' });
+
+  // Nenhum valor foi guardado: o que atravessou foi o código, e o desconto
+  // veio da cotação refeita contra o catálogo de agora.
+  await waitFor(() => {
+    expect(totalDoResumo()).toBe('R$ 151,92');
+  });
+
+  expect(screen.getByRole('button', { name: 'Tirar' })).toBeTruthy();
+});
+
+test('o pedido sai com o código do cupom que gerou o total exibido', async () => {
+  const usuario = userEvent.setup();
+
+  quoteFor = (body) =>
+    body.couponCode === 'BLACKFRIDAY'
+      ? cotacao({ coupon: CUPOM, couponDiscountCents: 3798, totalCents: 15192 })
+      : cotacao({ totalCents: 18990 });
+
+  await irAteARevisao(usuario);
+
+  // Na revisão o resumo lateral não existe: a caixa do cupom mora dentro do
+  // último passo, e e por isso que ela e o mesmo componente nos dois lugares.
+  await usuario.type(screen.getByLabelText('Cupom de desconto'), 'BLACKFRIDAY');
+  await usuario.click(screen.getByRole('button', { name: 'Aplicar' }));
+
+  await screen.findByRole('button', { name: 'Tirar' });
+
+  await usuario.click(screen.getByRole('button', { name: /Finalizar pelo WhatsApp/ }));
+
+  await waitFor(() => {
+    expect(orderRequests).toHaveLength(1);
+  });
+
+  expect(orderRequests[0]?.couponCode).toBe('BLACKFRIDAY');
+
+  // E o total conferido e o que a tela mostrou com o desconto, e não o cheio:
+  // mandar 18990 aqui faria o servidor recusar o próprio pedido que a tela
+  // acabou de montar.
+  expect(orderRequests[0]?.expectedTotalCents).toBe(15192);
+});

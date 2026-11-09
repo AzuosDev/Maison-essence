@@ -10,7 +10,7 @@ import {
   type AdminOrderSummary,
 } from '@/features/admin';
 import { cx } from '@/lib/cx';
-import { formatCents, formatDate } from '@/lib/format';
+import { formatCents, formatDate, formatTime } from '@/lib/format';
 import { useMediaQuery } from '@/lib/use-media-query';
 import { ChatIcon, ChevronRightIcon } from './admin-icons';
 import styles from './orders-table.module.css';
@@ -37,6 +37,14 @@ import styles from './orders-table.module.css';
  * E o atalho mais usado do painel: a dona vê o pedido e responde na
  * conversa. O link abre o WhatsApp com o número já preenchido — e fica fora
  * do link do pedido, porque são dois destinos diferentes no mesmo card.
+ *
+ * ## A hora, em coluna própria
+ *
+ * A data responde "de quando e"; a hora responde "chegou agora?", que e a
+ * pergunta que faz a dona abrir o painel. Num dia de seis pedidos a data e
+ * a mesma em todas as linhas, e o que separa um do outro e o relógio — com
+ * os segundos, porque dois pedidos do mesmo minuto acontecem justamente
+ * quando a conversa do WhatsApp esta acontecendo.
  */
 
 /** Acima disto, tabela. Abaixo, cards — o corte que o painel usa inteiro. */
@@ -105,6 +113,7 @@ function OrderRows({
         <thead>
           <tr>
             <th scope="col">Código</th>
+            <th scope="col">Hora</th>
             <th scope="col">Cliente</th>
             <th scope="col">Entrega</th>
             {showPayment ? <th scope="col">Pagamento</th> : null}
@@ -132,6 +141,8 @@ function OrderRows({
                 </Link>
                 <span className={styles.date}>{formatDate(order.createdAt)}</span>
               </th>
+
+              <td className={cx(styles.time, 'tabular')}>{formatTime(order.createdAt)}</td>
 
               <td>
                 <span className={styles.customer}>{order.customerName}</span>
@@ -210,6 +221,11 @@ function OrderCards({
             <div>
               <dt>Data</dt>
               <dd>{formatDate(order.createdAt)}</dd>
+            </div>
+
+            <div>
+              <dt>Hora</dt>
+              <dd className="tabular">{formatTime(order.createdAt)}</dd>
             </div>
 
             <div>

@@ -33,9 +33,9 @@ import {
  * ## Tudo aqui e função pura
  *
  * E a parte que erra em silêncio: um preço lido errado entra no banco um
- * centavo mais barato, uma variante duplicada rouba o SKU da original, uma
- * imagem reordenada troca a capa sem avisar. Nada disso precisa de uma tela
- * montada para ser testado.
+ * centavo mais barato, duas variantes com o mesmo SKU brigam pela mesma
+ * linha, uma imagem reordenada troca a capa sem avisar. Nada disso precisa
+ * de uma tela montada para ser testado.
  */
 
 /* ---- O modelo ------------------------------------------------------------ */
@@ -60,8 +60,6 @@ export interface VariantDraft {
 
 export interface ProductDraft {
   name: string;
-  /** Só na criação. A edição não mexe no endereço — ver `UpdateProductInput`. */
-  slug: string;
   description: string;
   brand: string;
   categoryIds: string[];
@@ -77,7 +75,6 @@ export interface ProductDraft {
 /** Onde os erros aparecem: por campo do produto e por chave de variante. */
 export interface DraftErrors {
   name?: string;
-  slug?: string;
   description?: string;
   brand?: string;
   images?: string;
@@ -104,7 +101,15 @@ function nextKey(): string {
   return `v${String(keySeed)}`;
 }
 
-/** Uma linha de variante em branco, ativa e sem estoque. */
+/**
+ * Uma linha de variante em branco, ativa e vendendo sob encomenda.
+ *
+ * `allowBackorder` nasce ligado porque e assim que a loja trabalha: o frasco
+ * e encomendado quando alguém compra, e um produto cadastrado com estoque
+ * zero e a venda desligada ficaria no ar como "esgotado" sem ninguém pedir
+ * isso. Quem controla estoque de verdade desliga o interruptor no cadastro —
+ * uma decisão por produto, e não uma lembrança a cada cadastro.
+ */
 export function newVariant(): VariantDraft {
   return {
     key: nextKey(),
@@ -115,7 +120,7 @@ export function newVariant(): VariantDraft {
     stock: '0',
     image: '',
     isActive: true,
-    allowBackorder: false,
+    allowBackorder: true,
   };
 }
 
@@ -129,7 +134,6 @@ export function newVariant(): VariantDraft {
 export function emptyProductDraft(): ProductDraft {
   return {
     name: '',
-    slug: '',
     description: '',
     brand: '',
     categoryIds: [],
@@ -146,7 +150,6 @@ export function emptyProductDraft(): ProductDraft {
 export function draftFromProduct(product: AdminProduct): ProductDraft {
   return {
     name: product.name,
-    slug: product.slug,
     description: product.description,
     brand: product.brand,
     categoryIds: [...product.categoryIds],
@@ -171,28 +174,6 @@ export function draftFromProduct(product: AdminProduct): ProductDraft {
     isReadyToShip: product.isReadyToShip,
     tags: [...product.tags],
   };
-}
-
-/**
- * Duplica uma linha de variante.
- *
- * O que se repete e o trabalho: preço, preço de comparação, estoque e as duas
- * chaves. O que **não** se repete e a identidade — `id` e `sku` saem fora,
- * porque são únicos por variante e copia-los faria a linha nova sobrescrever
- * a original ao salvar.
- *
- * O `label` fica como esta, de propósito. Quem duplica esta prestes a
- * escrever "50 ml" onde estava "100 ml", e apagar o campo tiraria a
- * referência do que ela esta copiando. Duas linhas com o mesmo label são
- * barradas pela validação, então o esquecimento não chega ao servidor.
- */
-export function duplicateVariant(variant: VariantDraft): VariantDraft {
-  // O `id` e retirado, e não zerado: com `exactOptionalPropertyTypes`, um
-  // campo opcional presente valendo `undefined` não e a mesma coisa que um
-  // campo ausente — e e a ausência que faz o servidor criar uma variante nova.
-  const { id: _existing, ...rest } = variant;
-
-  return { ...rest, key: nextKey(), sku: '' };
 }
 
 /* ---- As imagens ----------------------------------------------------------- */
@@ -376,7 +357,6 @@ function normalizeLabel(label: string): string {
 export function hasErrors(errors: DraftErrors): boolean {
   const fields = [
     errors.name,
-    errors.slug,
     errors.description,
     errors.brand,
     errors.images,
@@ -391,17 +371,14 @@ export function hasErrors(errors: DraftErrors): boolean {
 /**
  * O corpo do `POST`.
  *
- * O `slug` só entra quando foi escrito: omitido, o servidor o gera a partir
- * do nome, que e o caminho normal. Mandar string vazia seria diferente de
+ * O `slug` nunca entra: o painel não pergunta o endereço do produto, e
+ * omitido ele sai do nome no servidor. Mandar string vazia seria diferente de
  * omitir — o validador a recusaria.
  */
 export function draftToCreate(draft: ProductDraft): CreateProductInput {
-  const slug = draft.slug.trim();
-
   return {
     ...draftToUpdate(draft),
     name: draft.name.trim(),
-    ...(slug === '' ? {} : { slug }),
   };
 }
 

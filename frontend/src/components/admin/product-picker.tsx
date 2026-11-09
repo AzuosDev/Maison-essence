@@ -11,7 +11,10 @@ import styles from './product-picker.module.css';
  *
  * Duas telas fazem isto hoje — o perfume da vez da home e o brinde por valor
  * de compra — e as duas fazem a mesma pergunta de um jeito só: quem esta
- * escolhido agora, e qual outro produto o substitui.
+ * escolhido agora, e qual outro produto o substitui. A terceira tela que
+ * escolhe produto, a fileira de mais vendidos, escolhe uma lista e não um:
+ * ela monta a própria anatomia e reusa daqui a busca (`ProductSearch`) e a
+ * miniatura (`ProductThumb`), que são a parte que a dona aprende uma vez.
  *
  * ## Por que uma busca, e não uma lista
  *
@@ -82,16 +85,7 @@ export function ProductPicker({
   copy,
   publishedOnly = false,
 }: ProductPickerProps) {
-  const [typed, setTyped] = useState('');
-  const term = useDebouncedValue(typed.trim(), SEARCH_DELAY_MS);
-
   const chosen = useProduct(productId ?? '');
-  const found = useProducts({
-    q: term,
-    status: publishedOnly ? 'active' : 'all',
-    limit: RESULTS,
-  });
-  const results = found.data?.items ?? [];
   const offAir = copy.offAir ?? '';
 
   return (
@@ -112,7 +106,7 @@ export function ProductPicker({
       ) : (
         <>
           <div className={styles.chosen}>
-            <Thumb product={chosen.data} />
+            <ProductThumb product={chosen.data} />
 
             <div className={styles.identity}>
               <strong className={styles.name}>{chosen.data.name}</strong>
@@ -138,15 +132,81 @@ export function ProductPicker({
         </>
       )}
 
-      <Input
+      <ProductSearch
         label={copy.searchLabel}
+        hint={copy.searchHint}
+        publishedOnly={publishedOnly}
+        chosenIds={productId === null ? [] : [productId]}
+        currentLabel={copy.current}
+        onPick={onChange}
+      />
+    </div>
+  );
+}
+
+/**
+ * A busca que escolhe um produto do cadastro.
+ *
+ * Mora aqui e não dentro de `ProductPicker` porque duas telas a usam com
+ * anatomias de escolha diferentes: o perfume da vez e o brinde escolhem **um**
+ * produto, e a fileira de mais vendidos escolhe uma lista ordenada. O que não
+ * muda e a busca em si — três letras, seis resultados, a linha com miniatura,
+ * nome e marca —, e ela e a parte que a dona aprende uma vez e reusa nas três.
+ *
+ * `chosenIds` e o que já esta escolhido, em qualquer das telas: a linha
+ * correspondente troca o botão pelo rótulo em vez de sumir da lista, porque
+ * uma lista que muda de tamanho a cada escolha faz o dedo errar o alvo.
+ */
+export interface ProductSearchProps {
+  label: string;
+  hint: string;
+  /** A busca mostra só o que esta publicado. Ver `ProductPickerProps`. */
+  publishedOnly?: boolean;
+  /** O que já esta escolhido: a linha mostra o rótulo e não o botão. */
+  chosenIds: readonly string[];
+  /** O rótulo da linha já escolhida: "na home", "e o brinde", "na fileira". */
+  currentLabel: string;
+  /**
+   * Por que não se pode escolher mais nada agora — "fileira cheia", por
+   * exemplo. Preenchido, as linhas não escolhidas trocam o botão por este
+   * texto: a busca continua lendo, e o limite e dito no lugar onde ele
+   * atrapalha, e não só num rodapé que ninguém relê. Vazio não desenha nada,
+   * como o aviso de produto fora do ar.
+   */
+  locked?: string;
+  onPick: (productId: string) => void;
+}
+
+export function ProductSearch({
+  label,
+  hint,
+  publishedOnly = false,
+  chosenIds,
+  currentLabel,
+  locked = '',
+  onPick,
+}: ProductSearchProps) {
+  const [typed, setTyped] = useState('');
+  const term = useDebouncedValue(typed.trim(), SEARCH_DELAY_MS);
+
+  const found = useProducts({
+    q: term,
+    status: publishedOnly ? 'active' : 'all',
+    limit: RESULTS,
+  });
+  const results = found.data?.items ?? [];
+
+  return (
+    <>
+      <Input
+        label={label}
         block
         type="search"
         inputMode="search"
         autoComplete="off"
         placeholder="Nome ou marca"
         prefix={<SearchIcon />}
-        hint={copy.searchHint}
+        hint={hint}
         value={typed}
         onChange={(event) => {
           setTyped(event.target.value);
@@ -176,7 +236,7 @@ export function ProductPicker({
         <ul className={styles.results}>
           {results.map((product) => (
             <li key={product.id} className={styles.result}>
-              <Thumb product={product} />
+              <ProductThumb product={product} />
 
               <div className={styles.identity}>
                 <strong className={styles.name}>{product.name}</strong>
@@ -192,26 +252,28 @@ export function ProductPicker({
                 por leitor de tela. O rótulo visível abre o nome acessível,
                 que e o que o comando de voz exige.
               */}
-              {product.id === productId ? (
-                <span className={styles.current}>{copy.current}</span>
-              ) : (
+              {chosenIds.includes(product.id) ? (
+                <span className={styles.current}>{currentLabel}</span>
+              ) : locked === '' ? (
                 <Button
                   type="button"
                   variant="secondary"
                   size="small"
                   aria-label={`Escolher ${product.name}`}
                   onClick={() => {
-                    onChange(product.id);
+                    onPick(product.id);
                   }}
                 >
                   Escolher
                 </Button>
+              ) : (
+                <span className={styles.locked}>{locked}</span>
               )}
             </li>
           ))}
         </ul>
       )}
-    </div>
+    </>
   );
 }
 
@@ -238,12 +300,12 @@ function Clear({
 }
 
 /**
- * A capa do produto.
+ * A capa do produto, do tamanho que a linha usa nas três telas.
  *
  * `alt=""` de propósito: o nome esta na linha ao lado, e uma miniatura que
  * repete "Asad" faria o leitor de tela anunciar o mesmo nome duas vezes.
  */
-function Thumb({ product }: { product: AdminProduct }) {
+export function ProductThumb({ product }: { product: AdminProduct }) {
   return (
     <img
       {...imageProps(product.coverImage, 'thumb', '56px')}

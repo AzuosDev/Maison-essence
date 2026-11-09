@@ -14,8 +14,8 @@ import { Matches } from 'class-validator';
  * terceiro — poderia ser gravada como foto de um produto.
  *
  * Por isso a regra mora em `common/` e não no módulo de uploads: quem grava
- * imagem (produtos, categorias, banners, atalhos da home) precisa dela tanto
- * quanto quem faz o upload.
+ * imagem (produtos, categorias, banners, atalhos e cartazes da home) precisa
+ * dela tanto quanto quem faz o upload.
  */
 
 /** Raiz da conta do Cloudinary reservada a loja. */
@@ -27,6 +27,7 @@ export const UPLOAD_FOLDERS = {
   categories: `${UPLOAD_ROOT}/categories`,
   banners: `${UPLOAD_ROOT}/banners`,
   shortcuts: `${UPLOAD_ROOT}/shortcuts`,
+  posters: `${UPLOAD_ROOT}/posters`,
 } as const;
 
 export type UploadFolder = keyof typeof UPLOAD_FOLDERS;

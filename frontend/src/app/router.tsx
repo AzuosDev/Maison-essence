@@ -82,6 +82,15 @@ const storeRoutes: RouteObject = {
       ErrorBoundary: RouteErrorBoundary,
     },
 
+    // A vitrine da campanha, que e a mesma listagem com um filtro a mais: ela
+    // monta `CatalogView` com o contexto da campanha, como `/pronta-entrega`
+    // faz com a bandeira.
+    {
+      path: '/promocao/:slug',
+      lazy: page(() => import('@/pages/campaign/campaign-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
+
     // A página do produto, logo abaixo das listagens que levam a ela. A
     // ordem no arquivo não muda o casamento das rotas — quem decide e a
     // especificidade do caminho —, mas segue a ordem em que o cliente
@@ -270,6 +279,24 @@ const adminRoutes: RouteObject = {
         {
           path: 'categorias',
           lazy: page(() => import('@/pages/admin/admin-categories-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+
+        // Os cupons: a lista agrupada por estado e o cadastro da campanha.
+        // `nova` antes de `:id` pela mesma razão de `produtos/novo`.
+        {
+          path: 'cupons',
+          lazy: page(() => import('@/pages/admin/admin-coupons-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+        {
+          path: 'cupons/nova',
+          lazy: page(() => import('@/pages/admin/admin-coupon-form-page')),
+          ErrorBoundary: RouteErrorBoundary,
+        },
+        {
+          path: 'cupons/:id',
+          lazy: page(() => import('@/pages/admin/admin-coupon-form-page')),
           ErrorBoundary: RouteErrorBoundary,
         },
 

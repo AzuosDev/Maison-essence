@@ -78,6 +78,19 @@ export const ROUTES = {
    */
   productsOnSale: '/produtos?desconto=1',
 
+  /**
+   * A vitrine de uma campanha: os produtos de um cupom.
+   *
+   * `promocao`, e não `campanha`: campanha e a palavra do painel, onde a dona
+   * monta a coisa. Quem recebe o link no WhatsApp lê promoção, e o endereço e
+   * para ela.
+   *
+   * Só existe para cupom com produtos escolhidos. Cupom da loja inteira não
+   * tem recorte a mostrar, e a faixa da home manda para `/produtos` nesse
+   * caso — ver `hasShowcase`.
+   */
+  campaign: (slug: string) => `/promocao/${encodeURIComponent(slug)}`,
+
   category: (slug: string) => `/categorias/${slug}`,
 
   /** A busca, com o termo em `?q=`. */
@@ -212,6 +225,18 @@ export const ROUTES = {
 
     categories: `${ROUTE_GROUPS.admin}/categorias`,
     readyToShip: `${ROUTE_GROUPS.admin}/pronta-entrega`,
+
+    /**
+     * Cupons: a lista e o cadastro.
+     *
+     * `nova` e literal e por isso vem antes de `:id`, como em produtos — o
+     * React Router casa o caminho mais específico primeiro, mas a ordem
+     * declarada e o que a próxima pessoa lê. Em feminino porque o que se
+     * cadastra ali e a campanha, e e assim que a tela a chama.
+     */
+    coupons: `${ROUTE_GROUPS.admin}/cupons`,
+    newCoupon: `${ROUTE_GROUPS.admin}/cupons/nova`,
+    coupon: (id: string) => `${ROUTE_GROUPS.admin}/cupons/${id}`,
 
     orders: `${ROUTE_GROUPS.admin}/pedidos`,
     order: (id: string) => `${ROUTE_GROUPS.admin}/pedidos/${id}`,

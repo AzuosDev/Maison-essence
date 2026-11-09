@@ -66,6 +66,14 @@ export interface CatalogViewProps {
   context?: CatalogContext;
   /** O título vem de outra consulta e ainda não chegou. */
   isTitleLoading?: boolean;
+  /**
+   * O bloco que a rota põe entre o cabeçalho e a barra de ferramentas.
+   *
+   * Quem usa e a vitrine da campanha: o desconto, o código e o prazo moram
+   * ali, acima da lista e abaixo do título. E um lugar, não um componente —
+   * cada rota desenha o seu, e as que não tem nada a dizer não passam nada.
+   */
+  banner?: ReactNode;
   /** As pílulas de subcategoria, quando a rota tem uma categoria. */
   chips?: ReactNode;
   /** O termo buscado, realcado nos nomes. Só `/busca` passa. */
@@ -87,6 +95,7 @@ export function CatalogView({
   breadcrumb,
   context = NO_CONTEXT,
   isTitleLoading = false,
+  banner,
   chips,
   highlight = '',
   emptyTitle = 'Nenhum produto encontrado',
@@ -126,6 +135,8 @@ export function CatalogView({
         isTitleLoading={isTitleLoading}
         hideCount={isDesktop}
       />
+
+      {banner}
 
       {chips}
 

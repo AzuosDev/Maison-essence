@@ -57,6 +57,16 @@ export interface CreateOrderInput {
    * valor que ninguém combinou.
    */
   expectedTotalCents: number;
+  /**
+   * O código do cupom, como a cotação o recebeu.
+   *
+   * Vai no pedido porque o servidor **refaz** a cotação antes de gravar, e e
+   * essa segunda resolução que congela o cupom no documento. Sem o código
+   * aqui, o pedido sairia sem o desconto que a tela mostrou, e a conferência
+   * de `expectedTotalCents` recusaria o próprio total que ela acabou de
+   * exibir. Como no preço dos itens, a tela diz *qual*; o banco diz *quanto*.
+   */
+  couponCode?: string;
 }
 
 export interface OrderItemView {
@@ -74,9 +84,27 @@ export interface OrderItemView {
 export interface OrderTotalsView {
   subtotalCents: number;
   discountTotalCents: number;
+  /** Quanto o cupom tirou. Zero na maioria dos pedidos. */
+  couponDiscountCents: number;
   deliveryFeeCents: number;
   pixDiscountCents: number;
   totalCents: number;
+}
+
+/**
+ * O cupom do pedido, como ficou gravado.
+ *
+ * Sem id: quem lê um pedido não tem nada a fazer com o id da campanha, e o
+ * que importa esta todo aqui, congelado no dia da compra — inclusive o
+ * `discountLabel`, que e a frase que estava na tela quando ela comprou e
+ * continua verdadeira mesmo depois de a dona mudar o desconto da campanha.
+ */
+export interface OrderCoupon {
+  code: string;
+  title: string;
+  /** `20% OFF`, como estava escrito na tela. */
+  discountLabel: string;
+  discountCents: number;
 }
 
 /** O pedido gravado, com os preços congelados no momento em que fechou. */
@@ -103,6 +131,8 @@ export interface CustomerOrder {
     hasInterest: boolean;
   };
   totals: OrderTotalsView;
+  /** O cupom usado, ou `null`. */
+  coupon: OrderCoupon | null;
   /** A mensagem como o servidor a montou, para a tela oferecer copiar. */
   whatsappMessage: string;
   createdAt: string;

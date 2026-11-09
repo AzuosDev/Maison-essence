@@ -14,14 +14,16 @@ import styles from './best-sellers-page.module.css';
  * `/produtos`, `/pronta-entrega`, `/categorias/:slug` e `/busca` são a mesma
  * tela com contextos diferentes, porque as quatro são recortes do catálogo —
  * e o catálogo sabe filtrar e ordenar por todas elas. Esta não e um recorte:
- * o ranking sai da quantidade somada nos pedidos que viraram venda, e não do
- * cadastro do produto. Nenhuma ordem da listagem sabe calcula-lo, e inventar
- * um `?ordem=mais-vendidos` que o servidor não tem seria prometer na URL uma
- * ordenação que não existe.
+ * a fileira e a lista que a dona montou em Ajustes e, enquanto ela não
+ * montar, o ranking da quantidade somada nos pedidos que viraram venda.
+ * Nenhuma das duas sai do cadastro do produto, nenhuma ordem da listagem
+ * sabe calcula-las, e inventar um `?ordem=mais-vendidos` que o servidor não
+ * tem seria prometer na URL uma ordenação que não existe.
  *
  * Por isso aqui não há barra de filtros nem paginação: a prateleira tem
- * começo e fim, e são as quarenta e oito posições que o ranking alcança. Quem
- * quer navegar o catálogo inteiro tem o "Ver todos os produtos" no fim.
+ * começo e fim — a escolha da dona, que para em doze, ou as quarenta e oito
+ * posições que o ranking alcança. Quem quer navegar o catálogo inteiro tem o
+ * "Ver todos os produtos" no fim.
  *
  * ## A mesma resposta da home, sem segunda ida ao servidor
  *
@@ -44,7 +46,7 @@ export default function BestSellersPage() {
       <CatalogHeader
         breadcrumb={[{ label: 'Início', to: ROUTES.home }, { label: 'Mais vendidos' }]}
         title="Mais vendidos"
-        description="O que mais saiu das nossas mãos nas últimas semanas, na ordem em que vendeu."
+        description="O que mais sai das nossas mãos, na ordem em que a loja os mostra."
         totalItems={isPending ? undefined : products.length}
         isLoading={isPending}
       />

@@ -14,6 +14,7 @@ export {
   type PublicGift,
   type PublicPage,
   type PublicPageSummary,
+  type PublicPoster,
   type PublicSettings,
   type PublicShortcut,
   type SocialLinks,

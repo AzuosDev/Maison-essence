@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
-import { useAddToCart } from '@/components/store';
+import { ShieldIcon, useAddToCart } from '@/components/store';
 import { Badge, Button, QuantityStepper } from '@/components/ui';
 import {
   isLowStock,
@@ -33,11 +33,15 @@ import styles from './buy-box.module.css';
  * linha no dia em que a API mandar uma. Inventar cinco estrelas no frontend
  * seria propaganda enganosa escrita em CSS.
  *
- * ## Os dois botões
+ * ## A linha de compra, e o segundo caminho abaixo dela
  *
- * "Adicionar a sacola" continua a visita; "Comprar agora" põe o item na
- * sacola **e** vai para o checkout. O segundo não e um caminho paralelo: e o
- * mesmo caminho sem a parada, e por isso os dois passam exatamente pelo
+ * "Comprar" fica na mesma linha do seletor de quantidade, porque as duas
+ * coisas são uma decisão só: quantos, e vamos. Ele põe o item na sacola
+ * **e** vai para o checkout.
+ *
+ * "Adicionar a sacola" continua existindo, abaixo e em secundário: e o
+ * caminho de quem vai levar dois perfumes, e tira-lo obrigaria essa pessoa a
+ * passar pelo checkout para voltar a vitrine. Os dois passam exatamente pelo
  * mesmo `useAddToCart` — nenhuma linha de sacola nasce de outro lugar nesta
  * loja.
  *
@@ -124,12 +128,6 @@ export function BuyBox({ product, variant, onSelectVariant }: BuyBoxProps) {
         />
       ) : null}
 
-      <div className={styles.quantity}>
-        <QuantityStepper value={quantity} max={max} onChange={setQuantity} />
-
-        <StockNote variant={variant} />
-      </div>
-
       <QuantityDiscounts
         ladder={product.quantityDiscounts}
         quantity={quantity}
@@ -143,15 +141,62 @@ export function BuyBox({ product, variant, onSelectVariant }: BuyBoxProps) {
       />
 
       <div className={styles.actions}>
-        <Button block onClick={add} disabled={!available}>
-          {available ? 'Adicionar a sacola' : 'Esgotado'}
-        </Button>
+        <div className={styles.buyRow}>
+          <QuantityStepper
+            value={quantity}
+            max={max}
+            hideLabel
+            label={`Quantidade de ${product.name}`}
+            onChange={setQuantity}
+          />
 
-        <Button block variant="secondary" onClick={buyNow} disabled={!available}>
-          Comprar agora
+          <Button block onClick={buyNow} disabled={!available}>
+            {available ? 'Comprar' : 'Esgotado'}
+          </Button>
+        </div>
+
+        <StockNote variant={variant} />
+
+        <Button block variant="secondary" onClick={add} disabled={!available}>
+          Adicionar a sacola
         </Button>
       </div>
+
+      <SecurePurchase />
     </div>
+  );
+}
+
+/* ---- A compra protegida -------------------------------------------------- */
+
+/**
+ * O recado de segurança, logo abaixo do botão.
+ *
+ * E onde ele serve: a dúvida sobre entregar o proprio endereço a uma loja
+ * que se conhece do Instagram aparece no instante do clique, e não três
+ * blocos acima.
+ *
+ * Sem contorno e sem fundo, ao contrário do bloco de entrega que vem a
+ * seguir. Dois cartões preenchidos empilhados fazem a coluna virar uma pilha
+ * de caixas e nenhum dos dois se destaca — o escudo já separa esta linha do
+ * botão, e e só isso que ela precisa.
+ *
+ * O que esta escrito e o que a loja cumpre: o site não guarda cartão (não há
+ * gateway — o pagamento e combinado direto com a dona), e o que o checkout
+ * pede serve para entregar o pedido. Selo de certificação inventado, nota
+ * fiscal de segurança e "100% seguro" ficam de fora: nada aqui promete uma
+ * mecânica que não existe.
+ */
+function SecurePurchase() {
+  return (
+    <p className={styles.secure}>
+      <ShieldIcon className={styles.secureIcon} aria-hidden="true" />
+
+      <span>
+        <strong className={styles.secureTitle}>Compra protegida</strong>
+        <span className={styles.secureNote}>Seus dados cuidados durante toda a compra.</span>
+      </span>
+    </p>
   );
 }
 
@@ -197,16 +242,27 @@ function PriceBlock({
       ? Math.round((totalCents * pix.discountPercent) / 100)
       : 0;
 
+  // O que o preço riscado promete de economia, já com a quantidade em conta:
+  // e a conta que o cliente faria de cabeça entre os dois números acima.
+  const compareSavingsCents = compareAtCents === null ? 0 : compareAtCents * quantity - totalCents;
+
   return (
     <div className={styles.prices}>
-      <p className={styles.priceRow}>
-        {compareAtCents === null ? null : (
-          <span className={cx(styles.compareAt, 'tabular')}>
-            <span className="visually-hidden">De </span>
-            {formatCents(compareAtCents * quantity)}
-          </span>
-        )}
+      {/*
+        O "de" em linha própria, acima do preço.
 
+        Ao lado do número grande ele disputava a mesma linha de base e era
+        lido junto, como se fosse um intervalo. Em cima, a leitura e a ordem
+        da conta: era tanto, agora e tanto, você economiza tanto.
+      */}
+      {compareAtCents === null ? null : (
+        <p className={cx(styles.compareAt, 'tabular')}>
+          <span className="visually-hidden">De </span>
+          {formatCents(compareAtCents * quantity)}
+        </p>
+      )}
+
+      <p className={styles.priceRow}>
         <span className={cx(styles.price, 'tabular')}>{formatCents(totalCents)}</span>
 
         {/* A mesma forma do cartão da vitrine: dourado, ao lado do preço. O
@@ -214,6 +270,12 @@ function PriceBlock({
             nisso; trocar a forma aqui faria parecer outro desconto. */}
         {discountPercent > 0 ? <span className={styles.off}>{discountPercent}% OFF</span> : null}
       </p>
+
+      {compareSavingsCents > 0 ? (
+        <p className={styles.savings}>
+          Economize: <span className="tabular">{formatCents(compareSavingsCents)}</span>
+        </p>
+      ) : null}
 
       {quantity > 1 ? (
         <p className={styles.unit}>
@@ -224,7 +286,6 @@ function PriceBlock({
 
       {installment === null ? null : (
         <p className={styles.installment}>
-          ou em até{' '}
           <span className="tabular">
             {formatInstallment(installment.count, installment.installmentCents)}
           </span>{' '}

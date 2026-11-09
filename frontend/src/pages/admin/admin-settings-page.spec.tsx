@@ -20,8 +20,9 @@ import AdminSettingsPage from './admin-settings-page';
  *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
  * - **a divisão por campo**: o gerente da loja abre a tela e grava o que muda
- *   no expediente, e as quatro seções de moldura — redes, carrossel, perfume
- *   da vez e páginas do rodapé — não são desenhadas para ele. O atendimento
+ *   no expediente, e as cinco seções de moldura — redes, carrossel, a fileira
+ *   de mais vendidos, perfume da vez e páginas do rodapé — não são desenhadas
+ *   para ele. O atendimento
  *   não entra de jeito nenhum.
  */
 
@@ -46,6 +47,8 @@ const SETTINGS = {
   socialLinks: { instagram: '@maisonessence', tiktok: '' },
   freeShippingMinCents: 20_000,
   featuredPerfumeProductId: null,
+  // A fileira de mais vendidos no automatico, como a loja nasce.
+  bestSellerProductIds: [] as string[],
   gift: { isActive: false, minCents: null, productId: null, label: '' },
   banners: [
     {
@@ -178,6 +181,7 @@ function saved(patch: Patch): Settings {
     pickupAddress: { ...SETTINGS.pickupAddress, ...patch.pickupAddress },
     socialLinks: { ...SETTINGS.socialLinks, ...patch.socialLinks },
     banners: patch.banners ?? SETTINGS.banners,
+    bestSellerProductIds: patch.bestSellerProductIds ?? SETTINGS.bestSellerProductIds,
     institutionalPages: SETTINGS.institutionalPages.map((page) =>
       mergePage(page, patch.institutionalPages),
     ),
@@ -240,6 +244,15 @@ beforeEach(() => {
         // configurações: sem este desvio, a tela receberia o documento da loja
         // no lugar de uma página de produtos.
         if (url.includes('/admin/products')) {
+          // Cada linha da fileira de mais vendidos pede o produto pelo id, e
+          // não a pagina: sem este desvio ela receberia a lista inteira e
+          // mostraria uma linha sem nome.
+          const chosen = PRODUCTS.find((product) => url.endsWith(`/${product.id}`));
+
+          if (chosen !== undefined) {
+            return Promise.resolve(jsonResponse(chosen));
+          }
+
           return Promise.resolve(
             jsonResponse({
               items: PRODUCTS,
@@ -310,14 +323,28 @@ function lastWrite(): { url: string; method: string; body: string } | undefined 
   return calls.findLast((call) => call.method !== 'GET');
 }
 
+/**
+ * Entra num assunto da grade.
+ *
+ * A tela mostra um assunto por vez: a grade de retângulos primeiro, e o
+ * formulário só depois do clique. Quase todo caso daqui mexe em um assunto, e e
+ * por isso que ele começa com `abrir()` e este clique.
+ */
+async function entrar(assunto: string, user = userEvent.setup()): Promise<void> {
+  // O nome acessível do retângulo e o título mais o resumo mais o estado atual;
+  // a âncora no começo e o que separa "Atalhos da home" de "Banners da home".
+  await user.click(await screen.findByRole('button', { name: new RegExp(`^${assunto}`) }));
+}
+
 /* ---- Abrir a tela ------------------------------------------------------------ */
 
 test('abre com o que esta gravado, e o número legível', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('A loja');
 
-  const whatsapp = await screen.findByRole('textbox', { name: 'WhatsApp' });
+  const whatsapp = screen.getByRole('textbox', { name: 'WhatsApp' });
 
   expect((whatsapp as HTMLInputElement).value).toBe('(88) 99999-9999');
   expect((screen.getByRole('textbox', { name: 'Nome da loja' }) as HTMLInputElement).value).toBe(
@@ -330,7 +357,8 @@ test('abrir a tela não a deixa suja, nem com banner agendado', async () => {
 
   abrir();
 
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  // A grade carregada — e com ela o rascunho que o banner agendado alimenta.
+  await screen.findByRole('button', { name: /^Banners da home/ });
 
   // O banner viaja como instante e e editado como dia. Se a volta não fosse
   // exata, a barra apareceria sozinha e a dona aprenderia a ignora-lá.
@@ -352,9 +380,15 @@ test('o gerente entra e grava a operação da loja', async () => {
 
   abrir();
 
-  // As duas seções que são dele, e os campos que elas guardam.
-  expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
-  expect(screen.getByRole('heading', { name: /Retirada/ })).toBeDefined();
+  // Os quatro assuntos que são dele, na grade.
+  expect(await screen.findByRole('button', { name: /^A loja/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Retirada na loja/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^O brinde/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Atalhos da home/ })).toBeDefined();
+
+  // E, abrindo o primeiro, os campos que ele guarda.
+  await entrar('A loja');
+
   expect(screen.getByLabelText(/Nome da loja/)).toBeDefined();
   expect(screen.getByLabelText(/Barra de avisos/)).toBeDefined();
   expect(screen.getByLabelText(/Horário de atendimento/)).toBeDefined();
@@ -365,30 +399,148 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
 
   abrir();
 
-  await screen.findByRole('heading', { name: 'A loja' });
+  await screen.findByRole('button', { name: /^A loja/ });
 
-  // Nem desabilitadas: ausentes. Campo cinza que não aceita digitação e um
-  // convite a perguntar "por que não posso?" no meio do expediente.
-  expect(screen.queryByRole('heading', { name: 'Redes sociais' })).toBeNull();
-  expect(screen.queryByRole('heading', { name: 'Banners da home' })).toBeNull();
-  expect(screen.queryByRole('heading', { name: 'O perfume da vez' })).toBeNull();
-  expect(screen.queryByRole('heading', { name: 'Páginas do rodapé' })).toBeNull();
+  // Nem desabilitados: fora da grade. Retângulo cinza que não abre e um convite
+  // a perguntar "por que não posso?" no meio do expediente.
+  expect(screen.queryByRole('button', { name: /^Redes sociais/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Banners da home/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Mais vendidos/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^O perfume da vez/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Páginas do rodapé/ })).toBeNull();
 
   // E no lugar delas, a linha que diz onde aquilo foi e a quem pedir.
   expect(screen.getByText(/ficam com quem mantem o sistema/)).toBeDefined();
 });
 
-test('o administrador vê as seis seções', async () => {
+test('o administrador vê os nove assuntos', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
 
-  expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
-  expect(screen.getByRole('heading', { name: 'Redes sociais' })).toBeDefined();
-  expect(screen.getByRole('heading', { name: 'Banners da home' })).toBeDefined();
-  expect(screen.getByRole('heading', { name: 'O perfume da vez' })).toBeDefined();
-  expect(screen.getByRole('heading', { name: 'Páginas do rodapé' })).toBeDefined();
+  expect(await screen.findByRole('button', { name: /^A loja/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Retirada na loja/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^O brinde/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Banners da home/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Atalhos da home/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Mais vendidos/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^O perfume da vez/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Redes sociais/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Páginas do rodapé/ })).toBeDefined();
   expect(screen.queryByText(/ficam com quem mantem o sistema/)).toBeNull();
+});
+
+/* ---- A grade de assuntos ------------------------------------------------------- */
+
+/**
+ * O estado atual fica no retângulo, e e o que responde "como esta a loja?".
+ *
+ * Sem ele a grade seria um índice: nove nomes que obrigam a abrir cada um para
+ * descobrir se a retirada esta ligada. Sai do rascunho, e não do que esta
+ * gravado, para concordar com o que a pessoa acabou de digitar lá dentro.
+ */
+test('o retângulo diz como o assunto esta, sem precisar abrir', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  const loja = await screen.findByRole('button', { name: /^A loja/ });
+
+  expect(within(loja).getByText('Maison Essence')).toBeDefined();
+  expect(
+    within(screen.getByRole('button', { name: /^Retirada na loja/ })).getByText('oferecendo'),
+  ).toBeDefined();
+  expect(
+    within(screen.getByRole('button', { name: /^Mais vendidos/ })).getByText('no automático'),
+  ).toBeDefined();
+  // A loja de mentira tem cinco páginas, e só "Quem somos" publicada.
+  expect(
+    within(screen.getByRole('button', { name: /^Páginas do rodapé/ })).getByText(
+      '1 de 5 publicadas',
+    ),
+  ).toBeDefined();
+});
+
+/**
+ * A volta para a grade não grava, e não descarta.
+ *
+ * E a promessa que separa esta tela de nove telas de verdade: o rascunho e um
+ * só, a barra de gravar e uma só, e quem mexeu em dois assuntos grava os dois
+ * num clique.
+ */
+test('o que foi digitado atravessa a volta para a grade', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('A loja', user);
+
+  const nome = screen.getByRole('textbox', { name: 'Nome da loja' });
+
+  await user.clear(nome);
+  await user.type(nome, 'Maison Essence Perfumes');
+  await user.click(screen.getByRole('button', { name: 'Todos os assuntos' }));
+
+  // Na grade, o retângulo já mostra o nome novo — e a barra continua de pé.
+  expect(
+    within(await screen.findByRole('button', { name: /^A loja/ })).getByText(
+      'Maison Essence Perfumes',
+    ),
+  ).toBeDefined();
+  expect(screen.getByRole('button', { name: 'Salvar' })).toBeDefined();
+
+  await entrar('A loja', user);
+
+  expect((screen.getByRole('textbox', { name: 'Nome da loja' }) as HTMLInputElement).value).toBe(
+    'Maison Essence Perfumes',
+  );
+});
+
+/**
+ * Gravar com erro num assunto fechado abre o assunto, e diz qual e.
+ *
+ * Sem isso "Salvar" não faria nada e a tela não teria dito por que: o campo que
+ * recusa a gravação estaria atras de um clique que ninguém sabe que precisa dar.
+ */
+test('gravar com campo invalido abre o assunto dele, e nada viaja', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('A loja', user);
+  await user.clear(screen.getByRole('textbox', { name: 'Nome da loja' }));
+  await user.click(screen.getByRole('button', { name: 'Todos os assuntos' }));
+  await user.click(screen.getByRole('button', { name: 'Salvar' }));
+
+  expect(await screen.findByText(/Há campo para corrigir em/)).toBeDefined();
+  expect(screen.getByRole('textbox', { name: 'Nome da loja' })).toBeDefined();
+  expect(lastWrite()).toBeUndefined();
+});
+
+/**
+ * O retângulo leva a marca do que esta escondido nele.
+ *
+ * Ponto vermelho para campo a corrigir, dourado para aviso a ler — e o texto
+ * oculto ao lado de cada um, porque a cor não pode ser a unica a dizer.
+ */
+test('a grade marca o assunto com aviso dentro', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('A loja', user);
+  await user.clear(screen.getByRole('textbox', { name: 'WhatsApp' }));
+  await user.click(screen.getByRole('button', { name: 'Todos os assuntos' }));
+
+  const loja = await screen.findByRole('button', { name: /^A loja/ });
+
+  expect(within(loja).getByText('tem aviso para ler')).toBeDefined();
+  expect(
+    within(screen.getByRole('button', { name: /^O brinde/ })).queryByText('tem aviso para ler'),
+  ).toBeNull();
 });
 
 /* ---- Salvar ------------------------------------------------------------------- */
@@ -399,8 +551,9 @@ test('mudar o nome manda só o nome', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('A loja', user);
 
-  const nome = await screen.findByRole('textbox', { name: 'Nome da loja' });
+  const nome = screen.getByRole('textbox', { name: 'Nome da loja' });
 
   await user.clear(nome);
   await user.type(nome, 'Maison Essence Perfumes');
@@ -421,8 +574,9 @@ test('mudar o número da casa não manda o endereço inteiro', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('Retirada na loja', user);
 
-  const numero = await screen.findByRole('textbox', { name: 'Número' });
+  const numero = screen.getByRole('textbox', { name: 'Número' });
 
   await user.clear(numero);
   await user.type(numero, '130');
@@ -441,8 +595,9 @@ test('apagar o frete grátis geral manda null, e não zero', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('A loja', user);
 
-  const frete = await screen.findByRole('textbox', { name: 'Frete grátis a partir de' });
+  const frete = screen.getByRole('textbox', { name: 'Frete grátis a partir de' });
 
   await user.clear(frete);
   await user.click(await screen.findByRole('button', { name: 'Salvar' }));
@@ -468,8 +623,9 @@ test('o gerente liga o brinde e escolhe o valor meta', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
+  await entrar('O brinde', user);
 
-  await user.click(await screen.findByRole('switch', { name: 'Oferecer brinde' }));
+  await user.click(screen.getByRole('switch', { name: 'Oferecer brinde' }));
   await user.type(await screen.findByRole('textbox', { name: 'A partir de' }), '179,99');
   await user.type(
     await screen.findByRole('textbox', { name: 'A frase do brinde' }),
@@ -496,8 +652,9 @@ test('a prévia mostra a frase que a cliente vai ler', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
+  await entrar('O brinde', user);
 
-  await user.click(await screen.findByRole('switch', { name: 'Oferecer brinde' }));
+  await user.click(screen.getByRole('switch', { name: 'Oferecer brinde' }));
   await user.type(await screen.findByRole('textbox', { name: 'A partir de' }), '179,99');
   await user.type(
     await screen.findByRole('textbox', { name: 'A frase do brinde' }),
@@ -514,12 +671,78 @@ test('brinde ligado pela metade diz que não vai aparecer', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
+  await entrar('O brinde', user);
 
-  await user.click(await screen.findByRole('switch', { name: 'Oferecer brinde' }));
+  await user.click(screen.getByRole('switch', { name: 'Oferecer brinde' }));
 
-  expect(
-    await screen.findByText(/o aviso do brinde não aparece na loja/),
-  ).toBeDefined();
+  expect(await screen.findByText(/o aviso do brinde não aparece na loja/)).toBeDefined();
+});
+
+/* ---- A fileira de mais vendidos ------------------------------------------------ */
+
+test('sem escolha, a tela diz que a fileira esta no automático', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('Mais vendidos');
+
+  expect(screen.getByText(/A fileira esta no automático/)).toBeDefined();
+});
+
+test('escolher um produto manda a fileira inteira, e só ela', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('Mais vendidos', user);
+
+  const busca = screen.getByRole('searchbox', { name: 'Adicionar produto a fileira' });
+
+  await user.type(busca, 'yara');
+
+  // O clique sai da seção de propósito, e não da tela: e ela que diz qual
+  // fileira recebeu o produto. A busca do perfume da vez, que tem um botão
+  // "Escolher Yara Lattafa" igual a este, vive em outro assunto.
+  const secao = screen.getByRole('region', { name: 'Mais vendidos' });
+
+  await user.click(
+    await within(secao).findByRole('button', { name: /Escolher Yara Lattafa/ }, { timeout: 3000 }),
+  );
+  await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ bestSellerProductIds: ['p2'] });
+  });
+});
+
+test('a fileira montada mostra os produtos na ordem, e tirar um manda a lista sem ele', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+  SETTINGS.bestSellerProductIds = ['p1', 'p2'];
+
+  try {
+    abrir();
+    await entrar('Mais vendidos', user);
+
+    const secao = screen.getByRole('region', { name: 'Mais vendidos' });
+    const linhas = await within(secao).findAllByRole('listitem');
+
+    expect(linhas).toHaveLength(2);
+    expect(linhas[0]?.textContent).toContain('Asad Lattafa');
+    expect(linhas[1]?.textContent).toContain('Yara Lattafa');
+
+    await user.click(within(linhas[0]!).getByRole('button', { name: 'Ações de Asad Lattafa' }));
+    await user.click(screen.getByRole('button', { name: 'Tirar da fileira' }));
+    await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+    await waitFor(() => {
+      expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ bestSellerProductIds: ['p2'] });
+    });
+  } finally {
+    SETTINGS.bestSellerProductIds = [];
+  }
 });
 
 /* ---- O perfume da vez --------------------------------------------------------- */
@@ -530,8 +753,9 @@ test('escolher o perfume da vez manda o id do produto, e só ele', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('O perfume da vez', user);
 
-  const busca = await screen.findByRole('searchbox', { name: 'Trocar por outro produto' });
+  const busca = screen.getByRole('searchbox', { name: 'Trocar por outro produto' });
 
   await user.type(busca, 'asad');
 
@@ -552,10 +776,9 @@ test('sem escolha, a tela diz o que a home esta mostrando no lugar', async () =>
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('O perfume da vez');
 
-  expect(
-    await screen.findByText(/a home mostra o último produto marcado como destaque/),
-  ).toBeDefined();
+  expect(screen.getByText(/a home mostra o último produto marcado como destaque/)).toBeDefined();
 });
 
 test('descartar devolve os campos ao que esta gravado', async () => {
@@ -564,8 +787,9 @@ test('descartar devolve os campos ao que esta gravado', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('A loja', user);
 
-  const aviso = await screen.findByRole('textbox', { name: 'Barra de avisos' });
+  const aviso = screen.getByRole('textbox', { name: 'Barra de avisos' });
 
   await user.clear(aviso);
   await user.click(await screen.findByRole('button', { name: 'Descartar' }));
@@ -582,8 +806,9 @@ test('apagar o WhatsApp avisa que o pedido fica sem destino', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
+  await entrar('A loja', user);
 
-  const whatsapp = await screen.findByRole('textbox', { name: 'WhatsApp' });
+  const whatsapp = screen.getByRole('textbox', { name: 'WhatsApp' });
 
   await user.clear(whatsapp);
 
@@ -596,8 +821,7 @@ test('publicar uma página sem texto avisa, e diz qual e', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Páginas do rodapé', user);
 
   await user.click(screen.getByRole('button', { name: /Como comprar/ }));
   await user.click(screen.getByRole('switch', { name: 'Publicada no site' }));
@@ -611,8 +835,7 @@ test('o banner que já passou diz que encerrou, em vez de parecer no ar', async 
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Banners da home');
 
   expect(screen.getByText('No ar')).toBeDefined();
   expect(screen.getByText('Encerrado')).toBeDefined();
@@ -624,8 +847,7 @@ test('descer um banner manda o carrossel inteiro na ordem nova', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Banners da home', user);
 
   await user.click(screen.getByRole('button', { name: 'Ações de Coleção de verão' }));
   await user.click(screen.getByRole('button', { name: 'Descer' }));
@@ -655,8 +877,7 @@ test('mudar a vaga do banner manda a escolha no PATCH', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Banners da home', user);
 
   const [vaga] = screen.getAllByRole('combobox', { name: 'Onde aparece' });
 
@@ -683,8 +904,7 @@ test('a medida das duas artes fica na tela, em cada banner e no rodapé', async 
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Banners da home');
 
   // Uma legenda por arte, nos dois banners da loja de mentira.
   expect(screen.getAllByText('Computador · 1920 × 562 px')).toHaveLength(2);
@@ -702,8 +922,7 @@ test('escrever numa página manda só aquela página', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Páginas do rodapé', user);
 
   await user.click(screen.getByRole('button', { name: /Como comprar/ }));
 
@@ -727,8 +946,7 @@ test('a página fechada diz o essencial: publicada, e se há o que publicar', as
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
-
-  await screen.findByRole('textbox', { name: 'WhatsApp' });
+  await entrar('Páginas do rodapé');
 
   const quemSomos = screen.getByRole('button', { name: /Quem somos/ });
 

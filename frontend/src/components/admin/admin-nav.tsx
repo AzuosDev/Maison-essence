@@ -12,6 +12,7 @@ import {
   ReceiptIcon,
   ShieldIcon,
   SlidersIcon,
+  TagIcon,
   TruckIcon,
 } from './admin-icons';
 import styles from './admin-nav.module.css';
@@ -54,6 +55,7 @@ const ITEMS: readonly NavItem[] = [
   { area: 'products', label: 'Produtos', to: ROUTES.admin.products, icon: BottleIcon },
   { area: 'categories', label: 'Categorias', to: ROUTES.admin.categories, icon: LayersIcon },
   { area: 'readyToShip', label: 'Pronta entrega', to: ROUTES.admin.readyToShip, icon: TruckIcon },
+  { area: 'coupons', label: 'Cupons', to: ROUTES.admin.coupons, icon: TagIcon },
   { area: 'orders', label: 'Pedidos', to: ROUTES.admin.orders, icon: ReceiptIcon },
   { area: 'delivery', label: 'Entrega', to: ROUTES.admin.delivery, icon: PinIcon },
   { area: 'payments', label: 'Pagamento', to: ROUTES.admin.payments, icon: CardIcon },

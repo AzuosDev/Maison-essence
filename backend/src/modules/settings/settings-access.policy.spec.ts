@@ -97,6 +97,10 @@ describe('policy de acesso as configuracoes', () => {
         }),
       ],
       ['featuredPerfumeProductId', body({ featuredPerfumeProductId: '64b7f1c2a1b2c3d4e5f60718' })],
+      ['bestSellerProductIds', body({ bestSellerProductIds: ['64b7f1c2a1b2c3d4e5f60718'] })],
+      // Lista vazia devolve a fileira ao ranking das vendas: e uma edicao da
+      // primeira fileira da home como qualquer outra, e nao um campo ausente.
+      ['bestSellerProductIds vazia', body({ bestSellerProductIds: [] })],
     ])('recusa o gerente em %s', (_nome, dto) => {
       expect(() => {
         assertCanEditSettings(actor(USER_ROLES.OWNER), dto);

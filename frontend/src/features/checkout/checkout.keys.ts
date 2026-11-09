@@ -42,6 +42,15 @@ export interface QuoteInput {
     /** Só no cartão. */
     installments?: number;
   };
+  /**
+   * O código do cupom, já normalizado. Ausente e o caso comum.
+   *
+   * Entra na chave como qualquer outro campo, e e isso que faz "Aplicar"
+   * funcionar sem nenhum efeito: código novo e chave nova, e chave nova e
+   * cotação nova. O que ele **nunca** carrega e valor de desconto — como no
+   * preço dos itens, a tela diz *qual*, e o servidor diz *quanto*.
+   */
+  couponCode?: string;
 }
 
 export const checkoutKeys = {

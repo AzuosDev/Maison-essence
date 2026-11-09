@@ -35,6 +35,15 @@ export const ADMIN_AREAS = [
   'products',
   'categories',
   'readyToShip',
+
+  /**
+   * Cupons.
+   *
+   * Entre a prateleira e os pedidos de propósito: cupom e decisão de preço, e
+   * fica do lado do catálogo — não do lado do atendimento. O STAFF não o vê
+   * pela mesma razão que não vê preço nenhum.
+   */
+  'coupons',
   'orders',
   'delivery',
   'payments',

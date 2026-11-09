@@ -1,4 +1,4 @@
-import { useEffect, useState, type RefObject } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
 import { useStoreSettings } from '@/features/settings';
@@ -77,6 +77,48 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
 
   const gift = settings?.gift ?? null;
 
+  /*
+   * Trocar de página renova o pulinho.
+   *
+   * O pulo do CSS dá três rajadas e para. Como o balão mora na moldura da
+   * loja e **não** é remontado quando a cliente navega, ele terminaria na
+   * primeira página e ficaria quieto pelo resto da visita — inclusive na
+   * terceira página de catálogo, que é onde a decisão de somar mais um frasco
+   * acontece.
+   *
+   * Reiniciar pelo `key` do React não serve: remontar o cartão redispara a
+   * entrada dele, e um balão que reaparece do zero a cada página contradiz o
+   * eixo deste componente — ele muda de tamanho, nunca de presença. Quem
+   * reinicia, então, é a própria animação, pela API do navegador.
+   */
+  const rootRef = useRef<HTMLDivElement>(null);
+  const hoppedOn = useRef(pathname);
+
+  useEffect(() => {
+    // Na primeira página não há nada a reiniciar: o elemento acabou de
+    // nascer e a animação do CSS já partiu com ele. O que este efeito
+    // atende é a página **seguinte**, em que o elemento é o mesmo.
+    if (hoppedOn.current === pathname) {
+      return;
+    }
+
+    hoppedOn.current = pathname;
+
+    const target = rootRef.current?.querySelector('[data-hop]');
+
+    // `getAnimations` não existe no jsdom da bancada, e onde há apontador o
+    // respiro `hover: none` não declara animação nenhuma nesses elementos:
+    // nos dois casos não há o que reiniciar.
+    if (!target || typeof target.getAnimations !== 'function') {
+      return;
+    }
+
+    for (const animation of target.getAnimations()) {
+      animation.cancel();
+      animation.play();
+    }
+  }, [pathname]);
+
   // Sem campanha configurada não há balão. E a mesma regra do botão do
   // WhatsApp sem número: melhor nada do que uma promessa sem dono.
   if (gift === null) {
@@ -84,7 +126,7 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
   }
 
   return (
-    <div className={cx(styles.balloon, raised && styles.raised)}>
+    <div ref={rootRef} className={cx(styles.balloon, raised && styles.raised)}>
       {open ? (
         <div className={styles.card}>
           {/*
@@ -115,6 +157,7 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
       ) : (
         <button
           type="button"
+          data-hop
           className={styles.circle}
           aria-label={`Ver o brinde: compre ${formatCents(gift.minCents)} e ganhe ${gift.label}`}
           onClick={() => {
@@ -138,7 +181,7 @@ export function GiftBalloon({ avoidRef }: GiftBalloonProps) {
 function Figure({ image }: { image: string }) {
   if (image === '') {
     return (
-      <span className={styles.mark} aria-hidden="true">
+      <span data-hop className={styles.mark} aria-hidden="true">
         <GiftIcon />
       </span>
     );
@@ -152,6 +195,7 @@ function Figure({ image }: { image: string }) {
       height="64"
       loading="lazy"
       decoding="async"
+      data-hop
       className={styles.photo}
     />
   );

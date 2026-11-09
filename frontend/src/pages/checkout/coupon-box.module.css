@@ -1,0 +1,188 @@
+/*
+ * A caixa do cupom.
+ *
+ * Mora dentro do resumo e dentro da revisão, que já são superficie branca com
+ * filete — então aqui não ha caixa nenhuma: o que separa a caixa das linhas
+ * de dinheiro logo abaixo e um filete de 1px, que e como esta loja separa
+ * tudo. Caixa dentro de caixa seria o segundo nível de moldura que o sistema
+ * não tem.
+ */
+
+.box {
+  display: grid;
+  gap: var(--space-8);
+
+  padding-bottom: var(--space-16);
+  border-bottom: var(--border);
+}
+
+/*
+ * O rótulo, que também e o título da caixa.
+ *
+ * Mesma voz do rótulo de campo do design system — 12px, caixa alta, tinta
+ * cheia —, porque e o que ele e nos dois estados: no primeiro rotula o campo,
+ * no segundo nomeia a confirmação. O texto muda com o estado ("Cupom de
+ * desconto" / "Cupom aplicado") em vez de repetir a mesma palavra sobre duas
+ * coisas diferentes.
+ */
+.label {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/*
+ * O campo e o botão na mesma fileira, com a mesma altura.
+ *
+ * `--control-height` nos dois, e a recusa desenhada fora da fileira: e isso
+ * que mantem o topo dos dois alinhado quando o cupom e recusado. A frase
+ * dentro da coluna do campo empurraria o "Aplicar" para baixo da linha dele.
+ */
+.row {
+  display: flex;
+  align-items: start;
+  gap: var(--space-8);
+}
+
+.field {
+  flex: 1;
+  min-width: 0;
+}
+
+/*
+ * O código, enquanto se digita.
+ *
+ * Caixa alta e espacejamento aberto porque e um código que se lê caractere a
+ * caractere e se dita no WhatsApp — e nesse uso a diferença entre `0` e `O`
+ * precisa ser visível antes do clique, e não depois da recusa. A caixa alta e
+ * só visual: quem normaliza de verdade e `normalizeCouponCode`, no `onChange`,
+ * para que o valor do campo seja o mesmo que vai viajar.
+ */
+.code {
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* O botão não encolhe: "Aplicar" quebrado em duas linhas desalinha a fileira. */
+.action {
+  flex: none;
+}
+
+/* ---- O cupom que pegou --------------------------------------------------- */
+
+/*
+ * A confirmação no lugar do campo.
+ *
+ * Lavado dourado com filete dourado, como a linha escolhida do seletor de
+ * produtos do painel — e e a regra do ouro clicável no seu outro caso: aqui
+ * o dourado não e o que se clica, e o que se **ganha**. Mesma altura do
+ * campo que ela substitui, para que o botão ao lado não se mexa na troca.
+ */
+.applied {
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  min-height: var(--control-height);
+  padding: 0 var(--space-12);
+
+  background-color: var(--gold-wash);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-chip);
+}
+
+.check {
+  flex: none;
+
+  width: 1rem;
+  height: 1rem;
+
+  color: var(--gold-deep);
+}
+
+/*
+ * O código que valeu, com a linha inteira do chip.
+ *
+ * `anywhere` continua, para um código de vinte e quatro caracteres quebrar em
+ * vez de furar o chip num celular de 320px — mas ele agora tem a largura toda:
+ * o desconto saiu daqui justamente porque, dividindo esta linha, fazia
+ * `BLACKFRIDAY` quebrar em `BLACKFRID` e `AY`.
+ */
+.appliedCode {
+  min-width: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/*
+ * O desconto por extenso, ao lado do nome da campanha.
+ *
+ * Em tinta, e não no dourado da oferta: `--gold-deep` da 4.7:1 sobre o branco
+ * e cai abaixo do piso sobre lavado dourado, e num rótulo de 12px segurado
+ * para leitura isso não passa. Quem anuncia o desconto nesta tela e a conta
+ * logo abaixo, em reais — aqui ele e termo, não selo.
+ */
+.terms {
+  margin-inline-start: var(--space-8);
+
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* ---- As duas frases ------------------------------------------------------ */
+
+/* A recusa, escrita pelo servidor. Vermelha e texto: cor sozinha não conta. */
+.reason {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+  text-wrap: pretty;
+}
+
+/*
+ * O nome da campanha, e o que ela alcançou nesta sacola.
+ *
+ * O nome porque o código não conta nada — `BF26` aplicado sem nome deixa a
+ * cliente sem saber se e o cupom do story ou o que a amiga mandou. O alcance
+ * porque 20% de uma sacola de R$ 500 dando R$ 40 parece erro de conta até
+ * alguém dizer que só R$ 200 dela estavam na campanha, e essa frase e a que
+ * evita a mensagem no WhatsApp perguntando isso.
+ */
+/*
+ * O nome da campanha com o desconto, e o alcance embaixo.
+ *
+ * Duas linhas e não uma: o nome com o desconto respondem "que cupom e este",
+ * e o alcance responde "por que o desconto deu isso". Emendadas, a segunda
+ * pergunta ficaria pendurada no fim da primeira.
+ */
+.campaign {
+  display: grid;
+  gap: var(--space-4);
+
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.reach {
+  color: var(--muted);
+}

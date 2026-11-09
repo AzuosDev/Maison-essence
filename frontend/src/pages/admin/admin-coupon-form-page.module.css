@@ -1,0 +1,294 @@
+/*
+ * O cadastro da campanha.
+ *
+ * Mesma moldura do cadastro de produto, e de propósito: seções de superfície
+ * com filete, rótulo de seção em caixa alta pequena, barra de ações grudada no
+ * pé. Duas telas de formulário no mesmo painel não podem ter duas gramáticas.
+ *
+ * A medida de 60rem vale para tudo menos a seção dos produtos, que tem duas
+ * listas de linhas largas — ela sai por `.sectionWide`, e ninguém cresce junto.
+ */
+
+.page {
+  display: grid;
+  gap: var(--space-24);
+
+  max-width: 76rem;
+}
+
+.header,
+.section {
+  max-width: 60rem;
+}
+
+/* ---- O cabeçalho --------------------------------------------------------- */
+
+.header {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  justify-self: start;
+
+  /* Alvo de toque cheio: fica na borda de cima, onde o polegar chega torto. */
+  min-height: 2.75rem;
+  margin-inline-start: calc(var(--space-8) * -1);
+  padding-inline: var(--space-8);
+
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+  text-decoration: none;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.backLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+/*
+ * O título.
+ *
+ * Na edição ele e o código do cupom, e por isso leva o espacejamento aberto
+ * que o código tem no cartão: `BLACKFRIDAY` em caixa alta com espacejamento
+ * de display fica ilegível como bloco de letras.
+ */
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: var(--text-28);
+  font-weight: var(--weight-regular);
+  line-height: var(--leading-tight);
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+/* ---- As seções ----------------------------------------------------------- */
+
+.form {
+  display: grid;
+  gap: var(--space-24);
+}
+
+.section {
+  display: grid;
+  gap: var(--space-16);
+
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+}
+
+.sectionHead {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sectionTitle {
+  margin: 0;
+
+  font-family: var(--font-body);
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.sectionNote {
+  margin: 0;
+
+  max-width: 72ch;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.sectionBody {
+  display: grid;
+  gap: var(--space-16);
+}
+
+/*
+ * As duas datas, lado a lado quando cabem.
+ *
+ * E o par que se preenche junto: separar primeiro e último dia em duas linhas
+ * faria rolar entre um e outro para conferir a janela.
+ */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: var(--space-12);
+}
+
+/*
+ * Os campos que guardam um número curto.
+ *
+ * `20`, `30,00` e `50` num campo de novecentos pixels são três campos que
+ * parecem esperar um parágrafo. A medida diz o tamanho do que se escreve ali,
+ * que e metade do trabalho de um rótulo.
+ */
+.short {
+  max-width: 16rem;
+}
+
+.medium {
+  max-width: 24rem;
+}
+
+/*
+ * O código, enquanto se digita.
+ *
+ * Espacejamento aberto e peso médio: o campo guarda um código que se lê
+ * caractere a caractere, e a digitação precisa deixar ver a diferença entre
+ * `0` e `O` antes de o cupom ir para o story.
+ */
+.code {
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/*
+ * O aviso de limite apertado.
+ *
+ * Lavado dourado e não vermelho: não e erro, e consequência — baixar o limite
+ * para menos do que já foi vendido e uma decisão legitima, e a tela avisa o
+ * que vai acontecer em vez de recusar.
+ */
+.warning {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--gold-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+/* ---- A régua dentro do formulário --------------------------------------- */
+
+.ruler {
+  display: grid;
+  gap: var(--space-8);
+
+  padding: var(--space-12);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-chip);
+}
+
+.rulerTitle {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+/* ---- Os interruptores ---------------------------------------------------- */
+
+.switches {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/*
+ * A frase que explica o interruptor.
+ *
+ * Fica abaixo dele e recuada até a largura do texto do rótulo, para se ler
+ * como continuação da mesma linha e não como um parágrafo solto. O recuo e a
+ * largura do controle mais o vão do componente.
+ */
+.switchNote {
+  margin: 0 0 var(--space-8);
+  padding-inline-start: 3.25rem;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.switchNote:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- A barra de ações ---------------------------------------------------- */
+
+/*
+ * Grudada no pé da janela.
+ *
+ * `sticky` e não `fixed`: sticky respeita a largura da coluna de conteúdo e
+ * não cobre a sidebar do painel. A margem negativa e o padding devolvem a
+ * barra até a borda do conteúdo, para que o fundo a atravesse por inteiro em
+ * vez de terminar num degrau.
+ */
+.bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+
+  display: grid;
+  gap: var(--space-8);
+
+  margin-inline: calc(var(--gutter) * -1);
+  padding: var(--space-12) var(--gutter);
+
+  background-color: var(--admin-bg);
+  border-top: var(--border);
+}
+
+.barActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-8);
+}
+
+/* Excluir vai para a outra ponta: e a única ação da barra que não volta. */
+.delete {
+  margin-inline-end: auto;
+  color: var(--danger);
+}
+
+.delete:hover {
+  background-color: var(--danger-wash);
+  color: var(--danger);
+}
+
+.barError {
+  margin: 0;
+
+  font-size: var(--text-12);
+  color: var(--danger);
+}
+
+@media (min-width: 48rem) {
+  .title {
+    font-size: var(--text-36);
+  }
+
+  .section {
+    padding: var(--space-24);
+  }
+}

@@ -10,6 +10,7 @@ import {
   isDirty,
   linkFromTarget,
   moveBanner,
+  moveItem,
   moveShortcut,
   newBanner,
   newShortcut,
@@ -81,6 +82,9 @@ function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
     socialLinks: { instagram: '@maisonessence', tiktok: '' },
     freeShippingMinCents: 20_000,
     featuredPerfumeProductId: null,
+    // A fileira de mais vendidos nasce no automatico, como a loja de verdade:
+    // sem escolha nenhuma, o ranking das vendas manda.
+    bestSellerProductIds: [],
     // A loja nasce sem campanha de brinde: o caso de base e o que mais
     // acontece.
     gift: { isActive: false, minCents: null, productId: null, label: '' },
@@ -594,4 +598,59 @@ test('atalho ligado sem foto avisa que o círculo mostra a inicial', () => {
 
   expect(avisos).toHaveLength(1);
   expect(avisos[0]?.text).toContain('inicial do nome');
+});
+
+/* ---- A fileira de mais vendidos ---------------------------------------------- */
+
+/**
+ * A fileira que a dona monta a dedo.
+ *
+ * O que estes testes cobram e o que a tela promete: a ordem e conteúdo, e a
+ * lista vazia viaja. Sem o segundo, apagar a última escolha não mandaria nada
+ * ao servidor e a fileira ficaria para sempre com um produto que a dona
+ * acabou de tirar.
+ */
+test('a fileira de mais vendidos nasce sem escolha nenhuma', () => {
+  expect(draft().bestSellerProductIds).toEqual([]);
+  expect(changesOf(draft(), settings())).toBeNull();
+});
+
+test('escolher o primeiro produto manda a lista inteira', () => {
+  const changes = changesOf(draft({ bestSellerProductIds: ['p1'] }), settings());
+
+  expect(changes?.bestSellerProductIds).toEqual(['p1']);
+});
+
+test('trocar a ordem e uma alteração: a posição e o conteúdo', () => {
+  const montada = settings({ bestSellerProductIds: ['p1', 'p2', 'p3'] });
+  const aberto = draftFromSettings(montada);
+
+  expect(changesOf(aberto, montada)).toBeNull();
+
+  const changes = changesOf(
+    { ...aberto, bestSellerProductIds: moveItem(aberto.bestSellerProductIds, 2, 0) },
+    montada,
+  );
+
+  expect(changes?.bestSellerProductIds).toEqual(['p3', 'p1', 'p2']);
+});
+
+test('apagar a escolha manda a lista vazia, que devolve a fileira ao ranking', () => {
+  const montada = settings({ bestSellerProductIds: ['p1'] });
+
+  const changes = changesOf(
+    { ...draftFromSettings(montada), bestSellerProductIds: [] },
+    montada,
+  );
+
+  expect(changes?.bestSellerProductIds).toEqual([]);
+});
+
+/** Subir a primeira linha e descer a última não são erro: não fazem nada. */
+test('mover para fora da lista devolve a lista como estava', () => {
+  const ids = ['p1', 'p2'];
+
+  expect(moveItem(ids, 0, -1)).toEqual(ids);
+  expect(moveItem(ids, 1, 2)).toEqual(ids);
+  expect(moveItem(ids, 0, 0)).toEqual(ids);
 });
