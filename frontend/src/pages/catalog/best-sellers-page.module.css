@@ -1,0 +1,10 @@
+/*
+ * Mais vendidos: cabeçalho e grade, sem coluna de filtros.
+ *
+ * O mesmo respiro de pé das outras listagens, para que trocar de
+ * `/pronta-entrega` para cá não mude a altura do rodapé na tela.
+ */
+
+.page {
+  padding-bottom: var(--space-64);
+}

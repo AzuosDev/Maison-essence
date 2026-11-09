@@ -63,6 +63,14 @@ const storeRoutes: RouteObject = {
       lazy: page(() => import('@/pages/catalog/ready-to-ship-page')),
       ErrorBoundary: RouteErrorBoundary,
     },
+    // Mais vendidos não e a mesma tela das quatro acima: o ranking vem da
+    // rota de prateleira, e não da listagem filtrável, porque ele sai do
+    // histórico de pedidos e nenhum filtro do catálogo sabe calcula-lo.
+    {
+      path: '/mais-vendidos',
+      lazy: page(() => import('@/pages/catalog/best-sellers-page')),
+      ErrorBoundary: RouteErrorBoundary,
+    },
     {
       path: '/categorias/:slug',
       lazy: page(() => import('@/pages/catalog/category-page')),

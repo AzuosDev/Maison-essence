@@ -41,6 +41,7 @@ const SETTINGS = {
   freeShippingMinCents: null,
   gift: GIFT as typeof GIFT | null,
   banners: [],
+  shortcuts: [],
 };
 
 let configuracoes: Record<string, unknown>;

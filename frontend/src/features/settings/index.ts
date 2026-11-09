@@ -15,6 +15,7 @@ export {
   type PublicPage,
   type PublicPageSummary,
   type PublicSettings,
+  type PublicShortcut,
   type SocialLinks,
 } from './settings.types';
 export { useInstitutionalPage, type InstitutionalPageQuery } from './use-page';

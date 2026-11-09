@@ -107,6 +107,7 @@ const CONFIGURACOES = {
   pickupInstructions: '',
   freeShippingMinCents: null,
   banners: [],
+  shortcuts: [],
 };
 
 const PAGINAS = [{ slug: 'trocas-e-devolucoes', title: 'Trocas e devoluções' }];

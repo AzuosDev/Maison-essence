@@ -3,7 +3,7 @@ import { ROUTES } from '@/app/routes';
 import { ProductShelf, shelfWillRender, type ShelfContent } from '@/components/store';
 import { useLatest, useSaleShelf, useShelf, type PublicProduct } from '@/features/catalog';
 import { BrandRow } from './brand-row';
-import { CategoryCircles } from './category-circles';
+import { ShortcutCircles } from './shortcut-circles';
 import { CollectionPosters } from './collection-posters';
 import { FeaturedPerfume } from './featured-perfume';
 import { HomeBanner } from './home-banner';
@@ -15,7 +15,7 @@ import { InstagramInvite } from './instagram-invite';
  *
  * ## A ordem das seções
  *
- * Banner, categorias em círculo, fileira, marcas, cartazes de coleção,
+ * Banner, atalhos em círculo, fileira, marcas, cartazes de coleção,
  * fileira, banner do meio, fileira, Instagram, o perfume da vez.
  *
  * E o arranjo que a dona escolheu, e ele não e arbitrário: e a ordem que
@@ -71,7 +71,7 @@ import { InstagramInvite } from './instagram-invite';
  *
  * Toda seção ocupa a altura final desde o primeiro quadro: o hero pela
  * proporção fixa da foto, as prateleiras pelos esqueletos — que são o próprio
- * card com as linhas em branco — e a fileira de categorias pelos círculos de
+ * card com as linhas em branco — e a fileira de atalhos pelos círculos de
  * medida fixa. O único dado que chega depois e o parcelamento, e a linha dele
  * já vem com altura reservada no card.
  */
@@ -122,7 +122,10 @@ export default function HomePage() {
       key: 'best-sellers',
       title: 'Mais vendidos',
       description: 'O que mais saiu nas últimas semanas.',
-      to: ROUTES.products,
+      // Endereço próprio desde que `/mais-vendidos` existe: antes o "ver
+      // todos" desta fileira caia no catálogo inteiro, sem ranking nenhum, e
+      // quem clicou em "mais vendidos" não encontrava os mais vendidos.
+      to: ROUTES.bestSellers,
       linkLabel: 'Ver todos',
       content: contentOf(bestSellers),
     },
@@ -204,7 +207,7 @@ export default function HomePage() {
   return (
     <>
       <HomeHero />
-      <CategoryCircles />
+      <ShortcutCircles />
 
       {shelves.map((shelf, index) => (
         <Fragment key={shelf.key}>

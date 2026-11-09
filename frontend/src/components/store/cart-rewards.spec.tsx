@@ -29,6 +29,7 @@ const SETTINGS = {
   freeShippingMinCents: 25_000,
   gift: null as { minCents: number; label: string; image: string } | null,
   banners: [],
+  shortcuts: [],
 };
 
 /** A campanha da loja: brinde a partir de R$ 300. */

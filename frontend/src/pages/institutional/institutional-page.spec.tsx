@@ -42,6 +42,7 @@ const SETTINGS = {
   pickupInstructions: '',
   freeShippingMinCents: null,
   banners: [],
+  shortcuts: [],
 };
 
 const RETURNS = {

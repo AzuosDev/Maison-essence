@@ -144,7 +144,11 @@ export class UploadsService {
     }
 
     const references = await this.referencesTo(publicId);
-    const total = references.products + references.categories + references.banners;
+    const total =
+      references.products +
+      references.categories +
+      references.banners +
+      references.shortcuts;
 
     if (total > 0) {
       throw new ConflictException({
@@ -165,14 +169,18 @@ export class UploadsService {
         .countDocuments({ $or: [{ images: publicId }, { 'variants.image': publicId }] })
         .exec(),
       this.categories.countDocuments({ image: publicId }).exec(),
-      this.settings.findOne({}).select('banners').lean().exec(),
+      this.settings.findOne({}).select('banners shortcuts').lean().exec(),
     ]);
 
     const banners = (settings?.banners ?? []).filter(
       (banner) => banner.imageDesktop === publicId || banner.imageMobile === publicId,
     ).length;
 
-    return { products, categories, banners };
+    const shortcuts = (settings?.shortcuts ?? []).filter(
+      (shortcut) => shortcut.image === publicId,
+    ).length;
+
+    return { products, categories, banners, shortcuts };
   }
 
   /**
@@ -219,6 +227,7 @@ function inUseMessage(references: ImageReferences): string {
     plural(references.products, 'produto', 'produtos'),
     plural(references.categories, 'categoria', 'categorias'),
     plural(references.banners, 'banner', 'banners'),
+    plural(references.shortcuts, 'atalho da home', 'atalhos da home'),
   ].filter((place) => place !== null);
 
   return `Esta imagem ainda e usada em ${places.join(' e ')}. Troque a foto la antes de remover.`;

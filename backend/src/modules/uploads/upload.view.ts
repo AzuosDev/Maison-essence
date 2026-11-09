@@ -42,4 +42,6 @@ export interface ImageReferences {
   products: number;
   categories: number;
   banners: number;
+  /** Os círculos da home. Ver `Shortcut`, nas configurações. */
+  shortcuts: number;
 }

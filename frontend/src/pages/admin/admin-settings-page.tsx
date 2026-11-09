@@ -8,6 +8,7 @@ import {
   GiftEditor,
   PagesEditor,
   PerfumePicker,
+  ShortcutEditor,
 } from '@/components/admin';
 import { Button, EmptyState, Input, Skeleton, Switch, Textarea, useToast } from '@/components/ui';
 import {
@@ -35,13 +36,13 @@ import styles from './admin-settings-page.module.css';
 /**
  * As configurações da loja.
  *
- * ## Cinco assuntos, uma tela, um botão
+ * ## Vários assuntos, uma tela, um botão
  *
- * Nome da loja, retirada, redes, carrossel e páginas moram no mesmo documento
- * e são gravados pelo mesmo `PATCH`. Poderiam ser cinco telas, e não são:
- * quem abre esta área o faz raramente, quase sempre para mexer em uma coisa
- * só — e descobrir *qual das cinco telas* tem a barra de avisos custa mais do
- * que rolar uma página.
+ * Nome da loja, retirada, brinde, atalhos da home, redes, carrossel e páginas
+ * moram no mesmo documento e são gravados pelo mesmo `PATCH`. Poderiam ser
+ * sete telas, e não são: quem abre esta área o faz raramente, quase sempre
+ * para mexer em uma coisa só — e descobrir *qual das sete telas* tem a barra
+ * de avisos custa mais do que rolar uma página.
  *
  * ## O que só se descobre depois
  *
@@ -53,10 +54,10 @@ import styles from './admin-settings-page.module.css';
  * ## Quem entra, e até onde
  *
  * O gerente da loja e o administrador; o atendimento, não. E dentro da tela a
- * permissão se divide outra vez, por campo: as três primeiras seções são a
+ * permissão se divide outra vez, por campo: as quatro primeiras seções são a
  * operação da loja — nome, contato, horário, barra de avisos, frete grátis,
- * retirada e o brinde por valor de compra — e o gerente grava as três. As
- * quatro últimas são a moldura:
+ * retirada, o brinde por valor de compra e a fileira de atalhos da home — e o
+ * gerente grava as quatro. As quatro últimas são a moldura:
  * redes sociais, carrossel, perfume da vez e páginas do rodapé. Elas aparecem
  * em toda página da loja e não mudam no expediente, e por isso ficam com quem
  * mantem o sistema.
@@ -456,6 +457,38 @@ function SettingsForm({
             errors={errors.gift}
             onChange={(gift) => {
               set({ gift });
+            }}
+          />
+        </section>
+
+        {/*
+          A fileira de atalhos fica com a operação, e não com a moldura.
+
+          Pela mesma regra que decidiu o brinde: moldura e o que aparece em
+          toda página e não muda no dia a dia. A fileira aparece só na home e
+          muda com a campanha do mês — "Mais vendidos" na primeira posição em
+          novembro, a marca nova em março. E, antes desta tela existir, quem
+          mexia nela era quem reordenava Categorias, que e o gerente. Tirar
+          isso dele agora seria um acesso perdido, não um acesso protegido.
+        */}
+        <section className={styles.card} aria-labelledby="secao-atalhos">
+          <h2 className={styles.cardTitle} id="secao-atalhos">
+            Atalhos da home
+          </h2>
+
+          <p className={styles.cardHint}>
+            Os círculos logo abaixo do banner — o primeiro caminho de quem chega sem saber o que
+            quer. Cada um tem nome, foto e para onde leva; arraste para mudar a ordem. Sem nenhum
+            atalho, a home mostra as categorias principais.
+          </p>
+
+          <Warnings warnings={warnings} scope="shortcuts" />
+
+          <ShortcutEditor
+            shortcuts={draft.shortcuts}
+            errors={errors.shortcuts}
+            onChange={(shortcuts) => {
+              set({ shortcuts });
             }}
           />
         </section>

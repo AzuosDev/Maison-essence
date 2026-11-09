@@ -48,6 +48,7 @@ const CONFIG = {
   pickupInstructions: '',
   freeShippingMinCents: null,
   banners: [],
+  shortcuts: [],
 };
 
 /** O pedido que a cliente fez como convidada, com o telefone dela. */

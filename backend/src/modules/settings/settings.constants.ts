@@ -31,3 +31,29 @@ export function unknownBannersMessage(ids: readonly string[]): string {
 
   return `${alvo}. Recarregue a pagina de configuracoes e tente de novo.`;
 }
+
+/**
+ * Quantos atalhos a fileira da home aceita.
+ *
+ * Nove e o que cabe numa fileira de desktop sem o círculo encolher abaixo de
+ * 88px, que e o ponto em que a foto dentro dele deixa de ser reconhecível —
+ * e e o mesmo teto que a home já aplicava as categorias. O limite e de
+ * desenho, e por isso mora aqui e não na tela: o décimo atalho não apareceria
+ * na loja, e uma lista que aceita o que não mostra e uma armadilha.
+ */
+export const MAX_SHORTCUTS = 9;
+
+/** Teto do campo `order` do atalho — o mesmo declarado no schema. */
+export const MAX_SHORTCUT_ORDER = 9999;
+
+/** O nome embaixo do círculo. Curto porque ele tem a largura do círculo. */
+export const MAX_SHORTCUT_LABEL_LENGTH = 32;
+
+/** O destino do atalho, igual ao limite do link do banner. */
+export const MAX_SHORTCUT_LINK_LENGTH = 300;
+
+export function unknownShortcutsMessage(ids: readonly string[]): string {
+  const alvo = ids.length === 1 ? 'Um atalho citado não existe mais' : 'Atalhos citados não existem mais';
+
+  return `${alvo}. Recarregue a pagina de configuracoes e tente de novo.`;
+}

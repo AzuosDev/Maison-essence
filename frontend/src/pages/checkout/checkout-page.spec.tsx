@@ -96,6 +96,7 @@ const CONFIGURACOES = {
   pickupInstructions: 'Avise uma hora antes de vir.',
   freeShippingMinCents: null,
   banners: [],
+  shortcuts: [],
 };
 
 const PAGAMENTOS = {

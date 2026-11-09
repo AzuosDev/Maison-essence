@@ -38,6 +38,7 @@ const CONFIGURACOES = {
   pickupInstructions: '',
   freeShippingMinCents: null,
   banners: [],
+  shortcuts: [],
 };
 
 const COTACAO = {

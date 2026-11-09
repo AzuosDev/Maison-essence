@@ -9,10 +9,12 @@ import type {
   Banner,
   InstitutionalPage,
   PickupAddress,
+  Shortcut,
   SocialLinks,
   StoreGift,
   StoreSettingsDocument,
 } from './schemas/store-settings.schema.js';
+import { liveShortcuts } from './shortcuts.js';
 import { whatsappLinkOf } from './whatsapp-number.js';
 
 /** Endereço de retirada como as duas pontas o veem. */
@@ -96,6 +98,35 @@ export interface PublicBannerView {
   placement: BannerPlacement;
 }
 
+/**
+ * Atalho como o painel o edita: inclusive o desligado.
+ *
+ * O desligado continua aqui porque ele é o atalho da campanha guardada — a
+ * dona desliga "Black Friday" em dezembro e o traz de volta em novembro sem
+ * remontar nome, foto e destino.
+ */
+export interface ShortcutView {
+  id: string;
+  label: string;
+  image: string;
+  link: string;
+  order: number;
+  isActive: boolean;
+}
+
+/**
+ * Atalho como a home o recebe.
+ *
+ * Sem `isActive` e sem `order`: o que chega à vitrine já passou pelo filtro e
+ * já está na ordem certa. A home desenha a lista como ela veio.
+ */
+export interface PublicShortcutView {
+  id: string;
+  label: string;
+  image: string;
+  link: string;
+}
+
 /** Página institucional no painel. */
 export interface PageView extends EditablePage {}
 
@@ -133,6 +164,8 @@ export interface SettingsView {
   /** O brinde por valor de compra, como esta guardado. Ver `GiftView`. */
   gift: GiftView;
   banners: BannerView[];
+  /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
+  shortcuts: ShortcutView[];
   institutionalPages: PageView[];
   updatedAt: Date;
 }
@@ -179,6 +212,14 @@ export interface PublicSettingsView {
    */
   gift: PublicGiftView | null;
   banners: PublicBannerView[];
+  /**
+   * A fileira de atalhos da home, já filtrada e ordenada.
+   *
+   * Vazia significa "a dona não montou a fileira", e a home volta a desenhar
+   * as categorias-raiz — que é o que ela fazia antes desta lista existir. A
+   * vitrine é quem corta pelo teto de círculos que cabem numa fileira.
+   */
+  shortcuts: PublicShortcutView[];
 }
 
 export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
@@ -199,6 +240,10 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     banners: [...settings.banners]
       .sort((first, second) => first.order - second.order)
       .map(toBannerView),
+    // Na ordem da fileira, para a tela do painel bater com a home.
+    shortcuts: [...settings.shortcuts]
+      .sort((first, second) => first.order - second.order)
+      .map(toShortcutView),
     institutionalPages: toPageViews(settings),
     updatedAt: settings.updatedAt,
   };
@@ -230,6 +275,7 @@ export function toPublicSettingsView(
     freeShippingMinCents: settings.freeShippingMinCents,
     gift: liveGift(settings.gift, giftProduct),
     banners: liveBanners(settings.banners, now).map(toPublicBannerView),
+    shortcuts: liveShortcuts(settings.shortcuts).map(toPublicShortcutView),
   };
 }
 
@@ -298,6 +344,26 @@ export function toPublicBannerView(banner: Banner): PublicBannerView {
     buttonLabel: banner.buttonLabel,
     link: banner.link,
     placement: banner.placement,
+  };
+}
+
+export function toShortcutView(shortcut: Shortcut): ShortcutView {
+  return {
+    id: shortcut.id,
+    label: shortcut.label,
+    image: shortcut.image,
+    link: shortcut.link,
+    order: shortcut.order,
+    isActive: shortcut.isActive,
+  };
+}
+
+export function toPublicShortcutView(shortcut: Shortcut): PublicShortcutView {
+  return {
+    id: shortcut.id,
+    label: shortcut.label,
+    image: shortcut.image,
+    link: shortcut.link,
   };
 }
 

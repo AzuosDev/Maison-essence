@@ -280,6 +280,26 @@ const SETTINGS = {
       placement: 'middle',
     },
   ],
+  /*
+   * A fileira de atalhos montada, e não vazia.
+   *
+   * Vazia a home cai nas categorias-raiz, que e o estado de reserva — e e
+   * justamente o estado que a bancada **não** precisa mostrar: ele e o
+   * arranjo antigo, e já foi conferido. O que se confere aqui e a fileira
+   * que a dona monta: nomes curtos e longos lado a lado, um atalho sem foto
+   * para o círculo com a inicial aparecer, e sete deles, que e a conta real.
+   */
+  shortcuts: [
+    { id: 's1', label: 'Isabelle La Belle', image: 'maison-essence/shortcuts/isabelle-la-belle', link: '/produtos?marca=Isabelle%20La%20Belle' },
+    { id: 's2', label: "Victoria's Secret", image: 'maison-essence/shortcuts/victorias-secret', link: "/produtos?marca=Victoria's%20Secret" },
+    { id: 's3', label: 'Mais vendidos', image: 'maison-essence/shortcuts/mais-vendidos', link: '/mais-vendidos' },
+    { id: 's4', label: 'Feminino', image: 'maison-essence/shortcuts/feminino', link: '/categorias/feminino' },
+    { id: 's5', label: 'Masculino', image: 'maison-essence/shortcuts/masculino', link: '/categorias/masculino' },
+    { id: 's6', label: 'Body Splash Masculino', image: 'maison-essence/shortcuts/body-splash-masculino', link: '/categorias/body-splash-masculino' },
+    // Sem foto de propósito: e o círculo com a inicial, que a home desenha
+    // enquanto a dona não enviou a arte.
+    { id: 's7', label: 'Hidratantes', image: 'maison-essence/shortcuts/hidratantes', link: '/categorias/hidratantes' },
+  ],
 };
 
 const PAYMENTS = {

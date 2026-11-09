@@ -47,6 +47,7 @@ const CONFIGURACOES = {
   pickupInstructions: '',
   freeShippingMinCents: null,
   banners: [],
+  shortcuts: [],
 };
 
 /** Uma linha cotada, com os campos que a tela lê. */

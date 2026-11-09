@@ -12,6 +12,7 @@ import { hasValidWindow, unknownBannerIds } from './banners.js';
 import { liveGift } from './gift.js';
 import type { GiftOffer, GiftProduct } from './gift.js';
 import type { BannerDto } from './dto/banner.dto.js';
+import type { ShortcutDto } from './dto/shortcut.dto.js';
 import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
 import { upsertPages } from './institutional-pages.js';
 import { StoreSettings } from './schemas/store-settings.schema.js';
@@ -19,10 +20,12 @@ import type {
   StoreSettingsDocument,
   StoreSettingsModel,
 } from './schemas/store-settings.schema.js';
+import { unknownShortcutIds } from './shortcuts.js';
 import {
   INVALID_BANNER_WINDOW_MESSAGE,
   PAGE_NOT_FOUND_MESSAGE,
   unknownBannersMessage,
+  unknownShortcutsMessage,
 } from './settings.constants.js';
 import { assertCanEditSettings } from './settings-access.policy.js';
 import { diffOf } from './settings.diff.js';
@@ -182,6 +185,10 @@ export class SettingsService {
       settings.set('banners', this.plannedBanners(settings, dto.banners));
     }
 
+    if (dto.shortcuts !== undefined) {
+      settings.set('shortcuts', this.plannedShortcuts(settings, dto.shortcuts));
+    }
+
     if (dto.institutionalPages !== undefined) {
       settings.set(
         'institutionalPages',
@@ -310,14 +317,49 @@ export class SettingsService {
       };
     });
   }
+
+  /**
+   * A fileira recebida, pronta para substituir a gravada.
+   *
+   * Mesma regra do carrossel: o `_id` de cada atalho é preservado quando o
+   * painel manda o `id` — é ele que identifica a foto entre uma gravação e
+   * outra, e é por ele que o módulo de uploads sabe que a imagem ainda está
+   * em uso. Atalho sem `id` é novo e ganha o seu.
+   */
+  private plannedShortcuts(
+    settings: StoreSettingsDocument,
+    incoming: readonly ShortcutDto[],
+  ): Record<string, unknown>[] {
+    const unknown = unknownShortcutIds(
+      incoming,
+      settings.shortcuts.map((shortcut) => shortcut.id),
+    );
+
+    if (unknown.length > 0) {
+      throw new UnprocessableEntityException({
+        message: unknownShortcutsMessage(unknown),
+        details: { unknownIds: unknown },
+      });
+    }
+
+    return incoming.map((shortcut, index) => ({
+      _id: shortcut.id === undefined ? new Types.ObjectId() : new Types.ObjectId(shortcut.id),
+      label: shortcut.label,
+      image: shortcut.image ?? '',
+      link: shortcut.link,
+      // Sem `order`, vale a posição na lista que a dona arrastou na tela.
+      order: shortcut.order ?? index,
+      isActive: shortcut.isActive ?? true,
+    }));
+  }
 }
 
 /**
  * Retrato das configurações para a auditoria.
  *
- * Banners e páginas viram objetos indexados por `id` e por `slug` em vez de
- * arrays: assim o diff diz "o banner tal mudou de data" e não "a lista de
- * banners mudou", que e o que sairia de uma comparação por posição.
+ * Banners, atalhos e páginas viram objetos indexados por `id` e por `slug` em
+ * vez de arrays: assim o diff diz "o banner tal mudou de data" e não "a lista
+ * de banners mudou", que e o que sairia de uma comparação por posição.
  *
  * As datas viram texto ISO porque dois `Date` com o mesmo instante são
  * objetos diferentes, e o diff registraria alteração onde não houve.
@@ -371,6 +413,18 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
           startsAt: banner.startsAt?.toISOString() ?? null,
           endsAt: banner.endsAt?.toISOString() ?? null,
           isActive: banner.isActive,
+        },
+      ]),
+    ),
+    shortcuts: Object.fromEntries(
+      settings.shortcuts.map((shortcut) => [
+        shortcut.id,
+        {
+          label: shortcut.label,
+          image: shortcut.image,
+          link: shortcut.link,
+          order: shortcut.order,
+          isActive: shortcut.isActive,
         },
       ]),
     ),

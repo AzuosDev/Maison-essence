@@ -48,6 +48,7 @@ export {
 
 export { AdminNav, type AdminNavProps } from './admin-nav';
 export { BannerEditor, type BannerEditorProps } from './banner-editor';
+export { ShortcutEditor, type ShortcutEditorProps } from './shortcut-editor';
 export { CategoryPicker, type CategoryPickerProps } from './category-picker';
 export { CategoryTree, type CategoryTreeProps } from './category-tree';
 export { DeliveryTable, type DeliveryTableProps } from './delivery-table';
