@@ -143,9 +143,24 @@ describe('pedidos (e2e)', () => {
       brand: 'Lattafa',
       images: ['asad-capa'],
       variants: [
-        { sku: 'ASAD-100', label: '100 ml', priceCents: PRICE_100ML, stock: STOCK_100ML },
-        { sku: 'ASAD-ULT', label: 'ultima', priceCents: PRICE_LAST, stock: 1 },
-        { sku: 'ASAD-50', label: '50 ml', priceCents: 9_990, stock: 0 },
+        // Nenhuma variante aqui vende sob encomenda, ao contrario do padrao do
+        // schema: e o estoque que este arquivo inteiro defende, e quem vende sob
+        // encomenda nao tem estoque a defender.
+        {
+          sku: 'ASAD-100',
+          label: '100 ml',
+          priceCents: PRICE_100ML,
+          stock: STOCK_100ML,
+          allowBackorder: false,
+        },
+        {
+          sku: 'ASAD-ULT',
+          label: 'ultima',
+          priceCents: PRICE_LAST,
+          stock: 1,
+          allowBackorder: false,
+        },
+        { sku: 'ASAD-50', label: '50 ml', priceCents: 9_990, stock: 0, allowBackorder: false },
       ],
       isActive: true,
     });

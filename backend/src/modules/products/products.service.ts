@@ -483,7 +483,10 @@ function variantData(data: VariantInput, sku: string): VariantData {
     stock: data.stock ?? 0,
     image: data.image ?? '',
     isActive: data.isActive ?? true,
-    allowBackorder: data.allowBackorder ?? false,
+    // Ligado por omissão, como no formulário do painel: a loja vende sob
+    // encomenda, e variante nova com estoque zero e a encomenda desligada
+    // nasceria esgotada na vitrine.
+    allowBackorder: data.allowBackorder ?? true,
   };
 }
 

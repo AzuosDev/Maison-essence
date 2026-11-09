@@ -968,6 +968,12 @@ zerar o catalogo da loja. E o produto que a dona destacou na home continua
 destacado, e o que ela tirou de linha nao volta a vender porque a lista do
 fornecedor ainda o cita.
 
+Na criacao, a variante que o arquivo nao descreve por inteiro nasce **vendendo
+sob encomenda** (`allowBackorder: true`), como no cadastro pelo painel. A lista
+do fornecedor nao tem coluna de encomenda e traz estoque zero em todas as
+linhas: com o padrao invertido, cada importacao subiria o catalogo inteiro
+esgotado na vitrine. O arquivo que diz `false` continua mandando.
+
 ### Variantes casam pelo SKU
 
 A variante que o arquivo traz e o banco tem e atualizada **no lugar**, com o
@@ -1191,6 +1197,7 @@ a troca de senha — que sao os tres criterios de aceite do deploy.
 | `seed:superadmin`  | Cria o primeiro SUPER_ADMIN; idempotente   |
 | `seed:demo`        | Popula catalogo, entrega e configuracoes   |
 | `seed:catalog`     | Importa `catalog.json`; idempotente pelo slug |
+| `products:backorder` | Liga a venda sob encomenda em todas as variantes do banco; aceita `--dry-run` |
 | `typecheck`        | `tsc --noEmit`                             |
 | `test`             | Testes unitarios                           |
 | `test:e2e`         | Testes de ponta a ponta                    |

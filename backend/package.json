@@ -24,6 +24,7 @@
     "banners:upload": "npm run build && tsx scripts/banners/upload.ts",
     "categories:upload": "npm run build && tsx scripts/categories/upload.ts",
     "posters:upload": "npm run build && tsx scripts/posters/upload.ts",
+    "products:backorder": "npm run build && tsx scripts/products/allow-backorder.ts",
     "shortcuts:upload": "npm run build && tsx scripts/shortcuts/upload.ts",
     "lint": "oxlint --type-aware src/ api/ test/",
     "typecheck": "tsc --noEmit",

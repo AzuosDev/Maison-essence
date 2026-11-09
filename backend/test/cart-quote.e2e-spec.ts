@@ -100,7 +100,15 @@ describe('cotacao do carrinho (e2e)', () => {
       images: ['asad-capa'],
       variants: [
         { sku: 'ASAD-100', label: '100 ml', priceCents: PRICE_100ML, stock: 10 },
-        { sku: 'ASAD-50', label: '50 ml', priceCents: PRICE_50ML, stock: 0 },
+        // `allowBackorder: false` explicito: o padrao do schema e vender sob
+        // encomenda, e sem desligar aqui esta variante nao estaria esgotada.
+        {
+          sku: 'ASAD-50',
+          label: '50 ml',
+          priceCents: PRICE_50ML,
+          stock: 0,
+          allowBackorder: false,
+        },
       ],
       isActive: true,
     });

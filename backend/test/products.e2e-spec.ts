@@ -225,9 +225,12 @@ describe('products (e2e)', () => {
     it('zerar o estoque de todas as variantes faz inStock virar false', async () => {
       const created = await create({
         name: 'Asad',
+        // `allowBackorder: false` nas duas: zerar o estoque de quem vende sob
+        // encomenda — o padrao do cadastro — nao esgota nada, e o esgotamento e
+        // o que este teste afirma.
         variants: [
-          { label: '100 ml', priceCents: 24_990, stock: 4 },
-          { label: '50 ml', priceCents: 14_990, stock: 2 },
+          { label: '100 ml', priceCents: 24_990, stock: 4, allowBackorder: false },
+          { label: '50 ml', priceCents: 14_990, stock: 2, allowBackorder: false },
         ],
       });
 

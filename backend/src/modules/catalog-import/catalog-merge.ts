@@ -213,7 +213,10 @@ function newVariant(incoming: IncomingVariant, sku: string): VariantData {
     stock: incoming.stock ?? 0,
     image: incoming.image ?? '',
     isActive: incoming.isActive ?? true,
-    allowBackorder: incoming.allowBackorder ?? false,
+    // Ligado quando o arquivo não diz nada, igual ao cadastro pelo painel:
+    // metade do catálogo gira por encomenda, e variante nova com estoque zero
+    // e a encomenda desligada subiria como "esgotado" sem ninguém pedir isso.
+    allowBackorder: incoming.allowBackorder ?? true,
   };
 }
 

@@ -50,8 +50,14 @@ export class ProductVariant extends EmbeddedSchema {
   @Prop({ type: Boolean, default: true })
   isActive: boolean;
 
-  /** Deixa comprar com estoque zerado. Com `false`, a variante sai como esgotada. */
-  @Prop({ type: Boolean, default: false })
+  /**
+   * Deixa comprar com estoque zerado. Com `false`, a variante sai como esgotada.
+   *
+   * Nasce ligado: a loja vende o que encomenda ao distribuidor depois do
+   * pedido, e esse e o estado de quase todo o catálogo. Desligar e a exceção,
+   * e quem desliga faz isso na linha da variante, no painel.
+   */
+  @Prop({ type: Boolean, default: true })
   allowBackorder: boolean;
 }
 

@@ -119,6 +119,10 @@ describe('catalogo publico (e2e)', () => {
           label: '90 ml',
           priceCents: 29_990,
           compareAtPriceCents: 39_990,
+          // Sem estoque e sem encomenda: e este o esgotado do filtro
+          // `inStock`. O padrao do schema e vender sob encomenda, e vender
+          // sob encomenda e estar disponivel.
+          allowBackorder: false,
         },
       ],
     });

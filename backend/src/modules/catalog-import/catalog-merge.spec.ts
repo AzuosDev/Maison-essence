@@ -83,6 +83,31 @@ describe('mergeProduct, produto novo', () => {
     // Variante nova não tem `_id`: quem gera e o Mongoose.
     expect(data.variants[0]?._id).toBeUndefined();
   });
+
+  /**
+   * O arquivo do fornecedor não tem coluna de encomenda, e o estoque dele
+   * chega zerado: com a encomenda desligada por padrão, cada importação
+   * subiria o catálogo inteiro esgotado na vitrine.
+   */
+  it('a variante nova nasce vendendo sob encomenda', () => {
+    const { data } = mergeProduct(
+      fromFile({ variants: [{ sku: 'ME-0036', priceCents: 15_500 }] }),
+      null,
+    );
+
+    expect(data.variants[0]?.allowBackorder).toBe(true);
+  });
+
+  it('mas o arquivo que diz não, manda', () => {
+    const { data } = mergeProduct(
+      fromFile({
+        variants: [{ sku: 'ME-0036', priceCents: 15_500, allowBackorder: false }],
+      }),
+      null,
+    );
+
+    expect(data.variants[0]?.allowBackorder).toBe(false);
+  });
 });
 
 describe('mergeProduct, o vazio do arquivo não apaga o banco', () => {
