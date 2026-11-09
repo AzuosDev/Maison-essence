@@ -91,9 +91,30 @@
   border-radius: var(--radius-card);
 }
 
-.sectionHead {
+.sectionHead,
+.sectionLabel {
   display: grid;
   gap: var(--space-4);
+}
+
+/*
+ * O rótulo da seção e o interruptor dela, na mesma linha.
+ *
+ * O interruptor fica na borda oposta ao título, na altura dele: e a resposta
+ * da pergunta que o título faz, e os dois se leem de uma vez. Quando a frase
+ * de apoio e o controle não cabem lado a lado, o interruptor desce inteiro em
+ * vez de apertar o texto.
+ */
+.sectionHeadRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--space-8) var(--space-24);
+}
+
+.sectionHeadRow .sectionLabel {
+  flex: 1 1 18rem;
 }
 
 .sectionTitle {

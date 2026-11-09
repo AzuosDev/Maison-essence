@@ -166,10 +166,43 @@ function CouponForm({
 
   const [draft, setDraft] = useState<CouponDraft>(initial);
   const [tried, setTried] = useState(false);
+
+  /*
+   * As tres perguntas opcionais da campanha, cada uma atras do proprio
+   * interruptor.
+   *
+   * Campo em branco querendo dizer "sem prazo", "sem limite" e "na loja
+   * inteira" e uma convencao que a tela sabe e a dona nao: ela ve tres campos
+   * vazios e nao sabe se esqueceu de preencher. O interruptor responde a
+   * pergunta primeiro e o campo aparece como detalhe da resposta sim. Desligar
+   * limpa o que estava escrito, porque guardar valor escondido salvaria um
+   * prazo que a tela diz nao existir.
+   */
+  const [hasWindow, setHasWindow] = useState(initial.startsOn !== '' || initial.endsOn !== '');
+  const [hasLimit, setHasLimit] = useState(initial.maxUses !== '');
+  const [isScoped, setIsScoped] = useState(initial.productIds.length > 0);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   const isNew = coupon === null;
-  const errors = tried ? validateCoupon(draft) : {};
+
+  /*
+   * O que o interruptor ligado passa a exigir.
+   *
+   * Ligar "tem limite" e deixar o campo vazio salvaria um cupom sem limite
+   * nenhum, contrariando o que a tela acabou de dizer. O erro aparece no
+   * proprio campo, e a frase oferece a outra saida: desligar.
+   */
+  const gateErrors = () => ({
+    ...(hasLimit && draft.maxUses.trim() === ''
+      ? { maxUses: 'Escreva quantos cupons existem, ou desligue o limite de uso.' }
+      : {}),
+    ...(isScoped && draft.productIds.length === 0
+      ? { productIds: 'Escolha ao menos um produto, ou desligue para valer na loja inteira.' }
+      : {}),
+  });
+
+  const allErrors = () => ({ ...validateCoupon(draft), ...gateErrors() });
+  const errors = tried ? allErrors() : {};
   const warning = maxUsesWarning(draft, coupon);
   const saving = create.isPending || update.isPending;
 
@@ -190,7 +223,7 @@ function CouponForm({
   const submit = (): void => {
     setTried(true);
 
-    if (hasCouponErrors(validateCoupon(draft))) {
+    if (hasCouponErrors(allErrors())) {
       return;
     }
 
@@ -386,9 +419,27 @@ function CouponForm({
 
         <Section
           title="Quando vale"
-          note="Deixe as duas datas em branco para um código que vale desde já e até você desligar."
+          note={
+            hasWindow
+              ? 'O dia inteiro conta, dos dois lados. Deixe uma das datas em branco para deixar aquela ponta aberta.'
+              : 'Sem prazo: o código vale desde já e até você desligar o cupom.'
+          }
+          toggle={
+            <Switch
+              label="Tem data de validade"
+              checked={hasWindow}
+              onChange={(event) => {
+                setHasWindow(event.target.checked);
+
+                if (!event.target.checked) {
+                  set({ startsOn: '', endsOn: '' });
+                }
+              }}
+            />
+          }
         >
-          <div className={styles.pair}>
+          {!hasWindow ? null : (
+            <div className={styles.pair}>
             <Input
               label="Primeiro dia"
               block
@@ -407,32 +458,53 @@ function CouponForm({
               hint="O dia inteiro conta. Em branco, fica até ser desligado."
               value={draft.endsOn}
               error={errors.endsOn}
-              onChange={(event) => {
-                set({ endsOn: event.target.value });
-              }}
-            />
-          </div>
+                onChange={(event) => {
+                  set({ endsOn: event.target.value });
+                }}
+              />
+            </div>
+          )}
         </Section>
 
         <Section
           title="Quantos cupons existem"
-          note="O limite e o número de vendas que podem usar este código. A conta sobe quando você marca o pedido como Vendido, e um pedido ainda aberto já segura um cupom."
+          note={
+            hasLimit
+              ? 'O limite e o número de vendas que podem usar este código. A conta sobe quando você marca o pedido como Vendido, e um pedido ainda aberto já segura um cupom.'
+              : 'Sem limite: o código atende quantas vendas aparecerem enquanto estiver valendo.'
+          }
+          toggle={
+            <Switch
+              label="Tem limite de uso"
+              checked={hasLimit}
+              onChange={(event) => {
+                setHasLimit(event.target.checked);
+
+                if (!event.target.checked) {
+                  set({ maxUses: '' });
+                }
+              }}
+            />
+          }
         >
-          <Input
-            label="Limite de usos"
-            block
-            numeric
-            inputMode="numeric"
-            className={styles.medium}
-            placeholder="sem limite"
-            suffix="cupons"
-            hint="Em branco, não há limite."
-            value={draft.maxUses}
-            error={errors.maxUses}
-            onChange={(event) => {
-              set({ maxUses: event.target.value });
-            }}
-          />
+          {!hasLimit ? null : (
+            <Input
+              label="Limite de usos"
+              block
+              required
+              numeric
+              inputMode="numeric"
+              className={styles.medium}
+              placeholder="100"
+              suffix="cupons"
+              hint="Quantas vendas podem usar este código."
+              value={draft.maxUses}
+              error={errors.maxUses}
+              onChange={(event) => {
+                set({ maxUses: event.target.value });
+              }}
+            />
+          )}
 
           {warning === '' ? null : <output className={styles.warning}>{warning}</output>}
 
@@ -452,17 +524,36 @@ function CouponForm({
 
         <Section
           title="Em quais produtos"
-          note="Sem nenhum produto escolhido, o cupom vale para a loja inteira. Com produtos escolhidos, o desconto incide só nas linhas deles — e a campanha ganha uma vitrine própria."
+          note={
+            isScoped
+              ? 'O desconto incide só nas linhas dos produtos escolhidos — e a campanha ganha uma vitrine própria com eles.'
+              : 'Na loja inteira: o desconto vale em qualquer produto da sacola.'
+          }
+          toggle={
+            <Switch
+              label="Só em produtos escolhidos"
+              checked={isScoped}
+              onChange={(event) => {
+                setIsScoped(event.target.checked);
+
+                if (!event.target.checked) {
+                  set({ productIds: [] });
+                }
+              }}
+            />
+          }
         >
-          <ProductMultiPicker
-            productIds={draft.productIds}
-            max={COUPON_LIMITS.products}
-            emptyLabel="Nenhum produto escolhido: o desconto vale no catálogo todo."
-            error={errors.productIds}
-            onChange={(productIds) => {
-              set({ productIds });
-            }}
-          />
+          {!isScoped ? null : (
+            <ProductMultiPicker
+              productIds={draft.productIds}
+              max={COUPON_LIMITS.products}
+              emptyLabel="Escolha os produtos da campanha."
+              error={errors.productIds}
+              onChange={(productIds) => {
+                set({ productIds });
+              }}
+            />
+          )}
         </Section>
 
         <Section title="No ar e na home">
@@ -586,20 +677,28 @@ function CouponForm({
 function Section({
   title,
   note,
+  toggle,
   children,
 }: {
   title: string;
   note?: string;
+  /** O interruptor que responde a pergunta da seção, ao lado do rótulo dela. */
+  toggle?: ReactNode;
   children: ReactNode;
 }) {
   return (
     <section className={styles.section}>
-      <div className={styles.sectionHead}>
-        <h2 className={styles.sectionTitle}>{title}</h2>
-        {note === undefined ? null : <p className={styles.sectionNote}>{note}</p>}
+      <div className={toggle === undefined ? styles.sectionHead : styles.sectionHeadRow}>
+        <div className={styles.sectionLabel}>
+          <h2 className={styles.sectionTitle}>{title}</h2>
+          {note === undefined ? null : <p className={styles.sectionNote}>{note}</p>}
+        </div>
+
+        {toggle}
       </div>
 
-      <div className={styles.sectionBody}>{children}</div>
+      {/* Seção desligada não deixa um vão de corpo vazio embaixo do rótulo. */}
+      {children === null ? null : <div className={styles.sectionBody}>{children}</div>}
     </section>
   );
 }
