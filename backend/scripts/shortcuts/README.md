@@ -113,10 +113,20 @@ Logo, a arte precisa de duas coisas:
    ja recortado — fundo branco desenha um quadrado em volta do circulo,
    invisivel na loja clara e leitoso no tema escuro.
 
-Por causa do recorte, **arte que ja esta na conta em outro formato sobe de
-novo mesmo sem `--force`**: JPEG na vaga de um atalho e arte de antes desta
-mudanca. O envio leva `invalidate` junto, para o CDN nao continuar servindo a
-versao antiga.
+## O endereco da arte muda quando a arte muda
+
+`maison-essence/shortcuts/feminino-3f9c21a8`: o sufixo e a impressao digital
+da arte recortada. Existe porque a entrega do Cloudinary manda o navegador
+guardar a foto por **30 dias** — com nome fixo, trocar a arte nao trocaria a
+foto de quem ja esteve na loja, por mais que o CDN fosse limpo. Arte nova,
+endereco novo, e a troca aparece no primeiro carregamento de todo mundo.
+
+Rodar duas vezes com a mesma arte nao reenvia nada: mesma impressao digital,
+mesmo endereco.
+
+**A arte que sai de cena e removida da conta**, depois que a fileira nova esta
+gravada e so se nenhum atalho a usar mais. Sem isso, cada troca de foto
+deixaria para tras um arquivo que ninguem ve e ninguem apaga.
 
 O painel mostra o circulo no tamanho real, com a sobra para fora, justamente
 para que esse enquadramento se descubra ali e nao na loja.

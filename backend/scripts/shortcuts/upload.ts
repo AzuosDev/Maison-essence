@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import { createHash } from 'node:crypto';
 import { readdirSync } from 'node:fs';
 import { basename, extname, resolve } from 'node:path';
 import { ConfigService } from '@nestjs/config';
@@ -59,9 +60,15 @@ import {
  * transparencia. Cada arte passa por `cutBackground` antes de subir e vai para
  * a conta como PNG. Ver `art.ts`.
  *
- * E por isso que a arte que ja esta na conta em outro formato e reenviada
- * mesmo sem `--force`: o JPEG antigo na mesma vaga desenharia um quadrado
- * branco em volta de cada circulo.
+ * ## O endereco da arte carrega a impressao digital dela
+ *
+ * `maison-essence/shortcuts/feminino-3f9c21a8`. O sufixo sai do conteudo da
+ * arte recortada, porque a entrega do Cloudinary manda o navegador guardar a
+ * foto por 30 dias: com nome fixo, trocar a arte nao troca a foto de quem ja
+ * visitou a loja. Arte nova, endereco novo, e a troca aparece para todo mundo.
+ *
+ * A arte que sai de cena e removida da conta depois que a fileira nova esta
+ * gravada — senao cada troca deixaria um arquivo morto que ninguem mais ve.
  *
  * ## A fileira vai inteira
  *
@@ -145,17 +152,31 @@ function objectIdOf(id: string | undefined): Types.ObjectId {
   return id === undefined ? new Types.ObjectId() : new Types.ObjectId(id);
 }
 
-/** `maison-essence/shortcuts/mais-vendidos`. */
-function publicIdOf(shortcut: PlannedShortcut): string {
-  return `${CLOUDINARY_SHORTCUTS_FOLDER}/${shortcut.slug}`;
+/**
+ * `maison-essence/shortcuts/mais-vendidos-3f9c21a8`.
+ *
+ * O sufixo e a impressao digital da arte recortada, e ele existe porque a
+ * entrega do Cloudinary manda o navegador guardar a foto por **30 dias**. Com
+ * o nome fixo, trocar a arte na mesma vaga nao troca a foto de quem ja esteve
+ * na loja: o `invalidate` limpa o CDN, e nao o disco de quem visitou.
+ *
+ * Arte diferente, endereco diferente — e a troca aparece para todo mundo no
+ * primeiro carregamento. Arte igual, endereco igual: rodar o script duas vezes
+ * nao reenvia nada.
+ */
+function publicIdOf(shortcut: PlannedShortcut, art: Buffer): string {
+  const digest = createHash('sha1').update(art).digest('hex').slice(0, 8);
+
+  return `${CLOUDINARY_SHORTCUTS_FOLDER}/${shortcut.slug}-${digest}`;
 }
 
 /**
  * Sobe a arte ja recortada.
  *
- * `invalidate` junto do `overwrite` porque trocar o arquivo na mesma vaga nao
- * basta: sem limpar o CDN, a regiao que ja tinha a versao antiga em cache
- * continuaria servindo o JPEG de fundo branco por horas.
+ * Reescrever a mesma vaga so acontece com `--force`, ja que o endereco muda
+ * sozinho quando a arte muda. Quando acontece, vai com `invalidate`: trocar o
+ * arquivo sem limpar o CDN deixaria as regioes que ja tinham a versao antiga
+ * servindo ela por horas.
  */
 async function uploadArt(
   cloudinary: CloudinaryService,
@@ -220,6 +241,10 @@ async function main(): Promise<void> {
       settings.shortcuts.map((shortcut) => [shortcut.link, shortcut.id]),
     );
 
+    /* Lida antes de a fileira nova ser gravada por cima: e com ela que o fim
+       do script descobre qual arte deixou de ser usada. */
+    const artesAntigas = settings.shortcuts.map((shortcut) => shortcut.image);
+
     const saindo = settings.shortcuts.filter(
       (shortcut) => !SHORTCUTS.some((planned) => planned.link === shortcut.link),
     );
@@ -235,7 +260,6 @@ async function main(): Promise<void> {
 
     for (const [index, planned] of SHORTCUTS.entries()) {
       const filePath = art.get(planned.file);
-      const publicId = publicIdOf(planned);
 
       // ---- A foto -------------------------------------------------------
       let image = '';
@@ -243,32 +267,34 @@ async function main(): Promise<void> {
       if (filePath === undefined) {
         logger.warn(`sem foto para "${planned.label}": o circulo fica com a inicial do nome`);
         semFoto += 1;
-      } else if (options.dryRun) {
-        logger.log(
-          `[dry-run] ${planned.label}: ${basename(filePath)} -> ${publicId} (recortada e enviada como PNG)`,
-        );
-        image = publicId;
       } else {
-        // eslint-disable-next-line no-await-in-loop -- uma por vez: o log fica legivel e a API do Cloudinary nao ganha com paralelismo aqui.
-        const existing = await cloudinary.findImage(publicId);
-
         /*
-         * Arte guardada em outro formato e arte de antes do recorte: ela sobe
-         * de novo mesmo sem `--force`, senao o JPEG de fundo branco ficaria
-         * desenhando um quadrado em volta do circulo.
+         * O recorte vem antes de tudo, inclusive do `--dry-run`: e dele que
+         * sai o endereco da arte, entao sem recortar nao da nem para dizer
+         * para onde a foto iria. E trabalho local, sem rede.
          */
-        if (existing !== null && existing.format === UPLOAD_FORMAT && !options.force) {
-          logger.log(`ja recortada no Cloudinary, mantida: ${publicId}`);
-          mantidas += 1;
+        // eslint-disable-next-line no-await-in-loop -- uma por vez: o log fica legivel e a API do Cloudinary nao ganha com paralelismo aqui.
+        const { buffer, cutRatio } = await cutBackground(filePath);
+        const publicId = publicIdOf(planned, buffer);
+        const transparencia = `${(cutRatio * 100).toFixed(0)}% do quadrado virou transparencia`;
+
+        if (options.dryRun) {
+          logger.log(
+            `[dry-run] ${planned.label}: ${basename(filePath)} -> ${publicId} (${transparencia})`,
+          );
         } else {
           // eslint-disable-next-line no-await-in-loop
-          const { buffer, cutRatio } = await cutBackground(filePath);
-          // eslint-disable-next-line no-await-in-loop
-          await uploadArt(cloudinary, publicId, buffer, existing !== null);
-          logger.log(
-            `enviada: ${basename(filePath)} -> ${publicId} (${(cutRatio * 100).toFixed(0)}% do quadrado virou transparencia)`,
-          );
-          enviadas += 1;
+          const existing = await cloudinary.findImage(publicId);
+
+          if (existing !== null && !options.force) {
+            logger.log(`esta arte ja esta na conta, mantida: ${publicId}`);
+            mantidas += 1;
+          } else {
+            // eslint-disable-next-line no-await-in-loop
+            await uploadArt(cloudinary, publicId, buffer, options.force);
+            logger.log(`enviada: ${basename(filePath)} -> ${publicId} (${transparencia})`);
+            enviadas += 1;
+          }
         }
 
         image = publicId;
@@ -336,6 +362,27 @@ async function main(): Promise<void> {
 
     logger.log(`${String(enviadas)} fotos enviadas, ${String(mantidas)} ja estavam la.`);
     logger.log(`fileira gravada com ${String(SHORTCUTS.length)} atalhos.`);
+
+    /*
+     * A arte que saiu de cena sai tambem da conta.
+     *
+     * Como o endereco carrega a impressao digital, trocar a foto de um atalho
+     * sempre deixa a anterior para tras — sem nenhuma referencia no cadastro,
+     * invisivel no painel e ocupando espaco para sempre. So entra aqui o que
+     * este script acabou de substituir, e so depois de a fileira nova estar
+     * gravada.
+     */
+    const emUso = new Set(planejados.map((shortcut) => String(shortcut.image)));
+    const aposentadas = [...new Set(artesAntigas)].filter(
+      (publicId) => publicId !== '' && !emUso.has(publicId),
+    );
+
+    for (const publicId of aposentadas) {
+      // eslint-disable-next-line no-await-in-loop
+      const removida = await cloudinary.destroy(publicId);
+
+      logger.log(removida ? `arte antiga removida: ${publicId}` : `ja nao estava la: ${publicId}`);
+    }
 
     if (semFoto > 0) {
       logger.warn(`${String(semFoto)} atalhos ficaram sem foto.`);
