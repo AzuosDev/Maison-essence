@@ -24,7 +24,10 @@ import {
 } from './catalog.query.js';
 import type { CatalogFilterInput } from './catalog.query.js';
 import type { ListPublicProductsDto } from './dto/list-public-products.dto.js';
-import { toPublicCategories, toPublicProductView } from './public-product.view.js';
+import {
+  toPublicCategories,
+  toPublicProductView,
+} from './public-product.view.js';
 import type {
   LeanProduct,
   LeanProductFull,
@@ -38,7 +41,10 @@ import {
   SHELF_SIZE,
 } from './products.constants.js';
 import { discountLadder, entryTier } from './quantity-discount.js';
-import type { QuantityDiscountRule, QuantityDiscountTier } from './quantity-discount.js';
+import type {
+  QuantityDiscountRule,
+  QuantityDiscountTier,
+} from './quantity-discount.js';
 
 /** O card não mostra a descrição, e ela e o maior campo do produto. */
 const CARD_FIELDS = '-description';
@@ -71,9 +77,11 @@ export class PublicCatalogService {
   constructor(
     @InjectModel(Product.name) private readonly products: Model<Product>,
     @InjectModel(Category.name) private readonly categories: Model<Category>,
-    @InjectModel(QuantityDiscount.name) private readonly discounts: Model<QuantityDiscount>,
+    @InjectModel(QuantityDiscount.name)
+    private readonly discounts: Model<QuantityDiscount>,
     @InjectModel(Order.name) private readonly orders: Model<Order>,
-    @InjectModel(StoreSettings.name) private readonly settings: StoreSettingsModel,
+    @InjectModel(StoreSettings.name)
+    private readonly settings: StoreSettingsModel,
     private readonly coupons: CouponsService,
   ) {}
 
@@ -84,13 +92,17 @@ export class PublicCatalogService {
    * página: são duas idas ao Atlas independentes, e o que pesa na função
    * serverless e o tempo somado.
    */
-  async list(query: ListPublicProductsDto): Promise<Paginated<PublicProductView>> {
+  async list(
+    query: ListPublicProductsDto,
+  ): Promise<Paginated<PublicProductView>> {
     const page = query.page ?? 1;
     const limit = query.limit ?? PUBLIC_PAGE_SIZE;
     const term = query.q ?? '';
     const filter = catalogFilter({
       categoryIds:
-        query.category === undefined ? undefined : await this.categoryBranch(query.category),
+        query.category === undefined
+          ? undefined
+          : await this.categoryBranch(query.category),
       productIds: await this.campaignScope(query.campaign),
       q: term,
       brand: query.brand,
@@ -134,7 +146,9 @@ export class PublicCatalogService {
    *   depois do fim da promoção — melhor a grade vazia com a página dizendo
    *   que acabou do que o catálogo todo fingindo desconto.
    */
-  private async campaignScope(slug: string | undefined): Promise<Types.ObjectId[] | undefined> {
+  private async campaignScope(
+    slug: string | undefined,
+  ): Promise<Types.ObjectId[] | undefined> {
     if (slug === undefined || slug === '') {
       return undefined;
     }
@@ -177,9 +191,13 @@ export class PublicCatalogService {
    *
    * Produto que saiu do ar, perdeu a última variante a venda ou foi excluído
    * simplesmente não entra, como em qualquer prateleira: a fileira encurta em
-   * uma vaga e nenhum card leva a cliente a uma página 404. Se todos os
-   * escolhidos caírem, a fileira volta ao ranking — a home não fica sem a
-   * primeira fileira por causa de escolhas que envelheceram.
+   * uma vaga e nenhum card leva a cliente a uma página 404.
+   *
+   * Se todos os escolhidos caírem, a fileira não aparece — e **não** volta ao
+   * ranking. Ressuscitar o critério antigo em cima de uma escolha feita era o
+   * pior dos mundos: a dona apontava um produto, via a home com os mesmos
+   * mais vendidos de sempre e não tinha como saber se o painel não gravou ou
+   * se o produto não estava a venda. Sem fileira, a pergunta vira a certa.
    *
    * ## Sem escolha nenhuma: o critério antigo, inteiro
    *
@@ -191,7 +209,7 @@ export class PublicCatalogService {
   async bestSellers(limit = SHELF_SIZE): Promise<PublicProductView[]> {
     const chosen = await this.chosenBestSellers(limit);
 
-    if (chosen.length > 0) {
+    if (chosen !== null) {
       return this.toCards(chosen);
     }
 
@@ -201,7 +219,10 @@ export class PublicCatalogService {
       return this.toCards(sold);
     }
 
-    return this.toCards([...sold, ...(await this.fill(limit - sold.length, sold))]);
+    return this.toCards([
+      ...sold,
+      ...(await this.fill(limit - sold.length, sold)),
+    ]);
   }
 
   /**
@@ -266,9 +287,15 @@ export class PublicCatalogService {
    * iguais. O segundo caso não e detalhe: sem variante ativa não há preço nem
    * botão de comprar, e a página só serviria para frustrar quem clicou.
    */
-  private sellable(where: QueryFilter<Product>): Promise<LeanProductFull | null> {
+  private sellable(
+    where: QueryFilter<Product>,
+  ): Promise<LeanProductFull | null> {
     return this.products
-      .findOne({ ...where, isActive: true, variants: { $elemMatch: { isActive: true } } })
+      .findOne({
+        ...where,
+        isActive: true,
+        variants: { $elemMatch: { isActive: true } },
+      })
       .lean<LeanProductFull | null>()
       .exec();
   }
@@ -289,7 +316,9 @@ export class PublicCatalogService {
   }
 
   /** A página do produto montada: as categorias dele, os relacionados e a escada. */
-  private async detailOf(product: LeanProductFull): Promise<PublicProductDetailView> {
+  private async detailOf(
+    product: LeanProductFull,
+  ): Promise<PublicProductDetailView> {
     const [categories, related] = await Promise.all([
       this.categories
         .find({ _id: { $in: product.categoryIds }, isActive: true })
@@ -305,13 +334,20 @@ export class PublicCatalogService {
       description: product.description,
       categories: toPublicCategories(categories),
       quantityDiscounts: ladder,
-      related: related.map((other) => toPublicProductView(other, this.entryOf(rules, other))),
+      related: related.map((other) =>
+        toPublicProductView(other, this.entryOf(rules, other)),
+      ),
     };
   }
 
-  private async shelf(input: CatalogFilterInput, limit: number): Promise<PublicProductView[]> {
+  private async shelf(
+    input: CatalogFilterInput,
+    limit: number,
+  ): Promise<PublicProductView[]> {
     const found = await this.products
-      .aggregate<LeanProduct>(catalogPipeline(catalogFilter(input), 'newest', false, 0, limit))
+      .aggregate<LeanProduct>(
+        catalogPipeline(catalogFilter(input), 'newest', false, 0, limit),
+      )
       .exec();
 
     return this.toCards(found);
@@ -328,12 +364,19 @@ export class PublicCatalogService {
    * O `limit` corta no fim, e vale o menor entre ele e o que a dona escolheu:
    * a página `/mais-vendidos` pede quarenta e oito e recebe os doze que
    * existem, enquanto a home pede doze.
+   *
+   * `null` e lista vazia dizem coisas diferentes, e e por isso que esta
+   * função não devolve só um array: `null` e "a dona não montou fileira
+   * nenhuma" — aí vale o ranking —, e `[]` e "montou, e nada do que ela
+   * escolheu esta a venda hoje".
    */
-  private async chosenBestSellers(limit: number): Promise<LeanProduct[]> {
+  private async chosenBestSellers(
+    limit: number,
+  ): Promise<LeanProduct[] | null> {
     const { bestSellerProductIds } = await this.settings.getOrCreate();
 
     if (bestSellerProductIds.length === 0) {
-      return [];
+      return null;
     }
 
     const found = await this.products
@@ -345,7 +388,9 @@ export class PublicCatalogService {
       .select(CARD_FIELDS)
       .lean<LeanProduct[]>()
       .exec();
-    const byId = new Map(found.map((product) => [product._id.toHexString(), product]));
+    const byId = new Map(
+      found.map((product) => [product._id.toHexString(), product]),
+    );
 
     return bestSellerProductIds
       .map((id) => byId.get(id.toHexString()))
@@ -365,7 +410,12 @@ export class PublicCatalogService {
       .aggregate<SoldRow>([
         { $match: { status: { $in: [...SOLD_ORDER_STATUSES] } } },
         { $unwind: '$items' },
-        { $group: { _id: '$items.productId', sold: { $sum: '$items.quantity' } } },
+        {
+          $group: {
+            _id: '$items.productId',
+            sold: { $sum: '$items.quantity' },
+          },
+        },
         { $sort: { sold: -1, _id: -1 } },
         { $limit: limit * RANKING_SLACK },
       ])
@@ -384,7 +434,9 @@ export class PublicCatalogService {
       .select(CARD_FIELDS)
       .lean<LeanProduct[]>()
       .exec();
-    const byId = new Map(found.map((product) => [product._id.toHexString(), product]));
+    const byId = new Map(
+      found.map((product) => [product._id.toHexString(), product]),
+    );
 
     // A ordem e a do ranking, não a do `$in`: o Mongo devolve na ordem que
     // achar melhor, e aqui a ordem e o conteúdo da prateleira.
@@ -416,9 +468,15 @@ export class PublicCatalogService {
    * entre uma resposta e a seguinte, e a prateleira pareceria se embaralhar
    * sozinha.
    */
-  private fill(missing: number, shown: readonly LeanProduct[]): Promise<LeanProduct[]> {
+  private fill(
+    missing: number,
+    shown: readonly LeanProduct[],
+  ): Promise<LeanProduct[]> {
     return this.products
-      .find({ ...catalogFilter({}), _id: { $nin: shown.map((product) => product._id) } })
+      .find({
+        ...catalogFilter({}),
+        _id: { $nin: shown.map((product) => product._id) },
+      })
       .sort({ isFeatured: -1, createdAt: 1, _id: 1 })
       .limit(missing)
       .select(CARD_FIELDS)
@@ -452,10 +510,14 @@ export class PublicCatalogService {
       .exec();
   }
 
-  private async toCards(products: readonly LeanProduct[]): Promise<PublicProductView[]> {
+  private async toCards(
+    products: readonly LeanProduct[],
+  ): Promise<PublicProductView[]> {
     const rules = await this.rulesFor(products);
 
-    return products.map((product) => toPublicProductView(product, this.entryOf(rules, product)));
+    return products.map((product) =>
+      toPublicProductView(product, this.entryOf(rules, product)),
+    );
   }
 
   private entryOf(
@@ -482,7 +544,9 @@ export class PublicCatalogService {
    * Uma consulta para a página inteira, e não uma por card: são poucas regras
    * no total, e resolver qual vale para cada produto e conta de memória.
    */
-  private async rulesFor(products: readonly LeanProduct[]): Promise<QuantityDiscountRule[]> {
+  private async rulesFor(
+    products: readonly LeanProduct[],
+  ): Promise<QuantityDiscountRule[]> {
     if (products.length === 0) {
       return [];
     }
@@ -492,7 +556,11 @@ export class PublicCatalogService {
         isActive: true,
         $or: [
           { productId: { $in: products.map((product) => product._id) } },
-          { categoryId: { $in: products.flatMap((product) => product.categoryIds) } },
+          {
+            categoryId: {
+              $in: products.flatMap((product) => product.categoryIds),
+            },
+          },
         ],
       })
       .lean<QuantityDiscount[]>()
@@ -518,7 +586,10 @@ export class PublicCatalogService {
   private async categoryBranch(slug: string): Promise<Types.ObjectId[]> {
     const wanted = slugify(slug);
     const category = await this.categories
-      .findOne({ isActive: true, $or: [{ slug: wanted }, { previousSlugs: wanted }] })
+      .findOne({
+        isActive: true,
+        $or: [{ slug: wanted }, { previousSlugs: wanted }],
+      })
       .select('_id parentId')
       .exec();
 

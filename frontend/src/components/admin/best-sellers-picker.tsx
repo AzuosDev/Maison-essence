@@ -1,6 +1,6 @@
 import { useState, type DragEvent } from 'react';
 import { Badge, Skeleton } from '@/components/ui';
-import { SETTINGS_LIMITS, moveItem, useProduct } from '@/features/admin';
+import { SETTINGS_LIMITS, moveItem, useProduct, type AdminProduct } from '@/features/admin';
 import { cx } from '@/lib/cx';
 import { ArrowDownIcon, ArrowUpIcon, GripIcon, TrashIcon } from './admin-icons';
 import { ProductSearch, ProductThumb } from './product-picker';
@@ -65,8 +65,8 @@ export function BestSellersPicker({ productIds, onChange }: BestSellersPickerPro
       {productIds.length === 0 ? (
         <p className={styles.empty}>
           A fileira esta no automático: ela mostra o que mais vendeu, por unidades somadas nos
-          pedidos, e completa as vagas que faltam com o catálogo. O primeiro produto escolhido
-          aqui substitui esse critério inteiro.
+          pedidos, e completa as vagas que faltam com o catálogo. O primeiro produto escolhido aqui
+          substitui esse critério inteiro.
         </p>
       ) : (
         <ol className={styles.list}>
@@ -174,6 +174,7 @@ function ChosenRow({
 }) {
   const product = useProduct(productId);
   const name = product.data?.name ?? '';
+  const away = product.data === undefined ? '' : whyAway(product.data);
 
   const actions: RowMenuItem[] = [
     {
@@ -216,8 +217,8 @@ function ChosenRow({
         </>
       ) : product.isError || product.data === undefined ? (
         <p className={styles.gone}>
-          Este produto não esta mais no cadastro, e por isso não aparece na fileira. Tire-o da
-          lista para a vaga voltar a ser de outro.
+          Este produto não esta mais no cadastro, e por isso não aparece na fileira. Tire-o da lista
+          para a vaga voltar a ser de outro.
         </p>
       ) : (
         <>
@@ -237,9 +238,11 @@ function ChosenRow({
             curta. No celular só a frase sobrevive — o selo roubaria do nome
             do produto a largura de que ele precisa para ser lido.
           */}
-          {product.data.isActive ? null : (
+          {away === '' ? null : (
             <span className={styles.flag}>
-              <Badge variant="danger">fora do ar</Badge>
+              <Badge variant="danger">
+                {product.data.isActive ? 'não esta a venda' : 'fora do ar'}
+              </Badge>
             </span>
           )}
         </>
@@ -250,11 +253,29 @@ function ChosenRow({
           navega por leitor de tela. Sem nome ainda, vale a vaga. */}
       <RowMenu label={name === '' ? `card ${String(index + 1)}` : name} items={actions} />
 
-      {product.data?.isActive === false ? (
-        <p className={styles.warning}>
-          Fora do ar: a fileira fica com um card a menos até ele voltar.
-        </p>
-      ) : null}
+      {away === '' ? null : <p className={styles.warning}>{away}</p>}
     </div>
   );
+}
+
+/**
+ * Por que este produto não vai aparecer na fileira.
+ *
+ * Duas razões, e a segunda e a que ninguem adivinha: o produto esta
+ * publicado, aparece na busca aqui, e mesmo assim não entra em prateleira
+ * nenhuma da loja porque não tem variante a venda — a última foi desativada
+ * ou o cadastro nunca teve uma ativa. Sem esta frase a dona escolhe o
+ * produto, a fileira fica sem o card dele e a tela parece ter ignorado a
+ * escolha.
+ */
+function whyAway(product: AdminProduct): string {
+  if (!product.isActive) {
+    return 'Fora do ar: a fileira fica com um card a menos até ele voltar.';
+  }
+
+  if (!product.variants.some((variant) => variant.isActive)) {
+    return 'Sem variante a venda: a loja não mostra este produto em prateleira nenhuma, e a fileira fica com um card a menos. Ative uma variante no cadastro dele.';
+  }
+
+  return '';
 }
