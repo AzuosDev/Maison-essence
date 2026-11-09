@@ -6,10 +6,12 @@ import {
   ArrowLeftIcon,
   BannerEditor,
   BestSellersPicker,
+  BrandsPicker,
   ChevronRightIcon,
   GiftEditor,
   PagesEditor,
   PerfumePicker,
+  PosterEditor,
   ShortcutEditor,
 } from '@/components/admin';
 import { Button, EmptyState, Input, Skeleton, Switch, Textarea, useToast } from '@/components/ui';
@@ -39,22 +41,22 @@ import styles from './admin-settings-page.module.css';
 /**
  * As configurações da loja.
  *
- * ## Nove assuntos, uma tela, um botão
+ * ## Onze assuntos, uma tela, um botão
  *
- * Nome da loja, retirada, brinde, atalhos da home, redes, carrossel, as duas
- * fileiras que a home mostra e as páginas moram no mesmo documento e são
- * gravados pelo mesmo `PATCH`. Poderiam ser nove telas, e não são: quem abre
- * esta área o faz raramente, quase sempre para mexer em uma coisa só — e
- * descobrir *qual das nove telas* tem a barra de avisos custa mais do que
- * qualquer rolagem.
+ * Nome da loja, retirada, brinde, atalhos da home, redes, carrossel, as
+ * fileiras e as faixas que a home mostra e as páginas moram no mesmo
+ * documento e são gravados pelo mesmo `PATCH`. Poderiam ser onze telas, e não
+ * são: quem abre esta área o faz raramente, quase sempre para mexer em uma
+ * coisa só — e descobrir *qual das onze telas* tem a barra de avisos custa
+ * mais do que qualquer rolagem.
  *
- * Então os nove assuntos abrem em grade: um retângulo para cada um, com o
+ * Então os onze assuntos abrem em grade: um retângulo para cada um, com o
  * título, uma linha dizendo o que vive lá dentro e como aquilo esta agora —
  * "retirada: desligada", "3 artes", "mais vendidos: no automático". A grade
  * responde de relance a pergunta que traz a dona aqui ("como esta a loja?") e
  * clicar abre **um** assunto, sozinho na tela, com um voltar.
  *
- * Um assunto por vez, e não os nove empilhados: nove cartões numa coluna fazem
+ * Um assunto por vez, e não os onze empilhados: onze cartões numa coluna fazem
  * quem veio trocar o banner rolar por endereço de retirada e regra de brinde
  * para chegar lá — e, no celular, essa rolagem e a tela inteira.
  *
@@ -82,13 +84,14 @@ import styles from './admin-settings-page.module.css';
  * permissão se divide outra vez, por campo: quatro assuntos são a operação da
  * loja — nome, contato, horário, barra de avisos, frete grátis, retirada, o
  * brinde por valor de compra e a fileira de atalhos da home — e o gerente
- * grava os quatro. Os cinco outros são a moldura: redes sociais, carrossel, a
- * fileira de mais vendidos, perfume da vez e páginas do rodapé. Eles decidem o
- * que a loja mostra em toda página — ou, no caso dos dois da home, na primeira
- * tela de quem chega — e não mudam no expediente, e por isso ficam com quem
- * mantem o sistema.
+ * grava os quatro. Os sete outros são a moldura: redes sociais, carrossel, a
+ * fileira de mais vendidos, a faixa de marcas, os cartazes de coleção, o
+ * perfume da vez e as páginas do rodapé. Eles decidem o que a loja mostra em
+ * toda página — ou, no caso dos da home, o que ela diz de si antes de dizer
+ * preço — e não mudam no expediente, e por isso ficam com quem mantem o
+ * sistema.
  *
- * Para o gerente, esses cinco assuntos não são desabilitados: eles não entram
+ * Para o gerente, esses sete assuntos não são desabilitados: eles não entram
  * na grade. Retângulo cinza que não abre e um convite a perguntar "por que não
  * posso?" no meio do expediente, e a resposta seria uma conversa sobre
  * permissão. O lugar some, e abaixo da grade fica uma linha dizendo o que vive
@@ -152,7 +155,7 @@ export default function AdminSettingsPage() {
 /* ---- Os assuntos -------------------------------------------------------------- */
 
 /**
- * Os nove assuntos, na ordem em que a cliente encontra o que eles ajustam: o
+ * Os onze assuntos, na ordem em que a cliente encontra o que eles ajustam: o
  * que ela lê da loja, depois a home de cima para baixo, depois o rodapé.
  *
  * A chave não vai para o endereço do navegador — e estado da tela, não rota —,
@@ -165,6 +168,8 @@ const SUBJECTS = [
   'banners',
   'atalhos',
   'mais-vendidos',
+  'marcas',
+  'cartazes',
   'perfume',
   'redes',
   'paginas',
@@ -176,6 +181,8 @@ type Subject = (typeof SUBJECTS)[number];
 const FRAME_SUBJECTS: ReadonlySet<Subject> = new Set([
   'banners',
   'mais-vendidos',
+  'marcas',
+  'cartazes',
   'perfume',
   'redes',
   'paginas',
@@ -188,6 +195,8 @@ const SUBJECT_TITLES: Record<Subject, string> = {
   banners: 'Banners da home',
   atalhos: 'Atalhos da home',
   'mais-vendidos': 'Mais vendidos',
+  marcas: 'Nossas marcas',
+  cartazes: 'Cartazes de coleção',
   perfume: 'O perfume da vez',
   redes: 'Redes sociais',
   paginas: 'Páginas do rodapé',
@@ -201,6 +210,8 @@ const SUBJECT_SUMMARIES: Record<Subject, string> = {
   banners: 'O carrossel que abre a home e a faixa do meio dela.',
   atalhos: 'Os círculos logo abaixo do banner.',
   'mais-vendidos': 'A primeira fileira da home, e a que mais vende.',
+  marcas: 'Os nomes escritos no meio da home, e a vitrine de cada um.',
+  cartazes: 'As duas artes largas entre as prateleiras.',
   perfume: 'O bloco grande que fecha a home.',
   redes: 'Os ícones de Instagram e TikTok do rodapé.',
   paginas: 'Título, texto e publicação das seis páginas.',
@@ -213,6 +224,8 @@ const WARNING_SUBJECTS: Record<SettingsWarning['scope'], Subject> = {
   gift: 'brinde',
   banners: 'banners',
   shortcuts: 'atalhos',
+  posters: 'cartazes',
+  brands: 'marcas',
   pages: 'paginas',
 };
 
@@ -251,6 +264,8 @@ function subjectsWithError(errors: SettingsErrors, drawn: readonly Subject[]): r
     banners: someOf(Object.values(errors.banners ?? {})),
     atalhos: someOf(Object.values(errors.shortcuts ?? {})),
     'mais-vendidos': false,
+    marcas: false,
+    cartazes: someOf(Object.values(errors.posters ?? {})),
     perfume: false,
     redes: SUBJECT_FIELDS.redes.some((field) => errors[field] !== undefined),
     paginas: someOf(Object.values(errors.pages ?? {})),
@@ -284,6 +299,14 @@ function statusOf(draft: SettingsDraft, subject: Subject): string {
       return draft.bestSellerProductIds.length === 0
         ? 'no automático'
         : countOf(draft.bestSellerProductIds.length, 'produto', 'produtos');
+    case 'marcas':
+      return draft.brands.length === 0
+        ? 'no automático'
+        : countOf(draft.brands.length, 'marca', 'marcas');
+    case 'cartazes':
+      return draft.posters.length === 0
+        ? 'nas categorias'
+        : countOf(draft.posters.length, 'cartaz', 'cartazes');
     case 'perfume':
       return draft.featuredPerfumeProductId === null ? 'no automático' : 'escolhido';
     case 'redes':
@@ -501,9 +524,10 @@ function SettingsForm({
 
           {canEditFrame ? null : (
             <p className={styles.handover}>
-              O carrossel da home, a fileira de mais vendidos, o perfume da vez, as páginas do
-              rodapé e as redes sociais ficam com quem mantem o sistema — aparecem em toda página da
-              loja e não mudam no dia a dia. Para trocar alguma delas, fale com essa pessoa.
+              O carrossel da home, a fileira de mais vendidos, a faixa de marcas, os cartazes de
+              coleção, o perfume da vez, as páginas do rodapé e as redes sociais ficam com quem
+              mantem o sistema — são o que a loja mostra de si em toda página, e não mudam no dia a
+              dia. Para trocar alguma delas, fale com essa pessoa.
             </p>
           )}
         </>
@@ -868,6 +892,54 @@ function SettingsForm({
                 productIds={draft.bestSellerProductIds}
                 onChange={(bestSellerProductIds) => {
                   set({ bestSellerProductIds });
+                }}
+              />
+            </section>
+          ) : null}
+
+          {showing === 'marcas' ? (
+            <section className={styles.card} aria-labelledby="secao-marcas">
+              <h2 className={styles.cardTitle} id="secao-marcas">
+                Nossas marcas
+              </h2>
+
+              <p className={styles.cardHint}>
+                Os nomes escritos no meio da home, cada um levando a vitrine daquela marca. Escolha
+                da lista do cadastro: marca e texto livre no produto, e e por isso que a faixa
+                automática mostra cada erro de digitação como se fosse uma marca da casa.
+              </p>
+
+              <Warnings warnings={warnings} scope="brands" />
+
+              <BrandsPicker
+                brands={draft.brands}
+                onChange={(brands) => {
+                  set({ brands });
+                }}
+              />
+            </section>
+          ) : null}
+
+          {showing === 'cartazes' ? (
+            <section className={styles.card} aria-labelledby="secao-cartazes">
+              <h2 className={styles.cardTitle} id="secao-cartazes">
+                Cartazes de coleção
+              </h2>
+
+              <p className={styles.cardHint}>
+                As duas artes largas entre as prateleiras — o destaque do meio da página. Cada uma
+                tem arte, nome e para onde leva; a prévia mostra o cartaz como a home o desenha.
+                São duas colunas: com um cartaz só a faixa não aparece, e sem nenhum ela volta as
+                duas categorias com mais produtos.
+              </p>
+
+              <Warnings warnings={warnings} scope="posters" />
+
+              <PosterEditor
+                posters={draft.posters}
+                errors={errors.posters}
+                onChange={(posters) => {
+                  set({ posters });
                 }}
               />
             </section>

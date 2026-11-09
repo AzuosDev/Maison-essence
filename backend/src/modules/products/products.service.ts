@@ -20,7 +20,7 @@ import type { UpdateProductStatusDto } from './dto/update-product-status.dto.js'
 import { priceChangesBetween, priceSnapshotOf } from './price-audit.js';
 import { searchFilter, usesTextIndex } from './product-search.js';
 import { toProductView } from './product.view.js';
-import type { ProductView } from './product.view.js';
+import type { BrandCountView, ProductView } from './product.view.js';
 import {
   DEFAULT_PAGE_SIZE,
   PRODUCT_NOT_FOUND_MESSAGE,
@@ -76,6 +76,54 @@ export class ProductsService {
     ]);
 
     return paginate(found.map(toProductView), totalItems, page, limit);
+  }
+
+  /**
+   * As marcas escritas no cadastro, com quantos produtos cada grafia tem.
+   *
+   * ## Por que isto existe
+   *
+   * Marca e campo livre do produto: nao ha registro de marca neste sistema, e
+   * nunca houve. Entao "Isabelle La Belle", "Isabele La Belle" e "Isabele La
+   * Belle" sao tres marcas para a loja — tres vitrines, tres nomes na faixa
+   * da home —, e ninguem percebe isso olhando o cadastro de um produto por
+   * vez.
+   *
+   * Esta lista e o que permite ao painel **oferecer** as marcas em vez de
+   * pedir que sejam digitadas: montar a faixa escolhendo de uma lista nao
+   * inventa grafia nova, e a contagem ao lado de cada nome e o que denuncia a
+   * grafia que tem um produto so.
+   *
+   * ## As duas contagens
+   *
+   * `products` e o cadastro inteiro; `live` e o que a cliente consegue ver. A
+   * diferenca importa porque marca com produtos todos fora do ar leva a uma
+   * vitrine vazia — e uma faixa que promete uma marca e abre o vazio e pior
+   * do que uma faixa sem ela.
+   *
+   * Sem paginacao de proposito: sao dezenas de nomes, nao milhares, e quem
+   * monta a faixa precisa de todos de uma vez para comparar as grafias.
+   */
+  async brands(): Promise<BrandCountView[]> {
+    const rows = await this.products
+      .aggregate<{ _id: string; products: number; live: number }>([
+        { $match: { brand: { $nin: ['', null] } } },
+        {
+          $group: {
+            _id: '$brand',
+            products: { $sum: 1 },
+            live: { $sum: { $cond: ['$isActive', 1, 0] } },
+          },
+        },
+      ])
+      .exec();
+
+    // Ordenado aqui, e nao no banco: `localeCompare` com o pt poe "Árabe"
+    // junto de "Arabe", que e exatamente o par que a dona precisa ver lado a
+    // lado. O `$sort` do Mongo ordenaria por byte e separaria os dois.
+    return rows
+      .map((row) => ({ name: row._id, products: row.products, live: row.live }))
+      .sort((first, second) => first.name.localeCompare(second.name, 'pt'));
   }
 
   async findOne(id: string): Promise<ProductView> {

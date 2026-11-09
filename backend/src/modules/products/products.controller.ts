@@ -20,7 +20,7 @@ import { CreateProductDto } from './dto/create-product.dto.js';
 import { ListProductsDto } from './dto/list-products.dto.js';
 import { UpdateProductDto } from './dto/update-product.dto.js';
 import { UpdateProductStatusDto } from './dto/update-product-status.dto.js';
-import type { ProductView } from './product.view.js';
+import type { BrandCountView, ProductView } from './product.view.js';
 import { ProductsService } from './products.service.js';
 
 /**
@@ -43,6 +43,19 @@ export class ProductsController {
   @Get()
   list(@Query() query: ListProductsDto): Promise<Paginated<ProductView>> {
     return this.products.list(query);
+  }
+
+  /**
+   * As marcas escritas no cadastro, com a contagem de cada grafia.
+   *
+   * Antes de `:id`, e nao depois: declarada abaixo, a rota do id capturaria
+   * "brands" e devolveria 404 — o Nest casa na ordem em que as rotas sao
+   * declaradas.
+   */
+  @Roles(...READS_CATALOG)
+  @Get('brands')
+  brands(): Promise<BrandCountView[]> {
+    return this.products.brands();
   }
 
   @Roles(...READS_CATALOG)

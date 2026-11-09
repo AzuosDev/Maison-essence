@@ -203,6 +203,11 @@ export interface SettingsView {
    * categorias-raiz com mais produtos que tenham foto.
    */
   posters: PosterView[];
+  /**
+   * Os nomes da faixa "Nossas marcas", na ordem em que a home os escreve.
+   * Vazia, a faixa volta a sair das marcas dos produtos que ela carregou.
+   */
+  brands: string[];
   institutionalPages: PageView[];
   updatedAt: Date;
 }
@@ -265,6 +270,15 @@ export interface PublicSettingsView {
    * das categorias — que é o que ela fazia antes desta lista existir.
    */
   posters: PublicPosterView[];
+  /**
+   * As marcas escolhidas para a faixa, na ordem delas.
+   *
+   * Vazia significa "a dona não montou a faixa", e a home volta a deduzi-la
+   * dos produtos que já carregou — que é o que ela fazia antes desta lista
+   * existir, e o que também põe cada erro de digitação do cadastro na
+   * vitrine como se fosse uma marca.
+   */
+  brands: string[];
 }
 
 export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
@@ -294,6 +308,7 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     posters: [...settings.posters]
       .sort((first, second) => first.order - second.order)
       .map(toPosterView),
+    brands: [...settings.brands],
     institutionalPages: toPageViews(settings),
     updatedAt: settings.updatedAt,
   };
@@ -327,6 +342,8 @@ export function toPublicSettingsView(
     banners: liveBanners(settings.banners, now).map(toPublicBannerView),
     shortcuts: liveShortcuts(settings.shortcuts).map(toPublicShortcutView),
     posters: livePosters(settings.posters).map(toPublicPosterView),
+    // Sem filtro e sem ordenar: a lista já é a faixa, na ordem gravada.
+    brands: [...settings.brands],
   };
 }
 

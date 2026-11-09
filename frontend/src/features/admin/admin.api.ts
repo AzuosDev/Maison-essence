@@ -11,6 +11,7 @@ import type {
   AdminPaymentSettings,
   AdminProduct,
   AdminStoreSettings,
+  BrandCount,
   CreateCategoryInput,
   CreateCouponInput,
   CreateDeliveryCityInput,
@@ -98,6 +99,20 @@ export function listProducts(
   return api.get<AdminPage<AdminProduct>>('/admin/products', {
     scope: SESSION_SCOPES.ADMIN,
     query: params,
+    ...(signal ? { signal } : {}),
+  });
+}
+
+/**
+ * As marcas escritas no cadastro, com a contagem de cada grafia.
+ *
+ * Antes de `/admin/products/:id` no servidor, senão a rota do id capturaria
+ * "brands". Aqui e só uma leitura: quem monta a faixa de marcas precisa das
+ * grafias existentes para escolher entre elas em vez de digitar uma nova.
+ */
+export function listBrands(signal?: AbortSignal): Promise<BrandCount[]> {
+  return api.get<BrandCount[]>('/admin/products/brands', {
+    scope: SESSION_SCOPES.ADMIN,
     ...(signal ? { signal } : {}),
   });
 }

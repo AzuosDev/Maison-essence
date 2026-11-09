@@ -20,9 +20,9 @@ import AdminSettingsPage from './admin-settings-page';
  *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
  * - **a divisão por campo**: o gerente da loja abre a tela e grava o que muda
- *   no expediente, e as cinco seções de moldura — redes, carrossel, a fileira
- *   de mais vendidos, perfume da vez e páginas do rodapé — não são desenhadas
- *   para ele. O atendimento
+ *   no expediente, e as sete seções de moldura — redes, carrossel, a fileira
+ *   de mais vendidos, a faixa de marcas, os cartazes de coleção, perfume da
+ *   vez e páginas do rodapé — não são desenhadas para ele. O atendimento
  *   não entra de jeito nenhum.
  */
 
@@ -81,6 +81,17 @@ const SETTINGS = {
       isActive: true,
     },
   ],
+  // A faixa de cartazes e a de marcas no automatico, como a loja nasce.
+  posters: [] as {
+    id: string;
+    label: string;
+    image: string;
+    link: string;
+    caption: string;
+    order: number;
+    isActive: boolean;
+  }[],
+  brands: [] as string[],
   shortcuts: [
     {
       id: 's1',
@@ -182,6 +193,8 @@ function saved(patch: Patch): Settings {
     socialLinks: { ...SETTINGS.socialLinks, ...patch.socialLinks },
     banners: patch.banners ?? SETTINGS.banners,
     bestSellerProductIds: patch.bestSellerProductIds ?? SETTINGS.bestSellerProductIds,
+    posters: patch.posters ?? SETTINGS.posters,
+    brands: patch.brands ?? SETTINGS.brands,
     institutionalPages: SETTINGS.institutionalPages.map((page) =>
       mergePage(page, patch.institutionalPages),
     ),
@@ -203,6 +216,18 @@ function jsonResponse(body: unknown, status = 200): Response {
     headers: { 'content-type': 'application/json' },
   });
 }
+
+/**
+ * As grafias de marca do cadastro, como o servidor as conta.
+ *
+ * As duas primeiras são a mesma casa escrita de dois jeitos — uma letra de
+ * diferença —, que e o caso que a seção de marcas existe para mostrar.
+ */
+const BRANDS = [
+  { name: 'Isabele La Belle', products: 1, live: 1 },
+  { name: 'Isabelle La Belle', products: 6, live: 5 },
+  { name: 'Lattafa', products: 4, live: 0 },
+];
 
 /** A arvore que o seletor de destino de um atalho oferece. */
 const CATEGORIES = [
@@ -243,6 +268,13 @@ beforeEach(() => {
         // A busca do perfume da vez bate em `/admin/products`, e não nas
         // configurações: sem este desvio, a tela receberia o documento da loja
         // no lugar de uma página de produtos.
+        // A faixa de marcas pede as grafias do cadastro, com a contagem de
+        // cada uma. Sem este desvio ela receberia a pagina de produtos e a
+        // lista de escolha viria vazia.
+        if (url.includes('/admin/products/brands')) {
+          return Promise.resolve(jsonResponse(BRANDS));
+        }
+
         if (url.includes('/admin/products')) {
           // Cada linha da fileira de mais vendidos pede o produto pelo id, e
           // não a pagina: sem este desvio ela receberia a lista inteira e
@@ -406,6 +438,8 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
   expect(screen.queryByRole('button', { name: /^Redes sociais/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^Banners da home/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^Mais vendidos/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Nossas marcas/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Cartazes de coleção/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^O perfume da vez/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^Páginas do rodapé/ })).toBeNull();
 
@@ -413,7 +447,7 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
   expect(screen.getByText(/ficam com quem mantem o sistema/)).toBeDefined();
 });
 
-test('o administrador vê os nove assuntos', async () => {
+test('o administrador vê os onze assuntos', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
@@ -424,6 +458,8 @@ test('o administrador vê os nove assuntos', async () => {
   expect(screen.getByRole('button', { name: /^Banners da home/ })).toBeDefined();
   expect(screen.getByRole('button', { name: /^Atalhos da home/ })).toBeDefined();
   expect(screen.getByRole('button', { name: /^Mais vendidos/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Nossas marcas/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Cartazes de coleção/ })).toBeDefined();
   expect(screen.getByRole('button', { name: /^O perfume da vez/ })).toBeDefined();
   expect(screen.getByRole('button', { name: /^Redes sociais/ })).toBeDefined();
   expect(screen.getByRole('button', { name: /^Páginas do rodapé/ })).toBeDefined();
@@ -435,7 +471,7 @@ test('o administrador vê os nove assuntos', async () => {
 /**
  * O estado atual fica no retângulo, e e o que responde "como esta a loja?".
  *
- * Sem ele a grade seria um índice: nove nomes que obrigam a abrir cada um para
+ * Sem ele a grade seria um índice: onze nomes que obrigam a abrir cada um para
  * descobrir se a retirada esta ligada. Sai do rascunho, e não do que esta
  * gravado, para concordar com o que a pessoa acabou de digitar lá dentro.
  */
@@ -954,4 +990,123 @@ test('a página fechada diz o essencial: publicada, e se há o que publicar', as
   expect(
     within(screen.getByRole('button', { name: /Como comprar/ })).getByText('Sem texto'),
   ).toBeDefined();
+});
+
+/* ---- Os cartazes de coleção ------------------------------------------------------ */
+
+/**
+ * A faixa do meio da home.
+ *
+ * O que estes dois casos cobram e o que a seção tem de próprio: a faixa vazia
+ * diz o que a home esta mostrando no lugar, e um cartaz só avisa que a faixa
+ * desaparece — que e o estado em que a dona salva e não entende o que houve.
+ */
+test('sem cartaz, a tela diz que a home esta deduzindo a faixa', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('Cartazes de coleção');
+
+  // No lugar da lista, e não como aviso: a faixa vazia e o estado inicial de
+  // toda loja, e o que a dona precisa saber e o que a home esta mostrando.
+  expect(screen.getByText(/A faixa esta vazia/)).toBeDefined();
+  expect(screen.getByText(/duas categorias com mais produtos que tenham foto/)).toBeDefined();
+
+  // E a medida da arte fica na tela, como a dos banners.
+  expect(screen.getByText(/Medida da arte/).textContent).toContain('1920');
+});
+
+test('um cartaz só avisa que a faixa não aparece na home', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  const umSo = {
+    ...SETTINGS,
+    posters: [
+      {
+        id: 'c1',
+        label: "Victoria's Secret",
+        image: 'maison-essence/posters/victorias-secret-00fbe353',
+        link: "/produtos?marca=Victoria's%20Secret",
+        caption: '',
+        order: 0,
+        isActive: true,
+      },
+    ],
+  };
+
+  vi.stubGlobal(
+    'fetch',
+    vi.fn((url: string) =>
+      Promise.resolve(
+        jsonResponse(
+          url.includes('/admin/products/brands')
+            ? BRANDS
+            : url.includes('/admin/categories')
+              ? CATEGORIES
+              : umSo,
+        ),
+      ),
+    ),
+  );
+
+  abrir();
+  await entrar('Cartazes de coleção');
+
+  expect(screen.getByText(/Só um cartaz ligado/)).toBeDefined();
+
+  // O nome do cartaz aparece na prévia, do jeito que a home o escreve.
+  expect(screen.getAllByText("Victoria's Secret").length).toBeGreaterThan(0);
+});
+
+/* ---- Nossas marcas ---------------------------------------------------------------- */
+
+/**
+ * A faixa de marcas.
+ *
+ * Marca e campo livre do cadastro do produto, e e isso que põe a mesma casa
+ * na home escrita de dois jeitos. O que esta seção precisa fazer, e o que
+ * estes casos cobram, e mostrar as grafias do catálogo com o tamanho de cada
+ * uma — e deixar escolher dali, nunca digitar.
+ */
+test('as marcas vem do cadastro, com a contagem de cada grafia', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('Nossas marcas');
+
+  expect(await screen.findByRole('button', { name: /Isabelle La Belle/ })).toBeDefined();
+
+  // A marca com produtos, mas nenhum no ar, diz isso antes de ser escolhida:
+  // ela abriria uma vitrine vazia.
+  expect(screen.getByRole('button', { name: /Lattafa/ }).textContent).toContain('nenhum no ar');
+});
+
+test('as grafias parecidas viram aviso, com quantos produtos cada uma tem', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+  await entrar('Nossas marcas');
+
+  expect(await screen.findByText(/parecem a mesma marca/)).toBeDefined();
+
+  // E o conserto esta escrito, porque não e aqui: e no cadastro do produto.
+  expect(screen.getByText(/escrever a marca igual a da maior/)).toBeDefined();
+});
+
+test('escolher uma marca manda a faixa inteira, e só ela', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  const user = userEvent.setup();
+
+  abrir();
+  await entrar('Nossas marcas', user);
+
+  await user.click(await screen.findByRole('button', { name: /Isabelle La Belle/ }));
+  await user.click(screen.getByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    expect(lastWrite()).toBeDefined();
+  });
+
+  expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ brands: ['Isabelle La Belle'] });
 });

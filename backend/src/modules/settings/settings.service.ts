@@ -204,6 +204,13 @@ export class SettingsService {
       settings.set('bestSellerProductIds', dto.bestSellerProductIds);
     }
 
+    // A faixa de marcas e crua pelo mesmo motivo: e uma ordem de nomes, e os
+    // nomes vem do cadastro dos produtos. Quem confere se alguem tem aquela
+    // grafia escrita e o painel, que escolhe de uma lista tirada do catalogo.
+    if (dto.brands !== undefined) {
+      settings.set('brands', dto.brands);
+    }
+
     if (dto.institutionalPages !== undefined) {
       settings.set(
         'institutionalPages',
@@ -435,6 +442,8 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
     // único — a ordem faz parte do que mudou — e dois ids iguais são objetos
     // diferentes, o que registraria alteração onde não houve.
     bestSellerProductIds: settings.bestSellerProductIds.map((id) => id.toHexString()),
+    // Idem: a ordem faz parte do que mudou, e o array vale como um valor so.
+    brands: [...settings.brands],
     pickupAddress: {
       street: pickupAddress.street,
       number: pickupAddress.number,

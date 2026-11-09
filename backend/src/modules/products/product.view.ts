@@ -57,6 +57,20 @@ export interface ProductView {
   updatedAt: Date;
 }
 
+/**
+ * Uma grafia de marca encontrada no cadastro, e o tamanho dela.
+ *
+ * `products` e o cadastro inteiro; `live` e o que a cliente ve. Os dois
+ * numeros existem porque sao duas perguntas diferentes da dona: "essa grafia
+ * e a certa?" se responde comparando `products` entre grafias parecidas, e
+ * "essa marca abre uma vitrine?" se responde com `live`.
+ */
+export interface BrandCountView {
+  name: string;
+  products: number;
+  live: number;
+}
+
 export function toProductView(product: ProductDocument): ProductView {
   const variants = product.variants.map(toVariantView);
   // Os cálculos do card descrevem o que esta a venda, e não o que a dona

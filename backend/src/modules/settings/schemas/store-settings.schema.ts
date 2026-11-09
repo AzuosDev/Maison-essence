@@ -450,6 +450,25 @@ export class StoreSettings extends SingletonSchema {
   @Prop({ type: [CollectionPosterSchema], default: [] })
   posters: CollectionPoster[];
 
+  /**
+   * A faixa "Nossas marcas" da home, na ordem em que ela os escreve.
+   *
+   * Os nomes, e nao ids: marca e texto livre no cadastro do produto, e nao
+   * tem registro proprio nenhum. Cada nome vira o filtro `?marca=` da
+   * vitrine, entao ele precisa ser a grafia exata que os produtos daquela
+   * marca tem escrita — e por isso o painel escolhe de uma lista tirada do
+   * catalogo, em vez de deixar digitar.
+   *
+   * ## Lista vazia nao e faixa vazia
+   *
+   * Sem nenhuma escolha a faixa volta a mostrar as marcas dos produtos que a
+   * propria home ja carregou, em ordem alfabetica, que era o unico criterio
+   * antes deste campo. E o que faz a loja nova abrir com a faixa — e o que
+   * tambem expoe cada erro de digitacao do cadastro como se fosse uma marca.
+   */
+  @Prop({ type: [String], default: [] })
+  brands: string[];
+
   @Prop({ type: [InstitutionalPageSchema], default: [] })
   institutionalPages: InstitutionalPage[];
 }

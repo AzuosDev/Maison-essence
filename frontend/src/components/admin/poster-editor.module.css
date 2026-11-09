@@ -1,0 +1,392 @@
+/*
+ * A faixa de cartazes de coleção.
+ *
+ * Cada cartaz é um bloco com a prévia em cima e os campos embaixo — e não a
+ * prévia numa coluna estreita ao lado deles, como no editor de atalhos. O
+ * círculo de um atalho tem 104px na loja e cabe em qualquer canto; o cartaz
+ * tem 604px, e mostrá-lo a 300px faria o "VER A COLEÇÃO" virar um texto de
+ * 6px — legível em lugar nenhum, e mentindo sobre o que a cliente vê.
+ *
+ * Porque a prévia não é uma miniatura do arquivo: é o cartaz como a home o
+ * desenha. Daí as medidas do texto estarem em `cqw` (porcentagem da largura
+ * do próprio cartaz) e não em `rem`, e daí a prévia trocar de proporção no
+ * mesmo ponto em que a home troca — com `@container`, porque o que manda aqui
+ * é a largura do cartaz, não a da janela.
+ */
+
+.editor {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-12);
+
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--surface);
+}
+
+/* ---- O cabeçalho da linha ------------------------------------------------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * O estado do cartaz, escrito.
+ *
+ * Dois estados, como o atalho: cartaz é destaque e não campanha, então não há
+ * agendamento. A palavra carrega a informação e a cor só reforça.
+ */
+.status {
+  flex: none;
+
+  padding: 0.125rem var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.live {
+  background-color: var(--success-wash);
+  color: var(--success);
+}
+
+.off {
+  background-color: var(--bg-alt);
+  color: var(--ink-soft);
+}
+
+/* ---- O corpo ---------------------------------------------------------------- */
+
+.body {
+  display: grid;
+  gap: var(--space-16);
+}
+
+/*
+ * A prévia no tamanho que o cartaz tem na loja.
+ *
+ * 38rem é 608px, que é a largura de um cartaz num desktop de 1280. Quando a
+ * tela não tem essa largura, a prévia encolhe e o texto encolhe junto, na
+ * mesma proporção — que é exatamente o que acontece com a cliente.
+ */
+.art {
+  display: grid;
+  gap: var(--space-8);
+  align-content: start;
+
+  max-width: 38rem;
+}
+
+/*
+ * O botão é o próprio cartaz.
+ *
+ * Sem caixa e sem borda: o alvo é a arte mais o rótulo abaixo dela, e uma
+ * moldura em volta somaria um retângulo cujo único trabalho seria conter algo
+ * que já tem forma.
+ */
+.frameButton {
+  display: grid;
+  gap: var(--space-8);
+  justify-items: start;
+
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.frameButton:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.frameButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-card);
+}
+
+/*
+ * A moldura, com a proporção que ela tem na loja.
+ *
+ * `container-type: inline-size` é o que permite ao texto medir-se contra a
+ * largura do cartaz, em `cqw`. E `aspect-ratio` fixo com `object-fit: cover` é
+ * exatamente o que a home faz — é aqui que o corte de uma arte fora de medida
+ * aparece, em vez de aparecer na vitrine.
+ */
+.frame {
+  container-type: inline-size;
+
+  position: relative;
+  display: block;
+  overflow: hidden;
+
+  width: 100%;
+  aspect-ratio: 16 / 9;
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+  color: var(--slab-ink);
+  box-shadow: 0 0 0 1px var(--line);
+
+  transition: box-shadow var(--transition);
+}
+
+.frameButton:hover .frame {
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+.image {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* O mesmo véu da home, com os mesmos três pontos. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgb(10 10 10 / 0.78) 0%,
+    rgb(10 10 10 / 0.45) 32%,
+    transparent 62%
+  );
+}
+
+/*
+ * O pé do cartaz, nas proporções do celular.
+ *
+ * O cartaz do celular tem 358px: 16px de respiro, nome de 22px, apoio e
+ * convite de 12px. É a medida de base porque é a mais estreita, e é nela que
+ * o painel cai quando a tela é pequena.
+ */
+.caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.12cqw;
+
+  padding: 4.47cqw;
+}
+
+.posterName {
+  font-size: 6.15cqw;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-title);
+  line-height: 1.15;
+}
+
+/* O lugar do nome, enquanto ele não foi escrito. */
+.placeholder {
+  opacity: 0.55;
+  font-style: italic;
+}
+
+.posterCount {
+  font-size: 3.35cqw;
+  color: rgb(255 255 255 / 0.78);
+}
+
+.action {
+  margin-top: 2.23cqw;
+
+  font-size: 3.35cqw;
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--gold);
+
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+  text-decoration-thickness: 1px;
+}
+
+.artLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+.frameButton:hover .artLabel {
+  color: var(--gold-deep);
+}
+
+.artLabel svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+/*
+ * O que a moldura vai cortar desta arte.
+ *
+ * Fica colado na prévia, e não na lista de erros do formulário: é sobre a
+ * imagem que está ali em cima, e a dona só tem como agir sobre ele trocando o
+ * arquivo — que é o botão logo acima.
+ */
+.framing {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.artError {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--danger);
+  text-wrap: pretty;
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-12);
+  min-width: 0;
+}
+
+/* O tipo de destino e o valor dele, lado a lado: são uma pergunta só. */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-12);
+}
+
+/* ---- O rodapé do editor ------------------------------------------------------ */
+
+.empty,
+.room {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.empty {
+  padding: var(--space-16);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.room {
+  flex: 1 1 16rem;
+}
+
+/*
+ * A medida da arte, sempre na tela.
+ *
+ * Mesma família do `.room`, um degrau abaixo na cor: aquela linha fala do que
+ * dá para fazer agora, esta fala do que a arte precisa ser, que não muda.
+ */
+.sizes {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.uploadError {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  color: var(--danger);
+}
+
+/*
+ * O cartaz largo troca de proporção, como a home troca em 48rem.
+ *
+ * A pergunta aqui é a largura do cartaz, e não a da janela — a mesma prévia
+ * pode estar larga num monitor e estreita num celular —, e é por isso que a
+ * consulta é de contêiner. 30rem é o ponto em que o cartaz já tem folga para
+ * o nome grande, e abaixo dele o pé fica com as medidas do celular, que é o
+ * que a cliente veria ali.
+ */
+@container (min-width: 30rem) {
+  .caption {
+    gap: 0.66cqw;
+    padding: 3.97cqw;
+  }
+
+  .posterName {
+    font-size: 4.64cqw;
+  }
+
+  .posterCount {
+    font-size: 1.99cqw;
+  }
+
+  .action {
+    margin-top: 1.32cqw;
+    font-size: 1.99cqw;
+  }
+}
+
+@media (min-width: 48rem) {
+  .row {
+    padding: var(--space-16);
+  }
+}

@@ -1,9 +1,15 @@
 import { expect, test } from 'vitest';
 import type { InstitutionalPageSlug } from '@/features/settings';
 import { dayEndISO, dayStartISO } from '@/lib/format';
-import type { AdminBanner, AdminShortcut, AdminStoreSettings } from './admin.types';
+import type {
+  AdminBanner,
+  AdminPoster,
+  AdminShortcut,
+  AdminStoreSettings,
+} from './admin.types';
 import {
   bannerStatus,
+  brandCollisions,
   changesOf,
   draftFromSettings,
   hasSettingsErrors,
@@ -11,17 +17,21 @@ import {
   linkFromTarget,
   moveBanner,
   moveItem,
+  movePoster,
   moveShortcut,
   newBanner,
+  newPoster,
   newShortcut,
   normalizeWhatsapp,
   prettyWhatsapp,
   targetFromLink,
+  validatePosters,
   validateSettings,
   validateShortcuts,
   warningsOf,
   type PageDraft,
   type SettingsDraft,
+  type SettingsWarning,
 } from './store-settings';
 
 /**
@@ -60,6 +70,27 @@ const SHORTCUT: AdminShortcut = {
   isActive: true,
 };
 
+const POSTER: AdminPoster = {
+  id: 'c1',
+  label: "Victoria's Secret",
+  image: 'maison-essence/posters/victorias-secret-00fbe353',
+  link: "/produtos?marca=Victoria's%20Secret",
+  caption: '',
+  order: 0,
+  isActive: true,
+};
+
+/** O segundo cartaz: a faixa so aparece na home com os dois. */
+const OUTRO_POSTER: AdminPoster = {
+  id: 'c2',
+  label: 'Mais vendidos',
+  image: 'maison-essence/posters/mais-vendidos-09b18b9f',
+  link: '/mais-vendidos',
+  caption: '',
+  order: 1,
+  isActive: true,
+};
+
 function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
   return {
     storeName: 'Maison Essence',
@@ -90,6 +121,10 @@ function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
     gift: { isActive: false, minCents: null, productId: null, label: '' },
     banners: [BANNER],
     shortcuts: [SHORTCUT],
+    // A faixa de cartazes e a de marcas nascem no automatico, como a loja de
+    // verdade: sem escolha nenhuma, o catalogo manda nas duas.
+    posters: [],
+    brands: [],
     institutionalPages: [
       { slug: 'quem-somos', title: 'Quem somos', content: 'Texto', isActive: true },
       { slug: 'como-comprar', title: 'Como comprar', content: '', isActive: false },
@@ -101,6 +136,16 @@ function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
 
 function draft(patch: Partial<SettingsDraft> = {}): SettingsDraft {
   return { ...draftFromSettings(settings()), ...patch };
+}
+
+/** Os cartazes como o rascunho os guarda: o destino vira a escolha de volta. */
+function posterDrafts(...lista: AdminPoster[]): SettingsDraft['posters'] {
+  return draftFromSettings(settings({ posters: lista })).posters;
+}
+
+/** O primeiro aviso de um escopo, que e o único que estes casos cobram. */
+function warningOf(aberto: SettingsDraft, scope: SettingsWarning['scope']): string {
+  return warningsOf(aberto).find((warning) => warning.scope === scope)?.text ?? '';
 }
 
 /** As páginas do rascunho com uma delas alterada. */
@@ -653,4 +698,151 @@ test('mover para fora da lista devolve a lista como estava', () => {
   expect(moveItem(ids, 0, -1)).toEqual(ids);
   expect(moveItem(ids, 1, 2)).toEqual(ids);
   expect(moveItem(ids, 0, 0)).toEqual(ids);
+});
+
+/* ---- Os cartazes de coleção ------------------------------------------------------ */
+
+/**
+ * A faixa do meio da home.
+ *
+ * O que ela tem de próprio esta aqui: a arte e exigida — ao contrário da foto
+ * do atalho —, e os três estados da faixa (nenhum, um, dois) mudam a home de
+ * jeitos diferentes que ninguém adivinha olhando o painel.
+ */
+test('o cartaz sem arte e recusado, e o atalho sem foto não', () => {
+  const sem = { ...newPoster(''), label: 'Mais vendidos', targetValue: 'perfumes' };
+
+  expect(validatePosters([sem])[sem.key]?.image).toBeDefined();
+
+  // O mesmo caso no atalho não e erro: o círculo cai na inicial do nome.
+  const circulo = { ...newShortcut(), label: 'Mais vendidos', targetValue: 'perfumes' };
+
+  expect(validateShortcuts([circulo])[circulo.key]).toBeUndefined();
+});
+
+test('o cartaz exige nome e destino, e a linha de apoio e opcional', () => {
+  const vazio = newPoster('maison-essence/posters/arte-1a2b3c4d');
+  const errors = validatePosters([vazio])[vazio.key];
+
+  expect(errors?.label).toBeDefined();
+  expect(errors?.target).toBeDefined();
+  expect(errors?.caption).toBeUndefined();
+});
+
+test('um cartaz só avisa que a faixa some, e os dois desligados avisam que ela volta as categorias', () => {
+  expect(warningOf(draft({ posters: posterDrafts(POSTER) }), 'posters')).toContain(
+    'não aparece na home',
+  );
+
+  const desligados = draft({
+    posters: posterDrafts({ ...POSTER, isActive: false }, { ...OUTRO_POSTER, isActive: false }),
+  });
+
+  expect(warningOf(desligados, 'posters')).toContain('duas categorias');
+
+  // A faixa vazia e o estado inicial de toda loja: ela não avisa nada, ou o
+  // aviso nasceria ligado em instalação nova e ninguém o leria.
+  expect(
+    warningsOf(draft({ posters: [] })).filter((warning) => warning.scope === 'posters'),
+  ).toEqual([]);
+});
+
+test('a faixa montada com os dois não avisa nada', () => {
+  const montada = settings({ posters: [POSTER, OUTRO_POSTER] });
+
+  expect(
+    warningsOf(draftFromSettings(montada)).filter((warning) => warning.scope === 'posters'),
+  ).toEqual([]);
+});
+
+test('o destino do cartaz vai e volta como foi escolhido', () => {
+  const montada = settings({ posters: [POSTER, OUTRO_POSTER] });
+  const aberto = draftFromSettings(montada);
+
+  // A marca com apóstrofo e espaço e o caso que mais quebra na ida e volta.
+  expect(aberto.posters[0]?.targetKind).toBe('brand');
+  expect(aberto.posters[0]?.targetValue).toBe("Victoria's Secret");
+  expect(aberto.posters[1]?.targetKind).toBe('route');
+
+  // Reabrir e não mexer não suja a tela.
+  expect(changesOf(aberto, montada)).toBeNull();
+});
+
+test('trocar a ordem dos cartazes manda a faixa inteira, com a ordem nova', () => {
+  const montada = settings({ posters: [POSTER, OUTRO_POSTER] });
+  const aberto = draftFromSettings(montada);
+
+  const changes = changesOf({ ...aberto, posters: movePoster(aberto.posters, 1, 0) }, montada);
+
+  expect(changes?.posters?.map((poster) => poster.label)).toEqual([
+    'Mais vendidos',
+    "Victoria's Secret",
+  ]);
+  expect(changes?.posters?.map((poster) => poster.order)).toEqual([0, 1]);
+});
+
+/* ---- A faixa de marcas ------------------------------------------------------------ */
+
+/**
+ * As grafias que são a mesma marca.
+ *
+ * E o problema que a faixa automática expôs: marca e texto livre no cadastro
+ * do produto, então "Árabe", "Arabe" e "ARABE" viram três marcas da casa na
+ * home, cada uma com uma vitrine pela metade.
+ */
+test('acento, caixa e pontuação não fazem marcas diferentes', () => {
+  expect(brandCollisions(['Árabe', 'ARABE', 'arabe'])).toEqual([['Árabe', 'ARABE', 'arabe']]);
+  expect(brandCollisions(["Victoria's Secret", 'Victorias Secret'])).toEqual([
+    ["Victoria's Secret", 'Victorias Secret'],
+  ]);
+});
+
+test('marcas de verdade diferentes não viram grupo', () => {
+  expect(brandCollisions(['Lattafa', 'Armaf', 'Rasasi'])).toEqual([]);
+});
+
+test('a mesma grafia repetida não e colisão', () => {
+  expect(brandCollisions(['Lattafa', 'Lattafa'])).toEqual([]);
+});
+
+test('duas grafias na faixa viram aviso, e a faixa montada limpa não', () => {
+  const avisos = warningsOf(draft({ brands: ['Isabele La Belle', 'Isabelle La Belle'] }))
+    .filter((warning) => warning.scope === 'brands')
+    .map((warning) => warning.text);
+
+  expect(avisos).toHaveLength(1);
+  expect(avisos[0]).toContain('Isabele La Belle');
+
+  expect(
+    warningsOf(draft({ brands: ['Lattafa', 'Armaf'] })).filter(
+      (warning) => warning.scope === 'brands',
+    ),
+  ).toEqual([]);
+});
+
+test('uma marca só avisa que a faixa some da home', () => {
+  expect(warningOf(draft({ brands: ['Lattafa'] }), 'brands')).toContain('não aparece na home');
+
+  // Com duas, a faixa existe e o aviso sai da tela.
+  expect(
+    warningsOf(draft({ brands: ['Lattafa', 'Armaf'] })).filter(
+      (warning) => warning.scope === 'brands',
+    ),
+  ).toEqual([]);
+});
+
+test('escolher a primeira marca manda a faixa inteira, e apagar manda a lista vazia', () => {
+  expect(changesOf(draft({ brands: ['Lattafa'] }), settings())?.brands).toEqual(['Lattafa']);
+
+  const montada = settings({ brands: ['Lattafa', 'Armaf'] });
+
+  expect(changesOf({ ...draftFromSettings(montada), brands: [] }, montada)?.brands).toEqual([]);
+
+  // A ordem faz parte do que mudou, como nos mais vendidos.
+  const trocada = changesOf(
+    { ...draftFromSettings(montada), brands: moveItem(montada.brands, 1, 0) },
+    montada,
+  );
+
+  expect(trocada?.brands).toEqual(['Armaf', 'Lattafa']);
 });

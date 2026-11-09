@@ -3,6 +3,7 @@ import {
   createProduct,
   deleteProduct,
   fetchAdminProduct,
+  listBrands,
   listProducts,
   setProductReadyToShip,
   updateProduct,
@@ -44,6 +45,22 @@ export function useProducts(params: AdminProductListParams) {
     // A lista anterior fica na tela enquanto a nova vem: sem isto, cada letra
     // digitada na busca apaga os resultados e devolve o esqueleto.
     placeholderData: (previous) => previous,
+  });
+}
+
+/**
+ * As grafias de marca do cadastro, com quantos produtos cada uma tem.
+ *
+ * Mesma chave-raiz do catálogo, então qualquer gravação de produto já a
+ * invalida: cadastrar "Lattafa" com um "t" a mais tem de aparecer aqui na
+ * volta, que e justamente quando a dona vai ver que criou uma marca nova sem
+ * querer.
+ */
+export function useBrands() {
+  return useQuery({
+    queryKey: adminKeys.brands(),
+    queryFn: ({ signal }) => listBrands(signal),
+    staleTime: STALE_TIME_MS,
   });
 }
 

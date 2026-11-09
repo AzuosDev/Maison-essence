@@ -633,6 +633,38 @@ test('a faixa de marcas lista as marcas das fileiras, sem consulta nova', async 
   expect(chamadas.some((url) => url.includes('limit=100'))).toBe(false);
 });
 
+test('a faixa cadastrada manda, e na ordem da dona', async () => {
+  /*
+   * O ponto da lista propria: marca e campo livre do cadastro do produto, e a
+   * faixa deduzida publicava cada grafia como se fosse uma marca da casa. Com
+   * a lista montada, a home escreve o que a dona escolheu — e so isso.
+   */
+  configuracoes = { ...SETTINGS, brands: ['Armaf', 'Lattafa'] };
+
+  abrirHome();
+
+  const marcas = await screen.findByRole('region', { name: 'Nossas marcas' });
+  const links = within(marcas).getAllByRole('link');
+
+  expect(links.map((link) => link.textContent)).toEqual(['Armaf', 'Lattafa']);
+});
+
+test('a marca escolhida leva para a vitrine dela, mesmo sem produto na home', async () => {
+  /*
+   * A grafia gravada e a que o filtro casa: e por isso que o painel escolhe de
+   * uma lista do cadastro em vez de deixar digitar. E duas, e não uma, porque
+   * a faixa com um nome só não e desenhada — o painel avisa isso.
+   */
+  configuracoes = { ...SETTINGS, brands: ["Victoria's Secret", 'Lattafa'] };
+
+  abrirHome();
+
+  const marcas = await screen.findByRole('region', { name: 'Nossas marcas' });
+  const link = await within(marcas).findByRole('link', { name: "Victoria's Secret" });
+
+  expect(link.getAttribute('href')).toBe("/produtos?marca=Victoria's%20Secret");
+});
+
 test('cada marca leva para a vitrine filtrada por ela', async () => {
   abrirHome();
 

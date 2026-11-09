@@ -86,6 +86,18 @@ export const MAX_POSTER_LINK_LENGTH = 300;
 export const MAX_POSTER_CAPTION_LENGTH = 64;
 
 /**
+ * Quantos nomes a faixa "Nossas marcas" mostra.
+ *
+ * Oito, que e `MAX_BRANDS` da faixa: o que cabe em duas linhas de desktop sem
+ * a faixa virar paragrafo. Limite de desenho, como o dos atalhos e o dos
+ * cartazes — o nono nome seria uma escolha que a loja nao desenha.
+ */
+export const MAX_BRANDS = 8;
+
+/** O nome da marca, igual ao limite do campo `brand` do produto. */
+export const MAX_BRAND_LENGTH = 80;
+
+/**
  * Quantos produtos a fileira "Mais vendidos" aceita.
  *
  * Doze, que e `SHELF_SIZE`: o que a prateleira da home mostra. O teto não e

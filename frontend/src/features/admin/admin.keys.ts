@@ -45,6 +45,10 @@ export const adminKeys = {
   products: () => [...adminKeys.all, 'products'] as const,
   productList: (params: AdminProductListParams = {}) => [...adminKeys.products(), params] as const,
   product: (id: string) => [...adminKeys.products(), 'detail', id] as const,
+  /** As grafias de marca do cadastro. Debaixo de `products` de propósito:
+      editar um produto pode criar ou esvaziar uma grafia, e a invalidação do
+      catálogo precisa alcançar esta lista. */
+  brands: () => [...adminKeys.products(), 'brands'] as const,
 
   /**
    * A árvore de categorias.

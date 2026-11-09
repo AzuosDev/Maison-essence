@@ -4,6 +4,7 @@ import { centsFromInput, centsToInput, dateInputValue, dayEndISO, dayStartISO } 
 import {
   SETTINGS_LIMITS,
   type AdminBanner,
+  type AdminPoster,
   type AdminShortcut,
   type AdminGift,
   type AdminInstitutionalPage,
@@ -12,6 +13,7 @@ import {
   type BannerInput,
   type BannerPlacement,
   type InstitutionalPageInput,
+  type PosterInput,
   type ShortcutInput,
   type UpdateStoreSettingsInput,
 } from './admin.types';
@@ -115,9 +117,42 @@ export interface ShortcutDraft {
   /** `publicId` do Cloudinary. Vazio deixa o círculo na inicial do nome. */
   image: string;
   /** Que tipo de destino a dona escolheu. */
-  targetKind: ShortcutTargetKind;
+  targetKind: LinkTargetKind;
   /** O slug da categoria, o nome da marca, a lista pronta ou o caminho escrito. */
   targetValue: string;
+  isActive: boolean;
+}
+
+/**
+ * Um cartaz da faixa do meio da home em edição.
+ *
+ * O destino e guardado como a escolha da dona, e não como caminho, pela mesma
+ * razão do atalho — e pelo mesmo vocabulário, `LINK_TARGET_KINDS`.
+ *
+ * A diferença de forma e a arte: aqui ela e exigida. Não e o servidor sendo
+ * mais rígido, e o desenho da home — círculo sem foto cai na inicial do nome
+ * e continua um atalho, cartaz sem arte e meia tela de retângulo cinza no
+ * meio da vitrine.
+ */
+export interface PosterDraft {
+  /**
+   * Chave estável da linha na tela.
+   *
+   * Não e o `id` do servidor, pelo mesmo motivo do atalho: cartaz
+   * recém-adicionado ainda não tem um.
+   */
+  key: string;
+  /** Ausente em cartaz novo — e a ausência que faz o servidor criar. */
+  id?: string;
+  label: string;
+  /** `publicId` do Cloudinary. Vazio e cartaz que a validação recusa. */
+  image: string;
+  /** Que tipo de destino a dona escolheu. */
+  targetKind: LinkTargetKind;
+  /** O slug da categoria, o nome da marca, a lista pronta ou o caminho escrito. */
+  targetValue: string;
+  /** A linha de apoio embaixo do nome. Vazia some do cartaz. */
+  caption: string;
   isActive: boolean;
 }
 
@@ -180,6 +215,16 @@ export interface SettingsDraft {
   banners: BannerDraft[];
   /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
   shortcuts: ShortcutDraft[];
+  /** A faixa do meio da home. Vazia, a faixa cai nas duas categorias maiores. */
+  posters: PosterDraft[];
+  /**
+   * Os nomes da faixa "Nossas marcas", na ordem dela.
+   *
+   * Só os nomes, como os mais vendidos guardam só os ids: a contagem de cada
+   * grafia sai de uma consulta ao catálogo, e o rascunho não precisa
+   * envelhecer com ela. Lista vazia devolve a faixa ao automático.
+   */
+  brands: string[];
   pages: PageDraft[];
 }
 
@@ -192,6 +237,9 @@ export type BannerErrors = Partial<
 >;
 
 export type ShortcutErrors = Partial<Record<'label' | 'target', string>>;
+
+/** A arte entra aqui, e não entra na do atalho: cartaz sem arte e recusado. */
+export type PosterErrors = Partial<Record<'label' | 'image' | 'target' | 'caption', string>>;
 
 export type PageErrors = Partial<Record<'title' | 'content', string>>;
 
@@ -213,6 +261,8 @@ export interface SettingsErrors {
   banners?: Record<string, BannerErrors>;
   /** Por `key` do rascunho, pelo mesmo motivo dos banners. */
   shortcuts?: Record<string, ShortcutErrors>;
+  /** Por `key` do rascunho, pelo mesmo motivo dos banners. */
+  posters?: Record<string, PosterErrors>;
   /** Por `slug`. */
   pages?: Partial<Record<InstitutionalPageSlug, PageErrors>>;
 }
@@ -225,7 +275,7 @@ export interface SettingsErrors {
  * lado sem dizer nada.
  */
 export interface SettingsWarning {
-  scope: 'store' | 'pickup' | 'gift' | 'banners' | 'shortcuts' | 'pages';
+  scope: 'store' | 'pickup' | 'gift' | 'banners' | 'shortcuts' | 'posters' | 'brands' | 'pages';
   text: string;
 }
 
@@ -262,6 +312,8 @@ export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
     gift: draftFromGift(settings.gift),
     banners: settings.banners.map(draftFromBanner),
     shortcuts: settings.shortcuts.map(draftFromShortcut),
+    posters: settings.posters.map(draftFromPoster),
+    brands: [...settings.brands],
     pages: settings.institutionalPages.map(draftFromPage),
   };
 }
@@ -384,10 +436,15 @@ export const BANNER_STATUS_LABELS: Record<BannerStatus, string> = {
   off: 'Desligado',
 };
 
-/* ---- O destino de um atalho ------------------------------------------------------ */
+/* ---- O destino de um atalho ou de um cartaz --------------------------------------- */
 
 /**
- * As quatro formas de responder "para onde este círculo leva".
+ * As quatro formas de responder "para onde isto leva".
+ *
+ * `LINK_` e não `SHORTCUT_`: a mesma pergunta e feita duas vezes na tela de
+ * Ajustes — pela fileira de círculos e pela faixa de cartazes —, e as duas
+ * gravam a mesma coisa, um caminho. O que difere entre elas e o desenho na
+ * home, não o destino.
  *
  * O servidor guarda um caminho — `/categorias/hidratantes` — e só. A escolha
  * em quatro formas mora aqui, na tela, e por um motivo prático: pedir a
@@ -399,11 +456,11 @@ export const BANNER_STATUS_LABELS: Record<BannerStatus, string> = {
  * `custom` não e sobra: e a válvula que faz este modelo não precisar crescer
  * toda vez que a loja inventar um destino novo.
  */
-export const SHORTCUT_TARGET_KINDS = ['category', 'brand', 'route', 'custom'] as const;
+export const LINK_TARGET_KINDS = ['category', 'brand', 'route', 'custom'] as const;
 
-export type ShortcutTargetKind = (typeof SHORTCUT_TARGET_KINDS)[number];
+export type LinkTargetKind = (typeof LINK_TARGET_KINDS)[number];
 
-export const SHORTCUT_TARGET_LABELS: Record<ShortcutTargetKind, string> = {
+export const LINK_TARGET_LABELS: Record<LinkTargetKind, string> = {
   category: 'Uma categoria',
   brand: 'Uma marca',
   route: 'Uma lista da loja',
@@ -418,7 +475,7 @@ export const SHORTCUT_TARGET_LABELS: Record<ShortcutTargetKind, string> = {
  * da marcação de cada frasco. Antes desta lista, pôr qualquer uma das três na
  * primeira tela exigia inventar uma categoria vazia para ela.
  */
-export const SHORTCUT_ROUTES = [
+export const LINK_ROUTES = [
   { value: ROUTES.products, label: 'Todos os produtos' },
   { value: ROUTES.bestSellers, label: 'Mais vendidos' },
   { value: ROUTES.readyToShip, label: 'Pronta entrega' },
@@ -438,7 +495,7 @@ const CATEGORY_PREFIX = ROUTES.category('');
  * `/categorias/` levaria a lugar nenhum, e um atalho sem destino e recusado
  * pela validação antes de chegar aqui.
  */
-export function linkFromTarget(kind: ShortcutTargetKind, value: string): string {
+export function linkFromTarget(kind: LinkTargetKind, value: string): string {
   const written = value.trim();
 
   if (written === '') {
@@ -465,10 +522,10 @@ export function linkFromTarget(kind: ShortcutTargetKind, value: string): string 
  * `&pagina=2` — a tela apagaria em silêncio uma parte do destino que alguém
  * montou de propósito.
  */
-export function targetFromLink(link: string): { kind: ShortcutTargetKind; value: string } {
+export function targetFromLink(link: string): { kind: LinkTargetKind; value: string } {
   const written = link.trim();
 
-  if (SHORTCUT_ROUTES.some((route) => route.value === written)) {
+  if (LINK_ROUTES.some((route) => route.value === written)) {
     return { kind: 'route', value: written };
   }
 
@@ -581,6 +638,182 @@ export function shortcutToInput(shortcut: ShortcutDraft, index: number): Shortcu
     order: index,
     isActive: shortcut.isActive,
   };
+}
+
+/* ---- Os cartazes de coleção -------------------------------------------------------- */
+
+export function draftFromPoster(poster: AdminPoster): PosterDraft {
+  const target = targetFromLink(poster.link);
+
+  return {
+    key: poster.id,
+    id: poster.id,
+    label: poster.label,
+    image: poster.image,
+    targetKind: target.kind,
+    targetValue: target.value,
+    caption: poster.caption,
+    isActive: poster.isActive,
+  };
+}
+
+/**
+ * Um cartaz novo, a partir da arte que acabou de subir.
+ *
+ * Nasce da arte e não vazio, ao contrário do atalho: sem ela não há cartaz
+ * nenhum — a home se recusa a desenhar meia tela de retângulo cinza —, e um
+ * cartaz vazio na lista seria uma linha que só sabe dizer o que falta.
+ *
+ * O `id` fica **ausente**, e não `undefined`: com `exactOptionalPropertyTypes`,
+ * um campo opcional presente valendo `undefined` não e a mesma coisa que um
+ * campo ausente, e e a ausência que faz o servidor criar.
+ */
+export function newPoster(image: string): PosterDraft {
+  return {
+    key: `novo-${String(Date.now())}-${Math.random().toString(36).slice(2, 8)}`,
+    label: '',
+    image,
+    targetKind: 'category',
+    targetValue: '',
+    caption: '',
+    isActive: true,
+  };
+}
+
+/** Move um cartaz uma posição. Fora da lista, devolve a lista como estava. */
+export function movePoster(posters: readonly PosterDraft[], from: number, to: number): PosterDraft[] {
+  return moveItem(posters, from, to);
+}
+
+/**
+ * Um cartaz do rascunho, no formato do `PATCH`.
+ *
+ * `order` sai da posição no array, que e a ordem da faixa — o primeiro fica a
+ * esquerda no computador e em cima no celular.
+ */
+export function posterToInput(poster: PosterDraft, index: number): PosterInput {
+  return {
+    ...(poster.id === undefined ? {} : { id: poster.id }),
+    label: poster.label.trim(),
+    image: poster.image,
+    link: linkFromTarget(poster.targetKind, poster.targetValue),
+    caption: poster.caption.trim(),
+    order: index,
+    isActive: poster.isActive,
+  };
+}
+
+/* ---- A faixa de marcas ------------------------------------------------------------ */
+
+/**
+ * A marca reduzida ao que ela tem de comparável.
+ *
+ * Marca e campo livre do cadastro do produto, e e isso que produz "Árabe" e
+ * "ARABE" convivendo na faixa da home como se fossem duas casas. Comparar sem
+ * acento, sem caixa e sem espaço dobrado junta as duas.
+ *
+ * O apóstrofo **some** em vez de virar espaço, e isso e deliberado:
+ * "Victoria's Secret" e "Victorias Secret" são a mesma casa, e separa-las por
+ * causa de um sinal de pontuação seria o detector reproduzindo exatamente o
+ * erro que ele existe para achar.
+ *
+ * A normalização e **só para comparar**: o que se grava e a grafia escolhida,
+ * porque e ela que o filtro `?marca=` precisa casar no cadastro.
+ */
+export function brandKey(name: string): string {
+  return name
+    .normalize('NFD')
+    // As marcas combinantes do Unicode: o que sobra de "á" depois do NFD.
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/['\u2019\u02bc`]/g, '')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+/**
+ * Quantas letras separam duas grafias, até o teto que interessa.
+ *
+ * Levenshtein com duas linhas, que e o bastante para nomes de marca: a
+ * resposta exata de "quantas edições" não importa — importa saber se e uma.
+ */
+function editDistance(first: string, second: string): number {
+  let previous = [...Array(second.length + 1).keys()];
+
+  for (let row = 1; row <= first.length; row += 1) {
+    const current = [row];
+
+    for (let column = 1; column <= second.length; column += 1) {
+      const cost = first[row - 1] === second[column - 1] ? 0 : 1;
+
+      current[column] = Math.min(
+        (current[column - 1] ?? 0) + 1,
+        (previous[column] ?? 0) + 1,
+        (previous[column - 1] ?? 0) + cost,
+      );
+    }
+
+    previous = current;
+  }
+
+  return previous[second.length] ?? 0;
+}
+
+/**
+ * Duas grafias que são, quase certamente, a mesma marca.
+ *
+ * Igualdade depois da normalização — "Árabe" e "ARABE" — e **uma letra de
+ * diferença**, que e o erro de digitação de verdade: "Isabele La Belle" e
+ * "Isabelle La Belle" não são a mesma string nem depois de tirar acento e
+ * caixa, e e esse par que aparece na home como duas marcas.
+ *
+ * Uma letra, e não duas, e só a partir de cinco: em nome curto uma letra
+ * costuma ser outra marca, e o aviso que grita onde não há problema deixa de
+ * ser lido no dia em que houver.
+ */
+function nearlySame(first: string, second: string): boolean {
+  if (first === second) {
+    return true;
+  }
+
+  if (Math.abs(first.length - second.length) > 1 || Math.min(first.length, second.length) < 5) {
+    return false;
+  }
+
+  return editDistance(first, second) <= 1;
+}
+
+/**
+ * Os grupos de grafias que parecem a mesma marca.
+ *
+ * Devolve só os grupos com mais de uma grafia, na ordem em que a primeira de
+ * cada grupo apareceu. E o que a tela usa para dizer "estas duas são a mesma
+ * marca escrita de dois jeitos" — tanto na faixa montada quanto na lista que
+ * sai do catálogo, que e onde o erro nasceu.
+ */
+export function brandCollisions(names: readonly string[]): string[][] {
+  const groups: { key: string; names: string[] }[] = [];
+
+  for (const name of names) {
+    const key = brandKey(name);
+
+    if (key === '') {
+      continue;
+    }
+
+    // Compara com a primeira grafia de cada grupo, e não com todas: e ela que
+    // da nome ao grupo, e encadear semelhanças ("a" parece "b", "b" parece
+    // "c") acabaria juntando duas marcas que não se parecem em nada.
+    const group = groups.find((candidate) => nearlySame(candidate.key, key));
+
+    if (group === undefined) {
+      groups.push({ key, names: [name] });
+    } else if (!group.names.includes(name)) {
+      group.names.push(name);
+    }
+  }
+
+  return groups.map((group) => group.names).filter((group) => group.length > 1);
 }
 
 /* ---- O WhatsApp ----------------------------------------------------------------- */
@@ -748,6 +981,12 @@ export function validateSettings(
 
   if (Object.keys(shortcuts).length > 0) {
     errors.shortcuts = shortcuts;
+  }
+
+  const posters = validatePosters(draft.posters);
+
+  if (Object.keys(posters).length > 0) {
+    errors.posters = posters;
   }
 
   const pages = validatePages(draft.pages);
@@ -920,6 +1159,54 @@ export function validateShortcuts(
   return all;
 }
 
+/**
+ * Os cartazes da faixa.
+ *
+ * Nome, arte e destino são exigidos, e a linha de apoio não: ela e um
+ * complemento — "41 produtos" — e o cartaz sem ela esta inteiro.
+ *
+ * A arte entra na lista do que se exige, ao contrário do atalho. O círculo
+ * sem foto cai na inicial do nome e continua um atalho; o cartaz sem arte e
+ * meia tela de retângulo cinza no meio da vitrine, e a home se recusa a
+ * desenha-lo — o que deixaria a dona com uma faixa que sumiu sem explicação.
+ */
+export function validatePosters(posters: readonly PosterDraft[]): Record<string, PosterErrors> {
+  const all: Record<string, PosterErrors> = {};
+
+  for (const poster of posters) {
+    const errors: PosterErrors = {};
+    const label = poster.label.trim();
+
+    if (label === '') {
+      errors.label = 'Escreva o nome que aparece sobre a arte.';
+    } else if (label.length > SETTINGS_LIMITS.posterLabel) {
+      errors.label = `O nome passa de ${String(SETTINGS_LIMITS.posterLabel)} caracteres e não cabe no cartaz.`;
+    }
+
+    if (poster.image === '') {
+      errors.image = 'Envie a arte: sem ela a home não desenha este cartaz.';
+    }
+
+    const link = linkFromTarget(poster.targetKind, poster.targetValue);
+
+    if (link === '') {
+      errors.target = 'Escolha para onde este cartaz leva.';
+    } else if (link.length > SETTINGS_LIMITS.posterLink) {
+      errors.target = 'Esse endereço e longo demais.';
+    }
+
+    if (poster.caption.trim().length > SETTINGS_LIMITS.posterCaption) {
+      errors.caption = `A linha de apoio passa de ${String(SETTINGS_LIMITS.posterCaption)} caracteres e quebra em duas.`;
+    }
+
+    if (Object.keys(errors).length > 0) {
+      all[poster.key] = errors;
+    }
+  }
+
+  return all;
+}
+
 function validatePages(
   pages: readonly PageDraft[],
 ): Partial<Record<InstitutionalPageSlug, PageErrors>> {
@@ -990,6 +1277,8 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
   }
 
   warnings.push(...shortcutWarnings(draft.shortcuts));
+  warnings.push(...posterWarnings(draft.posters));
+  warnings.push(...brandWarnings(draft.brands));
 
   const vazias = draft.pages.filter((page) => page.isActive && page.content.trim() === '');
 
@@ -1047,6 +1336,90 @@ function shortcutWarnings(shortcuts: readonly ShortcutDraft[]): SettingsWarning[
   }
 
   return warnings;
+}
+
+/**
+ * A faixa de cartazes que não vai sair como a dona imagina.
+ *
+ * Dois estados mudam a home de um jeito que ninguém adivinha daqui:
+ *
+ * - **os cartazes cadastrados, todos desligados**, devolvem a faixa as duas
+ *   categorias com mais produtos. A faixa continua lá, com outro conteúdo —
+ *   e quem desligou não pediu para ver categoria nenhuma;
+ * - **um só ligado** tira a faixa inteira da home, porque o desenho dela são
+ *   duas colunas e meia faixa não existe. E o estado que mais assusta: a dona
+ *   salva um cartaz e a faixa some.
+ *
+ * A faixa **vazia** não avisa nada: e o estado inicial de toda loja, e a
+ * própria seção já diz, no lugar da lista, que a home esta deduzindo a dupla.
+ * Aviso que nasce ligado em instalação nova e aviso que ninguém lê.
+ *
+ * Nenhum dos dois bloqueia: são estados legítimos de quem esta montando a
+ * faixa e ainda não terminou.
+ */
+function posterWarnings(posters: readonly PosterDraft[]): SettingsWarning[] {
+  const ligados = posters.filter((poster) => poster.isActive);
+
+  if (posters.length === 0) {
+    return [];
+  }
+
+  if (ligados.length === 0) {
+    return [
+      {
+        scope: 'posters',
+        text: 'Os cartazes estão desligados: a home volta a mostrar as duas categorias com mais produtos.',
+      },
+    ];
+  }
+
+  if (ligados.length === 1) {
+    return [
+      {
+        scope: 'posters',
+        text: 'Só um cartaz ligado: a faixa são duas colunas, e com um só ela não aparece na home. Ligue o segundo, ou desligue os dois para a faixa voltar as categorias.',
+      },
+    ];
+  }
+
+  return [];
+}
+
+/**
+ * A faixa de marcas que não vai sair como a dona imagina.
+ *
+ * Dois casos, e os dois são silenciosos do outro lado:
+ *
+ * - **uma marca só** tira a faixa inteira da home. Uma palavra solta no meio
+ *   da página não e uma fileira, e a home prefere não desenhar nada — o que,
+ *   de dentro do painel, parece a tela não ter gravado;
+ * - **duas grafias da mesma marca** e o erro que a faixa automática tornou
+ *   visível: marca e campo livre do cadastro, e "Isabele La Belle" e
+ *   "Isabelle La Belle" viram dois nomes na home e duas vitrines, cada uma
+ *   com parte dos produtos. Escolher as duas a mão repetiria isso de
+ *   propósito.
+ *
+ * O segundo não bloqueia porque pode ser verdade: duas marcas diferentes
+ * podem mesmo ter nomes parecidos. Quem decide e quem conhece o estoque.
+ */
+function brandWarnings(brands: readonly string[]): SettingsWarning[] {
+  if (brands.length === 1) {
+    return [
+      {
+        scope: 'brands',
+        text: 'Com uma marca só a faixa não aparece na home — uma palavra solta no meio da página não e uma fileira. Escolha pelo menos duas, ou nenhuma para a faixa voltar ao automático.',
+      },
+    ];
+  }
+
+  return brandCollisions(brands).map((group) => {
+    const escritas = group.map((name) => `“${name}”`).join(' e ');
+
+    return {
+      scope: 'brands',
+      text: `${escritas} estão na faixa como marcas diferentes. Se são a mesma, cada vitrine mostra só parte dos produtos — e o que corrige isso e a grafia no cadastro deles.`,
+    };
+  });
 }
 
 /**
@@ -1188,10 +1561,22 @@ export function changesOf(
     changes.shortcuts = draft.shortcuts.map(shortcutToInput);
   }
 
+  // A faixa vai inteira, pelo mesmo motivo da fileira.
+  if (!samePosters(draft.posters, base.posters)) {
+    changes.posters = draft.posters.map(posterToInput);
+  }
+
+  // As marcas vao inteiras, e a lista vazia viaja: e ela que devolve a faixa
+  // as marcas dos produtos que a home carregou. A ordem faz parte do que
+  // mudou, como nos mais vendidos.
+  if (!sameOrder(draft.brands, base.brands)) {
+    changes.brands = [...draft.brands];
+  }
+
   // Os mais vendidos vao inteiros, e a lista vazia viaja: e ela que devolve a
   // fileira ao ranking das vendas. A ordem faz parte do que mudou — arrastar
   // o terceiro card para a frente e uma alteração como qualquer outra.
-  if (!sameIds(draft.bestSellerProductIds, base.bestSellerProductIds)) {
+  if (!sameOrder(draft.bestSellerProductIds, base.bestSellerProductIds)) {
     changes.bestSellerProductIds = [...draft.bestSellerProductIds];
   }
 
@@ -1309,8 +1694,14 @@ function sameBanner(banner: BannerDraft, other: BannerDraft | undefined): boolea
   );
 }
 
-/** Mesma lista e na mesma ordem: aqui a posição e o conteúdo. */
-function sameIds(draft: readonly string[], base: readonly string[]): boolean {
+/**
+ * Mesma lista e na mesma ordem: aqui a posição e o conteúdo.
+ *
+ * Serve as duas listas de texto da tela — os ids dos mais vendidos e os nomes
+ * das marcas —, e nas duas arrastar o terceiro para a frente e uma alteração
+ * como qualquer outra.
+ */
+function sameOrder(draft: readonly string[], base: readonly string[]): boolean {
   return draft.length === base.length && draft.every((id, index) => id === base[index]);
 }
 
@@ -1336,6 +1727,28 @@ function sameShortcut(shortcut: ShortcutDraft, other: ShortcutDraft | undefined)
     shortcut.targetKind === other.targetKind &&
     shortcut.targetValue === other.targetValue &&
     shortcut.isActive === other.isActive
+  );
+}
+
+function samePosters(draft: readonly PosterDraft[], base: readonly PosterDraft[]): boolean {
+  return (
+    draft.length === base.length && draft.every((poster, index) => samePoster(poster, base[index]))
+  );
+}
+
+function samePoster(poster: PosterDraft, other: PosterDraft | undefined): boolean {
+  if (other === undefined) {
+    return false;
+  }
+
+  return (
+    poster.id === other.id &&
+    poster.label === other.label &&
+    poster.image === other.image &&
+    poster.targetKind === other.targetKind &&
+    poster.targetValue === other.targetValue &&
+    poster.caption === other.caption &&
+    poster.isActive === other.isActive
   );
 }
 

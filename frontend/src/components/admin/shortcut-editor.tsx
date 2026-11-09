@@ -1,20 +1,14 @@
 import { useRef, useState, type DragEvent } from 'react';
-import { Button, Input, Select, Switch } from '@/components/ui';
+import { Button, Input, Switch } from '@/components/ui';
 import {
   SETTINGS_LIMITS,
   SHORTCUT_ART,
-  SHORTCUT_ROUTES,
-  SHORTCUT_TARGET_KINDS,
-  SHORTCUT_TARGET_LABELS,
   UPLOAD_FOLDERS,
-  flatten,
   moveShortcut,
   newShortcut,
-  useAdminCategories,
   useImageUpload,
   type ShortcutDraft,
   type ShortcutErrors,
-  type ShortcutTargetKind,
 } from '@/features/admin';
 import { imageUrl } from '@/lib/cloudinary';
 import { cx } from '@/lib/cx';
@@ -26,6 +20,7 @@ import {
   PlusIcon,
   TrashIcon,
 } from './admin-icons';
+import { LinkTargetFields, useCategoryOptions, type SelectOption } from './link-target';
 import { RowMenu, type RowMenuItem } from './row-menu';
 import styles from './shortcut-editor.module.css';
 
@@ -77,24 +72,12 @@ export interface ShortcutEditorProps {
 
 export function ShortcutEditor({ shortcuts, errors, onChange }: ShortcutEditorProps) {
   const upload = useImageUpload(UPLOAD_FOLDERS.shortcuts);
-  const { data: tree } = useAdminCategories();
+  // Uma vez por render da fileira, e não uma por linha. Ver `link-target`.
+  const categoryOptions = useCategoryOptions();
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
 
   const room = SETTINGS_LIMITS.shortcuts - shortcuts.length;
-
-  /*
-   * As categorias viram opções uma vez por render, e não uma por linha.
-   *
-   * A desativada entra com a palavra escrita ao lado em vez de sumir: ela
-   * continua sendo um destino válido — a dona pode estar montando a fileira
-   * de uma categoria que ainda vai ao ar —, e esconde-lá faria o atalho já
-   * salvo perder o destino silenciosamente ao reabrir a tela.
-   */
-  const categoryOptions = flatten(tree ?? []).map((category) => ({
-    value: category.slug,
-    label: category.isActive ? category.name : `${category.name} (fora do ar)`,
-  }));
 
   const set = (index: number, patch: Partial<ShortcutDraft>): void => {
     onChange(
@@ -223,27 +206,6 @@ export function ShortcutEditor({ shortcuts, errors, onChange }: ShortcutEditorPr
 }
 
 /* ---- Uma linha ------------------------------------------------------------------ */
-
-/**
- * Os quatro tipos de destino, fora do componente.
- *
- * Declarada dentro, a lista viraria um array novo a cada tecla digitada em
- * qualquer campo da linha.
- */
-const TARGET_OPTIONS = SHORTCUT_TARGET_KINDS.map((kind) => ({
-  value: kind,
-  label: SHORTCUT_TARGET_LABELS[kind],
-}));
-
-const ROUTE_OPTIONS = SHORTCUT_ROUTES.map((route) => ({
-  value: route.value,
-  label: route.label,
-}));
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
 
 function ShortcutRow({
   shortcut,
@@ -402,120 +364,17 @@ function ShortcutRow({
           />
 
           <div className={styles.pair}>
-            <Select
-              label="Leva para"
-              block
-              options={TARGET_OPTIONS}
-              value={shortcut.targetKind}
-              onChange={(event) => {
-                /*
-                  Trocar o tipo limpa o valor, e isso e de propósito.
-
-                  O slug de uma categoria não e o nome de uma marca nem um
-                  caminho: carregar o valor antigo para o campo novo deixaria
-                  um destino que parece preenchido e não leva a lugar nenhum,
-                  que e exatamente o erro que esta tela existe para evitar.
-                */
-                onSet({
-                  targetKind: event.target.value as ShortcutTargetKind,
-                  targetValue: '',
-                });
-              }}
-            />
-
-            <TargetValue
-              shortcut={shortcut}
-              categoryOptions={categoryOptions}
+            <LinkTargetFields
+              kind={shortcut.targetKind}
+              value={shortcut.targetValue}
               error={errors?.target}
-              onSet={onSet}
+              categoryOptions={categoryOptions}
+              maxLength={SETTINGS_LIMITS.shortcutLink}
+              onChange={onSet}
             />
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-/**
- * A segunda metade da pergunta: qual categoria, qual marca, qual lista.
- *
- * Quatro controles diferentes no mesmo lugar da linha, e não quatro campos
- * empilhados dos quais três ficariam desabilitados. O rótulo muda junto, em
- * vez de um "Valor" genérico: a pergunta inteira precisa caber na leitura de
- * uma linha.
- */
-function TargetValue({
-  shortcut,
-  categoryOptions,
-  error,
-  onSet,
-}: {
-  shortcut: ShortcutDraft;
-  categoryOptions: readonly SelectOption[];
-  error: string | undefined;
-  onSet: (patch: Partial<ShortcutDraft>) => void;
-}) {
-  if (shortcut.targetKind === 'category') {
-    return (
-      <Select
-        label="Qual categoria"
-        block
-        placeholder="Escolha a categoria"
-        options={categoryOptions}
-        value={shortcut.targetValue}
-        error={error}
-        onChange={(event) => {
-          onSet({ targetValue: event.target.value });
-        }}
-      />
-    );
-  }
-
-  if (shortcut.targetKind === 'route') {
-    return (
-      <Select
-        label="Qual lista"
-        block
-        placeholder="Escolha a lista"
-        options={ROUTE_OPTIONS}
-        value={shortcut.targetValue}
-        error={error}
-        onChange={(event) => {
-          onSet({ targetValue: event.target.value });
-        }}
-      />
-    );
-  }
-
-  if (shortcut.targetKind === 'brand') {
-    return (
-      <Input
-        label="Qual marca"
-        block
-        maxLength={SETTINGS_LIMITS.shortcutLabel}
-        placeholder="Isabelle La Belle"
-        hint="Escreva como esta no cadastro dos produtos, com as mesmas letras."
-        value={shortcut.targetValue}
-        error={error}
-        onChange={(event) => {
-          onSet({ targetValue: event.target.value });
-        }}
-      />
-    );
-  }
-
-  return (
-    <Input
-      label="Qual endereço"
-      block
-      maxLength={SETTINGS_LIMITS.shortcutLink}
-      placeholder="/produtos?pronta=1"
-      hint="Um caminho da loja, começando com barra, ou um endereço inteiro."
-      value={shortcut.targetValue}
-      error={error}
-      onChange={(event) => {
-        onSet({ targetValue: event.target.value });
-      }}
-    />
   );
 }

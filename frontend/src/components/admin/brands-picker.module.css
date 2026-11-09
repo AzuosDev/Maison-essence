@@ -1,0 +1,297 @@
+/*
+ * A faixa "Nossas marcas", escolhida a dedo.
+ *
+ * Três blocos, nesta ordem: a faixa montada, as grafias parecidas e a lista
+ * de onde se escolhe. A ordem não é arbitrária — quem abre esta seção vem
+ * olhar a faixa; o aviso das grafias vem antes da lista porque é ele que diz
+ * em que nome não vale a pena clicar.
+ *
+ * A anatomia das linhas é a do `BestSellersPicker`: posição, nome, contagem e
+ * o menu da linha. São as duas listas da tela em que a ordem é o conteúdo.
+ */
+
+.picker {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/* ---- As marcas escolhidas --------------------------------------------------- */
+
+.list {
+  display: grid;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--surface);
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+/* A régua de inserção no topo do alvo, como nas outras listas da tela. */
+.dropTarget {
+  background-color: var(--gold-wash);
+  box-shadow: inset 0 2px 0 var(--gold-deep);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8) var(--space-12);
+
+  padding: var(--space-8);
+}
+
+.grip {
+  flex: none;
+
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--muted);
+  cursor: grab;
+}
+
+/* A vaga na faixa, com numeral tabular: a coluna não dança ao remover uma. */
+.position {
+  flex: none;
+
+  min-width: 1.25rem;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  text-align: right;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.count {
+  flex: none;
+
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/*
+ * A marca que não abre vitrine.
+ *
+ * Dourado e não vermelho, com o mesmo vocabulário da tela de Ajustes: o
+ * vermelho é campo para corrigir, o dourado é aviso para ler. Esta não é um
+ * erro de preenchimento — é uma escolha que leva a cliente a uma página
+ * vazia, e que se conserta no cadastro do produto, não aqui.
+ */
+.missing {
+  flex: none;
+
+  font-size: var(--text-12);
+  color: var(--gold-deep);
+}
+
+/* ---- As grafias parecidas --------------------------------------------------- */
+
+.collisions {
+  display: grid;
+  gap: var(--space-8);
+
+  padding: var(--space-12);
+
+  background-color: var(--gold-wash);
+  border-radius: var(--radius-card);
+}
+
+.collisionsTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  margin: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+}
+
+.collisionsTitle svg {
+  flex: none;
+
+  width: 1rem;
+  height: 1rem;
+  color: var(--gold-deep);
+}
+
+.collisionsList {
+  display: grid;
+  gap: var(--space-4);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  font-size: var(--text-14);
+  color: var(--ink);
+}
+
+.collisionsList strong {
+  font-weight: var(--weight-medium);
+}
+
+.collisionsHint {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+/* ---- A lista de onde se escolhe --------------------------------------------- */
+
+.catalog {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.catalogTitle {
+  margin: 0;
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-button);
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.loading {
+  display: grid;
+  gap: var(--space-8);
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Uma marca do cadastro, com o tamanho dela ao lado.
+ *
+ * A contagem fica dentro do alvo, e não numa coluna à parte: é ela que
+ * responde "essa é a grafia certa?", e a resposta precisa estar onde a mão
+ * vai clicar.
+ */
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  padding: var(--space-8) var(--space-12);
+
+  border: var(--border);
+  border-radius: var(--radius-pill);
+  background-color: var(--surface);
+
+  font-family: inherit;
+  font-size: var(--text-14);
+  color: var(--ink);
+  cursor: pointer;
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+.option:hover:not(:disabled) {
+  border-color: var(--gold);
+  background-color: var(--gold-wash);
+}
+
+.option:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.option:disabled {
+  cursor: default;
+  color: var(--muted);
+  background-color: var(--bg-alt);
+}
+
+.option svg {
+  flex: none;
+
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--muted);
+}
+
+.option:disabled svg {
+  opacity: 0.5;
+}
+
+.optionName {
+  font-weight: var(--weight-medium);
+}
+
+.optionCount {
+  font-size: var(--text-12);
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+/* ---- O que a tela explica ---------------------------------------------------- */
+
+.empty,
+.room,
+.gone {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.empty {
+  padding: var(--space-16);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+}
+
+/* O arraste é o atalho de quem tem mouse; no toque, o menu da linha é o
+   caminho, e a alça perde a função. */
+@media (max-width: 30rem) {
+  .grip {
+    display: none;
+  }
+
+  .row {
+    gap: var(--space-8);
+  }
+}

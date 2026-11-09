@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ROUTES } from '@/app/routes';
 import { Container } from '@/components/ui';
 import { brandsOf, type PublicProduct } from '@/features/catalog';
+import { useStoreSettings } from '@/features/settings';
 import styles from './brand-row.module.css';
 
 /**
@@ -20,15 +21,22 @@ import styles from './brand-row.module.css';
  *
  * ## De onde sai a lista
  *
- * Das marcas que estão **nas prateleiras desta página**, e não de uma
- * consulta nova: a home já carregou os produtos das três fileiras, e as
- * marcas deles são exatamente as marcas que o cliente acabou de ver. Uma
- * consulta própria ao catálogo inteiro custaria uma requisição de cem itens
- * para desenhar oito palavras.
+ * Da faixa que a dona monta no painel: os nomes que ela escolheu, na ordem
+ * dela. Marca e campo livre do cadastro do produto, e e por isso que essa
+ * escolha passou a existir — sem ela, esta faixa publicava cada erro de
+ * digitação como se fosse uma marca da casa: "Arabe" ao lado de "Arabic", a
+ * mesma casa escrita de três jeitos, cada grafia com uma vitrine pela metade.
  *
- * O preço disso e que a faixa mostra as marcas em cartaz, não o acervo
- * inteiro. E o certo: ela e uma fileira de atalhos, e cada nome leva para a
- * vitrine já filtrada por aquela marca.
+ * **Sem nenhuma marca escolhida, a faixa volta a sair das prateleiras desta
+ * página** — as marcas dos produtos que a home já carregou, em ordem
+ * alfabética. E o que ela sempre fez, e o que faz nenhuma loja ficar sem a
+ * faixa no dia do deploy. Não e uma consulta nova: as três fileiras já
+ * trouxeram esses produtos, e pedir o catálogo inteiro para desenhar oito
+ * palavras custaria uma requisição de cem itens.
+ *
+ * Nos dois casos cada nome leva para a vitrine já filtrada por aquela marca —
+ * e, escolhida ou deduzida, a grafia precisa ser a mesma do cadastro, porque
+ * e ela que o filtro casa.
  */
 
 /** Oito e o que cabe em duas linhas de desktop sem a faixa virar parágrafo. */
@@ -40,7 +48,10 @@ interface BrandRowProps {
 }
 
 export function BrandRow({ products }: BrandRowProps) {
-  const brands = brandsOf(products).slice(0, MAX_BRANDS);
+  const { settings } = useStoreSettings();
+  const chosen = settings?.brands ?? [];
+
+  const brands = (chosen.length > 0 ? chosen : brandsOf(products)).slice(0, MAX_BRANDS);
 
   // Com uma marca só não há fileira: há uma palavra solta no meio da página.
   if (brands.length < 2) {

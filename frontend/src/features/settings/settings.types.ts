@@ -131,6 +131,15 @@ export interface PublicSettings {
    * lista existir.
    */
   posters: PublicPoster[];
+  /**
+   * As marcas da faixa "Nossas marcas", na ordem em que a home as escreve.
+   *
+   * Vazia e resposta legitima: a faixa volta a sair das marcas dos produtos
+   * que a propria home carregou — que e o que ela fazia antes desta lista
+   * existir, e o que tambem publicava cada erro de digitacao do cadastro
+   * como se fosse uma marca da casa.
+   */
+  brands: string[];
 }
 
 /**

@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   ArrayMaxSize,
   IsArray,
@@ -19,6 +19,8 @@ import { IsWhatsappNumber } from '../whatsapp-number.js';
 import {
   MAX_BANNERS,
   MAX_BEST_SELLERS,
+  MAX_BRANDS,
+  MAX_BRAND_LENGTH,
   MAX_POSTERS,
   MAX_SHORTCUTS,
 } from '../settings.constants.js';
@@ -39,7 +41,7 @@ import { SocialLinksDto } from './social-links.dto.js';
  * - campo simples: o valor recebido substitui o gravado;
  * - `pickupAddress`, `socialLinks` e `gift`: fusão campo a campo, porque a
  *   tela manda só o que a dona mexeu;
- * - `banners`, `shortcuts`, `posters` e `bestSellerProductIds`: substituição do array
+ * - `banners`, `shortcuts`, `posters`, `brands` e `bestSellerProductIds`: substituição do array
  *   inteiro, porque são listas ordenáveis — o que sumiu delas foi removido
  *   de propósito;
  * - `institutionalPages`: atualização por `slug`, porque as seis páginas
@@ -187,6 +189,32 @@ export class UpdateSettingsDto {
   @ValidateNested({ each: true })
   @Type(() => CollectionPosterDto)
   posters?: CollectionPosterDto[];
+
+  /**
+   * Os nomes da faixa "Nossas marcas", na ordem em que a home os escreve.
+   *
+   * Texto, e nao id: marca nao tem registro proprio: ela e um campo livre do
+   * cadastro do produto. Cada nome vira o filtro `?marca=` da vitrine, entao
+   * o que se grava aqui precisa ser a grafia exata dos produtos daquela
+   * marca. O servidor nao confere isso — e o painel que escolhe de uma lista
+   * tirada do catalogo, e quem mandar um nome que ninguem tem escrito grava
+   * uma faixa que leva a vitrines vazias.
+   *
+   * Array inteiro, como as outras listas ordenaveis. Vazio e resposta
+   * legitima: devolve a faixa as marcas dos produtos que a home carregou.
+   */
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(MAX_BRANDS)
+  @IsString({ each: true })
+  @MinLength(1, { each: true, message: 'marca sem nome' })
+  @MaxLength(MAX_BRAND_LENGTH, { each: true })
+  @Transform(({ value }: { value: unknown }) =>
+    Array.isArray(value)
+      ? value.map((name) => (typeof name === 'string' ? name.trim() : name))
+      : value,
+  )
+  brands?: string[];
 
   @IsOptional()
   @IsArray()

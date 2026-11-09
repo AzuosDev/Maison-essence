@@ -33,6 +33,7 @@ import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
 export const STORE_FRAME_FIELDS = [
   'banners',
   'bestSellerProductIds',
+  'brands',
   'featuredPerfumeProductId',
   'institutionalPages',
   'posters',
@@ -51,6 +52,7 @@ export type StoreFrameField = (typeof STORE_FRAME_FIELDS)[number];
 const FIELD_LABELS: Record<StoreFrameField, string> = {
   banners: 'o carrossel da home',
   bestSellerProductIds: 'a fileira de mais vendidos',
+  brands: 'a faixa de marcas',
   featuredPerfumeProductId: 'o perfume da vez',
   institutionalPages: 'as páginas do rodapé',
   posters: 'os cartazes de coleção',

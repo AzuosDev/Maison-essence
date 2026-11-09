@@ -391,6 +391,7 @@ export const UPLOAD_FOLDERS = {
   categories: 'categories',
   banners: 'banners',
   shortcuts: 'shortcuts',
+  posters: 'posters',
 } as const;
 
 export type UploadFolder = (typeof UPLOAD_FOLDERS)[keyof typeof UPLOAD_FOLDERS];
@@ -667,6 +668,50 @@ export interface AdminShortcut {
 }
 
 /**
+ * Um cartaz da faixa de coleção da home, como o painel o guarda.
+ *
+ * Lista própria e não os dois primeiros atalhos, mesmo quando o destino
+ * coincide: o cartaz e o destaque do meio da página e o círculo e a navegação
+ * da primeira tela. Amarra-los faria reordenar a fileira trocar os cartazes
+ * sozinho.
+ *
+ * A arte e obrigatória aqui, ao contrário do atalho: círculo sem foto cai na
+ * inicial do nome e continua um atalho, e cartaz sem arte e um retângulo
+ * cinza de meia tela no meio da vitrine.
+ */
+export interface AdminPoster {
+  id: string;
+  /** O nome grande, no pé do cartaz. */
+  label: string;
+  /** `publicId` do Cloudinary. Cartaz sem arte não existe. */
+  image: string;
+  /** Caminho da loja ou endereço inteiro. */
+  link: string;
+  /** A linha de apoio embaixo do nome — "41 produtos". Vazia some. */
+  caption: string;
+  order: number;
+  isActive: boolean;
+}
+
+/**
+ * Uma grafia de marca encontrada no cadastro, e o tamanho dela.
+ *
+ * Marca e campo livre do produto: não há registro de marca neste sistema. E
+ * por isso que a tela escolhe de uma lista em vez de pedir que se digite —
+ * digitar e o que produz "Isabele La Belle" ao lado de "Isabelle La Belle",
+ * duas vitrines para a mesma marca.
+ *
+ * `products` e o cadastro inteiro e `live` e o que a cliente ve. A grafia com
+ * um produto só costuma ser o erro de digitação; a marca com `live` zero leva
+ * a uma vitrine vazia.
+ */
+export interface BrandCount {
+  name: string;
+  products: number;
+  live: number;
+}
+
+/**
  * O brinde por valor de compra, como o painel o guarda.
  *
  * Cru de propósito: brinde desligado, sem valor meta ou sem produto continua
@@ -725,6 +770,10 @@ export interface AdminStoreSettings {
   banners: AdminBanner[];
   /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
   shortcuts: AdminShortcut[];
+  /** A faixa do meio da home. Vazia, a faixa cai nas duas categorias maiores. */
+  posters: AdminPoster[];
+  /** A faixa "Nossas marcas". Vazia, ela sai dos produtos que a home carregou. */
+  brands: string[];
   /** As cinco, sempre, mesmo as que ninguém escreveu ainda. */
   institutionalPages: AdminInstitutionalPage[];
   updatedAt: string;
@@ -764,6 +813,23 @@ export interface ShortcutInput {
   label: string;
   image?: string;
   link: string;
+  order?: number;
+  isActive?: boolean;
+}
+
+/**
+ * Um cartaz no corpo do `PATCH`.
+ *
+ * `id` presente identifica cartaz que já existe; ausente, o servidor cria.
+ * `image` e exigida — e a única diferença de forma em relação ao atalho, e
+ * ela vem do desenho da home, não de o servidor ser mais rígido aqui.
+ */
+export interface PosterInput {
+  id?: string;
+  label: string;
+  image: string;
+  link: string;
+  caption?: string;
   order?: number;
   isActive?: boolean;
 }
@@ -813,6 +879,13 @@ export interface UpdateStoreSettingsInput {
   banners?: BannerInput[];
   /** A fileira vai inteira, como o carrossel: e uma lista ordenável. */
   shortcuts?: ShortcutInput[];
+  /** A faixa vai inteira, pelo mesmo motivo da fileira. */
+  posters?: PosterInput[];
+  /**
+   * Os nomes da faixa de marcas, na ordem. Vazia devolve a faixa ao
+   * automático, como a lista de mais vendidos.
+   */
+  brands?: string[];
   institutionalPages?: InstitutionalPageInput[];
 }
 
@@ -838,6 +911,18 @@ export const SETTINGS_LIMITS = {
   shortcutLabel: 32,
   /** `MAX_SHORTCUT_LINK_LENGTH`, igual ao link do banner. */
   shortcutLink: 300,
+  /** `MAX_POSTERS`: a faixa são duas colunas, e dois e o que ela mostra. */
+  posters: 2,
+  /** `MAX_POSTER_LABEL_LENGTH`: o nome tem a largura de meia tela. */
+  posterLabel: 48,
+  /** `MAX_POSTER_LINK_LENGTH`, igual ao link do atalho. */
+  posterLink: 300,
+  /** `MAX_POSTER_CAPTION_LENGTH`: a linha de apoio e uma linha. */
+  posterCaption: 64,
+  /** `MAX_BRANDS`: o que cabe em duas linhas de desktop na faixa de marcas. */
+  brands: 8,
+  /** `MAX_BRAND_LENGTH`, que e o limite do campo `brand` do produto. */
+  brandName: 80,
   pageTitle: 120,
   /** `MAX_PAGE_CONTENT_LENGTH`. */
   pageContent: 20_000,
@@ -896,6 +981,20 @@ export function bannerArtMeasure(art: { width: number; height: number }): string
  * frasco sai pela borda.
  */
 export const SHORTCUT_ART = { width: 400, height: 400 } as const;
+
+/**
+ * A medida que a home pede da arte de um cartaz.
+ *
+ * **1920 × 1080, exatamente 16:9**, e nenhum dos dois números e folgado:
+ *
+ * - a moldura tem `aspect-ratio: 16 / 9` fixo e `object-fit: cover`, então
+ *   qualquer outra proporção e cortada pelo centro — uma arte quadrada perde
+ *   44% da altura, e ninguém escolhe o que sai;
+ * - a entrega vai até o preset `wide`, de 1920px, que e a variante que um
+ *   monitor retina grande pede. Abaixo de 1200px a arte chega mole nessas
+ *   telas, porque a transformação reduz e nunca amplia.
+ */
+export const POSTER_ART = { width: 1920, height: 1080 } as const;
 
 /* ---- Cupons --------------------------------------------------------------- */
 
