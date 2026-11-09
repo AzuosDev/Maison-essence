@@ -78,6 +78,16 @@ const SETTINGS = {
       isActive: true,
     },
   ],
+  shortcuts: [
+    {
+      id: 's1',
+      label: 'Hidratantes',
+      image: 'shortcuts/hidratantes',
+      link: '/categorias/hidratantes',
+      order: 0,
+      isActive: true,
+    },
+  ],
   institutionalPages: [
     { slug: 'quem-somos', title: 'Quem somos', content: 'Perfumes árabes.', isActive: true },
     { slug: 'como-comprar', title: 'Como comprar', content: '', isActive: false },
@@ -190,6 +200,24 @@ function jsonResponse(body: unknown, status = 200): Response {
   });
 }
 
+/** A arvore que o seletor de destino de um atalho oferece. */
+const CATEGORIES = [
+  {
+    id: 'c1',
+    name: 'Hidratantes',
+    slug: 'hidratantes',
+    previousSlugs: [],
+    parentId: null,
+    image: '',
+    order: 0,
+    isActive: true,
+    productCount: 4,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    children: [],
+  },
+];
+
 beforeEach(() => {
   calls = [];
 
@@ -221,6 +249,13 @@ beforeEach(() => {
               hasMore: false,
             }),
           );
+        }
+
+        // O seletor de destino dos atalhos pede a arvore de categorias.
+        // Sem este desvio ele receberia o documento da loja no lugar da
+        // lista, e a seção inteira cairia ao desenhar as opções.
+        if (url.includes('/admin/categories')) {
+          return Promise.resolve(jsonResponse(CATEGORIES));
         }
 
         return Promise.resolve(jsonResponse(SETTINGS));

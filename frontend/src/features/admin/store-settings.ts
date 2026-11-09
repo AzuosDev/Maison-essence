@@ -1,8 +1,10 @@
+import { ROUTES } from '@/app/routes';
 import { INSTITUTIONAL_PAGE_SLUGS, type InstitutionalPageSlug } from '@/features/settings';
 import { centsFromInput, centsToInput, dateInputValue, dayEndISO, dayStartISO } from '@/lib/format';
 import {
   SETTINGS_LIMITS,
   type AdminBanner,
+  type AdminShortcut,
   type AdminGift,
   type AdminInstitutionalPage,
   type AdminPickupAddress,
@@ -10,6 +12,7 @@ import {
   type BannerInput,
   type BannerPlacement,
   type InstitutionalPageInput,
+  type ShortcutInput,
   type UpdateStoreSettingsInput,
 } from './admin.types';
 
@@ -87,6 +90,38 @@ export interface BannerDraft {
 }
 
 /**
+ * Um atalho da fileira da home em edição.
+ *
+ * O destino não e guardado como caminho aqui, e sim como a escolha que a dona
+ * fez: "uma categoria", "uma marca", "uma lista pronta da loja" ou "um
+ * endereço escrito". O caminho — `/categorias/hidratantes` — e montado na
+ * saída, por `shortcutToInput`. A diferença e o que permite a tela oferecer um
+ * seletor de categorias em vez de um campo onde se digita barra e slug na mão,
+ * que e o jeito mais rápido de a fileira apontar para uma página que não
+ * existe.
+ */
+export interface ShortcutDraft {
+  /**
+   * Chave estável da linha na tela.
+   *
+   * Não e o `id` do servidor: atalho recém-adicionado ainda não tem um, e sem
+   * uma chave própria o React reaproveitaria o estado da linha errada quando
+   * a fileira fosse reordenada.
+   */
+  key: string;
+  /** Ausente em atalho novo — e a ausência que faz o servidor criar. */
+  id?: string;
+  label: string;
+  /** `publicId` do Cloudinary. Vazio deixa o círculo na inicial do nome. */
+  image: string;
+  /** Que tipo de destino a dona escolheu. */
+  targetKind: ShortcutTargetKind;
+  /** O slug da categoria, o nome da marca, a lista pronta ou o caminho escrito. */
+  targetValue: string;
+  isActive: boolean;
+}
+
+/**
  * O brinde por valor de compra, em edição.
  *
  * O valor meta e texto — `179,99` —, como todo dinheiro nesta tela: a dona
@@ -135,6 +170,8 @@ export interface SettingsDraft {
   featuredPerfumeProductId: string | null;
   gift: GiftDraft;
   banners: BannerDraft[];
+  /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
+  shortcuts: ShortcutDraft[];
   pages: PageDraft[];
 }
 
@@ -145,6 +182,8 @@ export type AddressErrors = Partial<Record<keyof AddressDraft, string>>;
 export type BannerErrors = Partial<
   Record<'imageDesktop' | 'title' | 'subtitle' | 'buttonLabel' | 'link' | 'window', string>
 >;
+
+export type ShortcutErrors = Partial<Record<'label' | 'target', string>>;
 
 export type PageErrors = Partial<Record<'title' | 'content', string>>;
 
@@ -164,6 +203,8 @@ export interface SettingsErrors {
   address?: AddressErrors;
   /** Por `key` do rascunho, e não por `id`: banner novo ainda não tem `id`. */
   banners?: Record<string, BannerErrors>;
+  /** Por `key` do rascunho, pelo mesmo motivo dos banners. */
+  shortcuts?: Record<string, ShortcutErrors>;
   /** Por `slug`. */
   pages?: Partial<Record<InstitutionalPageSlug, PageErrors>>;
 }
@@ -176,7 +217,7 @@ export interface SettingsErrors {
  * lado sem dizer nada.
  */
 export interface SettingsWarning {
-  scope: 'store' | 'pickup' | 'gift' | 'banners' | 'pages';
+  scope: 'store' | 'pickup' | 'gift' | 'banners' | 'shortcuts' | 'pages';
   text: string;
 }
 
@@ -211,6 +252,7 @@ export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
     featuredPerfumeProductId: settings.featuredPerfumeProductId,
     gift: draftFromGift(settings.gift),
     banners: settings.banners.map(draftFromBanner),
+    shortcuts: settings.shortcuts.map(draftFromShortcut),
     pages: settings.institutionalPages.map(draftFromPage),
   };
 }
@@ -332,6 +374,193 @@ export const BANNER_STATUS_LABELS: Record<BannerStatus, string> = {
   expired: 'Encerrado',
   off: 'Desligado',
 };
+
+/* ---- O destino de um atalho ------------------------------------------------------ */
+
+/**
+ * As quatro formas de responder "para onde este círculo leva".
+ *
+ * O servidor guarda um caminho — `/categorias/hidratantes` — e só. A escolha
+ * em quatro formas mora aqui, na tela, e por um motivo prático: pedir a
+ * categoria num seletor e pedir a marca num campo de texto e o que impede a
+ * fileira de apontar para uma página que não existe, que e o que acontece
+ * quando alguém digita barra e slug na mão. Na saída as quatro viram o mesmo
+ * caminho, e no servidor nenhuma delas tem nome.
+ *
+ * `custom` não e sobra: e a válvula que faz este modelo não precisar crescer
+ * toda vez que a loja inventar um destino novo.
+ */
+export const SHORTCUT_TARGET_KINDS = ['category', 'brand', 'route', 'custom'] as const;
+
+export type ShortcutTargetKind = (typeof SHORTCUT_TARGET_KINDS)[number];
+
+export const SHORTCUT_TARGET_LABELS: Record<ShortcutTargetKind, string> = {
+  category: 'Uma categoria',
+  brand: 'Uma marca',
+  route: 'Uma lista da loja',
+  custom: 'Um endereço escrito',
+};
+
+/**
+ * As listas prontas da loja, com o nome que a dona reconhece.
+ *
+ * São rotas que existem e que nenhuma categoria representa: "mais vendidos"
+ * sai do histórico de pedidos, "promoções" sai do preço, "pronta entrega" sai
+ * da marcação de cada frasco. Antes desta lista, pôr qualquer uma das três na
+ * primeira tela exigia inventar uma categoria vazia para ela.
+ */
+export const SHORTCUT_ROUTES = [
+  { value: ROUTES.products, label: 'Todos os produtos' },
+  { value: ROUTES.bestSellers, label: 'Mais vendidos' },
+  { value: ROUTES.readyToShip, label: 'Pronta entrega' },
+  { value: ROUTES.productsOnSale, label: 'Promoções' },
+] as const;
+
+/** O prefixo da vitrine filtrada por marca, para ler o caminho de volta. */
+const BRAND_PREFIX = `${ROUTES.products}?marca=`;
+
+/** O prefixo da categoria, para ler o caminho de volta. */
+const CATEGORY_PREFIX = ROUTES.category('');
+
+/**
+ * O caminho que este destino vira.
+ *
+ * Destino sem valor devolve texto vazio, e não um caminho pela metade:
+ * `/categorias/` levaria a lugar nenhum, e um atalho sem destino e recusado
+ * pela validação antes de chegar aqui.
+ */
+export function linkFromTarget(kind: ShortcutTargetKind, value: string): string {
+  const written = value.trim();
+
+  if (written === '') {
+    return '';
+  }
+
+  switch (kind) {
+    case 'category':
+      return ROUTES.category(written);
+    case 'brand':
+      return ROUTES.productsByBrand(written);
+    case 'route':
+    case 'custom':
+      return written;
+  }
+}
+
+/**
+ * O caminho gravado, de volta na escolha que o produziu.
+ *
+ * A leitura e **estrita**: `/produtos?marca=Lattafa` e a marca Lattafa, mas
+ * `/produtos?marca=Lattafa&pagina=2` e um endereço escrito. Reconhecer o
+ * segundo como marca faria o salvamento seguinte reescrever o caminho sem o
+ * `&pagina=2` — a tela apagaria em silêncio uma parte do destino que alguém
+ * montou de propósito.
+ */
+export function targetFromLink(link: string): { kind: ShortcutTargetKind; value: string } {
+  const written = link.trim();
+
+  if (SHORTCUT_ROUTES.some((route) => route.value === written)) {
+    return { kind: 'route', value: written };
+  }
+
+  if (written.startsWith(CATEGORY_PREFIX)) {
+    const slug = written.slice(CATEGORY_PREFIX.length);
+
+    if (slug !== '' && !slug.includes('/') && !slug.includes('?')) {
+      return { kind: 'category', value: slug };
+    }
+  }
+
+  if (written.startsWith(BRAND_PREFIX)) {
+    const brand = written.slice(BRAND_PREFIX.length);
+
+    if (brand !== '' && !brand.includes('&')) {
+      return { kind: 'brand', value: decodeURIComponent(brand) };
+    }
+  }
+
+  return { kind: 'custom', value: written };
+}
+
+/* ---- Os atalhos da home ---------------------------------------------------------- */
+
+export function draftFromShortcut(shortcut: AdminShortcut): ShortcutDraft {
+  const target = targetFromLink(shortcut.link);
+
+  return {
+    key: shortcut.id,
+    id: shortcut.id,
+    label: shortcut.label,
+    image: shortcut.image,
+    targetKind: target.kind,
+    targetValue: target.value,
+    isActive: shortcut.isActive,
+  };
+}
+
+/**
+ * Um atalho novo, ligado e sem destino.
+ *
+ * Nasce vazio e não a partir de um envio de foto, ao contrário do banner: o
+ * círculo sem foto existe há tempos — ele cai na inicial do nome —, e exigir
+ * a imagem primeiro obrigaria a dona a ter a arte pronta antes de montar a
+ * fileira. O que ele não pode e nascer com destino: "Todos os produtos" como
+ * padrão daria uma fileira de círculos que levam todos ao mesmo lugar, e
+ * ninguém repara nisso olhando a tela.
+ *
+ * O `id` fica **ausente**, e não `undefined`: com `exactOptionalPropertyTypes`,
+ * um campo opcional presente valendo `undefined` não e a mesma coisa que um
+ * campo ausente, e e a ausência que faz o servidor criar.
+ */
+export function newShortcut(): ShortcutDraft {
+  return {
+    key: `novo-${String(Date.now())}-${Math.random().toString(36).slice(2, 8)}`,
+    label: '',
+    image: '',
+    targetKind: 'category',
+    targetValue: '',
+    isActive: true,
+  };
+}
+
+/** Move um atalho uma posição. Fora da lista, devolve a lista como estava. */
+export function moveShortcut(
+  shortcuts: readonly ShortcutDraft[],
+  from: number,
+  to: number,
+): ShortcutDraft[] {
+  if (from === to || from < 0 || to < 0 || from >= shortcuts.length || to >= shortcuts.length) {
+    return [...shortcuts];
+  }
+
+  const next = [...shortcuts];
+  const [moved] = next.splice(from, 1);
+
+  if (moved === undefined) {
+    return [...shortcuts];
+  }
+
+  next.splice(to, 0, moved);
+
+  return next;
+}
+
+/**
+ * Um atalho do rascunho, no formato do `PATCH`.
+ *
+ * `order` sai da posição no array, que e a ordem que a dona arrastou, e o
+ * destino vira o caminho que o servidor guarda.
+ */
+export function shortcutToInput(shortcut: ShortcutDraft, index: number): ShortcutInput {
+  return {
+    ...(shortcut.id === undefined ? {} : { id: shortcut.id }),
+    label: shortcut.label.trim(),
+    image: shortcut.image,
+    link: linkFromTarget(shortcut.targetKind, shortcut.targetValue),
+    order: index,
+    isActive: shortcut.isActive,
+  };
+}
 
 /* ---- O WhatsApp ----------------------------------------------------------------- */
 
@@ -494,6 +723,12 @@ export function validateSettings(
     errors.banners = banners;
   }
 
+  const shortcuts = validateShortcuts(draft.shortcuts);
+
+  if (Object.keys(shortcuts).length > 0) {
+    errors.shortcuts = shortcuts;
+  }
+
   const pages = validatePages(draft.pages);
 
   if (Object.keys(pages).length > 0) {
@@ -624,6 +859,46 @@ function validateBanners(banners: readonly BannerDraft[]): Record<string, Banner
   return all;
 }
 
+/**
+ * Os atalhos da fileira.
+ *
+ * Nome e destino são exigidos, e a foto não: círculo sem foto cai na inicial
+ * do nome — e uma tela que exigisse a imagem obrigaria a dona a ter a arte
+ * pronta antes de montar a fileira. Atalho sem destino, ao contrário, não e
+ * configuração pela metade: e um círculo que a cliente toca e nada acontece,
+ * e o servidor o recusa de qualquer forma.
+ */
+export function validateShortcuts(
+  shortcuts: readonly ShortcutDraft[],
+): Record<string, ShortcutErrors> {
+  const all: Record<string, ShortcutErrors> = {};
+
+  for (const shortcut of shortcuts) {
+    const errors: ShortcutErrors = {};
+    const label = shortcut.label.trim();
+
+    if (label === '') {
+      errors.label = 'Escreva o nome que aparece embaixo do círculo.';
+    } else if (label.length > SETTINGS_LIMITS.shortcutLabel) {
+      errors.label = `O nome passa de ${String(SETTINGS_LIMITS.shortcutLabel)} caracteres e não cabe embaixo do círculo.`;
+    }
+
+    const link = linkFromTarget(shortcut.targetKind, shortcut.targetValue);
+
+    if (link === '') {
+      errors.target = 'Escolha para onde este atalho leva.';
+    } else if (link.length > SETTINGS_LIMITS.shortcutLink) {
+      errors.target = 'Esse endereço e longo demais.';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      all[shortcut.key] = errors;
+    }
+  }
+
+  return all;
+}
+
 function validatePages(
   pages: readonly PageDraft[],
 ): Partial<Record<InstitutionalPageSlug, PageErrors>> {
@@ -693,12 +968,60 @@ export function warningsOf(draft: SettingsDraft): SettingsWarning[] {
     });
   }
 
+  warnings.push(...shortcutWarnings(draft.shortcuts));
+
   const vazias = draft.pages.filter((page) => page.isActive && page.content.trim() === '');
 
   if (vazias.length > 0) {
     warnings.push({
       scope: 'pages',
       text: `${vazias.map((page) => PAGE_LABELS[page.slug]).join(', ')}: publicada sem texto, o link do rodapé abre uma página em branco.`,
+    });
+  }
+
+  return warnings;
+}
+
+/**
+ * A fileira de atalhos que não vai sair como a dona imagina.
+ *
+ * Nenhum dos dois bloqueia: os dois são estados legítimos que mudam a home
+ * sem dizer nada. O primeiro e o mais caro — fileira vazia não deixa a home
+ * sem navegação, ela volta as categorias-raiz, e quem salvou achando ter
+ * montado a fileira não entende por que a loja mostra outra coisa.
+ */
+function shortcutWarnings(shortcuts: readonly ShortcutDraft[]): SettingsWarning[] {
+  const warnings: SettingsWarning[] = [];
+  const ligados = shortcuts.filter((shortcut) => shortcut.isActive);
+
+  if (ligados.length === 0) {
+    warnings.push({
+      scope: 'shortcuts',
+      text:
+        shortcuts.length === 0
+          ? 'A fileira esta vazia: a home mostra as categorias principais, na ordem de Categorias.'
+          : 'Todos os atalhos estão desligados: a home volta a mostrar as categorias principais.',
+    });
+
+    return warnings;
+  }
+
+  const semFoto = ligados.filter((shortcut) => shortcut.image === '').length;
+
+  if (semFoto > 0) {
+    warnings.push({
+      scope: 'shortcuts',
+      text:
+        semFoto === 1
+          ? 'Um atalho esta sem foto: o círculo dele aparece com a inicial do nome.'
+          : `${String(semFoto)} atalhos estão sem foto: os círculos deles aparecem com a inicial do nome.`,
+    });
+  }
+
+  if (ligados.length > SETTINGS_LIMITS.shortcuts) {
+    warnings.push({
+      scope: 'shortcuts',
+      text: `A fileira mostra ${String(SETTINGS_LIMITS.shortcuts)} círculos. Os de baixo não aparecem na home.`,
     });
   }
 
@@ -838,6 +1161,12 @@ export function changesOf(
     changes.banners = draft.banners.map(bannerToInput);
   }
 
+  // A fileira vai inteira ou não vai, como o carrossel: o array substitui o
+  // gravado, e o atalho que sumiu dele foi removido de propósito.
+  if (!sameShortcuts(draft.shortcuts, base.shortcuts)) {
+    changes.shortcuts = draft.shortcuts.map(shortcutToInput);
+  }
+
   const pages = draft.pages
     .filter((page, index) => !samePage(page, base.pages[index]))
     .map(pageToInput);
@@ -949,6 +1278,31 @@ function sameBanner(banner: BannerDraft, other: BannerDraft | undefined): boolea
     banner.startsOn === other.startsOn &&
     banner.endsOn === other.endsOn &&
     banner.isActive === other.isActive
+  );
+}
+
+function sameShortcuts(
+  draft: readonly ShortcutDraft[],
+  base: readonly ShortcutDraft[],
+): boolean {
+  return (
+    draft.length === base.length &&
+    draft.every((shortcut, index) => sameShortcut(shortcut, base[index]))
+  );
+}
+
+function sameShortcut(shortcut: ShortcutDraft, other: ShortcutDraft | undefined): boolean {
+  if (other === undefined) {
+    return false;
+  }
+
+  return (
+    shortcut.id === other.id &&
+    shortcut.label === other.label &&
+    shortcut.image === other.image &&
+    shortcut.targetKind === other.targetKind &&
+    shortcut.targetValue === other.targetValue &&
+    shortcut.isActive === other.isActive
   );
 }
 

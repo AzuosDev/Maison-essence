@@ -1,0 +1,363 @@
+/*
+ * A fileira de atalhos da home.
+ *
+ * Cada atalho é um bloco com o círculo à esquerda e os campos à direita — a
+ * mesma leitura que a home faz, para que a decisão "essa foto funciona
+ * redonda?" possa ser tomada aqui, sem abrir o site.
+ *
+ * No celular o círculo sobe para cima dos campos. Ele é pequeno, então a
+ * coluna some antes que a linha fique apertada: o corte é o mesmo do editor
+ * de banners, em 48rem, para que as duas listas da tela de Ajustes mudem de
+ * forma no mesmo ponto.
+ */
+
+.editor {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.list {
+  display: grid;
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  border: var(--border);
+  border-radius: var(--radius-card);
+  background-color: var(--surface);
+}
+
+.dragging {
+  opacity: 0.4;
+}
+
+/*
+ * Onde o atalho vai cair: a régua de inserção no topo do alvo, como no editor
+ * de banners e na árvore de categorias. O fundo dourado diz qual linha, a
+ * régua diz de que lado. É informação do arraste, não decoração da linha.
+ */
+.dropTarget {
+  background-color: var(--gold-wash);
+  box-shadow: inset 0 2px 0 var(--gold-deep);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-12);
+
+  padding: var(--space-12);
+}
+
+/* ---- O cabeçalho da linha ------------------------------------------------- */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.grip {
+  flex: none;
+
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--muted);
+  cursor: grab;
+}
+
+.name {
+  flex: 1;
+  min-width: 0;
+
+  font-size: var(--text-14);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/*
+ * O estado do atalho, escrito.
+ *
+ * Dois estados e não quatro, ao contrário do banner: atalho é navegação e não
+ * campanha, então não há agendamento — ele está na fileira ou não está. A
+ * palavra carrega a informação e a cor só reforça.
+ */
+.status {
+  flex: none;
+
+  padding: 0.125rem var(--space-8);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+.live {
+  background-color: var(--success-wash);
+  color: var(--success);
+}
+
+.off {
+  background-color: var(--bg-alt);
+  color: var(--ink-soft);
+}
+
+/* ---- O corpo ---------------------------------------------------------------- */
+
+.body {
+  display: grid;
+  gap: var(--space-16);
+}
+
+.art {
+  display: grid;
+  gap: var(--space-8);
+  justify-items: start;
+  align-content: start;
+}
+
+/*
+ * O botão é o próprio círculo, e não uma prévia ao lado de um botão.
+ *
+ * Sem caixa, sem borda e sem fundo: o alvo é o círculo mais o rótulo logo
+ * abaixo, e desenhar uma moldura em volta somaria um retângulo à tela cujo
+ * único trabalho seria conter algo que já tem forma própria.
+ */
+.circleButton {
+  display: grid;
+  justify-items: center;
+  /* 16px e não 8px: o produto desce abaixo do disco, e o respiro que importa
+     e o que fica entre a arte e o rótulo. O mesmo da home. */
+  gap: var(--space-16);
+
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.circleButton:disabled {
+  cursor: progress;
+  opacity: 0.6;
+}
+
+.circleButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-card);
+}
+
+/*
+ * O círculo, na medida que ele tem na loja.
+ *
+ * 6.5rem é o diâmetro do desktop em `shortcut-circles.module.css`. Mostrá-lo
+ * maior aqui faria a foto parecer mais nítida do que ela vai ser, e menor
+ * esconderia o corte que é justamente o que esta tela existe para revelar.
+ *
+ * O fio de 1px é o mesmo da home, e pelo mesmo motivo: foto de catálogo é
+ * quase sempre clara nas beiradas, e sem o fio o círculo some dentro do
+ * branco da tela. `box-shadow` em vez de `border` para que engrossar no hover
+ * não some pixels ao diâmetro e mexa o bloco inteiro.
+ */
+.circle {
+  /* O mesmo 1/0,843 da home: o disco dourado da arte fecha com o contorno e o
+     produto sai por fora. Ver `shortcut-circles.module.css`. */
+  --art: 118.6%;
+
+  position: relative;
+  display: block;
+
+  width: 6.5rem;
+  height: 6.5rem;
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 0 0 1px var(--line);
+
+  transition: box-shadow var(--transition);
+}
+
+.circleButton:hover .circle {
+  box-shadow: 0 0 0 2px var(--gold);
+}
+
+/*
+ * A arte, maior que o círculo e centrada nele — como na home, e pelo mesmo
+ * motivo: e aqui que a dona descobre se a foto que ela escolheu fecha com o
+ * contorno ou flutua dentro dele.
+ */
+.image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+
+  width: var(--art);
+  height: var(--art);
+  /* Desfaz o teto de 100% do `reset.css`, que aqui encolheria a arte de volta
+     ao diâmetro do círculo. Ver `shortcut-circles.module.css`. */
+  max-width: none;
+  object-fit: contain;
+}
+
+/*
+ * A inicial: o fundo do círculo, e não a alternativa da foto.
+ *
+ * É o mesmo estado vazio que a home desenha, com a mesma cor. Um ícone de
+ * "sem imagem" aqui mostraria um vazio que a loja não mostra, e a dona
+ * publicaria sem saber o que a cliente veria no lugar.
+ */
+.initial {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: var(--text-28);
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  color: var(--gold-deep);
+}
+
+.artLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-4);
+
+  font-size: var(--text-12);
+  font-weight: var(--weight-medium);
+  color: var(--ink-soft);
+}
+
+.circleButton:hover .artLabel {
+  color: var(--gold-deep);
+}
+
+.artLabel svg {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.linkButton {
+  padding: 0;
+
+  background: none;
+  border: none;
+
+  font-family: inherit;
+  font-size: var(--text-12);
+  color: var(--ink-soft);
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  cursor: pointer;
+}
+
+.linkButton:hover {
+  color: var(--danger);
+}
+
+.linkButton:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.fields {
+  display: grid;
+  gap: var(--space-12);
+  min-width: 0;
+}
+
+/*
+ * O tipo de destino e o valor dele, lado a lado.
+ *
+ * Os dois são uma pergunta só — "leva para uma categoria; qual?" — e separá-los
+ * em duas linhas faria a segunda parecer independente da primeira. A medida
+ * mínima é maior que a do editor de banners porque aqui a coluna guarda nome
+ * de categoria inteiro, e não uma data.
+ */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: var(--space-12);
+}
+
+/* ---- O rodapé do editor ------------------------------------------------------ */
+
+.empty,
+.room {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.empty {
+  padding: var(--space-16);
+
+  background-color: var(--bg-alt);
+  border-radius: var(--radius-card);
+}
+
+.add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.room {
+  flex: 1 1 16rem;
+}
+
+/*
+ * A medida da foto, sempre na tela.
+ *
+ * Mesma família do `.room`, um degrau abaixo na cor: aquela linha fala do que
+ * dá para fazer agora ("a fileira está cheia"), esta fala do que a foto
+ * precisa ser, que não muda nunca.
+ */
+.sizes {
+  margin: 0;
+
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.uploadError {
+  margin: 0;
+  padding: var(--space-12);
+
+  background-color: var(--danger-wash);
+  border-radius: var(--radius-chip);
+
+  font-size: var(--text-12);
+  color: var(--danger);
+}
+
+/* O círculo ao lado dos campos quando há largura para as duas colunas. */
+@media (min-width: 48rem) {
+  .row {
+    padding: var(--space-16);
+  }
+
+  .body {
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+}

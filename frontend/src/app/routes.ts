@@ -50,6 +50,16 @@ export const ROUTES = {
   readyToShip: '/pronta-entrega',
 
   /**
+   * O que mais vendeu, com endereço próprio.
+   *
+   * Não e um filtro da vitrine, e por isso não cabe em `/produtos?ordem=`: o
+   * ranking sai do histórico de pedidos e não do cadastro, e nenhuma ordem da
+   * listagem sabe calcula-lo. A home já mostra a prateleira; este endereço e
+   * para onde "ver todos" e o atalho da fileira de círculos levam.
+   */
+  bestSellers: '/mais-vendidos',
+
+  /**
    * A vitrine já filtrada por uma marca.
    *
    * `marca`, e não `brand`: o nome do parâmetro e o que a vitrine lê da URL

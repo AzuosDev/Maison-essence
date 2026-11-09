@@ -1,5 +1,5 @@
 /*
- * A fileira de categorias em círculo.
+ * A fileira de atalhos em círculo.
  *
  * No celular ela rola e sangra até a borda; no desktop ela cabe inteira e se
  * distribui. O mesmo markup nos dois, e quem decide e a largura.
@@ -38,6 +38,17 @@
   /* A barra de rolagem some: a fileira já se anuncia pelo círculo cortado na
      beirada. */
   scrollbar-width: none;
+
+  /*
+   * O respiro que a arte que sai do círculo precisa.
+   *
+   * Trilho que rola na horizontal também corta na vertical — o navegador não
+   * deixa um eixo rolar e o outro vazar. Sem esta folga, o frasco que passa
+   * da borda de cima do disco seria decepado pelo próprio trilho. A margem
+   * negativa devolve a folga ao layout: a fileira ganha espaço por dentro e
+   * não empurra nada por fora. */
+  padding-block: var(--space-12);
+  margin-block: calc(var(--space-12) * -1);
 }
 
 .list::-webkit-scrollbar {
@@ -50,11 +61,14 @@
   width: 5.5rem;
 }
 
+/* 16px entre o círculo e o nome, e não os 8px de antes: o produto desce até
+   7px abaixo do disco, e o que precisa ficar com respiro e a distância entre
+   a arte e a letra — não entre o contorno e a letra. */
 .link {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-8);
+  gap: var(--space-16);
 
   color: var(--ink);
 }
@@ -67,6 +81,21 @@
 
 /*
  * O círculo.
+ *
+ * ## O disco da arte e o círculo, e o produto sai dele
+ *
+ * O círculo não recorta mais a foto. A arte do atalho traz o próprio disco
+ * dourado, e ele e desenhado na medida exata deste círculo: o que a arte
+ * puser fora do disco — o frasco mais alto, a asa do pavão que abre para os
+ * lados — aparece por cima da página, solto, como se saltasse da fileira. E
+ * o enquadramento que a arte foi feita para ter, e recortá-lo num círculo
+ * cortava justamente a parte que ele tem de mais vivo.
+ *
+ * Isso exige duas coisas da arte, e as duas são garantidas no envio
+ * (`backend/scripts/shortcuts/art.ts`): quadrada, com o disco centrado
+ * ocupando 84,3% do lado, e com o resto transparente. Fundo branco
+ * desenharia um quadrado em volta de cada círculo — invisível na loja clara e
+ * um bloco leitoso no tema escuro.
  *
  * ## O fio de contorno não e enfeite
  *
@@ -85,11 +114,15 @@
  * se mexeria a cada passagem do cursor.
  */
 .circle {
+  /* O lado do quadrado da arte, em diâmetros: o disco ocupa 84,3% dele, então
+     e por 1/0,843 que a arte cresce para o disco fechar com o círculo. Mudar
+     este número sem mudar a arte desalinha o disco do contorno. */
+  --art: 118.6%;
+
   position: relative;
   display: block;
   width: 5.5rem;
   height: 5.5rem;
-  overflow: hidden;
 
   background-color: var(--bg-alt);
   border-radius: var(--radius-pill);
@@ -102,15 +135,28 @@
   box-shadow: 0 0 0 2px var(--gold);
 }
 
-/* A foto entra por cima da inicial, e não no lugar dela: as duas ocupam o
-   mesmo círculo, e enquanto a foto não decodifica quem aparece e a letra. */
+/*
+ * A arte entra por cima da inicial, e não no lugar dela: enquanto ela não
+ * decodifica, quem aparece e a letra.
+ *
+ * Ela e maior que o círculo e fica centrada nele — e a sobra, de 9,3% do
+ * diâmetro para cada lado, que deixa o produto sair. `contain` e não `cover`
+ * porque a arte e quadrada por contrato: cortar para preencher tiraria o
+ * disco do esquadro e ele deixaria de fechar com o contorno.
+ */
 .image {
   position: absolute;
-  inset: 0;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
 
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: var(--art);
+  height: var(--art);
+  /* O `reset.css` limita toda imagem a 100% do pai, que aqui seria o próprio
+     círculo: sem desfazer isso, a arte voltaria ao diâmetro do círculo e o
+     disco encolheria para dentro do contorno. */
+  max-width: none;
+  object-fit: contain;
 }
 
 /*

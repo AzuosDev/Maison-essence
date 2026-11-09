@@ -1,18 +1,23 @@
 import { expect, test } from 'vitest';
 import type { InstitutionalPageSlug } from '@/features/settings';
 import { dayEndISO, dayStartISO } from '@/lib/format';
-import type { AdminBanner, AdminStoreSettings } from './admin.types';
+import type { AdminBanner, AdminShortcut, AdminStoreSettings } from './admin.types';
 import {
   bannerStatus,
   changesOf,
   draftFromSettings,
   hasSettingsErrors,
   isDirty,
+  linkFromTarget,
   moveBanner,
+  moveShortcut,
   newBanner,
+  newShortcut,
   normalizeWhatsapp,
   prettyWhatsapp,
+  targetFromLink,
   validateSettings,
+  validateShortcuts,
   warningsOf,
   type PageDraft,
   type SettingsDraft,
@@ -45,6 +50,15 @@ const BANNER: AdminBanner = {
   isActive: true,
 };
 
+const SHORTCUT: AdminShortcut = {
+  id: 's1',
+  label: 'Hidratantes',
+  image: 'shortcuts/hidratantes',
+  link: '/categorias/hidratantes',
+  order: 0,
+  isActive: true,
+};
+
 function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
   return {
     storeName: 'Maison Essence',
@@ -71,6 +85,7 @@ function settings(patch: Partial<AdminStoreSettings> = {}): AdminStoreSettings {
     // acontece.
     gift: { isActive: false, minCents: null, productId: null, label: '' },
     banners: [BANNER],
+    shortcuts: [SHORTCUT],
     institutionalPages: [
       { slug: 'quem-somos', title: 'Quem somos', content: 'Texto', isActive: true },
       { slug: 'como-comprar', title: 'Como comprar', content: '', isActive: false },
@@ -467,4 +482,116 @@ test('brinde desligado não avisa nada', () => {
   const desligado = comBrinde({ isActive: false, minValue: '', productId: null, label: '' });
 
   expect(warningsOf(desligado).filter((aviso) => aviso.scope === 'gift')).toEqual([]);
+});
+
+/* ---- Os atalhos da home ---------------------------------------------------- */
+
+/**
+ * O caminho tem que voltar igual ao que foi lido.
+ *
+ * E o mesmo risco da data do banner, por outro caminho: a tela guarda a
+ * escolha ("a categoria hidratantes") e o servidor guarda o caminho
+ * (`/categorias/hidratantes`). Se a volta não devolver exatamente o que
+ * estava la, abrir a tela deixaria a barra de salvar aparecendo sozinha — e a
+ * dona aprenderia a ignorar o único aviso de que há algo por gravar.
+ */
+test.each([
+  ['/categorias/hidratantes', 'category', 'hidratantes'],
+  ['/produtos?marca=Isabelle%20La%20Belle', 'brand', 'Isabelle La Belle'],
+  ['/mais-vendidos', 'route', '/mais-vendidos'],
+  ['/produtos?desconto=1', 'route', '/produtos?desconto=1'],
+])('o destino %s volta como %s e monta o mesmo caminho', (link, kind, value) => {
+  const target = targetFromLink(link);
+
+  expect(target).toEqual({ kind, value });
+  expect(linkFromTarget(target.kind, target.value)).toBe(link);
+});
+
+/**
+ * A leitura e estrita de propósito.
+ *
+ * `/produtos?marca=Lattafa&pagina=2` lido como marca viraria
+ * `/produtos?marca=Lattafa` no salvamento seguinte: a tela apagaria em
+ * silêncio um pedaço do destino que alguém montou de propósito.
+ */
+test.each([
+  '/produtos?marca=Lattafa&pagina=2',
+  '/categorias/hidratantes/pastas',
+  'https://instagram.com/maisonessence',
+])('o endereço %s fica como esta escrito', (link) => {
+  const target = targetFromLink(link);
+
+  expect(target).toEqual({ kind: 'custom', value: link });
+  expect(linkFromTarget(target.kind, target.value)).toBe(link);
+});
+
+test('abrir a tela com a fileira montada não a deixa suja', () => {
+  const aberto = draft();
+
+  expect(changesOf(aberto, settings())).toBeNull();
+  expect(isDirty(aberto, settings())).toBe(false);
+});
+
+test('a fileira viaja inteira quando um atalho muda de lugar', () => {
+  const dois = settings({
+    shortcuts: [SHORTCUT, { ...SHORTCUT, id: 's2', label: 'Perfumes', order: 1 }],
+  });
+  const aberto = draftFromSettings(dois);
+
+  const changes = changesOf(
+    { ...aberto, shortcuts: moveShortcut(aberto.shortcuts, 0, 1) },
+    dois,
+  );
+
+  expect(changes?.shortcuts?.map((shortcut) => shortcut.id)).toEqual(['s2', 's1']);
+  // `order` sai da posição na lista, e não do que veio do servidor.
+  expect(changes?.shortcuts?.map((shortcut) => shortcut.order)).toEqual([0, 1]);
+});
+
+test('atalho novo viaja sem id, que e o que faz o servidor criar', () => {
+  const aberto = draft();
+  const novo = { ...newShortcut(), label: 'Mais vendidos', targetKind: 'route' as const, targetValue: '/mais-vendidos' };
+
+  const changes = changesOf({ ...aberto, shortcuts: [...aberto.shortcuts, novo] }, settings());
+
+  expect(changes?.shortcuts?.[1]).toEqual({
+    label: 'Mais vendidos',
+    image: '',
+    link: '/mais-vendidos',
+    order: 1,
+    isActive: true,
+  });
+  expect(changes?.shortcuts?.[1]).not.toHaveProperty('id');
+});
+
+test('atalho sem nome e sem destino e recusado, e a foto não e cobrada', () => {
+  const errors = validateShortcuts([newShortcut()]);
+  const key = Object.keys(errors)[0]!;
+
+  expect(errors[key]?.label).toBeDefined();
+  expect(errors[key]?.target).toBeDefined();
+
+  const semFoto = validateShortcuts([
+    { ...newShortcut(), label: 'Hidratantes', targetValue: 'hidratantes' },
+  ]);
+
+  expect(semFoto).toEqual({});
+});
+
+test('a fileira vazia avisa que a home volta as categorias', () => {
+  const avisos = warningsOf(draft({ shortcuts: [] }))
+    .filter((warning) => warning.scope === 'shortcuts')
+    .map((warning) => warning.text);
+
+  expect(avisos).toHaveLength(1);
+  expect(avisos[0]).toContain('categorias principais');
+});
+
+test('atalho ligado sem foto avisa que o círculo mostra a inicial', () => {
+  const avisos = warningsOf(
+    draft({ shortcuts: [{ ...draft().shortcuts[0]!, image: '' }] }),
+  ).filter((warning) => warning.scope === 'shortcuts');
+
+  expect(avisos).toHaveLength(1);
+  expect(avisos[0]?.text).toContain('inicial do nome');
 });

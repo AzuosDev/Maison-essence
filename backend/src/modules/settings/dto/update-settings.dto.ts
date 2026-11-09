@@ -16,11 +16,12 @@ import {
 } from 'class-validator';
 import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { IsWhatsappNumber } from '../whatsapp-number.js';
-import { MAX_BANNERS } from '../settings.constants.js';
+import { MAX_BANNERS, MAX_SHORTCUTS } from '../settings.constants.js';
 import { BannerDto } from './banner.dto.js';
 import { GiftDto } from './gift.dto.js';
 import { InstitutionalPageDto } from './institutional-page.dto.js';
 import { PickupAddressDto } from './pickup-address.dto.js';
+import { ShortcutDto } from './shortcut.dto.js';
 import { SocialLinksDto } from './social-links.dto.js';
 
 /**
@@ -32,8 +33,8 @@ import { SocialLinksDto } from './social-links.dto.js';
  * - campo simples: o valor recebido substitui o gravado;
  * - `pickupAddress`, `socialLinks` e `gift`: fusão campo a campo, porque a
  *   tela manda só o que a dona mexeu;
- * - `banners`: substituição do array inteiro, porque e uma lista ordenável —
- *   o que sumiu dela foi removido de propósito;
+ * - `banners` e `shortcuts`: substituição do array inteiro, porque são listas
+ *   ordenáveis — o que sumiu delas foi removido de propósito;
  * - `institutionalPages`: atualização por `slug`, porque as seis páginas
  *   existem sempre e cada uma e editada na sua própria tela.
  */
@@ -131,6 +132,21 @@ export class UpdateSettingsDto {
   @ValidateNested({ each: true })
   @Type(() => BannerDto)
   banners?: BannerDto[];
+
+  /**
+   * A fileira de atalhos da home: os círculos logo abaixo do banner.
+   *
+   * Array inteiro, como o carrossel — é uma lista ordenável, e o atalho que
+   * sumiu dela foi removido de propósito. Lista vazia é resposta legítima e
+   * não configuração pela metade: sem nenhum atalho a home volta a desenhar
+   * as categorias-raiz, que é o que ela sempre fez.
+   */
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(MAX_SHORTCUTS)
+  @ValidateNested({ each: true })
+  @Type(() => ShortcutDto)
+  shortcuts?: ShortcutDto[];
 
   @IsOptional()
   @IsArray()

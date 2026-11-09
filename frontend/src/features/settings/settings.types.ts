@@ -61,6 +61,23 @@ export interface PublicGift {
   image: string;
 }
 
+/**
+ * Um atalho da fileira de círculos da home, já resolvido pelo servidor.
+ *
+ * Chega pronto para ser desenhado: só os ligados vêm, e já na ordem da
+ * fileira. A loja não decide nada sobre atalho — ela corta pelo número de
+ * círculos que cabem e desenha o resto como veio.
+ */
+export interface PublicShortcut {
+  id: string;
+  /** O nome embaixo do círculo. */
+  label: string;
+  /** `publicId` da foto. Vazio e legitimo: o círculo cai na inicial do nome. */
+  image: string;
+  /** Caminho da loja (`/categorias/hidratantes`) ou endereço inteiro. */
+  link: string;
+}
+
 export interface PublicSettings {
   storeName: string;
   /** Só digitos, com código do pais: `5588999999999`. */
@@ -79,6 +96,14 @@ export interface PublicSettings {
   /** O brinde por valor de compra. `null` quando a loja não da brinde hoje. */
   gift: PublicGift | null;
   banners: PublicBanner[];
+  /**
+   * A fileira de círculos da home, na ordem que a dona montou no painel.
+   *
+   * Vazia e resposta legitima: significa que ninguém montou a fileira ainda,
+   * e a home volta a desenhar as categorias-raiz — que e o que ela fazia
+   * antes desta lista existir.
+   */
+  shortcuts: PublicShortcut[];
 }
 
 /**

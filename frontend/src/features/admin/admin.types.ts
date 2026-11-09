@@ -363,6 +363,7 @@ export const UPLOAD_FOLDERS = {
   products: 'products',
   categories: 'categories',
   banners: 'banners',
+  shortcuts: 'shortcuts',
 } as const;
 
 export type UploadFolder = (typeof UPLOAD_FOLDERS)[keyof typeof UPLOAD_FOLDERS];
@@ -620,6 +621,25 @@ export interface AdminBanner {
 }
 
 /**
+ * Um atalho da fileira de círculos da home, como o painel o guarda.
+ *
+ * O desligado continua aqui: ele e o atalho da campanha guardada — a dona
+ * desliga "Black Friday" em dezembro e o traz de volta em novembro sem
+ * remontar nome, foto e destino.
+ */
+export interface AdminShortcut {
+  id: string;
+  /** O nome embaixo do círculo. */
+  label: string;
+  /** `publicId` do Cloudinary. Vazio deixa o círculo na inicial do nome. */
+  image: string;
+  /** Caminho da loja ou endereço inteiro. */
+  link: string;
+  order: number;
+  isActive: boolean;
+}
+
+/**
  * O brinde por valor de compra, como o painel o guarda.
  *
  * Cru de propósito: brinde desligado, sem valor meta ou sem produto continua
@@ -671,6 +691,8 @@ export interface AdminStoreSettings {
   /** O brinde por valor de compra, como esta guardado. */
   gift: AdminGift;
   banners: AdminBanner[];
+  /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
+  shortcuts: AdminShortcut[];
   /** As cinco, sempre, mesmo as que ninguém escreveu ainda. */
   institutionalPages: AdminInstitutionalPage[];
   updatedAt: string;
@@ -695,6 +717,22 @@ export interface BannerInput {
   order?: number;
   startsAt?: string | null;
   endsAt?: string | null;
+  isActive?: boolean;
+}
+
+/**
+ * Um atalho no corpo do `PATCH`.
+ *
+ * `id` presente identifica atalho que já existe; ausente, o servidor cria.
+ * Manter o `id` e o que preserva a identidade da foto entre gravações — e e
+ * por ele que o servidor sabe que a imagem ainda esta em uso.
+ */
+export interface ShortcutInput {
+  id?: string;
+  label: string;
+  image?: string;
+  link: string;
+  order?: number;
   isActive?: boolean;
 }
 
@@ -736,6 +774,8 @@ export interface UpdateStoreSettingsInput {
   /** Só o que mudou no brinde: o servidor funde campo a campo. */
   gift?: Partial<AdminGift>;
   banners?: BannerInput[];
+  /** A fileira vai inteira, como o carrossel: e uma lista ordenável. */
+  shortcuts?: ShortcutInput[];
   institutionalPages?: InstitutionalPageInput[];
 }
 
@@ -753,6 +793,12 @@ export const SETTINGS_LIMITS = {
   bannerSubtitle: 200,
   bannerButtonLabel: 40,
   bannerLink: 300,
+  /** `MAX_SHORTCUTS`: o que cabe numa fileira de desktop sem encolher o círculo. */
+  shortcuts: 9,
+  /** `MAX_SHORTCUT_LABEL_LENGTH`: o nome tem a largura do círculo. */
+  shortcutLabel: 32,
+  /** `MAX_SHORTCUT_LINK_LENGTH`, igual ao link do banner. */
+  shortcutLink: 300,
   pageTitle: 120,
   /** `MAX_PAGE_CONTENT_LENGTH`. */
   pageContent: 20_000,
@@ -800,3 +846,14 @@ export const BANNER_ART = {
 export function bannerArtMeasure(art: { width: number; height: number }): string {
   return `${String(art.width)} × ${String(art.height)} px`;
 }
+
+/**
+ * A medida que a home pede da foto de um atalho.
+ *
+ * O círculo tem 6.5rem (104px) no desktop e a foto e servida no preset
+ * `thumb`, que entrega 400px de largura — e a medida em que ela ainda fica
+ * nítida numa tela de densidade dupla. Quadrada porque o recorte e um
+ * círculo: numa foto em retrato, `object-fit: cover` corta as laterais e o
+ * frasco sai pela borda.
+ */
+export const SHORTCUT_ART = { width: 400, height: 400 } as const;

@@ -31,6 +31,9 @@ scripts/banners/art/*
 scripts/categories/art/*
 !scripts/categories/art/.gitkeep
 
+scripts/shortcuts/art/*
+!scripts/shortcuts/art/.gitkeep
+
 logs/
 *.log
 npm-debug.log*

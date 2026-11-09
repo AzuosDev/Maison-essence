@@ -4,6 +4,12 @@ A foto que aparece no circulo de categoria da home. E o mesmo campo que o
 painel preenche em **Editar categoria -> Enviar foto** — este script existe
 para fazer as sete de uma vez, nao para substituir o painel.
 
+> **A fileira da home nao sai mais daqui.** Desde que os atalhos existem
+> (Ajustes -> Atalhos da home), os circulos da home sao uma lista propria, com
+> foto propria — ver `scripts/shortcuts/`. A foto de categoria continua valendo
+> para o cartaz de colecao e para a fileira de reserva, que e o que a home
+> desenha quando nenhum atalho esta cadastrado.
+
 ## Como usar
 
 1. Ponha os arquivos em `art/`, **cada um com o nome do slug da categoria**:
@@ -53,7 +59,7 @@ pedido.
 
 ## O enquadramento
 
-A vitrine recorta num circulo de 88px (`category-circles.module.css`). Foto
+A vitrine recorta num circulo de 88px (`shortcut-circles.module.css`). Foto
 quadrada, assunto centralizado e fundo claro e o que sobrevive a esse corte;
 frasco alto e estreito perde o gargalo.
 

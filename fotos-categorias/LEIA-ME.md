@@ -1,63 +1,65 @@
-# Fotos das categorias (provisórias)
+# Fotos dos atalhos da home
 
-Sete fotos para os círculos de categoria da home, uma por categoria cadastrada.
-**Não são fotos da loja** — são banco de imagem livre, e estão aqui como tapa-buraco
-até existir foto própria.
+As sete fotos dos círculos que abrem a home, logo abaixo do banner. **São fotos
+da loja**, enviadas pela dona em 09/11/2026 — e não banco de imagem.
 
-## Como usar
+Cada arquivo casa com um atalho pelo nome, e o casamento está escrito em
+`backend/scripts/shortcuts/config.ts`:
 
-Painel → Categorias → **Editar categoria** → **Enviar foto**. Uma por vez.
-Depois que as sete estiverem no Cloudinary, esta pasta pode ser apagada: o que
-vale é o `publicId` que ficou no cadastro, não o arquivo daqui.
+| Arquivo | Atalho | Leva para |
+|---|---|---|
+| `ISABELLE LA BELLE.jpg.jpeg` | Isabelle La Belle | a vitrine filtrada pela marca |
+| `VITORIA'S SECRETS.jpg.jpeg` | Victoria's Secret | a vitrine filtrada pela marca |
+| `MAIS VENDIDOS.jpg.jpeg` | Mais vendidos | `/mais-vendidos` |
+| `FEMININO.jpg.jpeg` | Feminino | a categoria `feminino` |
+| `MASCULINO.jpg.jpeg` | Masculino | a categoria `masculino` |
+| `BODY SPLASH MASCULINO.jpg.jpeg` | Body Splash Masculino | a categoria `body-splash-masculino` |
+| `PASTAS ISABELLE LA BELLE.jpg.jpeg` | Hidratantes | a categoria `hidratantes` |
 
-As fotos já vêm cortadas em quadrado (1200×1200). A vitrine recorta num círculo
-de 88px, então o que importa é o miolo do quadro.
+A última linha não é engano: o arquivo descreve o que está na imagem — as
+pastas hidratantes — e o rótulo é o que a cliente procura.
 
-## Origem e licença
+## Como subir
 
-Todas do [Pexels](https://www.pexels.com/license/), sob a licença do Pexels: uso
-comercial liberado, sem atribuição obrigatória, edição permitida.
+Pelo painel, uma por vez: **Ajustes → Atalhos da home → Enviar foto**. É o
+caminho normal, e o único que a dona precisa saber.
 
-| Arquivo | Foto |
-|---|---|
-| `perfumes.jpg` | https://www.pexels.com/photo/brown-glass-bottles-on-a-white-surface-7796458/ |
-| `miniaturas.jpg` | https://www.pexels.com/photo/silver-spray-bottle-on-white-textile-8903695/ |
-| `body-splash.jpg` | https://www.pexels.com/photo/perfume-bottle-on-a-white-surface-surrounded-by-dried-flowers-7796498/ |
-| `body-mist.jpg` | https://www.pexels.com/photo/white-plastic-bottles-on-white-surface-7691163/ |
-| `hidratantes.jpg` | https://www.pexels.com/photo/skincare-product-in-bottle-on-white-table-5797999/ |
-| `desodorantes.jpg` | https://www.pexels.com/photo/white-plastic-tube-and-pump-bottle-lying-on-a-white-background-12024942/ |
-| `kits.jpg` | https://www.pexels.com/photo/white-containers-on-white-surface-8015460/ |
+De uma vez, pelo terminal:
 
-## Por que estas, e não as primeiras que apareceram
+```sh
+cd backend
+npm run shortcuts:upload -- --dir=../fotos-categorias --dry-run
+npm run shortcuts:upload -- --dir=../fotos-categorias
+```
 
-Duas regras de corte, e as duas descartaram muita coisa:
+O script sobe as fotos para o Cloudinary e monta a fileira inteira nas
+configurações. Ver `backend/scripts/shortcuts/README.md` — inclusive a nota
+sobre **contra qual banco isso roda**.
 
-**Nenhuma marca legível.** A licença do Pexels proíbe usar a imagem de um jeito
-que sugira endosso da marca que aparece nela — e, numa loja que vende perfume,
-frasco de concorrente no círculo de categoria é pior do que uma questão de
-licença. Foram descartados por isso frascos de Zara, Dolce & Gabbana, Ivy Dubai,
-NARS, Tom Ford, Clinique e Zudio, que apareceram nas primeiras buscas.
+## O enquadramento
 
-**Fundo claro e luz de estúdio.** As sete precisam ler como um conjunto na mesma
-fileira. Foto de fundo azul forte ou escuro, sozinha entre seis claras, quebra a
-fileira — e a vitrine é branca de ponta a ponta.
+A home **não recorta** estas artes. O disco dourado que elas trazem é desenhado
+na medida exata do círculo, e o que está fora do disco — o frasco mais alto que
+ele, a asa do pavão de `FEMININO` — aparece por fora, solto sobre a página.
 
-Também foram descartados sprays que, olhados de perto, eram produto de limpeza
-("multi-purpose cleaner") e flat lays de maquiagem, que não é o que a casa vende.
+As sete seguem a mesma régua: **quadrado de 600px, disco centrado com 506px**,
+ou 84,3% do lado. É essa proporção que o CSS da fileira usa para fazer o disco
+fechar com o contorno, então uma arte nova precisa vir no mesmo enquadramento.
 
-## O que ainda não está bom
+O fundo branco destes JPEGs **é recortado no envio** e a arte sobe como PNG
+transparente (`backend/scripts/shortcuts/art.ts`). Pelo painel não há recorte:
+ali a dona precisa enviar um PNG já sem fundo, senão fica um quadrado branco em
+volta do círculo — invisível na loja clara, e um bloco leitoso no tema escuro.
+O painel mostra o círculo no tamanho real, com a sobra para fora, para que isso
+se descubra antes de publicar.
 
-Quatro das sete são fiéis à categoria: **perfumes**, **body splash**,
-**hidratantes** e **kits**.
+## O que havia aqui antes
 
-Três são aproximação, e vale saber disso antes de publicar:
+Sete fotos de banco de imagem (Pexels), uma por categoria cadastrada, usadas
+como tapa-buraco nos círculos enquanto a fileira era a árvore de categorias.
+Elas saíram quando as fotos de verdade chegaram. A fileira também deixou de ser
+a árvore: hoje é uma lista própria, editada em Ajustes → Atalhos da home.
 
-- **miniaturas** — é um frasco pequeno com tampa dourada, não uma miniatura
-  de 25ml de verdade.
-- **body-mist** — são frascos de pump, não de névoa.
-- **desodorantes** — é um tubo com pump; desodorante não tem esse formato.
-
-Banco de imagem livre quase não tem foto desses três sem marca estampada. Para
-essas três, uma foto do próprio estoque sobre uma folha branca, feita com o
-celular, fica melhor do que qualquer coisa daqui — e é a única que mostra o que
-a cliente vai receber.
+As fotos das **categorias** — que ainda valem, para os cartazes de coleção e
+para a fileira de reserva — continuam sendo enviadas em Painel → Categorias →
+Editar categoria → Enviar foto, ou por `backend/scripts/categories/`.

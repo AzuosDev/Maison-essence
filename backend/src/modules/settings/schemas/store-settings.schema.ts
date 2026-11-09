@@ -164,6 +164,65 @@ export class Banner extends EmbeddedSchema {
 export const BannerSchema = createSchema(Banner);
 
 /**
+ * Um atalho da fileira de círculos da home.
+ *
+ * ## O que ele e, e por que deixou de ser categoria
+ *
+ * A fileira logo abaixo do banner e a primeira navegação da loja: quem chega
+ * pelo anúncio não tem um perfume em mente, tem uma intenção. Até aqui essa
+ * fileira era, literalmente, as categorias-raiz do catálogo na ordem do
+ * painel — e isso amarrava duas decisões diferentes num campo só. A dona não
+ * podia pôr "Mais vendidos" na primeira tela sem inventar uma categoria vazia
+ * para isso, nem destacar uma marca sem transformar a marca em categoria e
+ * reclassificar sessenta produtos.
+ *
+ * Agora a fileira e lista própria: cada atalho tem o nome que a cliente lê, a
+ * foto do círculo e o endereço para onde leva. A arvore de categorias volta a
+ * ser só o que ela e — a organização do catálogo —, e o menu continua saindo
+ * dela.
+ *
+ * ## O destino e um caminho, e não um tipo
+ *
+ * `link` guarda `/categorias/hidratantes`, `/produtos?marca=Isabelle%20La%20Belle`
+ * ou `/mais-vendidos` — texto, como no banner. Modelar "categoria | marca |
+ * rota" em campos separados daria um schema que precisa crescer toda vez que
+ * a loja inventar um destino novo; o painel e que oferece as três formas de
+ * preencher este campo sem a dona escrever caminho nenhum.
+ *
+ * ## Lista vazia não e lista quebrada
+ *
+ * Sem nenhum atalho cadastrado a home volta a desenhar as categorias-raiz,
+ * que e o comportamento de sempre. Isso não e tolerância a configuração pela
+ * metade: e o que garante que a loja nunca fica sem a primeira navegação da
+ * página por causa de uma lista que ninguém preencheu ainda.
+ */
+@Schema(embeddedSchemaOptions())
+export class Shortcut extends EmbeddedSchema {
+  /** O nome embaixo do círculo. Curto: ele tem a largura do círculo. */
+  @Prop(textProp({ required: true, max: 32 }))
+  label: string;
+
+  /**
+   * `publicId` do Cloudinary. Vazio e legitimo — o círculo cai na inicial do
+   * nome, como já fazia a categoria sem foto.
+   */
+  @Prop(textProp({ max: 200, default: '' }))
+  image: string;
+
+  /** Para onde o atalho leva. Caminho da loja ou endereço inteiro. */
+  @Prop(textProp({ required: true, max: 300 }))
+  link: string;
+
+  @Prop(integerProp({ default: 0, max: 9999 }))
+  order: number;
+
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
+}
+
+export const ShortcutSchema = createSchema(Shortcut);
+
+/**
  * Página institucional. O slug vem de uma lista fixa porque o endereço e
  * público e já circula; o que a dona edita e título e conteúdo.
  */
@@ -271,6 +330,15 @@ export class StoreSettings extends SingletonSchema {
 
   @Prop({ type: [BannerSchema], default: [] })
   banners: Banner[];
+
+  /**
+   * A fileira de círculos da home. Vazia, a home cai nas categorias-raiz.
+   *
+   * Ver `Shortcut`: a lista e própria justamente para que destacar uma marca
+   * ou "Mais vendidos" na primeira tela não exija inventar uma categoria.
+   */
+  @Prop({ type: [ShortcutSchema], default: [] })
+  shortcuts: Shortcut[];
 
   @Prop({ type: [InstitutionalPageSchema], default: [] })
   institutionalPages: InstitutionalPage[];
