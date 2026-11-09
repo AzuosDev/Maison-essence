@@ -12,6 +12,7 @@ import { hasValidWindow, unknownBannerIds } from './banners.js';
 import { liveGift } from './gift.js';
 import type { GiftOffer, GiftProduct } from './gift.js';
 import type { BannerDto } from './dto/banner.dto.js';
+import type { CollectionPosterDto } from './dto/poster.dto.js';
 import type { ShortcutDto } from './dto/shortcut.dto.js';
 import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
 import { upsertPages } from './institutional-pages.js';
@@ -20,11 +21,13 @@ import type {
   StoreSettingsDocument,
   StoreSettingsModel,
 } from './schemas/store-settings.schema.js';
+import { unknownPosterIds } from './posters.js';
 import { unknownShortcutIds } from './shortcuts.js';
 import {
   INVALID_BANNER_WINDOW_MESSAGE,
   PAGE_NOT_FOUND_MESSAGE,
   unknownBannersMessage,
+  unknownPostersMessage,
   unknownShortcutsMessage,
 } from './settings.constants.js';
 import { assertCanEditSettings } from './settings-access.policy.js';
@@ -187,6 +190,10 @@ export class SettingsService {
 
     if (dto.shortcuts !== undefined) {
       settings.set('shortcuts', this.plannedShortcuts(settings, dto.shortcuts));
+    }
+
+    if (dto.posters !== undefined) {
+      settings.set('posters', this.plannedPosters(settings, dto.posters));
     }
 
     // A fileira de mais vendidos e a lista crua, sem planejamento nenhum: ela
@@ -360,12 +367,49 @@ export class SettingsService {
       isActive: shortcut.isActive ?? true,
     }));
   }
+
+  /**
+   * A faixa de cartazes recebida, pronta para substituir a gravada.
+   *
+   * Mesma regra do carrossel e dos atalhos: o `_id` de cada cartaz é
+   * preservado quando o painel manda o `id` — é ele que identifica a arte
+   * entre uma gravação e outra, e é por ele que o módulo de uploads sabe que
+   * a imagem ainda está em uso.
+   */
+  private plannedPosters(
+    settings: StoreSettingsDocument,
+    incoming: readonly CollectionPosterDto[],
+  ): Record<string, unknown>[] {
+    const unknown = unknownPosterIds(
+      incoming,
+      settings.posters.map((poster) => poster.id),
+    );
+
+    if (unknown.length > 0) {
+      throw new UnprocessableEntityException({
+        message: unknownPostersMessage(unknown),
+        details: { unknownIds: unknown },
+      });
+    }
+
+    return incoming.map((poster, index) => ({
+      _id: poster.id === undefined ? new Types.ObjectId() : new Types.ObjectId(poster.id),
+      label: poster.label,
+      image: poster.image,
+      link: poster.link,
+      caption: poster.caption ?? '',
+      // Sem `order`, vale a posição na lista que a dona arrastou na tela.
+      order: poster.order ?? index,
+      isActive: poster.isActive ?? true,
+    }));
+  }
 }
 
 /**
  * Retrato das configurações para a auditoria.
  *
- * Banners, atalhos e páginas viram objetos indexados por `id` e por `slug` em
+ * Banners, atalhos, cartazes e páginas viram objetos indexados por `id` e por
+ * `slug` em
  * vez de arrays: assim o diff diz "o banner tal mudou de data" e não "a lista
  * de banners mudou", que e o que sairia de uma comparação por posição.
  *
@@ -437,6 +481,19 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
           link: shortcut.link,
           order: shortcut.order,
           isActive: shortcut.isActive,
+        },
+      ]),
+    ),
+    posters: Object.fromEntries(
+      settings.posters.map((poster) => [
+        poster.id,
+        {
+          label: poster.label,
+          image: poster.image,
+          link: poster.link,
+          caption: poster.caption,
+          order: poster.order,
+          isActive: poster.isActive,
         },
       ]),
     ),

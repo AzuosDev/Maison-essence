@@ -148,7 +148,8 @@ export class UploadsService {
       references.products +
       references.categories +
       references.banners +
-      references.shortcuts;
+      references.shortcuts +
+      references.posters;
 
     if (total > 0) {
       throw new ConflictException({
@@ -169,7 +170,7 @@ export class UploadsService {
         .countDocuments({ $or: [{ images: publicId }, { 'variants.image': publicId }] })
         .exec(),
       this.categories.countDocuments({ image: publicId }).exec(),
-      this.settings.findOne({}).select('banners shortcuts').lean().exec(),
+      this.settings.findOne({}).select('banners shortcuts posters').lean().exec(),
     ]);
 
     const banners = (settings?.banners ?? []).filter(
@@ -180,7 +181,11 @@ export class UploadsService {
       (shortcut) => shortcut.image === publicId,
     ).length;
 
-    return { products, categories, banners, shortcuts };
+    const posters = (settings?.posters ?? []).filter(
+      (poster) => poster.image === publicId,
+    ).length;
+
+    return { products, categories, banners, shortcuts, posters };
   }
 
   /**
@@ -228,6 +233,7 @@ function inUseMessage(references: ImageReferences): string {
     plural(references.categories, 'categoria', 'categorias'),
     plural(references.banners, 'banner', 'banners'),
     plural(references.shortcuts, 'atalho da home', 'atalhos da home'),
+    plural(references.posters, 'cartaz de coleção', 'cartazes de coleção'),
   ].filter((place) => place !== null);
 
   return `Esta imagem ainda e usada em ${places.join(' e ')}. Troque a foto la antes de remover.`;

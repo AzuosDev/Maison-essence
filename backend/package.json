@@ -23,6 +23,7 @@
     "images:upload": "npm run build && tsx scripts/catalog-images/upload.ts",
     "banners:upload": "npm run build && tsx scripts/banners/upload.ts",
     "categories:upload": "npm run build && tsx scripts/categories/upload.ts",
+    "posters:upload": "npm run build && tsx scripts/posters/upload.ts",
     "shortcuts:upload": "npm run build && tsx scripts/shortcuts/upload.ts",
     "lint": "oxlint --type-aware src/ api/ test/",
     "typecheck": "tsc --noEmit",

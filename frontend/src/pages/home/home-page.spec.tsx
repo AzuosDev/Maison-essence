@@ -717,6 +717,43 @@ test('os cartazes trazem as duas maiores categorias com foto', async () => {
   expect(links[1]?.getAttribute('href')).toBe('/categorias/velas');
 });
 
+test('a faixa cadastrada manda, e o catalogo nao e consultado', async () => {
+  // O ponto da lista propria: "Mais vendidos" nao e categoria nenhuma, e
+  // ainda assim e um cartaz. Antes disso, por ele ali exigia inventar uma
+  // categoria vazia.
+  configuracoes = {
+    ...SETTINGS,
+    posters: [
+      {
+        id: 'p1',
+        label: 'Mais vendidos',
+        image: 'maison-essence/posters/mais-vendidos-09b18b9f',
+        link: '/mais-vendidos',
+        caption: '',
+      },
+      {
+        id: 'p2',
+        label: "Victoria's Secret",
+        image: 'maison-essence/posters/victorias-secret-00fbe353',
+        link: "/produtos?marca=Victoria's%20Secret",
+        caption: '',
+      },
+    ],
+  };
+
+  abrirHome();
+
+  const colecoes = await screen.findByRole('region', { name: 'Coleções' });
+  const links = within(colecoes).getAllByRole('link');
+
+  expect(links).toHaveLength(2);
+  expect(links[0]?.getAttribute('href')).toBe('/mais-vendidos');
+  expect(within(colecoes).getByText('Mais vendidos')).toBeDefined();
+
+  // A linha de apoio vazia não abre um vão embaixo do nome.
+  expect(within(colecoes).queryByText(/\d+ produtos?$/)).toBeNull();
+});
+
 test('sem duas categorias com foto, a faixa de cartazes some', async () => {
   categorias = CATEGORIES.map((categoria) => Object.assign({}, categoria, { image: '' }));
 

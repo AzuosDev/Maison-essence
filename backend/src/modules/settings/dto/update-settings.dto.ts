@@ -16,11 +16,17 @@ import {
 } from 'class-validator';
 import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { IsWhatsappNumber } from '../whatsapp-number.js';
-import { MAX_BANNERS, MAX_BEST_SELLERS, MAX_SHORTCUTS } from '../settings.constants.js';
+import {
+  MAX_BANNERS,
+  MAX_BEST_SELLERS,
+  MAX_POSTERS,
+  MAX_SHORTCUTS,
+} from '../settings.constants.js';
 import { BannerDto } from './banner.dto.js';
 import { GiftDto } from './gift.dto.js';
 import { InstitutionalPageDto } from './institutional-page.dto.js';
 import { PickupAddressDto } from './pickup-address.dto.js';
+import { CollectionPosterDto } from './poster.dto.js';
 import { ShortcutDto } from './shortcut.dto.js';
 import { SocialLinksDto } from './social-links.dto.js';
 
@@ -33,7 +39,7 @@ import { SocialLinksDto } from './social-links.dto.js';
  * - campo simples: o valor recebido substitui o gravado;
  * - `pickupAddress`, `socialLinks` e `gift`: fusão campo a campo, porque a
  *   tela manda só o que a dona mexeu;
- * - `banners`, `shortcuts` e `bestSellerProductIds`: substituição do array
+ * - `banners`, `shortcuts`, `posters` e `bestSellerProductIds`: substituição do array
  *   inteiro, porque são listas ordenáveis — o que sumiu delas foi removido
  *   de propósito;
  * - `institutionalPages`: atualização por `slug`, porque as seis páginas
@@ -166,6 +172,21 @@ export class UpdateSettingsDto {
   @ValidateNested({ each: true })
   @Type(() => ShortcutDto)
   shortcuts?: ShortcutDto[];
+
+  /**
+   * Os dois cartazes de coleção: as artes largas no meio da home.
+   *
+   * Array inteiro, como o carrossel e a fileira de atalhos. Lista vazia é
+   * resposta legítima: sem nenhum cartaz a faixa volta a sair das duas
+   * categorias-raiz com mais produtos que tenham foto, que é o que ela sempre
+   * fez.
+   */
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(MAX_POSTERS)
+  @ValidateNested({ each: true })
+  @Type(() => CollectionPosterDto)
+  posters?: CollectionPosterDto[];
 
   @IsOptional()
   @IsArray()

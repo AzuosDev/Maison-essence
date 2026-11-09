@@ -9,11 +9,13 @@ import type {
   Banner,
   InstitutionalPage,
   PickupAddress,
+  CollectionPoster,
   Shortcut,
   SocialLinks,
   StoreGift,
   StoreSettingsDocument,
 } from './schemas/store-settings.schema.js';
+import { livePosters } from './posters.js';
 import { liveShortcuts } from './shortcuts.js';
 import { whatsappLinkOf } from './whatsapp-number.js';
 
@@ -127,6 +129,31 @@ export interface PublicShortcutView {
   link: string;
 }
 
+/**
+ * Cartaz de coleção como o painel o edita: inclusive o desligado.
+ *
+ * Mesmo motivo do atalho desligado — a arte da campanha guardada continua
+ * montada, com nome, foto e destino, à espera de ser religada.
+ */
+export interface PosterView {
+  id: string;
+  label: string;
+  image: string;
+  link: string;
+  caption: string;
+  order: number;
+  isActive: boolean;
+}
+
+/** Cartaz como a home o recebe: já filtrado e na ordem da faixa. */
+export interface PublicPosterView {
+  id: string;
+  label: string;
+  image: string;
+  link: string;
+  caption: string;
+}
+
 /** Página institucional no painel. */
 export interface PageView extends EditablePage {}
 
@@ -171,6 +198,11 @@ export interface SettingsView {
   banners: BannerView[];
   /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
   shortcuts: ShortcutView[];
+  /**
+   * Os dois cartazes largos do meio da home. Vazia, a faixa cai nas duas
+   * categorias-raiz com mais produtos que tenham foto.
+   */
+  posters: PosterView[];
   institutionalPages: PageView[];
   updatedAt: Date;
 }
@@ -225,6 +257,14 @@ export interface PublicSettingsView {
    * vitrine é quem corta pelo teto de círculos que cabem numa fileira.
    */
   shortcuts: PublicShortcutView[];
+
+  /**
+   * Os cartazes de coleção, já filtrados e ordenados.
+   *
+   * Vazia significa "a dona não montou a faixa", e a home volta a deduzi-la
+   * das categorias — que é o que ela fazia antes desta lista existir.
+   */
+  posters: PublicPosterView[];
 }
 
 export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
@@ -250,6 +290,10 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     shortcuts: [...settings.shortcuts]
       .sort((first, second) => first.order - second.order)
       .map(toShortcutView),
+    // Idem: na ordem da faixa.
+    posters: [...settings.posters]
+      .sort((first, second) => first.order - second.order)
+      .map(toPosterView),
     institutionalPages: toPageViews(settings),
     updatedAt: settings.updatedAt,
   };
@@ -282,6 +326,7 @@ export function toPublicSettingsView(
     gift: liveGift(settings.gift, giftProduct),
     banners: liveBanners(settings.banners, now).map(toPublicBannerView),
     shortcuts: liveShortcuts(settings.shortcuts).map(toPublicShortcutView),
+    posters: livePosters(settings.posters).map(toPublicPosterView),
   };
 }
 
@@ -370,6 +415,28 @@ export function toPublicShortcutView(shortcut: Shortcut): PublicShortcutView {
     label: shortcut.label,
     image: shortcut.image,
     link: shortcut.link,
+  };
+}
+
+export function toPosterView(poster: CollectionPoster): PosterView {
+  return {
+    id: poster.id,
+    label: poster.label,
+    image: poster.image,
+    link: poster.link,
+    caption: poster.caption,
+    order: poster.order,
+    isActive: poster.isActive,
+  };
+}
+
+export function toPublicPosterView(poster: CollectionPoster): PublicPosterView {
+  return {
+    id: poster.id,
+    label: poster.label,
+    image: poster.image,
+    link: poster.link,
+    caption: poster.caption,
   };
 }
 

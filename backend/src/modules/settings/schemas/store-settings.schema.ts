@@ -224,6 +224,75 @@ export class Shortcut extends EmbeddedSchema {
 export const ShortcutSchema = createSchema(Shortcut);
 
 /**
+ * Um cartaz de colecao: as duas artes largas no meio da home.
+ *
+ * ## Por que nao sai mais das categorias
+ *
+ * Ate aqui a faixa desenhava as duas categorias-raiz com mais produtos que
+ * tivessem foto — ninguem escolhia, o catalogo escolhia. A loja crescia e a
+ * faixa trocava sozinha; e por "Victoria's Secret" ali, que e marca, ou
+ * "Mais vendidos", que nao e categoria nenhuma, era impossivel sem inventar
+ * uma categoria vazia e reclassificar produto.
+ *
+ * E a mesma amarra que `Shortcut` desfez na fileira de circulos, e a saida e
+ * a mesma: lista propria, com nome, arte e destino.
+ *
+ * ## Lista propria, e nao os dois primeiros atalhos
+ *
+ * O cartaz e o circulo coincidem hoje — "Victoria's Secret" e "Mais
+ * vendidos" sao os dois —, e ainda assim sao listas separadas. Amarra-las
+ * faria o quarto circulo virar cartaz no dia em que a dona reordenasse a
+ * fileira, e tiraria dela a escolha de destacar no meio da pagina algo que
+ * nao esta na primeira tela. Sao duas decisoes, e duas decisoes moram em
+ * dois campos.
+ *
+ * ## A arte e obrigatoria aqui
+ *
+ * Ao contrario do atalho, que sem foto cai na inicial do nome: cartaz sem
+ * arte e um retangulo cinza de meia tela, e dois retangulos cinzas no meio
+ * da vitrine sao piores do que nao ter a faixa. A home ja omitia o cartaz
+ * sem foto quando eles saiam das categorias, e continua omitindo.
+ */
+@Schema(embeddedSchemaOptions())
+export class CollectionPoster extends EmbeddedSchema {
+  /** O nome escrito sobre a arte, no pe do cartaz. */
+  @Prop(textProp({ required: true, max: 48 }))
+  label: string;
+
+  /**
+   * `publicId` do Cloudinary. Obrigatorio: o cartaz e a arte.
+   *
+   * Paisagem 16:9 — a home desenha com `object-fit: cover` numa moldura
+   * 16/9, e qualquer outra proporcao e cortada pelo centro.
+   */
+  @Prop(textProp({ required: true, max: 200 }))
+  image: string;
+
+  /** Para onde o cartaz leva. Caminho da loja ou endereco inteiro. */
+  @Prop(textProp({ required: true, max: 300 }))
+  link: string;
+
+  /**
+   * A linha de apoio, embaixo do nome.
+   *
+   * Vazia e legitima, e o padrao: quando os cartazes saiam das categorias
+   * esta linha era a contagem de produtos, que a API devolvia. Lista propria
+   * nao tem contagem para devolver — "Mais vendidos" nao e uma categoria que
+   * se conte —, entao a dona escreve o que quiser ali, ou nada.
+   */
+  @Prop(textProp({ max: 64, default: '' }))
+  caption: string;
+
+  @Prop(integerProp({ default: 0, max: 9999 }))
+  order: number;
+
+  @Prop({ type: Boolean, default: true })
+  isActive: boolean;
+}
+
+export const CollectionPosterSchema = createSchema(CollectionPoster);
+
+/**
  * Página institucional. O slug vem de uma lista fixa porque o endereço e
  * público e já circula; o que a dona edita e título e conteúdo.
  */
@@ -371,6 +440,15 @@ export class StoreSettings extends SingletonSchema {
    */
   @Prop({ type: [ShortcutSchema], default: [] })
   shortcuts: Shortcut[];
+
+  /**
+   * Os dois cartazes largos no meio da home. Vazia, a faixa cai nas duas
+   * categorias-raiz com mais produtos que tenham foto.
+   *
+   * Ver `CollectionPoster`: lista separada da dos atalhos de proposito.
+   */
+  @Prop({ type: [CollectionPosterSchema], default: [] })
+  posters: CollectionPoster[];
 
   @Prop({ type: [InstitutionalPageSchema], default: [] })
   institutionalPages: InstitutionalPage[];

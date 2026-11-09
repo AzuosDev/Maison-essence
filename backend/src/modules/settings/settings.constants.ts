@@ -53,6 +53,39 @@ export const MAX_SHORTCUT_LABEL_LENGTH = 32;
 export const MAX_SHORTCUT_LINK_LENGTH = 300;
 
 /**
+ * Quantos cartazes de colecao a home desenha.
+ *
+ * Dois, porque o desenho da faixa e duas colunas: um cartaz sozinho com
+ * 1232px de largura vira um banner que ninguem pediu, e tres nao cabem sem
+ * encolher a foto abaixo do que uma paisagem 16:9 suporta. Mesmo motivo do
+ * teto dos atalhos — limite de desenho, e nao de banco.
+ */
+export const MAX_POSTERS = 2;
+
+/** Teto do campo `order` do cartaz — o mesmo declarado no schema. */
+export const MAX_POSTER_ORDER = 9999;
+
+/**
+ * O nome escrito sobre o cartaz.
+ *
+ * Maior que o do atalho: o rotulo do cartaz tem a largura de meia tela, e
+ * nao a de um circulo de 104px.
+ */
+export const MAX_POSTER_LABEL_LENGTH = 48;
+
+/** O destino do cartaz, igual ao limite do link do atalho e do banner. */
+export const MAX_POSTER_LINK_LENGTH = 300;
+
+/**
+ * A linha de apoio embaixo do nome do cartaz.
+ *
+ * Uma linha, e por isso curta: ela cabe na largura do cartaz sem quebrar, e
+ * o que nao cabe em 64 caracteres nao e apoio — e paragrafo, e paragrafo
+ * sobre foto nao se le.
+ */
+export const MAX_POSTER_CAPTION_LENGTH = 64;
+
+/**
  * Quantos produtos a fileira "Mais vendidos" aceita.
  *
  * Doze, que e `SHELF_SIZE`: o que a prateleira da home mostra. O teto não e
@@ -60,6 +93,13 @@ export const MAX_SHORTCUT_LINK_LENGTH = 300;
  * seria guardar uma escolha que a loja não desenha.
  */
 export const MAX_BEST_SELLERS = 12;
+
+export function unknownPostersMessage(ids: readonly string[]): string {
+  const alvo =
+    ids.length === 1 ? 'Um cartaz citado nao existe mais' : 'Cartazes citados nao existem mais';
+
+  return `${alvo}. Recarregue a pagina de configuracoes e tente de novo.`;
+}
 
 export function unknownShortcutsMessage(ids: readonly string[]): string {
   const alvo = ids.length === 1 ? 'Um atalho citado não existe mais' : 'Atalhos citados não existem mais';

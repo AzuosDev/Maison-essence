@@ -78,6 +78,25 @@ export interface PublicShortcut {
   link: string;
 }
 
+/**
+ * Um cartaz de coleção: as artes largas no meio da home.
+ *
+ * Lista separada da dos atalhos de propósito — ver `CollectionPoster`, no
+ * backend. A arte e obrigatória aqui, ao contrário da do círculo: cartaz sem
+ * foto e um retângulo cinza de meia tela.
+ */
+export interface PublicPoster {
+  id: string;
+  /** O nome escrito sobre a arte, no pe do cartaz. */
+  label: string;
+  /** `publicId` da foto. Paisagem 16:9 — a home corta o resto. */
+  image: string;
+  /** Caminho da loja (`/mais-vendidos`) ou endereço inteiro. */
+  link: string;
+  /** A linha de apoio embaixo do nome. Vazia e legitima. */
+  caption: string;
+}
+
 export interface PublicSettings {
   storeName: string;
   /** Só digitos, com código do pais: `5588999999999`. */
@@ -104,6 +123,14 @@ export interface PublicSettings {
    * antes desta lista existir.
    */
   shortcuts: PublicShortcut[];
+  /**
+   * Os dois cartazes largos do meio da home, na ordem que a dona montou.
+   *
+   * Vazia e resposta legitima: a faixa volta a sair das duas categorias-raiz
+   * com mais produtos que tenham foto, que e o que ela fazia antes desta
+   * lista existir.
+   */
+  posters: PublicPoster[];
 }
 
 /**
