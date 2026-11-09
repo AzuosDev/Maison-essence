@@ -161,6 +161,11 @@ export interface SettingsView {
    * primeiro destaque, que e o padrão da loja.
    */
   featuredPerfumeProductId: string | null;
+  /**
+   * Os produtos da fileira "Mais vendidos", na ordem da fileira. Vazia, a
+   * fileira volta ao ranking das vendas.
+   */
+  bestSellerProductIds: string[];
   /** O brinde por valor de compra, como esta guardado. Ver `GiftView`. */
   gift: GiftView;
   banners: BannerView[];
@@ -235,6 +240,7 @@ export function toSettingsView(settings: StoreSettingsDocument): SettingsView {
     socialLinks: toSocialLinksView(settings.socialLinks),
     freeShippingMinCents: settings.freeShippingMinCents,
     featuredPerfumeProductId: settings.featuredPerfumeProductId?.toHexString() ?? null,
+    bestSellerProductIds: settings.bestSellerProductIds.map((id) => id.toHexString()),
     gift: toGiftView(settings.gift),
     // Ordenados como a home os exibe, para a tela do painel bater com o site.
     banners: [...settings.banners]

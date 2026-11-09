@@ -12,8 +12,8 @@ import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
  * - **a operação**: nome da loja, WhatsApp, e-mail, horário, barra de avisos,
  *   mínimo de frete grátis, retirada e endereço. Muda no expediente, por quem
  *   esta no expediente, e errar custa uma correção de um minuto.
- * - **a moldura**: o carrossel da home, o perfume da vez, as páginas que o
- *   rodapé lista, as redes sociais. São decisões de implantação, tomadas uma
+ * - **a moldura**: o carrossel da home, a fileira de mais vendidos, o
+ *   perfume da vez, as páginas que o rodapé lista, as redes sociais. São decisões de implantação, tomadas uma
  *   vez com quem mantem o sistema, e cada uma delas aparece em toda página
  *   da loja — uma página institucional despublicada tira do ar um link que já
  *   circula no WhatsApp de quem comprou.
@@ -31,6 +31,7 @@ import type { UpdateSettingsDto } from './dto/update-settings.dto.js';
 /** Os campos de `/admin/settings` que só o SUPER_ADMIN grava. */
 export const STORE_FRAME_FIELDS = [
   'banners',
+  'bestSellerProductIds',
   'featuredPerfumeProductId',
   'institutionalPages',
   'socialLinks',
@@ -47,6 +48,7 @@ export type StoreFrameField = (typeof STORE_FRAME_FIELDS)[number];
  */
 const FIELD_LABELS: Record<StoreFrameField, string> = {
   banners: 'o carrossel da home',
+  bestSellerProductIds: 'a fileira de mais vendidos',
   featuredPerfumeProductId: 'o perfume da vez',
   institutionalPages: 'as páginas do rodapé',
   socialLinks: 'as redes sociais',

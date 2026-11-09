@@ -121,7 +121,7 @@ export default function HomePage() {
     {
       key: 'best-sellers',
       title: 'Mais vendidos',
-      description: 'O que mais saiu nas últimas semanas.',
+      description: 'O que mais sai das nossas mãos.',
       // Endereço próprio desde que `/mais-vendidos` existe: antes o "ver
       // todos" desta fileira caia no catálogo inteiro, sem ranking nenhum, e
       // quem clicou em "mais vendidos" não encontrava os mais vendidos.

@@ -432,6 +432,78 @@ describe('configuracoes da loja (e2e)', () => {
     });
   });
 
+  /**
+   * A fileira "Mais vendidos" da home, apontada a dedo.
+   *
+   * O que esta suite cobra e a gravacao: a ordem que chega e a ordem que
+   * fica, e a lista vazia viaja. Qual card a loja desenha a partir disso e
+   * assunto de `public-catalog.e2e-spec` — aqui o produto citado nem precisa
+   * existir, porque esta rota nao consulta o catalogo.
+   */
+  describe('a fileira de mais vendidos', () => {
+    const ASAD = '64b7f1c2a1b2c3d4e5f60718';
+    const VELA = '64b7f1c2a1b2c3d4e5f60719';
+
+    it('grava a lista na ordem recebida, e a devolve na mesma ordem', async () => {
+      const admin = await signedInAdmin();
+
+      const response = await patch(admin, { bestSellerProductIds: [VELA, ASAD] }).expect(200);
+
+      expect(response.body.bestSellerProductIds).toEqual([VELA, ASAD]);
+
+      const stored = await adminSettings(admin).expect(200);
+
+      expect(stored.body.bestSellerProductIds).toEqual([VELA, ASAD]);
+    });
+
+    /** Vazia nao e campo ausente: e o pedido de voltar ao ranking. */
+    it('a lista vazia viaja e apaga a escolha', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, { bestSellerProductIds: [VELA] }).expect(200);
+
+      const response = await patch(admin, { bestSellerProductIds: [] }).expect(200);
+
+      expect(response.body.bestSellerProductIds).toEqual([]);
+    });
+
+    it('nasce vazia, sem ninguem ter escolhido nada', async () => {
+      const admin = await signedInAdmin();
+
+      const response = await adminSettings(admin).expect(200);
+
+      expect(response.body.bestSellerProductIds).toEqual([]);
+    });
+
+    it('recusa o que nao e id de produto', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, { bestSellerProductIds: ['asad-lattafa'] }).expect(400);
+    });
+
+    it('recusa mais produtos do que a fileira mostra', async () => {
+      const admin = await signedInAdmin();
+      const ids = Array.from(
+        { length: 13 },
+        (_unused, index) => `64b7f1c2a1b2c3d4e5f607${String(index + 10)}`,
+      );
+
+      await patch(admin, { bestSellerProductIds: ids }).expect(400);
+    });
+
+    it('a troca da fileira entra na trilha de auditoria', async () => {
+      const admin = await signedInAdmin();
+
+      await patch(admin, { bestSellerProductIds: [VELA, ASAD] }).expect(200);
+
+      const entry = await audit.findOne({ action: 'settings.updated' }).exec();
+
+      expect(entry?.toJSON()).toMatchObject({
+        changes: { bestSellerProductIds: { from: [], to: [VELA, ASAD] } },
+      });
+    });
+  });
+
   describe('GET /settings (publica)', () => {
     it('dispensa autenticacao e entrega so o subconjunto seguro', async () => {
       const admin = await signedInAdmin();
@@ -812,8 +884,9 @@ describe('configuracoes da loja (e2e)', () => {
    * A tela e uma, e a permissao dentro dela e duas.
    *
    * O gerente abre `/admin/settings` e grava o que muda no expediente. O que
-   * e moldura da loja — o carrossel da home, o perfume da vez, as paginas do
-   * rodape, as redes sociais — ele le e nao grava. Ver
+   * e moldura da loja — o carrossel da home, a fileira de mais vendidos, o
+   * perfume da vez, as paginas do rodape, as redes sociais — ele le e nao
+   * grava. Ver
    * `settings-access.policy.ts`.
    */
   describe('a divisao de Configuracoes por campo', () => {
@@ -865,6 +938,10 @@ describe('configuracoes da loja (e2e)', () => {
       ],
       ['as redes sociais', { socialLinks: { instagram: 'maisonessence' } }],
       ['o perfume da vez', { featuredPerfumeProductId: '64b7f1c2a1b2c3d4e5f60718' }],
+      [
+        'a fileira de mais vendidos',
+        { bestSellerProductIds: ['64b7f1c2a1b2c3d4e5f60718'] },
+      ],
     ])('recusa o gerente em %s, dizendo o que pedir', async (_campo, body) => {
       const owner = await signedInOwner();
 

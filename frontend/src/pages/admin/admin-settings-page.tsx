@@ -5,6 +5,7 @@ import {
   AlertIcon,
   ArrowLeftIcon,
   BannerEditor,
+  BestSellersPicker,
   GiftEditor,
   PagesEditor,
   PerfumePicker,
@@ -38,9 +39,9 @@ import styles from './admin-settings-page.module.css';
  *
  * ## Vários assuntos, uma tela, um botão
  *
- * Nome da loja, retirada, brinde, atalhos da home, redes, carrossel e páginas
- * moram no mesmo documento e são gravados pelo mesmo `PATCH`. Poderiam ser
- * sete telas, e não são: quem abre esta área o faz raramente, quase sempre
+ * Nome da loja, retirada, brinde, atalhos da home, redes, carrossel, as duas
+ * fileiras que a home mostra e as páginas moram no mesmo documento e são
+ * gravados pelo mesmo `PATCH`. Poderiam ser oito telas, e não são: quem abre esta área o faz raramente, quase sempre
  * para mexer em uma coisa só — e descobrir *qual das sete telas* tem a barra
  * de avisos custa mais do que rolar uma página.
  *
@@ -57,12 +58,13 @@ import styles from './admin-settings-page.module.css';
  * permissão se divide outra vez, por campo: as quatro primeiras seções são a
  * operação da loja — nome, contato, horário, barra de avisos, frete grátis,
  * retirada, o brinde por valor de compra e a fileira de atalhos da home — e o
- * gerente grava as quatro. As quatro últimas são a moldura:
- * redes sociais, carrossel, perfume da vez e páginas do rodapé. Elas aparecem
- * em toda página da loja e não mudam no expediente, e por isso ficam com quem
- * mantem o sistema.
+ * gerente grava as quatro. As cinco últimas são a moldura: redes sociais,
+ * carrossel, a fileira de mais vendidos, perfume da vez e páginas do rodapé.
+ * Elas decidem o que a loja mostra em toda página — ou, no caso das duas da
+ * home, na primeira tela de quem chega — e não mudam no expediente, e por
+ * isso ficam com quem mantem o sistema.
  *
- * Para o gerente, essas quatro seções não são desabilitadas: elas não são
+ * Para o gerente, essas cinco seções não são desabilitadas: elas não são
  * desenhadas. Campo cinza que não aceita digitação e um convite a perguntar
  * "por que não posso?" no meio do expediente, e a resposta seria uma conversa
  * sobre permissão. O lugar some, e no fim da tela fica uma linha dizendo o
@@ -555,13 +557,35 @@ function SettingsForm({
             </section>
 
             {/*
-          O perfume da vez vem depois do carrossel, e não junto dos textos da
-          loja.
+          As três seções da home, na ordem em que a cliente as encontra: o
+          carrossel abre a página, os mais vendidos são a primeira fileira
+          dela, e o perfume da vez a fecha.
 
-          Os dois são a home: o carrossel abre a página e este bloco a fecha.
-          Lidos em sequencia, eles são o que a dona de fato vem conferir aqui
-          — "o que a cliente vê primeiro e com o que ela sai".
+          E por isso que elas estão juntas e nesta ordem, e não junto dos
+          textos da loja: lidas em sequencia, são o que a dona de fato vem
+          conferir aqui — "o que a cliente vê primeiro, o que ela vê depois e
+          com o que ela sai".
         */}
+            <section className={styles.card} aria-labelledby="secao-mais-vendidos">
+              <h2 className={styles.cardTitle} id="secao-mais-vendidos">
+                Mais vendidos
+              </h2>
+
+              <p className={styles.cardHint}>
+                A primeira fileira da home, e a que mais vende. Escolha os produtos e a ordem
+                deles: a fileira e exatamente esta lista, e nada entra atrás para completar. Sem
+                nenhuma escolha, ela volta ao automático — o que mais saiu nos pedidos, completado
+                pelo catálogo.
+              </p>
+
+              <BestSellersPicker
+                productIds={draft.bestSellerProductIds}
+                onChange={(bestSellerProductIds) => {
+                  set({ bestSellerProductIds });
+                }}
+              />
+            </section>
+
             <section className={styles.card} aria-labelledby="secao-perfume">
               <h2 className={styles.cardTitle} id="secao-perfume">
                 O perfume da vez
@@ -603,8 +627,8 @@ function SettingsForm({
           </>
         ) : (
           <p className={styles.handover}>
-            O carrossel da home, o perfume da vez, as páginas do rodapé e as redes sociais ficam com
-            quem mantem o sistema — aparecem em toda página da loja e não mudam no dia a dia. Para
+            O carrossel da home, a fileira de mais vendidos, o perfume da vez, as páginas do
+            rodapé e as redes sociais ficam com quem mantem o sistema — aparecem em toda página da loja e não mudam no dia a dia. Para
             trocar alguma delas, fale com essa pessoa.
           </p>
         )}

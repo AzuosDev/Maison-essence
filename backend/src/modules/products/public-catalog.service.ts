@@ -127,26 +127,42 @@ export class PublicCatalogService {
   }
 
   /**
-   * Mais vendidos, por quantidade somada nos pedidos que viraram venda.
+   * A fileira "Mais vendidos" da home.
    *
-   * A soma e de unidades e não de pedidos: dez frascos em uma compra só pesam
-   * dez. O ranking sai dos pedidos e a vitrine sai do catálogo, então produto
-   * desativado desaparece da prateleira sem sumir do histórico.
+   * ## Quem escolhe
    *
-   * ## A prateleira não chega pela metade
+   * A dona, apontando os produtos em Ajustes — e a escolha e absoluta: a
+   * fileira e aqueles produtos, naquela ordem, e nada entra atrás para
+   * completar. Quatro escolhidos dao quatro cards.
    *
-   * O ranking manda enquanto tem o que mandar, e as vagas que sobram são
-   * completadas com o catálogo: destaque primeiro, depois o mais novo — o
-   * mesmo critério dos relacionados da página do produto. Loja que ainda não
-   * vendeu não tem ranking nenhum, e sem o complemento a primeira fileira da
-   * home — a que a cliente vê antes de qualquer outra — simplesmente não
-   * existia no dia da inauguração.
+   * Antes deste campo a fileira era o ranking dos pedidos, e por isso quem a
+   * montava era a cliente, comprando. A primeira fileira da home — a que
+   * mais vende — mostrava o que esgotou, o que entrou num pedido grande de
+   * uma pessoa só, ou o frasco barato que sai muito e não e o que a loja quer
+   * pôr na frente. Isso agora e decisão de quem vende.
    *
-   * O complemento entra atrás, nunca na frente: a primeira posição e de quem
-   * vendeu de verdade, e cada venda nova empurra para fora da prateleira um
-   * produto que estava ali só para preencher, sem ninguém mexer em nada.
+   * ## Quando a escolha não vale
+   *
+   * Produto que saiu do ar, perdeu a última variante a venda ou foi excluído
+   * simplesmente não entra, como em qualquer prateleira: a fileira encurta em
+   * uma vaga e nenhum card leva a cliente a uma página 404. Se todos os
+   * escolhidos caírem, a fileira volta ao ranking — a home não fica sem a
+   * primeira fileira por causa de escolhas que envelheceram.
+   *
+   * ## Sem escolha nenhuma: o critério antigo, inteiro
+   *
+   * Lista vazia e o estado de quem ainda não montou a fileira, e aí vale o
+   * que valia antes — ranking das vendas, por unidades somadas nos pedidos
+   * que viraram venda, completado pelo catálogo para a fileira não chegar
+   * pela metade. Ver `ranked` e `fill`.
    */
   async bestSellers(limit = SHELF_SIZE): Promise<PublicProductView[]> {
+    const chosen = await this.chosenBestSellers(limit);
+
+    if (chosen.length > 0) {
+      return this.toCards(chosen);
+    }
+
     const sold = await this.ranked(limit);
 
     if (sold.length >= limit) {
@@ -267,6 +283,42 @@ export class PublicCatalogService {
       .exec();
 
     return this.toCards(found);
+  }
+
+  /**
+   * Os produtos que a dona escolheu para a fileira, na ordem dela.
+   *
+   * A ordem e a da lista gravada e não a do `$in`: o Mongo devolve na ordem
+   * que achar melhor, e aqui a ordem e o conteúdo da fileira. O filtro e o
+   * mesmo de toda prateleira — produto fora do ar e produto sem variante a
+   * venda somem da vitrine, inclusive escolhidos a dedo.
+   *
+   * O `limit` corta no fim, e vale o menor entre ele e o que a dona escolheu:
+   * a página `/mais-vendidos` pede quarenta e oito e recebe os doze que
+   * existem, enquanto a home pede doze.
+   */
+  private async chosenBestSellers(limit: number): Promise<LeanProduct[]> {
+    const { bestSellerProductIds } = await this.settings.getOrCreate();
+
+    if (bestSellerProductIds.length === 0) {
+      return [];
+    }
+
+    const found = await this.products
+      .find({
+        _id: { $in: bestSellerProductIds },
+        isActive: true,
+        variants: { $elemMatch: { isActive: true } },
+      })
+      .select(CARD_FIELDS)
+      .lean<LeanProduct[]>()
+      .exec();
+    const byId = new Map(found.map((product) => [product._id.toHexString(), product]));
+
+    return bestSellerProductIds
+      .map((id) => byId.get(id.toHexString()))
+      .filter((product): product is LeanProduct => product !== undefined)
+      .slice(0, limit);
   }
 
   /**

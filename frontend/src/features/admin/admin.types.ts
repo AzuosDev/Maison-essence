@@ -696,6 +696,11 @@ export interface AdminStoreSettings {
    * no último produto marcado como destaque, que e o padrão da loja.
    */
   featuredPerfumeProductId: string | null;
+  /**
+   * Os produtos da fileira "Mais vendidos" da home, na ordem da fileira.
+   * Vazia, a fileira volta ao ranking das vendas.
+   */
+  bestSellerProductIds: string[];
   /** O brinde por valor de compra, como esta guardado. */
   gift: AdminGift;
   banners: AdminBanner[];
@@ -779,6 +784,11 @@ export interface UpdateStoreSettingsInput {
   freeShippingMinCents?: number | null;
   /** `null` devolve o perfume da vez ao último destaque marcado. */
   featuredPerfumeProductId?: string | null;
+  /**
+   * A fileira de mais vendidos vai inteira, como o carrossel: e uma lista
+   * ordenável. Vazia, devolve a fileira ao ranking das vendas.
+   */
+  bestSellerProductIds?: string[];
   /** Só o que mudou no brinde: o servidor funde campo a campo. */
   gift?: Partial<AdminGift>;
   banners?: BannerInput[];
@@ -803,6 +813,8 @@ export const SETTINGS_LIMITS = {
   bannerLink: 300,
   /** `MAX_SHORTCUTS`: o que cabe numa fileira de desktop sem encolher o círculo. */
   shortcuts: 9,
+  /** `MAX_BEST_SELLERS`: o que a prateleira da home mostra. */
+  bestSellers: 12,
   /** `MAX_SHORTCUT_LABEL_LENGTH`: o nome tem a largura do círculo. */
   shortcutLabel: 32,
   /** `MAX_SHORTCUT_LINK_LENGTH`, igual ao link do banner. */

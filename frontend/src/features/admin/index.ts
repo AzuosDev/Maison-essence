@@ -287,6 +287,7 @@ export {
   isDirty as isSettingsDirty,
   linkFromTarget,
   moveBanner,
+  moveItem,
   moveShortcut,
   newBanner,
   newShortcut,

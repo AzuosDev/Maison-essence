@@ -168,6 +168,14 @@ export interface SettingsDraft {
    * uma consulta por id, e o rascunho não precisa envelhecer com eles.
    */
   featuredPerfumeProductId: string | null;
+  /**
+   * A fileira "Mais vendidos" da home, na ordem dos cards.
+   *
+   * Só os ids, como o perfume da vez: o nome e a foto de cada linha saem de
+   * uma consulta por id, e o rascunho não precisa envelhecer com eles. Lista
+   * vazia devolve a fileira ao ranking das vendas.
+   */
+  bestSellerProductIds: string[];
   gift: GiftDraft;
   banners: BannerDraft[];
   /** A fileira de círculos da home. Vazia, a home cai nas categorias-raiz. */
@@ -250,6 +258,7 @@ export function draftFromSettings(settings: AdminStoreSettings): SettingsDraft {
     freeShippingMin:
       settings.freeShippingMinCents === null ? '' : centsToInput(settings.freeShippingMinCents),
     featuredPerfumeProductId: settings.featuredPerfumeProductId,
+    bestSellerProductIds: [...settings.bestSellerProductIds],
     gift: draftFromGift(settings.gift),
     banners: settings.banners.map(draftFromBanner),
     shortcuts: settings.shortcuts.map(draftFromShortcut),
@@ -529,15 +538,27 @@ export function moveShortcut(
   from: number,
   to: number,
 ): ShortcutDraft[] {
-  if (from === to || from < 0 || to < 0 || from >= shortcuts.length || to >= shortcuts.length) {
-    return [...shortcuts];
+  return moveItem(shortcuts, from, to);
+}
+
+/**
+ * Tira de uma posição e põe noutra, devolvendo uma lista nova.
+ *
+ * Genérica porque são duas listas ordenáveis com a mesma mecânica — os
+ * atalhos da home e os mais vendidos — e a aritmética de índice fora de faixa
+ * não merece duas implementações. Índice inválido devolve a lista como estava:
+ * "subir" na primeira linha não e erro, e não faz nada.
+ */
+export function moveItem<T>(items: readonly T[], from: number, to: number): T[] {
+  if (from === to || from < 0 || to < 0 || from >= items.length || to >= items.length) {
+    return [...items];
   }
 
-  const next = [...shortcuts];
+  const next = [...items];
   const [moved] = next.splice(from, 1);
 
   if (moved === undefined) {
-    return [...shortcuts];
+    return [...items];
   }
 
   next.splice(to, 0, moved);
@@ -1167,6 +1188,13 @@ export function changesOf(
     changes.shortcuts = draft.shortcuts.map(shortcutToInput);
   }
 
+  // Os mais vendidos vao inteiros, e a lista vazia viaja: e ela que devolve a
+  // fileira ao ranking das vendas. A ordem faz parte do que mudou — arrastar
+  // o terceiro card para a frente e uma alteração como qualquer outra.
+  if (!sameIds(draft.bestSellerProductIds, base.bestSellerProductIds)) {
+    changes.bestSellerProductIds = [...draft.bestSellerProductIds];
+  }
+
   const pages = draft.pages
     .filter((page, index) => !samePage(page, base.pages[index]))
     .map(pageToInput);
@@ -1279,6 +1307,11 @@ function sameBanner(banner: BannerDraft, other: BannerDraft | undefined): boolea
     banner.endsOn === other.endsOn &&
     banner.isActive === other.isActive
   );
+}
+
+/** Mesma lista e na mesma ordem: aqui a posição e o conteúdo. */
+function sameIds(draft: readonly string[], base: readonly string[]): boolean {
+  return draft.length === base.length && draft.every((id, index) => id === base[index]);
 }
 
 function sameShortcuts(

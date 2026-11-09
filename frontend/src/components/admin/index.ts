@@ -48,6 +48,7 @@ export {
 
 export { AdminNav, type AdminNavProps } from './admin-nav';
 export { BannerEditor, type BannerEditorProps } from './banner-editor';
+export { BestSellersPicker, type BestSellersPickerProps } from './best-sellers-picker';
 export { ShortcutEditor, type ShortcutEditorProps } from './shortcut-editor';
 export { CategoryPicker, type CategoryPickerProps } from './category-picker';
 export { CategoryTree, type CategoryTreeProps } from './category-tree';
@@ -62,8 +63,11 @@ export { PagesEditor, type PagesEditorProps } from './pages-editor';
 export { PerfumePicker, type PerfumePickerProps } from './perfume-picker';
 export {
   ProductPicker,
+  ProductSearch,
+  ProductThumb,
   type ProductPickerCopy,
   type ProductPickerProps,
+  type ProductSearchProps,
 } from './product-picker';
 export { RowMenu, type RowMenuItem, type RowMenuProps } from './row-menu';
 export { PaymentPreview, type PaymentPreviewProps } from './payment-preview';

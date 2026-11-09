@@ -52,6 +52,15 @@ export const MAX_SHORTCUT_LABEL_LENGTH = 32;
 /** O destino do atalho, igual ao limite do link do banner. */
 export const MAX_SHORTCUT_LINK_LENGTH = 300;
 
+/**
+ * Quantos produtos a fileira "Mais vendidos" aceita.
+ *
+ * Doze, que e `SHELF_SIZE`: o que a prateleira da home mostra. O teto não e
+ * de banco nem de tela — e a fileira em si, e aceitar o décimo terceiro
+ * seria guardar uma escolha que a loja não desenha.
+ */
+export const MAX_BEST_SELLERS = 12;
+
 export function unknownShortcutsMessage(ids: readonly string[]): string {
   const alvo = ids.length === 1 ? 'Um atalho citado não existe mais' : 'Atalhos citados não existem mais';
 

@@ -20,8 +20,9 @@ import AdminSettingsPage from './admin-settings-page';
  *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
  * - **a divisão por campo**: o gerente da loja abre a tela e grava o que muda
- *   no expediente, e as quatro seções de moldura — redes, carrossel, perfume
- *   da vez e páginas do rodapé — não são desenhadas para ele. O atendimento
+ *   no expediente, e as cinco seções de moldura — redes, carrossel, a fileira
+ *   de mais vendidos, perfume da vez e páginas do rodapé — não são desenhadas
+ *   para ele. O atendimento
  *   não entra de jeito nenhum.
  */
 
@@ -46,6 +47,8 @@ const SETTINGS = {
   socialLinks: { instagram: '@maisonessence', tiktok: '' },
   freeShippingMinCents: 20_000,
   featuredPerfumeProductId: null,
+  // A fileira de mais vendidos no automatico, como a loja nasce.
+  bestSellerProductIds: [] as string[],
   gift: { isActive: false, minCents: null, productId: null, label: '' },
   banners: [
     {
@@ -178,6 +181,7 @@ function saved(patch: Patch): Settings {
     pickupAddress: { ...SETTINGS.pickupAddress, ...patch.pickupAddress },
     socialLinks: { ...SETTINGS.socialLinks, ...patch.socialLinks },
     banners: patch.banners ?? SETTINGS.banners,
+    bestSellerProductIds: patch.bestSellerProductIds ?? SETTINGS.bestSellerProductIds,
     institutionalPages: SETTINGS.institutionalPages.map((page) =>
       mergePage(page, patch.institutionalPages),
     ),
@@ -240,6 +244,15 @@ beforeEach(() => {
         // configurações: sem este desvio, a tela receberia o documento da loja
         // no lugar de uma página de produtos.
         if (url.includes('/admin/products')) {
+          // Cada linha da fileira de mais vendidos pede o produto pelo id, e
+          // não a pagina: sem este desvio ela receberia a lista inteira e
+          // mostraria uma linha sem nome.
+          const chosen = PRODUCTS.find((product) => url.endsWith(`/${product.id}`));
+
+          if (chosen !== undefined) {
+            return Promise.resolve(jsonResponse(chosen));
+          }
+
           return Promise.resolve(
             jsonResponse({
               items: PRODUCTS,
@@ -371,6 +384,7 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
   // convite a perguntar "por que não posso?" no meio do expediente.
   expect(screen.queryByRole('heading', { name: 'Redes sociais' })).toBeNull();
   expect(screen.queryByRole('heading', { name: 'Banners da home' })).toBeNull();
+  expect(screen.queryByRole('heading', { name: 'Mais vendidos' })).toBeNull();
   expect(screen.queryByRole('heading', { name: 'O perfume da vez' })).toBeNull();
   expect(screen.queryByRole('heading', { name: 'Páginas do rodapé' })).toBeNull();
 
@@ -378,7 +392,7 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
   expect(screen.getByText(/ficam com quem mantem o sistema/)).toBeDefined();
 });
 
-test('o administrador vê as seis seções', async () => {
+test('o administrador vê as sete seções', async () => {
   signInAs(USER_ROLES.SUPER_ADMIN);
 
   abrir();
@@ -386,6 +400,7 @@ test('o administrador vê as seis seções', async () => {
   expect(await screen.findByRole('heading', { name: 'A loja' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Redes sociais' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Banners da home' })).toBeDefined();
+  expect(screen.getByRole('heading', { name: 'Mais vendidos' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'O perfume da vez' })).toBeDefined();
   expect(screen.getByRole('heading', { name: 'Páginas do rodapé' })).toBeDefined();
   expect(screen.queryByText(/ficam com quem mantem o sistema/)).toBeNull();
@@ -520,6 +535,70 @@ test('brinde ligado pela metade diz que não vai aparecer', async () => {
   expect(
     await screen.findByText(/o aviso do brinde não aparece na loja/),
   ).toBeDefined();
+});
+
+/* ---- A fileira de mais vendidos ------------------------------------------------ */
+
+test('sem escolha, a tela diz que a fileira esta no automático', async () => {
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  expect(await screen.findByText(/A fileira esta no automático/)).toBeDefined();
+});
+
+test('escolher um produto manda a fileira inteira, e só ela', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+
+  abrir();
+
+  const busca = await screen.findByRole('searchbox', { name: 'Adicionar produto a fileira' });
+
+  await user.type(busca, 'yara');
+
+  // A busca da fileira e a do perfume da vez mostram os dois produtos, e as
+  // duas tem um botão "Escolher Yara Lattafa". O da fileira e o que esta
+  // dentro desta seção.
+  const secao = screen.getByRole('region', { name: 'Mais vendidos' });
+
+  await user.click(
+    await within(secao).findByRole('button', { name: /Escolher Yara Lattafa/ }, { timeout: 3000 }),
+  );
+  await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+  await waitFor(() => {
+    expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ bestSellerProductIds: ['p2'] });
+  });
+});
+
+test('a fileira montada mostra os produtos na ordem, e tirar um manda a lista sem ele', async () => {
+  const user = userEvent.setup();
+
+  signInAs(USER_ROLES.SUPER_ADMIN);
+  SETTINGS.bestSellerProductIds = ['p1', 'p2'];
+
+  try {
+    abrir();
+
+    const secao = await screen.findByRole('region', { name: 'Mais vendidos' });
+    const linhas = await within(secao).findAllByRole('listitem');
+
+    expect(linhas).toHaveLength(2);
+    expect(linhas[0]?.textContent).toContain('Asad Lattafa');
+    expect(linhas[1]?.textContent).toContain('Yara Lattafa');
+
+    await user.click(within(linhas[0]!).getByRole('button', { name: 'Ações de Asad Lattafa' }));
+    await user.click(screen.getByRole('button', { name: 'Tirar da fileira' }));
+    await user.click(await screen.findByRole('button', { name: 'Salvar' }));
+
+    await waitFor(() => {
+      expect(JSON.parse(lastWrite()?.body ?? '{}')).toEqual({ bestSellerProductIds: ['p2'] });
+    });
+  } finally {
+    SETTINGS.bestSellerProductIds = [];
+  }
 });
 
 /* ---- O perfume da vez --------------------------------------------------------- */

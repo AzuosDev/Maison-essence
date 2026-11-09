@@ -254,3 +254,17 @@ export function objectIdProp(options: ObjectIdPropOptions = {}): SchemaTypeOptio
     ...options,
   };
 }
+
+/**
+ * Lista de referências, na ordem em que foi gravada.
+ *
+ * `default: []` e não ausente: campo de lista que chega `undefined` obriga
+ * todo leitor a checar antes de iterar, e o documento de configurações e
+ * lido em toda página da loja.
+ */
+export function objectIdListProp(): SchemaTypeOptions<unknown> {
+  return {
+    type: [SchemaTypes.ObjectId],
+    default: [],
+  };
+}

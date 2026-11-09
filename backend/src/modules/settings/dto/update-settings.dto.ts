@@ -16,7 +16,7 @@ import {
 } from 'class-validator';
 import { MAX_CENTS } from '../../../database/schema-helpers.js';
 import { IsWhatsappNumber } from '../whatsapp-number.js';
-import { MAX_BANNERS, MAX_SHORTCUTS } from '../settings.constants.js';
+import { MAX_BANNERS, MAX_BEST_SELLERS, MAX_SHORTCUTS } from '../settings.constants.js';
 import { BannerDto } from './banner.dto.js';
 import { GiftDto } from './gift.dto.js';
 import { InstitutionalPageDto } from './institutional-page.dto.js';
@@ -33,8 +33,9 @@ import { SocialLinksDto } from './social-links.dto.js';
  * - campo simples: o valor recebido substitui o gravado;
  * - `pickupAddress`, `socialLinks` e `gift`: fusão campo a campo, porque a
  *   tela manda só o que a dona mexeu;
- * - `banners` e `shortcuts`: substituição do array inteiro, porque são listas
- *   ordenáveis — o que sumiu delas foi removido de propósito;
+ * - `banners`, `shortcuts` e `bestSellerProductIds`: substituição do array
+ *   inteiro, porque são listas ordenáveis — o que sumiu delas foi removido
+ *   de propósito;
  * - `institutionalPages`: atualização por `slug`, porque as seis páginas
  *   existem sempre e cada uma e editada na sua própria tela.
  */
@@ -112,6 +113,24 @@ export class UpdateSettingsDto {
   @IsOptional()
   @IsMongoId({ message: 'informe o id de um produto válido' })
   featuredPerfumeProductId?: string | null;
+
+  /**
+   * Os produtos da fileira "Mais vendidos" da home, na ordem da fileira.
+   *
+   * Array inteiro, como o carrossel e os atalhos: e uma lista ordenável, e o
+   * produto que sumiu dela foi tirado de propósito. Lista vazia e resposta
+   * legítima — devolve a fileira ao ranking das vendas, que e o que ela
+   * sempre fez antes desta escolha existir.
+   *
+   * Como no perfume da vez, só o id e validado aqui: se o produto esta no ar
+   * e se tem variante a venda e pergunta de quem monta a home, não de quem
+   * grava as configurações — ver `PublicCatalogService.bestSellers`.
+   */
+  @IsOptional()
+  @IsArray()
+  @ArrayMaxSize(MAX_BEST_SELLERS)
+  @IsMongoId({ each: true, message: 'informe ids de produtos válidos' })
+  bestSellerProductIds?: string[];
 
   /**
    * O brinde por valor de compra: "Compre R$ 179,99 e ganhe um porta

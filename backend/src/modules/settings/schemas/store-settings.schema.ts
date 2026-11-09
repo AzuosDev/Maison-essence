@@ -17,6 +17,7 @@ import {
   createSchema,
   enumProp,
   integerProp,
+  objectIdListProp,
   objectIdProp,
   textProp,
 } from '../../../database/schema-helpers.js';
@@ -317,6 +318,37 @@ export class StoreSettings extends SingletonSchema {
    */
   @Prop(objectIdProp({ default: null }))
   featuredPerfumeProductId: Types.ObjectId | null;
+
+  /**
+   * A fileira "Mais vendidos" da home, escolhida a dedo.
+   *
+   * ## Por que a lista existe
+   *
+   * Antes dela a fileira era o ranking dos pedidos, e quem a montava era a
+   * cliente — comprando. Isso tem uma consequência que ninguém pediu: a
+   * primeira fileira da home, a que mais vende, mostrava o que esgotou, o
+   * que entrou num pedido grande de uma pessoa só, ou o frasco barato que
+   * sai muito e não e o que a loja quer pôr na frente. Aqui a dona aponta os
+   * produtos, na ordem em que eles aparecem.
+   *
+   * ## O id, e a ordem e o conteúdo
+   *
+   * O id e não o slug, pelo mesmo motivo do perfume da vez: renomear o
+   * produto troca o slug, e a escolha não pode se desfazer porque alguém
+   * corrigiu um nome no cadastro. A ordem do array e a ordem da fileira — o
+   * primeiro id e o primeiro card.
+   *
+   * ## Lista vazia e o estado inicial, não uma fileira vazia
+   *
+   * Sem nenhuma escolha a fileira volta ao ranking das vendas completado
+   * pelo catálogo, que era o único critério antes deste campo — a home nunca
+   * abre sem a primeira fileira, inclusive no dia da inauguração. Com
+   * escolha, a fileira e exatamente ela: três produtos escolhidos dao três
+   * cards, e nada entra atrás para preencher. Ver
+   * `PublicCatalogService.bestSellers`.
+   */
+  @Prop(objectIdListProp())
+  bestSellerProductIds: Types.ObjectId[];
 
   /**
    * O brinde por valor de compra.

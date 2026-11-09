@@ -189,6 +189,14 @@ export class SettingsService {
       settings.set('shortcuts', this.plannedShortcuts(settings, dto.shortcuts));
     }
 
+    // A fileira de mais vendidos e a lista crua, sem planejamento nenhum: ela
+    // não tem linha com identidade própria como o banner e o atalho — e uma
+    // ordem de ids, e os ids são do catálogo. O Mongoose converte o texto em
+    // `ObjectId` na gravação, como em qualquer referência.
+    if (dto.bestSellerProductIds !== undefined) {
+      settings.set('bestSellerProductIds', dto.bestSellerProductIds);
+    }
+
     if (dto.institutionalPages !== undefined) {
       settings.set(
         'institutionalPages',
@@ -379,6 +387,10 @@ function auditSnapshot(settings: StoreSettingsDocument): AuditSnapshot {
     // Texto, e não `ObjectId`: dois ids iguais são objetos diferentes, e o
     // diff registraria alteração onde não houve.
     featuredPerfumeProductId: settings.featuredPerfumeProductId?.toHexString() ?? null,
+    // Lista de texto, e não de `ObjectId`: o diff compara array como valor
+    // único — a ordem faz parte do que mudou — e dois ids iguais são objetos
+    // diferentes, o que registraria alteração onde não houve.
+    bestSellerProductIds: settings.bestSellerProductIds.map((id) => id.toHexString()),
     pickupAddress: {
       street: pickupAddress.street,
       number: pickupAddress.number,
