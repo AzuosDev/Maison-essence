@@ -1,11 +1,17 @@
 /*
  * Configurações.
  *
- * Uma coluna só, e não duas: os cinco blocos são assuntos independentes, e
- * uma segunda coluna colocaria lado a lado coisas que não se comparam — o
- * CEP da retirada e o título de um banner. A largura máxima existe pelo
- * mesmo motivo que existe num texto: campo de formulário com 90rem de largura
- * obriga o olho a atravessar a tela entre o rótulo e o valor.
+ * Duas telas no mesmo lugar: a grade dos nove assuntos e o assunto aberto.
+ *
+ * A grade e multicoluna porque ali os retângulos se comparam — "como esta
+ * cada parte da loja" e uma leitura de relance, e lado a lado ela cabe numa
+ * tela sem rolagem. O assunto aberto e de coluna única pelo motivo oposto: os
+ * campos de um formulário não se comparam entre si, e uma segunda coluna
+ * colocaria o CEP da retirada ao lado do título de um banner.
+ *
+ * A largura máxima existe pelo mesmo motivo que existe num texto: campo de
+ * formulário com 90rem de largura obriga o olho a atravessar a tela entre o
+ * rótulo e o valor.
  *
  * `flex` e não `grid` na página de propósito: a barra de salvar gruda no
  * rodapé da viewport, e o bloco que contem um item grudento precisa ser o
@@ -47,12 +53,201 @@
   text-wrap: pretty;
 }
 
-/* ---- Os blocos ------------------------------------------------------------- */
+/* ---- A grade de assuntos ------------------------------------------------------- */
 
-.form {
+/*
+ * Nove retângulos, um por assunto.
+ *
+ * `auto-fill` com piso de 15rem, e não um número fixo de colunas: o retângulo
+ * guarda um título, uma linha de explicação e o estado atual, e abaixo dessa
+ * medida a explicação vira quatro linhas de duas palavras. No celular e uma
+ * coluna; num monitor, três.
+ */
+.hub {
   display: grid;
-  gap: var(--space-16);
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+  gap: var(--space-12);
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
+
+/* A célula estica o botão: senão cada retângulo teria a altura do seu próprio
+   texto, e a fileira ficaria serrilhada. */
+.tileCell {
+  display: grid;
+}
+
+.tile {
+  display: grid;
+  /* O meio cresce. E o que mantem o estado atual na mesma altura em todos os
+     retângulos da fileira, qualquer que seja o tamanho da explicação. */
+  grid-template-rows: auto 1fr auto;
+  gap: var(--space-8);
+
+  width: 100%;
+  min-height: 9rem;
+  padding: var(--space-16);
+
+  background-color: var(--surface);
+  border: var(--border);
+  border-radius: var(--radius-card);
+
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    border-color var(--transition),
+    background-color var(--transition);
+}
+
+/* A borda dourada e o único aviso de que o retângulo abre: dourado e ação na
+   loja inteira, e aqui o retângulo todo e o botão. */
+.tile:hover {
+  border-color: var(--gold);
+}
+
+.tile:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: calc(var(--focus-offset) * -1);
+}
+
+.tile:active {
+  background-color: var(--gold-wash);
+}
+
+.tileTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+
+  font-family: var(--font-display);
+  font-size: var(--text-16);
+  font-weight: var(--weight-medium);
+  color: var(--ink);
+}
+
+.tileSummary {
+  font-size: var(--text-12);
+  line-height: var(--leading-body);
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+
+.tileFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-8);
+}
+
+/* O estado atual — "desligada", "3 artes", "no automático". Mais escuro e
+   mais pesado que a explicação acima porque e o dado, e não o texto sobre
+   ele: e esta linha que responde "como esta a loja?" sem abrir nada. */
+.tileStatus {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--text-12);
+  font-weight: var(--weight-semibold);
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tileFoot svg {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+  color: var(--muted);
+
+  transition:
+    color var(--transition),
+    transform var(--transition);
+}
+
+.tile:hover .tileFoot svg {
+  color: var(--ink);
+  transform: translateX(2px);
+}
+
+/*
+ * O ponto que diz que há algo dentro: vermelho para campo a corrigir,
+ * dourado para aviso a ler.
+ *
+ * Mesmo vocabulário de `rate-table`, onde a aba fechada também esconde erro
+ * que recusa a gravação. O texto oculto ao lado carrega o mesmo sinal, porque
+ * a cor não pode ser a única a dizer.
+ */
+.flag,
+.note {
+  flex: none;
+
+  width: 0.375rem;
+  height: 0.375rem;
+  border-radius: var(--radius-pill);
+}
+
+.flag {
+  background-color: var(--danger);
+}
+
+.note {
+  background-color: var(--gold);
+}
+
+/* ---- O assunto aberto ---------------------------------------------------------- */
+
+.panel {
+  display: grid;
+  gap: var(--space-12);
+}
+
+/* O foco cai aqui quando o assunto abre, para o Tab seguir de dentro dele. Sem
+   contorno porque este bloco não e alcançável pelo teclado — só pelo `focus()`
+   que o abriu —, e o mesmo que as abas fazem com o painel delas. */
+.panel:focus {
+  outline: none;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  justify-self: start;
+
+  min-height: 2.75rem;
+  padding-inline: var(--space-8);
+
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  font-family: var(--font-body);
+  font-size: var(--text-14);
+  color: var(--ink-soft);
+
+  transition: color var(--transition);
+}
+
+.back:hover {
+  color: var(--ink);
+}
+
+.back:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-chip);
+}
+
+.back svg {
+  flex: none;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ---- Os blocos ------------------------------------------------------------- */
 
 .card {
   display: grid;
@@ -94,11 +289,12 @@
 }
 
 /*
-  A linha que fecha a tela do gerente, no lugar das quatro seções de moldura.
+  A linha que fecha a grade do gerente, no lugar dos cinco retângulos de
+  moldura.
 
-  Sem a moldura do cartão: o que esta ali não e um bloco que ele pode editar e
-  ficou vazio — e uma explicação de onde aquilo foi. Um cartão com borda
-  pareceria um formulário quebrado.
+  Sem a moldura do cartão: o que esta ali não e um assunto que ele pode abrir e
+  ficou vazio — e uma explicação de onde aquilo foi. Um retângulo com borda
+  pareceria um décimo assunto, e pedindo clique.
 */
 .handover {
   margin: 0;
@@ -197,9 +393,11 @@
 /*
  * Aparece quando há o que salvar, e gruda no rodapé até ser resolvida.
  *
- * Esta tela e longa e se edita de cima a baixo. Sem a barra presa, a dona
- * mexeria na quinta página institucional e teria de rolar três telas para
- * encontrar o botão — ou sairia achando que tinha salvo.
+ * Assunto como "Páginas do rodapé" e longo e se edita de cima a baixo, e o
+ * rascunho atravessa a volta para a grade: quem mexeu em dois assuntos grava
+ * os dois. Sem a barra presa, a dona mexeria na quinta página institucional e
+ * teria de rolar três telas para encontrar o botão — ou sairia achando que
+ * tinha salvo.
  *
  * A sombra sobe — o deslocamento e negativo — porque a barra flutua sobre o
  * conteúdo que esta **acima** dela.
