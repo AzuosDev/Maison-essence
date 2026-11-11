@@ -107,8 +107,8 @@ test('excluir para sempre e só do administrador', () => {
 });
 
 test('a moldura da loja dentro de Configurações e só do administrador', () => {
-  // O gerente abre a área (`canSee`) e grava a operação; o carrossel, o
-  // perfume da vez, as páginas do rodapé e as redes sociais, não.
+  // O gerente abre a área (`canSee`) e grava a operação, a vitrine da home
+  // inclusa; o carrossel, os cartazes e as páginas do rodapé, não.
   expect(canEditStoreFrame(USER_ROLES.SUPER_ADMIN)).toBe(true);
   expect(canEditStoreFrame(USER_ROLES.OWNER)).toBe(false);
   expect(canEditStoreFrame(USER_ROLES.STAFF)).toBe(false);

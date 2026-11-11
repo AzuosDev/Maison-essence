@@ -936,12 +936,6 @@ describe('configuracoes da loja (e2e)', () => {
         'as paginas do rodape',
         { institutionalPages: [{ slug: INSTITUTIONAL_PAGE_SLUGS.ABOUT, isActive: true }] },
       ],
-      ['as redes sociais', { socialLinks: { instagram: 'maisonessence' } }],
-      ['o perfume da vez', { featuredPerfumeProductId: '64b7f1c2a1b2c3d4e5f60718' }],
-      [
-        'a fileira de mais vendidos',
-        { bestSellerProductIds: ['64b7f1c2a1b2c3d4e5f60718'] },
-      ],
     ])('recusa o gerente em %s, dizendo o que pedir', async (_campo, body) => {
       const owner = await signedInOwner();
 
@@ -950,10 +944,19 @@ describe('configuracoes da loja (e2e)', () => {
       expect(String(response.body.message)).toMatch(/administrador altera/);
     });
 
-    it('apagar a escolha do perfume da vez tambem e moldura', async () => {
+    it('a vitrine da home e as redes sociais sao do gerente', async () => {
       const owner = await signedInOwner();
 
-      await patch(owner, { featuredPerfumeProductId: null }).expect(403);
+      const response = await patch(owner, {
+        socialLinks: { instagram: 'maisonessence' },
+        featuredPerfumeProductId: null,
+        bestSellerProductIds: [],
+        brands: [],
+      }).expect(200);
+
+      expect(response.body).toMatchObject({
+        socialLinks: { instagram: 'maisonessence' },
+      });
     });
 
     it('um campo de moldura recusa o corpo inteiro: nada e gravado', async () => {
@@ -976,12 +979,10 @@ describe('configuracoes da loja (e2e)', () => {
       const response = await patch(admin, {
         storeName: 'Maison Essence Sobral',
         banners: [{ imageDesktop: BANNER_IMAGE, title: 'Natal' }],
-        socialLinks: { instagram: 'maisonessence' },
       }).expect(200);
 
       expect(response.body).toMatchObject({
         storeName: 'Maison Essence Sobral',
-        socialLinks: { instagram: 'maisonessence' },
       });
       expect(response.body.banners).toHaveLength(1);
     });

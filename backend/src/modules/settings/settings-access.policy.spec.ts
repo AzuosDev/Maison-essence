@@ -79,6 +79,29 @@ describe('policy de acesso as configuracoes', () => {
       }).not.toThrow();
     });
 
+    /**
+     * A vitrine da home passou a ser do expediente.
+     *
+     * O perfume da vez, a fileira de mais vendidos, a faixa de marcas e as
+     * redes sociais mudam com a estacao e com o estoque — quem esta na loja
+     * decide, e errar custa uma correcao de um minuto. `null` em
+     * `featuredPerfumeProductId` devolve a escolha ao primeiro destaque, e
+     * tambem e do gerente.
+     */
+    it('passa a vitrine da home e as redes sociais', () => {
+      const dto = body({
+        featuredPerfumeProductId: null,
+        bestSellerProductIds: ['64b7f1c2a1b2c3d4e5f60718'],
+        brands: [],
+        socialLinks: { instagram: 'maisonessence' } as UpdateSettingsDto['socialLinks'],
+      });
+
+      expect(frameFieldsIn(dto)).toEqual([]);
+      expect(() => {
+        assertCanEditSettings(actor(USER_ROLES.OWNER), dto);
+      }).not.toThrow();
+    });
+
     it('nao reclama de corpo vazio: salvar sem editar nada e so um no-op', () => {
       expect(() => {
         assertCanEditSettings(actor(USER_ROLES.OWNER), body({}));
@@ -90,31 +113,14 @@ describe('policy de acesso as configuracoes', () => {
     it.each([
       ['banners', body({ banners: [] })],
       ['institutionalPages', body({ institutionalPages: [] })],
-      [
-        'socialLinks',
-        body({
-          socialLinks: { instagram: 'maisonessence' } as UpdateSettingsDto['socialLinks'],
-        }),
-      ],
-      ['featuredPerfumeProductId', body({ featuredPerfumeProductId: '64b7f1c2a1b2c3d4e5f60718' })],
-      ['bestSellerProductIds', body({ bestSellerProductIds: ['64b7f1c2a1b2c3d4e5f60718'] })],
-      // Lista vazia devolve a fileira ao ranking das vendas: e uma edicao da
-      // primeira fileira da home como qualquer outra, e nao um campo ausente.
-      ['bestSellerProductIds vazia', body({ bestSellerProductIds: [] })],
+      ['posters', body({ posters: [] })],
     ])('recusa o gerente em %s', (_nome, dto) => {
       expect(() => {
         assertCanEditSettings(actor(USER_ROLES.OWNER), dto);
       }).toThrow(ForbiddenException);
     });
 
-    it('trata null como edicao: apagar a escolha tambem e mexer na moldura', () => {
-      const dto = body({ featuredPerfumeProductId: null });
 
-      expect(frameFieldsIn(dto)).toEqual(['featuredPerfumeProductId']);
-      expect(() => {
-        assertCanEditSettings(actor(USER_ROLES.OWNER), dto);
-      }).toThrow(ForbiddenException);
-    });
 
     it('recusa o corpo inteiro, e nao so o campo: nao ha gravacao pela metade', () => {
       const dto = body({ storeName: 'Maison Essence Sobral', banners: [] });
@@ -128,7 +134,7 @@ describe('policy de acesso as configuracoes', () => {
       const dto = body({
         banners: [],
         institutionalPages: [],
-        featuredPerfumeProductId: null,
+        posters: [],
         storeName: 'Maison Essence Sobral',
       });
 
@@ -144,15 +150,15 @@ describe('policy de acesso as configuracoes', () => {
     });
 
     it('varios campos saem separados por virgula e um "e"', () => {
-      expect(storeFrameMessage(['banners', 'institutionalPages', 'socialLinks'])).toContain(
-        'o carrossel da home, as páginas do rodapé e as redes sociais',
+      expect(storeFrameMessage(['banners', 'institutionalPages', 'posters'])).toContain(
+        'o carrossel da home, as páginas do rodapé e os cartazes de coleção',
       );
     });
 
     it('a ordem e a da lista de campos, e nao a do corpo recebido', () => {
-      const dto = body({ socialLinks: {} as UpdateSettingsDto['socialLinks'], banners: [] });
+      const dto = body({ posters: [], banners: [] });
 
-      expect(frameFieldsIn(dto)).toEqual(['banners', 'socialLinks']);
+      expect(frameFieldsIn(dto)).toEqual(['banners', 'posters']);
     });
   });
 });

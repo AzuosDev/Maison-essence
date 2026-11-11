@@ -20,8 +20,8 @@ import type { SettingsView } from './settings.view.js';
  * para corrigir um horário e o tipo de dependência que faz a pessoa parar de
  * corrigir.
  *
- * Só que a mesma tela guarda a moldura da loja — o carrossel da home, o
- * perfume da vez, as páginas do rodapé, as redes sociais —, e essa parte
+ * Só que a mesma tela guarda a moldura da loja — o carrossel da home, os
+ * cartazes de coleção, as páginas do rodapé —, e essa parte
  * continua sendo do administrador. A divisão não cabe num decorator, que
  * decide por rota; ela mora em `settings-access.policy.ts` e e aplicada no
  * serviço, campo a campo, antes de qualquer gravação.

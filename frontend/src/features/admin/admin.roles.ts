@@ -147,9 +147,10 @@ export function canDeleteForever(role: UserRole | undefined): boolean {
  * O papel mexe na moldura da loja, dentro de Configurações.
  *
  * Moldura e o que aparece em toda página e não muda no expediente: o
- * carrossel da home, o perfume da vez, as páginas que o rodapé lista, as
- * redes sociais. O resto da tela — nome, contato, horário, barra de avisos,
- * frete grátis, retirada — e do gerente.
+ * carrossel da home, os cartazes de coleção e as páginas que o rodapé lista.
+ * O resto da tela — nome, contato, horário, barra de avisos, frete grátis,
+ * retirada, e a vitrine que muda com a estação: atalhos, mais vendidos,
+ * marcas, perfume da vez e redes sociais — e do gerente.
  *
  * A divisão e por campo, e não por área, porque a tela e uma: mandar o
  * gerente a uma segunda tela para corrigir o horário de atendimento seria

@@ -20,10 +20,10 @@ import AdminSettingsPage from './admin-settings-page';
  *   da casa não pode apagar o ponto de referência;
  * - **o que some do site sem avisar vira aviso escrito**;
  * - **a divisão por campo**: o gerente da loja abre a tela e grava o que muda
- *   no expediente, e as sete seções de moldura — redes, carrossel, a fileira
- *   de mais vendidos, a faixa de marcas, os cartazes de coleção, perfume da
- *   vez e páginas do rodapé — não são desenhadas para ele. O atendimento
- *   não entra de jeito nenhum.
+ *   no expediente — a vitrine da home entre as coisas: atalhos, mais
+ *   vendidos, marcas, perfume da vez e redes sociais. Só as três seções de
+ *   moldura — carrossel, cartazes de coleção e páginas do rodapé — não são
+ *   desenhadas para ele. O atendimento não entra de jeito nenhum.
  */
 
 const SETTINGS = {
@@ -426,7 +426,7 @@ test('o gerente entra e grava a operação da loja', async () => {
   expect(screen.getByLabelText(/Horário de atendimento/)).toBeDefined();
 });
 
-test('para o gerente, a moldura da loja não e desenhada', async () => {
+test('para o gerente, só a moldura da loja não e desenhada', async () => {
   signInAs(USER_ROLES.OWNER);
 
   abrir();
@@ -435,15 +435,18 @@ test('para o gerente, a moldura da loja não e desenhada', async () => {
 
   // Nem desabilitados: fora da grade. Retângulo cinza que não abre e um convite
   // a perguntar "por que não posso?" no meio do expediente.
-  expect(screen.queryByRole('button', { name: /^Redes sociais/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^Banners da home/ })).toBeNull();
-  expect(screen.queryByRole('button', { name: /^Mais vendidos/ })).toBeNull();
-  expect(screen.queryByRole('button', { name: /^Nossas marcas/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^Cartazes de coleção/ })).toBeNull();
-  expect(screen.queryByRole('button', { name: /^O perfume da vez/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /^Páginas do rodapé/ })).toBeNull();
 
-  // E no lugar delas, a linha que diz onde aquilo foi e a quem pedir.
+  // E a vitrine da home, que e do expediente, continua na grade dele.
+  expect(screen.getByRole('button', { name: /^Atalhos da home/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Mais vendidos/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Nossas marcas/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^O perfume da vez/ })).toBeDefined();
+  expect(screen.getByRole('button', { name: /^Redes sociais/ })).toBeDefined();
+
+  // E no lugar das três, a linha que diz onde aquilo foi e a quem pedir.
   expect(screen.getByText(/ficam com quem mantem o sistema/)).toBeDefined();
 });
 

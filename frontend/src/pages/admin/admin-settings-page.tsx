@@ -178,15 +178,7 @@ const SUBJECTS = [
 type Subject = (typeof SUBJECTS)[number];
 
 /** Os assuntos de moldura: fora da grade de quem não os grava. */
-const FRAME_SUBJECTS: ReadonlySet<Subject> = new Set([
-  'banners',
-  'mais-vendidos',
-  'marcas',
-  'cartazes',
-  'perfume',
-  'redes',
-  'paginas',
-]);
+const FRAME_SUBJECTS: ReadonlySet<Subject> = new Set(['banners', 'cartazes', 'paginas']);
 
 const SUBJECT_TITLES: Record<Subject, string> = {
   loja: 'A loja',
@@ -524,8 +516,7 @@ function SettingsForm({
 
           {canEditFrame ? null : (
             <p className={styles.handover}>
-              O carrossel da home, a fileira de mais vendidos, a faixa de marcas, os cartazes de
-              coleção, o perfume da vez, as páginas do rodapé e as redes sociais ficam com quem
+              O carrossel da home, os cartazes de coleção e as páginas do rodapé ficam com quem
               mantem o sistema — são o que a loja mostra de si em toda página, e não mudam no dia a
               dia. Para trocar alguma delas, fale com essa pessoa.
             </p>
